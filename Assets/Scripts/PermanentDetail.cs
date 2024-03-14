@@ -1,0 +1,360 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using System;
+using DG.Tweening;
+using System.Threading.Tasks;
+using TMPro;
+using System.Linq;
+public class PermanentDetail : MonoBehaviour
+{
+    [Header("パネル")]
+    public GameObject pokemonInfoPanel;
+
+    [Header("カード情報プレハブ")]
+    public CardInfo cardInfoPrefab;
+
+    public TextMeshProUGUI cardNameText;
+
+    public ScrollRect pokemonScroll;
+    public TextMeshProUGUI effectText;
+    public Image CardImage;
+
+    Permanent _permanent;
+
+    [SerializeField] TMP_FontAsset CardNameFont_ENG;
+    [SerializeField] TMP_FontAsset CardNameFont_JPN;
+
+    CardSource topCard = null;
+
+    public async void OpenUnitDetail(Permanent permanent)
+    {
+        GManager.instance.PlayDecisionSE();
+
+        _permanent = permanent;
+
+        if (permanent.TopCard != null)
+        {
+            topCard = permanent.TopCard;
+        }
+
+        this.gameObject.SetActive(true);
+
+        CardImage.sprite = await permanent.TopCard.GetCardSprite();
+
+        if (cardNameText != null)
+        {
+            if (ContinuousController.instance.language == Language.ENG)
+            {
+                cardNameText.font = CardNameFont_ENG;
+                cardNameText.text = _permanent.TopCard.BaseENGCardNameFromEntity;
+            }
+
+            else
+            {
+                cardNameText.font = CardNameFont_JPN;
+                cardNameText.text = _permanent.TopCard.BaseJPNCardNameFromEntity;
+            }
+        }
+
+        List<ICardEffect> cardEffects = new List<ICardEffect>();
+
+        foreach (ICardEffect cardEffect in permanent.EffectList(EffectTiming.None))
+        {
+            bool add = false;
+
+            if (cardEffect is IDisableCardEffect)
+            {
+                add = true;
+            }
+
+            else
+            {
+                if (cardEffect.CanUse(null))
+                {
+                    if (!string.IsNullOrEmpty(cardEffect.EffectName))
+                    {
+                        add = true;
+                    }
+                }
+            }
+
+            if (add)
+            {
+                cardEffects.Add(cardEffect);
+            }
+        }
+
+        string effectString = "";
+
+        #region セキュリティアタック
+        if (permanent.IsDigimon)
+        {
+            if (permanent.Strike_AllowMinus >= 0)
+            {
+                effectString += $"Security Attack : {permanent.Strike}\n";
+            }
+
+            else
+            {
+                effectString += $"Security Attack : {permanent.Strike} ({permanent.Strike_AllowMinus})\n";
+            }
+
+            effectString += $"-------------------------\n";
+        }
+        #endregion
+
+        #region ブロッカー
+        if (permanent.HasBlocker)
+        {
+            effectString += $"- Blocker\n";
+        }
+        #endregion
+
+        #region 貫通
+        if (permanent.HasPierce)
+        {
+            effectString += $"- Pierce\n";
+        }
+        #endregion
+
+        #region 再起動
+        if (permanent.HasReboot)
+        {
+            effectString += $"- Reboot\n";
+        }
+        #endregion
+
+        #region 回避
+        if (permanent.HasEvade)
+        {
+            effectString += $"- Evade\n";
+        }
+        #endregion
+
+        #region 速攻
+        if (permanent.HasRush)
+        {
+            effectString += $"- Rush\n";
+        }
+        #endregion
+
+        #region 連携
+        if (permanent.HasAlliance)
+        {
+            effectString += $"- Alliance\n";
+        }
+        #endregion
+
+        #region 防壁
+        if (permanent.HasBarrier)
+        {
+            effectString += $"- Barrier\n";
+        }
+        #endregion
+
+        #region 道連れ
+        if (permanent.HasRetaliation)
+        {
+            for (int i = 0; i < permanent.RetaliationCount; i++)
+            {
+                effectString += $"- Retaliation\n";
+            }
+        }
+        #endregion
+
+        #region ジャミング
+        if (permanent.HasJamming)
+        {
+            effectString += $"- Jamming\n";
+        }
+        #endregion
+
+        #region 突進
+        if (permanent.HasRaid)
+        {
+            effectString += $"- Raid\n";
+        }
+        #endregion
+
+        #region マインドリンク
+        if (permanent.HasMindLink)
+        {
+            effectString += $"- Mind Link\n";
+        }
+        #endregion
+
+        #region 不屈
+        if (permanent.HasFortitude)
+        {
+            effectString += $"- Fortitude\n";
+        }
+        #endregion
+
+        #region 進撃
+        if (permanent.HasBlitz)
+        {
+            effectString += $"- Blitz\n";
+        }
+        #endregion
+
+        #region セキュリティアタック変更
+        if (permanent.HasSecurityAttackChanges)
+        {
+            for (int i = 0; i < permanent.SecurityAttackChanges.Count; i++)
+            {
+                string text = permanent.SecurityAttackChanges[i] > 0 ? $"- Security Attack +{permanent.SecurityAttackChanges[i]}\n" : $"- Security Attack {permanent.SecurityAttackChanges[i]}\n";
+
+                effectString += text;
+            }
+        }
+        #endregion
+
+        #region 効果
+        foreach (ICardEffect cardEffect in cardEffects)
+        {
+            if (cardEffect is IChangeSAttackEffect)
+            {
+                continue;
+            }
+
+            if (cardEffect is ICanSuspendByDigisorptionEffect)
+            {
+                continue;
+            }
+
+            if (cardEffect is IAddSkillEffect)
+            {
+                continue;
+            }
+
+            if (cardEffect is IBlockerEffect)
+            {
+                continue;
+            }
+
+            if (cardEffect is IRushEffect)
+            {
+                continue;
+            }
+
+            if (cardEffect is IRebootEffect)
+            {
+                continue;
+            }
+
+            if (cardEffect is IAddDigivolutionRequirementEffect)
+            {
+                continue;
+            }
+
+            if (cardEffect is CanNotBeDestroyedByBattleClass && cardEffect.EffectName == "Jamming")
+            {
+                continue;
+            }
+
+            if (cardEffect.IsNotShowUI)
+            {
+                continue;
+            }
+
+            effectString += $"- {cardEffect.EffectName}\n";
+        }
+        #endregion
+
+        effectText.text = effectString.Replace("、", ",").Replace("，", ",");
+        effectText.raycastTarget = false;
+
+        for (int i = 0; i < pokemonScroll.content.childCount; i++)
+        {
+            Destroy(pokemonScroll.content.GetChild(i).gameObject);
+        }
+
+        List<CardSource> cardSources = permanent.cardSources.Clone();
+
+        foreach (CardSource cardSource in cardSources)
+        {
+            CardInfo cardInfo = Instantiate(cardInfoPrefab, pokemonScroll.content);
+            cardInfo.SetUpCardInfo(cardSource);
+
+            foreach (ScrollRect scrollRect in cardInfo.scrollRects)
+            {
+                scrollRect.content = pokemonScroll.content;
+                scrollRect.viewport = pokemonScroll.viewport;
+            }
+        }
+
+        Vector3 targetPositon = Vector3.zero;
+        Vector3 startPosition = Vector3.zero;
+
+        if (_permanent.ShowingPermanentCard.transform.position.x > 27)
+        {
+            targetPositon = new Vector3(-390, 0, 0);
+            startPosition = new Vector3(-130, 0, 0);
+        }
+
+        else
+        {
+            targetPositon = new Vector3(390, 0, 0);
+            startPosition = new Vector3(130, 0, 0);
+        }
+
+        pokemonInfoPanel.transform.localScale = new Vector3(1.1f, 1.1f, 1.1f);
+
+        float animationTime = 0.12f;
+
+        var sequence = DOTween.Sequence();
+
+        sequence
+            .Append(pokemonInfoPanel.transform.DOScale(new Vector3(1.3f, 1.3f, 1.3f), animationTime));
+
+        sequence.Play();
+
+        await Task.Delay(TimeSpan.FromSeconds(Time.deltaTime));
+
+        pokemonScroll.verticalNormalizedPosition = 1;
+    }
+
+    bool _first = false;
+    public void CloseUnitDetail()
+    {
+        if (_first)
+        {
+            if (Opening.instance != null)
+            {
+                Opening.instance.PlayCancelSE();
+            }
+        }
+
+        _first = true;
+
+        gameObject.SetActive(false);
+    }
+
+    public void OnClickCardImage()
+    {
+        if (_permanent != null)
+        {
+            if (_permanent.TopCard != null)
+            {
+                GManager.instance.cardDetail.OpenCardDetail(_permanent.TopCard, true);
+
+                if (GManager.instance != null)
+                {
+                    GManager.instance.PlayDecisionSE();
+                }
+            }
+        }
+
+        if (topCard != null)
+        {
+            GManager.instance.cardDetail.OpenCardDetail(topCard, true);
+
+            if (GManager.instance != null)
+            {
+                GManager.instance.PlayDecisionSE();
+            }
+        }
+    }
+}
