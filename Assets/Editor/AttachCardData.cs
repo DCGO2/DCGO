@@ -1,0 +1,61 @@
+﻿using System.Collections.Generic;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using System.Linq;
+using System;
+public class AttachCardData : MonoBehaviour
+{
+    [MenuItem("Window/Attach/AttachCardData")]
+    static void Attach_CardData()
+    {
+        List<CEntity_Base> List = GetAsset.LoadAll<CEntity_Base>("Assets/CardBaseEntity/");
+
+        List<string> UnimplementedCardIDs = new List<string>() { "BT10-084", "BT12-044" };
+
+        foreach (GameObject obj in Selection.gameObjects)
+        {
+            if (obj.GetComponent<ContinuousController>() != null)
+            {
+                ContinuousController CCtrl = obj.GetComponent<ContinuousController>();
+
+                CCtrl.CardList = new CEntity_Base[] { };
+                CCtrl.SortedCardList = new CEntity_Base[] { };
+
+                List<CEntity_Base> cEntity_Bases = new List<CEntity_Base>();
+
+                foreach (CEntity_Base cEntity_Base in List)
+                {
+                    if (UnimplementedCardIDs.Contains(cEntity_Base.CardID))
+                    {
+                        continue;
+                    }
+
+                    if (String.IsNullOrEmpty(cEntity_Base.CardSpriteName))
+                    {
+                        continue;
+                    }
+
+                    cEntity_Bases.Add(cEntity_Base);
+                }
+
+                EditorGUI.BeginChangeCheck();
+
+                CCtrl.CardList = DeckData.SortedCardPoolList(cEntity_Bases).ToArray();
+                cEntity_Bases.Sort((a, b) => a.CardIndex - b.CardIndex);
+                CCtrl.SortedCardList = cEntity_Bases.ToArray();
+
+                if (EditorGUI.EndChangeCheck())
+                {
+                    var scene = SceneManager.GetActiveScene();
+                    EditorSceneManager.MarkSceneDirty(scene);
+                }
+
+                Debug.Log($"カード:{CCtrl.CardList.ToList().Map(cEntity_Base => cEntity_Base.CardID).Distinct().ToList().Count}種類");
+
+                return;
+            }
+        }
+    }
+}

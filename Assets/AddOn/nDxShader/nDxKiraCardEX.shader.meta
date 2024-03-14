@@ -1,0 +1,20 @@
+fileFormatVersion: 2
+guid: e5c7f044c0ca90f4da12abe47b144805
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures:
+  - _MainTex: {fileID: 2800000, guid: 179154ba93fe3314383193d2ba30f753, type: 3}
+  - _FrameNormal: {fileID: 2800000, guid: aa3265674c1c28d4bb915004242baf0e, type: 3}
+  - _FrameTex: {fileID: 2800000, guid: be0038d502cb9c142aab8b2dfd270946, type: 3}
+  - _BackFace: {fileID: 2800000, guid: c6636bf7ae35bc1448a1f93e10e7b5af, type: 3}
+  - _SubKiraTex: {fileID: 2800000, guid: 7df63a4247a77c549a2f511374372e64, type: 3}
+  - _HoloTex: {fileID: 2800000, guid: 0b3677ea3bd08c4408b9ea5a4bdf433e, type: 3}
+  - _KiraTex: {fileID: 2800000, guid: 876e4176d30bee54db2ca97158d72e55, type: 3}
+  - _ArtEmission: {fileID: 2800000, guid: 59d2d107650fb4f4a93e0962301e23e9, type: 3}
+  - _NisuTex: {fileID: 2800000, guid: 6685679ca781c6540996f8eb1183a3f6, type: 3}
+  - _NisuNormal: {fileID: 2800000, guid: 5066e27fa10bfd441af17761d75b0e9b, type: 3}
+  nonModifiableTextures: []
+  preprocessorOverride: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
