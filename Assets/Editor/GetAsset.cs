@@ -44,7 +44,7 @@ public static class GetAsset
         List<T> assetList = new List<T>();
 
         //Get all files in the specified directory (including child directories)
-        string[] filePathArray = Directory.GetFiles(directoryPath, "*", SearchOption.AllDirectories);
+        string[] filePathArray = System.IO.Directory.GetFiles(directoryPath, "*", SearchOption.AllDirectories);
 
         //Add only assets from the acquired files to the list
         foreach (string filePath in filePathArray)
