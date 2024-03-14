@@ -52,7 +52,7 @@ public class AttachCardData : MonoBehaviour
                     EditorSceneManager.MarkSceneDirty(scene);
                 }
 
-                Debug.Log($"カード:{CCtrl.CardList.ToList().Map(cEntity_Base => cEntity_Base.CardID).Distinct().ToList().Count}種類");
+                Debug.Log($"card:{CCtrl.CardList.ToList().Map(cEntity_Base => cEntity_Base.CardID).Distinct().ToList().Count}kinds");
 
                 return;
             }
