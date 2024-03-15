@@ -8,28 +8,28 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 public class EditDeck : MonoBehaviour
 {
-    [Header("デッキ作成オブジェクト")]
+    [Header("Deck creation object")]
     public GameObject CreateDeckObject;
 
-    [Header("カードプレハブ")]
+    [Header("card prefab")]
     public CardPrefab_CreateDeck cardPrefab_CreateDeck;
 
-    [Header("カードプールのスクロールレクト")]
+    [Header("card pool scroll rect")]
     public ScrollRect CardPoolScroll;
 
-    [Header("デッキカードのスクロールレクト")]
+    [Header("Deck card scroll rect")]
     public ScrollRect DeckScroll;
 
-    [Header("デッキカード枚数表示テキスト")]
+    [Header("Deck card number display text")]
     public Text DeckCountText;
 
-    [Header("読み込み中オブジェクト")]
+    [Header("loading object")]
     public LoadingObject LoadingObjec;
 
-    [Header("カード詳細表示")]
+    [Header("Card details display")]
     public DetailCard_DeckEditor DetailCard;
 
-    [Header("フィルター")]
+    [Header("filter")]
     public FilterCardList filterCardList;
 
     /*
@@ -37,10 +37,10 @@ public class EditDeck : MonoBehaviour
     public FilterPanel filterPanel;
     */
 
-    [Header("デッキ名インプットフィールド")]
+    [Header("Deck name input field")]
     public InputField DeckNameInputField;
 
-    //編集中のデッキデータ
+    //Deck data being edited
     public DeckData EdittingDeckData { get; set; }
 
     bool _isFromSelectDeck = false;
@@ -54,10 +54,10 @@ public class EditDeck : MonoBehaviour
     public Text ShowDisplayPageIndexText;
     public LoadingObject isSearchingObject;
 
-    [Header("ページ切り替えSE")]
+    [Header("Page switching SE")]
     public AudioClip SwitchPageSE;
 
-    [Header("カード分類表示")]
+    [Header("Card classification display")]
     [SerializeField] CardDistribution cardDistribution;
     int _maxDisplayPageIndex;
     string _oldDeckName = "";
@@ -172,7 +172,7 @@ public class EditDeck : MonoBehaviour
         }
     }
 
-    #region カード詳細表示
+    #region Card details display
     public void OffDetailCard()
     {
         DetailCard.OffDetailCard();
@@ -194,7 +194,7 @@ public class EditDeck : MonoBehaviour
 
     private void Update()
     {
-        #region 数フレームに一度だけ更新
+        #region Updates only once every few frames
         _frameCount++;
 
         if (_frameCount < _updateFrame)
@@ -217,7 +217,7 @@ public class EditDeck : MonoBehaviour
         }
     }
 
-    #region 見えているカードだけを表示
+    #region Show only visible cards
     public void ShowOnlyVisibleObjects()
     {
         if (DoneSetUp)
@@ -258,7 +258,7 @@ public class EditDeck : MonoBehaviour
 
     public bool isEditting { get; set; } = false;
 
-    #region デッキ編集画面を閉じる
+    #region Close deck editing screen
     public void OnClickCompleteEditButton()
     {
         ContinuousController.instance.PlaySE(Opening.instance.DecisionSE);
@@ -402,7 +402,7 @@ public class EditDeck : MonoBehaviour
     }
     #endregion
 
-    #region デッキ編集画面を開く
+    #region Open deck editing screen
     public void SetUpCreateDeck(DeckData deckData, bool isFromSelectDeck, bool isFromClipboard = false)
     {
         if (deckData == null)
@@ -560,7 +560,7 @@ public class EditDeck : MonoBehaviour
 
     public List<CardPrefab_CreateDeck> CardPoolCardPrefabs_CreateDeck = new List<CardPrefab_CreateDeck>();
 
-    #region ゲーム開始時にデッキ編集画面を初期化
+    #region Initialize the deck editing screen at the start of the game
     public List<CardPrefab_CreateDeck> cardPoolPrefabs_all = new List<CardPrefab_CreateDeck>();
     List<CardPrefab_CreateDeck> _cardPoolPrefabs = new List<CardPrefab_CreateDeck>();
     bool DoneSetUp { get; set; } = false;
@@ -630,12 +630,12 @@ public class EditDeck : MonoBehaviour
     }
     #endregion
 
-    #region デッキ内容の変更をUIに変更
+    #region Changed deck content changes to UI
     public void ReflectDeckData()
     {
         if (EdittingDeckData != null)
         {
-            //デッキに入れられないカードはカバーをオン
+            //Turn on covers for cards that cannot be included in the deck
             if (_checkCoverCoroutine != null)
             {
                 StopCoroutine(_checkCoverCoroutine);
@@ -658,7 +658,7 @@ public class EditDeck : MonoBehaviour
     }
     #endregion
 
-    #region デッキ枚数テキストを表示
+    #region Show deck number text
     public void SetDeckCountText()
     {
         DeckCountText.text = $"{EdittingDeckData.DeckCards().Count}+{EdittingDeckData.DigitamaDeckCards().Count}/50+5";
@@ -675,7 +675,7 @@ public class EditDeck : MonoBehaviour
     }
     #endregion
 
-    #region デッキのカードを生成
+    #region Generate cards for deck
     public CardPrefab_CreateDeck CreateDeckCard(CEntity_Base cEntity_Base)
     {
         CardPrefab_CreateDeck _cardPrefab_CreateDeck = Instantiate(cardPrefab_CreateDeck, DeckScroll.content);
@@ -722,7 +722,7 @@ public class EditDeck : MonoBehaviour
     }
     #endregion
 
-    #region 検索・フィルター条件に合うカードだけを表示
+    #region Display only cards that meet search/filter conditions
     bool MatchCondition(CEntity_Base cEntity_Base)
     {
         if (!filterCardList.OnlyContainsName()(cEntity_Base))
@@ -811,33 +811,33 @@ public class EditDeck : MonoBehaviour
     }
     #endregion
 
-    #region カードオブジェクトの操作
+    #region Manipulating card objects
 
-    [Header("ドラッグ可能なカードオブジェクト")]
+    [Header("draggable card object")]
     public Draggable_Card draggable_CardPrefab;
 
-    [Header("ドラッグ可能なカードオブジェクト親")]
+    [Header("draggable card object parent")]
     public Transform draggable_CardParent;
 
-    [Header("デッキカードのdropArea")]
+    [Header("Deck card dropArea")]
     public DropArea DeckCardsDropArea;
 
-    [Header("カードプールのdropArea")]
+    [Header("card pool dropArea")]
     public DropArea CardPoolDropArea;
 
-    [Header("ドラッグ中のカバー")]
+    [Header("Cover while dragging")]
     public GameObject DraggingCover;
 
-    [Header("消えるデッキカードの座標")]
+    [Header("Coordinates of the disappearing deck card")]
     public Transform DisappearDeckCardTransform;
 
-    //ドラッグ可能かどうか
+    //Is it draggable?
     public bool CanDrag { get; set; } = true;
 
-    //ドラッグ中かどうか
+    //Whether you are dragging
     public bool isDragging { get; set; } = false;
 
-    #region ドラッグ可能なオブジェクトを生成
+    #region Generate draggable objects
     public Draggable_Card CreateDraggable_Card()
     {
         Draggable_Card draggable_Card = Instantiate(draggable_CardPrefab, draggable_CardParent);
@@ -850,7 +850,7 @@ public class EditDeck : MonoBehaviour
     }
     #endregion
 
-    #region ドラッグ開始時
+    #region At the start of drag
     public IEnumerator OnBeginDrag(CardPrefab_CreateDeck _cardPrefab_CreateDeck)
     {
         if (_cardPrefab_CreateDeck.transform.parent == CardPoolScroll.content)
@@ -945,7 +945,7 @@ public class EditDeck : MonoBehaviour
     }
     #endregion
 
-    #region ドラッグ終了時
+    #region At the end of dragging
     public void OnEndDrag(List<DropArea> dropAreas, CardPrefab_CreateDeck _cardPrefab_CreateDeck, Draggable_Card draggable_Card)
     {
         DeckCardsDropArea.OffDropPanel();
@@ -1011,7 +1011,7 @@ public class EditDeck : MonoBehaviour
 
     float _addCardAnimationTime = 0.01f;
 
-    #region ドロップ時にデッキにカードを追加アニメーション
+    #region Animation to add cards to deck when dropped
     IEnumerator AddDeckCardCoroutine(CardPrefab_CreateDeck _cardPrefab_CreateDeck, Draggable_Card draggable_Card)
     {
         if (!DeckBuildingRule.CanAddCard(_cardPrefab_CreateDeck.cEntity_Base, EdittingDeckData))
@@ -1108,7 +1108,7 @@ public class EditDeck : MonoBehaviour
     }
     #endregion
 
-    #region ドロップ時にカードを除くアニメーション
+    #region Animation to remove cards on drop
     IEnumerator RemoveDeckCardCoroutine(CardPrefab_CreateDeck _cardPrefab_CreateDeck, Draggable_Card draggable_Card)
     {
         ContinuousController.instance.PlaySE(Opening.instance.DrawSE);
@@ -1139,7 +1139,7 @@ public class EditDeck : MonoBehaviour
     }
     #endregion
 
-    #region 右クリック時にデッキにカードを追加アニメーション
+    #region Add card to deck animation when right-clicking
     public IEnumerator AddDeckCardCoroutine_OnClick(CardPrefab_CreateDeck _cardPrefab_CreateDeck)
     {
         if (!DeckBuildingRule.CanAddCard(_cardPrefab_CreateDeck.cEntity_Base, EdittingDeckData))
@@ -1159,7 +1159,7 @@ public class EditDeck : MonoBehaviour
     }
     #endregion
 
-    #region 右クリック時にデッキにカードを除くアニメーション
+    #region Animation to remove cards from deck when right-clicking
     public IEnumerator RemoveDeckCardCoroutine_OnClick(CardPrefab_CreateDeck _cardPrefab_CreateDeck)
     {
         Draggable_Card draggable_Card = CreateDraggable_Card();
@@ -1176,7 +1176,7 @@ public class EditDeck : MonoBehaviour
     }
     #endregion
 
-    #region デッキにカードを追加
+    #region add cards to deck
     public IEnumerator AddDeckCards(CEntity_Base cEntity_Base)
     {
         if (!DeckBuildingRule.CanAddCard(cEntity_Base, EdittingDeckData))
@@ -1194,7 +1194,7 @@ public class EditDeck : MonoBehaviour
     }
     #endregion
 
-    #region デッキからカードを除く
+    #region remove cards from deck
     public IEnumerator RemoveDeckCards(CEntity_Base cEntity_Base)
     {
         if (cEntity_Base.cardKind == CardKind.DigiEgg)

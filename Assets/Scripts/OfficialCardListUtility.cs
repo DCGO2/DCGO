@@ -77,9 +77,9 @@ public class OfficialCardListUtility
                         {
                             foreach (string cardColorNameValues in DataBase.CardColorNameDictionary.Values)
                             {
-                                if (cardColorName == cardColorNameValues)
+                                if (cardColorName.Trim() == cardColorNameValues)
                                 {
-                                    cEntity_Base.cardColors.Add(DictionaryUtility.GetCardColor(cardColorName, DataBase.CardColorNameDictionary));
+                                    cEntity_Base.cardColors.Add(DictionaryUtility.GetCardColor(cardColorName.Trim(), DataBase.CardColorNameDictionary));
                                 }
                             }
                         }
@@ -1080,6 +1080,8 @@ public class OfficialCardListUtility
         cEntity_Base.EffectDiscription_JPN = GetTagRemovedString(cEntity_Base.EffectDiscription_JPN);
         cEntity_Base.InheritedEffectDiscription_JPN = GetTagRemovedString(cEntity_Base.InheritedEffectDiscription_JPN);
         cEntity_Base.SecurityEffectDiscription_JPN = GetTagRemovedString(cEntity_Base.SecurityEffectDiscription_JPN);
+
+        Debug.LogWarning(cEntity_Base.cardColors.Count);
         #endregion
     }
 
