@@ -17,7 +17,7 @@ public class CsvLoader_CardEntity : Editor
         var LoadCSV = target as LoadCSV_CardEntity;
         DrawDefaultInspector();
 
-        if (GUILayout.Button("カードデータ作成"))
+        if (GUILayout.Button("Create Scriptable Objects"))
         {
             EditorCoroutineUtility.StartCoroutine(SetCsvDataToScriptableObject(LoadCSV), this);
         }
@@ -360,7 +360,7 @@ public class CsvLoader_CardEntity : Editor
 
                 #region ファイル名と保存先
                 //ファイル名
-                string fileName = $"{cardEntity.CardName_JPN}-{CardImageName}.asset";
+                string fileName = $"{cardEntity.CardName_ENG}-{CardImageName}.asset";
                 fileName = fileName.Replace("?", "？").Replace(":", "：");
                 cardEntity.name = fileName.Replace(".asset", "");
                 //保存先
@@ -373,6 +373,7 @@ public class CsvLoader_CardEntity : Editor
 
                 string filePath = $"{folderPath}/{fileName}".Trim().Replace("\t", "").Replace("\n", "").Replace(" ", "");
 
+                
                 //フォルダが無ければ作成
                 if (!Directory.Exists(folderPath))
                 {
@@ -384,7 +385,6 @@ public class CsvLoader_CardEntity : Editor
                     Directory.CreateDirectory(folderPath);
                 }
                 #endregion
-
 
                 if (!string.IsNullOrEmpty(customCardID))
                 {

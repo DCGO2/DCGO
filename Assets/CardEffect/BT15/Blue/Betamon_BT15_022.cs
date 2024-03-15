@@ -14,7 +14,7 @@ public class Betamon_BT15_022 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Opponent's 1 Digimon ca't attack", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Opponent's 1 Digimon can't attack", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 

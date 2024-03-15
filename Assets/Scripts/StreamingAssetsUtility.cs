@@ -28,7 +28,7 @@ public class StreamingAssetsUtility
     public static async Task<Sprite> GetSprite(string fileName, bool isCard = false, bool isLauncher = false)
     {
         string path = Path.Combine(GetStreamingAssetPath(isLauncher), $"{fileName}.jpg").Replace("\\", "/");
-
+        Debug.Log(path);
         if (!File.Exists(path))
         {
             path = Path.Combine(GetStreamingAssetPath(isLauncher), $"{fileName}.png").Replace("\\", "/");
