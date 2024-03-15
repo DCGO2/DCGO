@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: MeteorWing-BT15-089
+  m_EditorClassIdentifier: 
+  CardIndex: 3234
+  cardColors: 00000000
+  PlayCost: 0
+  EvoCosts: []
+  Level: 0
+  CardName_JPN: "\u30E1\u30C6\u30AA\u30A6\u30A3\u30F3\u30B0\r"
+  CardName_ENG: Meteor Wing
+  Form_JPN: []
+  Form_ENG: []
+  Attribute_JPN: []
+  Attribute_ENG: []
+  Type_JPN: []
+  Type_ENG: []
+  CardSpriteName: BT15-089
+  cardKind: 2
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[Main] Delete 1 of your opponent''s Digimon with 15000
+    DP or less. For each of your opponent''s security cards, remove 2000 from this
+    DP deletion effect''s maximum.'
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: '[Security] Activate this card''s [Main] effect.'
+  CardEffectClassName: Meteor_Wing_BT15_089
+  DP: 0
+  rarity: 0
+  OverflowMemory: 0
+  CardID: BT15-089
+  MaxCountInDeck: 4

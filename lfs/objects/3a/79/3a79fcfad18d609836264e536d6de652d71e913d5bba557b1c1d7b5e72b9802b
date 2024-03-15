@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Megadramon-BT15-064_P1
+  m_EditorClassIdentifier: 
+  CardIndex: 3201
+  cardColors: 05000000
+  PlayCost: 0
+  EvoCosts: []
+  Level: 5
+  CardName_JPN: "\u30E1\u30AC\u30C9\u30E9\u30E2\u30F3\r"
+  CardName_ENG: Megadramon
+  Form_JPN: []
+  Form_ENG:
+  - Ultimate
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Virus
+  Type_JPN: []
+  Type_ENG:
+  - Cyborg
+  - SoC
+  CardSpriteName: BT15-064_P1
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[On Play] [When Digivolving] Reveal the top 3 cards of
+    your deck. Among them, place 1 [Machine]/[Cyborg]/[SoC]&#160;trait card as this
+    Digimon''s bottom digivolution card, and add 1 such card to the hand. Trash the
+    rest.[When Attacking] If an [SoC]&#160;trait Tamer card is in this Digimon''s
+    digivolution cards, delete 1 of your opponent''s play cost 3 or lower Digimon
+    or Tamers.'
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: '[When Attacking] [Once Per Turn]  1 of your opponent''s
+    Digimon (Trash the top card. You can''t trash past level 3 cards).'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Megadramon_BT15_064
+  DP: 7000
+  rarity: 3
+  OverflowMemory: 0
+  CardID: BT15-064
+  MaxCountInDeck: 4

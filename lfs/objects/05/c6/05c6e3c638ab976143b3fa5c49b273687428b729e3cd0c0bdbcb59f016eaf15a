@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Ryudamon-BT15-056
+  m_EditorClassIdentifier: 
+  CardIndex: 3191
+  cardColors: 0500000003000000
+  PlayCost: 0
+  EvoCosts: []
+  Level: 3
+  CardName_JPN: "\u30EA\u30E5\u30A6\u30C0\u30E2\u30F3\r"
+  CardName_ENG: Ryudamon
+  Form_JPN: []
+  Form_ENG:
+  - Rookie
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Vaccine
+  Type_JPN: []
+  Type_ENG:
+  - Beast
+  - X Antibody
+  - DigiPolice
+  CardSpriteName: BT15-056
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[Start of Your Main Phase] By placing 1 [Shuu Yulin] from
+    your hand as this Digimon''s bottom digivolution card, this Digimon isn''t affected
+    by the effects of your opponent''s Digimon until the end of their turn.'
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: '[All Turns] [Once Per Turn] When this Digimon
+    becomes suspended, suspend 1 of your opponent''s Digimon or Tamers with a play
+    cost less than or equal to this Digimon''s play cost.'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Ryudamon_BT15_056
+  DP: 2000
+  rarity: 3
+  OverflowMemory: 0
+  CardID: BT15-056
+  MaxCountInDeck: 4

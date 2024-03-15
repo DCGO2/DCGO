@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Gigadramon-BT15-062
+  m_EditorClassIdentifier: 
+  CardIndex: 3198
+  cardColors: 05000000
+  PlayCost: 0
+  EvoCosts: []
+  Level: 5
+  CardName_JPN: "\u30AE\u30AC\u30C9\u30E9\u30E2\u30F3\r"
+  CardName_ENG: Gigadramon
+  Form_JPN: []
+  Form_ENG:
+  - Ultimate
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Virus
+  Type_JPN: []
+  Type_ENG:
+  - Cyborg
+  CardSpriteName: BT15-062
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[On Play] Reveal the top 4 cards of your deck. Add 2 level
+    6 or higher cards among them to the hand. Return the rest to the bottom of the
+    deck.[End of Your Turn] By deleting 1 of your Digimon, you may play 1 Digimon
+    card with the [Dark Masters]&#160;trait from your hand to an empty space in your
+    breeding area without paying the cost.'
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: ' (Unsuspend this Digimon during your opponent''s
+    unsuspend phase).'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Gigadramon_BT15_062
+  DP: 6000
+  rarity: 0
+  OverflowMemory: 0
+  CardID: BT15-062
+  MaxCountInDeck: 4

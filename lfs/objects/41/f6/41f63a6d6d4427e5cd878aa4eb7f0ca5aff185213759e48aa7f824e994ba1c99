@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Puppetmon-BT15-052
+  m_EditorClassIdentifier: 
+  CardIndex: 3187
+  cardColors: 03000000
+  PlayCost: 0
+  EvoCosts: []
+  Level: 6
+  CardName_JPN: "\u30D4\u30CE\u30C3\u30AD\u30E2\u30F3\r"
+  CardName_ENG: Puppetmon
+  Form_JPN: []
+  Form_ENG:
+  - Mega
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Virus
+  Type_JPN: []
+  Type_ENG:
+  - Puppet
+  - Dark Masters
+  CardSpriteName: BT15-052
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[On Play] [When Attacking] Return 1 of your opponent''s
+    suspended Digimon to the bottom of the deck.[Your Turn] This Digimon can only
+    digivolve into white Digimon.[End of Opponent''s Turn] Delete this Digimon. Then,
+    you may play 1 Digimon card with the [Dark Masters]&#160;trait, other than [Puppetmon],
+    from your hand without paying the cost.'
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: ' (When this Digimon attacks and deletes an opponent''s
+    Digimon and survives the battle, it performs any security checks it normally
+    would).'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Puppetmon_BT15_052
+  DP: 11000
+  rarity: 2
+  OverflowMemory: 0
+  CardID: BT15-052
+  MaxCountInDeck: 4

@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: SuperShocker-BT15-094
+  m_EditorClassIdentifier: 
+  CardIndex: 3239
+  cardColors: 03000000
+  PlayCost: 0
+  EvoCosts: []
+  Level: 0
+  CardName_JPN: "\u30D7\u30C1\u30B5\u30F3\u30C0\u30FC\r"
+  CardName_ENG: Super Shocker
+  Form_JPN: []
+  Form_ENG: []
+  Attribute_JPN: []
+  Attribute_ENG: []
+  Type_JPN: []
+  Type_ENG: []
+  CardSpriteName: BT15-094
+  cardKind: 2
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[Main] Suspend 1 level 6 or lower Digimon. 1 of your Digimon
+    with the [Insectoid]&#160;trait gets +3000 DP until the end of your opponent''s
+    turn.'
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: '[Security] Activate this card''s [Main] effect.
+    Then, add this card to the hand.'
+  CardEffectClassName: Super_Shocker_BT15_094
+  DP: 0
+  rarity: 0
+  OverflowMemory: 0
+  CardID: BT15-094
+  MaxCountInDeck: 4

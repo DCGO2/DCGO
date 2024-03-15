@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Plesiomon(XAntibody)-BT15-032
+  m_EditorClassIdentifier: 
+  CardIndex: 3161
+  cardColors: 01000000
+  PlayCost: 0
+  EvoCosts: []
+  Level: 6
+  CardName_JPN: "\u30D7\u30EC\u30B7\u30AA\u30E2\u30F3X\u6297\u4F53\r"
+  CardName_ENG: Plesiomon (X Antibody)
+  Form_JPN: []
+  Form_ENG:
+  - Mega
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Data
+  Type_JPN: []
+  Type_ENG:
+  - Plesiosaur
+  - X Antibody
+  CardSpriteName: BT15-032
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[When Digivolving] [When Attacking] [Once Per Turn] Return
+    1 of your opponent''s Digimon with as many or fewer digivolution cards as this
+    Digimon to the hand.[Opponent''s Turn] When an opponent''s Digimon with as many
+    or fewer digivolution cards as this Digimon attacks, if [Plesiomon]/[X Antibody]
+    is in this Digimon''s digivolution cards, gain 2 memory.'
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Plesiomon_X_Antibody_BT15_032
+  DP: 13000
+  rarity: 2
+  OverflowMemory: 0
+  CardID: BT15-032
+  MaxCountInDeck: 4

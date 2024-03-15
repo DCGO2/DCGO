@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Gesomon-BT15-074
+  m_EditorClassIdentifier: 
+  CardIndex: 3211
+  cardColors: 06000000
+  PlayCost: 0
+  EvoCosts: []
+  Level: 4
+  CardName_JPN: "\u30B2\u30BD\u30E2\u30F3\r"
+  CardName_ENG: Gesomon
+  Form_JPN: []
+  Form_ENG:
+  - Champion
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Virus
+  Type_JPN: []
+  Type_ENG:
+  - Mollusk
+  CardSpriteName: BT15-074
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: ' (At blocker timing, by suspending this Digimon, it becomes
+    the attack target).[On Play] [When Digivolving] Your opponent may trash 1 Digimon
+    card in their hand. If they don''t, gain 1 memory.[Your Turn] While your opponent
+    has no Digimon, this Digimon can''t attack.'
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: '[All Turns] [Once Per Turn] When an effect plays
+    an opponent''s Digimon, gain 1 memory.'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Gesomon_BT15_074
+  DP: 5000
+  rarity: 1
+  OverflowMemory: 0
+  CardID: BT15-074
+  MaxCountInDeck: 4

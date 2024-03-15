@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: MarvinJackson-BT15-086
+  m_EditorClassIdentifier: 
+  CardIndex: 3229
+  cardColors: 05000000
+  PlayCost: 0
+  EvoCosts: []
+  Level: 0
+  CardName_JPN: "\u30DE\u30FC\u30F4\u30A3\u30F3\u30FB\u30B8\u30E3\u30AF\u30BD\u30F3\r"
+  CardName_ENG: Marvin Jackson
+  Form_JPN: []
+  Form_ENG: []
+  Attribute_JPN: []
+  Attribute_ENG: []
+  Type_JPN: []
+  Type_ENG:
+  - SoC
+  CardSpriteName: BT15-086
+  cardKind: 1
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[Security] Play this card without paying the cost.[Start
+    of Your Main Phase] By trashing 1 card with the [Machine]/[Cyborg]/[SoC]&#160;trait
+    in your hand, gain 1 memory.[Main]  (Place this Tamer as that Digimon''s bottom
+    digivolution card if there are no Tamer cards in its digivolution cards) with
+    1 of your Digimon with the [Machine]/[Cyborg]/[SoC]&#160;trait.'
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: '[All Turns] While this Digimon has the [Machine]/[Cyborg]/[SoC]&#160;trait,
+    it gains  (This Digimon can''t be deleted in battles against Security Digimon)
+    and  (At blocker timing, by suspending this Digimon, it becomes the attack target).[End
+    of All Turns] You may play 1 [Marvin Jackson] from this Digimon''s digivolution
+    cards without paying the cost.'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Marvin_Jackson_BT15_086
+  DP: 0
+  rarity: 2
+  OverflowMemory: 0
+  CardID: BT15-086
+  MaxCountInDeck: 4

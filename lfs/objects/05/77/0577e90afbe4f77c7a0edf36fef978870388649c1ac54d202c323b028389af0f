@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: WaruMonzaemon-BT15-065
+  m_EditorClassIdentifier: 
+  CardIndex: 3202
+  cardColors: 05000000
+  PlayCost: 0
+  EvoCosts: []
+  Level: 5
+  CardName_JPN: "\u30EF\u30EB\u3082\u3093\u3056\u3048\u30E2\u30F3\r"
+  CardName_ENG: WaruMonzaemon
+  Form_JPN: []
+  Form_ENG:
+  - Ultimate
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Virus
+  Type_JPN: []
+  Type_ENG:
+  - Puppet
+  CardSpriteName: BT15-065
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[On Play] [When Digivolving] By trashing 1 card with [Numemon]&#160;in
+    its name in your hand or this Digimon''s digivolution cards,  1 of your opponent''s
+    Digimon (Trash the top card. You can''t trash past level 3 cards).[On Play] By
+    placing 1 card with [Numemon]&#160;in its name from your trash as this Digimon''s
+    bottom digivolution card, until the end of your opponent''s turn, none of their
+    Digimon with play costs of 5 or less can attack players.'
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: '[Your Turn] While this Digimon has [Monzaemon]/[Numemon]&#160;in
+    its name, it gains  (This Digimon checks 1 additional security card).'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: WaruMonzaemon_BT15_065
+  DP: 7000
+  rarity: 1
+  OverflowMemory: 0
+  CardID: BT15-065
+  MaxCountInDeck: 4

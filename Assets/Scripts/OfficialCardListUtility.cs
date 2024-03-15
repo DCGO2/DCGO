@@ -66,7 +66,7 @@ public class OfficialCardListUtility
             {
                 if (!string.IsNullOrEmpty(targetCardData[i]))
                 {
-                    //�J�[�h�F
+                    //Card Color
                     if (targetCardData[i].Contains("<divclass=\"card_detailcard_detail_"))
                     {
                         targetCardData[i] = targetCardData[i].Replace("<divclass=\"card_detailcard_detail_", "").Replace("\">", "").Replace("multicolor", "");
@@ -85,7 +85,7 @@ public class OfficialCardListUtility
                         }
                     }
 
-                    //�J�[�h���
+                    //Card Type
                     if (targetCardData[i].Contains("cardtype"))
                     {
                         foreach (string cardTypeName in DataBase.CardKindJPNameDictionary.Values)
@@ -97,7 +97,7 @@ public class OfficialCardListUtility
                         }
                     }
 
-                    //���x��
+                    //Card Level
                     if (targetCardData[i].Contains("cardlv"))
                     {
                         targetCardData[i] = targetCardData[i].Replace("<liclass=\"cardlv\">Lv.", "").Replace("</li>", "");
@@ -108,7 +108,7 @@ public class OfficialCardListUtility
                         }
                     }
 
-                    //�J�[�h��
+                    //Card Name
                     if (targetCardData[i].Contains("card_name"))
                     {
                         targetCardData[i] = targetCardData[i].Replace("<divclass=\"card_name\">", "").Replace("</div>", "")
@@ -122,8 +122,8 @@ public class OfficialCardListUtility
                         }
                     }
 
-                    //�`��
-                    if (targetCardData[i].Contains("<dt>�`��</dt>"))
+                    //Form?
+                    if (targetCardData[i].Contains("<dt>形態</dt>"))
                     {
                         targetCardData[i + 1] = targetCardData[i + 1].Replace("<dd>", "").Replace("</dd>", "");
 
@@ -133,8 +133,8 @@ public class OfficialCardListUtility
                         }
                     }
 
-                    //����
-                    if (targetCardData[i].Contains("<dt>����</dt>"))
+                    //Attribute
+                    if (targetCardData[i].Contains("<dt>属性</dt>"))
                     {
                         targetCardData[i + 1] = targetCardData[i + 1].Replace("<dd>", "").Replace("</dd>", "");
 
@@ -144,8 +144,8 @@ public class OfficialCardListUtility
                         }
                     }
 
-                    //�^�C�v
-                    if (targetCardData[i].Contains("<dt>�^�C�v</dt>"))
+                    //Type
+                    if (targetCardData[i].Contains("<dt>タイプ</dt>"))
                     {
                         targetCardData[i + 1] = targetCardData[i + 1].Replace("<dd>", "").Replace("</dd>", "");
 
@@ -177,21 +177,21 @@ public class OfficialCardListUtility
                         }
                     }
 
-                    //�o��R�X�g
-                    if (targetCardData[i].Contains("<dt>�o��R�X�g</dt>"))
+                    //Play Cost
+                    if (targetCardData[i].Contains("<dt>登場コスト</dt>"))
                     {
                         targetCardData[i + 1] = targetCardData[i + 1].Replace("<dd>", "").Replace("</dd>", "");
 
                         if (!string.IsNullOrEmpty(targetCardData[i + 1]))
                         {
-                            if (int.TryParse(targetCardData[i + 1], out value))
+                            if (int.TryParse(targetCardData[i + 1].Trim(), out value))
                             {
                                 cEntity_Base.PlayCost = value;
                             }
                         }
                     }
 
-                    //���A���e�B
+                    //Rarity
                     if (targetCardData[i].Contains("<li>") && targetCardData[i].Contains("</li>"))
                     {
                         targetCardData[i] = targetCardData[i].Replace("<li>", "").Replace("</li>", "");
@@ -206,10 +206,10 @@ public class OfficialCardListUtility
                         }
                     }
 
-                    //�i���R�X�g
-                    if (targetCardData[i].Contains("<dt>�i���R�X�g1</dt>"))
+                    //Evo Cost 1
+                    if (targetCardData[i].Contains("<dt>進化コスト1</dt>"))
                     {
-                        targetCardData[i + 1] = targetCardData[i + 1].Replace("<dd>", "").Replace("</dd>", "").Replace("Lv.", "").Replace("����", "��");
+                        targetCardData[i + 1] = targetCardData[i + 1].Replace("<dd>", "").Replace("</dd>", "").Replace("Lv.", "").Replace("から", "��");
 
                         string[] evoCostStrings = targetCardData[i + 1].Split("��");
 
@@ -241,10 +241,10 @@ public class OfficialCardListUtility
                         }
                     }
 
-                    //�i���R�X�g
-                    if (targetCardData[i].Contains("<dt>�i���R�X�g2</dt>"))
+                    //Evo Cost 2
+                    if (targetCardData[i].Contains("<dt>進化コスト2</dt>"))
                     {
-                        targetCardData[i + 1] = targetCardData[i + 1].Replace("<dd>", "").Replace("</dd>", "").Replace("Lv.", "").Replace("����", "��");
+                        targetCardData[i + 1] = targetCardData[i + 1].Replace("<dd>", "").Replace("</dd>", "").Replace("Lv.", "").Replace("から", "��");
 
                         string[] evoCostStrings = targetCardData[i + 1].Split("��");
 
@@ -266,7 +266,7 @@ public class OfficialCardListUtility
                         }
                     }
 
-                    //����
+                    //Effect Description
                     if (targetCardData[i].Contains("<dt>����</dt>") || targetCardData[i].Contains("<dt>��i�e�L�X�g</dt>"))
                     {
                         targetCardData[i + 1] = targetCardData[i + 1].Replace("<dd>", "").Replace("</dd>", "");
@@ -277,8 +277,8 @@ public class OfficialCardListUtility
                         }
                     }
 
-                    //�i��������
-                    if (targetCardData[i].Contains("<dt>�i��������</dt>") || (!(cEntity_Base.cardKind == CardKind.Digimon && hasAceName) && targetCardData[i].Contains("<dt>���i�e�L�X�g</dt>")))
+                    //Inherited Effect Description
+                    if (targetCardData[i].Contains("<dt>�i��������</dt>") || (!(cEntity_Base.cardKind == CardKind.Digimon && hasAceName) && targetCardData[i].Contains("<dt>下段テキスト</dt>")))
                     {
                         targetCardData[i + 1] = targetCardData[i + 1].Replace("<dd>", "").Replace("</dd>", "");
 
@@ -288,8 +288,8 @@ public class OfficialCardListUtility
                         }
                     }
 
-                    //�Z�L�����e�B����
-                    if (targetCardData[i].Contains("<dt>�Z�L�����e�B����</dt>") || (!(cEntity_Base.cardKind == CardKind.Digimon || cEntity_Base.cardKind == CardKind.DigiEgg) && targetCardData[i].Contains("<dt>���i�e�L�X�g</dt>")))
+                    //Security Effect Description
+                    if (targetCardData[i].Contains("<dt>�Z�L�����e�B����</dt>") || (!(cEntity_Base.cardKind == CardKind.Digimon || cEntity_Base.cardKind == CardKind.DigiEgg) && targetCardData[i].Contains("<dt>下段テキスト</dt>")))
                     {
                         targetCardData[i + 1] = targetCardData[i + 1].Replace("<dd>", "").Replace("</dd>", "");
 
@@ -299,14 +299,17 @@ public class OfficialCardListUtility
                         }
                     }
 
-                    //�I�[�o�[�t���[
-                    if (cEntity_Base.cardKind == CardKind.Digimon && hasAceName && targetCardData[i].Contains("<dt>���i�e�L�X�g</dt>"))
+                    //Overflow Memory
+                    if (cEntity_Base.cardKind == CardKind.Digimon && hasAceName && targetCardData[i].Contains("<dt>下段テキスト</dt>"))
                     {
-                        if (targetCardData[i + 1].Contains("overflow-4"))
+                        if (targetCardData[i + 1].Contains("overflow-5"))
                         {
                             cEntity_Base.OverflowMemory = 4;
                         }
-
+                        else if (targetCardData[i + 1].Contains("overflow-4"))
+                        {
+                            cEntity_Base.OverflowMemory = 4;
+                        }
                         else if (targetCardData[i + 1].Contains("overflow-3"))
                         {
                             cEntity_Base.OverflowMemory = 3;
@@ -344,7 +347,7 @@ public class OfficialCardListUtility
             {
                 if (!string.IsNullOrEmpty(targetCardData[i]))
                 {
-                    //�J�[�h��
+                    //Card Name
                     if (targetCardData[i].Contains("card_name"))
                     {
                         targetCardData[i] = targetCardData[i].Replace(" ", "").Replace("<divclass=\"card_name\">", "").Replace("</div>", "")
@@ -353,7 +356,7 @@ public class OfficialCardListUtility
                         cEntity_Base.CardName_ENG = targetCardData[i].Replace("�I", "!");
                     }
 
-                    //�`��
+                    //Form
                     if (targetCardData[i].Contains("<dt>Form</dt>"))
                     {
                         targetCardData[i + 1] = targetCardData[i + 1].Replace("<dd>", "").Replace("</dd>", "");
@@ -364,7 +367,7 @@ public class OfficialCardListUtility
                         }
                     }
 
-                    //����
+                    //Attribute
                     if (targetCardData[i].Contains("<dt>Attribute</dt>"))
                     {
                         targetCardData[i + 1] = targetCardData[i + 1].Replace("<dd>", "").Replace("</dd>", "");
@@ -375,7 +378,7 @@ public class OfficialCardListUtility
                         }
                     }
 
-                    //�^�C�v
+                    //Type
                     if (targetCardData[i].Contains("<dt>Type</dt>"))
                     {
                         targetCardData[i + 1] = targetCardData[i + 1].Replace("<dd>", "").Replace("</dd>", "");
@@ -394,7 +397,7 @@ public class OfficialCardListUtility
                         }
                     }
 
-                    //����
+                    //Effect Description
                     if (targetCardData[i].Contains("<dt>Effect</dt>") || targetCardData[i].Contains("<dt>��i�e�L�X�g</dt>"))
                     {
                         targetCardData[i + 1] = targetCardData[i + 1].Replace("<dd>", "").Replace("</dd>", "");
@@ -410,7 +413,7 @@ public class OfficialCardListUtility
                         }
                     }
 
-                    //�i��������
+                    //Inherited Effect Description
                     if (targetCardData[i].Contains("<dt>Digivolveeffect</dt>") && !(cEntity_Base.cardKind == CardKind.Digimon && cEntity_Base.IsACE))
                     {
                         targetCardData[i + 1] = targetCardData[i + 1].Replace("<dd>", "").Replace("</dd>", "");
@@ -421,7 +424,7 @@ public class OfficialCardListUtility
                         }
                     }
 
-                    //�Z�L�����e�B����
+                    //Security Effect Description
                     if (targetCardData[i].Contains("<dt>Securityeffect</dt>"))
                     {
                         targetCardData[i + 1] = targetCardData[i + 1].Replace("<dd>", "").Replace("</dd>", "");

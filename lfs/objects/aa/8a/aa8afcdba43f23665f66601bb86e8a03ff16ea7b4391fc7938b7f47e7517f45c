@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: WingsofLove-BT15-088
+  m_EditorClassIdentifier: 
+  CardIndex: 3233
+  cardColors: 00000000
+  PlayCost: 0
+  EvoCosts: []
+  Level: 0
+  CardName_JPN: "\u611B\u60C5\u306E\u53CC\u7FFC\r"
+  CardName_ENG: Wings of Love
+  Form_JPN: []
+  Form_ENG: []
+  Attribute_JPN: []
+  Attribute_ENG: []
+  Type_JPN: []
+  Type_ENG: []
+  CardSpriteName: BT15-088
+  cardKind: 2
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[Main] You may play 1 red Tamer card with a play cost of
+    4 or less from your hand without paying the cost. Then, if you have a Tamer with
+    [Sora Takenouchi]&#160;in its name, return 1 red Digimon card from your trash
+    to the hand.'
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: You may play 1 [Biyomon] from your hand or trash
+    without paying the cost. Then, add this card to the hand.
+  CardEffectClassName: Wings_of_Love_BT15_088
+  DP: 0
+  rarity: 1
+  OverflowMemory: 0
+  CardID: BT15-088
+  MaxCountInDeck: 4

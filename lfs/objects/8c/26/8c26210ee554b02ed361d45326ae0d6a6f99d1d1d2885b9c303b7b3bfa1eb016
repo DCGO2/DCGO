@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Piedmon-BT15-079
+  m_EditorClassIdentifier: 
+  CardIndex: 3217
+  cardColors: 06000000
+  PlayCost: 0
+  EvoCosts: []
+  Level: 6
+  CardName_JPN: "\u30D4\u30A8\u30E2\u30F3\r"
+  CardName_ENG: Piedmon
+  Form_JPN: []
+  Form_ENG:
+  - Mega
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Virus
+  Type_JPN: []
+  Type_ENG:
+  - Wizard
+  - Dark Masters
+  CardSpriteName: BT15-079
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: "[On Play] [When Attacking] Delete 1 of your opponent\u2019s
+    unsuspended Digimon.[Your Turn] This Digimon can only digivolve into white Digimon.[End
+    of Opponent's Turn] Delete this Digimon. Then, you may play 1 Digimon card with
+    the [Dark Masters]&#160;trait, other than [Piedmon], from your hand without paying
+    the cost."
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: ' (When this Digimon is deleted after losing a
+    battle, delete the Digimon it was battling).'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Piedmon_BT15_079
+  DP: 11000
+  rarity: 2
+  OverflowMemory: 0
+  CardID: BT15-079
+  MaxCountInDeck: 4
