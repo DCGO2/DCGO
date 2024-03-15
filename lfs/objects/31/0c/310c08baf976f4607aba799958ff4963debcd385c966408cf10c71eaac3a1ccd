@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Palmon(XAntibody)-BT15-045
+  m_EditorClassIdentifier: 
+  CardIndex: 3178
+  cardColors: 03000000
+  PlayCost: 0
+  EvoCosts: []
+  Level: 3
+  CardName_JPN: "\u30D1\u30EB\u30E2\u30F3X\u6297\u4F53\r"
+  CardName_ENG: Palmon (X Antibody)
+  Form_JPN: []
+  Form_ENG:
+  - Rookie
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Data
+  Type_JPN: []
+  Type_ENG:
+  - Vegetation
+  - X Antibody
+  CardSpriteName: BT15-045
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[On Play] [When Digivolving] Suspend 1 of your opponent''s
+    Digimon.'
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: '[Your Turn] [Once Per Turn] When one of your green
+    Tamers is played, gain 1 memory.'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Palmon_X_Antibody_BT15_045
+  DP: 3000
+  rarity: 0
+  OverflowMemory: 0
+  CardID: BT15-045
+  MaxCountInDeck: 4

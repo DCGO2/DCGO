@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Bombermon-BT15-039
+  m_EditorClassIdentifier: 
+  CardIndex: 3171
+  cardColors: 02000000
+  PlayCost: 0
+  EvoCosts: []
+  Level: 5
+  CardName_JPN: "\u30DC\u30DE\u30FC\u30E2\u30F3\r"
+  CardName_ENG: Bombermon
+  Form_JPN: []
+  Form_ENG:
+  - Ultimate
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Virus
+  Type_JPN: []
+  Type_ENG:
+  - Mutant
+  CardSpriteName: BT15-039
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[On Play] [When Digivolving] Until the end of your opponent''s
+    turn, 1 of their Digimon gets -3000 DP and gains "[On Deletion] Lose 1 memory."[All
+    Turns] This Digimon gains all of the effects of cards with [Gammamon]&#160;in
+    their names in this Digimon''s digivolution cards.'
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: '[All Turns] This Digimon gains all of the effects
+    of cards with [Gammamon]&#160;in their names in this Digimon''s digivolution
+    cards.'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Bombermon_BT15_039
+  DP: 7000
+  rarity: 1
+  OverflowMemory: 0
+  CardID: BT15-039
+  MaxCountInDeck: 4

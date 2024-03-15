@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Omekamon-BT15-060
+  m_EditorClassIdentifier: 
+  CardIndex: 3196
+  cardColors: 05000000
+  PlayCost: 0
+  EvoCosts: []
+  Level: 4
+  CardName_JPN: "\u30AA\u30E1\u30AB\u30E2\u30F3\r"
+  CardName_ENG: Omekamon
+  Form_JPN: []
+  Form_ENG:
+  - Champion
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Data
+  Type_JPN: []
+  Type_ENG:
+  - Puppet
+  - X Antibody
+  CardSpriteName: BT15-060
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: While this card is revealed from the deck, its name is also
+    treated as [Omnimon]. (At blocker timing, by suspending this Digimon, it becomes
+    the attack target).[On Play] If it's your turn, 1 of your other Digimon may digivolve
+    into a black Digimon card with [Greymon]/[Garurumon]&#160;in its name in your
+    hand with the digivolution cost reduced by 2.
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: '[When Attacking] [Once Per Turn]  1 of your opponent''s
+    Digimon (Trash the top card. You can''t trash past level 3 cards).'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Omekamon_BT15_060
+  DP: 5000
+  rarity: 1
+  OverflowMemory: 0
+  CardID: BT15-060
+  MaxCountInDeck: 4

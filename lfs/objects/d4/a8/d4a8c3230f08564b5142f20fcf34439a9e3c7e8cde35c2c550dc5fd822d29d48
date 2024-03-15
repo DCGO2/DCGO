@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Numemon(XAntibody)-BT15-057
+  m_EditorClassIdentifier: 
+  CardIndex: 3193
+  cardColors: 05000000
+  PlayCost: 0
+  EvoCosts: []
+  Level: 4
+  CardName_JPN: "\u30CC\u30E1\u30E2\u30F3X\u6297\u4F53\r"
+  CardName_ENG: Numemon (X Antibody)
+  Form_JPN: []
+  Form_ENG:
+  - Champion
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Virus
+  Type_JPN: []
+  Type_ENG:
+  - Mollusk
+  - X Antibody
+  CardSpriteName: BT15-057
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[All Turns] While [Numemon]/[X Antibody] is in this Digimon''s
+    digivolution cards, it gains "[On Deletion] You may play 1 Digimon card with
+    [Numemon]&#160;in its name from your trash without paying the cost."'
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: '[On Deletion] You may play 1 Digimon card with
+    [Numemon]&#160;in its name from your trash without paying the cost.'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Numemon_X_Antibody_BT15_057
+  DP: 2000
+  rarity: 2
+  OverflowMemory: 0
+  CardID: BT15-057
+  MaxCountInDeck: 4

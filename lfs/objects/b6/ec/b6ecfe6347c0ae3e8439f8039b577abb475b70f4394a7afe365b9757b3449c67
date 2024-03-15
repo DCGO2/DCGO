@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Myotismon-BT15-076
+  m_EditorClassIdentifier: 
+  CardIndex: 3213
+  cardColors: 06000000
+  PlayCost: 0
+  EvoCosts: []
+  Level: 5
+  CardName_JPN: "\u30F4\u30A1\u30F3\u30C7\u30E2\u30F3ACE\r"
+  CardName_ENG: Myotismon
+  Form_JPN: []
+  Form_ENG:
+  - Ultimate
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Virus
+  Type_JPN: []
+  Type_ENG:
+  - Undead
+  CardSpriteName: BT15-076
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[Hand] [Counter]  (Your Digimon may digivolve into this
+    card without paying the cost). (At blocker timing, by suspending this Digimon,
+    it becomes the attack target).[On Play] [When Digivolving] You may play 1 purple
+    level 3 Digimon card or 1 purple Tamer card from your trash without paying the
+    cost.'
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Myotismon_ACE_BT15_076
+  DP: 8000
+  rarity: 3
+  OverflowMemory: 0
+  CardID: BT15-076
+  MaxCountInDeck: 4

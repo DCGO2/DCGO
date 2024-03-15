@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Biyomon-BT15-007
+  m_EditorClassIdentifier: 
+  CardIndex: 3130
+  cardColors: 00000000
+  PlayCost: 0
+  EvoCosts: []
+  Level: 3
+  CardName_JPN: "\u30D4\u30E8\u30E2\u30F3\r"
+  CardName_ENG: Biyomon
+  Form_JPN: []
+  Form_ENG:
+  - Rookie
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Vaccine
+  Type_JPN: []
+  Type_ENG:
+  - Bird
+  CardSpriteName: BT15-007
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[Start of Your Main Phase] By trashing 1 Digimon card with
+    &#91;Avian]/&#91;Bird]/&#91;Beast]/&#91;Animal]/&#91;Sovereign]&#160;in one of
+    its traits (other than [Sea Animal]) in your hand, reveal the top 4 cards of
+    your deck. Add 1 red card among them to the hand. Return the rest to the bottom
+    of the deck.'
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: '[Your Turn] [Once Per Turn] When a card is removed
+    from your opponent''s security stack, gain 1 memory.'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Biyomon_BT15_007
+  DP: 1000
+  rarity: 3
+  OverflowMemory: 0
+  CardID: BT15-007
+  MaxCountInDeck: 4

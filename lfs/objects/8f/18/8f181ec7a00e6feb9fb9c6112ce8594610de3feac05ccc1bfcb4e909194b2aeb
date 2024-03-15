@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: ShuuYulin-BT15-087_P1
+  m_EditorClassIdentifier: 
+  CardIndex: 3232
+  cardColors: 05000000
+  PlayCost: 0
+  EvoCosts: []
+  Level: 0
+  CardName_JPN: "\u5F90\u6708\u9234\r"
+  CardName_ENG: Shuu Yulin
+  Form_JPN: []
+  Form_ENG: []
+  Attribute_JPN: []
+  Attribute_ENG: []
+  Type_JPN: []
+  Type_ENG:
+  - DigiPolice
+  CardSpriteName: BT15-087_P1
+  cardKind: 1
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[Security] Play this card without paying the cost.[Start
+    of Your Turn] If you have 2 memory or less, set your memory to 3.[Main]  (Place
+    this Tamer as that Digimon''s bottom digivolution card if there are no Tamer
+    cards in its digivolution cards) with 1 of your Digimon with the [X Antibody]/[DigiPolice]&#160;trait.'
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: '[All Turns] While this Digimon has the [X Antibody]/[DigiPolice]&#160;trait,
+    it gains  (When this Digimon attacks, by suspending 1 of your other Digimon,
+    add the suspended Digimon''s DP to this Digimon and it gains  for the attack)
+    and  (Unsuspend this Digimon during your opponent''s unsuspend phase).[End of
+    All Turns] You may play 1 [Shuu Yulin] from this Digimon''s digivolution cards
+    without paying the cost.'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Shuu_Yulin_BT15_087
+  DP: 0
+  rarity: 2
+  OverflowMemory: 0
+  CardID: BT15-087
+  MaxCountInDeck: 4

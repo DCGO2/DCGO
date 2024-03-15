@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: SoraTakenouchi-BT15-082
+  m_EditorClassIdentifier: 
+  CardIndex: 3221
+  cardColors: 00000000
+  PlayCost: 0
+  EvoCosts: []
+  Level: 0
+  CardName_JPN: "\u6B66\u4E4B\u5185\u7A7A\r"
+  CardName_ENG: Sora Takenouchi
+  Form_JPN: []
+  Form_ENG: []
+  Attribute_JPN: []
+  Attribute_ENG: []
+  Type_JPN: []
+  Type_ENG: []
+  CardSpriteName: BT15-082
+  cardKind: 1
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[Start of Your Turn] If you have 2 memory or less, set
+    your memory to 3.[All Turns] When a red Digimon card returns from your trash
+    to the hand, by returning this Tamer to the hand, you may play 1 13000 DP or
+    lower red Digimon card with &#91;Avian]/&#91;Bird]/&#91;Beast]/&#91;Animal]/&#91;Sovereign]&#160;in
+    one of its traits (other than [Sea Animal]) from your hand without paying the
+    cost. For each of your opponent''s security cards, remove 2000 from this effect''s
+    playable card''s DP maximum.'
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: '[Security] Play this card without paying the cost.'
+  CardEffectClassName: Sora_Takenouchi_BT15_082
+  DP: 0
+  rarity: 2
+  OverflowMemory: 0
+  CardID: BT15-082
+  MaxCountInDeck: 4

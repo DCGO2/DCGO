@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Wizardmon-BT15-036
+  m_EditorClassIdentifier: 
+  CardIndex: 3165
+  cardColors: 0200000006000000
+  PlayCost: 0
+  EvoCosts: []
+  Level: 4
+  CardName_JPN: "\u30A6\u30A3\u30B6\u30FC\u30E2\u30F3\r"
+  CardName_ENG: Wizardmon
+  Form_JPN: []
+  Form_ENG:
+  - Champion
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Data
+  Type_JPN: []
+  Type_ENG:
+  - Wizard
+  CardSpriteName: BT15-036
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: ' (At blocker timing, by suspending this Digimon, it becomes
+    the attack target).[On Play] [On Deletion] By trashing the top or bottom card
+    of your security stack, 1 of your opponent''s Digimon gets -6000 DP until the
+    end of their turn.'
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Wizardmon_BT15_036
+  DP: 5000
+  rarity: 0
+  OverflowMemory: 0
+  CardID: BT15-036
+  MaxCountInDeck: 4

@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Monzaemon(XAntibody)-BT15-040
+  m_EditorClassIdentifier: 
+  CardIndex: 3172
+  cardColors: 02000000
+  PlayCost: 0
+  EvoCosts: []
+  Level: 5
+  CardName_JPN: "\u3082\u3093\u3056\u3048\u30E2\u30F3X\u6297\u4F53\r"
+  CardName_ENG: Monzaemon (X Antibody)
+  Form_JPN: []
+  Form_ENG:
+  - Ultimate
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Vaccine
+  Type_JPN: []
+  Type_ENG:
+  - Puppet
+  - X Antibody
+  CardSpriteName: BT15-040
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[When Digivolving] If a card with [Monzaemon]&#160;in its
+    name or [X Antibody] is in this Digimon''s digivolution cards, you may play 1
+    [Numemon] or level 3 Digimon card from your hand without paying the cost.[All
+    Turns] [Once Per Turn] When one of your other Digimon is played, 1 of your opponent''s
+    Digimon gets -2000 DP for each of your Digimon until the end of their turn.'
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Monzaemon_X_Antibody_BT15_040
+  DP: 8000
+  rarity: 0
+  OverflowMemory: 0
+  CardID: BT15-040
+  MaxCountInDeck: 4

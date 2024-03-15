@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Brachiomon-BT15-016
+  m_EditorClassIdentifier: 
+  CardIndex: 3142
+  cardColors: 0000000001000000
+  PlayCost: 0
+  EvoCosts: []
+  Level: 5
+  CardName_JPN: "\u30D6\u30E9\u30AD\u30E2\u30F3\r"
+  CardName_ENG: Brachiomon
+  Form_JPN: []
+  Form_ENG:
+  - Ultimate
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Data
+  Type_JPN: []
+  Type_ENG:
+  - Plesiosaur
+  CardSpriteName: BT15-016
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[On Play] [When Digivolving] If your opponent has 4 or
+    less memory, 1 of your opponent''s Digimon with 8000 DP or more can''t attack
+    until the end of their turn. If they have 4 or more, delete 1 of their Digimon
+    with 6000 DP or less.'
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: '[On Deletion] Return 1 of your opponent''s Digimon
+    with 7000 DP or less to the hand.'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Brachiomon_BT15_016
+  DP: 7000
+  rarity: 1
+  OverflowMemory: 0
+  CardID: BT15-016
+  MaxCountInDeck: 4

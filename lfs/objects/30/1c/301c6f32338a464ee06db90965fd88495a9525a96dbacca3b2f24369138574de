@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: HerculesKabuterimon-BT15-053
+  m_EditorClassIdentifier: 
+  CardIndex: 3188
+  cardColors: 03000000
+  PlayCost: 0
+  EvoCosts: []
+  Level: 6
+  CardName_JPN: "\u30D8\u30E9\u30AF\u30EB\u30AB\u30D6\u30C6\u30EA\u30E2\u30F3\r"
+  CardName_ENG: HerculesKabuterimon
+  Form_JPN: []
+  Form_ENG:
+  - Mega
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Vaccine
+  Type_JPN: []
+  Type_ENG:
+  - Insectoid
+  CardSpriteName: BT15-053
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[Start of Your Main Phase] [When Digivolving] Suspend 1
+    of your opponent''s Digimon. 1 your Digimon gains  (When this Digimon attacks
+    and deletes an opponent''s Digimon and survives the battle, it performs any security
+    checks it normally would) for the turn.[All Turns] While this Digimon is suspended,
+    it isn''t affected by the effects of your opponent''s Digimon.'
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: HerculesKabuterimon_BT15_053
+  DP: 12000
+  rarity: 2
+  OverflowMemory: 0
+  CardID: BT15-053
+  MaxCountInDeck: 4

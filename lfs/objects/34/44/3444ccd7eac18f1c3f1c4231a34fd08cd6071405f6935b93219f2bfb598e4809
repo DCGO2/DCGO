@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: WereGarurumon-BT15-026_P2
+  m_EditorClassIdentifier: 
+  CardIndex: 3155
+  cardColors: 01000000
+  PlayCost: 0
+  EvoCosts: []
+  Level: 5
+  CardName_JPN: "\u30EF\u30FC\u30AC\u30EB\u30EB\u30E2\u30F3ACE\r"
+  CardName_ENG: WereGarurumon
+  Form_JPN: []
+  Form_ENG:
+  - Ultimate
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Vaccine
+  Type_JPN: []
+  Type_ENG:
+  - Beastkin
+  CardSpriteName: BT15-026_P2
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[Hand] [Counter]  (Your Digimon may digivolve into this
+    card without paying the cost).[On Play] [When Digivolving]  (Draw 1 card from
+    your deck). Then, if you have 5 or more cards in your hand, trash 1 card in your
+    hand.[All Turns] [Once Per Turn] When one of your Digimon''s effects adds cards
+    to your hand, 1 of your opponent''s Digimon or Tamers can''t suspend until the
+    end of their turn.'
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: WereGarurumon_ACE_BT15_026
+  DP: 7000
+  rarity: 3
+  OverflowMemory: 0
+  CardID: BT15-026
+  MaxCountInDeck: 4

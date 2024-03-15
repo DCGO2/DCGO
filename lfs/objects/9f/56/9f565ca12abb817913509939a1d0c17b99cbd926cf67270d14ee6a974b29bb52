@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Loogarmon-BT15-075
+  m_EditorClassIdentifier: 
+  CardIndex: 3212
+  cardColors: 0600000000000000
+  PlayCost: 0
+  EvoCosts: []
+  Level: 4
+  CardName_JPN: "\u30EB\u30AC\u30EB\u30E2\u30F3\r"
+  CardName_ENG: Loogarmon
+  Form_JPN: []
+  Form_ENG:
+  - Champion
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Virus
+  Type_JPN: []
+  Type_ENG:
+  - Dark Animal
+  - X Antibody
+  - SoC
+  CardSpriteName: BT15-075
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[When Digivolving] [When Attacking] By trashing 1 card
+    in your hand, this Digimon gets +2000 DP for the turn. If a Tamer card with the
+    [SoC]&#160;trait is in this Digimon''s digivolution cards,  (Draw 1 card from
+    your deck).'
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: '[End of Attack] [Once Per Turn] If your opponent
+    has 1 or more memory, gain 1 memory.'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Loogarmon_BT15_075
+  DP: 5000
+  rarity: 0
+  OverflowMemory: 0
+  CardID: BT15-075
+  MaxCountInDeck: 4

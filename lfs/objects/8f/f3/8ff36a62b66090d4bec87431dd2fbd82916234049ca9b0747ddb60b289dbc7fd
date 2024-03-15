@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Coelamon-BT15-023
+  m_EditorClassIdentifier: 
+  CardIndex: 3150
+  cardColors: 01000000
+  PlayCost: 0
+  EvoCosts: []
+  Level: 4
+  CardName_JPN: "\u30B7\u30FC\u30E9\u30E2\u30F3\r"
+  CardName_ENG: Coelamon
+  Form_JPN: []
+  Form_ENG:
+  - Champion
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Data
+  Type_JPN: []
+  Type_ENG:
+  - Ancient Fish
+  CardSpriteName: BT15-023
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[On Play] Trash the bottom 2 digivolution cards of 1 of
+    your opponent''s Digimon. Then, if your opponent has no Digimon with digivolution
+    cards, gain 1 memory.'
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Coelamon_BT15_023
+  DP: 5000
+  rarity: 0
+  OverflowMemory: 0
+  CardID: BT15-023
+  MaxCountInDeck: 4

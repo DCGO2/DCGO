@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: IzzyIzumi-BT15-085
+  m_EditorClassIdentifier: 
+  CardIndex: 3227
+  cardColors: 03000000
+  PlayCost: 0
+  EvoCosts: []
+  Level: 0
+  CardName_JPN: "\u6CC9\u5149\u5B50\u90CE\r"
+  CardName_ENG: Izzy Izumi
+  Form_JPN: []
+  Form_ENG: []
+  Attribute_JPN: []
+  Attribute_ENG: []
+  Type_JPN: []
+  Type_ENG: []
+  CardSpriteName: BT15-085
+  cardKind: 1
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[Start of Your Turn] If you have 2 memory or less, set
+    your memory to 3.[Opponent''s Turn] When an opponent''s Digimon attacks, by suspending
+    this Tamer, switch the target of attack to 1 of your suspended Digimon with the
+    [Insectoid]&#160;trait.'
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: '[Security] Play this card without paying the cost.'
+  CardEffectClassName: Izzy_Izumi_BT15_085
+  DP: 0
+  rarity: 2
+  OverflowMemory: 0
+  CardID: BT15-085
+  MaxCountInDeck: 4
