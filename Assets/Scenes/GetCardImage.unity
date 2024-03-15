@@ -136,7 +136,7 @@ GameObject:
   - component: {fileID: 42193362}
   - component: {fileID: 42193361}
   m_Layer: 5
-  m_Name: "\u65E5\u672C\u8A9E\u30AB\u30FC\u30C9\u30EA\u30B9\u30C8\u30BD\u30FC\u30B9\u30B3\u30FC\u30C9\u53D6\u5F97"
+  m_Name: Get Japanese card list source code
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -482,10 +482,10 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: fd49ff800166d2342b59300beda66650, type: 3}
-    m_FontSize: 200
+    m_FontSize: 160
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 2
+    m_MinSize: 1
     m_MaxSize: 200
     m_Alignment: 4
     m_AlignByGeometry: 0
@@ -493,7 +493,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "\u65E5\u672C\u8A9E\u30AB\u30FC\u30C9\u753B\u50CF\u5165\u624B"
+  m_Text: Obtaining Japanese card images
 --- !u!222 &311950842
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -728,7 +728,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "\u82F1\u8A9E\u30AB\u30FC\u30C9\u753B\u50CF\u5165\u624B"
+  m_Text: Get English card images
 --- !u!222 &683017832
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -750,7 +750,7 @@ GameObject:
   - component: {fileID: 770522177}
   - component: {fileID: 770522176}
   m_Layer: 5
-  m_Name: "\u82F1\u8A9E\u30AB\u30FC\u30C9\u30EA\u30B9\u30C8\u30BD\u30FC\u30B9\u30B3\u30FC\u30C9\u53D6\u5F97"
+  m_Name: Get English card list source code
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -900,11 +900,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3683f4827b8c26a47a2a5944b11b24aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SetID: BT15
+  SetID: ST17
   minCardID: 1
-  maxCardID: 105
+  maxCardID: 13
   minParallelID: 0
-  maxParallelID: 3
+  maxParallelID: 1
 --- !u!4 &952339082
 Transform:
   m_ObjectHideFlags: 0
@@ -933,7 +933,7 @@ GameObject:
   - component: {fileID: 1137362556}
   - component: {fileID: 1137362555}
   m_Layer: 5
-  m_Name: "\u65E5\u672C\u8A9E\u30AB\u30FC\u30C9\u753B\u50CF\u5165\u624B"
+  m_Name: Obtaining Japanese card images
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1067,7 +1067,7 @@ GameObject:
   - component: {fileID: 1256422892}
   - component: {fileID: 1256422891}
   m_Layer: 5
-  m_Name: "\u4E2D\u65AD"
+  m_Name: Stop
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1259,7 +1259,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "\u82F1\u8A9E\u30AB\u30FC\u30C9\u30EA\u30B9\u30C8\u30BD\u30FC\u30B9\u30B3\u30FC\u30C9\u53D6\u5F97"
+  m_Text: Get English card list source code
 --- !u!222 &1375375773
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1339,7 +1339,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "\u4E2D\u65AD"
+  m_Text: Stop
 --- !u!222 &1631910120
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1361,7 +1361,7 @@ GameObject:
   - component: {fileID: 1644945496}
   - component: {fileID: 1644945495}
   m_Layer: 5
-  m_Name: "\u82F1\u8A9E\u30AB\u30FC\u30C9\u753B\u50CF\u5165\u624B"
+  m_Name: Get English card image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1684,7 +1684,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "\u65E5\u672C\u8A9E\u30AB\u30FC\u30C9\u30EA\u30B9\u30C8\u30BD\u30FC\u30B9\u30B3\u30FC\u30C9\u53D6\u5F97"
+  m_Text: Get Japanese card list source code
 --- !u!222 &1800354921
 CanvasRenderer:
   m_ObjectHideFlags: 0

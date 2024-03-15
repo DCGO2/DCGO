@@ -206,11 +206,11 @@ public class TestWWW : MonoBehaviour
                     savingText += $"{parseByEnter[i]}\n";
                 }
 
-                StreamWriter sw = new StreamWriter($"../Digimon Card Game Online/Assets/TextAsset/{CardListID}.txt", false);// 指定されたファイル名のテキストファイルを新規で用意
+                StreamWriter sw = new StreamWriter(Application.dataPath + $"/TextAsset/{CardListID}.txt", false);// 指定されたファイル名のテキストファイルを新規で用意
                 sw.WriteLine(savingText);// ファイルに書き出したあと改行
                 sw.Flush();// StreamWriterのバッファに書き出し残しがないか確認
                 sw.Close();// ファイルを閉じる
-
+                Debug.Log(Application.dataPath + $"/TextAsset/{CardListID}.txt");
                 Debug.Log($"保存:{SetID},{CardListID}");
 
                 yield return new WaitForSeconds(0.5f);
