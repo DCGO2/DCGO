@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Garudamon-BT15-014_P1
+  m_EditorClassIdentifier: 
+  CardIndex: 3135
+  cardColors: 00000000
+  PlayCost: 4
+  EvoCosts:
+  - CardColor: 0
+    Level: 4
+    MemoryCost: 3
+  Level: 5
+  CardName_JPN: "\u30AC\u30EB\u30C0\u30E2\u30F3\r"
+  CardName_ENG: Garudamon
+  Form_JPN:
+  - "\u5B8C\u5168\u4F53\r"
+  Form_ENG:
+  - Ultimate
+  Attribute_JPN:
+  - "\u30EF\u30AF\u30C1\u30F3\u7A2E\r"
+  Attribute_ENG:
+  - Vaccine
+  Type_JPN:
+  - "\u9CE5\u4EBA\u578B\r"
+  Type_ENG:
+  - Birdkin
+  CardSpriteName: BT15-014_P1
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: "[Hand] [Counter]  (Your Digimon may digivolve into this
+    card without paying the cost).[On Play] [When Digivolving] You may play 1 play
+    cost 4 or lower red Tamer card from your hand without paying the cost.[All Turns]
+    [Once Per Turn] When one of your Tamers is played, delete 1 of your opponent\u2019s
+    Digimon with ."
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: GarudamonAce_BT15_014
+  DP: 7000
+  rarity: 3
+  OverflowMemory: 3
+  CardID: BT15-014
+  MaxCountInDeck: 4

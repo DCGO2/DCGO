@@ -6,154 +6,13 @@ using Photon;
 using System;
 using Photon.Pun;
 
-public class Metalseadramon_BT15_031 : CEntity_Effect
+public class MetalSeadramon_BT15_031 : CEntity_Effect
 {
     public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-        if (timing == EffectTiming.OnEnterFieldAnyone)
-        {
-            ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Return 1 level 5 or lower Digimon to hand", CanUseCondition, card);
-            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-            cardEffects.Add(activateClass);
-
-            string EffectDiscription()
-            {
-                return "[When Digivolving] Return 1 of your opponent's Digimon to the bottom of their deck. (Trash all of the digivolution cards of that Digimon.)";
-            }
-
-            bool CanSelectPermanentCondition(Permanent permanent)
-            {
-                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                {
-                    if (permanent.TopCard.HasLevel)
-                    {
-                        if (permanent.Level <= 5)
-                        {
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            }
-
-            bool CanUseCondition(Hashtable hashtable)
-            {
-                return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-            }
-
-            bool CanActivateCondition(Hashtable hashtable)
-            {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
-                {
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
-            }
-
-            IEnumerator ActivateCoroutine(Hashtable _hashtable)
-            {
-                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                {
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-
-                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                    selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectPermanentCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: maxCount,
-                        canNoSelect: false,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: null,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Bounce,
-                        cardEffect: activateClass);
-
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                }
-            }
-        }
-
-        if (timing == EffectTiming.OnAllyAttack)
-        {
-            ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Return 1 level 5 or lower Digimon to hand", CanUseCondition, card);
-            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-            cardEffects.Add(activateClass);
-
-            string EffectDiscription()
-            {
-                return "[When Digivolving] Return 1 of your opponent's Digimon to the bottom of their deck. (Trash all of the digivolution cards of that Digimon.)";
-            }
-
-            bool CanSelectPermanentCondition(Permanent permanent)
-            {
-                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                {
-                    if (permanent.TopCard.HasLevel)
-                    {
-                        if (permanent.Level <= 5)
-                        {
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            }
-
-            bool CanUseCondition(Hashtable hashtable)
-            {
-                return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
-            }
-
-            bool CanActivateCondition(Hashtable hashtable)
-            {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
-                {
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
-            }
-
-            IEnumerator ActivateCoroutine(Hashtable _hashtable)
-            {
-                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                {
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-
-                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                    selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectPermanentCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: maxCount,
-                        canNoSelect: false,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: null,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Bounce,
-                        cardEffect: activateClass);
-
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                }
-            }
-        }
-
+        #region All Turns
         if (timing == EffectTiming.None)
         {
             bool Condition()
@@ -182,7 +41,82 @@ public class Metalseadramon_BT15_031 : CEntity_Effect
             effectName: "This Digimon can digivolve only to white Digimon")
             );
         }
+        #endregion
 
+        #region On Play/When Attacking
+        if (timing == EffectTiming.OnEnterFieldAnyone || timing == EffectTiming.OnAllyAttack)
+        {
+            ActivateClass activateClass = new ActivateClass();
+            activateClass.SetUpICardEffect("Return 1 level 5 or lower Digimon to hand", CanUseCondition, card);
+            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+            cardEffects.Add(activateClass);
+
+            string EffectDiscription()
+            {
+                return "[On Play] [When Attacking] Return 1 of your opponent's level 5 or lower Digimon to the bottom of their deck.";
+            }
+
+            bool CanSelectPermanentCondition(Permanent permanent)
+            {
+                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                {
+                    if (permanent.TopCard.HasLevel)
+                    {
+                        if (permanent.Level <= 5)
+                        {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+
+            bool CanUseCondition(Hashtable hashtable)
+            {
+                return CardEffectCommons.CanTriggerOnPlay(hashtable, card) || CardEffectCommons.CanTriggerOnAttack(hashtable,card);
+            }
+
+            bool CanActivateCondition(Hashtable hashtable)
+            {
+                if (CardEffectCommons.IsExistOnBattleArea(card))
+                {
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            IEnumerator ActivateCoroutine(Hashtable _hashtable)
+            {
+                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                {
+                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                    selectPermanentEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanSelectPermanentCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: maxCount,
+                        canNoSelect: false,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: null,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Bounce,
+                        cardEffect: activateClass);
+
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                }
+            }
+        }
+        #endregion
+
+        #region End of Opponent's Turn
         if (timing == EffectTiming.OnEndTurn)
         {
             ActivateClass activateClass = new ActivateClass();
@@ -192,7 +126,7 @@ public class Metalseadramon_BT15_031 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[End of Your Turn] Trash the top card of your security stack.";
+                return "[End of Opponent's Turn] Delete this Digimon. Then, you may play 1 Digimon card with the [Dark Masters] trait, other than [MetalSeadramon], from your hand without paying the cost.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)
@@ -290,11 +224,11 @@ public class Metalseadramon_BT15_031 : CEntity_Effect
                 }
             }
         }
+        #endregion
 
+        //Inherited Effect
         if (timing == EffectTiming.None)
-        {
             cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(isInheritedEffect: true, card: card, condition: null));
-        }
 
         return cardEffects;
     }

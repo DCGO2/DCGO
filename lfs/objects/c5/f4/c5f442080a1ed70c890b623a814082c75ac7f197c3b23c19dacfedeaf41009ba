@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: VenomInfusion-BT15-099
+  m_EditorClassIdentifier: 
+  CardIndex: 3239
+  cardColors: 06000000
+  PlayCost: 6
+  EvoCosts: []
+  Level: 0
+  CardName_JPN: "\u30F4\u30A7\u30CE\u30E0\u30A4\u30F3\u30D5\u30E5\u30FC\u30BA\r"
+  CardName_ENG: Venom Infusion
+  Form_JPN:
+  - "-\r"
+  Form_ENG: []
+  Attribute_JPN:
+  - "-\r"
+  Attribute_ENG: []
+  Type_JPN:
+  - "-\r"
+  Type_ENG: []
+  CardSpriteName: BT15-099
+  cardKind: 2
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[Main] By trashing 1 Digimon card in your hand, delete
+    1 of your opponent''s Digimon whose level is less than or equal to the trashed
+    card''s level. When a card with [Myotismon]&#160;in its text is trashed by this
+    effect,  (Draw 2 cards from your deck).'
+  InheritedEffectDiscription_JPN: "\u3010\u30BB\u30AD\u30E5\u30EA\u30C6\u30A3\u3011\u3053\u306E\u30AB\u30FC\u30C9\u306E\u3010\u30E1\u30A4\u30F3\u3011\u52B9\u679C\u3092\u767A\u63EE\u3059\u308B\u3002\r"
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: "\u3010\u30BB\u30AD\u30E5\u30EA\u30C6\u30A3\u3011\u3053\u306E\u30AB\u30FC\u30C9\u306E\u3010\u30E1\u30A4\u30F3\u3011\u52B9\u679C\u3092\u767A\u63EE\u3059\u308B\u3002\r"
+  SecurityEffectDiscription_ENG: '[Security] Activate this card''s [Main] effect.'
+  CardEffectClassName: Venom_Infusion_BT15_099
+  DP: 0
+  rarity: 0
+  OverflowMemory: 0
+  CardID: BT15-099
+  MaxCountInDeck: 4

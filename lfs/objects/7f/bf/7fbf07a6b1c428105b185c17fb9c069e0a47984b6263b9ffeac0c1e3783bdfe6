@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: MegaSeadramon-BT15-029
+  m_EditorClassIdentifier: 
+  CardIndex: 3153
+  cardColors: 01000000
+  PlayCost: 7
+  EvoCosts:
+  - CardColor: 1
+    Level: 4
+    MemoryCost: 3
+  Level: 5
+  CardName_JPN: "\u30E1\u30AC\u30B7\u30FC\u30C9\u30E9\u30E2\u30F3\r"
+  CardName_ENG: MegaSeadramon
+  Form_JPN:
+  - "\u5B8C\u5168\u4F53\r"
+  Form_ENG:
+  - Ultimate
+  Attribute_JPN:
+  - "\u30C7\u30FC\u30BF\u7A2E\r"
+  Attribute_ENG:
+  - Data
+  Type_JPN:
+  - "\u6C34\u68F2\u578B\r"
+  Type_ENG:
+  - Aquatic
+  CardSpriteName: BT15-029
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[On Play] [When Digivolving] By placing 1 of your other
+    blue Digimon as this Digimon''s bottom digivolution card, return 1 of your opponent''s
+    Digimon whose level is less than or equal to the placed card''s level to the
+    bottom of the deck.'
+  InheritedEffectDiscription_JPN: "\u3010\u30A2\u30BF\u30C3\u30AF\u6642\u3011\uFF3B\u30BF\u30FC\u30F3\u306B1\u56DE\uFF3D\u4ED6\u306E\u9752\u306E\u81EA\u5206\u306E\u30C7\u30B8\u30E2\u30F31\u4F53\u3092\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u306E\u9032\u5316\u5143\u306E\u4E0B\u306B\u7F6E\u304F\u3053\u3068\u3067,\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u3092\u30A2\u30AF\u30C6\u30A3\u30D6\u306B\u3059\u308B\u3002\r"
+  InheritedEffectDiscription_ENG: '[When Attacking] [Once Per Turn] By placing 1
+    of your other blue Digimon as this Digimon''s bottom digivolution card, unsuspend
+    this Digimon.'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: MegaSeadramon_BT15_029
+  DP: 7000
+  rarity: 1
+  OverflowMemory: 0
+  CardID: BT15-029
+  MaxCountInDeck: 4

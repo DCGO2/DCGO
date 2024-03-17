@@ -11,56 +11,56 @@ using UnityEngine.EventSystems;
 using TMPro;
 public class CardPrefab_CreateDeck : MonoBehaviour
 {
-    [Header("カード画像")]
+    [Header("Card Image")]
     public Image CardImage;
 
-    [Header("スクロールレクト")]
+    [Header("Scroll Rect")]
     public List<ScrollRect> scroll = new List<ScrollRect>();
 
-    [Header("カバー")]
+    [Header("Cover")]
     public List<GameObject> Cover = new List<GameObject>();
 
-    [Header("カバー(スタンダード)")]
+    [Header("Cover Standard")]
     public GameObject Cover_Standard;
 
-    [Header("アウトライン")]
+    [Header("Outline")]
     public GameObject Outline;
 
-    [Header("アニメーター")]
+    [Header("Anim")]
     public Animator anim;
 
-    [Header("コストアイコン")]
+    [Header("Cost Icons")]
     public List<Image> CostIcons = new List<Image>();
 
-    [Header("コストテキスト")]
+    [Header("Cost Text")]
     public TextMeshProUGUI CostText;
 
-    [Header("レベルアイコン")]
+    [Header("Level Icons")]
     public List<Image> LevelIcons;
 
-    [Header("レベルテキスト")]
+    [Header("Level Text")]
     public TextMeshProUGUI LevelText;
 
-    [Header("進化コストアイコン")]
+    [Header("Evo Cost Icons")]
     public List<Image> EvoCostIcons;
 
-    [Header("進化コストテキスト_レベル")]
+    [Header("Evo Cost Text Level")]
     public List<TextMeshProUGUI> EvoCostTexts_Level;
 
-    [Header("進化コストテキスト_メモリー")]
+    [Header("Evo Cost Text Memory")]
     public List<TextMeshProUGUI> EvoCostTexts_Memory;
 
-    [Header("枚数制限")]
+    [Header("Quantity Limit")]
     public GameObject LimitObject;
     public Text LimitText;
 
-    [Header("禁止")]
+    [Header("Ban")]
     public GameObject BanObject;
 
-    [Header("白丸")]
+    [Header("White Circle")]
     public Sprite WhiteCircle;
 
-    [Header("虹丸")]
+    [Header("Rainbow Circle")]
     public Sprite RainbowCircle;
 
     public Transform Parent;

@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: SkullMeramon-BT15-015
+  m_EditorClassIdentifier: 
+  CardIndex: 3137
+  cardColors: 00000000
+  PlayCost: 7
+  EvoCosts:
+  - CardColor: 0
+    Level: 4
+    MemoryCost: 2
+  Level: 5
+  CardName_JPN: "\u30C7\u30B9\u30E1\u30E9\u30E2\u30F3\r"
+  CardName_ENG: SkullMeramon
+  Form_JPN:
+  - "\u5B8C\u5168\u4F53\r"
+  Form_ENG:
+  - Ultimate
+  Attribute_JPN:
+  - "\u30C7\u30FC\u30BF\u7A2E\r"
+  Attribute_ENG:
+  - Data
+  Type_JPN:
+  - "\u706B\u708E\u578B\r"
+  Type_ENG:
+  - Flame
+  CardSpriteName: BT15-015
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[Main] [Once Per Turn] By paying 2 cost, this Digimon gains 
+    (This Digimon checks 1 additional security card) for the turn. Then, this Digimon
+    may attack.'
+  InheritedEffectDiscription_JPN: "-\r"
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: SkullMeramon_BT15_015
+  DP: 7000
+  rarity: 0
+  OverflowMemory: 0
+  CardID: BT15-015
+  MaxCountInDeck: 4

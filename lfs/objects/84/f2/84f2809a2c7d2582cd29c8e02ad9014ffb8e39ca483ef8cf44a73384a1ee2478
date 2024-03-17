@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Airdramon-BT15-059
+  m_EditorClassIdentifier: 
+  CardIndex: 3190
+  cardColors: 05000000
+  PlayCost: 5
+  EvoCosts:
+  - CardColor: 5
+    Level: 3
+    MemoryCost: 2
+  Level: 4
+  CardName_JPN: "\u30A8\u30A2\u30C9\u30E9\u30E2\u30F3\r"
+  CardName_ENG: Airdramon
+  Form_JPN:
+  - "\u6210\u719F\u671F\r"
+  Form_ENG:
+  - Champion
+  Attribute_JPN:
+  - "\u30EF\u30AF\u30C1\u30F3\u7A2E\r"
+  Attribute_ENG:
+  - Vaccine
+  Type_JPN:
+  - "\u5E7B\u7363\u578B"
+  - "SoC\r"
+  Type_ENG:
+  - Mythical Beast
+  - SoC
+  CardSpriteName: BT15-059
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[On Play] [When Digivolving] By placing 1 [Marvin Jackson]
+    from your hand as this Digimon''s bottom digivolution card,  1 of your opponent''s
+    Digimon (Trash the top card. You can''t trash past level 3 cards).'
+  InheritedEffectDiscription_JPN: "\u226A\u518D\u8D77\u52D5\u226B\uFF08\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u306F\u76F8\u624B\u306E\u30A2\u30AF\u30C6\u30A3\u30D6\u30D5\u30A7\u30A4\u30BA\u3067\u3082\u30A2\u30AF\u30C6\u30A3\u30D6\u306B\u306A\u308B\uFF09\r"
+  InheritedEffectDiscription_ENG: ' (Unsuspend this Digimon during your opponent''s
+    unsuspend phase).'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Airdramon_BT15_059
+  DP: 4000
+  rarity: 0
+  OverflowMemory: 0
+  CardID: BT15-059
+  MaxCountInDeck: 4

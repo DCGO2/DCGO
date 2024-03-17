@@ -22,7 +22,7 @@ public class Tsunomon_BT15_002 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Your Turn][Once Per Turn] When an effect adds a card to your hand, this Digimon gets +1000 DP for the turn.";
+                return "[Your Turn] [Once Per Turn] When one of your Digimon's effects adds cards to your hand, this Digimon gets +1000 DP until the end of your opponent's turn.";
             }
 
             bool CanUseCondition(Hashtable hashtable)

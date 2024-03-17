@@ -12,6 +12,7 @@ public class Garurumon_BT15_024 : CEntity_Effect
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+        #region Alternate Digivolution Requirement
         if (timing == EffectTiming.None)
         {
             bool PermanentCondition(Permanent targetPermanent)
@@ -32,7 +33,9 @@ public class Garurumon_BT15_024 : CEntity_Effect
 
             cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 2, ignoreDigivolutionRequirement: false, card: card, condition: null));
         }
+        #endregion
 
+        #region When Digivolving
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
@@ -42,7 +45,7 @@ public class Garurumon_BT15_024 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Start of Your Main Phase] If you have a Tamer with [Tai Kamiya] in its name, this Digimon may digivolve into [Greymon] in your hand without paying the cost.";
+                return "[When Digivolving] If you have a Tamer with [Matt Ishida] in its name, <Draw 1>. If you don't have a Tamer with [Matt Ishida] in its name, you may play 1 Tamer card with [Matt Ishida] in its name from your hand with the play cost reduced by 3.";
             }
 
             bool PermanentCondition(Permanent permanent)
@@ -244,6 +247,7 @@ public class Garurumon_BT15_024 : CEntity_Effect
                 }
             }
         }
+        #endregion
 
         if (timing == EffectTiming.OnAllyAttack)
         {

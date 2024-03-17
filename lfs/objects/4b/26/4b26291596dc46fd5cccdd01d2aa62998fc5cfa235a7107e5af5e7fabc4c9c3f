@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Scorpiomon-BT15-027
+  m_EditorClassIdentifier: 
+  CardIndex: 3151
+  cardColors: 01000000
+  PlayCost: 6
+  EvoCosts:
+  - CardColor: 1
+    Level: 4
+    MemoryCost: 3
+  Level: 5
+  CardName_JPN: "\u30A2\u30CE\u30DE\u30ED\u30AB\u30EA\u30E2\u30F3\r"
+  CardName_ENG: Scorpiomon
+  Form_JPN:
+  - "\u5B8C\u5168\u4F53\r"
+  Form_ENG:
+  - Ultimate
+  Attribute_JPN:
+  - "\u30C7\u30FC\u30BF\u7A2E\r"
+  Attribute_ENG:
+  - Data
+  Type_JPN:
+  - "\u53E4\u4EE3\u7532\u6BBB\u985E\u578B\r"
+  Type_ENG:
+  - Ancient Crustacean
+  CardSpriteName: BT15-027
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[On Play] Reveal the top 4 cards of your deck. Add 2 level
+    6 or higher cards among them to the hand. Return the rest to the bottom of the
+    deck.[End of Your Turn] By deleting 1 of your Digimon, you may play 1 Digimon
+    card with the [Dark Masters]&#160;trait from your hand to an empty space in your
+    breeding area without paying the cost.'
+  InheritedEffectDiscription_JPN: "\u226A\u30D6\u30ED\u30C3\u30AB\u30FC\u226B\uFF08\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u306F\u30D6\u30ED\u30C3\u30AF\u30BF\u30A4\u30DF\u30F3\u30B0\u3067\u30D6\u30ED\u30C3\u30AF\u3067\u304D\u308B\uFF09\r"
+  InheritedEffectDiscription_ENG: ' (At blocker timing, by suspending this Digimon,
+    it becomes the attack target).'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Scorpiomon_BT15_027
+  DP: 6000
+  rarity: 0
+  OverflowMemory: 0
+  CardID: BT15-027
+  MaxCountInDeck: 4

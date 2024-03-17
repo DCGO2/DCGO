@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Akatorimon-BT15-010
+  m_EditorClassIdentifier: 
+  CardIndex: 3130
+  cardColors: 00000000
+  PlayCost: 4
+  EvoCosts:
+  - CardColor: 0
+    Level: 3
+    MemoryCost: 2
+  Level: 4
+  CardName_JPN: "\u30A2\u30AB\u30C8\u30EA\u30E2\u30F3\r"
+  CardName_ENG: Akatorimon
+  Form_JPN:
+  - "\u6210\u719F\u671F\r"
+  Form_ENG:
+  - Champion
+  Attribute_JPN:
+  - "\u30C7\u30FC\u30BF\u7A2E\r"
+  Attribute_ENG:
+  - Data
+  Type_JPN:
+  - "\u5DE8\u9CE5\u578B\r"
+  Type_ENG:
+  - Giant Bird
+  CardSpriteName: BT15-010
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[Your Turn] [Once Per Turn] When one of your Digimon attacks
+    a player, delete 1 of your opponent''s Digimon with 3000 DP or less.'
+  InheritedEffectDiscription_JPN: "-\r"
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Akatorimon_BT15_010
+  DP: 5000
+  rarity: 0
+  OverflowMemory: 0
+  CardID: BT15-010
+  MaxCountInDeck: 4

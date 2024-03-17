@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: MetalSeadramon-BT15-031
+  m_EditorClassIdentifier: 
+  CardIndex: 3155
+  cardColors: 01000000
+  PlayCost: 11
+  EvoCosts:
+  - CardColor: 1
+    Level: 5
+    MemoryCost: 3
+  Level: 6
+  CardName_JPN: "\u30E1\u30BF\u30EB\u30B7\u30FC\u30C9\u30E9\u30E2\u30F3\r"
+  CardName_ENG: MetalSeadramon
+  Form_JPN:
+  - "\u7A76\u6975\u4F53\r"
+  Form_ENG:
+  - Mega
+  Attribute_JPN:
+  - "\u30C7\u30FC\u30BF\u7A2E\r"
+  Attribute_ENG:
+  - Data
+  Type_JPN:
+  - "\u30B5\u30A4\u30DC\u30FC\u30B0\u578B"
+  - "\u30C0\u30FC\u30AF\u30DE\u30B9\u30BF\u30FC\u30BA\r"
+  Type_ENG:
+  - Cyborg
+  - Dark Masters
+  CardSpriteName: BT15-031
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[On Play] [When Attacking] Return 1 of your opponent''s
+    level 5 or lower Digimon to the hand.[Your Turn] This Digimon can only digivolve
+    into white Digimon.[End of Opponent''s Turn] Delete this Digimon. Then, you may
+    play 1 Digimon card with the [Dark Masters]&#160;trait, other than [MetalSeadramon],
+    from your hand without paying the cost.'
+  InheritedEffectDiscription_JPN: "\u226A\u30D6\u30ED\u30C3\u30AB\u30FC\u226B\uFF08\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u306F\u30D6\u30ED\u30C3\u30AF\u30BF\u30A4\u30DF\u30F3\u30B0\u3067\u30D6\u30ED\u30C3\u30AF\u3067\u304D\u308B\uFF09\r"
+  InheritedEffectDiscription_ENG: ' (At blocker timing, by suspending this Digimon,
+    it becomes the attack target).'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: MetalSeadramon_BT15_031
+  DP: 11000
+  rarity: 2
+  OverflowMemory: 0
+  CardID: BT15-031
+  MaxCountInDeck: 4

@@ -31,7 +31,7 @@ public class Gabumon_BT15_020 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Start of Your Main Phase] If you have a Tamer with [Tai Kamiya] in its name, this Digimon may digivolve into [Greymon] in your hand without paying the cost.";
+                return "[Start of Your Main Phase] 1 of your Digimon gains <Blocker> until the end of your opponent's turn. Then, if you have a Tamer with [Matt Ishida] in its name, <Draw 1>.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)

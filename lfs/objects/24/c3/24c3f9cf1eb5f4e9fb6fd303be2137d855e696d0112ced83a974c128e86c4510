@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Togemon(XAntibody)-BT15-048
+  m_EditorClassIdentifier: 
+  CardIndex: 3176
+  cardColors: 03000000
+  PlayCost: 5
+  EvoCosts:
+  - CardColor: 3
+    Level: 3
+    MemoryCost: 2
+  Level: 4
+  CardName_JPN: "\u30C8\u30B2\u30E2\u30F3X\u6297\u4F53\r"
+  CardName_ENG: Togemon (X Antibody)
+  Form_JPN:
+  - "\u6210\u719F\u671F\r"
+  Form_ENG:
+  - Champion
+  Attribute_JPN:
+  - "\u30C7\u30FC\u30BF\u7A2E\r"
+  Attribute_ENG:
+  - Data
+  Type_JPN:
+  - "\u690D\u7269\u578B"
+  - "X\u6297\u4F53\r"
+  Type_ENG:
+  - Vegetation
+  - X Antibody
+  CardSpriteName: BT15-048
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[When Digivolving] 1 of your opponent''s Digimon can''t
+    unsuspend until the end of their turn. If [Togemon]/[X Antibody] is in this Digimon''s
+    digivolution cards, suspend 1 of your opponent''s Digimon.'
+  InheritedEffectDiscription_JPN: "\u3010\u81EA\u5206\u306E\u30BF\u30FC\u30F3\u3011\u30EC\u30B9\u30C8\u72B6\u614B\u306E\u76F8\u624B\u306E\u30C7\u30B8\u30E2\u30F31\u4F53\u3054\u3068\u306B,\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u3092DP+1000\u3002\r"
+  InheritedEffectDiscription_ENG: '[Your Turn] This Digimon gets +1000 DP for each
+    of your opponent''s suspended Digimon.'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Togemon_X_Antibody_BT15_048
+  DP: 5000
+  rarity: 0
+  OverflowMemory: 0
+  CardID: BT15-048
+  MaxCountInDeck: 4

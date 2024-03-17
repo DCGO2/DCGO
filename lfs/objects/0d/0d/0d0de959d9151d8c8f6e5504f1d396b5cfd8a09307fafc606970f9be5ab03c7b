@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Angewomon-BT15-038_P1
+  m_EditorClassIdentifier: 
+  CardIndex: 3164
+  cardColors: 02000000
+  PlayCost: 4
+  EvoCosts:
+  - CardColor: 2
+    Level: 4
+    MemoryCost: 3
+  Level: 5
+  CardName_JPN: "\u30A8\u30F3\u30B8\u30A7\u30A6\u30FC\u30E2\u30F3\r"
+  CardName_ENG: Angewomon
+  Form_JPN:
+  - "\u5B8C\u5168\u4F53\r"
+  Form_ENG:
+  - Ultimate
+  Attribute_JPN:
+  - "\u30EF\u30AF\u30C1\u30F3\u7A2E\r"
+  Attribute_ENG:
+  - Vaccine
+  Type_JPN:
+  - "\u5927\u5929\u4F7F\u578B\r"
+  Type_ENG:
+  - Archangel
+  CardSpriteName: BT15-038_P1
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[Hand] [Counter]  (Your Digimon may digivolve into this
+    card without paying the cost).[On Play] [When Digivolving] By trashing the top
+    or bottom card of your security stack, 1 of your opponent''s Digimon gets -6000
+    DP until the end of their turn.[All Turns] [Once Per Turn] When a card is removed
+    from your security stack, if you have 3 or fewer security cards,  (Place the
+    top card of your deck on top of your security stack).'
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Angewomon_ACE_BT15_038
+  DP: 7000
+  rarity: 3
+  OverflowMemory: 3
+  CardID: BT15-038
+  MaxCountInDeck: 4

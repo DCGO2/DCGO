@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: WaruMonzaemon-BT15-065
+  m_EditorClassIdentifier: 
+  CardIndex: 3197
+  cardColors: 05000000
+  PlayCost: 7
+  EvoCosts:
+  - CardColor: 5
+    Level: 4
+    MemoryCost: 4
+  Level: 5
+  CardName_JPN: "\u30EF\u30EB\u3082\u3093\u3056\u3048\u30E2\u30F3\r"
+  CardName_ENG: WaruMonzaemon
+  Form_JPN:
+  - "\u5B8C\u5168\u4F53\r"
+  Form_ENG:
+  - Ultimate
+  Attribute_JPN:
+  - "\u30A6\u30A3\u30EB\u30B9\u7A2E\r"
+  Attribute_ENG:
+  - Virus
+  Type_JPN:
+  - "\u30D1\u30DA\u30C3\u30C8\u578B\r"
+  Type_ENG:
+  - Puppet
+  CardSpriteName: BT15-065
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[On Play] [When Digivolving] By trashing 1 card with [Numemon]&#160;in
+    its name in your hand or this Digimon''s digivolution cards,  1 of your opponent''s
+    Digimon (Trash the top card. You can''t trash past level 3 cards).[On Play] By
+    placing 1 card with [Numemon]&#160;in its name from your trash as this Digimon''s
+    bottom digivolution card, until the end of your opponent''s turn, none of their
+    Digimon with play costs of 5 or less can attack players.'
+  InheritedEffectDiscription_JPN: "\u3010\u81EA\u5206\u306E\u30BF\u30FC\u30F3\u3011\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u304C\u540D\u79F0\u306B\u300C\u3082\u3093\u3056\u3048\u30E2\u30F3\u300D/\u300C\u30CC\u30E1\u30E2\u30F3\u300D\u3092\u542B\u3080\u9593,\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u306F\u226AS\u30A2\u30BF\u30C3\u30AF+1\u226B\u3092\u5F97\u308B\u3002\r"
+  InheritedEffectDiscription_ENG: '[Your Turn] While this Digimon has [Monzaemon]/[Numemon]&#160;in
+    its name, it gains  (This Digimon checks 1 additional security card).'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: WaruMonzaemon_BT15_065
+  DP: 7000
+  rarity: 1
+  OverflowMemory: 0
+  CardID: BT15-065
+  MaxCountInDeck: 4
