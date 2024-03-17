@@ -11,6 +11,7 @@ public class Betamon_BT15_022 : CEntity_Effect
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+        #region On Play
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
@@ -20,7 +21,7 @@ public class Betamon_BT15_022 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Play] Delete 1 of your opponent's Digimon with <Blocker>.";
+                return "[On Play] If played by an effect, 1 of your opponent's Digimon can't attack until the end of their turn.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
@@ -88,7 +89,9 @@ public class Betamon_BT15_022 : CEntity_Effect
                 }
             }
         }
+        #endregion
 
+        //Inherited Effect
         if (timing == EffectTiming.None)
         {
             cardEffects.Add(CardEffectFactory.JammingSelfStaticEffect(isInheritedEffect: true, card: card, condition: null));

@@ -7,12 +7,13 @@ using System;
 using Photon.Pun;
 
 
-public class Metalgarurumon_BT15_101 : CEntity_Effect
+public class MetalGarurumon_BT15_101 : CEntity_Effect
 {
     public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+        //Alternate Digivolution Requirement
         if (timing == EffectTiming.None)
         {
             bool PermanentCondition(Permanent targetPermanent)
@@ -23,6 +24,7 @@ public class Metalgarurumon_BT15_101 : CEntity_Effect
             cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 4, ignoreDigivolutionRequirement: false, card: card, condition: null));
         }
 
+        #region Alternate Digivolution Condition
         if (timing == EffectTiming.None)
         {
             bool Condition()
@@ -33,7 +35,7 @@ public class Metalgarurumon_BT15_101 : CEntity_Effect
                     {
                         if (permanent.IsTamer)
                         {
-                            if (permanent.TopCard.ContainsCardName("Matt Ishida]"))
+                            if (permanent.TopCard.ContainsCardName("Matt Ishida"))
                             {
                                 return true;
                             }
@@ -85,12 +87,15 @@ public class Metalgarurumon_BT15_101 : CEntity_Effect
 
             cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 4, ignoreDigivolutionRequirement: true, card: card, condition: Condition));
         }
-
+        #endregion
+        
+        //Evade
         if (timing == EffectTiming.WhenPermanentWouldBeDeleted)
         {
             cardEffects.Add(CardEffectFactory.EvadeSelfEffect(isInheritedEffect: false, card: card, condition: null));
         }
 
+        #region When Digivolving
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
@@ -100,7 +105,7 @@ public class Metalgarurumon_BT15_101 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Digivolving] You may trash up to 3 blue cards from your hand. For each card trashed by this effect, you may trash 1 card under 1 of your opponent's Digimon or Tamers. Then, 1 of your opponent's Digimon or Tamers without cards under it can't suspend until the end of your opponent's turn.";
+                return "[When Digivolving] 3 of your opponent's Digimon and Tamers can't suspend until the end of their turn.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
@@ -203,7 +208,9 @@ public class Metalgarurumon_BT15_101 : CEntity_Effect
                 }
             }
         }
+        #endregion
 
+        #region All Turns
         if (timing == EffectTiming.OnTappedAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
@@ -214,7 +221,7 @@ public class Metalgarurumon_BT15_101 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[All Turns][Once Per Turn] When this Digimon becomes suspended, unsuspend it.";
+                return "[All Turns] [Once Per Turn] When this Digimon becomes suspended, you may unsuspend it.";
             }
 
             bool CanUseCondition(Hashtable hashtable)
@@ -250,6 +257,7 @@ public class Metalgarurumon_BT15_101 : CEntity_Effect
                 yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { selectedPermanent }, activateClass).Unsuspend());
             }
         }
+        #endregion
 
         return cardEffects;
     }

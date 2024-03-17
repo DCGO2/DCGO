@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: MarvinJackson-BT15-086
+  m_EditorClassIdentifier: 
+  CardIndex: 3224
+  cardColors: 05000000
+  PlayCost: 3
+  EvoCosts: []
+  Level: 0
+  CardName_JPN: "\u30DE\u30FC\u30F4\u30A3\u30F3\u30FB\u30B8\u30E3\u30AF\u30BD\u30F3\r"
+  CardName_ENG: Marvin Jackson
+  Form_JPN:
+  - "-\r"
+  Form_ENG: []
+  Attribute_JPN:
+  - "-\r"
+  Attribute_ENG: []
+  Type_JPN:
+  - "SoC\r"
+  Type_ENG:
+  - SoC
+  CardSpriteName: BT15-086
+  cardKind: 1
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[Security] Play this card without paying the cost.[Start
+    of Your Main Phase] By trashing 1 card with the [Machine]/[Cyborg]/[SoC]&#160;trait
+    in your hand, gain 1 memory.[Main]  (Place this Tamer as that Digimon''s bottom
+    digivolution card if there are no Tamer cards in its digivolution cards) with
+    1 of your Digimon with the [Machine]/[Cyborg]/[SoC]&#160;trait.'
+  InheritedEffectDiscription_JPN: "\u3010\u304A\u4E92\u3044\u306E\u30BF\u30FC\u30F3\u3011\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u304C\u7279\u5FB4\u306B\u300C\u30DE\u30B7\u30FC\u30F3\u578B\u300D/\u300C\u30B5\u30A4\u30DC\u30FC\u30B0\u578B\u300D/\u300CSoC\u300D\u3092\u6301\u3064\u9593,\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u306F\u226A\u30B8\u30E3\u30DF\u30F3\u30B0\u226B\u3068\u226A\u30D6\u30ED\u30C3\u30AB\u30FC\u226B\u3092\u5F97\u308B\u3002\u3010\u304A\u4E92\u3044\u306E\u30BF\u30FC\u30F3\u7D42\u4E86\u6642\u3011\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u306E\u9032\u5316\u5143\u304B\u3089,\u300C\u30DE\u30FC\u30F4\u30A3\u30F3\u30B8\u30E3\u30AF\u30BD\u30F3\u300D1\u679A\u3092\u30B3\u30B9\u30C8\u3092\u652F\u6255\u308F\u305A\u306B\u767B\u5834\u3067\u304D\u308B\u3002\r"
+  InheritedEffectDiscription_ENG: '[All Turns] While this Digimon has the [Machine]/[Cyborg]/[SoC]&#160;trait,
+    it gains  (This Digimon can''t be deleted in battles against Security Digimon)
+    and  (At blocker timing, by suspending this Digimon, it becomes the attack target).[End
+    of All Turns] You may play 1 [Marvin Jackson] from this Digimon''s digivolution
+    cards without paying the cost.'
+  SecurityEffectDiscription_JPN: "\u3010\u304A\u4E92\u3044\u306E\u30BF\u30FC\u30F3\u3011\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u304C\u7279\u5FB4\u306B\u300C\u30DE\u30B7\u30FC\u30F3\u578B\u300D/\u300C\u30B5\u30A4\u30DC\u30FC\u30B0\u578B\u300D/\u300CSoC\u300D\u3092\u6301\u3064\u9593,\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u306F\u226A\u30B8\u30E3\u30DF\u30F3\u30B0\u226B\u3068\u226A\u30D6\u30ED\u30C3\u30AB\u30FC\u226B\u3092\u5F97\u308B\u3002\u3010\u304A\u4E92\u3044\u306E\u30BF\u30FC\u30F3\u7D42\u4E86\u6642\u3011\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u306E\u9032\u5316\u5143\u304B\u3089,\u300C\u30DE\u30FC\u30F4\u30A3\u30F3\u30B8\u30E3\u30AF\u30BD\u30F3\u300D1\u679A\u3092\u30B3\u30B9\u30C8\u3092\u652F\u6255\u308F\u305A\u306B\u767B\u5834\u3067\u304D\u308B\u3002\r"
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Marvin_Jackson_BT15_086
+  DP: 0
+  rarity: 2
+  OverflowMemory: 0
+  CardID: BT15-086
+  MaxCountInDeck: 4

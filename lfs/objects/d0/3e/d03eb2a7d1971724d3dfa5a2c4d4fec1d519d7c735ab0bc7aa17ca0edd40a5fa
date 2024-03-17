@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Myotismon-BT15-076
+  m_EditorClassIdentifier: 
+  CardIndex: 3208
+  cardColors: 06000000
+  PlayCost: 5
+  EvoCosts:
+  - CardColor: 6
+    Level: 4
+    MemoryCost: 3
+  Level: 5
+  CardName_JPN: "\u30F4\u30A1\u30F3\u30C7\u30E2\u30F3\r"
+  CardName_ENG: Myotismon
+  Form_JPN:
+  - "\u5B8C\u5168\u4F53\r"
+  Form_ENG:
+  - Ultimate
+  Attribute_JPN:
+  - "\u30A6\u30A3\u30EB\u30B9\u7A2E\r"
+  Attribute_ENG:
+  - Virus
+  Type_JPN:
+  - "\u30A2\u30F3\u30C7\u30C3\u30C9\u578B\r"
+  Type_ENG:
+  - Undead
+  CardSpriteName: BT15-076
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[Hand] [Counter]  (Your Digimon may digivolve into this
+    card without paying the cost). (At blocker timing, by suspending this Digimon,
+    it becomes the attack target).[On Play] [When Digivolving] You may play 1 purple
+    level 3 Digimon card or 1 purple Tamer card from your trash without paying the
+    cost.'
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Myotismon_ACE_BT15_076
+  DP: 8000
+  rarity: 3
+  OverflowMemory: 3
+  CardID: BT15-076
+  MaxCountInDeck: 4

@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Hagurumon-BT15-055
+  m_EditorClassIdentifier: 
+  CardIndex: 3185
+  cardColors: 05000000
+  PlayCost: 3
+  EvoCosts:
+  - CardColor: 5
+    Level: 2
+    MemoryCost: 0
+  Level: 3
+  CardName_JPN: "\u30CF\u30B0\u30EB\u30E2\u30F3\r"
+  CardName_ENG: Hagurumon
+  Form_JPN:
+  - "\u6210\u9577\u671F\r"
+  Form_ENG:
+  - Rookie
+  Attribute_JPN:
+  - "\u30A6\u30A3\u30EB\u30B9\u7A2E\r"
+  Attribute_ENG:
+  - Virus
+  Type_JPN:
+  - "\u30DE\u30B7\u30FC\u30F3\u578B\r"
+  Type_ENG:
+  - Machine
+  CardSpriteName: BT15-055
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[On Play] Reveal the top 3 cards of your deck. Add 1 card
+    with the [Machine]/[Cyborg]&#160;trait and 1 black Tamer card among them to the
+    hand. Return the rest to the bottom of the deck.'
+  InheritedEffectDiscription_JPN: "\u226A\u518D\u8D77\u52D5\u226B\uFF08\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u306F\u76F8\u624B\u306E\u30A2\u30AF\u30C6\u30A3\u30D6\u30D5\u30A7\u30A4\u30BA\u3067\u3082\u30A2\u30AF\u30C6\u30A3\u30D6\u306B\u306A\u308B\uFF09\r"
+  InheritedEffectDiscription_ENG: ' (Unsuspend this Digimon during your opponent''s
+    unsuspend phase).'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Hagurumon_BT15_055
+  DP: 1000
+  rarity: 1
+  OverflowMemory: 0
+  CardID: BT15-055
+  MaxCountInDeck: 4

@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Tsunomon-BT15-002
+  m_EditorClassIdentifier: 
+  CardIndex: 3116
+  cardColors: 01000000
+  PlayCost: 0
+  EvoCosts: []
+  Level: 2
+  CardName_JPN: "\u30C4\u30CE\u30E2\u30F3\r"
+  CardName_ENG: Tsunomon
+  Form_JPN:
+  - "\u5E7C\u5E74\u671F\r"
+  Form_ENG:
+  - In-Training
+  Attribute_JPN:
+  - "-\r"
+  Attribute_ENG: []
+  Type_JPN:
+  - "\u30EC\u30C3\u30B5\u30FC\u578B\r"
+  Type_ENG:
+  - Lesser
+  CardSpriteName: BT15-002
+  cardKind: 3
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: 
+  InheritedEffectDiscription_JPN: "\u3010\u81EA\u5206\u306E\u30BF\u30FC\u30F3\u3011\uFF3B\u30BF\u30FC\u30F3\u306B1\u56DE\uFF3D\u81EA\u5206\u306E\u30C7\u30B8\u30E2\u30F3\u306E\u52B9\u679C\u3067\u81EA\u5206\u306E\u624B\u672D\u304C\u5897\u3048\u305F\u3068\u304D,\u76F8\u624B\u306E\u30BF\u30FC\u30F3\u7D42\u4E86\u307E\u3067,\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u3092DP+1000\u3002\r"
+  InheritedEffectDiscription_ENG: '[Your Turn] [Once Per Turn] When one of your Digimon''s
+    effects adds cards to your hand, this Digimon gets +1000 DP until the end of
+    your opponent''s turn.'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Tsunomon_BT15_002
+  DP: 0
+  rarity: 1
+  OverflowMemory: 0
+  CardID: BT15-002
+  MaxCountInDeck: 4

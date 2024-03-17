@@ -10,7 +10,8 @@ public class MegaSeadramon_BT15_029 : CEntity_Effect
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-        if(timing == EffectTiming.OnEnterFieldAnyone)
+        #region On Play/When Digivolving
+        if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Place 1 Digimon card to digivolution cards to return 1 of your opponent's Digimon whose level is less than or equal to the placed card's level to the bottom of the deck.", CanUseCondition, card);
@@ -19,16 +20,16 @@ public class MegaSeadramon_BT15_029 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Play] By placing 1 of your other blue Digimon as this Digimon's bottom digivolution card, return 1 of your opponent's Digimon whose level is less than or equal to the placed card's level to the bottom of the deck.";
+                return "[On Play] [When Digivolving] By placing 1 of your other blue Digimon as this Digimon's bottom digivolution card, return 1 of your opponent's Digimon whose level is less than or equal to the placed card's level to the bottom of the deck.";
             }
 
-            bool CanSelectCardCondition(CardSource cardSource)
+            bool CanSelectOwnPermanentCondition(Permanent permanent)
             {
-                if (cardSource.IsDigimon)
+                if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Blue))
+                    if (permanent.TopCard.CardColors.Contains(CardColor.Blue))
                     {
-                        if(!cardSource.Equals(card))
+                        if (!permanent.TopCard.Equals(card))
                             return true;
                     }
                 }
@@ -49,7 +50,7 @@ public class MegaSeadramon_BT15_029 : CEntity_Effect
 
             bool CanUseCondition(Hashtable hashtable)
             {
-                return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                return CardEffectCommons.CanTriggerOnPlay(hashtable, card) || CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
             }
 
             bool CanActivateCondition(Hashtable hashtable)
@@ -77,7 +78,7 @@ public class MegaSeadramon_BT15_029 : CEntity_Effect
 
                     selectPermanentSourcecEffect.SetUp(
                         selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectPermanentCondition,
+                        canTargetCondition: CanSelectOwnPermanentCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: maxCount,
@@ -140,44 +141,47 @@ public class MegaSeadramon_BT15_029 : CEntity_Effect
                 }
             }
         }
+        #endregion
 
-        return cardEffects;
-        /*if(timing == EffectTiming.OnEnterFieldAnyone)
+        #region Inerited Effect
+        if (timing == EffectTiming.OnAllyAttack)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Retuen 1 Digimon card to the deck bottom", CanUseCondition, card);
-            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+            activateClass.SetUpICardEffect("Unsuspend this Digimon", CanUseCondition, card);
+            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+            activateClass.SetIsInheritedEffect(true);
+            activateClass.SetHashString("Unsuspend_BT15_020");
             cardEffects.Add(activateClass);
 
             string EffectDiscription()
             {
-                return "[When Digivolving] By placing 1 of your other blue Digimon as this Digimon's bottom digivolution card, return 1 of your opponent's Digimon whose level is less than or equal to the placed card's level to the bottom of the deck.";
+                return "[When Attacking] [Once Per Turn] By placing 1 of your other blue Digimon as this Digimon's bottom digivolution card, unsuspend this Digimon.";
+            }
+
+            bool CanSelectOwnPermanentCondition(Permanent permanent)
+            {
+                if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                {
+                    if (permanent.TopCard.CardColors.Contains(CardColor.Blue))
+                    {
+                        if (!permanent.TopCard.Equals(card))
+                            return true;
+                    }
+                }
+
+                return false;
             }
 
             bool CanUseCondition(Hashtable hashtable)
             {
-                return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
             }
 
             bool CanActivateCondition(Hashtable hashtable)
             {
                 if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
-                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, PermanentCondition))
-                    {
-                        if (card.Owner.LibraryCards.Count >= 1)
-                        {
-                            return true;
-                        }
-                    }
-
-                    if (!CardEffectCommons.HasMatchConditionOwnersPermanent(card, PermanentCondition))
-                    {
-                        if (card.Owner.HandCards.Count >= 1)
-                        {
-                            return true;
-                        }
-                    }
+                    return true;
                 }
 
                 return false;
@@ -185,141 +189,51 @@ public class MegaSeadramon_BT15_029 : CEntity_Effect
 
             IEnumerator ActivateCoroutine(Hashtable _hashtable)
             {
-                if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, PermanentCondition))
+                if (CanActivateCondition(_hashtable))
                 {
-                    yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
-                }
+                    List<CardSource> selectedCards = new List<CardSource>();
 
-                if (!CardEffectCommons.HasMatchConditionOwnersPermanent(card, PermanentCondition))
-                {
-                    #region reduce play cost
-                    ChangeCostClass changeCostClass = new ChangeCostClass();
-                    changeCostClass.SetUpICardEffect($"Play Cost -3", CanUseCondition1, card);
-                    changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
-                    Func<EffectTiming, ICardEffect> getCardEffect = GetCardEffect;
-                    card.Owner.UntilCalculateFixedCostEffect.Add(getCardEffect);
+                    int maxCount = 1;
 
-                    ICardEffect GetCardEffect(EffectTiming _timing)
+                    SelectPermanentEffect selectPermanentSourcecEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                    selectPermanentSourcecEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanSelectOwnPermanentCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: maxCount,
+                        canNoSelect: true,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: SelectPermanentSourceCoroutine,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    selectPermanentSourcecEffect.SetUpCustomMessage("Select 1 card to place on bottom of digivolution cards.", "The opponent is selecting 1 card to place on bottom of digivolution cards.");
+
+                    yield return StartCoroutine(selectPermanentSourcecEffect.Activate());
+
+                    IEnumerator SelectPermanentSourceCoroutine(Permanent permanent)
                     {
-                        if (_timing == EffectTiming.None)
-                        {
-                            return changeCostClass;
-                        }
+                        selectedCards.Add(permanent.TopCard);
 
-                        return null;
+                        yield return null;
                     }
 
-                    bool CanUseCondition1(Hashtable hashtable)
+                    if (selectedCards.Count >= 1)
                     {
-                        return true;
+                        yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(
+                            selectedCards,
+                            activateClass));
+
+                        yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() }, activateClass).Unsuspend());
                     }
-
-                    int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
-                    {
-                        if (CardSourceCondition(cardSource))
-                        {
-                            if (RootCondition(root))
-                            {
-                                if (PermanentsCondition(targetPermanents))
-                                {
-                                    Cost -= 3;
-                                }
-                            }
-                        }
-
-                        return Cost;
-                    }
-
-                    bool PermanentsCondition(List<Permanent> targetPermanents)
-                    {
-                        if (targetPermanents == null)
-                        {
-                            return true;
-                        }
-
-                        else
-                        {
-                            if (targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0)
-                            {
-                                return true;
-                            }
-                        }
-
-                        return false;
-                    }
-
-                    bool CardSourceCondition(CardSource cardSource)
-                    {
-                        if (cardSource.IsTamer)
-                        {
-                            if (cardSource.ContainsCardName("Matt Ishida"))
-                            {
-                                return true;
-                            }
-                        }
-
-                        return false;
-                    }
-
-                    bool RootCondition(SelectCardEffect.Root root)
-                    {
-                        return true;
-                    }
-
-                    bool isUpDown()
-                    {
-                        return true;
-                    }
-                    #endregion
-
-                    if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
-                    {
-                        List<CardSource> selectedCards = new List<CardSource>();
-
-                        int maxCount = 1;
-
-                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                        selectHandEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectCardCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: true,
-                            canEndNotMax: false,
-                            isShowOpponent: true,
-                            selectCardCoroutine: SelectCardCoroutine,
-                            afterSelectCardCoroutine: null,
-                            mode: SelectHandEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-                        selectHandEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
-                        selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
-
-                        yield return StartCoroutine(selectHandEffect.Activate());
-
-                        IEnumerator SelectCardCoroutine(CardSource cardSource)
-                        {
-                            selectedCards.Add(cardSource);
-
-                            yield return null;
-                        }
-
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                            cardSources: selectedCards,
-                            activateClass: activateClass,
-                            payCost: true,
-                            isTapped: false,
-                            root: SelectCardEffect.Root.Hand,
-                            activateETB: true));
-                    }
-
-                    #region release effect reducing play cost 
-                    card.Owner.UntilCalculateFixedCostEffect.Remove(getCardEffect);
-                    #endregion
                 }
             }
-        }*/
+        }
+        #endregion
+
+        return cardEffects;
     }
 }

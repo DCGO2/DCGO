@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Kabuterimon-BT15-047
+  m_EditorClassIdentifier: 
+  CardIndex: 3175
+  cardColors: 03000000
+  PlayCost: 5
+  EvoCosts:
+  - CardColor: 3
+    Level: 3
+    MemoryCost: 2
+  Level: 4
+  CardName_JPN: "\u30AB\u30D6\u30C6\u30EA\u30E2\u30F3\r"
+  CardName_ENG: Kabuterimon
+  Form_JPN:
+  - "\u6210\u719F\u671F\r"
+  Form_ENG:
+  - Champion
+  Attribute_JPN:
+  - "\u30EF\u30AF\u30C1\u30F3\u7A2E\r"
+  Attribute_ENG:
+  - Vaccine
+  Type_JPN:
+  - "\u6606\u866B\u578B\r"
+  Type_ENG:
+  - Insectoid
+  CardSpriteName: BT15-047
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[All Turns] While this Digimon is suspended, it isn''t
+    affected by the effects of your opponent''s Digimon.'
+  InheritedEffectDiscription_JPN: "\u3010\u304A\u4E92\u3044\u306E\u30BF\u30FC\u30F3\u3011\uFF3B\u30BF\u30FC\u30F3\u306B1\u56DE\uFF3D\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u304C\u30D0\u30C8\u30EB\u3067\u76F8\u624B\u306E\u30C7\u30B8\u30E2\u30F3\u3092\u6D88\u6EC5\u3055\u305B\u305F\u3068\u304D,\u30E1\u30E2\u30EA\u30FC+1\u3002\r"
+  InheritedEffectDiscription_ENG: '[All Turns] [Once Per Turn] When this Digimon
+    deletes an opponent''s Digimon in battle, gain 1 memory.'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Kabuterimon_BT15_047
+  DP: 5000
+  rarity: 0
+  OverflowMemory: 0
+  CardID: BT15-047
+  MaxCountInDeck: 4

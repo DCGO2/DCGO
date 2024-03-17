@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Gizamon-BT15-068
+  m_EditorClassIdentifier: 
+  CardIndex: 3200
+  cardColors: 06000000
+  PlayCost: 3
+  EvoCosts:
+  - CardColor: 6
+    Level: 2
+    MemoryCost: 0
+  Level: 3
+  CardName_JPN: "\u30AE\u30B6\u30E2\u30F3\r"
+  CardName_ENG: Gizamon
+  Form_JPN:
+  - "\u6210\u9577\u671F\r"
+  Form_ENG:
+  - Rookie
+  Attribute_JPN:
+  - "\u30A6\u30A3\u30EB\u30B9\u7A2E\r"
+  Attribute_ENG:
+  - Virus
+  Type_JPN:
+  - "\u6C34\u68F2\u54FA\u4E73\u985E\u578B\r"
+  Type_ENG:
+  - Sea Animal
+  CardSpriteName: BT15-068
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[On Play] Until the end of your opponent''s turn, 1 of
+    their Digimon gains "[On Deletion] Lose 1 memory."'
+  InheritedEffectDiscription_JPN: "\u3010\u304A\u4E92\u3044\u306E\u30BF\u30FC\u30F3\u3011\uFF3B\u30BF\u30FC\u30F3\u306B1\u56DE\uFF3D\u52B9\u679C\u3067\u76F8\u624B\u306E\u30C7\u30B8\u30E2\u30F3\u304C\u767B\u5834\u3057\u305F\u3068\u304D,\u30E1\u30E2\u30EA\u30FC+1\u3002\r"
+  InheritedEffectDiscription_ENG: '[All Turns] [Once Per Turn] When an effect plays
+    an opponent''s Digimon, gain 1 memory.'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Gizamon_BT15_068
+  DP: 1000
+  rarity: 0
+  OverflowMemory: 0
+  CardID: BT15-068
+  MaxCountInDeck: 4

@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Leviamon(XAntibody)-BT15-081_P1
+  m_EditorClassIdentifier: 
+  CardIndex: 3215
+  cardColors: 06000000
+  PlayCost: 14
+  EvoCosts:
+  - CardColor: 6
+    Level: 5
+    MemoryCost: 6
+  Level: 6
+  CardName_JPN: "\u30EA\u30F4\u30A1\u30A4\u30A2\u30E2\u30F3X\u6297\u4F53\r"
+  CardName_ENG: Leviamon (X Antibody)
+  Form_JPN:
+  - "\u7A76\u6975\u4F53\r"
+  Form_ENG:
+  - Mega
+  Attribute_JPN:
+  - "\u30A6\u30A3\u30EB\u30B9\u7A2E\r"
+  Attribute_ENG:
+  - Virus
+  Type_JPN:
+  - "\u9B54\u738B\u578B"
+  - "\u4E03\u5927\u9B54\u738B"
+  - "X\u6297\u4F53\r"
+  Type_ENG:
+  - Demon Lord
+  - Seven Great Demon Lords
+  - X Antibody
+  CardSpriteName: BT15-081_P1
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[Trash] [All Turns] When an effect plays an opponent''s
+    Digimon or Tamer, 1 of your [Leviamon] or Digimon with [X Antibody] in their
+    digivolution cards may digivolve into this card without paying the cost. (This
+    Digimon checks 2 additional security cards)[When Digivolving] If your opponent
+    has as many or more total Digimon and Tamers as you, delete 1 of their Tamers.
+    Then, delete 1 of your opponent''s level 3, 1 of their level 5 and 1 of their
+    level 7 Digimon.'
+  InheritedEffectDiscription_JPN: "-\r"
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Leviamon_X_Antibody_BT15_081
+  DP: 14000
+  rarity: 3
+  OverflowMemory: 0
+  CardID: BT15-081
+  MaxCountInDeck: 4

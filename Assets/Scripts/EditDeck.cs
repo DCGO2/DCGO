@@ -1040,9 +1040,9 @@ public class EditDeck : MonoBehaviour
         {
             DeckCards.Add(cEntity_Base);
         }
-
+        Debug.Log("ADDED EDITTING DECK DATA ENTITIES TO DECK CARDS LIST: " + DeckCards.Count);
         int index = DeckCards.IndexOf(_cardPrefab_CreateDeck.cEntity_Base) + DeckCards.Count((cEntity_Base) => cEntity_Base == _cardPrefab_CreateDeck.cEntity_Base) - 1;
-
+        Debug.Log("GETTING INDEX OF LAST ADDED CARD: " + index);
         CardPrefab_CreateDeck newCardPrefab = CreateDeckCard(_cardPrefab_CreateDeck.cEntity_Base);
 
         newCardPrefab.HideDeckCardTab();

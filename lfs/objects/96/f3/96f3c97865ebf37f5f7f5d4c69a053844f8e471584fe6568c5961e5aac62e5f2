@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: SupremeConnection!-BT15-096
+  m_EditorClassIdentifier: 
+  CardIndex: 3236
+  cardColors: 05000000
+  PlayCost: 3
+  EvoCosts: []
+  Level: 0
+  CardName_JPN: "\u81F3\u9AD8\u306E\u30B3\u30CD\u30AF\u30B7\u30E7\u30F3!!\r"
+  CardName_ENG: Supreme Connection!
+  Form_JPN:
+  - "-\r"
+  Form_ENG: []
+  Attribute_JPN:
+  - "-\r"
+  Attribute_ENG: []
+  Type_JPN:
+  - "-\r"
+  Type_ENG: []
+  CardSpriteName: BT15-096
+  cardKind: 2
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: "[Main] Reveal the top 5 cards of your deck. Among them,
+    add 1 card with the [Machine]/[Cyborg]&#160;trait to the hand and trash 1 such
+    card. Return the rest to the top of the deck. Then, place this card in the battle
+    area.[Main]  (After this card is placed, by trashing it the next turn or later,
+    activate the effect below.)\u2022 You may play 1 level 5 or higher Digimon card
+    with the [Machine]/[Cyborg]&#160;trait from your hand with the play cost reduced
+    by 3."
+  InheritedEffectDiscription_JPN: "\u3010\u30BB\u30AD\u30E5\u30EA\u30C6\u30A3\u3011\u81EA\u5206\u306E\u30C7\u30C3\u30AD\u306E\u4E0A\u304B\u30895\u679A\u30AA\u30FC\u30D7\u30F3\u3059\u308B\u3002\u305D\u306E\u4E2D\u306E\u7279\u5FB4\u306B\u300C\u30DE\u30B7\u30FC\u30F3\u578B\u300D/\u300C\u30B5\u30A4\u30DC\u30FC\u30B0\u578B\u300D\u3092\u6301\u3064\u30AB\u30FC\u30C91\u679A\u3092\u624B\u672D\u306B\u52A0\u3048,1\u679A\u3092\u7834\u68C4\u3059\u308B\u3002\u6B8B\u308A\u306F\u30C7\u30C3\u30AD\u306E\u4E0A\u306B\u623B\u3059\u3002\u305D\u306E\u5F8C,\u3053\u306E\u30AB\u30FC\u30C9\u3092\u30D0\u30C8\u30EB\u30A8\u30EA\u30A2\u306B\u7F6E\u304F\u3002\r"
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: "\u3010\u30BB\u30AD\u30E5\u30EA\u30C6\u30A3\u3011\u81EA\u5206\u306E\u30C7\u30C3\u30AD\u306E\u4E0A\u304B\u30895\u679A\u30AA\u30FC\u30D7\u30F3\u3059\u308B\u3002\u305D\u306E\u4E2D\u306E\u7279\u5FB4\u306B\u300C\u30DE\u30B7\u30FC\u30F3\u578B\u300D/\u300C\u30B5\u30A4\u30DC\u30FC\u30B0\u578B\u300D\u3092\u6301\u3064\u30AB\u30FC\u30C91\u679A\u3092\u624B\u672D\u306B\u52A0\u3048,1\u679A\u3092\u7834\u68C4\u3059\u308B\u3002\u6B8B\u308A\u306F\u30C7\u30C3\u30AD\u306E\u4E0A\u306B\u623B\u3059\u3002\u305D\u306E\u5F8C,\u3053\u306E\u30AB\u30FC\u30C9\u3092\u30D0\u30C8\u30EB\u30A8\u30EA\u30A2\u306B\u7F6E\u304F\u3002\r"
+  SecurityEffectDiscription_ENG: '[Security] Reveal the top 5 cards of your deck.
+    Among them, add 1 card with the [Machine]/[Cyborg]&#160;trait to the hand and
+    trash 1 such card. Return the rest to the top of the deck. Then, place this card
+    in the battle area.'
+  CardEffectClassName: Supreme_Connection!_BT15_096
+  DP: 0
+  rarity: 2
+  OverflowMemory: 0
+  CardID: BT15-096
+  MaxCountInDeck: 4

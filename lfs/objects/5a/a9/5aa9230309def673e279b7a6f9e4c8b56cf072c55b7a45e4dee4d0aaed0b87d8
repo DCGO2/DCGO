@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Birdramon-BT15-013
+  m_EditorClassIdentifier: 
+  CardIndex: 3133
+  cardColors: 00000000
+  PlayCost: 5
+  EvoCosts:
+  - CardColor: 0
+    Level: 3
+    MemoryCost: 2
+  Level: 4
+  CardName_JPN: "\u30D0\u30FC\u30C9\u30E9\u30E2\u30F3\r"
+  CardName_ENG: Birdramon
+  Form_JPN:
+  - "\u6210\u719F\u671F\r"
+  Form_ENG:
+  - Champion
+  Attribute_JPN:
+  - "\u30EF\u30AF\u30C1\u30F3\u7A2E\r"
+  Attribute_ENG:
+  - Vaccine
+  Type_JPN:
+  - "\u5DE8\u9CE5\u578B\r"
+  Type_ENG:
+  - Giant Bird
+  CardSpriteName: BT15-013
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[When Digivolving] Return 1 red Digimon card with &#91;Avian]/&#91;Bird]/&#91;Beast]/&#91;Animal]/&#91;Sovereign]&#160;in
+    one of its traits (other than [Sea Animal]) from your trash to the hand.'
+  InheritedEffectDiscription_JPN: "\u3010\u81EA\u5206\u306E\u30BF\u30FC\u30F3\u3011\uFF3B\u30BF\u30FC\u30F3\u306B1\u56DE\uFF3D\u76F8\u624B\u306E\u30BB\u30AD\u30E5\u30EA\u30C6\u30A3\u304C\u6E1B\u3063\u305F\u3068\u304D,\u30E1\u30E2\u30EA\u30FC+1\u3002\r"
+  InheritedEffectDiscription_ENG: '[Your Turn] [Once Per Turn] When a card is removed
+    from your opponent''s security stack, gain 1 memory.'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Birdramon_BT15_013
+  DP: 5000
+  rarity: 1
+  OverflowMemory: 0
+  CardID: BT15-013
+  MaxCountInDeck: 4

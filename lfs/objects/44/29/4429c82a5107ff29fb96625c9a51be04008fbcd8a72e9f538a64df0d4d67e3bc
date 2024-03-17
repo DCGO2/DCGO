@@ -1,0 +1,62 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Hisyaryumon-BT15-063
+  m_EditorClassIdentifier: 
+  CardIndex: 3194
+  cardColors: 0500000003000000
+  PlayCost: 7
+  EvoCosts:
+  - CardColor: 5
+    Level: 4
+    MemoryCost: 4
+  - CardColor: 3
+    Level: 4
+    MemoryCost: 4
+  Level: 5
+  CardName_JPN: "\u30D2\u30B7\u30E3\u30EA\u30E5\u30A6\u30E2\u30F3\r"
+  CardName_ENG: Hisyaryumon
+  Form_JPN:
+  - "\u5B8C\u5168\u4F53\r"
+  Form_ENG:
+  - Ultimate
+  Attribute_JPN:
+  - "\u30EF\u30AF\u30C1\u30F3\u7A2E\r"
+  Attribute_ENG:
+  - Vaccine
+  Type_JPN:
+  - "\u7363\u7ADC\u578B"
+  - "X\u6297\u4F53"
+  - "\u30C7\u30B8\u5BFE\r"
+  Type_ENG:
+  - Beast Dragon
+  - X Antibody
+  - DigiPolice
+  CardSpriteName: BT15-063
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: ' (At blocker timing, by suspending this Digimon, it becomes
+    the attack target).[All Turns] When an effect suspends another Digimon or Tamer,
+    if a Tamer card with the [DigiPolice]&#160;trait is in this Digimon''s digivolution
+    cards, this Digimon may digivolve into a Digimon card with the [Beast Dragon]/[DigiPolice]&#160;trait
+    in your hand without paying the cost.'
+  InheritedEffectDiscription_JPN: "\u3010\u304A\u4E92\u3044\u306E\u30BF\u30FC\u30F3\u3011\uFF3B\u30BF\u30FC\u30F3\u306B1\u56DE\uFF3D\u52B9\u679C\u3067\u4ED6\u306E\u30C7\u30B8\u30E2\u30F3/\u30C6\u30A4\u30DE\u30FC\u304C\u30EC\u30B9\u30C8\u3057\u305F\u3068\u304D,\u7279\u5FB4\u306B\u300C\u7363\u7ADC\u578B\u300D/\u300C\u30C7\u30B8\u5BFE\u300D\u3092\u6301\u3064\u81EA\u5206\u306E\u30C7\u30B8\u30E2\u30F31\u4F53\u3092\u30A2\u30AF\u30C6\u30A3\u30D6\u306B\u3059\u308B\u3002\r"
+  InheritedEffectDiscription_ENG: '[All Turns] [Once Per Turn] When an effect suspends
+    another Digimon or Tamer, unsuspend 1 of your Digimon with the [Beast Dragon]/[DigiPolice]&#160;trait.'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Hisyaryumon_BT15_063
+  DP: 7000
+  rarity: 2
+  OverflowMemory: 0
+  CardID: BT15-063
+  MaxCountInDeck: 4

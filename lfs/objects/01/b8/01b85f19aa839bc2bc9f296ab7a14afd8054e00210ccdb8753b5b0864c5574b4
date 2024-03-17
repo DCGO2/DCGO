@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: WingsofLove-BT15-088
+  m_EditorClassIdentifier: 
+  CardIndex: 3228
+  cardColors: 00000000
+  PlayCost: 2
+  EvoCosts: []
+  Level: 0
+  CardName_JPN: "\u611B\u60C5\u306E\u53CC\u7FFC\r"
+  CardName_ENG: Wings of Love
+  Form_JPN:
+  - "-\r"
+  Form_ENG: []
+  Attribute_JPN:
+  - "-\r"
+  Attribute_ENG: []
+  Type_JPN:
+  - "-\r"
+  Type_ENG: []
+  CardSpriteName: BT15-088
+  cardKind: 2
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[Main] You may play 1 red Tamer card with a play cost of
+    4 or less from your hand without paying the cost. Then, if you have a Tamer with
+    [Sora Takenouchi]&#160;in its name, return 1 red Digimon card from your trash
+    to the hand.'
+  InheritedEffectDiscription_JPN: "\u3010\u30BB\u30AD\u30E5\u30EA\u30C6\u30A3\u3011\u81EA\u5206\u306E\u624B\u672D\u304B\u30C8\u30E9\u30C3\u30B7\u30E5\u304B\u3089,\u300C\u30D4\u30E8\u30E2\u30F3\u300D1\u679A\u3092\u30B3\u30B9\u30C8\u3092\u652F\u6255\u308F\u305A\u306B\u767B\u5834\u3067\u304D\u308B\u3002\u305D\u306E\u5F8C,\u3053\u306E\u30AB\u30FC\u30C9\u3092\u624B\u672D\u306B\u52A0\u3048\u308B\u3002\r"
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: "\u3010\u30BB\u30AD\u30E5\u30EA\u30C6\u30A3\u3011\u81EA\u5206\u306E\u624B\u672D\u304B\u30C8\u30E9\u30C3\u30B7\u30E5\u304B\u3089,\u300C\u30D4\u30E8\u30E2\u30F3\u300D1\u679A\u3092\u30B3\u30B9\u30C8\u3092\u652F\u6255\u308F\u305A\u306B\u767B\u5834\u3067\u304D\u308B\u3002\u305D\u306E\u5F8C,\u3053\u306E\u30AB\u30FC\u30C9\u3092\u624B\u672D\u306B\u52A0\u3048\u308B\u3002\r"
+  SecurityEffectDiscription_ENG: You may play 1 [Biyomon] from your hand or trash
+    without paying the cost. Then, add this card to the hand.
+  CardEffectClassName: Wings_of_Love_BT15_088
+  DP: 0
+  rarity: 1
+  OverflowMemory: 0
+  CardID: BT15-088
+  MaxCountInDeck: 4
