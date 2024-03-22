@@ -6,12 +6,13 @@ using Photon;
 using System;
 using Photon.Pun;
 
-public class LilimonXAntibody_BT15_051 : CEntity_Effect
+public class Lillymon_X_Antibody_BT15_051 : CEntity_Effect
 {
     public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+        //Alternate Digivolution Requirement
         if (timing == EffectTiming.None)
         {
             bool PermanentCondition(Permanent targetPermanent)
@@ -27,6 +28,7 @@ public class LilimonXAntibody_BT15_051 : CEntity_Effect
                 condition: null));
         }
 
+        #region When Digivolving
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
@@ -36,7 +38,7 @@ public class LilimonXAntibody_BT15_051 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Digivolving] 1 of your opponent's Digimon cannot unsuspend until the end of your opponent's turn.";
+                return "[When Digivolving] If there's a suspended Digimon, gain 1 memory. If [Lillymon] or [X Antibody] in this Digimon's digivolution cards, <Draw 1> for each of your opponent's suspended Digimon.";
             }
 
             bool CanUseCondition(Hashtable hashtable)
@@ -60,7 +62,7 @@ public class LilimonXAntibody_BT15_051 : CEntity_Effect
                 return false;
             }
 
-            bool PermanentCondition1(Permanent permanent)
+            bool IsSuspendedCondition(Permanent permanent)
             {
                 if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                 {
@@ -87,7 +89,7 @@ public class LilimonXAntibody_BT15_051 : CEntity_Effect
 
                     if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardNames.Contains("Lillymon") || cardSource.CardNames.Contains("X Antibody") || cardSource.CardNames.Contains("XAntibody")) >= 1)
                     {
-                        if (CardEffectCommons.HasMatchConditionPermanent(PermanentCondition1))
+                        if (CardEffectCommons.HasMatchConditionPermanent(IsSuspendedCondition))
                         {
                             if (card.Owner.LibraryCards.Count >= 1)
                             {
@@ -111,18 +113,20 @@ public class LilimonXAntibody_BT15_051 : CEntity_Effect
                 {
                     if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardNames.Contains("Lillymon") || cardSource.CardNames.Contains("X Antibody") || cardSource.CardNames.Contains("XAntibody")) >= 1)
                     {
-                        if (CardEffectCommons.HasMatchConditionPermanent(PermanentCondition1))
+                        if (CardEffectCommons.HasMatchConditionPermanent(IsSuspendedCondition))
                         {
                             yield return ContinuousController.instance.StartCoroutine(new DrawClass(
                                 card.Owner,
-                                CardEffectCommons.MatchConditionPermanentCount(PermanentCondition1),
+                                CardEffectCommons.MatchConditionPermanentCount(IsSuspendedCondition),
                                 activateClass).Draw());
                         }
                     }
                 }
             }
         }
+        #endregion
 
+        #region Inherited Effect
         if (timing == EffectTiming.None)
         {
             int count()
@@ -152,6 +156,7 @@ public class LilimonXAntibody_BT15_051 : CEntity_Effect
                 card: card,
                 condition: Condition));
         }
+        #endregion
 
         return cardEffects;
     }

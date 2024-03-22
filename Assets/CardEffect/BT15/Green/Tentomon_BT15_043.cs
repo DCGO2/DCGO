@@ -12,6 +12,7 @@ public class Tentomon_BT15_043 : CEntity_Effect
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+        #region Start of Main Phase
         if (timing == EffectTiming.OnStartMainPhase)
         {
             ActivateClass activateClass = new ActivateClass();
@@ -21,7 +22,7 @@ public class Tentomon_BT15_043 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Start of Your Main Phase] If you have a Tamer with [Tai Kamiya] in its name, this Digimon may digivolve into [Greymon] in your hand without paying the cost.";
+                return "[Start of Your Main Phase] By suspending 1 Digimon, 1 of your Digimon with the [Insectoid] trait gets +3000 DP until the end of your opponent's turn.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
@@ -168,7 +169,9 @@ public class Tentomon_BT15_043 : CEntity_Effect
                 }
             }
         }
+        #endregion
 
+        #region Inherited Effect
         if (timing == EffectTiming.OnEndBattle)
         {
             ActivateClass activateClass = new ActivateClass();
@@ -180,22 +183,19 @@ public class Tentomon_BT15_043 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Your Turn][Once Per Turn] When this Digimon deletes an opponent's Digimon in battle, gain 1 memory.";
+                return "[All Turns] [Once Per Turn] When this Digimon deletes an opponent's Digimon in battle, gain 1 memory.";
             }
 
             bool CanUseCondition(Hashtable hashtable)
             {
                 if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
-                    if (CardEffectCommons.IsOwnerTurn(card))
-                    {
-                        bool WinnerCondition(Permanent permanent) => permanent.cardSources.Contains(card);
-                        bool LoserCondition(Permanent permanent) => CardEffectCommons.IsOpponentPermanent(permanent, card);
+                    bool WinnerCondition(Permanent permanent) => permanent.cardSources.Contains(card);
+                    bool LoserCondition(Permanent permanent) => CardEffectCommons.IsOpponentPermanent(permanent, card);
 
-                        if (CardEffectCommons.CanTriggerWhenDeleteOpponentDigimonByBattle(hashtable: hashtable, winnerCondition: WinnerCondition, loserCondition: LoserCondition, isOnlyWinnerSurvive: false))
-                        {
-                            return true;
-                        }
+                    if (CardEffectCommons.CanTriggerWhenDeleteOpponentDigimonByBattle(hashtable: hashtable, winnerCondition: WinnerCondition, loserCondition: LoserCondition, isOnlyWinnerSurvive: false))
+                    {
+                        return true;
                     }
                 }
 
@@ -218,6 +218,7 @@ public class Tentomon_BT15_043 : CEntity_Effect
                 yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
             }
         }
+        #endregion
 
         return cardEffects;
     }
