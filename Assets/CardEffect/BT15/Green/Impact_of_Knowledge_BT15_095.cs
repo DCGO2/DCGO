@@ -5,12 +5,13 @@ using System.Linq;
 using Photon;
 using System;
 using Photon.Pun;
-public class ClashOfKnowledge_BT15_095 : CEntity_Effect
+public class Impact_of_Knowledge_BT15_095 : CEntity_Effect
 {
     public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+        #region Use Option
         if (timing == EffectTiming.OptionSkill)
         {
             ActivateClass activateClass = new ActivateClass();
@@ -20,7 +21,7 @@ public class ClashOfKnowledge_BT15_095 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Main] Until the end of your opponent's turn, 1 of your opponent's Digimon gains \"[On Deletion] Trash the top card of your security stack.\" Then, if you have a blue Digimon in play, you may play 1 green level 4 or lower Digimon card with a [Free] trait from your hand without paying its cost.";
+                return "[Main] Suspend 1 of your opponent's Digimon. Then, if you have a Tamer with [Izzy Izumi] in its name, until end of your opponent's turn, 1 of their Digimon gains \"[On Deletion] Trash the top card of your security stack.\"";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
@@ -149,6 +150,7 @@ public class ClashOfKnowledge_BT15_095 : CEntity_Effect
                 }
             }
         }
+        #endregion
 
         if (timing == EffectTiming.SecuritySkill)
         {

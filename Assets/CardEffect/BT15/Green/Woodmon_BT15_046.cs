@@ -22,7 +22,7 @@ public class Woodmon_BT15_046 : CEntity_Effect
 
       string EffectDiscription()
       {
-        return "[Opponent's Turn][Once Per Turn] When one of your Digimon becomes suspended, trash the top card of your opponent's security stack.";
+        return "[Your Turn] [Once Per Turn] When one of your Digimon becomes suspended, <Draw 1>.";
       }
 
       bool PermanentCondition(Permanent permanent)
