@@ -21,7 +21,7 @@ public class Gigadramon_BT15_062 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Play] Reveal the top 4 cards of your deck. Add 2 cards that are either black with [Knightmon] or [DeadlyAxemon] in their names or with [Twilight] in their traits among them to your hand. Place the rest at the bottom of your deck in any order.";
+                return "[On Play] Reveal the top 4 cards of your deck. Add 2 level 6 or higher Digimon cards among them to the hand. Place the rest at the bottom of the deck.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)
@@ -84,7 +84,7 @@ public class Gigadramon_BT15_062 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Start of Your Main Phase] If you have a Tamer with [Tai Kamiya] in its name, this Digimon may digivolve into [Greymon] in your hand without paying the cost.";
+                return "By deleting 1 of your Digimon, you may play 1 Digimon card with the [Dark Masters] trait from you hand to and empty space in your breeding area without paying the cost.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
@@ -96,7 +96,7 @@ public class Gigadramon_BT15_062 : CEntity_Effect
             {
                 if (card.Owner.GetBreedingAreaPermanents().Count == 0)
                 {
-                    if (cardSource.CardTraits.Contains("Dark Masters") || cardSource.CardTraits.Contains("Dark Masters"))
+                    if (cardSource.CardTraits.Contains("Dark Masters"))
                     {
                         if (cardSource.IsDigimon)
                         {
