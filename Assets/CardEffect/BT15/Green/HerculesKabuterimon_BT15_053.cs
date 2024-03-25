@@ -40,25 +40,31 @@ public class HerculesKabuterimon_BT15_053 : CEntity_Effect
                 {
                     if (CardEffectCommons.IsOwnerTurn(card))
                     {
+                        if (timing == EffectTiming.OnEnterFieldAnyone)
+                        {
+                            return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                        }
+
                         return true;
                     }
                 }
 
-                return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                return false;
             }
 
             bool CanActivateCondition(Hashtable hashtable)
             {
                 if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                    if (timing != EffectTiming.OnEnterFieldAnyone)
                     {
-                        return true;
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                            return true;
                     }
-
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition1))
+                    else
                     {
-                        return true;
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition1))
+                            return true;
                     }
                 }
 

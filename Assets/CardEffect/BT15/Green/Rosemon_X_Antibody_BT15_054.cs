@@ -10,6 +10,22 @@ public class Rosemon_X_Antibody_BT15_054 : CEntity_Effect
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+        //Alternate Digivolution Requirement
+        if (timing == EffectTiming.None)
+        {
+            bool PermanentCondition(Permanent targetPermanent)
+            {
+                return targetPermanent.TopCard.CardNames.Contains("Rosemon");
+            }
+
+            cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
+                permanentCondition: PermanentCondition,
+                digivolutionCost: 1,
+                ignoreDigivolutionRequirement: false,
+                card: card,
+                condition: null));
+        }
+
         #region When Digivolving
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
@@ -185,7 +201,7 @@ public class Rosemon_X_Antibody_BT15_054 : CEntity_Effect
 
                     selectPermanentEffect.SetUp(
                         selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectPermanentCondition,
+                        canTargetCondition: PermanentCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: maxCount,
@@ -196,7 +212,7 @@ public class Rosemon_X_Antibody_BT15_054 : CEntity_Effect
                         mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to unsuspend.", "The opponent is selecting 1 Digimon to unsuspend.");
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to suspend.", "The opponent is selecting 1 Digimon to suspend.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                 }

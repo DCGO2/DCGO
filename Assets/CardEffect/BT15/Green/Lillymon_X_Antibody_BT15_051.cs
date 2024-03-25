@@ -53,9 +53,7 @@ public class Lillymon_X_Antibody_BT15_051 : CEntity_Effect
                     if (permanent.IsDigimon)
                     {
                         if (permanent.IsSuspended)
-                        {
                             return true;
-                        }
                     }
                 }
 
