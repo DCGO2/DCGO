@@ -5,7 +5,7 @@ using System.Linq;
 using Photon;
 using System;
 using Photon.Pun;
-public class SupremeConnection_BT15_096 : CEntity_Effect
+public class Supreme_Connection_BT15_096 : CEntity_Effect
 {
     public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
     {
@@ -20,7 +20,7 @@ public class SupremeConnection_BT15_096 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Main] <Draw 1>. Then, place this card in your battle area.";
+                return "[Main] Reveal the top 5 cards of your deck. Among them, add 1 card with the [Machine] or [Cyborg] trait to the hand and trash 1 such card. Return the rest to the top of the deck. Then, place this card in the battle area.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)
@@ -72,7 +72,7 @@ public class SupremeConnection_BT15_096 : CEntity_Effect
                     cardEffect: activateClass));
             }
         }
-
+        
         if (timing == EffectTiming.OnDeclaration)
         {
             ActivateClass activateClass = new ActivateClass();
@@ -82,7 +82,7 @@ public class SupremeConnection_BT15_096 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Main] ?申?申Delay?申?申 (By trashing this card in your battle area, activate the effect below. You can't activate this effect the turn this card enters play.)?申EPlay 1 Digimon card with [Four Great Dragons] in its traits from your hand without paying the cost. The Digimon played by this effect can't digivolve to level 7, and at the end of your opponent's turn, delete that Digimon.";
+                return "[Main][Delay] You may play 1 level 5 or higher Digimon card with the [Machine] or [Cyborg] trait from your hand with the play cost reduced by 3.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)
@@ -290,7 +290,7 @@ public class SupremeConnection_BT15_096 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Security] Suspend 1 of your opponent's Digimon. Then, add this card to your hand.";
+                return "[Security] Reveal the top 5 cards of your deck. Among them, add 1 card with the [Machine] or [Cyborg] trait to the hand and trash 1 such card. Return the rest to the top of the deck. Then, place this card in the battle area.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)
@@ -342,7 +342,7 @@ public class SupremeConnection_BT15_096 : CEntity_Effect
                     cardEffect: activateClass));
             }
         }
-
+        
         return cardEffects;
     }
 }
