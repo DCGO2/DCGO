@@ -19,7 +19,7 @@ public class Meramon_BT15_009 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Main] If you have a level 5 or higher green Digimon in playÅCyou can suspend this Tamer to reveal the top card of your deck. If that card is a Digimon cardÅCadd it to your hand. Otherwise place it at the bottom of your deck.";
+                return "[Main][Once per turn] By paying 2 memory, delete 1 of your opponent's Digimon with DP less than or equal to this Digimon.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)

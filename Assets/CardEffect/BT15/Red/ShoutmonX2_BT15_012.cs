@@ -117,7 +117,7 @@ public class ShoutmonX2_BT15_012 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Digivolving] Suspend 1 of your opponent's Digimon. That Digimon doesn't unsuspend during their next unsuspend phase.";
+                return "[On Play] Suspend 1 of your opponent's Digimon. If DigiXrosing with 2 cards, that Digimon can't unsuspend during your opponent's next unsuspend phase.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
