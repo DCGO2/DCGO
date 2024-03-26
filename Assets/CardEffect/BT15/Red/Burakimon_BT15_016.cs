@@ -20,7 +20,7 @@ public class Burakimon_BT15_016 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Play] Delete 1 of your opponent's Digimon with <Blocker>.";
+                return "[On Play] If your opponent has 4 or less memory, 1 of your opponent's Digimon with 8000 DP or more can't attack until the end of your opponent's turn. If your opponent has 4 or more memory, delete 1 of your opponent's Digimon with 6000 DP or less.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
@@ -149,7 +149,7 @@ public class Burakimon_BT15_016 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Deletion] Gain 1 memory.";
+                return "[On Deletion] Return 1 of your opponent's Digimon with 7000 DP or less to the hand.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
