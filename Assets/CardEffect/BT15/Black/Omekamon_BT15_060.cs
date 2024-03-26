@@ -21,14 +21,9 @@ public class Omekamon_BT15_060 : CEntity_Effect
 
             bool CanUseCondition(Hashtable hashtable)
             {
-                if(!CardEffectCommons.IsExistOnBattleArea(card))
+                if(card.IsBeingRevealed)
                 {
                     return true;
-                }
-
-                if(!CardEffectCommons.IsExistOnHand(card))
-                {
-                    return false;
                 }
                 
                 return false;
@@ -44,7 +39,7 @@ public class Omekamon_BT15_060 : CEntity_Effect
                 return CardNames;
             }
         }
-
+        
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
