@@ -5,7 +5,7 @@ using System.Linq;
 using Photon;
 using System;
 using Photon.Pun;
-public class VandemonAce_BT15_076 : CEntity_Effect
+public class Myotismon_ACE_BT15_076 : CEntity_Effect
 {
     public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
     {
