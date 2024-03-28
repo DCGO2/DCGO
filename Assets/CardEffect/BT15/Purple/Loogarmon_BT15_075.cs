@@ -6,7 +6,7 @@ using Photon;
 using System;
 using Photon.Pun;
 using System.Net.Security;
-public class Rugarumon_BT15_075 : CEntity_Effect
+public class Loogarmon_BT15_075 : CEntity_Effect
 {
     public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
     {

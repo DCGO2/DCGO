@@ -6,7 +6,7 @@ using Photon;
 using System;
 using Photon.Pun;
 
-public class SeventhLightning_BT15_100 : CEntity_Effect
+public class Seventh_Lightning_BT15_100 : CEntity_Effect
 {
     public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
     {

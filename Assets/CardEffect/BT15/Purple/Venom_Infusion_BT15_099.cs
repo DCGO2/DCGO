@@ -6,7 +6,7 @@ using Photon;
 using System;
 using Photon.Pun;
 
-public class VenomUnfuse_BT15_099 : CEntity_Effect
+public class Venom_Infusion_BT15_099 : CEntity_Effect
 {
     public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
     {
