@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using UnityEditor.Experimental.GraphView;
 using System.Linq;
+using UnityEngine;
 
 public class Rosemon_X_Antibody_BT15_054 : CEntity_Effect
 {
@@ -221,7 +222,7 @@ public class Rosemon_X_Antibody_BT15_054 : CEntity_Effect
         #endregion
 
         #region Opponent's Turn Digimon Enters From Raising Area
-        if (timing == EffectTiming.OnEnterFieldAnyone)
+        if (timing == EffectTiming.OnMove)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Suspend 1 of your Opponent's Digimon", CanUseCondition, card);
