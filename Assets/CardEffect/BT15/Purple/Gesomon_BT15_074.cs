@@ -8,265 +8,179 @@ using Photon.Pun;
 
 public class Gesomon_BT15_074 : CEntity_Effect
 {
-  public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
-  {
-    List<ICardEffect> cardEffects = new List<ICardEffect>();
-
-    if (timing == EffectTiming.None)
+    public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
     {
-      cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
-    }
+        List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-    if (timing == EffectTiming.OnEnterFieldAnyone)
-    {
-      ActivateClass activateClass = new ActivateClass();
-      activateClass.SetUpICardEffect("Opponent trashes 1 Digimon card, or you gain Memory +1", CanUseCondition, card);
-      activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-      cardEffects.Add(activateClass);
-
-      string EffectDiscription()
-      {
-        return "[On Play] Your opponent may trash 1 Tamer card or Option card in their hand. If they don't, gain 1 memory and <Draw 1>.";
-      }
-
-      bool CanSelectCardCondition(CardSource cardSource)
-      {
-        if (cardSource.Owner == card.Owner.Enemy)
+        if (timing == EffectTiming.None)
         {
-          if (cardSource.IsDigimon)
-          {
-            return true;
-          }
+            cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
         }
 
-        return false;
-      }
-
-      bool CanUseCondition(Hashtable hashtable)
-      {
-        return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-      }
-
-      bool CanActivateCondition(Hashtable hashtable)
-      {
-        if (CardEffectCommons.IsExistOnBattleArea(card))
+        #region On Play/When Digivolving
+        if (timing == EffectTiming.OnEnterFieldAnyone)
         {
-          if (card.Owner.Enemy.HandCards.Count >= 1)
-          {
-            return true;
-          }
+            ActivateClass activateClass = new ActivateClass();
+            activateClass.SetUpICardEffect("Opponent trashes 1 Digimon card, or you gain Memory +1", CanUseCondition, card);
+            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+            cardEffects.Add(activateClass);
 
-          if (card.Owner.CanAddMemory(activateClass))
-          {
-            return true;
-          }
-        }
-
-        return false;
-      }
-
-      IEnumerator ActivateCoroutine(Hashtable _hashtable)
-      {
-        bool discarded = false;
-
-        if (card.Owner.Enemy.HandCards.Count >= 1)
-        {
-          int discardCount = 1;
-
-          SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-          selectHandEffect.SetUp(
-              selectPlayer: card.Owner.Enemy,
-              canTargetCondition: CanSelectCardCondition,
-              canTargetCondition_ByPreSelecetedList: null,
-              canEndSelectCondition: null,
-              maxCount: discardCount,
-              canNoSelect: true,
-              canEndNotMax: false,
-              isShowOpponent: true,
-              selectCardCoroutine: null,
-              afterSelectCardCoroutine: AfterSelectCardCoroutine,
-              mode: SelectHandEffect.Mode.Discard,
-              cardEffect: activateClass);
-
-          yield return StartCoroutine(selectHandEffect.Activate());
-
-          IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
-          {
-            if (cardSources.Count >= 1)
+            string EffectDiscription()
             {
-              discarded = true;
-
-              yield return null;
+                return "[On Play] [When Digivolving] Your opponent may trash 1 Digimon card in their hand. If they don't, gain 1 memory.";
             }
-          }
-        }
 
-        if (!discarded)
-        {
-          yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
-        }
-      }
-    }
-
-    if (timing == EffectTiming.OnEnterFieldAnyone)
-    {
-      ActivateClass activateClass = new ActivateClass();
-      activateClass.SetUpICardEffect("Opponent trashes 1 Digimon card, or you gain Memory +1", CanUseCondition, card);
-      activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-      cardEffects.Add(activateClass);
-
-      string EffectDiscription()
-      {
-        return "[On Play] Your opponent may trash 1 Tamer card or Option card in their hand. If they don't, gain 1 memory and <Draw 1>.";
-      }
-
-      bool CanSelectCardCondition(CardSource cardSource)
-      {
-        if (cardSource.Owner == card.Owner.Enemy)
-        {
-          if (cardSource.IsDigimon)
-          {
-            return true;
-          }
-        }
-
-        return false;
-      }
-
-      bool CanUseCondition(Hashtable hashtable)
-      {
-        return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
-      }
-
-      bool CanActivateCondition(Hashtable hashtable)
-      {
-        if (CardEffectCommons.IsExistOnBattleArea(card))
-        {
-          if (card.Owner.Enemy.HandCards.Count >= 1)
-          {
-            return true;
-          }
-
-          if (card.Owner.CanAddMemory(activateClass))
-          {
-            return true;
-          }
-        }
-
-        return false;
-      }
-
-      IEnumerator ActivateCoroutine(Hashtable _hashtable)
-      {
-        bool discarded = false;
-
-        if (card.Owner.Enemy.HandCards.Count >= 1)
-        {
-          int discardCount = 1;
-
-          SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-          selectHandEffect.SetUp(
-              selectPlayer: card.Owner.Enemy,
-              canTargetCondition: CanSelectCardCondition,
-              canTargetCondition_ByPreSelecetedList: null,
-              canEndSelectCondition: null,
-              maxCount: discardCount,
-              canNoSelect: true,
-              canEndNotMax: false,
-              isShowOpponent: true,
-              selectCardCoroutine: null,
-              afterSelectCardCoroutine: AfterSelectCardCoroutine,
-              mode: SelectHandEffect.Mode.Discard,
-              cardEffect: activateClass);
-
-          yield return StartCoroutine(selectHandEffect.Activate());
-
-          IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
-          {
-            if (cardSources.Count >= 1)
+            bool CanSelectCardCondition(CardSource cardSource)
             {
-              discarded = true;
+                if (cardSource.Owner == card.Owner.Enemy)
+                {
+                    if (cardSource.IsDigimon)
+                    {
+                        return true;
+                    }
+                }
 
-              yield return null;
+                return false;
             }
-          }
-        }
 
-        if (!discarded)
-        {
-          yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
-        }
-      }
-    }
-
-    if (timing == EffectTiming.None)
-    {
-      bool Condition()
-      {
-        return CardEffectCommons.IsOwnerTurn(card) && card.Owner.Enemy.GetBattleAreaDigimons().Count == 0;
-      }
-
-      cardEffects.Add(CardEffectFactory.CanNotAttackSelfStaticEffect(
-          defenderCondition: null,
-          isInheritedEffect: false,
-          card: card,
-          condition: Condition,
-          effectName: "Can't Attack"));
-    }
-
-    if (timing == EffectTiming.OnEnterFieldAnyone)
-    {
-      ActivateClass activateClass = new ActivateClass();
-      activateClass.SetUpICardEffect("Memory +1", CanUseCondition, card);
-      activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
-      activateClass.SetHashString("Memory1_BT15_074");
-      activateClass.SetIsInheritedEffect(true);
-      cardEffects.Add(activateClass);
-
-      string EffectDiscription()
-      {
-        return "[All Turns] [Once Per Turn] When an effect plays an opponent's Digimon, gain 1 memory.";
-      }
-
-      bool PermanentCondition(Permanent permanent)
-      {
-        return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
-      }
-
-      bool CanUseCondition(Hashtable hashtable)
-      {
-        if (CardEffectCommons.IsExistOnBattleArea(card))
-        {
-          if (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PermanentCondition))
-          {
-            if (CardEffectCommons.IsByEffect(hashtable, null))
+            bool CanUseCondition(Hashtable hashtable)
             {
-              return true;
+                return CardEffectCommons.CanTriggerOnPlay(hashtable, card) || CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
             }
-          }
+
+            bool CanActivateCondition(Hashtable hashtable)
+            {
+                if (CardEffectCommons.IsExistOnBattleArea(card))
+                {
+                    if (card.Owner.Enemy.HandCards.Count >= 1)
+                    {
+                        return true;
+                    }
+
+                    if (card.Owner.CanAddMemory(activateClass))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            IEnumerator ActivateCoroutine(Hashtable _hashtable)
+            {
+                bool discarded = false;
+
+                if (card.Owner.Enemy.HandCards.Count >= 1)
+                {
+                    int discardCount = 1;
+
+                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                    selectHandEffect.SetUp(
+                        selectPlayer: card.Owner.Enemy,
+                        canTargetCondition: CanSelectCardCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: discardCount,
+                        canNoSelect: true,
+                        canEndNotMax: false,
+                        isShowOpponent: true,
+                        selectCardCoroutine: null,
+                        afterSelectCardCoroutine: AfterSelectCardCoroutine,
+                        mode: SelectHandEffect.Mode.Discard,
+                        cardEffect: activateClass);
+
+                    yield return StartCoroutine(selectHandEffect.Activate());
+
+                    IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
+                    {
+                        if (cardSources.Count >= 1)
+                        {
+                            discarded = true;
+
+                            yield return null;
+                        }
+                    }
+                }
+
+                if (!discarded)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
+                }
+            }
         }
+        #endregion
 
-        return false;
-      }
-
-      bool CanActivateCondition(Hashtable hashtable)
-      {
-        if (CardEffectCommons.IsExistOnBattleArea(card))
+        #region All Turns - Can't Attack
+        if (timing == EffectTiming.None)
         {
-          return true;
+            bool Condition()
+            {
+                return CardEffectCommons.IsOwnerTurn(card) && card.Owner.Enemy.GetBattleAreaDigimons().Count == 0;
+            }
+
+            cardEffects.Add(CardEffectFactory.CanNotAttackSelfStaticEffect(
+                defenderCondition: null,
+                isInheritedEffect: false,
+                card: card,
+                condition: Condition,
+                effectName: "Can't Attack"));
         }
+        #endregion
 
-        return false;
-      }
+        #region All Turns - Inherited Effect
+        if (timing == EffectTiming.OnEnterFieldAnyone)
+        {
+            ActivateClass activateClass = new ActivateClass();
+            activateClass.SetUpICardEffect("Memory +1", CanUseCondition, card);
+            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+            activateClass.SetHashString("Memory1_BT15_074");
+            activateClass.SetIsInheritedEffect(true);
+            cardEffects.Add(activateClass);
 
-      IEnumerator ActivateCoroutine(Hashtable _hashtable)
-      {
-        yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
-      }
+            string EffectDiscription()
+            {
+                return "[All Turns] [Once Per Turn] When an effect plays an opponent's Digimon, gain 1 memory.";
+            }
+
+            bool PermanentCondition(Permanent permanent)
+            {
+                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+            }
+
+            bool CanUseCondition(Hashtable hashtable)
+            {
+                if (CardEffectCommons.IsExistOnBattleArea(card))
+                {
+                    if (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PermanentCondition))
+                    {
+                        if (CardEffectCommons.IsByEffect(hashtable, null))
+                        {
+                            return true;
+                        }
+                    }
+                }
+
+                return false;
+            }
+
+            bool CanActivateCondition(Hashtable hashtable)
+            {
+                if (CardEffectCommons.IsExistOnBattleArea(card))
+                {
+                    return true;
+                }
+
+                return false;
+            }
+
+            IEnumerator ActivateCoroutine(Hashtable _hashtable)
+            {
+                yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
+            }
+        }
+        #endregion
+
+        return cardEffects;
     }
-
-    return cardEffects;
-  }
 }

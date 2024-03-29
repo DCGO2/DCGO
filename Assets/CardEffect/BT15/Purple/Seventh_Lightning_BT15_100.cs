@@ -21,7 +21,7 @@ public class Seventh_Lightning_BT15_100 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Trash][Your Turn] If one of your Digimon digivolves into [Beelzemon (X Antibody)], by returning this card to the bottom of your deck, delete 1 of your opponent's Digimon with the lowest level.";
+                return "[Trash] [All Turns] When one of your Digimon digivolves into [Leviamon (X Antibody)], by returning this card to the bottom of the deck, delete 1 of your opponent's level 4 and 1 of their level 6 Digimon.";
             }
 
             bool PermanentCondition(Permanent permanent)
@@ -42,7 +42,7 @@ public class Seventh_Lightning_BT15_100 : CEntity_Effect
                 return false;
             }
 
-            bool CanSelectPermanentCondition(Permanent permanent)
+            bool CanSelectLevel4Condition(Permanent permanent)
             {
                 if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                 {
@@ -57,7 +57,7 @@ public class Seventh_Lightning_BT15_100 : CEntity_Effect
                 return false;
             }
 
-            bool CanSelectPermanentCondition1(Permanent permanent)
+            bool CanSelectLevel6Condition(Permanent permanent)
             {
                 if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                 {
@@ -106,15 +106,15 @@ public class Seventh_Lightning_BT15_100 : CEntity_Effect
 
                     List<Permanent> selectedPermanents = new List<Permanent>();
 
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectLevel4Condition))
                     {
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectLevel4Condition));
 
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectPermanentCondition,
+                            canTargetCondition: CanSelectLevel4Condition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,
@@ -130,15 +130,15 @@ public class Seventh_Lightning_BT15_100 : CEntity_Effect
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
 
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition1))
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectLevel6Condition))
                     {
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition1));
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectLevel6Condition));
 
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectPermanentCondition1,
+                            canTargetCondition: CanSelectLevel6Condition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,
@@ -176,7 +176,7 @@ public class Seventh_Lightning_BT15_100 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Main] Delete 1 of your opponent's Digimon with the lowest level.";
+                return "[Main] By trashing 1 card in your hand, delete 1 of your opponent's level 4 and 1 of their level 6 Digimon.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)

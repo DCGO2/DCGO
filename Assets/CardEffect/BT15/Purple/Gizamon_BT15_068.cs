@@ -21,7 +21,7 @@ public class Gizamon_BT15_068 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Play] Delete 1 of your opponent's Digimon with <Blocker>.";
+                return "[On Play] Until the end of your opponent's turn, 1 of your opponent's Digimon gains \"[On Deletion] Lose 1 memory.\"";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)

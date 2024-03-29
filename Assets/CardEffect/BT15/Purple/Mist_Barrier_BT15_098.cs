@@ -141,7 +141,7 @@ public class Mist_Barrier_BT15_098 : CEntity_Effect
         }
         #endregion
 
-        #region Delay Effect
+        
         if (timing == EffectTiming.OnDestroyedAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
@@ -149,6 +149,7 @@ public class Mist_Barrier_BT15_098 : CEntity_Effect
             activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 
+            #region Delay Effect - When deleted
             string EffectDiscription()
             {
                 return "[All Turns] When one of your [Myotismon] is deleted, <Delay>.\r\n• You may play 1 [VenomMyotismon] from your trash without paying the cost.";
@@ -182,14 +183,81 @@ public class Mist_Barrier_BT15_098 : CEntity_Effect
             IEnumerator ActivateCoroutine(Hashtable _hashtable)
             {
                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: new List<Permanent>() { card.PermanentOfThisCard() }, activateClass: activateClass, successProcess: permanents => SuccessProcess(), failureProcess: null));
+            }
+            #endregion
 
-                IEnumerator SuccessProcess()
+            #region Delay Effect - Play VenomMyotismon
+
+            bool CanSelectVenomMyotismon(CardSource cardSource)
+            {
+                if (cardSource != null)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(2, activateClass));
+                    if (cardSource.IsDigimon)
+                    {
+                        if (cardSource.Owner == card.Owner)
+                        {
+                            if (cardSource.CardNames.Contains("VenomMyotismon"))
+                            {
+                                if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
+                                {
+
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                return false;
+            }
+
+            IEnumerator SuccessProcess()
+            {
+                if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, (cardSource) => CanSelectVenomMyotismon(cardSource)))
+                {
+                    int maxCount = Math.Min(1, card.Owner.TrashCards.Count((cardSource) => CanSelectVenomMyotismon(cardSource)));
+
+                    List<CardSource> selectedCards = new List<CardSource>();
+
+                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                    selectCardEffect.SetUp(
+                                canTargetCondition: CanSelectVenomMyotismon,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                canNoSelect: () => false,
+                                selectCardCoroutine: SelectCardCoroutine,
+                                afterSelectCardCoroutine: null,
+                                message: "Select 1 card to play.",
+                                maxCount: maxCount,
+                                canEndNotMax: false,
+                                isShowOpponent: true,
+                                mode: SelectCardEffect.Mode.Custom,
+                                root: SelectCardEffect.Root.Trash,
+                                customRootCardList: null,
+                                canLookReverseCard: true,
+                                selectPlayer: card.Owner,
+                                cardEffect: activateClass);
+
+                    selectCardEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
+                    selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
+
+                    yield return StartCoroutine(selectCardEffect.Activate());
+
+                    IEnumerator SelectCardCoroutine(CardSource cardSource)
+                    {
+                        selectedCards.Add(cardSource);
+
+                        yield return null;
+                    }
+
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedCards, activateClass: activateClass, payCost: false, isTapped: false, root: SelectCardEffect.Root.Trash, activateETB: true));
                 }
             }
+            #endregion
         }
-        #endregion
+
+
 
         if (timing == EffectTiming.SecuritySkill)
         {
