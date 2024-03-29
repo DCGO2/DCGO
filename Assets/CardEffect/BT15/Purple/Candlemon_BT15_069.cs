@@ -21,7 +21,7 @@ public class Candlemon_BT15_069 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Play] Trigger <Draw 1>. (Draw 1 card from your deck.)";
+                return "[On Deletion] If your opponent has 1 or less memory, <Draw 1>. If your opponent has 1 or more memory, gain 1 memory.";
             }
 
             bool CanUseCondition(Hashtable hashtable)

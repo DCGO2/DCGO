@@ -1,12 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using System.Linq;
-using Photon;
-using System;
-using Photon.Pun;
-using System.Net.Security;
-public class Loogarmon_BT15_075 : CEntity_Effect
+
+public class Loogamon_BT15_071 : CEntity_Effect
 {
     public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
     {
@@ -21,7 +17,7 @@ public class Loogarmon_BT15_075 : CEntity_Effect
                 {
                     if (targetPermanent.TopCard.HasLevel)
                     {
-                        if (targetPermanent.Level == 3)
+                        if (targetPermanent.Level == 2)
                         {
                             return true;
                         }
@@ -33,29 +29,29 @@ public class Loogarmon_BT15_075 : CEntity_Effect
 
             cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
                 permanentCondition: PermanentCondition,
-                digivolutionCost: 2,
+                digivolutionCost: 0,
                 ignoreDigivolutionRequirement: false,
                 card: card,
                 condition: null));
         }
         #endregion
 
-        #region When Digivolving/On Attack
-        if (timing == EffectTiming.OnEnterFieldAnyone || timing == EffectTiming.OnAllyAttack)
+        #region When Attacking
+        if (timing == EffectTiming.OnAllyAttack)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("DP +2000 and Draw 1", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Delete 1 Digimon and Draw 1", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
             cardEffects.Add(activateClass);
 
             string EffectDiscription()
             {
-                return "[When Digivolving] Delete 1 of your opponent's Digimon with 4000 DP or less. If an opponent's Digimon isn't deleted by this effect, you may digivolve this Digimon into a level 6 Digimon card with [Gallantmon] in its name in your hand for its digivolution cost. When this Digimon would digivolve with this effect, reduce the digivolution cost by 1.";
+                return "[When Attacking] By trashing 1 card in your hand, delete 1 of your opponent's Digimon with 3000 DP or less. If a Tamer card with the [SoC] trait is in this Digimon's digivolution cards, <Draw 1>.";
             }
 
             bool CanUseCondition(Hashtable hashtable)
             {
-                return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card) || CardEffectCommons.CanTriggerOnAttack(hashtable, card);
+                return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
             }
 
             bool CanActivateCondition(Hashtable hashtable)
@@ -68,6 +64,21 @@ public class Loogarmon_BT15_075 : CEntity_Effect
                     }
                 }
 
+                return false;
+            }
+
+            bool CanSelectDeleteCondition(Permanent permanent)
+            {
+                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                {
+                    if (permanent.HasDP)
+                    {
+                        if (permanent.DP <= 3000)
+                        {
+                            return true;
+                        }
+                    }
+                }
                 return false;
             }
 
@@ -109,11 +120,27 @@ public class Loogarmon_BT15_075 : CEntity_Effect
 
                     if (discarded)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
-                                targetPermanent: card.PermanentOfThisCard(),
-                                changeValue: 2000,
-                                effectDuration: EffectDuration.UntilEachTurnEnd,
-                                activateClass: activateClass));
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectDeleteCondition))
+                        {
+                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectDeleteCondition));
+
+                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                            selectPermanentEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: CanSelectDeleteCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: maxCount,
+                                canNoSelect: false,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: null,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Destroy,
+                                cardEffect: activateClass);
+
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                        }
 
                         if (CardEffectCommons.IsExistOnBattleArea(card))
                         {

@@ -21,7 +21,7 @@ public class DemiDevimon_BT15_070 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Play] Reveal the top 4 cards of your deck. Add 2 cards with [Garurumon]/[X Antibody] in their names among them to the hand. Place the rest at the bottom of the deck. If you added cards, trash 1 card in your hand.";
+                return "[On Play] Reveal the top 4 cards of your deck. Add 1 card with [Myotismon] in its text among them to the hand. Return the rest to the bottom of the deck. If you added cards, trash 1 card in your hand.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)
