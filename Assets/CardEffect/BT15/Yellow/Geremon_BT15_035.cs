@@ -44,7 +44,7 @@ public class Geremon_BT15_035 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Play] You may trash 1 Digimon card with [Machine] or [Cyborg] in its traits in your hand to ?申?申Draw 2?申?申. (Draw 2 cards from your deck.)";
+                return "[On Play] By trashing 1 card with [Numemon] or [Sukamon] in its name in your hand, 1 of your opponent's Digimon gains [Security A. -1] until the end of your opponent's turn.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)
@@ -171,7 +171,7 @@ public class Geremon_BT15_035 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Play] You may trash 1 Digimon card with [Machine] or [Cyborg] in its traits in your hand to ?申?申Draw 2?申?申. (Draw 2 cards from your deck.)";
+                return "[On Deletion] By trashing 1 card with [Numemon] or [Sukamon] in its name in your hand, 1 of your opponent's Digimon gains [Security A. -1] until the end of your opponent's turn.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)
@@ -289,7 +289,7 @@ public class Geremon_BT15_035 : CEntity_Effect
             }
         }
 
-        if (timing == EffectTiming.OnDestroyedAnyone)
+        if (timing == EffectTiming.OnAllyAttack)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Security Attack -1", CanUseCondition, card);
@@ -299,7 +299,7 @@ public class Geremon_BT15_035 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Deletion] Gain 1 memory.";
+                return "[When Attacking] 1 of your opponent's Digimon gains [Security A. -1] until the end of your opponent's turn.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
@@ -309,7 +309,7 @@ public class Geremon_BT15_035 : CEntity_Effect
 
             bool CanUseCondition(Hashtable hashtable)
             {
-                return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
             }
 
             bool CanActivateCondition(Hashtable hashtable)

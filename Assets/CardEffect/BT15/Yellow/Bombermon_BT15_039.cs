@@ -30,7 +30,7 @@ public class Bombermon_BT15_039 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Play] Delete 1 of your opponent's Digimon with <Blocker>.";
+                return "[On Play] 1 of your opponent's Digimon gets -3000 DP and [On Deletion] Lose 1 memory, until the end of your opponent's turn.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
@@ -157,7 +157,7 @@ public class Bombermon_BT15_039 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Play] Delete 1 of your opponent's Digimon with <Blocker>.";
+                return "[When Digivolving] 1 of your opponent's Digimon gets -3000 DP and [On Deletion] Lose 1 memory, until the end of your opponent's turn.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)

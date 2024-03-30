@@ -5,7 +5,7 @@ using System.Linq;
 using Photon;
 using System;
 using Photon.Pun;
-public class AngewomonAce_BT15_038 : CEntity_Effect
+public class Angewomon_ACE_BT15_038 : CEntity_Effect
 {
   public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
   {
@@ -25,7 +25,7 @@ public class AngewomonAce_BT15_038 : CEntity_Effect
 
       string EffectDiscription()
       {
-        return "[On Play] You may trash the top card of your security stack to unsuspend this Digimon.";
+        return "[On Play] By trashing the top or bottom card of your security stack, 1 of your opponent's Digimon gets -6000 DP until the end of your opponent's turn.";
       }
 
       bool CanSelectPermanentCondition(Permanent permanent)
@@ -69,7 +69,7 @@ public class AngewomonAce_BT15_038 : CEntity_Effect
           yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
           bool fromTop = GManager.instance.userSelectionManager.SelectedBoolValue;
-
+  
           yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
                   card.Owner,
                   1,
@@ -123,7 +123,7 @@ public class AngewomonAce_BT15_038 : CEntity_Effect
 
       string EffectDiscription()
       {
-        return "[When Digivolving] You may trash the top card of your security stack to unsuspend this Digimon.";
+        return "[On Play] By trashing the top or bottom card of your security stack, 1 of your opponent's Digimon gets -6000 DP until the end of your opponent's turn.";
       }
 
       bool CanSelectPermanentCondition(Permanent permanent)
