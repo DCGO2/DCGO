@@ -35,11 +35,6 @@ public class WaruMonzaemon_BT15_065 : CEntity_Effect
                 return "[On Play] By placing 1 card with [Numemon] in it's name from your trash as this Digimon's bottom digivolution card, all of your opponent's Digimon with a play cost of 5 or less can't attack players until the end of your opponent's turn.";
             }
 
-            bool CanSelectPermanentCondition(Permanent permanent)
-            {
-                return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
-            }
-
             bool CanSelectCardCondition(CardSource cardSource)
             {
                 return cardSource.ContainsCardName("Numemon");
@@ -391,9 +386,29 @@ public class WaruMonzaemon_BT15_065 : CEntity_Effect
                 }
             }
 
-
+            
         }
 
+        if (timing == EffectTiming.None)
+        {
+            bool Condition()
+            {
+                if (CardEffectCommons.IsExistOnBattleArea(card))
+                {
+                    if (CardEffectCommons.IsOwnerTurn(card))
+                    {
+                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.IsDigimon && permanent.TopCard.ContainsCardName("Monzaemon") || permanent.TopCard.ContainsCardName("Numemon")))
+                        {
+                            return true;
+                        }
+                    }
+                }
+
+                return false;
+            }
+
+            cardEffects.Add(CardEffectFactory.ChangeSelfSAttackStaticEffect(changeValue: 1, isInheritedEffect: true, card: card, condition: Condition));
+        }
 
 
         return cardEffects;

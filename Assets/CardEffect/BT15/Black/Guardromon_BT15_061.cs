@@ -6,7 +6,7 @@ using Photon;
 using System;
 using Photon.Pun;
 
-public class Girdromon_BT15_061 : CEntity_Effect
+public class Guardromon_BT15_061 : CEntity_Effect
 {
   public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
   {

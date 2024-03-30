@@ -84,7 +84,7 @@ public class Gigadramon_BT15_062 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "By deleting 1 of your Digimon, you may play 1 Digimon card with the [Dark Masters] trait from you hand to and empty space in your breeding area without paying the cost.";
+                return "[End of Your Turn] By deleting 1 of your Digimon, you may play 1 Digimon card with the [Dark Masters] trait from you hand to and empty space in your breeding area without paying the cost.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
