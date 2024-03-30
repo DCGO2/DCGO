@@ -6,7 +6,7 @@ using Photon;
 using System;
 using Photon.Pun;
 
-public class Mugendramon_BT15_066 : CEntity_Effect
+public class Machinedramon_BT15_066 : CEntity_Effect
 {
     public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
     {
@@ -188,12 +188,12 @@ public class Mugendramon_BT15_066 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[End of Your Turn] Trash the top card of your security stack.";
+                return "[End of Opponent's Turn] Delete this Digimon. Then you may play 1 Digimon card with the [Dark Masters] trait, other than [Machinedramon] from your hand without paying the cost.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                if (!cardSource.CardNames.Contains("Mechadramon"))
+                if (!cardSource.CardNames.Contains("Machinedramon"))
                 {
                     if (cardSource.IsDigimon)
                     {
