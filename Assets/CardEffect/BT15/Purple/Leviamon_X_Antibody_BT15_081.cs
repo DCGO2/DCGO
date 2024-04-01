@@ -81,14 +81,11 @@ public class Leviamon_X_Antibody_BT15_081 : CEntity_Effect
             {
                 if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                 {
-                    foreach (CardSource cardSource in card.Owner.TrashCards)
+                    if (CanSelectCardCondition(permanent.TopCard))
                     {
-                        if (CanSelectCardCondition(cardSource))
+                        if (permanent.TopCard.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass))
                         {
-                            if (cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass))
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
                 }
@@ -105,7 +102,7 @@ public class Leviamon_X_Antibody_BT15_081 : CEntity_Effect
                         return true;
                     }
 
-                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardNames.Contains("X Antibody") || cardSource.CardNames.Contains("XAntibody")) >= 1)
+                    if (cardSource.PermanentOfThisCard().DigivolutionCards.Count((CS) => CS.CardNames.Contains("X Antibody") || CS.CardNames.Contains("XAntibody")) >= 1)
                     {
                         return cardSource.Level == 5 && cardSource.CardColors.Contains(CardColor.Purple);
                     }
@@ -119,7 +116,11 @@ public class Leviamon_X_Antibody_BT15_081 : CEntity_Effect
             {
                 if (CardEffectCommons.IsExistOnTrash(card))
                 {
-                    return true;
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                    {
+                        return true;
+                    }
+                        
                 }
 
                 return false;
