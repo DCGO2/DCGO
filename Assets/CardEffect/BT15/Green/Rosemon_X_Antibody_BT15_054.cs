@@ -1,9 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
-using UnityEditor.Experimental.GraphView;
 using System.Linq;
-using UnityEngine;
 
 public class Rosemon_X_Antibody_BT15_054 : CEntity_Effect
 {
