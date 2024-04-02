@@ -45,7 +45,7 @@ public class Leviamon_X_Antibody_BT15_081 : CEntity_Effect
         if(timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Play 1 [Leviamon] from trash", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Digivolve 1 [Leviamon (X Antibody)] from trash", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
             cardEffects.Add(activateClass);
 

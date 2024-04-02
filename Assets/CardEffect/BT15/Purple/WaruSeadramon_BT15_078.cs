@@ -77,8 +77,9 @@ public class WaruSeadramon_BT15_078 : CEntity_Effect
                 }
 
                 AddSkillClass addSkillClass = new AddSkillClass();
-                addSkillClass.SetUpICardEffect("Memory -2", CanUseCondition1, card);
+                addSkillClass.SetUpICardEffect("Memory -1", CanUseCondition1, card);
                 addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
+                
                 card.Owner.UntilOpponentTurnEndEffects.Add((_timing) => addSkillClass);
 
                 bool CanUseCondition1(Hashtable hashtable)
@@ -133,7 +134,7 @@ public class WaruSeadramon_BT15_078 : CEntity_Effect
 
                         bool CanActivateCondition1(Hashtable hashtable)
                         {
-                            if (CardEffectCommons.IsExistOnBattleArea(cardSource))
+                            if (CardEffectCommons.CanActivateOnDeletion(card))
                             {
                                 return true;
                             }
