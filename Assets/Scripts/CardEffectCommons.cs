@@ -318,13 +318,14 @@ public partial class CardEffectCommons
         bool isHand,
         ICardEffect activateClass,
         IEnumerator successProcess,
-        bool ignoreLevel = false)
+        bool ignoreLevel = false,
+        bool ignoreSelection = false)
     {
         if (targetPermanent == null) yield break;
         if (targetPermanent.TopCard == null) yield break;
         if (activateClass == null) yield break;
         if (activateClass.EffectSourceCard == null) yield break;
-
+       
         Player owner = targetPermanent.TopCard.Owner;
         SelectCardEffect.Root root = isHand ? SelectCardEffect.Root.Hand : SelectCardEffect.Root.Trash;
         bool ignoreDigivolutionRequirement = ignoreDigivolutionRequirementFixedCost >= 0;
@@ -547,7 +548,7 @@ public partial class CardEffectCommons
 
         else
         {
-            if (HasMatchConditionOwnersCardInTrash(targetPermanent.TopCard, CanSelectCardCondition))
+            if (HasMatchConditionOwnersCardInTrash(targetPermanent.TopCard, CanSelectCardCondition) && !ignoreSelection)
             {
                 int maxCount = 1;
 
@@ -575,6 +576,10 @@ public partial class CardEffectCommons
                 selectCardEffect.SetUpCustomMessage_ShowCard("Selected Card");
 
                 yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+            }
+            else
+            {
+                selectedCards.Add(activateClass.EffectSourceCard);
             }
         }
 
@@ -606,6 +611,7 @@ public partial class CardEffectCommons
 
         if (selectedCards.Count >= 1)
         {
+
             if (IsDigivolvedByTheEffect(targetPermanent, selectedCards[0], activateClass))
             {
                 if (successProcess != null)

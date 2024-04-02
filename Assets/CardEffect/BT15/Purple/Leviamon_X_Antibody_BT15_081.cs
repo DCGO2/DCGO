@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public class Leviamon_X_Antibody_BT15_081 : CEntity_Effect
 {
@@ -83,7 +84,7 @@ public class Leviamon_X_Antibody_BT15_081 : CEntity_Effect
                 {
                     if (CanSelectCardCondition(permanent.TopCard))
                     {
-                        if (permanent.TopCard.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass))
+                        if (card.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass, root: SelectCardEffect.Root.Trash))
                         {
                             return true;
                         }
@@ -95,9 +96,9 @@ public class Leviamon_X_Antibody_BT15_081 : CEntity_Effect
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                if (cardSource.IsDigimon)
+                if(CardEffectCommons.IsExistOnBattleAreaDigimon(cardSource))
                 {
-                    if(cardSource.CardNames.Contains("Leviamon"))
+                    if (cardSource.CardNames.Contains("Leviamon"))
                     {
                         return true;
                     }
@@ -162,16 +163,21 @@ public class Leviamon_X_Antibody_BT15_081 : CEntity_Effect
 
                     if (selectedPermanent != null)
                     {
+                        Debug.Log("Selected Permanent: " + selectedPermanent.TopCard.CardNames[0]);
+     
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
                             targetPermanent: selectedPermanent,
-                            cardCondition: CanSelectCardCondition,
+                            cardCondition: null,
                             payCost: false,
                             reduceCostTuple: null,
                             fixedCostTuple: null,
                             ignoreDigivolutionRequirementFixedCost: -1,
                             isHand: false,
                             activateClass: activateClass,
-                            successProcess: null));
+                            successProcess: null,
+                            ignoreLevel: false,
+                            ignoreSelection: true));
+                        Debug.Log("Selected Permanent: Done");
                     }
                 }
             }

@@ -103,7 +103,7 @@ public class Mist_Barrier_BT15_098 : CEntity_Effect
                                     maxCount: maxCount,
                                     canEndNotMax: true,
                                     isShowOpponent: true,
-                                    mode: SelectCardEffect.Mode.AddHand,
+                                    mode: SelectCardEffect.Mode.Custom,
                                     root: SelectCardEffect.Root.Trash,
                                     customRootCardList: null,
                                     canLookReverseCard: true,
