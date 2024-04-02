@@ -54,7 +54,7 @@ public class Rosemon_X_Antibody_BT15_054 : CEntity_Effect
             {
                 if(CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card))
                 {
-                    if (permanent.TopCard.CardKind == CardKind.Tamer)
+                    if (permanent.IsTamer)
                         return true;
                 }
 
@@ -123,7 +123,7 @@ public class Rosemon_X_Antibody_BT15_054 : CEntity_Effect
                         canEndNotMax: false,
                         selectPermanentCoroutine: SelectPermanentCoroutine,
                         afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Custom,
+                        mode: SelectPermanentEffect.Mode.Tap,
                         cardEffect: activateClass);
 
                     selectTamerEffect.SetUpCustomMessage(
