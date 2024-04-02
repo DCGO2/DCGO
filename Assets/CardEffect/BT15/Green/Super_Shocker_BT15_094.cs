@@ -6,12 +6,13 @@ using Photon;
 using System;
 using Photon.Pun;
 
-public class PuchiThunder_BT15_094 : CEntity_Effect
+public class Super_Shocker_BT15_094 : CEntity_Effect
 {
     public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+        #region Use Option
         if (timing == EffectTiming.OptionSkill)
         {
             ActivateClass activateClass = new ActivateClass();
@@ -21,12 +22,12 @@ public class PuchiThunder_BT15_094 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Main] Suspend 1 of your opponent's Digimon.";
+                return "[Main] Suspend 1 level 6 or lower Digimon. 1 of your Digimon with the [Insectoid] trait gets +3000 DP until the end of your opponent's turn.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
             {
-                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
                 {
                     if (permanent.Level <= 6)
                     {
@@ -116,6 +117,7 @@ public class PuchiThunder_BT15_094 : CEntity_Effect
                 }
             }
         }
+        #endregion
 
         if (timing == EffectTiming.SecuritySkill)
         {

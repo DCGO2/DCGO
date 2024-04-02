@@ -6,7 +6,7 @@ using Photon;
 using System;
 using Photon.Pun;
 
-public class Mashmon_BT15_044 : CEntity_Effect
+public class Mushroomon_BT15_044 : CEntity_Effect
 {
     public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
     {
@@ -21,7 +21,7 @@ public class Mashmon_BT15_044 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Deletion] Gain 2 memory.";
+                return "[On Deletion] 1 of your opponent's Digimon can't unsuspend until the end of their turn.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)

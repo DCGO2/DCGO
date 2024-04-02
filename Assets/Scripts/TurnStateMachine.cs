@@ -2071,7 +2071,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                     }
                     #endregion
 
-                    #region ドラッグ終了時
+                    #region At the end of drag
                     void OnDropCard(List<DropArea> dropAreas)
                     {
                         if (isSync)
@@ -2098,18 +2098,18 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                             handCard.OffJogressPlayText();
                             handCard.OffBurstPlayText();
 
-                            #region カードをプレイ
+                            #region play cards
 
                             bool isOnHand = dropAreas.Count((dropArea) => dropArea.IsChildThisDropArea(GManager.instance.You.HandDropArea.gameObject)) > 0;
                             bool selected = false;
 
-                            #region 手札領域でドロップしていない場合
+                            #region If it is not dropped in the hand area
                             if (!isOnHand)
                             {
-                                #region キャラクター・フィールド
+                                #region character field
                                 if (handCard.cardSource.IsPermanent)
                                 {
-                                    #region 枠でドロップしているかチェック
+                                    #region Check if it is dropped in the frame
                                     foreach (FieldCardFrame fieldCardFrame in GManager.instance.You.fieldCardFrames)
                                     {
                                         if (handCard.cardSource.CanPlayCardTargetFrame(fieldCardFrame, true, null) || handCard.cardSource.CanJogressFromTargetPermanent(fieldCardFrame.GetFramePermanent(), true) || handCard.cardSource.CanBurstDigivolutionFromTargetPermanent(fieldCardFrame.GetFramePermanent(), true))
@@ -2146,25 +2146,25 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                                     bool canJogressDigivolution = handCard.cardSource.CanJogressFromTargetPermanent(fieldCardFrame.GetFramePermanent(), true);
                                                     bool canBurstDigivolution = handCard.cardSource.CanBurstDigivolutionFromTargetPermanent(fieldCardFrame.GetFramePermanent(), true);
 
-                                                    //通常進化だけ可能
+                                                    //Only normal evolution possible
                                                     if (canNormalDigivolution && !canJogressDigivolution && !canBurstDigivolution)
                                                     {
                                                         Digivolution();
                                                     }
 
-                                                    //ジョグレスだけ可能
+                                                    //Only jogless is possible
                                                     else if (!canNormalDigivolution && canJogressDigivolution && !canBurstDigivolution)
                                                     {
                                                         SelectJogressDigivolutionCards(true);
                                                     }
 
-                                                    //バースト進化だけ可能
+                                                    //Only burst evolution possible
                                                     else if (!canNormalDigivolution && !canJogressDigivolution && canBurstDigivolution)
                                                     {
                                                         SelectBurstDigivolutionCards(true);
                                                     }
 
-                                                    //通常進化とジョグレスが可能
+                                                    //Normal evolution and Jogress possible
                                                     else if (canNormalDigivolution && canJogressDigivolution && !canBurstDigivolution)
                                                     {
                                                         Vector3 Pos = handCard.transform.position;
@@ -2213,7 +2213,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                                         }
                                                     }
 
-                                                    //通常進化とバースト進化が可能
+                                                    //Normal evolution and burst evolution possible
                                                     else if (canNormalDigivolution && !canJogressDigivolution && canBurstDigivolution)
                                                     {
                                                         Vector3 Pos = handCard.transform.position;
@@ -2262,7 +2262,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                                         }
                                                     }
 
-                                                    #region ジョグレス進化元を選択
+                                                    #region Select Jogress evolution source
                                                     void SelectJogressDigivolutionCards(bool move)
                                                     {
                                                         Vector3 Pos = handCard.transform.position;
@@ -2362,7 +2362,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                                     }
                                                     #endregion
 
-                                                    #region 通常進化する
+                                                    #region usually evolves
                                                     void Digivolution()
                                                     {
                                                         photonView.RPC("SetPlayCard", RpcTarget.All, handCard.cardSource.CardIndex, fieldCardFrame.FrameID, new int[0], -1);
@@ -2769,7 +2769,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region 手札のカードがプレイ可能かどうかを取得
+    #region Get whether the card in hand is playable
     IEnumerator SetHandCardPlayablity(CardSource cardSource)
     {
         if (cardSource.IsOption) yield break;
