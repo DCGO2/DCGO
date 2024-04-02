@@ -12,7 +12,7 @@ public class Candlemon_BT15_069 : CEntity_Effect
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-        if (timing == EffectTiming.OnEnterFieldAnyone)
+        if (timing == EffectTiming.OnDestroyedAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Draw 1 and/or gain Memory +1", CanUseCondition, card);
@@ -26,12 +26,12 @@ public class Candlemon_BT15_069 : CEntity_Effect
 
             bool CanUseCondition(Hashtable hashtable)
             {
-                return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
             }
 
             bool CanActivateCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
+                if (CardEffectCommons.CanActivateOnDeletion(card))
                 {
                     if (card.Owner.Enemy.MemoryForPlayer <= 1)
                     {
