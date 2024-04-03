@@ -6,7 +6,7 @@ using Photon;
 using System;
 using Photon.Pun;
 
-public class UltimateSlicer_BT15_097 : CEntity_Effect
+public class Ultimate_Slicer_BT15_097 : CEntity_Effect
 {
     public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
     {
@@ -15,13 +15,13 @@ public class UltimateSlicer_BT15_097 : CEntity_Effect
         if (timing == EffectTiming.OptionSkill)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect(card.BaseENGCardNameFromEntity, CanUseCondition, card);
+            activateClass.SetUpICardEffect("Delete 1 Digimon or Tamer", CanUseCondition, card);
             activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 
             string EffectDiscription()
             {
-                return "[Main] Delete 1 of your opponent's Digimon with the lowest level.";
+                return "[Main] By trashing 1 Digimon card with the [Machine], [Cyborg] or [SoC] trait in your hand, delete 1 of your opponent's Digimon or Tamers with the lowest play cost.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)

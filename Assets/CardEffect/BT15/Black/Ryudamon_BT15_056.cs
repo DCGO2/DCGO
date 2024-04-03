@@ -181,85 +181,87 @@ public class Ryudamon_BT15_056 : CEntity_Effect
                     yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(selectedCards, activateClass));
 
 
-                }
-
-                //Inherited effect
-                if (timing == EffectTiming.OnTappedAnyone)
-                {
-                    ActivateClass activateClass = new ActivateClass();
-                    activateClass.SetUpICardEffect("Suspend opponent's Digimon or Tamers with play cost less than this Digimon.", CanUseCondition, card);
-                    activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-                    activateClass.SetIsInheritedEffect(true);
-                    cardEffects.Add(activateClass);
-
-                    string EffectDiscription()
-                    {
-                        return "[All Turns][Once per turn] When this Digimon becomes suspened, suspened 1 of your opponent's Digimon or Tamers with a play cost less than or equal to this Digimon.";
-                    }
-
-                    bool CanSelectPermanentCondition(Permanent permanent)
-                    {
-                        if (CardEffectCommons.IsExistOnBattleArea(card))
-                        {
-                            if (permanent.TopCard.GetCostItself <= card.PermanentOfThisCard().TopCard.GetCostItself)
-                            {
-                                return true;
-                            }
-                        }
-                        return false;
-                    }
-
-                    bool CanActivateCondition(Hashtable hashtable)
-                    {
-                        if (CardEffectCommons.IsExistOnBattleArea(card))
-                        {
-                            if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                            {
-                                return true;
-                            }
-                        }
-
-                        return false;
-                    }
-
-                    bool CanUseCondition(Hashtable hashtable)
-                    {
-                        if (CardEffectCommons.IsExistOnBattleArea(card))
-                        {
-                            if (CardEffectCommons.CanTriggerWhenPermanentSuspends(hashtable, (permanent) => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)))
-                            {
-                                return true;
-                            }
-                        }
-                        return false;
-                    }
-
-                    IEnumerator ActivateCoroutine(Hashtable _hashtable)
-                    {
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectPermanentCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: false,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: null,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Tap,
-                            cardEffect: activateClass);
-
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                    }
-
-                }
+                }   
             }
 
-        } 
+        }
+
+        //Inherited effect
+        if (timing == EffectTiming.OnTappedAnyone)
+        {
+            ActivateClass activateClass = new ActivateClass();
+            activateClass.SetUpICardEffect("Suspend opponent's Digimon or Tamers with play cost less than this Digimon.", CanUseCondition, card);
+            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+            activateClass.SetIsInheritedEffect(true);
+            cardEffects.Add(activateClass);
+
+            string EffectDiscription()
+            {
+                return "[All Turns][Once per turn] When this Digimon becomes suspened, suspened 1 of your opponent's Digimon or Tamers with a play cost less than or equal to this Digimon.";
+            }
+
+            bool CanSelectPermanentCondition(Permanent permanent)
+            {
+                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card))
+                {
+                    if (permanent.TopCard.GetCostItself <= card.PermanentOfThisCard().TopCard.GetCostItself)
+                    {
+                        if (permanent.TopCard.IsDigimon || permanent.TopCard.IsTamer)
+                        {
+                            
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+
+            bool CanUseCondition(Hashtable hashtable)
+            {
+                if (CardEffectCommons.IsExistOnBattleArea(card))
+                {
+                    if (CardEffectCommons.CanTriggerWhenSelfPermanentSuspends(hashtable, card))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            bool CanActivateCondition(Hashtable hashtable)
+            {
+                if (CardEffectCommons.IsExistOnBattleArea(card))
+                {
+                    return true;
+                }
+
+                return false;
+            }
+
+            IEnumerator ActivateCoroutine(Hashtable _hashtable)
+            {
+                int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+
+                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                selectPermanentEffect.SetUp(
+                    selectPlayer: card.Owner,
+                    canTargetCondition: CanSelectPermanentCondition,
+                    canTargetCondition_ByPreSelecetedList: null,
+                    canEndSelectCondition: null,
+                    maxCount: maxCount,
+                    canNoSelect: false,
+                    canEndNotMax: false,
+                    selectPermanentCoroutine: null,
+                    afterSelectPermanentCoroutine: null,
+                    mode: SelectPermanentEffect.Mode.Tap,
+                    cardEffect: activateClass);
+
+                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+            }
+
+        }
 
         return cardEffects;
     }
