@@ -49,7 +49,7 @@ public class Hisyaryumon_BT15_063 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[All Turns][Once Per Turn] When an effect suspends another Digimon or Tamer, unsuspend 1 of your Digimon with the [Beast Dragon] or [DigiPolice] trait";
+                return "[All Turns][Once Per Turn] When an effect suspends another Digimon or Tamer, unsuspend 1 of your Digimon with the [Beast Dragon] or [DigiPolice] trait.";
             }
 
             bool PermanentCondition(Permanent permanent)
@@ -60,7 +60,10 @@ public class Hisyaryumon_BT15_063 : CEntity_Effect
                     {
                         if (permanent.TopCard.HasDigiPoliceTraits || permanent.TopCard.HasBeastDragonTraits)
                         {
-                            return true;
+                            if (permanent.IsSuspended)
+                            {
+                                return true;
+                            }
                         }
                     }
                 }
@@ -72,16 +75,14 @@ public class Hisyaryumon_BT15_063 : CEntity_Effect
             {
                 if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
-                    if (CardEffectCommons.CanTriggerWhenPermanentSuspends(hashtable, PermanentCondition))
+                    if (CardEffectCommons.CanTriggerWhenPermanentSuspends(hashtable, (permanent) => CardEffectCommons.IsPermanentExistsOnBattleArea(permanent) && permanent != card.PermanentOfThisCard()))
                     {
                         if (CardEffectCommons.IsByEffect(hashtable, null))
                         {
                             return true;
                         }
-                            
                     }
                 }
-
                 return false;
             }
 
@@ -160,7 +161,7 @@ public class Hisyaryumon_BT15_063 : CEntity_Effect
             {
                 if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
-                    if (CardEffectCommons.CanTriggerWhenPermanentSuspends(hashtable, (permanent) => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)))
+                    if (CardEffectCommons.CanTriggerWhenPermanentSuspends(hashtable, (permanent) => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) && permanent != card.PermanentOfThisCard()))
                     {
                         if (CardEffectCommons.IsByEffect(hashtable, null))
                         {

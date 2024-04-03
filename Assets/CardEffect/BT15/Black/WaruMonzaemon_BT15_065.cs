@@ -173,7 +173,14 @@ public class WaruMonzaemon_BT15_065 : CEntity_Effect
 
             bool CanSelectPermanentCondition(Permanent permanent)
             {
-                return CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card);
+                if(permanent.TopCard.IsDigimon)
+                {
+                    if (permanent.TopCard.HasLevel)
+                    {
+                        return true;
+                    }
+                }
+                return false;
             }
 
             bool CanUseCondition(Hashtable hashtable)

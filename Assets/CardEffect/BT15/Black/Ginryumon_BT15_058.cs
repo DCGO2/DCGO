@@ -43,7 +43,7 @@ public class Ginryumon_BT15_058 : CEntity_Effect
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Suspend opponent's Digimon or Tamers with play cost less than this Digimon.", CanUseCondition, card);
-            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
             activateClass.SetIsInheritedEffect(true);
             cardEffects.Add(activateClass);
 
@@ -81,7 +81,7 @@ public class Ginryumon_BT15_058 : CEntity_Effect
             {
                 if(CardEffectCommons.IsExistOnBattleArea(card))
                 {
-                    if (CardEffectCommons.CanTriggerWhenPermanentSuspends(hashtable, (permanent) => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)))
+                    if (CardEffectCommons.CanTriggerWhenSelfPermanentSuspends(hashtable, card))
                     {
                         return true;
                     }
