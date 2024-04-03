@@ -25,34 +25,31 @@ public class CsvLoader_CardEntity : Editor
 
     IEnumerator SetCsvDataToScriptableObject(LoadCSV_CardEntity loadCSV)
     {
-        List<Sprite> SpriteList_English = GetAsset.LoadAll<Sprite>("Assets/Image/Card_ENG");
-        List<Sprite> SpriteList_Japanese = GetAsset.LoadAll<Sprite>("Assets/Image/Card_JPN");
-        List<Sprite> SpriteList_EnglishErrata = GetAsset.LoadAll<Sprite>("Assets/Image/Card_Errata");
         List<TextAsset> CardListTexts = GetAsset.LoadAll<TextAsset>("Assets/TextAsset");
 
         int value = 0;
 
-        // ƒ{ƒ^ƒ“‚ğ‰Ÿ‚·‚Æƒp[ƒXŠJn
+        // Check if CSV file is null
         if (loadCSV.csvFile == null)
         {
-            Debug.LogWarning(loadCSV.name + " : “Ç‚İ‚ŞCSVƒtƒ@ƒCƒ‹‚ªƒZƒbƒg‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB");
+            Debug.LogWarning("CSV File is null: " + loadCSV.name);
             yield break;
         }
 
-        Debug.Log(loadCSV.name + " : ƒJ[ƒhƒf[ƒ^‚Ìì¬‚ğŠJn‚µ‚Ü‚·B");
+        Debug.Log("CSV File Found: " + loadCSV.name);
 
-        // CSV‚ğ•¶š—ñ‚É•ÏŠ·
+        // CSV‚ Text
         string csvText = loadCSV.csvFile.text;
 
-        //‰üs•¶š‚Åƒp[ƒX
+        //Split by new line
         string[] afterParse = csvText.Split('\n');
 
-        // ƒwƒbƒ_s‚ğœ‚¢‚ÄƒCƒ“ƒ|[ƒg
+        //Skip the first line, parse by ","
         for (int i = 1; i < afterParse.Length; i++)
         {
             string[] parseByComma = afterParse[i].Split(',');
 
-            // Å‰‚Ì—ñ‚ª‹ó”’‚È‚ç“Ç‚İ‚Ü‚È‚¢
+            // skip if first column is empty
             if (string.IsNullOrEmpty(parseByComma[0]))
             {
                 continue;
@@ -67,62 +64,23 @@ public class CsvLoader_CardEntity : Editor
 
             IEnumerator CreateCardData(string CardImageName)
             {
-                // CardEntity‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğƒƒ‚ƒŠã‚Éì¬
+                // CardEntity‚ instance created
                 CEntity_Base cardEntity = CreateInstance<CEntity_Base>();
 
                 cardEntity.CardSpriteName = CardImageName;
 
-                /*
-                //‰æ‘œ‚ğƒAƒ^ƒbƒ`
-                foreach (Sprite sp in SpriteList_English)
-                {
-                    if (sp.name == CardImageName)
-                    {
-                        // cardEntity.CardSprite_ENG = sp;
-                        cardEntity.CardSpriteName = CardImageName;
-                        break;
-                    }
-                }
-
-                //ƒGƒ‰ƒbƒ^”Å‚ÌƒJ[ƒh‰æ‘œ‚ğƒAƒ^ƒbƒ`
-                foreach (Sprite sp in SpriteList_EnglishErrata)
-                {
-                    if (sp.name == CardImageName + "-Errata")
-                    {
-                        // cardEntity.CardSprite_ENG = sp;
-                        cardEntity.CardSpriteName = CardImageName;
-                        break;
-                    }
-                }
-
-                foreach (Sprite sp in SpriteList_Japanese)
-                {
-                    if (sp.name == CardImageName)
-                    {
-                        // cardEntity.CardSprite_JPN = sp;
-                        cardEntity.CardSpriteName = CardImageName;
-                        break;
-                    }
-                }
-
-                if (String.IsNullOrEmpty(cardEntity.CardSpriteName))
-                {
-                    Debug.Log($"{CardImageName}‚Ì‰pŒê”Å‰æ‘œ‚ª‚ ‚è‚Ü‚¹‚ñ");
-                }
-                */
-
-                //ƒJ[ƒhŒø‰ÊƒXƒLƒ‹–¼‚ğæ“¾
+                //Set card effect class name
                 cardEntity.CardEffectClassName = parseByComma[column];
                 column++;
 
-                //ƒJ[ƒhIndex
+                //Set card index number
                 if (int.TryParse(parseByComma[column], out value))
                 {
                     cardEntity.CardIndex = value;
                 }
                 column++;
 
-                //Å‘å–‡”
+                //Parse max count (most csv this is empty)
                 if (!string.IsNullOrEmpty(parseByComma[column]))
                 {
                     if (int.TryParse(parseByComma[column], out value))
@@ -132,7 +90,7 @@ public class CsvLoader_CardEntity : Editor
                 }
                 column++;
 
-                //ƒJ[ƒhID
+                //Get Card Image Name
                 string[] parseByUnderBar = CEntity_Base.GetParseByUnderBar(CardImageName);
 
                 cardEntity.CardID = $"{parseByUnderBar[0]}";
@@ -151,7 +109,7 @@ public class CsvLoader_CardEntity : Editor
                 }
                 column++;
 
-                //ƒJ[ƒhƒŠƒXƒg‚Ìƒ\[ƒXƒR[ƒh‚©‚çæ“¾
+                //Get Japanese and English card ID
                 List<string> CardListIDs_JPN = DataBase.CardListIDs(CEntity_Base.GetParseByHyphen(CardImageName)[0], false);
                 List<string> CardListIDs_ENG = DataBase.CardListIDs(CEntity_Base.GetParseByHyphen(CardImageName)[0], true);
 
@@ -189,7 +147,7 @@ public class CsvLoader_CardEntity : Editor
                     {
                         List<CardColor> evoCosts_color = new List<CardColor>();
 
-                        //wiki‚©‚çæ“¾
+                        //wiki‚grab text from site
                         yield return new EditorWaitForSeconds(0.5f);
                         WebClient wc = new WebClient();
                         wc.Encoding = Encoding.UTF8;
@@ -412,7 +370,7 @@ public class CsvLoader_CardEntity : Editor
             }
         }
 
-        Debug.Log(loadCSV.name + " : ƒJ[ƒhƒf[ƒ^‚Ìì¬‚ªŠ®—¹‚µ‚Ü‚µ‚½B");
+        Debug.Log("Card Data Created for: " + loadCSV.name);
     }
 
     string GetCardDataURL(string CardImageName)
