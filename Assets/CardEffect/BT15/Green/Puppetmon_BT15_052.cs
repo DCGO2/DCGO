@@ -6,148 +6,13 @@ using Photon;
 using System;
 using Photon.Pun;
 
-public class Pinokkimon_BT15_052 : CEntity_Effect
+public class Puppetmon_BT15_052 : CEntity_Effect
 {
     public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-        if (timing == EffectTiming.OnEnterFieldAnyone)
-        {
-            ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Return 1 suspended Digimon to the bottom of deck", CanUseCondition, card);
-            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-            cardEffects.Add(activateClass);
-
-            string EffectDiscription()
-            {
-                return "[When Digivolving] Trigger <De-Digivolve 1> on 1 of your opponent's Digimon. (Trash up to 1 card from the top of one of your opponent's Digimon. If it has no digivolution cards, or becomes a level 3 Digimon, you can't trash any more cards.)";
-            }
-
-            bool CanSelectPermanentCondition(Permanent permanent)
-            {
-                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                {
-                    if (permanent.IsSuspended)
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }
-
-            bool CanUseCondition(Hashtable hashtable)
-            {
-                return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-            }
-
-            bool CanActivateCondition(Hashtable hashtable)
-            {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
-                {
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
-            }
-
-            IEnumerator ActivateCoroutine(Hashtable _hashtable)
-            {
-                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                {
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-
-                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                    selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectPermanentCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: maxCount,
-                        canNoSelect: false,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: null,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.PutLibraryBottom,
-                        cardEffect: activateClass);
-
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                }
-            }
-        }
-
-        if (timing == EffectTiming.OnAllyAttack)
-        {
-            ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Return 1 suspended Digimon to the bottom of deck", CanUseCondition, card);
-            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-            cardEffects.Add(activateClass);
-
-            string EffectDiscription()
-            {
-                return "[When Digivolving] Trigger <De-Digivolve 1> on 1 of your opponent's Digimon. (Trash up to 1 card from the top of one of your opponent's Digimon. If it has no digivolution cards, or becomes a level 3 Digimon, you can't trash any more cards.)";
-            }
-
-            bool CanSelectPermanentCondition(Permanent permanent)
-            {
-                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                {
-                    if (permanent.IsSuspended)
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }
-
-            bool CanUseCondition(Hashtable hashtable)
-            {
-                return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
-            }
-
-            bool CanActivateCondition(Hashtable hashtable)
-            {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
-                {
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
-            }
-
-            IEnumerator ActivateCoroutine(Hashtable _hashtable)
-            {
-                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                {
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-
-                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                    selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectPermanentCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: maxCount,
-                        canNoSelect: false,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: null,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.PutLibraryBottom,
-                        cardEffect: activateClass);
-
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                }
-            }
-        }
-
+        //Can't evo on white
         if (timing == EffectTiming.None)
         {
             bool Condition()
@@ -177,6 +42,75 @@ public class Pinokkimon_BT15_052 : CEntity_Effect
             );
         }
 
+        #region On Play/When Attacking
+        if (timing == EffectTiming.OnEnterFieldAnyone || timing == EffectTiming.OnAllyAttack)
+        {
+            ActivateClass activateClass = new ActivateClass();
+            activateClass.SetUpICardEffect("Return 1 suspended Digimon to the bottom of deck", CanUseCondition, card);
+            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+            cardEffects.Add(activateClass);
+
+            string EffectDiscription()
+            {
+                return "[On Play] [When Attacking] Return 1 of your opponent's suspended Digimon to the bottom of the deck.";
+            }
+
+            bool CanSelectPermanentCondition(Permanent permanent)
+            {
+                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                {
+                    if (permanent.IsSuspended)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            bool CanUseCondition(Hashtable hashtable)
+            {
+                return CardEffectCommons.CanTriggerOnPlay(hashtable, card) || CardEffectCommons.CanTriggerOnAttack(hashtable, card);
+            }
+
+            bool CanActivateCondition(Hashtable hashtable)
+            {
+                if (CardEffectCommons.IsExistOnBattleArea(card))
+                {
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                        return true;
+                }
+
+                return false;
+            }
+
+            IEnumerator ActivateCoroutine(Hashtable _hashtable)
+            {
+                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                {
+                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                    selectPermanentEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanSelectPermanentCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: maxCount,
+                        canNoSelect: false,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: null,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.PutLibraryBottom,
+                        cardEffect: activateClass);
+
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                }
+            }
+        }
+        #endregion
+
+        #region End of Opponent's Turn
         if (timing == EffectTiming.OnEndTurn)
         {
             ActivateClass activateClass = new ActivateClass();
@@ -186,26 +120,19 @@ public class Pinokkimon_BT15_052 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[End of Your Turn] Trash the top card of your security stack.";
+                return "[End of Opponent's Turn] Delete this Digimon. Then, you may play 1 Digimon card with the [Dark Masters] trait, other than [Puppetmon] from your hand without paying the cost.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                if (!cardSource.CardNames.Contains("Pinokkimon"))
+                if (!cardSource.CardNames.Contains("Puppetmon"))
                 {
                     if (cardSource.IsDigimon)
                     {
                         if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                         {
-                            if (cardSource.CardTraits.Contains("Dark Masters"))
-                            {
+                            if (cardSource.CardTraits.Contains("Dark Masters") || cardSource.CardTraits.Contains("DarkMasters"))
                                 return true;
-                            }
-
-                            if (cardSource.CardTraits.Contains("DarkMasters"))
-                            {
-                                return true;
-                            }
                         }
                     }
                 }
@@ -284,11 +211,11 @@ public class Pinokkimon_BT15_052 : CEntity_Effect
                 }
             }
         }
+        #endregion
 
+        //Inhereted Effect
         if (timing == EffectTiming.OnDetermineDoSecurityCheck)
-        {
             cardEffects.Add(CardEffectFactory.PierceSelfEffect(isInheritedEffect: true, card: card, condition: null));
-        }
 
         return cardEffects;
     }

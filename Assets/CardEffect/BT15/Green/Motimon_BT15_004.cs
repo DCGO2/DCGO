@@ -6,7 +6,7 @@ using Photon;
 using System;
 using Photon.Pun;
 
-public class Mochimon_BT15_004 : CEntity_Effect
+public class Motimon_BT15_004 : CEntity_Effect
 {
     public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
     {
@@ -22,7 +22,7 @@ public class Mochimon_BT15_004 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[End of Your Turn] This Digimon may attack an opponent's Digimon.";
+                return "[End of Your Turn] If this Digimon has the [Insectoid] trait, it may attack an opponent's Digimon.";
             }
 
             bool CanUseCondition(Hashtable hashtable)

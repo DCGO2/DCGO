@@ -6,12 +6,13 @@ using Photon;
 using System;
 using Photon.Pun;
 
-public class Jureimon_BT15_050 : CEntity_Effect
+public class Cherrymon_BT15_050 : CEntity_Effect
 {
     public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+        #region On Play
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
@@ -21,7 +22,7 @@ public class Jureimon_BT15_050 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Play] Reveal the top 4 cards of your deck. Add 2 cards that are either black with [Knightmon] or [DeadlyAxemon] in their names or with [Twilight] in their traits among them to your hand. Place the rest at the bottom of your deck in any order.";
+                return "[On Play] Reveal the top 4 cards of your deck. Add 2 level 6 or higher cards among them to the hand. Return the rest to the bottom of the deck.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)
@@ -74,7 +75,9 @@ public class Jureimon_BT15_050 : CEntity_Effect
                 ));
             }
         }
+        #endregion
 
+        #region On End Your Turn
         if (timing == EffectTiming.OnEndTurn)
         {
             ActivateClass activateClass = new ActivateClass();
@@ -84,7 +87,7 @@ public class Jureimon_BT15_050 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Start of Your Main Phase] If you have a Tamer with [Tai Kamiya] in its name, this Digimon may digivolve into [Greymon] in your hand without paying the cost.";
+                return "[End of Your Turn] By deleting 1 of your Digimon, you may play 1 Digimon card with the [Dark Masters] trait from your hand to an empty space in your breeding area without paying the cost.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
@@ -96,7 +99,7 @@ public class Jureimon_BT15_050 : CEntity_Effect
             {
                 if (card.Owner.GetBreedingAreaPermanents().Count == 0)
                 {
-                    if (cardSource.CardTraits.Contains("Dark Masters") || cardSource.CardTraits.Contains("Dark Masters"))
+                    if (cardSource.CardTraits.Contains("Dark Masters") || cardSource.CardTraits.Contains("DarkMasters"))
                     {
                         if (cardSource.IsDigimon)
                         {
@@ -224,7 +227,9 @@ public class Jureimon_BT15_050 : CEntity_Effect
                 }
             }
         }
+        #endregion
 
+        //Inherited Effect
         if (timing == EffectTiming.OnDetermineDoSecurityCheck)
         {
             cardEffects.Add(CardEffectFactory.PierceSelfEffect(isInheritedEffect: true, card: card, condition: null));
