@@ -1,15 +1,17 @@
+using System.Collections;
 using System.Collections.Generic;
 
-    #ROOTNAMESPACEBEGIN#
-public class #SCRIPTNAME# : CEntity_Effect
+namespace DCGO.CardEffects
 {
-    public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
+    public class #SCRIPTNAME# : CEntity_Effect
     {
-        List<ICardEffect> cardEffects = new List<ICardEffect>();
+        public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
+        {
+            List<ICardEffect> cardEffects = new List<ICardEffect>();
 
 
 
-        return cardEffects;
+            return cardEffects;
+        }
     }
 }
-#ROOTNAMESPACEEND#
