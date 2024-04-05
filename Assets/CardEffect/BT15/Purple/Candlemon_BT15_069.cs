@@ -6,13 +6,13 @@ using Photon;
 using System;
 using Photon.Pun;
 
-public class Candmon_BT15_069 : CEntity_Effect
+public class Candlemon_BT15_069 : CEntity_Effect
 {
     public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-        if (timing == EffectTiming.OnEnterFieldAnyone)
+        if (timing == EffectTiming.OnDestroyedAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Draw 1 and/or gain Memory +1", CanUseCondition, card);
@@ -21,17 +21,17 @@ public class Candmon_BT15_069 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Play] Trigger <Draw 1>. (Draw 1 card from your deck.)";
+                return "[On Deletion] If your opponent has 1 or less memory, <Draw 1>. If your opponent has 1 or more memory, gain 1 memory.";
             }
 
             bool CanUseCondition(Hashtable hashtable)
             {
-                return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
             }
 
             bool CanActivateCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
+                if (CardEffectCommons.CanActivateOnDeletion(card))
                 {
                     if (card.Owner.Enemy.MemoryForPlayer <= 1)
                     {

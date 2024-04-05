@@ -6,13 +6,14 @@ using Photon;
 using System;
 using Photon.Pun;
 
-public class Piemon_BT15_079 : CEntity_Effect
+public class Piedmon_BT15_079 : CEntity_Effect
 {
     public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-        if (timing == EffectTiming.OnEnterFieldAnyone)
+        #region On Play/When Attacking
+        if (timing == EffectTiming.OnEnterFieldAnyone || timing == EffectTiming.OnAllyAttack)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Delete 1 unsuspened Digimon", CanUseCondition, card);
@@ -21,7 +22,7 @@ public class Piemon_BT15_079 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Digivolving] Trigger <De-Digivolve 1> on 1 of your opponent's Digimon. (Trash up to 1 card from the top of one of your opponent's Digimon. If it has no digivolution cards, or becomes a level 3 Digimon, you can't trash any more cards.)";
+                return "[On Play] [When Attacking] Delete 1 of your opponent's unsuspended Digimon.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
@@ -38,7 +39,7 @@ public class Piemon_BT15_079 : CEntity_Effect
 
             bool CanUseCondition(Hashtable hashtable)
             {
-                return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                return CardEffectCommons.CanTriggerOnPlay(hashtable, card) || CardEffectCommons.CanTriggerOnAttack(hashtable, card);
             }
 
             bool CanActivateCondition(Hashtable hashtable)
@@ -79,74 +80,7 @@ public class Piemon_BT15_079 : CEntity_Effect
                 }
             }
         }
-
-        if (timing == EffectTiming.OnAllyAttack)
-        {
-            ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Delete 1 unsuspened Digimon", CanUseCondition, card);
-            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-            cardEffects.Add(activateClass);
-
-            string EffectDiscription()
-            {
-                return "[When Digivolving] Trigger <De-Digivolve 1> on 1 of your opponent's Digimon. (Trash up to 1 card from the top of one of your opponent's Digimon. If it has no digivolution cards, or becomes a level 3 Digimon, you can't trash any more cards.)";
-            }
-
-            bool CanSelectPermanentCondition(Permanent permanent)
-            {
-                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                {
-                    if (!permanent.IsSuspended)
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }
-
-            bool CanUseCondition(Hashtable hashtable)
-            {
-                return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
-            }
-
-            bool CanActivateCondition(Hashtable hashtable)
-            {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
-                {
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
-            }
-
-            IEnumerator ActivateCoroutine(Hashtable _hashtable)
-            {
-                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                {
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-
-                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                    selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectPermanentCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: maxCount,
-                        canNoSelect: false,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: null,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Destroy,
-                        cardEffect: activateClass);
-
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                }
-            }
-        }
+        #endregion
 
         if (timing == EffectTiming.None)
         {
@@ -177,6 +111,7 @@ public class Piemon_BT15_079 : CEntity_Effect
             );
         }
 
+        #region On End Opponents Turn
         if (timing == EffectTiming.OnEndTurn)
         {
             ActivateClass activateClass = new ActivateClass();
@@ -186,12 +121,12 @@ public class Piemon_BT15_079 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[End of Your Turn] Trash the top card of your security stack.";
+                return "[End of Opponent's Turn] Delete this Digimon. Then, you may play 1 Digimon card with the [Dark Masters] trait, other than [Piedmon] from your hand without paying the cost.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                if (!cardSource.CardNames.Contains("Piemon"))
+                if (!cardSource.CardNames.Contains("Piedmon"))
                 {
                     if (cardSource.IsDigimon)
                     {
@@ -284,6 +219,7 @@ public class Piemon_BT15_079 : CEntity_Effect
                 }
             }
         }
+        #endregion
 
         if (timing == EffectTiming.OnDestroyedAnyone)
         {
