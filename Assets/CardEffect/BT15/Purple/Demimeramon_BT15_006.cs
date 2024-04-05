@@ -6,7 +6,7 @@ using Photon;
 using System;
 using Photon.Pun;
 
-public class Puchimeramon_BT15_006 : CEntity_Effect
+public class Demimeramon_BT15_006 : CEntity_Effect
 {
     public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
     {
@@ -22,7 +22,7 @@ public class Puchimeramon_BT15_006 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Deletion] Gain 1 memory.";
+                return "[On Deletion] By trashing 1 level 5 or higher Digimon card in your hand, <Draw 2>.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)

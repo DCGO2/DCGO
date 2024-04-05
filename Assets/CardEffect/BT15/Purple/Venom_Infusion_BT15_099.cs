@@ -6,7 +6,7 @@ using Photon;
 using System;
 using Photon.Pun;
 
-public class VenomUnfuse_BT15_099 : CEntity_Effect
+public class Venom_Infusion_BT15_099 : CEntity_Effect
 {
     public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
     {
@@ -21,7 +21,7 @@ public class VenomUnfuse_BT15_099 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Main] Delete 1 of your opponent's Digimon with the lowest level.";
+                return "[Main] By trashing 1 Digimon card in your hand, delete 1 of your opponent's Digimon whose level is less than or equal to the trashed car's level.When a card with [Myotismon] in its text is trashed by this effect, <Draw 2>.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)

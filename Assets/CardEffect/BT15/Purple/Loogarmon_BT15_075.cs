@@ -6,12 +6,13 @@ using Photon;
 using System;
 using Photon.Pun;
 using System.Net.Security;
-public class Rugarumon_BT15_075 : CEntity_Effect
+public class Loogarmon_BT15_075 : CEntity_Effect
 {
     public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+        #region Alternate Digivolution Requirement
         if (timing == EffectTiming.None)
         {
             bool PermanentCondition(Permanent targetPermanent)
@@ -37,8 +38,10 @@ public class Rugarumon_BT15_075 : CEntity_Effect
                 card: card,
                 condition: null));
         }
+        #endregion
 
-        if (timing == EffectTiming.OnEnterFieldAnyone)
+        #region When Digivolving/On Attack
+        if (timing == EffectTiming.OnEnterFieldAnyone || timing == EffectTiming.OnAllyAttack)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("DP +2000 and Draw 1", CanUseCondition, card);
@@ -52,7 +55,7 @@ public class Rugarumon_BT15_075 : CEntity_Effect
 
             bool CanUseCondition(Hashtable hashtable)
             {
-                return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card) || CardEffectCommons.CanTriggerOnAttack(hashtable, card);
             }
 
             bool CanActivateCondition(Hashtable hashtable)
@@ -123,93 +126,9 @@ public class Rugarumon_BT15_075 : CEntity_Effect
                 }
             }
         }
+        #endregion
 
-        if (timing == EffectTiming.OnAllyAttack)
-        {
-            ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("DP +2000 and Draw 1", CanUseCondition, card);
-            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
-            cardEffects.Add(activateClass);
-
-            string EffectDiscription()
-            {
-                return "[When Attacking] [Once Per Turn] For each of this Digimon's digivolution cards, trash any 1 digivolution card from 1 of your opponent's Digimon. Then, until the end of your opponent's turn, all of their Digimon with no digivolution cards can't suspend.";
-            }
-
-            bool CanUseCondition(Hashtable hashtable)
-            {
-                return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
-            }
-
-            bool CanActivateCondition(Hashtable hashtable)
-            {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
-                {
-                    if (card.Owner.HandCards.Count >= 1)
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
-            }
-
-            IEnumerator ActivateCoroutine(Hashtable _hashtable)
-            {
-                if (card.Owner.HandCards.Count >= 1)
-                {
-                    bool discarded = false;
-
-                    int discardCount = 1;
-
-                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                    selectHandEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: cardSource => true,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: discardCount,
-                        canNoSelect: true,
-                        canEndNotMax: false,
-                        isShowOpponent: true,
-                        selectCardCoroutine: null,
-                        afterSelectCardCoroutine: AfterSelectCardCoroutine,
-                        mode: SelectHandEffect.Mode.Discard,
-                        cardEffect: activateClass);
-
-                    yield return StartCoroutine(selectHandEffect.Activate());
-
-                    IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
-                    {
-                        if (cardSources.Count >= 1)
-                        {
-                            discarded = true;
-
-                            yield return null;
-                        }
-                    }
-
-                    if (discarded)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
-                                targetPermanent: card.PermanentOfThisCard(),
-                                changeValue: 2000,
-                                effectDuration: EffectDuration.UntilEachTurnEnd,
-                                activateClass: activateClass));
-
-                        if (CardEffectCommons.IsExistOnBattleArea(card))
-                        {
-                            if (card.PermanentOfThisCard().DigivolutionCards.Some(cardSource => cardSource.IsTamer && cardSource.CardTraits.Contains("SoC")))
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
+        #region End of Attack - Inherited Effect
         if (timing == EffectTiming.OnEndAttack)
         {
             ActivateClass activateClass = new ActivateClass();
@@ -221,7 +140,7 @@ public class Rugarumon_BT15_075 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[End of Attack][Once Per Turn] When your opponent has no Digimon in play, if this Digimon has [Growlmon] or [Gallantmon] in its name, gain 2 memory.";
+                return "[End of Attack] [Once Per Turn] If your opponent has 1 or more memory, gain 1 memory.";
             }
 
             bool CanUseCondition(Hashtable hashtable)
@@ -247,6 +166,7 @@ public class Rugarumon_BT15_075 : CEntity_Effect
                 yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
             }
         }
+        #endregion
 
         return cardEffects;
     }
