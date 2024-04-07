@@ -209,7 +209,7 @@ public class Marvin_Jackson_BT15_086 : CEntity_Effect
             cardEffects.Add(CardEffectFactory.JammingSelfStaticEffect(isInheritedEffect: true, card: card, condition: Condition));
         }
 
-        if (timing == EffectTiming.OnAllyAttack)
+        if (timing == EffectTiming.None)
         {
             bool Condition()
             {
