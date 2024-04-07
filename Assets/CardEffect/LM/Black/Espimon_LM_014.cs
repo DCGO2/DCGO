@@ -1,60 +1,62 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class Espimon_LM_014 : CEntity_Effect
+namespace DCGO.CardEffects.LM
 {
-    public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
+    public class Espimon_LM_014 : CEntity_Effect
     {
-        List<ICardEffect> cardEffects = new List<ICardEffect>();
-
-        #region OnPlay
-        if (timing == EffectTiming.OnEnterFieldAnyone)
+        public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
-            ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Reveal the top 3 cards of deck", CanUseCondition, card);
-            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-            cardEffects.Add(activateClass);
+            List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            string EffectDiscription()
+            #region OnPlay
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
-                return "[On Play] Reveal the top 3 cards of your deck. Add 1 card with <Blocker> or 1 Tamer card among them to the hand. Return the rest to the bottom of the deck.";
-            }
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Reveal the top 3 cards of deck", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                cardEffects.Add(activateClass);
 
-            bool CanSelectBlockerCondition(CardSource cardSource)
-            {
-                return cardSource.HasBlocker;
-            }
-
-            bool CanSelectTamerCondition(CardSource cardSource)
-            {
-                return cardSource.IsTamer;
-            }
-
-            bool CanUseCondition(Hashtable hashtable)
-            {
-                return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-            }
-
-            bool CanActivateCondition(Hashtable hashtable)
-            {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
+                string EffectDiscription()
                 {
-                    if (card.Owner.LibraryCards.Count >= 1)
-                    {
-                        return true;
-                    }
+                    return "[On Play] Reveal the top 3 cards of your deck. Add 1 card with <Blocker> or 1 Tamer card among them to the hand. Return the rest to the bottom of the deck.";
                 }
 
-                return false;
-            }
+                bool CanSelectBlockerCondition(CardSource cardSource)
+                {
+                    return cardSource.HasBlocker;
+                }
 
-            IEnumerator ActivateCoroutine(Hashtable _hashtable)
-            {
-                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SimplifiedRevealDeckTopCardsAndSelect(
-                    revealCount: 3,
-                    simplifiedSelectCardConditions:
-                    new SimplifiedSelectCardConditionClass[]
+                bool CanSelectTamerCondition(CardSource cardSource)
+                {
+                    return cardSource.IsTamer;
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
+                        if (card.Owner.LibraryCards.Count >= 1)
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SimplifiedRevealDeckTopCardsAndSelect(
+                        revealCount: 3,
+                        simplifiedSelectCardConditions:
+                        new SimplifiedSelectCardConditionClass[]
+                        {
                         new SimplifiedSelectCardConditionClass(
                             canTargetCondition:CanSelectBlockerCondition,
                             message: "Select 1 card with [Blocker].",
@@ -67,62 +69,63 @@ public class Espimon_LM_014 : CEntity_Effect
                             mode: SelectCardEffect.Mode.AddHand,
                             maxCount: 1,
                             selectCardCoroutine: null),
-                    },
-                    remainingCardsPlace: RemainingCardsPlace.DeckBottom,
-                    activateClass: activateClass
-                ));
+                        },
+                        remainingCardsPlace: RemainingCardsPlace.DeckBottom,
+                        activateClass: activateClass
+                    ));
+                }
             }
-        }
-        #endregion
+            #endregion
 
-        #region OnAttackTargetChanged - Inherited Effect
-        if (timing == EffectTiming.OnAttackTargetChanged)
-        {
-            ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Draw 1", CanUseCondition, card);
-            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
-            activateClass.SetIsInheritedEffect(true);
-            activateClass.SetHashString("Draw+1_LM_014");
-            cardEffects.Add(activateClass);
-
-            string EffectDiscription()
+            #region OnAttackTargetChanged - Inherited Effect
+            if (timing == EffectTiming.OnAttackTargetChanged)
             {
-                return "[Opponent's Turn] [Once Per Turn] When the attack target is switched, <Draw 1>.";
-            }
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Draw 1", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetIsInheritedEffect(true);
+                activateClass.SetHashString("Draw+1_LM_014");
+                cardEffects.Add(activateClass);
 
-            bool CanUseCondition(Hashtable hashtable)
-            {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
+                string EffectDiscription()
                 {
-                    if (CardEffectCommons.CanTriggerOnPermanentAttackTargetSwitch(hashtable, permanent => true))
-                    {
-                        return true;
-                    }
+                    return "[Opponent's Turn] [Once Per Turn] When the attack target is switched, <Draw 1>.";
                 }
 
-                return false;
-            }
-
-            bool CanActivateCondition(Hashtable hashtable)
-            {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
+                bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (card.Owner.LibraryCards.Count >= 1)
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        return true;
+                        if (CardEffectCommons.CanTriggerOnPermanentAttackTargetSwitch(hashtable, permanent => true))
+                        {
+                            return true;
+                        }
                     }
+
+                    return false;
                 }
 
-                return false;
-            }
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (card.Owner.LibraryCards.Count >= 1)
+                        {
+                            return true;
+                        }
+                    }
 
-            IEnumerator ActivateCoroutine(Hashtable _hashtable)
-            {
-                yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
+                    return false;
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
+                }
             }
+            #endregion
+
+            return cardEffects;
         }
-        #endregion
-
-        return cardEffects;
     }
 }

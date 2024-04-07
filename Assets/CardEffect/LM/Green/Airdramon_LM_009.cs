@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.LM
 {
     public class Airdramon_LM_009 : CEntity_Effect
     {
