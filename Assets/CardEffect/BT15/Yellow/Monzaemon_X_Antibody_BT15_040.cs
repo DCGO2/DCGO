@@ -122,12 +122,28 @@ public class Monzaemon_X_Antibody_BT15_040 : CEntity_Effect
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Give opponent's Digimon -2000 DP for each Digimon", CanUseCondition, card);
-            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+            activateClass.SetHashString("ReduceDP_BT15_040");
             cardEffects.Add(activateClass);
+           
 
             string EffectDiscription()
             {
                 return "[All Turns][Once per turn] When another of your Digimon is played, for each of your Digimon, 1 of your opponent's Digimon gets -2000 DP unti the end of your opponent's turn";
+            }
+
+            bool CanUseCondition(Hashtable hashtable)
+            {
+                if (CardEffectCommons.IsExistOnBattleArea(card))
+                {
+                    if (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, (permanent) => 
+                        CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) && permanent.TopCard != card))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
             }
 
             bool CanActivateCondition(Hashtable hashtable)
@@ -137,33 +153,6 @@ public class Monzaemon_X_Antibody_BT15_040 : CEntity_Effect
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
                         return true;
-                    }
-                }
-
-                return false;
-            }
-
-            bool CanUseCondition(Hashtable hashtable)
-            {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
-                {
-                    return true;
-                }
-
-                return false;
-            }
-
-
-            bool PermanentCondition(Permanent permanent)
-            {
-                if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
-                {
-                    if (permanent.IsDigimon)
-                    {
-                        if (permanent != card.PermanentOfThisCard())
-                        {
-                            return true;
-                        }
                     }
                 }
 
@@ -185,7 +174,7 @@ public class Monzaemon_X_Antibody_BT15_040 : CEntity_Effect
                 int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
 
                 int maxDP = 0;
-                maxDP += 2000 * card.Owner.GetBattleAreaPermanents().Count();
+                maxDP += 2000 * card.Owner.GetBattleAreaDigimons().Count();
 
                 SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
