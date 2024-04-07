@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Diarbbitmon-LM-013
+  m_EditorClassIdentifier: 
+  CardIndex: 3258
+  cardColors: 03000000
+  PlayCost: 6
+  EvoCosts:
+  - CardColor: 3
+    Level: 5
+    MemoryCost: 3
+  Level: 6
+  CardName_JPN: "\u30C7\u30A3\u30EB\u30D3\u30C3\u30C8\u30E2\u30F3\r"
+  CardName_ENG: Diarbbitmon
+  Form_JPN:
+  - "\u7A76\u6975\u4F53\r"
+  Form_ENG:
+  - Mega
+  Attribute_JPN:
+  - "\u30EF\u30AF\u30C1\u30F3\u7A2E\r"
+  Attribute_ENG:
+  - Vaccine
+  Type_JPN:
+  - "\u7363\u9A0E\u58EB\u578B\r"
+  Type_ENG:
+  - Beast Knight
+  CardSpriteName: LM-013
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[Hand] [Counter]  (Your Digimon may digivolve into this
+    card without paying the cost).[On Play] [When Digivolving] Suspend 1 of your
+    opponent''s Digimon. Then, if they have no unsuspended Digimon, gain 2 memory.[When
+    Attacking] You may play 1 Digimon card with [Angoramon]&#160;in its text from
+    your hand without paying the cost. At the end of your opponent''s turn, return
+    that Digimon to the hand.'
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Diarbbitmon_LM_013
+  DP: 11000
+  rarity: 3
+  OverflowMemory: 4
+  CardID: LM-013
+  MaxCountInDeck: 4

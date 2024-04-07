@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Quantumon-LM-020
+  m_EditorClassIdentifier: 
+  CardIndex: 3265
+  cardColors: 0200000003000000
+  PlayCost: 13
+  EvoCosts:
+  - CardColor: 2
+    Level: 5
+    MemoryCost: 5
+  - CardColor: 3
+    Level: 5
+    MemoryCost: 5
+  Level: 6
+  CardName_JPN: "\u30AF\u30AA\u30F3\u30BF\u30E2\u30F3\r"
+  CardName_ENG: Quantumon
+  Form_JPN:
+  - "\u7A76\u6975\u4F53\r"
+  Form_ENG:
+  - Mega
+  Attribute_JPN:
+  - "\u30C7\u30FC\u30BF\u7A2E\r"
+  Attribute_ENG:
+  - Data
+  Type_JPN:
+  - "\u5996\u7CBE\u578B\r"
+  Type_ENG:
+  - Fairy
+  CardSpriteName: LM-020
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[When Digivolving] By placing 1 Digimon on top of its owner''s
+    security stack, reveal all of your opponent''s security cards, and place 1 card
+    among them on top of your opponent''s deck. Shuffle the rest and return them
+    to the security stack.[Start of Opponent''s Turn] Declare 1 card category. Then,
+    reveal the top card of your opponent''s deck. If that card is of the declared
+    category, this Digimon isn''t affected by the effects of that card category for
+    the turn. Return the revealed card to the top or the bottom of your opponent''s
+    deck.'
+  InheritedEffectDiscription_JPN: "-\r"
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Quantumon_LM_020
+  DP: 13000
+  rarity: 4
+  OverflowMemory: 0
+  CardID: LM-020
+  MaxCountInDeck: 4
