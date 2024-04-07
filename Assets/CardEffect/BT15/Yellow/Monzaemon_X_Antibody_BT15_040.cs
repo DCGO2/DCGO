@@ -12,6 +12,25 @@ public class Monzaemon_X_Antibody_BT15_040 : CEntity_Effect
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+        if (timing == EffectTiming.None)
+        {
+            bool PermanentCondition(Permanent targetPermanent)
+            {
+                if (targetPermanent.TopCard.CardNames.Contains("Monzaemon") && targetPermanent.Level == 5 && !targetPermanent.TopCard.HasXAntibodyTraits)
+                {
+                    return true;
+                }
+                return false;
+            }
+
+            cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
+                permanentCondition: PermanentCondition,
+                digivolutionCost: 0,
+                ignoreDigivolutionRequirement: false,
+                card: card,
+                condition: null));
+        }
+
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
@@ -26,7 +45,7 @@ public class Monzaemon_X_Antibody_BT15_040 : CEntity_Effect
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                if (cardSource.CardNames.Contains("Numemon") || cardSource.HasLevel && cardSource.Level <=3)
+                if (cardSource.ContainsCardName("Numemon") || (cardSource.HasLevel && cardSource.Level <=3))
                 {
                     if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                     {
@@ -98,7 +117,7 @@ public class Monzaemon_X_Antibody_BT15_040 : CEntity_Effect
                 }
             }
         }
-        /*
+        
         if(timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
@@ -111,9 +130,33 @@ public class Monzaemon_X_Antibody_BT15_040 : CEntity_Effect
                 return "[All Turns][Once per turn] When another of your Digimon is played, for each of your Digimon, 1 of your opponent's Digimon gets -2000 DP unti the end of your opponent's turn";
             }
 
+            bool CanActivateCondition(Hashtable hashtable)
+            {
+                if (CardEffectCommons.IsExistOnBattleArea(card))
+                {
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            bool CanUseCondition(Hashtable hashtable)
+            {
+                if (CardEffectCommons.IsExistOnBattleArea(card))
+                {
+                    return true;
+                }
+
+                return false;
+            }
+
+
             bool PermanentCondition(Permanent permanent)
             {
-                if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
+                if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
                 {
                     if (permanent.IsDigimon)
                     {
@@ -137,8 +180,41 @@ public class Monzaemon_X_Antibody_BT15_040 : CEntity_Effect
                 return false;
             }
 
+            IEnumerator ActivateCoroutine(Hashtable _hashtable)
+            {
+                int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+
+                int maxDP = 0;
+                maxDP += 2000 * card.Owner.GetBattleAreaPermanents().Count();
+
+                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                selectPermanentEffect.SetUp(
+                    selectPlayer: card.Owner,
+                    canTargetCondition: CanSelectPermanentCondition,
+                    canTargetCondition_ByPreSelecetedList: null,
+                    canEndSelectCondition: null,
+                    maxCount: maxCount,
+                    canNoSelect: false,
+                    canEndNotMax: false,
+                    selectPermanentCoroutine: SelectPermanentCoroutine,
+                    afterSelectPermanentCoroutine: null,
+                    mode: SelectPermanentEffect.Mode.Custom,
+                    cardEffect: activateClass);
+
+                selectPermanentEffect.SetUpCustomMessage("Selcect 1 Digimon that will get DP " + maxDP + ".", "The opponent is selecting 1 Digimon that will get DP " + maxDP + ".");
+
+                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: permanent, changeValue: -maxDP, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
+
+                }
+            }
+
         }
-        */
+        
 
         return cardEffects;
     }
