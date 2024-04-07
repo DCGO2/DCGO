@@ -161,7 +161,7 @@ public class Hisyaryumon_BT15_063 : CEntity_Effect
             {
                 if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
-                    if (CardEffectCommons.CanTriggerWhenPermanentSuspends(hashtable, (permanent) => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) && permanent != card.PermanentOfThisCard()))
+                    if (CardEffectCommons.CanTriggerWhenPermanentSuspends(hashtable, (permanent) => CardEffectCommons.IsExistOnBattleAreaDigimon(card) && permanent != card.PermanentOfThisCard()))
                     {
                         if (CardEffectCommons.IsByEffect(hashtable, null))
                         {

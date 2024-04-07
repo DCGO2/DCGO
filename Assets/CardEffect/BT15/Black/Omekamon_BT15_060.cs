@@ -14,6 +14,11 @@ public class Omekamon_BT15_060 : CEntity_Effect
 
         if(timing == EffectTiming.None)
         {
+            cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(isInheritedEffect: true, card: card, condition: null));
+        }
+
+        if(timing == EffectTiming.None)
+        {
             ChangeCardNamesClass changeCardNamesClass = new ChangeCardNamesClass();
             changeCardNamesClass.SetUpICardEffect("Also treated as [Omnimon] when revealed from the top of the deck.", CanUseCondition, card);
             changeCardNamesClass.SetUpChangeCardNamesClass(changeCardNames: ChangeCardNames);
