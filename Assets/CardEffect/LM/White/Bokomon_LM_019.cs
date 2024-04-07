@@ -2,177 +2,180 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-public class Bokomon_LM_019 : CEntity_Effect
+namespace DCGO.CardEffects.LM
 {
-    public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
+    public class Bokomon_LM_019 : CEntity_Effect
     {
-        List<ICardEffect> cardEffects = new List<ICardEffect>();
-
-        #region OnPlay
-        if (timing == EffectTiming.OnEnterFieldAnyone)
+        public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
-            ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Reveal the top 4 cards of deck", CanUseCondition, card);
-            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-            cardEffects.Add(activateClass);
+            List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            string EffectDiscription()
+            #region OnPlay
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
-                return "[On Play] Reveal the top 4 cards of your deck. Add 1 card with [Gammamon] in its text among them to the hand. Return the rest to the bottom of the deck.";
-            }
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Reveal the top 4 cards of deck", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                cardEffects.Add(activateClass);
 
-            bool CanSelectCardCondition(CardSource cardSource)
-            {
-                return cardSource.HasText("Gammamon");
-            }
-
-            bool CanUseCondition(Hashtable hashtable)
-            {
-                return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-            }
-
-            bool CanActivateCondition(Hashtable hashtable)
-            {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
+                string EffectDiscription()
                 {
-                    if (card.Owner.LibraryCards.Count >= 1)
-                    {
-                        return true;
-                    }
+                    return "[On Play] Reveal the top 4 cards of your deck. Add 1 card with [Gammamon] in its text among them to the hand. Return the rest to the bottom of the deck.";
                 }
 
-                return false;
-            }
+                bool CanSelectCardCondition(CardSource cardSource)
+                {
+                    return cardSource.HasText("Gammamon");
+                }
 
-            IEnumerator ActivateCoroutine(Hashtable _hashtable)
-            {
-                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SimplifiedRevealDeckTopCardsAndSelect(
-                    revealCount: 4,
-                    simplifiedSelectCardConditions:
-                    new SimplifiedSelectCardConditionClass[]
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
+                        if (card.Owner.LibraryCards.Count >= 1)
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SimplifiedRevealDeckTopCardsAndSelect(
+                        revealCount: 4,
+                        simplifiedSelectCardConditions:
+                        new SimplifiedSelectCardConditionClass[]
+                        {
                         new SimplifiedSelectCardConditionClass(
                             canTargetCondition:CanSelectCardCondition,
                             message: "Select 1 card with [Gammamon] in it's text.",
                             mode: SelectCardEffect.Mode.AddHand,
                             maxCount: 1,
                             selectCardCoroutine: null),
-                    },
-                    remainingCardsPlace: RemainingCardsPlace.DeckBottom,
-                    activateClass: activateClass
-                ));
+                        },
+                        remainingCardsPlace: RemainingCardsPlace.DeckBottom,
+                        activateClass: activateClass
+                    ));
+                }
             }
-        }
-        #endregion
+            #endregion
 
-        #region All Turns
-        if (timing == EffectTiming.WhenRemoveField)
-        {
-            ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Delete this Digimon to prevent 1 other Digimon from leaving Battle Area", CanUseCondition, card);
-            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
-            activateClass.SetHashString("Substitute_LM01_019");
-            cardEffects.Add(activateClass);
-
-            string EffectDiscription()
+            #region All Turns
+            if (timing == EffectTiming.WhenRemoveField)
             {
-                return "[All Turns] When one of your Digimon with [Gammamon] in its text, other than [Bokomon], would leave the battle area other than by one of your effects, by deleting this Digimon, prevent it from leaving.";
-            }
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Delete this Digimon to prevent 1 other Digimon from leaving Battle Area", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetHashString("Substitute_LM01_019");
+                cardEffects.Add(activateClass);
 
-            bool PermanentCondition(Permanent permanent)
-            {
-                if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                string EffectDiscription()
                 {
-                    if (permanent.TopCard.HasText("Gammamon") && !permanent.TopCard.CardNames.Contains("Bokomon"))
-                    {
-                        return true;
-                    }
+                    return "[All Turns] When one of your Digimon with [Gammamon] in its text, other than [Bokomon], would leave the battle area other than by one of your effects, by deleting this Digimon, prevent it from leaving.";
                 }
 
-                return false;
-            }
-
-            bool CanUseCondition(Hashtable hashtable)
-            {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
+                bool PermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, PermanentCondition))
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        if (!CardEffectCommons.IsByEffect(hashtable, cardEffect => CardEffectCommons.IsOwnerEffect(cardEffect, card)))
+                        if (permanent.TopCard.HasText("Gammamon") && !permanent.TopCard.CardNames.Contains("Bokomon"))
                         {
                             return true;
                         }
                     }
+
+                    return false;
                 }
 
-                return false;
-            }
-
-            bool CanActivateCondition(Hashtable hashtable)
-            {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
+                bool CanUseCondition(Hashtable hashtable)
                 {
-                    return true;
-                }
-
-                return false;
-            }
-
-            IEnumerator ActivateCoroutine(Hashtable _hashtable)
-            {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
-                {
-                    Permanent thisCardPermanent = card.PermanentOfThisCard();
-
-                    if (CardEffectCommons.HasMatchConditionPermanent(PermanentCondition))
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(PermanentCondition));
-
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: PermanentCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: true,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: SelectPermanentCoroutine,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to delete.", "The opponent is selecting 1 Digimon to delete.");
-
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                        if (CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, PermanentCondition))
                         {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
-                                targetPermanents: new List<Permanent>() { thisCardPermanent },
-                                activateClass: activateClass,
-                                successProcess: permanents => SuccessProcess(),
-                                failureProcess: null));
-
-                            IEnumerator SuccessProcess()
+                            if (!CardEffectCommons.IsByEffect(hashtable, cardEffect => CardEffectCommons.IsOwnerEffect(cardEffect, card)))
                             {
-                                permanent.willBeRemoveField = false;
+                                return true;
+                            }
+                        }
+                    }
 
-                                permanent.HideDeleteEffect();
-                                permanent.HideHandBounceEffect();
-                                permanent.HideDeckBounceEffect();
-                                permanent.HideWillRemoveFieldEffect();
+                    return false;
+                }
 
-                                yield return null;
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        return true;
+                    }
+
+                    return false;
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        Permanent thisCardPermanent = card.PermanentOfThisCard();
+
+                        if (CardEffectCommons.HasMatchConditionPermanent(PermanentCondition))
+                        {
+                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(PermanentCondition));
+
+                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                            selectPermanentEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: PermanentCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: maxCount,
+                                canNoSelect: true,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: SelectPermanentCoroutine,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Custom,
+                                cardEffect: activateClass);
+
+                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to delete.", "The opponent is selecting 1 Digimon to delete.");
+
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                            IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
+                                    targetPermanents: new List<Permanent>() { thisCardPermanent },
+                                    activateClass: activateClass,
+                                    successProcess: permanents => SuccessProcess(),
+                                    failureProcess: null));
+
+                                IEnumerator SuccessProcess()
+                                {
+                                    permanent.willBeRemoveField = false;
+
+                                    permanent.HideDeleteEffect();
+                                    permanent.HideHandBounceEffect();
+                                    permanent.HideDeckBounceEffect();
+                                    permanent.HideWillRemoveFieldEffect();
+
+                                    yield return null;
+                                }
                             }
                         }
                     }
                 }
             }
-        }
-        #endregion
+            #endregion
 
-        return cardEffects;
+            return cardEffects;
+        }
     }
 }
