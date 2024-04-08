@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace DCGO.CardEffects.LM
 {
@@ -58,7 +59,7 @@ namespace DCGO.CardEffects.LM
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermanentCondition))
+                    if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermanentCondition))
                     {
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
 
@@ -99,7 +100,6 @@ namespace DCGO.CardEffects.LM
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 Digimon card with [Angoramon] in its name from hand", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
-                activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("PlayAngoramon_LM_013");
                 cardEffects.Add(activateClass);
 
@@ -135,12 +135,8 @@ namespace DCGO.CardEffects.LM
                     {
                         if (card.Owner.HandCards.Count >= 1)
                         {
-                            return true;
-                        }
-
-                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
-                        {
-                            return true;
+                            if(card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
+                                return true;
                         }
                     }
 
@@ -149,8 +145,6 @@ namespace DCGO.CardEffects.LM
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    bool canSelectHand = card.Owner.HandCards.Count(CanSelectCardCondition) >= 1;
-
                     SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
                     List<CardSource> selectedCards = new List<CardSource>();
