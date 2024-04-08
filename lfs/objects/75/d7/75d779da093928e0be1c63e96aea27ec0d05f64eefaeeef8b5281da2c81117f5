@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Cthyllamon-LM-006
+  m_EditorClassIdentifier: 
+  CardIndex: 3251
+  cardColors: 0100000006000000
+  PlayCost: 11
+  EvoCosts:
+  - CardColor: 1
+    Level: 5
+    MemoryCost: 3
+  - CardColor: 6
+    Level: 5
+    MemoryCost: 3
+  Level: 6
+  CardName_JPN: "\u30AF\u30C6\u30A3\u30FC\u30E9\u30E2\u30F3\r"
+  CardName_ENG: Cthyllamon
+  Form_JPN:
+  - "\u7A76\u6975\u4F53\r"
+  Form_ENG:
+  - Mega
+  Attribute_JPN:
+  - "\u30A6\u30A3\u30EB\u30B9\u7A2E\r"
+  Attribute_ENG:
+  - Virus
+  Type_JPN:
+  - "\u5996\u7CBE\u578B\r"
+  Type_ENG:
+  - Fairy
+  CardSpriteName: LM-006
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[Trash] [Main] By returning 1 of your Tamers to the bottom
+    of the deck, play this card with the play cost reduced by the play cost of the
+    returned Tamer.[On Play] [When Digivolving] Trash the bottom 3 digivolution cards
+    of 1 of your opponent''s Digimon. Then, until the end of their turn, none of
+    their Digimon with no digivolution cards can attack.'
+  InheritedEffectDiscription_JPN: "-\r"
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Cthyllamon_LM_006
+  DP: 11000
+  rarity: 0
+  OverflowMemory: 0
+  CardID: LM-006
+  MaxCountInDeck: 4

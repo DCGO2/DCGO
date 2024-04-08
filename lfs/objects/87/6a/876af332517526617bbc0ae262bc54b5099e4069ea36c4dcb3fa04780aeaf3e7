@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Jellymon-LM-002
+  m_EditorClassIdentifier: 
+  CardIndex: 3247
+  cardColors: 01000000
+  PlayCost: 3
+  EvoCosts:
+  - CardColor: 1
+    Level: 2
+    MemoryCost: 0
+  Level: 3
+  CardName_JPN: "\u30B8\u30A7\u30EA\u30FC\u30E2\u30F3\r"
+  CardName_ENG: Jellymon
+  Form_JPN:
+  - "\u6210\u9577\u671F\r"
+  Form_ENG:
+  - Rookie
+  Attribute_JPN:
+  - "\u30C7\u30FC\u30BF\u7A2E\r"
+  Attribute_ENG:
+  - Data
+  Type_JPN:
+  - "\u8EDF\u4F53\u578B\r"
+  Type_ENG:
+  - Mollusk
+  CardSpriteName: LM-002
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[Start of Your Main Phase] If you have 7 or fewer cards
+    in your hand,  (Draw 1 card from your deck).'
+  InheritedEffectDiscription_JPN: "\u3010\u30A2\u30BF\u30C3\u30AF\u6642\u3011\u81EA\u5206\u306E\u624B\u672D\u304C7\u679A\u4EE5\u4E0B\u306A\u3089,\u226A1\u30C9\u30ED\u30FC\u226B\u3002\r"
+  InheritedEffectDiscription_ENG: '[When Attacking] If you have 7 or fewer cards
+    in your hand,  (Draw 1 card from your deck).'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Jellymon_LM_002
+  DP: 1000
+  rarity: 1
+  OverflowMemory: 0
+  CardID: LM-002
+  MaxCountInDeck: 4
