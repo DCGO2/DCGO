@@ -94,86 +94,69 @@ namespace DCGO.CardEffects.LM
 
                         IEnumerator SelectCardCoroutine(CardSource cardSource)
                         {
+                            selectedCards.Add(cardSource);
                             yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(selectedCards, activateClass));
-
-                            ActivateClass thenActivateClass = new ActivateClass();
-                            thenActivateClass.SetUpICardEffect("Delete 1 Digimon with 8000 DP, +1000 DP for each color in sources", CanUseCondition, card);
-                            thenActivateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-                            cardEffects.Add(thenActivateClass);
-
-                            int MaxDP()
-                            {
-                                int DP = 8000;
-
-                                List<CardColor> cardColors = new List<CardColor>();
-
-                                foreach (CardSource source in card.PermanentOfThisCard().cardSources)
-                                {
-                                    foreach (CardColor cardColor in source.CardColors)
-                                    {
-                                        if (!cardColors.Contains(cardColor))
-                                            cardColors.Add(cardColor);
-                                    }
-                                }
-
-                                cardColors = cardColors.Distinct().ToList();
-
-                                DP += cardColors.Count * 1000;
-
-                                return DP;
-                            }
-
-                            bool CanSelectPermanentCondition(Permanent permanent)
-                            {
-                                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                                {
-                                    if (permanent.DP <= card.Owner.MaxDP_DeleteEffect(MaxDP(), thenActivateClass))
-                                    {
-                                        return true;
-                                    }
-                                }
-
-                                return false;
-                            }
-
-                            bool CanActivateCondition(Hashtable hashtable)
-                            {
-                                if (CardEffectCommons.IsExistOnBattleArea(card))
-                                {
-                                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                                    {
-                                        return true;
-                                    }
-                                }
-
-                                return false;
-                            }
-
-                            IEnumerator ActivateCoroutine(Hashtable _hashtable)
-                            {
-                                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                                {
-                                    int maxCount = System.Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-
-                                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                                    selectPermanentEffect.SetUp(
-                                        selectPlayer: card.Owner,
-                                        canTargetCondition: CanSelectPermanentCondition,
-                                        canTargetCondition_ByPreSelecetedList: null,
-                                        canEndSelectCondition: null,
-                                        maxCount: maxCount,
-                                        canNoSelect: false,
-                                        canEndNotMax: false,
-                                        selectPermanentCoroutine: null,
-                                        afterSelectPermanentCoroutine: null,
-                                        mode: SelectPermanentEffect.Mode.Destroy,
-                                        cardEffect: thenActivateClass);
-
-                                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                                }
-                            }
                         }
+
+                        #region Then, Delete 1 of your opponent's Digimon with 8000 DP or less.
+                        int MaxDP()
+                        {
+                            int DP = 8000;
+
+                            List<CardColor> cardColors = new List<CardColor>();
+
+                            foreach (CardSource source in card.PermanentOfThisCard().cardSources)
+                            {
+                                foreach (CardColor cardColor in source.CardColors)
+                                {
+                                    if (!cardColors.Contains(cardColor))
+                                        cardColors.Add(cardColor);
+                                }
+                            }
+
+                            cardColors = cardColors.Distinct().ToList();
+
+                            DP += cardColors.Count * 1000;
+
+                            return DP;
+                        }
+
+                        bool CanSelectPermanentCondition(Permanent permanent)
+                        {
+                            if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                            {
+                                if (permanent.DP <= card.Owner.MaxDP_DeleteEffect(MaxDP(), activateClass))
+                                {
+                                    return true;
+                                }
+                            }
+
+                            return false;
+                        }
+
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                        {
+                            int maxDeleteCount = System.Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+
+                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                            selectPermanentEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: CanSelectPermanentCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: maxDeleteCount,
+                                canNoSelect: false,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: null,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Destroy,
+                                cardEffect: activateClass);
+
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                        }
+
+                        #endregion
                     }
                 }
             }
