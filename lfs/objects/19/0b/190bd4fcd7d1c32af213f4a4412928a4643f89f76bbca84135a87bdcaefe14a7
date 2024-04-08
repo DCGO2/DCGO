@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Ryudamon-LM-015
+  m_EditorClassIdentifier: 
+  CardIndex: 3260
+  cardColors: 05000000
+  PlayCost: 3
+  EvoCosts:
+  - CardColor: 5
+    Level: 2
+    MemoryCost: 0
+  Level: 3
+  CardName_JPN: "\u30EA\u30E5\u30A6\u30C0\u30E2\u30F3\r"
+  CardName_ENG: Ryudamon
+  Form_JPN:
+  - "\u6210\u9577\u671F\r"
+  Form_ENG:
+  - Rookie
+  Attribute_JPN:
+  - "\u30EF\u30AF\u30C1\u30F3\u7A2E\r"
+  Attribute_ENG:
+  - Vaccine
+  Type_JPN:
+  - "\u7363\u578B"
+  - "X\u6297\u4F53\r"
+  Type_ENG:
+  - Beast
+  - X Antibody
+  CardSpriteName: LM-015
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[When Attacking] If you have a Tamer, this Digimon may
+    digivolve into [Ginryumon] in your hand without paying the cost.'
+  InheritedEffectDiscription_JPN: "\u3010\u81EA\u5206\u306E\u30BF\u30FC\u30F3\u3011\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u304C\u7279\u5FB4\u306B\u300CX\u6297\u4F53\u300D\u3092\u6301\u3064\u9593,\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u3092DP+1000\u3002\r"
+  InheritedEffectDiscription_ENG: '[Your Turn] While this Digimon has the [X Antibody]&#160;trait,
+    it gets +1000 DP.'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Ryudamon_LM_015
+  DP: 1000
+  rarity: 0
+  OverflowMemory: 0
+  CardID: LM-015
+  MaxCountInDeck: 4
