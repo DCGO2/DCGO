@@ -20,7 +20,7 @@ public class Bombermon_BT15_039 : CEntity_Effect
 
             cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
         }
-
+        #region On Play
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
@@ -147,7 +147,9 @@ public class Bombermon_BT15_039 : CEntity_Effect
                 }
             }
         }
+        #endregion
 
+        #region When Digivolving
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
@@ -274,7 +276,9 @@ public class Bombermon_BT15_039 : CEntity_Effect
                 }
             }
         }
+        #endregion
 
+        #region All Turns
         if (timing == EffectTiming.None)
         {
             AddSkillClass addSkillClass = new AddSkillClass();
@@ -328,7 +332,9 @@ public class Bombermon_BT15_039 : CEntity_Effect
                 return cardEffects;
             }
         }
+        #endregion
 
+        #region Inheritable
         if (timing == EffectTiming.None)
         {
             AddSkillClass addSkillClass = new AddSkillClass();
@@ -382,6 +388,7 @@ public class Bombermon_BT15_039 : CEntity_Effect
                 return cardEffects;
             }
         }
+        #endregion
 
         return cardEffects;
     }

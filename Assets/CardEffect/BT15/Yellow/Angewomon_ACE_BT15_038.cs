@@ -16,7 +16,9 @@ public class Angewomon_ACE_BT15_038 : CEntity_Effect
       cardEffects.Add(CardEffectFactory.BlastDigivolveEffect(card: card, condition: null));
     }
 
-    if (timing == EffectTiming.OnEnterFieldAnyone)
+        #region On Play
+
+        if (timing == EffectTiming.OnEnterFieldAnyone)
     {
       ActivateClass activateClass = new ActivateClass();
       activateClass.SetUpICardEffect("Trash the top card of your security so that opponent's 1 Digimon gains DP -6000", CanUseCondition, card);
@@ -113,8 +115,11 @@ public class Angewomon_ACE_BT15_038 : CEntity_Effect
         }
       }
     }
+#endregion
 
-    if (timing == EffectTiming.OnEnterFieldAnyone)
+        #region When Digivolving 
+
+        if (timing == EffectTiming.OnEnterFieldAnyone)
     {
       ActivateClass activateClass = new ActivateClass();
       activateClass.SetUpICardEffect("Trash the top card of your security so that opponent's 1 Digimon gains DP -6000", CanUseCondition, card);
@@ -211,8 +216,11 @@ public class Angewomon_ACE_BT15_038 : CEntity_Effect
         }
       }
     }
+        #endregion
 
-    if (timing == EffectTiming.OnLoseSecurity)
+        #region All Turns
+
+        if (timing == EffectTiming.OnLoseSecurity)
     {
       ActivateClass activateClass = new ActivateClass();
       activateClass.SetUpICardEffect("Recovery +1 (Deck)", CanUseCondition, card);
@@ -256,7 +264,9 @@ public class Angewomon_ACE_BT15_038 : CEntity_Effect
         yield return ContinuousController.instance.StartCoroutine(new IRecovery(card.Owner, 1, activateClass).Recovery());
       }
     }
+        #endregion
 
-    return cardEffects;
+
+        return cardEffects;
   }
 }

@@ -18,6 +18,8 @@ public class Wizardmon_BT15_036 : CEntity_Effect
             cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
         }
 
+        #region On Deletion
+
         if (timing == EffectTiming.OnDestroyedAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
@@ -118,8 +120,10 @@ public class Wizardmon_BT15_036 : CEntity_Effect
                 }
             }
         }
+        #endregion
 
-            if (timing == EffectTiming.OnEnterFieldAnyone)
+        #region On Play
+        if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash a security to give opponent's Digimon -6000 DP.", CanUseCondition, card);
@@ -135,7 +139,7 @@ public class Wizardmon_BT15_036 : CEntity_Effect
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (card.Owner.SecurityCards.Count > 0)
+                        if (card.Owner.SecurityCards.Count >= 1)
                         {
                             return true;
                         }
@@ -221,6 +225,7 @@ public class Wizardmon_BT15_036 : CEntity_Effect
             
         
         }
+        #endregion
 
         return cardEffects;
     }
