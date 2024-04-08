@@ -1374,6 +1374,36 @@ public class CardSource : MonoBehaviour
     }
     #endregion
 
+    #region whether this card has at least 1 trait that contains "Beast Dragon"
+    public bool HasBeastDragonTraits
+    {
+        get
+        {
+            if (ContainsTraits("BeastDragon"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+    #endregion
+
+    #region whether this card has at least 1 trait that contains "DigiPolice"
+    public bool HasDigiPoliceTraits
+    {
+        get
+        {
+            if (ContainsTraits("DigiPolice"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+    #endregion
+
     #region whether this card has the string in text
     public bool HasText(string text)
     {

@@ -5,6 +5,7 @@ using System.Linq;
 using Photon;
 using System;
 using Photon.Pun;
+using System.Drawing.Printing;
 
 public class Airdramon_BT15_059 : CEntity_Effect
 {
@@ -47,17 +48,17 @@ public class Airdramon_BT15_059 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Play] By placing 1 blue level 3 Digimon card or 1 Digimon card with [Aqua] or [Sea Animal] in one of its traits from your hand under this Digimon as its bottom digivolution card, <Draw 1>.";
+                return "[On Play] By placing 1 [Marvin Jackson] from your hand under this Digimon as it's bottom digivolution card, [De-Digivolve 1] 1 of your opponent's Digimon.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                if (cardSource.CardNames.Contains("AA BB"))
+                if (cardSource.CardNames.Contains("Marvin Jackson"))
                 {
                     return true;
                 }
 
-                if (cardSource.CardNames.Contains("AABB"))
+                if (cardSource.CardNames.Contains("MarvinJackson"))
                 {
                     return true;
                 }
@@ -180,17 +181,17 @@ public class Airdramon_BT15_059 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Digivolving] By placing 1 blue level 3 Digimon card or 1 Digimon card with [Aqua] or [Sea Animal] in one of its traits from your hand under this Digimon as its bottom digivolution card, <Draw 1>.";
+                return "[On Play] By placing 1[Marvin Jackson] from your hand under this Digimon as it's bottom digivolution card, [De-Digivolve 1] 1 of your opponent's Digimon.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                if (cardSource.CardNames.Contains("AA BB"))
+                if (cardSource.CardNames.Contains("Marvin Jackson"))
                 {
                     return true;
                 }
 
-                if (cardSource.CardNames.Contains("AABB"))
+                if (cardSource.CardNames.Contains("MarvinJackson"))
                 {
                     return true;
                 }
