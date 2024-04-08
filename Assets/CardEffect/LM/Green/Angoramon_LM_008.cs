@@ -22,9 +22,22 @@ namespace DCGO.CardEffects.LM
                     return "[Start of Your Main Phase] If you have a Tamer, gain 1 memory.";
                 }
 
+                bool HasTamerCondition(Permanent permanent)
+                {
+                    return permanent.IsTamer;
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return card.Owner.CanAddMemory(activateClass);
+                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, HasTamerCondition))
+                    {
+                        if(card.Owner.CanAddMemory(activateClass))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -58,7 +71,7 @@ namespace DCGO.CardEffects.LM
                         {
                             if(card.PermanentOfThisCard().TopCard != card)
                             {
-                                if (card.PermanentOfThisCard().TopCard.CardNames.Contains("Angoramon"))
+                                if (card.PermanentOfThisCard().TopCard.HasText("Angoramon"))
                                 {
                                     return true;
                                 }

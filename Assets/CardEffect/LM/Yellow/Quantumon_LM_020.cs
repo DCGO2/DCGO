@@ -244,17 +244,17 @@ namespace DCGO.CardEffects.LM
                             message: "",
                             mode: SelectCardEffect.Mode.Custom,
                             maxCount: -1,
-                            selectCardCoroutine: RevealedCardsCoroutine),
+                            selectCardCoroutine: null),
                         remainingCardsPlace: RemainingCardsPlace.DeckTopOrBottom,
                         activateClass: activateClass,
-                        revealedCardsCoroutine: null,
+                        revealedCardsCoroutine: RevealedCardsCoroutine,
                         refSelectedCards: null,
                         isOpponentDeck: true
                     ));
 
-                    IEnumerator RevealedCardsCoroutine(CardSource revealedCard)
+                    IEnumerator RevealedCardsCoroutine(List<CardSource> revealedCards)
                     {
-                        if (revealedCard.CardKind.Equals(selectedCategory))
+                        if (revealedCards[0].CardKind.Equals(selectedCategory))
                         {
                             CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
                             canNotAffectedClass.SetUpICardEffect("Isn't affected by opponent's Digimon's effects", CanUseCondition, card);

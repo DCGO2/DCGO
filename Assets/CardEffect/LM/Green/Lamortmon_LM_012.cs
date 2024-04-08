@@ -61,7 +61,7 @@ namespace DCGO.CardEffects.LM
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermanentCondition))
+                    if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermanentCondition))
                     {
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
 
@@ -84,7 +84,7 @@ namespace DCGO.CardEffects.LM
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectUnsuspendCondition))
+                        if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectUnsuspendCondition))
                         {
                             int blockerCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectUnsuspendCondition));
 
