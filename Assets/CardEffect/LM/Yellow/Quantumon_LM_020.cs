@@ -25,20 +25,7 @@ namespace DCGO.CardEffects.LM
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.CardNames.Contains("X Antibody") || cardSource.CardNames.Contains("XAntibody"))
-                    {
-                        return true;
-                    }
-
-                    if (cardSource.Level == 6)
-                    {
-                        if (cardSource.HasLevel)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return true;
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -80,7 +67,6 @@ namespace DCGO.CardEffects.LM
                     bool placedToSecurity = false;
 
                     List<Permanent> selectedPermanents = new List<Permanent>();
-                    List<CardSource> selectedCards = new List<CardSource>();
 
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
@@ -135,7 +121,7 @@ namespace DCGO.CardEffects.LM
                                 canNoSelect: () => false,
                                 selectCardCoroutine: SelectCardCoroutine,
                                 afterSelectCardCoroutine: AfterSelectCardCoroutine,
-                                message: "Select 1 card to discard.",
+                                message: "Select 1 card to return to top of deck.",
                                 maxCount: maxCount,
                                 canEndNotMax: false,
                                 isShowOpponent: true,
@@ -260,7 +246,10 @@ namespace DCGO.CardEffects.LM
                             maxCount: -1,
                             selectCardCoroutine: RevealedCardsCoroutine),
                         remainingCardsPlace: RemainingCardsPlace.DeckTopOrBottom,
-                        activateClass: activateClass
+                        activateClass: activateClass,
+                        revealedCardsCoroutine: null,
+                        refSelectedCards: null,
+                        isOpponentDeck: true
                     ));
 
                     IEnumerator RevealedCardsCoroutine(CardSource revealedCard)
