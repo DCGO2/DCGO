@@ -21,7 +21,8 @@ public class Gatomon_BT15_037 : CEntity_Effect
             cardEffects.Add(CardEffectFactory.BarrierSelfEffect(isInheritedEffect: true, card: card, condition: null));
         }
 
-        if(timing == EffectTiming.OnLoseSecurity)
+        #region All Turns
+        if (timing == EffectTiming.OnLoseSecurity)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Gain 1 memory.", CanUseCondition, card);
@@ -60,7 +61,9 @@ public class Gatomon_BT15_037 : CEntity_Effect
                 yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
             }
         }
+        #endregion
 
+        #region When trashed from security
         if (timing == EffectTiming.OnDiscardSecurity)
         {
             ActivateClass activateClass = new ActivateClass();
@@ -88,7 +91,8 @@ public class Gatomon_BT15_037 : CEntity_Effect
                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: new List<CardSource>() { card }, activateClass: activateClass, payCost: false, isTapped: false, root: SelectCardEffect.Root.Execution, activateETB: true));
             }
 
-        }    
+        }
+        #endregion
 
         return cardEffects;
     }

@@ -12,6 +12,8 @@ public class Geremon_BT15_035 : CEntity_Effect
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+        #region Rule Text
+
         if (timing == EffectTiming.None)
         {
             ChangeCardNamesClass changeCardNamesClass = new ChangeCardNamesClass();
@@ -34,6 +36,9 @@ public class Geremon_BT15_035 : CEntity_Effect
                 return CardNames;
             }
         }
+        #endregion
+
+        #region On Play
 
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
@@ -162,6 +167,10 @@ public class Geremon_BT15_035 : CEntity_Effect
             }
         }
 
+        #endregion
+
+        #region On Deletion
+
         if (timing == EffectTiming.OnDestroyedAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
@@ -288,12 +297,16 @@ public class Geremon_BT15_035 : CEntity_Effect
                 }
             }
         }
+        #endregion
+
+        #region Inheritable
 
         if (timing == EffectTiming.OnAllyAttack)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Security Attack -1", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+            activateClass.SetHashString("Sec-1_BT15_035");
             activateClass.SetIsInheritedEffect(true);
             cardEffects.Add(activateClass);
 
@@ -304,7 +317,11 @@ public class Geremon_BT15_035 : CEntity_Effect
 
             bool CanSelectPermanentCondition(Permanent permanent)
             {
-                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+                if(CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent,card))
+                {
+                    return true;
+                }
+                return false;
             }
 
             bool CanUseCondition(Hashtable hashtable)
@@ -314,13 +331,12 @@ public class Geremon_BT15_035 : CEntity_Effect
 
             bool CanActivateCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card))
-                {
+        
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
                         return true;
                     }
-                }
+                
 
                 return false;
             }
@@ -363,7 +379,9 @@ public class Geremon_BT15_035 : CEntity_Effect
                 }
             }
         }
-
+        #endregion
+         
         return cardEffects;
+
     }
 }

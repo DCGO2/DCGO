@@ -12,7 +12,9 @@ public class Salamon_BT15_034 : CEntity_Effect
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-        if(timing == EffectTiming.OnLoseSecurity)
+        #region All Turns Inherit
+
+        if (timing == EffectTiming.OnLoseSecurity)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Give an opponent's Digimon card -2000 DP.", CanUseCondition, card);
@@ -85,6 +87,10 @@ public class Salamon_BT15_034 : CEntity_Effect
             }
 
         }
+
+        #endregion
+
+        #region Start of Main Phase
 
         if (timing == EffectTiming.OnStartMainPhase)
         {
@@ -260,6 +266,8 @@ public class Salamon_BT15_034 : CEntity_Effect
 
         }
 
-            return cardEffects;
+        #endregion
+
+        return cardEffects;
     }
 }
