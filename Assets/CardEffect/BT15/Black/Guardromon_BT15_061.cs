@@ -6,7 +6,7 @@ using Photon;
 using System;
 using Photon.Pun;
 
-public class Girdromon_BT15_061 : CEntity_Effect
+public class Guardromon_BT15_061 : CEntity_Effect
 {
   public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
   {
@@ -26,7 +26,7 @@ public class Girdromon_BT15_061 : CEntity_Effect
 
       string EffectDiscription()
       {
-        return "[On Play] You may trash 1 Digimon card with [Machine] or [Cyborg] in its traits in your hand to <Draw 2>. (Draw 2 cards from your deck.)";
+        return "[On Play] You may trash 1 Digimon card with [Machine] or [Cyborg] in its traits in your hand, 1 of your Digimon can't be deleted by your opponent's effects until the end of your opponent's turn";
       }
 
       bool CanSelectCardCondition(CardSource cardSource)
@@ -159,7 +159,7 @@ public class Girdromon_BT15_061 : CEntity_Effect
 
       string EffectDiscription()
       {
-        return "[On Play] You may trash 1 Digimon card with [Machine] or [Cyborg] in its traits in your hand to <Draw 2>. (Draw 2 cards from your deck.)";
+        return "[When Digivolving] You may trash 1 Digimon card with [Machine] or [Cyborg] in its traits in your hand, 1 of your Digimon can't be deleted by your opponent's effects until the end of your opponent's turn";
       }
 
       bool CanSelectCardCondition(CardSource cardSource)
