@@ -30,7 +30,7 @@ public class CardSource : MonoBehaviour
     {
         _cEntity_Base = cEntity_Base;
         Owner = owner;
-        gameObject.name = _cEntity_Base.CardName_JPN;
+        gameObject.name = _cEntity_Base.CardName_ENG;
 
         SetFace();
     }

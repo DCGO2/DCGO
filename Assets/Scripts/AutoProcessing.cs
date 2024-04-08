@@ -519,7 +519,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
     {
         List<SkillInfo> skillInfos = new List<SkillInfo>();
 
-        #region プレイヤーの効果
+        #region player effect
         foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
         {
             foreach (ICardEffect cardEffect in player.EffectList(timing).Filter(cardEffect => cardEffectCondition == null || cardEffectCondition(cardEffect)))
@@ -538,7 +538,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
         }
         #endregion
 
-        #region 場のパーマネントの効果
+        #region Effects of permanents in play
         foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
         {
             foreach (Permanent permanent in player.GetFieldPermanents())
@@ -560,7 +560,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
         }
         #endregion
 
-        #region トラッシュのカードの効果
+        #region Trash card effect
         foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
         {
             foreach (CardSource cardSource in player.TrashCards)
@@ -582,7 +582,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
         }
         #endregion
 
-        #region 手札のカードの効果
+        #region Effects of cards in hand
         foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
         {
             foreach (CardSource cardSource in player.HandCards)
