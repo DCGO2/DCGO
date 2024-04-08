@@ -36,7 +36,15 @@ namespace DCGO.CardEffects.LM
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (CardEffectCommons.IsOwnerTurn(card))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)

@@ -26,10 +26,12 @@ namespace DCGO.CardEffects.LM
                 {
                     if (permanent == AttackingPermanent)
                     {
-                        if (DefendingCard != null)
-                        {
-                            return true;
-                        }
+                        return true;
+                    }
+
+                    if (permanent == DefendingPermanent)
+                    {
+                        return true;
                     }
 
                     return false;
@@ -41,6 +43,19 @@ namespace DCGO.CardEffects.LM
                     {
                         return true;
                     }
+                    return false;
+                }
+
+                bool PermanentCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
+                    {
+                        if(permanent.TopCard == card)
+                        {
+                            return true;
+                        }
+                    }
+
                     return false;
                 }
 
@@ -95,14 +110,12 @@ namespace DCGO.CardEffects.LM
 
                     if (discarded)
                     {
-                        yield return CardEffectFactory.CanNotBeDestroyedByBattleStaticEffect(
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotBeDeletedPlayerEffect(
+                            permanentCondition: PermanentCondition,
                             canNotBeDestroyedByBattleCondition: CanNotBeDestroyedByBattleCondition,
-                            permanentCondition: null,
-                            isInheritedEffect: false,
-                            card: card,
-                            condition: null,
-                            effectName: "Can't be deleted by battle"
-                        );
+                            effectDuration: EffectDuration.UntilOwnerTurnEnd,
+                            activateClass: activateClass,
+                            effectName: "Can't be deleted by battle"));
                     }
                 }
             }

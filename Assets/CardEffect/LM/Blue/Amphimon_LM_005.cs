@@ -93,6 +93,7 @@ namespace DCGO.CardEffects.LM
                 {
                     List<CardSource> discardedCards = new List<CardSource>();
 
+                    int maxCount = Math.Min(4, card.Owner.HandCards.Count(CanSelectCardCondition));
                     SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
                     selectHandEffect.SetUp(
@@ -100,7 +101,7 @@ namespace DCGO.CardEffects.LM
                         canTargetCondition: CanSelectCardTrashingCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
-                        maxCount: 4,
+                        maxCount: maxCount,
                         canNoSelect: true,
                         canEndNotMax: false,
                         isShowOpponent: true,
@@ -118,41 +119,38 @@ namespace DCGO.CardEffects.LM
                         yield return null;
                     }
 
-                    if (discardedCards.Count >= 1)
+                    foreach (CardSource cardSource in discardedCards)
                     {
-                        foreach (CardSource cardSource in discardedCards)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SelectTrashDigivolutionCards(
-                                permanentCondition: CanSelectPermanentCondition,
-                                cardCondition: CanSelectCardCondition,
-                                maxCount: 1,
-                                canNoTrash: false,
-                                isFromOnly1Permanent: true,
-                                activateClass: activateClass
-                            ));
-                        }
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SelectTrashDigivolutionCards(
+                            permanentCondition: CanSelectPermanentCondition,
+                            cardCondition: CanSelectCardCondition,
+                            maxCount: 1,
+                            canNoTrash: false,
+                            isFromOnly1Permanent: true,
+                            activateClass: activateClass
+                        ));
+                    }
 
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectBounceCondition))
-                        {
-                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectBounceCondition));
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectBounceCondition))
+                    {
+                        int maxBounceCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectBounceCondition));
 
-                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: CanSelectBounceCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: maxCount,
-                                canNoSelect: false,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: null,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Bounce,
-                                cardEffect: activateClass);
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectBounceCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: maxBounceCount,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: null,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Bounce,
+                            cardEffect: activateClass);
 
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                        }
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
                 }
             }

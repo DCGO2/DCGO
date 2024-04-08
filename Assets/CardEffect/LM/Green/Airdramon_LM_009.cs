@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.LM
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Reduce Play/Digivolution Cost", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 activateClass.SetHashString("PlayDigivolutionCost-_LM_009");
                 cardEffects.Add(activateClass);
 
@@ -34,7 +34,7 @@ namespace DCGO.CardEffects.LM
                 {
                     if (CardEffectCommons.IsExistOnHand(cardSource))
                     {
-                        if (cardSource.CardNames.Contains("Angoramon"))
+                        if (cardSource.HasText("Angoramon"))
                             return true;
                     }
 
@@ -42,7 +42,7 @@ namespace DCGO.CardEffects.LM
                 }
                 bool DigivolveCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.CardNames.Contains("Angoramon"))
+                    if (cardSource.HasText("Angoramon"))
                         return true;
 
                     return false;
@@ -134,9 +134,15 @@ namespace DCGO.CardEffects.LM
                             {
                                 if (cardSource != null)
                                 {
-                                    if (cardSource == card)
+                                    if (cardSource.Owner == card.Owner)
                                     {
-                                        return true;
+                                        if (cardSource.IsDigimon)
+                                        {
+                                            if (cardSource.HasText("Angoramon"))
+                                            {
+                                                return true;
+                                            }
+                                        }
                                     }
                                 }
 
@@ -179,7 +185,7 @@ namespace DCGO.CardEffects.LM
                 {
                     if(CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent,card))
                     {
-                        return permanent.TopCard.CardNames.Contains("Angoramon");
+                        return permanent.TopCard.HasText("Angoramon");
                     }
 
                     return false;

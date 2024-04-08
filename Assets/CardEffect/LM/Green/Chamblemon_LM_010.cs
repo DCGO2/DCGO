@@ -61,7 +61,7 @@ namespace DCGO.CardEffects.LM
                             canEndNotMax: false,
                             selectPermanentCoroutine: null,
                             afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
+                            mode: SelectPermanentEffect.Mode.Tap,
                             cardEffect: activateClass);
 
                         selectPermanentEffect.SetUpCustomMessage("Select 1 Tamer to suspend.", "The opponent is selecting 1 Tamer to suspend.");
