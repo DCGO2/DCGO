@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Amphimon-LM-005
+  m_EditorClassIdentifier: 
+  CardIndex: 3250
+  cardColors: 01000000
+  PlayCost: 6
+  EvoCosts:
+  - CardColor: 1
+    Level: 5
+    MemoryCost: 3
+  Level: 6
+  CardName_JPN: "\u30A2\u30F3\u30D5\u30A3\u30E2\u30F3\r"
+  CardName_ENG: Amphimon
+  Form_JPN:
+  - "\u7A76\u6975\u4F53\r"
+  Form_ENG:
+  - Mega
+  Attribute_JPN:
+  - "\u30C7\u30FC\u30BF\u7A2E\r"
+  Attribute_ENG:
+  - Data
+  Type_JPN:
+  - "\u30B5\u30A4\u30DC\u30FC\u30B0\u578B\r"
+  Type_ENG:
+  - Cyborg
+  CardSpriteName: LM-005
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[Hand] [Counter]  (Your Digimon may digivolve into this
+    card without paying the cost).[On Play] [When Digivolving] You may trash up to
+    4 blue cards in your hand. For each one, trash any 1 card under your opponent''s
+    Digimon or Tamers. Then, return 1 of their Digimon or Tamers without cards under
+    it to the hand.[When Attacking] By returning 3 cards with [Jellymon]&#160;in
+    their texts from your trash to the bottom of the deck, this Digimon gains  (This
+    Digimon checks 1 additional security card) for the turn.'
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Amphimon_LM_005
+  DP: 11000
+  rarity: 3
+  OverflowMemory: 4
+  CardID: LM-005
+  MaxCountInDeck: 4

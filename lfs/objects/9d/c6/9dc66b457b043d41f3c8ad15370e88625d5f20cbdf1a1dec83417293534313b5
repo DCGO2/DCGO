@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Bokomon-LM-019
+  m_EditorClassIdentifier: 
+  CardIndex: 3264
+  cardColors: 04000000
+  PlayCost: 3
+  EvoCosts: []
+  Level: 3
+  CardName_JPN: "\u30DC\u30B3\u30E2\u30F3\r"
+  CardName_ENG: Bokomon
+  Form_JPN:
+  - "\u6210\u9577\u671F\r"
+  Form_ENG:
+  - Rookie
+  Attribute_JPN:
+  - "\u30EF\u30AF\u30C1\u30F3\u7A2E\r"
+  Attribute_ENG:
+  - Vaccine
+  Type_JPN:
+  - "\u7A81\u7136\u5909\u7570\u578B\r"
+  Type_ENG:
+  - Mutant
+  CardSpriteName: LM-019
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[On Play] Reveal the top 4 cards of your deck. Add 1 card
+    with [Gammamon]&#160;in its text among them to the hand. Return the rest to the
+    bottom of the deck.[All Turns] When one of your Digimon with [Gammamon]&#160;in
+    its text, other than [Bokomon], would leave the battle area other than by one
+    of your effects, by deleting this Digimon, prevent it from leaving.'
+  InheritedEffectDiscription_JPN: "-\r"
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Bokomon_LM_019
+  DP: 2000
+  rarity: 1
+  OverflowMemory: 0
+  CardID: LM-019
+  MaxCountInDeck: 4

@@ -352,7 +352,7 @@ public class CardObjectController : MonoBehaviour
 
         cardSource.SetBaseData(cEntity_Base, player);
 
-        cardSource.cEntity_EffectController.AddCardEffect(cEntity_Base.CardEffectClassName);
+        cardSource.cEntity_EffectController.AddCardEffect(cEntity_Base.CardID, cEntity_Base.CardEffectClassName);
 
         cardSource.SetUpCardIndex(GManager.instance.CardIndex);
 

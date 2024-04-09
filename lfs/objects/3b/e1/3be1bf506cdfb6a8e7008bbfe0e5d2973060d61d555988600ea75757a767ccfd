@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Siriusmon-LM-001
+  m_EditorClassIdentifier: 
+  CardIndex: 3246
+  cardColors: 00000000
+  PlayCost: 7
+  EvoCosts:
+  - CardColor: 0
+    Level: 5
+    MemoryCost: 4
+  Level: 6
+  CardName_JPN: "\u30B7\u30EA\u30A6\u30B9\u30E2\u30F3\r"
+  CardName_ENG: Siriusmon
+  Form_JPN:
+  - "\u7A76\u6975\u4F53\r"
+  Form_ENG:
+  - Mega
+  Attribute_JPN:
+  - "\u30EF\u30AF\u30C1\u30F3\u7A2E\r"
+  Attribute_ENG:
+  - Vaccine
+  Type_JPN:
+  - "\u5149\u7ADC\u578B\r"
+  Type_ENG:
+  - Light Dragon
+  CardSpriteName: LM-001
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[Hand] [Counter]  (Your Digimon may digivolve into this
+    card without paying the cost).[On Play] [When Digivolving] You may place 1 card
+    with [Gammamon]&#160;in its text from your hand as this Digimon''s bottom digivolution
+    card. Then, delete 1 of your opponent''s Digimon with 8000 DP or less. For each
+    color in this Digimon''s digivolution cards, add 1000 to this DP deletion effect''s
+    maximum.[All Turns] [Once Per Turn] When another Digimon is deleted, gain 1 memory.'
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Siriusmon_LM_001
+  DP: 12000
+  rarity: 3
+  OverflowMemory: 4
+  CardID: LM-001
+  MaxCountInDeck: 4
