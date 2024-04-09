@@ -228,7 +228,7 @@ namespace DCGO.CardEffects.LM
                             new SelectionElement<int>(message: $"Option", value : 2, spriteIndex: 0),
                         };
 
-                    string selectPlayerMessage = "Choose a card category will you use?";
+                    string selectPlayerMessage = "Choose a card category you will use?";
                     string notSelectPlayerMessage = "The opponent is choosing which card category to use.";
 
                     GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
@@ -237,6 +237,9 @@ namespace DCGO.CardEffects.LM
 
                     int actionID = GManager.instance.userSelectionManager.SelectedIntValue;
                     selectedCategory = (CardKind)actionID;
+
+                    if(!card.Owner.isYou)
+                        GManager.instance.commandText.OpenCommandText($"The opponent has choosen to use: {selectedCategory}.");
 
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.RevealDeckTopCardsAndProcessForAll(
                         revealCount: 1,
@@ -256,6 +259,8 @@ namespace DCGO.CardEffects.LM
 
                     IEnumerator RevealedCardsCoroutine(List<CardSource> revealedCards)
                     {
+                        GManager.instance.commandText.CloseCommandText();
+
                         if (revealedCards[0].CardKind.Equals(selectedCategory))
                         {
                             CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
@@ -281,27 +286,23 @@ namespace DCGO.CardEffects.LM
 
                             bool SkillCondition(ICardEffect cardEffect)
                             {
-
                                     switch (selectedCategory)
                                     { 
                                         case CardKind.Digimon:
                                         if (cardEffect.IsDigimonEffect)
                                         {
-                                            Debug.Log("Digimon Chosen");
                                             return true;
                                         }
                                             break;
                                         case CardKind.Tamer:
                                         if (cardEffect.IsTamerEffect)
                                         {
-                                            Debug.Log("Tamer Chosen");
                                             return true;
                                         }
                                             break;
                                         case CardKind.Option:
                                         if (cardEffect.EffectSourceCard.IsOption)
                                         {
-                                            Debug.Log("Option Chosen");
                                             return true;
                                         }
                                             break;
