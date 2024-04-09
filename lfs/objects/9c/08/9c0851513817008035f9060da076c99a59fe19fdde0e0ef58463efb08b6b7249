@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Thetismon-LM-004
+  m_EditorClassIdentifier: 
+  CardIndex: 3249
+  cardColors: 01000000
+  PlayCost: 7
+  EvoCosts:
+  - CardColor: 1
+    Level: 4
+    MemoryCost: 3
+  Level: 5
+  CardName_JPN: "\u30C6\u30C6\u30A3\u30B9\u30E2\u30F3\r"
+  CardName_ENG: Thetismon
+  Form_JPN:
+  - "\u5B8C\u5168\u4F53\r"
+  Form_ENG:
+  - Ultimate
+  Attribute_JPN:
+  - "\u30C7\u30FC\u30BF\u7A2E\r"
+  Attribute_ENG:
+  - Data
+  Type_JPN:
+  - "\u6C34\u68F2\u7363\u4EBA\u578B\r"
+  Type_ENG:
+  - Aquabeast
+  CardSpriteName: LM-004
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[On Play] [When Digivolving] By trashing 2 blue cards in
+    your hand, unsuspend 1 of your Digimon and 1 of your [Kiyoshiro Higashimitarai],
+    and this Digimon gains  (At blocker timing, by suspending this Digimon, it becomes
+    the attack target) until the end of your opponent''s turn.'
+  InheritedEffectDiscription_JPN: "\u3010\u304A\u4E92\u3044\u306E\u30BF\u30FC\u30F3\u3011\uFF3B\u30BF\u30FC\u30F3\u306B\uFF11\u56DE\uFF3D\u81EA\u5206\u306E\u624B\u672D\u304B\u3089,\u300C\u30B8\u30A7\u30EA\u30FC\u30E2\u30F3\u300D\u306E\u8A18\u8FF0\u304C\u3042\u308B\u30AB\u30FC\u30C9\u304C\u7834\u68C4\u3055\u308C\u305F\u3068\u304D,\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u3092\u30A2\u30AF\u30C6\u30A3\u30D6\u306B\u3067\u304D\u308B\u3002\r"
+  InheritedEffectDiscription_ENG: '[All Turns] [Once Per Turn] When a card with [Jellymon]&#160;in
+    its text is trashed from your hand, you may unsuspend this Digimon.'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Thetismon_LM_004
+  DP: 7000
+  rarity: 1
+  OverflowMemory: 0
+  CardID: LM-004
+  MaxCountInDeck: 4

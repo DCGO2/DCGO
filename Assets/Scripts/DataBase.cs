@@ -231,9 +231,17 @@ public class DataBase : MonoBehaviour
                     cardListID.Add("522018");
                     break;
 
-                // case "EX5":
-                //     cardListID.Add("522019");
-                //     break;
+                 case "EX5":
+                     cardListID.Add("522019");
+                     break;
+
+                case "BT15":
+                    cardListID.Add("522020");
+                    break;
+
+                case "LM":
+                    cardListID.Add("522020");
+                    break;
 
                 case "P":
                     cardListID.Add("522007");
@@ -396,6 +404,10 @@ public class DataBase : MonoBehaviour
 
                 case "BT15":
                     cardListID.Add("503021");
+                    break;
+
+                case "LM":
+                    cardListID.Add("503201");
                     break;
 
                 case "P":

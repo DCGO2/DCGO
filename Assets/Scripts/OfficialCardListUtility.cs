@@ -464,7 +464,7 @@ public class OfficialCardListUtility
             }
         }
 
-        #region �G���b�^�E��A�C��
+        #region Card erratas
         if (cEntity_Base.Type_JPN.Contains("X�R��"))
         {
             if (!cEntity_Base.Type_ENG.Contains("XAntibody"))

@@ -9,6 +9,8 @@ using UnityEngine.Networking;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using DG.Tweening.Plugins.Core.PathCore;
+
 public class TestWWW : MonoBehaviour
 {
     [SerializeField] string SetID;
@@ -239,7 +241,7 @@ public class TestWWW : MonoBehaviour
     {
         picsCount = 0;
 
-        Debug.Log("ÉJÅ[ÉhâÊëúï€ë∂äJén");
+        Debug.Log("Getting Card Images....");
 
         if (minParallelID < 0)
         {
@@ -256,7 +258,7 @@ public class TestWWW : MonoBehaviour
             }
         }
 
-        Debug.Log("ÉJÅ[ÉhâÊëúï€ë∂èIóπ");
+        Debug.Log("Obtained Images");
     }
 
     int picsCount = 0;
@@ -311,9 +313,12 @@ public class TestWWW : MonoBehaviour
             {
                 string fileName = $"{cardImageURL}.png";
 
+                string ImagePath = System.IO.Path.GetFullPath(System.IO.Path.Combine(Application.dataPath, @"..\..\Textures\Card\"));
+
                 if (isEnglish)
                 {
-                    File.WriteAllBytes(@$"C:\Users\USER\Pictures\DigimonCard/Card_ENG/{fileName}", webReq_CardImage.downloadHandler.data);
+                    Debug.Log(ImagePath);
+                    File.WriteAllBytes(ImagePath + fileName, webReq_CardImage.downloadHandler.data);
                 }
 
                 else
@@ -323,10 +328,7 @@ public class TestWWW : MonoBehaviour
 
                 picsCount++;
 
-                if (picsCount % 8 == 1)
-                {
-                    Debug.Log($"{fileName}ÇÃÉJÅ[ÉhâÊëúï€ë∂äÆóπ");
-                }
+                Debug.Log($"{fileName}Ç {picsCount}/{maxCardID}");
             }
 
             catch (Exception ex)

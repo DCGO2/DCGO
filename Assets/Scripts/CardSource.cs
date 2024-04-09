@@ -30,7 +30,7 @@ public class CardSource : MonoBehaviour
     {
         _cEntity_Base = cEntity_Base;
         Owner = owner;
-        gameObject.name = _cEntity_Base.CardName_JPN;
+        gameObject.name = _cEntity_Base.CardName_ENG;
 
         SetFace();
     }
@@ -1666,6 +1666,13 @@ public class CardSource : MonoBehaviour
 
         return false;
     }
+    #endregion
+
+    #region whether this card has [Fortitude]
+    public bool HasBlocker =>
+        EffectList(EffectTiming.None)
+            .Some(cardEffect => cardEffect is BlockerClass
+                && !cardEffect.IsInheritedEffect && !cardEffect.IsSecurityEffect);
     #endregion
 
     #region whether this card has [DigiBurst]

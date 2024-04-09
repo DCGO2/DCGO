@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: SymbareAngoramon-LM-011
+  m_EditorClassIdentifier: 
+  CardIndex: 3256
+  cardColors: 03000000
+  PlayCost: 5
+  EvoCosts:
+  - CardColor: 3
+    Level: 3
+    MemoryCost: 2
+  Level: 4
+  CardName_JPN: "\u30B8\u30F3\u30D0\u30FC\u30A2\u30F3\u30B4\u30E9\u30E2\u30F3\r"
+  CardName_ENG: SymbareAngoramon
+  Form_JPN:
+  - "\u6210\u719F\u671F\r"
+  Form_ENG:
+  - Champion
+  Attribute_JPN:
+  - "\u30EF\u30AF\u30C1\u30F3\u7A2E\r"
+  Attribute_ENG:
+  - Vaccine
+  Type_JPN:
+  - "\u7363\u4EBA\u578B\r"
+  Type_ENG:
+  - Beastkin
+  CardSpriteName: LM-011
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[On Play] [When Digivolving] Suspend 1 of your opponent''s
+    Digimon. Then, if they have no unsuspended Digimon, 1 of your Digimon gains 
+    (At blocker timing, by suspending this Digimon, it becomes the attack target)
+    until the end of your opponent''s turn.'
+  InheritedEffectDiscription_JPN: "\u3010\u81EA\u5206\u306E\u30BF\u30FC\u30F3\u3011\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u306B\u300C\u30A2\u30F3\u30B4\u30E9\u30E2\u30F3\u300D\u306E\u8A18\u8FF0\u304C\u3042\u308B\u9593,\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u3092DP+2000\u3002\r"
+  InheritedEffectDiscription_ENG: '[Your Turn] While this Digimon has [Angoramon]&#160;in
+    its text, it gets +2000 DP.'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: SymbareAngoramon_LM_011
+  DP: 5000
+  rarity: 1
+  OverflowMemory: 0
+  CardID: LM-011
+  MaxCountInDeck: 4
