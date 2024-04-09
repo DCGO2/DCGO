@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.IO;
 
 public class CEntity_EffectController : MonoBehaviour
 {
@@ -153,13 +154,17 @@ public class CEntity_EffectController : MonoBehaviour
     #endregion
 
     #region カード効果をセット
-    public void AddCardEffect(string ClassName)
+    public void AddCardEffect(string ID, string ClassName)
     {
+        ID = ID.Split("-")[0];
         #region カード効果クラスのインスタンスを生成してセット
         bool CanAttachEffectComponent()
         {
             if (string.IsNullOrEmpty(ClassName)) return false;
-            if (Type.GetType(ClassName) == null) return false;
+            if (Type.GetType(ClassName) == null)
+            {
+                if (Type.GetType($"DCGO.CardEffects.{ID}.{ClassName}") == null) return false;
+            }
 
             return true;
         }
@@ -169,6 +174,9 @@ public class CEntity_EffectController : MonoBehaviour
         if (CanAttachEffectComponent())
         {
             Type t = Type.GetType(ClassName);
+
+            if (t == null)
+                t = Type.GetType($"DCGO.CardEffects.{ID}.{ClassName}");
 
             Component component = this.gameObject.AddComponent(t);
 
