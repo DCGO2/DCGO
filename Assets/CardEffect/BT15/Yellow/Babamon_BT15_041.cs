@@ -90,7 +90,7 @@ public class Babamon_BT15_041 : CEntity_Effect
         #endregion
 
         #region On Deletion
-        if (timing == EffectTiming.OnEnterFieldAnyone)
+        if (timing == EffectTiming.OnDestroyedAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Give opponent's Digimon -6000 DP.", CanUseCondition, card);
@@ -104,12 +104,7 @@ public class Babamon_BT15_041 : CEntity_Effect
 
             bool CanActivateCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
-                {
-                    return true;
-                }
-
-                return false;
+                return CardEffectCommons.CanActivateOnDeletion(card);
             }
 
             bool CanUseCondition(Hashtable hashtable)
@@ -171,6 +166,7 @@ public class Babamon_BT15_041 : CEntity_Effect
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Delete this Digimon to play [Rosemon] or [Jijimon] from hand.", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+            activateClass.SetHashString("DeleteAndPlay_BT15_041");
             cardEffects.Add(activateClass);
 
             string EffectDiscription()
@@ -220,135 +216,116 @@ public class Babamon_BT15_041 : CEntity_Effect
 
             IEnumerator ActivateCoroutine(Hashtable _hashtable)
             {
-                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: new List<Permanent>() { card.PermanentOfThisCard() }, activateClass: activateClass, successProcess: permanents => SuccessProcess(), failureProcess: null));
+                yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(
+                    new List<Permanent>() { card.PermanentOfThisCard() },
+                    CardEffectCommons.CardEffectHashtable(activateClass)).Destroy());
 
-                IEnumerator SuccessProcess()
+                if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
                 {
-                    if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
+                    List<CardSource> selectedCards = new List<CardSource>();
+
+                    int maxCount = 1;
+                    bool selectedCard = false;
+
+                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                    selectHandEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanSelectCardCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: maxCount,
+                        canNoSelect: true,
+                        canEndNotMax: false,
+                        isShowOpponent: true,
+                        selectCardCoroutine: SelectCardCoroutine,
+                        afterSelectCardCoroutine: null,
+                        mode: SelectHandEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    selectHandEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
+                    selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
+
+                    yield return StartCoroutine(selectHandEffect.Activate());
+
+                    IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
-                        List<CardSource> selectedCards = new List<CardSource>();
-
-                        int maxCount = 1;
-
-                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                        selectHandEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectCardCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: true,
-                            canEndNotMax: false,
-                            isShowOpponent: true,
-                            selectCardCoroutine: SelectCardCoroutine,
-                            afterSelectCardCoroutine: null,
-                            mode: SelectHandEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-                        selectHandEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
-                        selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
-
-                        yield return StartCoroutine(selectHandEffect.Activate());
-
-                        IEnumerator SelectCardCoroutine(CardSource cardSource)
-                        {
-                            selectedCards.Add(cardSource);
-
-                            yield return null;
-                        }
+                        selectedCards.Add(cardSource);
+                        selectedCard = true;
 
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedCards, activateClass: activateClass, payCost: false, isTapped: false, root: SelectCardEffect.Root.Hand, activateETB: true));
 
-
-                        IEnumerator AfterSelectCoroutine(List<CardSource> cardSources)
+                        if (selectedCards[0].HasWhenDigivolvingEffect)
                         {
-                            List<Permanent> permanents = CardEffectCommons.GetPlayedPermanentsFromEnterFieldHashtable(
-                    hashtable: _hashtable,
-                    rootCondition: null);
+                            List<ICardEffect> candidateEffects = cardSource.PermanentOfThisCard().EffectList(EffectTiming.OnEnterFieldAnyone)
+                            .Clone()
+                            .Filter(cardEffect => cardEffect != null && cardEffect is ActivateICardEffect && !cardEffect.IsSecurityEffect && cardEffect.IsWhenDigivolving);
 
-                            if (permanents != null)
+                            if (candidateEffects.Count >= 1)
                             {
-                                List<ICardEffect> candidateEffects = permanents
-                                    .Map(permanent => permanent.EffectList(EffectTiming.OnEnterFieldAnyone))
-                                    .Flat()
-                                    .Clone()
-                                    .Filter(cardEffect => cardEffect != null && cardEffect is ActivateICardEffect && !cardEffect.IsSecurityEffect && cardEffect.IsWhenDigivolving);
+                                ICardEffect selectedEffect = null;
 
-                                if (candidateEffects.Count >= 1)
+                                if (candidateEffects.Count == 1)
                                 {
-                                    ICardEffect selectedEffect = null;
+                                    selectedEffect = candidateEffects[0];
+                                }
 
-                                    if (candidateEffects.Count == 1)
+                                else
+                                {
+                                    List<SkillInfo> skillInfos = candidateEffects
+                                        .Map(cardEffect => new SkillInfo(cardEffect, null, EffectTiming.None));
+
+                                    List<CardSource> cardSources = candidateEffects
+                                        .Map(cardEffect => cardEffect.EffectSourceCard);
+
+                                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                                    selectCardEffect.SetUp(
+                                        canTargetCondition: (cardSource) => true,
+                                        canTargetCondition_ByPreSelecetedList: null,
+                                        canEndSelectCondition: null,
+                                        canNoSelect: () => false,
+                                        selectCardCoroutine: null,
+                                        afterSelectCardCoroutine: null,
+                                        message: "Select 1 effect to activate.",
+                                        maxCount: 1,
+                                        canEndNotMax: false,
+                                        isShowOpponent: false,
+                                        mode: SelectCardEffect.Mode.Custom,
+                                        root: SelectCardEffect.Root.Custom,
+                                        customRootCardList: cardSources,
+                                        canLookReverseCard: true,
+                                        selectPlayer: card.Owner,
+                                        cardEffect: activateClass);
+
+                                    selectCardEffect.SetNotShowCard();
+                                    selectCardEffect.SetUpSkillInfos(skillInfos);
+                                    selectCardEffect.SetUpAfterSelectIndexCoroutine(AfterSelectIndexCoroutine);
+
+                                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+
+                                    IEnumerator AfterSelectIndexCoroutine(List<int> selectedIndexes)
                                     {
-                                        selectedEffect = candidateEffects[0];
-                                    }
-
-                                    else
-                                    {
-                                        List<SkillInfo> skillInfos = candidateEffects
-                                            .Map(cardEffect => new SkillInfo(cardEffect, null, EffectTiming.None));
-
-                                        List<CardSource> cardSources1 = candidateEffects
-                                            .Map(cardEffect => cardEffect.EffectSourceCard);
-
-                                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                                        selectCardEffect.SetUp(
-                                            canTargetCondition: (cardSource) => true,
-                                            canTargetCondition_ByPreSelecetedList: null,
-                                            canEndSelectCondition: null,
-                                            canNoSelect: () => false,
-                                            selectCardCoroutine: null,
-                                            afterSelectCardCoroutine: null,
-                                            message: "Select 1 effect to activate.",
-                                            maxCount: 1,
-                                            canEndNotMax: false,
-                                            isShowOpponent: false,
-                                            mode: SelectCardEffect.Mode.Custom,
-                                            root: SelectCardEffect.Root.Custom,
-                                            customRootCardList: cardSources,
-                                            canLookReverseCard: true,
-                                            selectPlayer: card.Owner,
-                                            cardEffect: activateClass);
-
-                                        selectCardEffect.SetNotShowCard();
-                                        selectCardEffect.SetUpSkillInfos(skillInfos);
-                                        selectCardEffect.SetUpAfterSelectIndexCoroutine(AfterSelectIndexCoroutine);
-
-                                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-
-                                        IEnumerator AfterSelectIndexCoroutine(List<int> selectedIndexes)
+                                        if (selectedIndexes.Count == 1)
                                         {
-                                            if (selectedIndexes.Count == 1)
-                                            {
-                                                selectedEffect = candidateEffects[selectedIndexes[0]];
-                                                yield return null;
-                                            }
+                                            selectedEffect = candidateEffects[selectedIndexes[0]];
+                                            yield return null;
                                         }
                                     }
+                                }
 
-                                    if (selectedEffect != null)
-                                    {
-                                        if (selectedEffect.EffectSourceCard != null)
-                                        {
-                                            if (selectedEffect.EffectSourceCard.PermanentOfThisCard() != null)
-                                            {
-                                                Hashtable effectHashtable = CardEffectCommons.WhenDigivolvingCheckHashtableOfCard(selectedEffect.EffectSourceCard);
+                                if (selectedEffect != null)
+                                {
+                                    Hashtable effectHashtable = CardEffectCommons.WhenDigivolvingCheckHashtableOfCard(selectedEffect.EffectSourceCard);
+                                    Debug.Log("XX");
 
-                                                if (selectedEffect.CanUse(effectHashtable))
-                                                {
-                                                    yield return ContinuousController.instance.StartCoroutine(((ActivateICardEffect)selectedEffect).Activate_Optional_Effect_Execute(effectHashtable));
-                                                }
-                                            }
-                                        }
-                                    }
+                                        yield return ContinuousController.instance.StartCoroutine(
+                                            ((ActivateICardEffect)selectedEffect).Activate_Optional_Effect_Execute(effectHashtable));
+                                    
                                 }
                             }
                         }
                     }
-
-
                 }
             }
 

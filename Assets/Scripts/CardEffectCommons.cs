@@ -298,6 +298,10 @@ public partial class CardEffectCommons
     public static ActivateClass OptionMainEffect(CardSource card) => card.EffectList(EffectTiming.OptionSkill).Find(cardEffect => cardEffect != null && cardEffect is ActivateClass && cardEffect.EffectDiscription.Contains("[Main]")) as ActivateClass;
     #endregion
 
+    #region this Option card's Security effect
+    public static ActivateClass OptionSecurityEffect(CardSource card) => card.EffectList(EffectTiming.SecuritySkill).Find(cardEffect => cardEffect != null && cardEffect is ActivateClass && cardEffect.EffectDiscription.Contains("[Security]")) as ActivateClass;
+    #endregion
+
     #region Add Option's Security effect that "Activate this card's Main effect" to cardEffects
     public static void AddActivateMainOptionSecurityEffect(CardSource card, ref List<ICardEffect> cardEffects, string effectName, string effectDiscription = "", Func<ICardEffect, IEnumerator> afterMainEffect = null)
     {
