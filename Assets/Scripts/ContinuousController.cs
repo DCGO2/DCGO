@@ -106,6 +106,7 @@ public class ContinuousController : MonoBehaviour
     public CEntity_Base AmonToken { get; private set; }
     public CEntity_Base UmonToken { get; private set; }
     public CEntity_Base FujitsumonToken { get; private set; }
+    public CEntity_Base GyuukimonToken { get; private set; }
     public CardRestriction BanList { get; private set; } = new CardRestriction(new List<CardLimitCount>(), new List<BannedPair>());
 
     void LoadBanList()
@@ -221,6 +222,26 @@ public class ContinuousController : MonoBehaviour
         };
 
         await FujitsumonToken.GetCardSprite();
+
+        GyuukimonToken = new CEntity_Base()
+        {
+            cardColors = new List<CardColor>() { CardColor.White },
+            PlayCost = 14,
+            Level = 6,
+            CardName_JPN = "ギュウキモン",
+            CardName_ENG = "Gyuukimon",
+            Form_JPN = new List<string>() { "究極の" },
+            Form_ENG = new List<string>() { "Ultimate" },
+            Attribute_JPN = new List<string>() { "ウイルス" },
+            Attribute_ENG = new List<string>() { "Virus" },
+            Type_JPN = new List<string>() { "ダークアニマル" },
+            Type_ENG = new List<string>() { "Dark Animal" },
+            CardSpriteName = "LM-018-token",
+            cardKind = CardKind.Digimon,
+            DP = 3000,
+        };
+
+        await GyuukimonToken.GetCardSprite();
     }
 
     public static ContinuousController instance = null;

@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Gammamon-LM-016
+  m_EditorClassIdentifier: 
+  CardIndex: 3261
+  cardColors: 06000000
+  PlayCost: 3
+  EvoCosts:
+  - CardColor: 6
+    Level: 2
+    MemoryCost: 0
+  Level: 3
+  CardName_JPN: "\u30AC\u30F3\u30DE\u30E2\u30F3\r"
+  CardName_ENG: Gammamon
+  Form_JPN:
+  - "\u6210\u9577\u671F\r"
+  Form_ENG:
+  - Rookie
+  Attribute_JPN:
+  - "\u30A6\u30A3\u30EB\u30B9\u7A2E\r"
+  Attribute_ENG:
+  - Virus
+  Type_JPN:
+  - "\u89D2\u7ADC\u578B\r"
+  Type_ENG:
+  - Ceratopsian
+  CardSpriteName: LM-016
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[All Turns] [Once Per Turn] When an effect deletes one
+    of your other Digimon, this Digimon may digivolve into a Digimon card with [Gammamon]&#160;in
+    its text in your trash without paying the cost.'
+  InheritedEffectDiscription_JPN: "\u3010\u6D88\u6EC5\u6642\u3011\u81EA\u5206\u306E\u624B\u672D\u304B\u3089,\u300C\u5929\u30CE\u6CB3\u5B99\u300D1\u679A\u3092\u30B3\u30B9\u30C8\u3092\u652F\u6255\u308F\u305A\u306B\u767B\u5834\u3067\u304D\u308B\u3002\r"
+  InheritedEffectDiscription_ENG: '[On Deletion] You may play 1 [Hiro Amanokawa]
+    from your hand without paying the cost.'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Gammamon_LM_016
+  DP: 1000
+  rarity: 2
+  OverflowMemory: 0
+  CardID: LM-016
+  MaxCountInDeck: 4
