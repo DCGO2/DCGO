@@ -12,6 +12,8 @@ public class Kari_Kamiya_BT15_084 : CEntity_Effect
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+        #region When trashed from security
+
         if (timing == EffectTiming.OnDiscardSecurity)
         {
             ActivateClass activateClass = new ActivateClass();
@@ -85,11 +87,16 @@ public class Kari_Kamiya_BT15_084 : CEntity_Effect
                 }
             }
         }
+        #endregion
 
+        #region Start of Turn
         if (timing == EffectTiming.OnStartTurn)
         {
             cardEffects.Add(CardEffectFactory.SetMemoryTo3TamerEffect(card));
         }
+        #endregion
+
+        #region All turns
 
         if (timing == EffectTiming.OnLoseSecurity)
         {
@@ -175,10 +182,14 @@ public class Kari_Kamiya_BT15_084 : CEntity_Effect
             }
         }
 
+        #endregion
+
+        #region Security effect
         if (timing == EffectTiming.SecuritySkill)
         {
             cardEffects.Add(CardEffectFactory.PlaySelfTamerSecurityEffect(card));
         }
+        #endregion
 
         return cardEffects;
     }
