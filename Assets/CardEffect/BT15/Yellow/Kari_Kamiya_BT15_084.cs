@@ -6,7 +6,7 @@ using Photon;
 using System;
 using Photon.Pun;
 
-public class YagamiHikari_BT15_084 : CEntity_Effect
+public class Kari_Kamiya_BT15_084 : CEntity_Effect
 {
     public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
     {
@@ -21,7 +21,7 @@ public class YagamiHikari_BT15_084 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "When an effect trashes this card from the security stack, you may play this card without paying the cost.";
+                return "When an effect trashes this card from the security stack, 1 of your opponent's Digimon gains [Security A -1] until the end of your opponent's turn.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
@@ -91,16 +91,16 @@ public class YagamiHikari_BT15_084 : CEntity_Effect
             cardEffects.Add(CardEffectFactory.SetMemoryTo3TamerEffect(card));
         }
 
-        if (timing == EffectTiming.OnAddSecurity)
+        if (timing == EffectTiming.OnLoseSecurity)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Opponent's 1 Digimon gains Security Attack -1", CanUseCondition, card);
-            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
             cardEffects.Add(activateClass);
 
             string EffectDiscription()
             {
-                return "[Your Turn] When a card is added to your security stack, by suspending this Tamer, gain 1 memory.";
+                return "[All Turns] When an effect removes a card from your security stack, by suspending this Tamer, 1 of your opponent's Digimon gains [Security A-1] until the end of your opponent's turn.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
@@ -112,16 +112,10 @@ public class YagamiHikari_BT15_084 : CEntity_Effect
             {
                 if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
-                    if (CardEffectCommons.IsOwnerTurn(card))
-                    {
-                        if (CardEffectCommons.CanTriggerWhenAddSecurity(hashtable, player => player == card.Owner))
+                        if (CardEffectCommons.CanTriggerWhenLoseSecurity(hashtable, player => player == card.Owner))
                         {
-                            if (CardEffectCommons.IsByEffect(hashtable, null))
-                            {
-                                return true;
-                            }
+                             return true;
                         }
-                    }
                 }
 
                 return false;
