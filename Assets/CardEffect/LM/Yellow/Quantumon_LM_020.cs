@@ -217,6 +217,8 @@ namespace DCGO.CardEffects.LM
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
+                    Permanent selectedPermanent = card.PermanentOfThisCard();
+
                     yield return GManager.instance.photonWaitController.StartWait("Quantumon_Select_ETB");
 
                     List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
@@ -259,7 +261,7 @@ namespace DCGO.CardEffects.LM
                             CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
                             canNotAffectedClass.SetUpICardEffect("Isn't affected by opponent's Digimon's effects", CanUseCondition, card);
                             canNotAffectedClass.SetUpCanNotAffectedClass(CardCondition: CardCondition, SkillCondition: SkillCondition);
-                            cardEffects.Add(canNotAffectedClass);
+                            selectedPermanent.UntilOpponentTurnEndEffects.Add((_timing) => canNotAffectedClass);
 
                             bool CardCondition(CardSource cardSource)
                             {
@@ -279,24 +281,32 @@ namespace DCGO.CardEffects.LM
 
                             bool SkillCondition(ICardEffect cardEffect)
                             {
-                                if (CardEffectCommons.IsOpponentEffect(cardEffect, card))
-                                {
+
                                     switch (selectedCategory)
                                     { 
                                         case CardKind.Digimon:
-                                            if (cardEffect.IsDigimonEffect)
-                                                return true;
+                                        if (cardEffect.IsDigimonEffect)
+                                        {
+                                            Debug.Log("Digimon Chosen");
+                                            return true;
+                                        }
                                             break;
                                         case CardKind.Tamer:
-                                            if (cardEffect.IsTamerEffect)
-                                                return true;
+                                        if (cardEffect.IsTamerEffect)
+                                        {
+                                            Debug.Log("Tamer Chosen");
+                                            return true;
+                                        }
                                             break;
                                         case CardKind.Option:
-                                            if (cardEffect.EffectSourceCard.IsOption)
-                                                return true;
+                                        if (cardEffect.EffectSourceCard.IsOption)
+                                        {
+                                            Debug.Log("Option Chosen");
+                                            return true;
+                                        }
                                             break;
                                     }
-                                }
+                                
 
                                 return false;
                             }
