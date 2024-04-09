@@ -23,14 +23,18 @@ namespace DCGO.CardEffects.LM
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    if (permanent.IsDigimon)
+                    if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
                     {
-                        if (permanent.Level <= 4)
+                        if (permanent.IsDigimon)
                         {
-                            return true;
+                            if (permanent.Level <= 4)
+                            {
+                                return true;
+                            }
                         }
                     }
-                    return false;
+                        
+                   return false;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
