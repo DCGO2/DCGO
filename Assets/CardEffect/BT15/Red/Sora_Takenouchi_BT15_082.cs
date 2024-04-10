@@ -17,7 +17,7 @@ public class Sora_Takenouchi_BT15_082 : CEntity_Effect
             cardEffects.Add(CardEffectFactory.SetMemoryTo3TamerEffect(card));
         }
 
-        if(timing == EffectTiming.WhenReturntoHandAnyone)
+        if(timing == EffectTiming.OnReturnCardsToHandFromTrash)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Return this Tamer to your hand to play a Digimon from your hand.", CanUseCondition, card);
@@ -36,22 +36,11 @@ public class Sora_Takenouchi_BT15_082 : CEntity_Effect
 
             bool CanUseCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
+                if (CardEffectCommons.IsExistOnBattleArea(card) && card.Owner.isYou)
                 {
-                    if (hashtable.ContainsKey("Permanents"))
-                    {
-                        List<Permanent> Permanents = (List<Permanent>)hashtable["Permanents"];
-
-                        if (Permanents != null)
-                        {
-                            if (Permanents.Count((permanent) => permanent.TopCard.CardColors.Contains(CardColor.Red)) >= 1)
-                            {
-                                return true;
-                            }
-                        }
-                    }
+                    return true;
                 }
-
+                
                 return false;
             }
 
@@ -60,6 +49,47 @@ public class Sora_Takenouchi_BT15_082 : CEntity_Effect
                 if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
                         return true;
+                }
+
+                return false;
+            }
+            
+            bool CanSelectCardCondition(CardSource cardSource)
+            {
+                int subAmount = card.Owner.SecurityCards.Count * 2000;
+                int cardDP = 13000;
+                
+                if (cardSource.CardDP <= cardDP - subAmount)
+                {
+                    if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false,
+                            cardEffect: activateClass))
+                    {
+                        if (cardSource.CardTraits.Contains("Avian"))
+                        {
+                            return true;
+                        }
+                        if (cardSource.CardTraits.Contains("Bird"))
+                        {
+                            return true;
+                        }
+                        if (cardSource.CardTraits.Contains("Beast"))
+                        {
+                            return true;
+                        }
+                        if (cardSource.CardTraits.Contains("Animal"))
+                        {
+                            return true;
+                        }
+                        if (cardSource.CardTraits.Contains("Sovereign"))
+                        {
+                            return true;
+                        }
+
+                        if (cardSource.CardTraits.Contains("Sea Animal"))
+                        {
+                            return false;
+                        }
+                    }
                 }
 
                 return false;
@@ -106,10 +136,47 @@ public class Sora_Takenouchi_BT15_082 : CEntity_Effect
                     IEnumerator SuccessProcess()
                     {
                         Debug.Log("Successful Return: Select and Play out digimon");
-                        yield return null;
+                        List<CardSource> selectedCards = new List<CardSource>();
+
+                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                        selectHandEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectCardCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: true,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            selectCardCoroutine: SelectCardCoroutine,
+                            afterSelectCardCoroutine: null,
+                            mode: SelectHandEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        selectHandEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
+                        selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
+
+                        yield return StartCoroutine(selectHandEffect.Activate());
+
+                        IEnumerator SelectCardCoroutine(CardSource cardSource)
+                        {
+                            selectedCards.Add(cardSource);
+
+                            yield return null;
+                        }
+
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedCards, activateClass: activateClass, payCost: false, isTapped: false, root: SelectCardEffect.Root.Hand, activateETB: true));
                     }
                 }
             }
+        }
+
+        if (timing == EffectTiming.OnPermamemtReturnedToHand)
+        {
+            ActivateClass activateClass = new ActivateClass();
+
+            
         }
         
         if(timing == EffectTiming.SecuritySkill)
