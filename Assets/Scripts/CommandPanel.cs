@@ -106,7 +106,13 @@ public class CommandPanel : MonoBehaviour
         {
             if (handCard.cardSource != null)
             {
-                CommandPanelObject.transform.localPosition = new Vector2(0f, 31f);
+                if(!CardEffectCommons.IsExistOnTrash(handCard.cardSource))
+                    CommandPanelObject.transform.localPosition = new Vector2(0f, 31f);
+                else
+                {
+                    CommandPanelObject.transform.localPosition = new Vector2(0f, -125f);
+                    CommandPanelObject.transform.localScale = new Vector3(4f, 4f, 1f);
+                }
             }
         }
 
