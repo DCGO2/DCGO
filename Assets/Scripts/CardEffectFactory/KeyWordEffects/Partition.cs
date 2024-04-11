@@ -7,7 +7,7 @@ using UnityEngine;
 public partial class CardEffectFactory
 {
     #region Trigger effect of [Partition] on oneself
-    public static ActivateClass PartitionSelfEffect(bool isInheritedEffect, CardSource card, Func<bool> condition, Func<CardSource, bool> canSelectPermanentCondition)
+    public static ActivateClass PartitionSelfEffect(bool isInheritedEffect, CardSource card, Func<bool> condition, Func<CardSource, bool> canSelectFirstSourceCondition, Func<CardSource, bool> canSelectSecondSourceCondition)
     {
         Permanent targetPermanent = card.PermanentOfThisCard();
 
@@ -21,12 +21,12 @@ public partial class CardEffectFactory
             return false;
         }
 
-        return PartitionEffect(targetPermanent: targetPermanent, isInheritedEffect: isInheritedEffect, condition: CanUseCondition, cardCondition: canSelectPermanentCondition, card);
+        return PartitionEffect(targetPermanent: targetPermanent, isInheritedEffect: isInheritedEffect, condition: CanUseCondition, firstSourceCondition: canSelectFirstSourceCondition, secondSourceCondition: canSelectSecondSourceCondition, card);
     }
     #endregion
 
     #region Trigger effect of [Partition]
-    public static ActivateClass PartitionEffect(Permanent targetPermanent, bool isInheritedEffect, Func<bool> condition, Func<CardSource, bool> cardCondition, CardSource card)
+    public static ActivateClass PartitionEffect(Permanent targetPermanent, bool isInheritedEffect, Func<bool> condition, Func<CardSource, bool> firstSourceCondition, Func<CardSource, bool> secondSourceCondition, CardSource card)
     {
         if (targetPermanent == null) return null;
         if (targetPermanent.TopCard == null) return null;
@@ -58,7 +58,7 @@ public partial class CardEffectFactory
 
         IEnumerator ActivateCoroutine(Hashtable _hashtable)
         {
-            return CardEffectCommons.PartitionProcess(activateClass, targetPermanent, cardCondition);
+            return CardEffectCommons.PartitionProcess(activateClass, targetPermanent, firstSourceCondition, secondSourceCondition);
         }
 
         return activateClass;

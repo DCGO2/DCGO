@@ -491,7 +491,7 @@ public class DataBase : MonoBehaviour
 
     public static string BarrierEffectDiscription()
     {
-        return "<Barrier? (When this Digimon would be deleted in battle, by trashing the top card of your security stack, prevent that deletion.)";
+        return "<Barrier> (When this Digimon would be deleted in battle, by trashing the top card of your security stack, prevent that deletion.)";
     }
 
     public static string BlastDigivolveEffectDiscription()
@@ -512,6 +512,11 @@ public class DataBase : MonoBehaviour
     public static string PartitionEffectDiscription()
     {
         return "<Partition> (When this Digimon with 1 of each specified card in its digivolution cards would leave the battle area other than by one of your effects or in battle, you may play 1 of each card without paying their costs)";
+    }
+
+    public static string CollisionEffectDiscription()
+    {
+        return "<Collision> (During this Digimon's attack, all of your opponent's Digimon gain <Blocker>, and your opponent blocks if possible)";
     }
 
     public static string ReplaceToASCII(string text)
