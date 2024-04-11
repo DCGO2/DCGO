@@ -243,6 +243,10 @@ public class DataBase : MonoBehaviour
                     cardListID.Add("522020");
                     break;
 
+                case "BT16":
+                    cardListID.Add("522021");
+                    break;
+
                 case "P":
                     cardListID.Add("522007");
                     cardListID.Add("522901");
@@ -408,6 +412,10 @@ public class DataBase : MonoBehaviour
 
                 case "LM":
                     cardListID.Add("503201");
+                    break;
+
+                case "BT16":
+                    cardListID.Add("503022");
                     break;
 
                 case "P":
