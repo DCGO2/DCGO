@@ -1,9 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
-using System.Linq;
-using UnityEngine;
-using static UnityEngine.UI.GridLayoutGroup;
 
 public partial class CardEffectCommons
 {
@@ -24,7 +21,6 @@ public partial class CardEffectCommons
         return false;
     }
     #endregion
-
     
     #region Can activate [Partition]
     public static bool CanActivatePartition(Permanent permanent)
@@ -42,9 +38,9 @@ public partial class CardEffectCommons
     #endregion
 
     #region Effect process of [Partition]
-    public static IEnumerator PartitionProcess(ICardEffect activateClass, Permanent permanent, Func<CardSource, bool> CanSelectCardCondition)
+    public static IEnumerator PartitionProcess(ICardEffect activateClass, Permanent permanent, Func<CardSource, bool> CanSelectFirstSourceCondition, Func<CardSource, bool> CanSelectSecondSourceCondition)
     {
-        yield return ContinuousController.instance.StartCoroutine(new PartitionClass(permanent).Partition(activateClass, CanSelectCardCondition));
+        yield return ContinuousController.instance.StartCoroutine(new PartitionClass(permanent).Partition(activateClass, CanSelectFirstSourceCondition, CanSelectSecondSourceCondition));
     }
     #endregion
 
@@ -59,7 +55,7 @@ public partial class CardEffectCommons
         Permanent _permanent = null;
 
 
-        public IEnumerator Partition(ICardEffect activateClass, Func<CardSource, bool> CanSelectCardCondition)
+        public IEnumerator Partition(ICardEffect activateClass, Func<CardSource, bool> CanSelectFristSourceCondition, Func<CardSource, bool> CanSelectSecondSourceCondition)
         {
             if (_permanent != null)
             {
@@ -75,7 +71,27 @@ public partial class CardEffectCommons
 
                     SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
                     selectCardEffect.SetUp(
-                            canTargetCondition: CanSelectCardCondition,
+                            canTargetCondition: CanSelectFristSourceCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            canNoSelect: () => false,
+                            selectCardCoroutine: SelectCardCoroutine,
+                            afterSelectCardCoroutine: null,
+                            message: "Select card to play",
+                            maxCount: 1,
+                            canEndNotMax: false,
+                            isShowOpponent: false,
+                            mode: SelectCardEffect.Mode.Custom,
+                            root: SelectCardEffect.Root.DigivolutionCards,
+                            customRootCardList: _permanent.cardSources,
+                            canLookReverseCard: true,
+                            selectPlayer: topCard.Owner,
+                            cardEffect: activateClass);
+
+                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+
+                    selectCardEffect.SetUp(
+                            canTargetCondition: CanSelectSecondSourceCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             canNoSelect: () => false,
@@ -104,7 +120,7 @@ public partial class CardEffectCommons
                 
                 foreach(CardSource card in selectedCards)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
+                    yield return ContinuousController.instance.StartCoroutine(PlayPermanentCards(
                         cardSources: new List<CardSource>() { card },
                         activateClass: activateClass,
                         payCost: false,
