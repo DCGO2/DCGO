@@ -34,11 +34,19 @@ public class Sora_Takenouchi_BT15_082 : CEntity_Effect
                 return permanent.TopCard == card;
             }
 
+            bool CardReturnedCondition(CardSource cardSource)
+            {
+                return cardSource.CardColors.Contains(CardColor.Red);
+            }
+
             bool CanUseCondition(Hashtable hashtable)
             {
                 if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
-                    return true;
+                    if (CardEffectCommons.CanTriggerWhenCardsReturnToHandFromTrash(hashtable, CardReturnedCondition, card))
+                    {
+                        return true;
+                    }
                 }
                 
                 return false;
@@ -58,7 +66,7 @@ public class Sora_Takenouchi_BT15_082 : CEntity_Effect
             {
                 int subAmount = card.Owner.Enemy.SecurityCards.Count * 2000;
                 int cardDP = 13000 - subAmount;
-                Debug.Log(cardDP);
+
                 if (cardSource.CardDP <= cardDP && cardSource.CardColors.Contains(CardColor.Red) && cardSource.Owner == card.Owner)
                 {
                     if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false,
