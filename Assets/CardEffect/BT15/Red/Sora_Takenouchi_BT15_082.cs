@@ -36,7 +36,7 @@ public class Sora_Takenouchi_BT15_082 : CEntity_Effect
 
             bool CanUseCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.IsExistOnBattleArea(card) && card.Owner.isYou)
+                if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
                     return true;
                 }
@@ -56,36 +56,35 @@ public class Sora_Takenouchi_BT15_082 : CEntity_Effect
             
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                int subAmount = card.Owner.SecurityCards.Count * 2000;
-                int cardDP = 13000;
-                
-                if (cardSource.CardDP <= cardDP - subAmount)
+                int subAmount = card.Owner.Enemy.SecurityCards.Count * 2000;
+                int cardDP = 13000 - subAmount;
+                Debug.Log(cardDP);
+                if (cardSource.CardDP <= cardDP && cardSource.CardColors.Contains(CardColor.Red) && cardSource.Owner == card.Owner)
                 {
                     if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false,
                             cardEffect: activateClass))
                     {
-                        if (cardSource.CardTraits.Contains("Avian"))
+                        if (cardSource.ContainsTraits("Avian"))
                         {
                             return true;
                         }
-                        if (cardSource.CardTraits.Contains("Bird"))
+                        if (cardSource.ContainsTraits("Bird"))
                         {
                             return true;
                         }
-                        if (cardSource.CardTraits.Contains("Beast"))
+                        if (cardSource.ContainsTraits("Beast"))
                         {
                             return true;
                         }
-                        if (cardSource.CardTraits.Contains("Animal"))
+                        if (cardSource.ContainsTraits("Animal"))
                         {
                             return true;
                         }
-                        if (cardSource.CardTraits.Contains("Sovereign"))
+                        if (cardSource.ContainsTraits("Sovereign"))
                         {
                             return true;
                         }
-
-                        if (cardSource.CardTraits.Contains("Sea Animal"))
+                        if (cardSource.ContainsTraits("Sea Animal"))
                         {
                             return false;
                         }
@@ -171,13 +170,7 @@ public class Sora_Takenouchi_BT15_082 : CEntity_Effect
                 }
             }
         }
-
-        if (timing == EffectTiming.OnPermamemtReturnedToHand)
-        {
-            ActivateClass activateClass = new ActivateClass();
-
-            
-        }
+        
         
         if(timing == EffectTiming.SecuritySkill)
         {
