@@ -165,7 +165,7 @@ public class Babamon_BT15_041 : CEntity_Effect
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Delete this Digimon to play [Rosemon] or [Jijimon] from hand.", CanUseCondition, card);
-            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
             activateClass.SetHashString("DeleteAndPlay_BT15_041");
             cardEffects.Add(activateClass);
 

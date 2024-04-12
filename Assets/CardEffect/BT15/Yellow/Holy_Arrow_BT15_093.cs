@@ -85,6 +85,12 @@ public class Holy_Arrow_BT15_093 : CEntity_Effect
 
                     bool fromTop = GManager.instance.userSelectionManager.SelectedBoolValue;
 
+                    yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
+                    player: card.Owner,
+                    destroySecurityCount: 1,
+                    cardEffect: activateClass,
+                    fromTop: fromTop).DestroySecurity());
+
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
