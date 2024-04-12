@@ -1668,10 +1668,11 @@ public class CardSource : MonoBehaviour
     }
     #endregion
 
-    #region whether this card has [Fortitude]
+    #region whether this card has [Blocker]
     public bool HasBlocker =>
         EffectList(EffectTiming.None)
-            .Some(cardEffect => cardEffect is BlockerClass
+            .Some(cardEffect => cardEffect is BlockerClass 
+                && cardEffect.CanUseCondition == null
                 && !cardEffect.IsInheritedEffect && !cardEffect.IsSecurityEffect);
     #endregion
 

@@ -240,10 +240,10 @@ namespace DCGO.CardEffects.LM
                                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.BouncePeremanentAndProcessAccordingToResult(
                                         targetPermanents: new List<Permanent>() { playedCard.PermanentOfThisCard() },
                                         activateClass: activateClass,
-                                        successProcess: SuccessProcess(),
+                                        successProcess: null,
                                         failureProcess: null));
 
-                                    IEnumerator SuccessProcess()
+                                    /*IEnumerator SuccessProcess()
                                     {
                                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
@@ -274,7 +274,7 @@ namespace DCGO.CardEffects.LM
                                                 cardEffect: activateClass);
 
                                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                                    }
+                                    }*/
                                 }
                             }
 

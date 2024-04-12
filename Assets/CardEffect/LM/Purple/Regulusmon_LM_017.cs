@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 using System.Linq;
 
 namespace DCGO.CardEffects.LM
@@ -171,6 +172,7 @@ namespace DCGO.CardEffects.LM
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete 1 Digimon, Play 1 Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetHashString("Delete_Play_LM_017");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -199,18 +201,18 @@ namespace DCGO.CardEffects.LM
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
+                    Debug.Log($"CanUseCondition");
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
+                        Debug.Log($"CanUseCondition: Exists");
                         if (CardEffectCommons.CanTriggerOnAddDigivolutionCard(
                                 hashtable: hashtable,
                                 permanentCondition: permanent => permanent == card.PermanentOfThisCard(),
                                 cardEffectCondition: cardEffect => cardEffect.EffectSourceCard != null,
                                 cardCondition: null))
                         {
-                            if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                            {
-                                return true;
-                            }
+                            Debug.Log($"CanUseCondition: Can Trigger OnAddDigivolution");
+                            return true;
                         }
                     }
 
@@ -241,7 +243,7 @@ namespace DCGO.CardEffects.LM
                         mode: SelectPermanentEffect.Mode.Destroy,
                         cardEffect: activateClass);
 
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 card to place at the bottom of digivolution cards.", "The opponent is selecting 1 card to place at the bottom of digivolution cards.");
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 digimon to delete.", "The opponent is selecting 1 digimon to delete.");
 
                     yield return StartCoroutine(selectPermanentEffect.Activate());
 
@@ -249,10 +251,12 @@ namespace DCGO.CardEffects.LM
                     {
                         selectedCards.Add(permanent);
 
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: selectedCards, activateClass: activateClass, successProcess: permanents => SuccessProcess(), failureProcess: null));
+
                         yield return null;
                     }
 
-                    if (selectedCards.Count >= 1)
+                    IEnumerator SuccessProcess()
                     {
                         ActivateClass activateByClass = new ActivateClass();
                         activateByClass.SetUpICardEffect("Play 1 Digimon", CanUseByCondition, card);
@@ -315,6 +319,8 @@ namespace DCGO.CardEffects.LM
                                 root: SelectCardEffect.Root.Trash,
                                 activateETB: true));
                         }
+
+                        yield return null;
                     }
                 }
             }
