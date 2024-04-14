@@ -224,17 +224,20 @@ public class ShiromineNokia_BT5_092 : CEntity_Effect
 
                         bool PermanentCondition(Permanent targetPermanent)
                         {
-                            if (targetPermanent.TopCard != null)
+                            if(targetPermanent != null)
                             {
-                                if (targetPermanent.TopCard.Owner == card.Owner)
+                                if (targetPermanent.TopCard != null)
                                 {
-                                    if (targetPermanent.TopCard.Owner.GetBattleAreaPermanents().Contains(targetPermanent))
+                                    if (targetPermanent.TopCard.Owner == card.Owner)
                                     {
-                                        return true;
+                                        if (targetPermanent.TopCard.Owner.GetBattleAreaPermanents().Contains(targetPermanent))
+                                        {
+                                            return true;
+                                        }
                                     }
                                 }
                             }
-
+                            
                             return false;
                         }
 

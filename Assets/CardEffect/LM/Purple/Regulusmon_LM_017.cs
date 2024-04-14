@@ -189,29 +189,16 @@ namespace DCGO.CardEffects.LM
                     return false;
                 }
 
-                bool CanSelectCardCondition(CardSource cardSource)
-                {
-                    if (CardEffectCommons.IsExistOnTrash(cardSource))
-                    {
-                        if (cardSource.Owner == card.Owner)
-                            return cardSource.IsDigimon && cardSource.Level <= 4;
-                    }
-                    return false;
-                }
-
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    Debug.Log($"CanUseCondition");
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        Debug.Log($"CanUseCondition: Exists");
                         if (CardEffectCommons.CanTriggerOnAddDigivolutionCard(
                                 hashtable: hashtable,
                                 permanentCondition: permanent => permanent == card.PermanentOfThisCard(),
                                 cardEffectCondition: cardEffect => cardEffect.EffectSourceCard != null,
                                 cardCondition: null))
                         {
-                            Debug.Log($"CanUseCondition: Can Trigger OnAddDigivolution");
                             return true;
                         }
                     }
@@ -258,69 +245,60 @@ namespace DCGO.CardEffects.LM
 
                     IEnumerator SuccessProcess()
                     {
-                        ActivateClass activateByClass = new ActivateClass();
-                        activateByClass.SetUpICardEffect("Play 1 Digimon", CanUseByCondition, card);
-                        activateByClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
-                        cardEffects.Add(activateByClass);
+                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
-                        bool CanUseByCondition(Hashtable hashtable)
+                        List<CardSource> selectedCards = new List<CardSource>();
+
+                        bool CanSelectCardCondition(CardSource cardSource)
                         {
-                            if (CardEffectCommons.IsExistOnBattleArea(card))
+                            if (CardEffectCommons.IsExistOnTrash(cardSource))
                             {
-                                if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
+                                if (cardSource.Owner == card.Owner)
                                 {
-                                    return true;
+                                    return cardSource.IsDigimon && cardSource.Level <= 4;
                                 }
-                            }
 
+
+                            }
                             return false;
                         }
 
-                        IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                        selectCardEffect.SetUp(
+                            canTargetCondition: CanSelectCardCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            canNoSelect: () => true,
+                            selectCardCoroutine: SelectCardCoroutine,
+                            afterSelectCardCoroutine: null,
+                            message: "Select 1 Digimon card to play.",
+                            maxCount: 1,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            mode: SelectCardEffect.Mode.Custom,
+                            root: SelectCardEffect.Root.Trash,
+                            customRootCardList: null,
+                            canLookReverseCard: true,
+                            selectPlayer: card.Owner,
+                            cardEffect: activateClass);
+
+                        selectCardEffect.SetUpCustomMessage("Select 1 Digimon to play.", "The opponent is selecting 1 Digimon card to play.");
+
+                        yield return StartCoroutine(selectCardEffect.Activate());
+
+                        IEnumerator SelectCardCoroutine(CardSource cardSource)
                         {
-                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+                            selectedCards.Add(cardSource);
 
-                            List<CardSource> selectedCards = new List<CardSource>();
+                            yield return null;
+                        }
 
-                            selectCardEffect.SetUp(
-                                canTargetCondition: CanSelectCardCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                canNoSelect: () => true,
-                                selectCardCoroutine: SelectCardCoroutine,
-                                afterSelectCardCoroutine: null,
-                                message: "Select 1 Digimon card to play.",
-                                maxCount: 1,
-                                canEndNotMax: false,
-                                isShowOpponent: true,
-                                mode: SelectCardEffect.Mode.Custom,
-                                root: SelectCardEffect.Root.Trash,
-                                customRootCardList: null,
-                                canLookReverseCard: true,
-                                selectPlayer: card.Owner,
-                                cardEffect: activateClass);
-
-                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to play.", "The opponent is selecting 1 Digimon card to play.");
-
-                            yield return StartCoroutine(selectPermanentEffect.Activate());
-
-                            IEnumerator SelectCardCoroutine(CardSource cardSource)
-                            {
-                                selectedCards.Add(cardSource);
-
-                                yield return null;
-                            }
-
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
                                 cardSources: selectedCards,
-                                activateClass: activateByClass,
+                                activateClass: activateClass,
                                 payCost: false,
                                 isTapped: false,
                                 root: SelectCardEffect.Root.Trash,
                                 activateETB: true));
-                        }
-
-                        yield return null;
                     }
                 }
             }
