@@ -11,6 +11,7 @@ public class Brachiomon_BT15_016 : CEntity_Effect
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+        #region On Play - When Digivolving
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
@@ -20,7 +21,7 @@ public class Brachiomon_BT15_016 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Play] If your opponent has 4 or less memory, 1 of your opponent's Digimon with 8000 DP or more can't attack until the end of your opponent's turn. If your opponent has 4 or more memory, delete 1 of your opponent's Digimon with 6000 DP or less.";
+                return "[On Play] [When Digivolving] If your opponent has 4 or less memory, 1 of your opponent's Digimon with 8000 DP or more can't attack until the end of their turn. If they have 4 or more, delete 1 of their Digimon with 6000 DP or less.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
@@ -51,7 +52,7 @@ public class Brachiomon_BT15_016 : CEntity_Effect
 
             bool CanUseCondition(Hashtable hashtable)
             {
-                return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                return CardEffectCommons.CanTriggerOnPlay(hashtable, card) || CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
             }
 
             bool CanActivateCondition(Hashtable hashtable)
@@ -101,7 +102,7 @@ public class Brachiomon_BT15_016 : CEntity_Effect
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will get effects.", "The opponent is selecting 1 Digimon that will get effects.");
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that can't attack", "The opponent is selecting 1 Digimon that can't attack.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
@@ -138,7 +139,9 @@ public class Brachiomon_BT15_016 : CEntity_Effect
                 }
             }
         }
+        #endregion
 
+        #region On Deletion - Inherited Effect
         if (timing == EffectTiming.OnDestroyedAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
@@ -208,6 +211,7 @@ public class Brachiomon_BT15_016 : CEntity_Effect
                 }
             }
         }
+        #endregion
 
         return cardEffects;
     }
