@@ -98,16 +98,22 @@ public class Kari_Kamiya_BT15_084 : CEntity_Effect
 
         #region All turns
 
-        if (timing == EffectTiming.OnLoseSecurity)
+        if (timing == EffectTiming.OnDiscardSecurity)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Opponent's 1 Digimon gains Security Attack -1", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+            activateClass.SetHashString("AllTurns_BT15_084");
             cardEffects.Add(activateClass);
 
             string EffectDiscription()
             {
                 return "[All Turns] When an effect removes a card from your security stack, by suspending this Tamer, 1 of your opponent's Digimon gains [Security A-1] until the end of your opponent's turn.";
+            }
+
+            bool CardCondition(CardSource cardSource)
+            {
+                return true;
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
@@ -119,7 +125,7 @@ public class Kari_Kamiya_BT15_084 : CEntity_Effect
             {
                 if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
-                        if (CardEffectCommons.CanTriggerWhenLoseSecurity(hashtable, player => player == card.Owner))
+                        if (CardEffectCommons.CanTriggerOnTrashSecurity(hashtable, cardEffect => cardEffect != null, CardCondition))
                         {
                              return true;
                         }
