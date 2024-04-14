@@ -126,7 +126,7 @@ public class Wendigomon_ST17_04 : CEntity_Effect
                         canNoSelect: false,
                         canEndNotMax: false,
                         selectPermanentCoroutine: null,
-                        afterSelectPermanentCoroutine: DeleteDigimonCoroutine,
+                        afterSelectPermanentCoroutine: null,
                         mode: SelectPermanentEffect.Mode.Destroy,
                         cardEffect: activateClass);
 
