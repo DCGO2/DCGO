@@ -5,7 +5,7 @@ using System;
 using System.Linq;
 
 
-public class Deathmeramon_BT15_015 : CEntity_Effect
+public class SkullMeramon_BT15_015 : CEntity_Effect
 {
     public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
     {
@@ -21,7 +21,7 @@ public class Deathmeramon_BT15_015 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Main] If you have a level 5 or higher green Digimon in playÅCyou can suspend this Tamer to reveal the top card of your deck. If that card is a Digimon cardÅCadd it to your hand. Otherwise place it at the bottom of your deck.";
+                return "[Main][Once per turn] By paying 2 memory, this Digimon gains [Security A+1] for the turn. Then, this Digimon may attack.";
             }
 
             bool CanUseCondition(Hashtable hashtable)

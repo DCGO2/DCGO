@@ -18,7 +18,7 @@ public class Muchomon_BT15_008 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Your Turn] When one of your Digimon with [Greymon] in its name attacks (other than [DoruGreymon],[BurningGreymon], or [DexDoruGreymon]), you may suspend this Tamer to gain 1 memory.";
+                return "[Your Turn][Once per turn] When your red Digimon attacks a play, [Draw 1].";
             }
 
             bool PermanentCondition(Permanent permanent)

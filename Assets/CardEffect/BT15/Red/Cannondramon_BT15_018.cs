@@ -5,7 +5,7 @@ using System.Linq;
 using Photon;
 using System;
 using Photon.Pun;
-public class Canondramon_BT15_018 : CEntity_Effect
+public class Cannondramon_BT15_018 : CEntity_Effect
 {
     public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
     {
@@ -21,7 +21,7 @@ public class Canondramon_BT15_018 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[End of Your Turn] Trash the top card of your security stack.";
+                return "[End of Your Turn] [Once Per Turn] If your opponent has 4 or more memory, delete 1 of their Digimon with the lowest DP.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
@@ -91,7 +91,7 @@ public class Canondramon_BT15_018 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[End of Your Turn] Trash the top card of your security stack.";
+                return "[End of Opponent's Turn] [Once Per Turn] If you have 4 or less memory, delete 1 of your opponent's Digimon with the highest play cost.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)

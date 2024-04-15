@@ -20,7 +20,7 @@ public class Akatorimon_BT15_010 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Your Turn] When one of your Digimon with [Greymon] in its name attacks (other than [DoruGreymon],[BurningGreymon], or [DexDoruGreymon]), you may suspend this Tamer to gain 1 memory.";
+                return "[Your Turn][Once per turn] When your Digimon attacks a player, delete 1 of your opponent's Digimon with 3000DP or less.";
             }
 
             bool PermanentCondition(Permanent permanent)
