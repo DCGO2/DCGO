@@ -14,6 +14,18 @@ namespace DCGO.CardEffects.ST17
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region Blocker and Armor Purge
+            if (timing == EffectTiming.None)
+            {
+                cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
+            }
+
+            if (timing == EffectTiming.WhenPermanentWouldBeDeleted)
+            {
+                cardEffects.Add(CardEffectFactory.ArmorPurgeEffect(card: card));
+            }
+            #endregion
+
             #region Digivolution Condition
             if (timing == EffectTiming.None)
             {
