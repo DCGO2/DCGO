@@ -1744,6 +1744,14 @@ public class CardSource : MonoBehaviour
                 && cardEffect.IsOnPlay);
     #endregion
 
+    #region whether this card has [When Digivolving] effect
+    public bool HasWhenDigivolvingEffect =>
+        EffectList(EffectTiming.OnEnterFieldAnyone)
+            .Some(cardEffect => cardEffect is ActivateICardEffect
+                && !cardEffect.IsInheritedEffect && !cardEffect.IsSecurityEffect
+                && cardEffect.IsWhenDigivolving);
+    #endregion
+
     #region whether this card has [Digisorption]
     public bool HasDigisorption =>
         EffectList(EffectTiming.BeforePayCost)
