@@ -26,7 +26,7 @@ namespace DCGO.CardEffects.ST17
                     return false;
                 }
 
-                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 5, ignoreDigivolutionRequirement: false, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 5, ignoreDigivolutionRequirement: true, card: card, condition: null));
             }
 
             if (timing == EffectTiming.None)
@@ -50,7 +50,7 @@ namespace DCGO.CardEffects.ST17
                 cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
             }
 
-            if (timing == EffectTiming.WhenPermanentWouldBeDeleted)
+            if (timing == EffectTiming.None)
             {
                 cardEffects.Add(CardEffectFactory.RebootSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
             }
@@ -70,6 +70,7 @@ namespace DCGO.CardEffects.ST17
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Suspend Digimons and Tamers and give effects", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetHashString("SuspendAndGiveEffects_ST17_08");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -112,9 +113,14 @@ namespace DCGO.CardEffects.ST17
 
                 bool CanSelectPermanentCondition1(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
+                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card))
                     {
-                        if (permanent.CanSelectBySkill(activateClass))
+                        if (permanent.IsDigimon)
+                        {
+                            return true;
+                        }
+
+                        if (permanent.IsTamer)
                         {
                             return true;
                         }
@@ -125,9 +131,9 @@ namespace DCGO.CardEffects.ST17
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    if (card.Owner.GetBattleAreaPermanents().Count(CanSelectPermanentCondition) + card.Owner.Enemy.GetBattleAreaPermanents().Count(CanSelectPermanentCondition) >= 1)
+                    if (card.Owner.Enemy.GetBattleAreaPermanents().Count(CanSelectPermanentCondition) >= 1)
                     {
-                        int maxCount = Math.Min(2, card.Owner.GetBattleAreaPermanents().Count(CanSelectPermanentCondition) + card.Owner.Enemy.GetBattleAreaPermanents().Count(CanSelectPermanentCondition));
+                        int maxCount = Math.Min(2, card.Owner.Enemy.GetBattleAreaPermanents().Count(CanSelectPermanentCondition));
 
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
@@ -187,7 +193,7 @@ namespace DCGO.CardEffects.ST17
                             CanNotDigivolveClass canNotPutFieldClass = new CanNotDigivolveClass();
                             canNotPutFieldClass.SetUpICardEffect("Can't Digivolve", CanUseCondition1, card);
                             canNotPutFieldClass.SetUpCanNotEvolveClass(permanentCondition: PermanentCondition, cardCondition: CardCondition);
-                            card.Owner.Enemy.UntilOwnerTurnEndEffects.Add((_timing) => canNotPutFieldClass);
+                            selectedPermanent.UntilOwnerTurnEndEffects.Add(GetCardEffect);
 
                             ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().DebuffSE);
 
@@ -204,10 +210,7 @@ namespace DCGO.CardEffects.ST17
                                 {
                                     if (permanent.TopCard != null)
                                     {
-                                        if (permanent.TopCard.Owner == card.Owner.Enemy)
-                                        {
-                                            return true;
-                                        }
+                                        return true;
                                     }
                                 }
 
@@ -216,12 +219,24 @@ namespace DCGO.CardEffects.ST17
 
                             bool CardCondition(CardSource cardSource)
                             {
+
                                 if (cardSource.Owner == card.Owner.Enemy)
                                 {
                                     return true;
                                 }
 
                                 return false;
+                                
+                            }
+
+                            ICardEffect GetCardEffect(EffectTiming _timing)
+                            {
+                                if (_timing == EffectTiming.None)
+                                {
+                                    return canNotPutFieldClass;
+                                }
+
+                                return null;
                             }
 
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCantUnsuspendUntilOpponentTurnEnd(
@@ -231,6 +246,103 @@ namespace DCGO.CardEffects.ST17
 
                         }
                     }
+                }
+            }
+            
+            if (timing == EffectTiming.OnEnterFieldAnyone)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Unsuspend this Digimon", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetHashString("Unsuspend_ST17_08");
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[When Digivolving] You may unsuspend this Digimon.";
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        return true;
+                    }
+
+                    return false;
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (CardEffectCommons.CanUnsuspend(card.PermanentOfThisCard()))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                {
+                    Permanent selectedPermanent = card.PermanentOfThisCard();
+
+                    yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { selectedPermanent }, activateClass).Unsuspend());
+                }
+
+            }
+
+
+            #endregion
+
+            #region End of Attack
+
+            if(timing == EffectTiming.OnEndAttack)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Unsuspend this Digimon", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetHashString("Unsuspend_ST17_08");
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[End of Attack] You may unsuspend this Digimon.";
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        return true;
+                    }
+
+                    return false;
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (CardEffectCommons.CanTriggerOnAttack(hashtable, card))
+                        {
+                            if (CardEffectCommons.CanUnsuspend(card.PermanentOfThisCard()))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+
+                    return false;
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                {
+                    Permanent selectedPermanent = card.PermanentOfThisCard();
+
+                    yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { selectedPermanent }, activateClass).Unsuspend());
                 }
             }
 
