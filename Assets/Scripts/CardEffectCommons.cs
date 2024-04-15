@@ -635,6 +635,290 @@ public partial class CardEffectCommons
     }
     #endregion
 
+    #region Target permanent Digivolves into Digimon card execution area
+    public static IEnumerator DigivolveIntoExcecutingAreaCard(
+        Permanent targetPermanent,
+        Func<CardSource, bool> cardCondition,
+        bool payCost,
+        (int reduceCost, Func<CardSource, bool> reduceCostCardCondition)? reduceCostTuple,
+        (int fixedCost, Func<CardSource, bool> fixedCostCardCondition)? fixedCostTuple,
+        int ignoreDigivolutionRequirementFixedCost,
+        ICardEffect activateClass,
+        IEnumerator successProcess,
+        bool ignoreLevel = false,
+        bool ignoreSelection = false)
+    {
+        if (targetPermanent == null) yield break;
+        if (targetPermanent.TopCard == null) yield break;
+        if (activateClass == null) yield break;
+        if (activateClass.EffectSourceCard == null) yield break;
+
+        Player owner = targetPermanent.TopCard.Owner;
+        SelectCardEffect.Root root = SelectCardEffect.Root.Execution;
+        bool ignoreDigivolutionRequirement = ignoreDigivolutionRequirementFixedCost >= 0;
+
+        int fixedCost = -1;
+
+        if (fixedCostTuple != null)
+        {
+            fixedCost = fixedCostTuple.Value.fixedCost;
+        }
+
+        if (ignoreDigivolutionRequirement)
+        {
+            fixedCost = ignoreDigivolutionRequirementFixedCost;
+        }
+
+        bool CanSelectCardCondition(CardSource cardSource)
+        {
+            if (cardSource.IsDigimon)
+            {
+                if (cardCondition == null || cardCondition(cardSource))
+                {
+                    if (!cardSource.CanNotEvolve(targetPermanent))
+                    {
+                        if (ignoreLevel
+                        || cardSource.CanPlayCardTargetFrame(
+                            frame: targetPermanent.PermanentFrame,
+                            PayCost: payCost,
+                            cardEffect: activateClass,
+                            root: root,
+                            fixedCost: fixedCost))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        #region reduce cost
+        Func<EffectTiming, ICardEffect> getChangeCostEffect = null;
+
+        if (reduceCostTuple != null)
+        {
+            bool PermanentCondition(Permanent permanent)
+            {
+                return permanent == targetPermanent;
+            }
+
+            bool CardCondition(CardSource cardSource)
+            {
+                if (cardSource != null)
+                {
+                    if (cardSource.Owner == owner)
+                    {
+                        if (reduceCostTuple.Value.reduceCostCardCondition == null || reduceCostTuple.Value.reduceCostCardCondition(cardSource))
+                        {
+                            return true;
+                        }
+                    }
+                }
+
+                return false;
+            }
+
+            getChangeCostEffect = ChangeDigivolutionCostPlayerEffect(
+                permanentCondition: PermanentCondition,
+                cardCondition: CardCondition,
+                rootCondition: null,
+                changeValue: -reduceCostTuple.Value.reduceCost,
+                activateClass: activateClass,
+                setFixedCost: false);
+
+            if (getChangeCostEffect != null)
+            {
+                AddEffectToPlayer(
+                    effectDuration: EffectDuration.UntilCalculateFixedCost,
+                    card: targetPermanent.TopCard,
+                    cardEffect: null,
+                    timing: EffectTiming.None,
+                    getCardEffect: getChangeCostEffect);
+            }
+        }
+        #endregion
+
+        #region set fixed cost
+        Func<EffectTiming, ICardEffect> getFixedCostEffect = null;
+
+        if (fixedCostTuple != null)
+        {
+            bool PermanentCondition(Permanent permanent)
+            {
+                return permanent == targetPermanent;
+            }
+
+            bool CardCondition(CardSource cardSource)
+            {
+                if (cardSource != null)
+                {
+                    if (cardSource.Owner == owner)
+                    {
+                        if (fixedCostTuple.Value.fixedCostCardCondition == null || fixedCostTuple.Value.fixedCostCardCondition(cardSource))
+                        {
+                            return true;
+                        }
+                    }
+                }
+
+                return false;
+            }
+
+            getFixedCostEffect = ChangeDigivolutionCostPlayerEffect(
+                permanentCondition: PermanentCondition,
+                cardCondition: CardCondition,
+                rootCondition: null,
+                changeValue: fixedCost,
+                activateClass: activateClass,
+                setFixedCost: true);
+
+            if (getChangeCostEffect != null)
+            {
+                AddEffectToPlayer(
+                    effectDuration: EffectDuration.UntilCalculateFixedCost,
+                    card: targetPermanent.TopCard,
+                    cardEffect: null,
+                    timing: EffectTiming.None,
+                    getCardEffect: getFixedCostEffect);
+            }
+        }
+        #endregion
+
+        #region ignore digivolution requirement
+        Func<EffectTiming, ICardEffect> getIgnoreDigivolutionRequirementEffect = null;
+
+        if (ignoreDigivolutionRequirement)
+        {
+            bool PermanentCondition(Permanent permanent)
+            {
+                return permanent == targetPermanent;
+            }
+
+            bool CardCondition(CardSource cardSource)
+            {
+                if (cardSource == null)
+                {
+                    return false;
+                }
+
+                if (cardSource.Owner != owner)
+                {
+                    return false;
+                }
+
+                if (cardCondition == null || cardCondition(cardSource))
+                {
+                    return true;
+                }
+
+                return false;
+            }
+
+            getIgnoreDigivolutionRequirementEffect = GainIgnoreDigivolutionRequirementPlayerEffect(
+                permanentCondition: PermanentCondition,
+                cardCondition: CardCondition,
+                ignoreDigivolutionRequirement: ignoreDigivolutionRequirement,
+                digivolutionCost: fixedCost,
+                activateClass: activateClass);
+
+            if (getIgnoreDigivolutionRequirementEffect != null)
+            {
+                AddEffectToPlayer(
+                effectDuration: EffectDuration.UntilCalculateFixedCost,
+                card: targetPermanent.TopCard,
+                cardEffect: null,
+                timing: EffectTiming.None,
+                getCardEffect: getIgnoreDigivolutionRequirementEffect);
+            }
+        }
+        #endregion
+
+        List<CardSource> selectedCards = new List<CardSource>();
+
+        IEnumerator SelectCardCoroutine(CardSource cardSource)
+        {
+            selectedCards.Add(cardSource);
+
+            yield return null;
+        }
+
+            if (owner.ExecutingCards.Count(CanSelectCardCondition) >= 1)
+            {
+                int maxCount = 1;
+
+                SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                selectCardEffect.SetUp(
+                            canTargetCondition: CanSelectCardCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            canNoSelect: () => true,
+                            selectCardCoroutine: SelectCardCoroutine,
+                            afterSelectCardCoroutine: null,
+                            message: "Select 1 card to digivolve.",
+                            maxCount: maxCount,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            mode: SelectCardEffect.Mode.Custom,
+                            root: SelectCardEffect.Root.Execution,
+                            customRootCardList: null,
+                            canLookReverseCard: true,
+                            selectPlayer: owner,
+                            cardEffect: activateClass);
+
+                selectCardEffect.SetUpCustomMessage("Select 1 card to digivolve.", "The opponent is selecting 1 card to digivolve.");
+                selectCardEffect.SetUpCustomMessage_ShowCard("Selected Card");
+
+                yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+            }
+            else
+            {
+                selectedCards.Add(activateClass.EffectSourceCard);
+            }
+        
+
+        PlayCardClass playCardClass = new PlayCardClass(
+            cardSources: selectedCards,
+            hashtable: CardEffectHashtable(activateClass),
+            payCost: payCost,
+            targetPermanent: targetPermanent,
+            isTapped: false,
+            root: root,
+            activateETB: true);
+
+        if (ignoreLevel) playCardClass.SetIgnoreLevel();
+        if (!ignoreDigivolutionRequirement && fixedCost >= 0) playCardClass.SetFixedCost(fixedCost);
+
+        yield return ContinuousController.instance.StartCoroutine(playCardClass.PlayCard());
+
+        #region release effect
+        if (getChangeCostEffect != null) owner.UntilCalculateFixedCostEffect.Remove(getChangeCostEffect);
+        #endregion
+
+        #region release effect
+        if (getFixedCostEffect != null) owner.UntilCalculateFixedCostEffect.Remove(getFixedCostEffect);
+        #endregion
+
+        #region release effect
+        if (getIgnoreDigivolutionRequirementEffect != null) owner.UntilCalculateFixedCostEffect.Remove(getIgnoreDigivolutionRequirementEffect);
+        #endregion
+
+        if (selectedCards.Count >= 1)
+        {
+
+            if (IsDigivolvedByTheEffect(targetPermanent, selectedCards[0], activateClass))
+            {
+                if (successProcess != null)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(successProcess);
+                }
+            }
+        }
+    }
+    #endregion
+
     #region Get the effect given by EffectTiming
     public static Func<EffectTiming, ICardEffect> GetCardEffectByEffectTiming(EffectTiming timing, ICardEffect cardEffect) => (_timing) => _timing == timing ? cardEffect : null;
     #endregion

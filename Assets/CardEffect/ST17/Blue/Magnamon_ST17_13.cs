@@ -60,7 +60,22 @@ namespace DCGO.CardEffects.ST17
                     return false;
                 }
 
-                
+                bool CanSelectCardCondition(CardSource cardSource)
+                {
+                        if (cardSource.IsDigimon)
+                        {
+                            if (CardEffectCommons.IsExistOnBattleArea(card))
+                            {
+                            Debug.Log("Selecting");
+                                if (cardSource.CanPlayCardTargetFrame(card.PermanentOfThisCard().PermanentFrame, true, activateClass, root: SelectCardEffect.Root.Execution))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+
+                    return false;
+                }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
@@ -81,6 +96,11 @@ namespace DCGO.CardEffects.ST17
                     bool CanSelectPermanentCondition(Permanent permanent)
                     {
                         return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+                    }
+
+                    bool CanSelectPermanentCondition1(Permanent permanent)
+                    {
+                        return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
                     }
 
                     bool CanUseCondition1(Hashtable hashtable)
@@ -130,7 +150,51 @@ namespace DCGO.CardEffects.ST17
                             }
                         }
 
-                        
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition1))
+                        {
+                            Permanent selectedPermanent = null;
+
+                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition1));
+
+                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                            selectPermanentEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: CanSelectPermanentCondition1,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: maxCount,
+                                canNoSelect: true,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: SelectPermanentCoroutine,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Custom,
+                                cardEffect: activateClass);
+
+                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will digivolve.", "The opponent is selecting 1 Digimon that will digivolve.");
+
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                            IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                            {
+                                selectedPermanent = permanent;
+
+                                yield return null;
+                            }
+
+                            if (selectedPermanent != null)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoExcecutingAreaCard(
+                                    targetPermanent: selectedPermanent,
+                                    cardCondition: CanSelectCardCondition,
+                                    payCost: false,
+                                    reduceCostTuple: null,
+                                    fixedCostTuple: null,
+                                    ignoreDigivolutionRequirementFixedCost: -1,
+                                    activateClass: activateClass,
+                                    successProcess: null));
+                            }
+                        }
 
                     }
 
