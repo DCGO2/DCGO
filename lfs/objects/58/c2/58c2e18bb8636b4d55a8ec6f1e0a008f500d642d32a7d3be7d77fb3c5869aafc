@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: HenryWong-ST17-10
+  m_EditorClassIdentifier: 
+  CardIndex: 3283
+  cardColors: 03000000
+  PlayCost: 3
+  EvoCosts: []
+  Level: 0
+  CardName_JPN: "\u674E\u5065\u826F"
+  CardName_ENG: "HenryWong\r"
+  Form_JPN: []
+  Form_ENG:
+  - "-\r"
+  Attribute_JPN: []
+  Attribute_ENG:
+  - "-\r"
+  Type_JPN: []
+  Type_ENG:
+  - "-\r"
+  CardSpriteName: ST17-10
+  cardKind: 1
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: "[Start of Your Main Phase] If your opponent has a Digimon,
+    gain 1 memory. [Main] By placing this Tamer and 1 [Gargomon] and 1 [Rapidmon]
+    from your trash in any order as one of your [Terriermon]'s bottom digivolution
+    cards, that Digimon may digivolve into [MegaGargomon] in the hand for a digivolution
+    cost of 4, ignoring its digivolution requirements. If this effect digivolved,
+    that Digimon gains <Rush> for the turn.\r"
+  InheritedEffectDiscription_JPN: "\u3010\u30BB\u30AD\u30E5\u30EA\u30C6\u30A3\u3011\u3053\u306E\u30AB\u30FC\u30C9\u3092\u30B3\u30B9\u30C8\u3092\u652F\u6255\u308F\u305A\u306B\u767B\u5834\u3055\u305B\u308B\u3002"
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: "\u3010\u30BB\u30AD\u30E5\u30EA\u30C6\u30A3\u3011\u3053\u306E\u30AB\u30FC\u30C9\u3092\u30B3\u30B9\u30C8\u3092\u652F\u6255\u308F\u305A\u306B\u767B\u5834\u3055\u305B\u308B\u3002"
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: HenryWong_ST17_10
+  DP: 0
+  rarity: 2
+  OverflowMemory: 0
+  CardID: ST17-10
+  MaxCountInDeck: 4

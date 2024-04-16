@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: BlindingRay-BT4-104_P1
+  m_EditorClassIdentifier: 
+  CardIndex: 3288
+  cardColors: 02000000
+  PlayCost: 0
+  EvoCosts: []
+  Level: 0
+  CardName_JPN: "\u7D76\u5149\u885D\r"
+  CardName_ENG: "BlindingRay\r"
+  Form_JPN:
+  - "-\r"
+  Form_ENG:
+  - "-\r"
+  Attribute_JPN:
+  - "-\r"
+  Attribute_ENG:
+  - "-\r"
+  Type_JPN:
+  - "-\r"
+  Type_ENG:
+  - "-\r"
+  CardSpriteName: BT4-104_P1
+  cardKind: 2
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: "[Main] Trash the top card of your security stack. Then,
+    gain 2 memory.\r"
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: "-\r"
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: "-\r"
+  CardEffectClassName: Zekkoushou_BT4_104
+  DP: 0
+  rarity: 2
+  OverflowMemory: 0
+  CardID: BT4-104
+  MaxCountInDeck: 4
