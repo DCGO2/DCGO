@@ -5,7 +5,7 @@ using System.Linq;
 using Photon;
 using System;
 using Photon.Pun;
-public class AngewomonAce_BT15_038 : CEntity_Effect
+public class Angewomon_ACE_BT15_038 : CEntity_Effect
 {
   public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
   {
@@ -16,7 +16,9 @@ public class AngewomonAce_BT15_038 : CEntity_Effect
       cardEffects.Add(CardEffectFactory.BlastDigivolveEffect(card: card, condition: null));
     }
 
-    if (timing == EffectTiming.OnEnterFieldAnyone)
+        #region On Play
+
+        if (timing == EffectTiming.OnEnterFieldAnyone)
     {
       ActivateClass activateClass = new ActivateClass();
       activateClass.SetUpICardEffect("Trash the top card of your security so that opponent's 1 Digimon gains DP -6000", CanUseCondition, card);
@@ -25,7 +27,7 @@ public class AngewomonAce_BT15_038 : CEntity_Effect
 
       string EffectDiscription()
       {
-        return "[On Play] You may trash the top card of your security stack to unsuspend this Digimon.";
+        return "[On Play] By trashing the top or bottom card of your security stack, 1 of your opponent's Digimon gets -6000 DP until the end of your opponent's turn.";
       }
 
       bool CanSelectPermanentCondition(Permanent permanent)
@@ -69,7 +71,7 @@ public class AngewomonAce_BT15_038 : CEntity_Effect
           yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
           bool fromTop = GManager.instance.userSelectionManager.SelectedBoolValue;
-
+  
           yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
                   card.Owner,
                   1,
@@ -113,8 +115,11 @@ public class AngewomonAce_BT15_038 : CEntity_Effect
         }
       }
     }
+#endregion
 
-    if (timing == EffectTiming.OnEnterFieldAnyone)
+        #region When Digivolving 
+
+        if (timing == EffectTiming.OnEnterFieldAnyone)
     {
       ActivateClass activateClass = new ActivateClass();
       activateClass.SetUpICardEffect("Trash the top card of your security so that opponent's 1 Digimon gains DP -6000", CanUseCondition, card);
@@ -123,7 +128,7 @@ public class AngewomonAce_BT15_038 : CEntity_Effect
 
       string EffectDiscription()
       {
-        return "[When Digivolving] You may trash the top card of your security stack to unsuspend this Digimon.";
+        return "[On Play] By trashing the top or bottom card of your security stack, 1 of your opponent's Digimon gets -6000 DP until the end of your opponent's turn.";
       }
 
       bool CanSelectPermanentCondition(Permanent permanent)
@@ -211,8 +216,11 @@ public class AngewomonAce_BT15_038 : CEntity_Effect
         }
       }
     }
+        #endregion
 
-    if (timing == EffectTiming.OnLoseSecurity)
+        #region All Turns
+
+        if (timing == EffectTiming.OnLoseSecurity)
     {
       ActivateClass activateClass = new ActivateClass();
       activateClass.SetUpICardEffect("Recovery +1 (Deck)", CanUseCondition, card);
@@ -256,7 +264,9 @@ public class AngewomonAce_BT15_038 : CEntity_Effect
         yield return ContinuousController.instance.StartCoroutine(new IRecovery(card.Owner, 1, activateClass).Recovery());
       }
     }
+        #endregion
 
-    return cardEffects;
+
+        return cardEffects;
   }
 }

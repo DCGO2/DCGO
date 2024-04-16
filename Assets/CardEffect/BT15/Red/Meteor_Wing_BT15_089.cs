@@ -6,7 +6,7 @@ using Photon;
 using System;
 using Photon.Pun;
 
-public class MeteorWing_BT15_089 : CEntity_Effect
+public class Meteor_Wing_BT15_089 : CEntity_Effect
 {
     public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
     {
@@ -21,7 +21,7 @@ public class MeteorWing_BT15_089 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Main] Delete 1 of your opponent's Digimon with 4000 DP or less.";
+                return "[Main] Delete 1 of your opponent's Digimon with 15000 DP or less. For each of your opponent's security cards, subtract 2000 from the maximum this DP-based deletion effect can delete.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)

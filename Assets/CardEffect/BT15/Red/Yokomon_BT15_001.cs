@@ -6,7 +6,7 @@ using Photon;
 using System;
 using Photon.Pun;
 
-public class Pyokomon_BT15_001 : CEntity_Effect
+public class Yokomon_BT15_001 : CEntity_Effect
 {
     public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
     {
@@ -22,7 +22,7 @@ public class Pyokomon_BT15_001 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Deletion] Gain 1 memory.";
+                return "[On Deletion] Return 1 Digimon card with [Avian], [Bird], [Beast], [Animal], [Sovereign] in one of its traits other than [Sea Animal], from your trash to the hand.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)

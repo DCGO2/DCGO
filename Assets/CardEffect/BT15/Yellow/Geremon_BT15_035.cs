@@ -12,6 +12,8 @@ public class Geremon_BT15_035 : CEntity_Effect
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+        #region Rule Text
+
         if (timing == EffectTiming.None)
         {
             ChangeCardNamesClass changeCardNamesClass = new ChangeCardNamesClass();
@@ -34,6 +36,9 @@ public class Geremon_BT15_035 : CEntity_Effect
                 return CardNames;
             }
         }
+        #endregion
+
+        #region On Play
 
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
@@ -44,7 +49,7 @@ public class Geremon_BT15_035 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Play] You may trash 1 Digimon card with [Machine] or [Cyborg] in its traits in your hand to ?申?申Draw 2?申?申. (Draw 2 cards from your deck.)";
+                return "[On Play] By trashing 1 card with [Numemon] or [Sukamon] in its name in your hand, 1 of your opponent's Digimon gains [Security A. -1] until the end of your opponent's turn.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)
@@ -162,6 +167,10 @@ public class Geremon_BT15_035 : CEntity_Effect
             }
         }
 
+        #endregion
+
+        #region On Deletion
+
         if (timing == EffectTiming.OnDestroyedAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
@@ -171,7 +180,7 @@ public class Geremon_BT15_035 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Play] You may trash 1 Digimon card with [Machine] or [Cyborg] in its traits in your hand to ?申?申Draw 2?申?申. (Draw 2 cards from your deck.)";
+                return "[On Deletion] By trashing 1 card with [Numemon] or [Sukamon] in its name in your hand, 1 of your opponent's Digimon gains [Security A. -1] until the end of your opponent's turn.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)
@@ -288,39 +297,46 @@ public class Geremon_BT15_035 : CEntity_Effect
                 }
             }
         }
+        #endregion
 
-        if (timing == EffectTiming.OnDestroyedAnyone)
+        #region Inheritable
+
+        if (timing == EffectTiming.OnAllyAttack)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Security Attack -1", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+            activateClass.SetHashString("Sec-1_BT15_035");
             activateClass.SetIsInheritedEffect(true);
             cardEffects.Add(activateClass);
 
             string EffectDiscription()
             {
-                return "[On Deletion] Gain 1 memory.";
+                return "[When Attacking] 1 of your opponent's Digimon gains [Security A. -1] until the end of your opponent's turn.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
             {
-                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+                if(CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent,card))
+                {
+                    return true;
+                }
+                return false;
             }
 
             bool CanUseCondition(Hashtable hashtable)
             {
-                return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
             }
 
             bool CanActivateCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card))
-                {
+        
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
                         return true;
                     }
-                }
+                
 
                 return false;
             }
@@ -363,7 +379,9 @@ public class Geremon_BT15_035 : CEntity_Effect
                 }
             }
         }
-
+        #endregion
+         
         return cardEffects;
+
     }
 }

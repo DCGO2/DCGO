@@ -12,7 +12,7 @@ namespace DCGO.CardEffects.LM
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Place 1 levl 4 Digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Delete 1 levl 4 Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 

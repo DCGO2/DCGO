@@ -6,7 +6,7 @@ using Photon;
 using System;
 using Photon.Pun;
 
-public class Hoohmon_BT15_017 : CEntity_Effect
+public class Phoenixmon_BT15_017 : CEntity_Effect
 {
     public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
     {
@@ -21,7 +21,7 @@ public class Hoohmon_BT15_017 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Play] Delete 1 of your opponent's Digimon with <Blocker>.";
+                return "[On Play] If your opponent has 3 or fewer security cards, delete 1 of their Digimon with the lowest DP. If they have 4 or more, trash the top card of their security stack.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
@@ -102,7 +102,7 @@ public class Hoohmon_BT15_017 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Deletion] Gain 2 memory.";
+                return "[On Deletion] If your opponent has 3 or fewer security cards, delete 1 of their Digimon with the lowest DP. If they have 4 or more, trash the top card of their security stack.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
@@ -183,7 +183,7 @@ public class Hoohmon_BT15_017 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Play] Delete 1 of your opponent's Digimon with 6000 DP or less.";
+                return "[On Play] You may play 1 red Digimon card with 5000 DP or less or 1 red Tamer card from your hand without paying the cost.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)

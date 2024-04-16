@@ -225,9 +225,9 @@ public class ContinuousController : MonoBehaviour
 
         GyuukimonToken = new CEntity_Base()
         {
-            cardColors = new List<CardColor>() { CardColor.White },
-            PlayCost = 14,
-            Level = 6,
+            cardColors = new List<CardColor>() { CardColor.Purple },
+            PlayCost = 7,
+            Level = 5,
             CardName_JPN = "ギュウキモン",
             CardName_ENG = "Gyuukimon",
             Form_JPN = new List<string>() { "究極の" },

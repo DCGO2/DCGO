@@ -6,7 +6,7 @@ using Photon;
 using System;
 using Photon.Pun;
 
-public class Tiranomon_BT15_011 : CEntity_Effect
+public class Tyrannomon_BT15_011 : CEntity_Effect
 {
     public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
     {
@@ -47,7 +47,7 @@ public class Tiranomon_BT15_011 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Play] Reveal the top 4 cards of your deck. Add 2 cards with [Garurumon]/[X Antibody] in their names among them to the hand. Place the rest at the bottom of the deck. If you added cards, trash 1 card in your hand.";
+                return "[On Play] Reveal the top 4 cards of your deck. Add 1 Digimon card and 1 Tamer card both with the [SoC] trait among them to the hand. Return the rest to the bottom of the deck. If you added, trash 1 card in your hand.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)
@@ -105,13 +105,13 @@ public class Tiranomon_BT15_011 : CEntity_Effect
                     {
                         new SimplifiedSelectCardConditionClass(
                             canTargetCondition:CanSelectCardCondition,
-                            message: "Select 1 card with [Garurumon]/[X Antibody] in their names.",
+                            message: "Select 1 Digimon card with the [SoC] trait.",
                             mode: SelectCardEffect.Mode.AddHand,
                             maxCount: 1,
                             selectCardCoroutine: null),
                         new SimplifiedSelectCardConditionClass(
                             canTargetCondition:CanSelectCardCondition1,
-                            message: "Select 1 card with [Garurumon]/[X Antibody] in their names.",
+                            message: "Select 1 Tamer card with the [SoC] trait.",
                             mode: SelectCardEffect.Mode.AddHand,
                             maxCount: 1,
                             selectCardCoroutine: null),
