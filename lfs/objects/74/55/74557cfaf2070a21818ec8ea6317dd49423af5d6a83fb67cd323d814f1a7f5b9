@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: "PrideMemoryBoost\uFF01-BT7-105_P1"
+  m_EditorClassIdentifier: 
+  CardIndex: 3289
+  cardColors: 05000000
+  PlayCost: 4
+  EvoCosts: []
+  Level: 0
+  CardName_JPN: "\u30D7\u30E9\u30A4\u30C9\u30FB\u30E1\u30E2\u30EA\u30FC\u30D6\u30FC\u30B9\u30C8\uFF01\uFF01\r"
+  CardName_ENG: "PrideMemoryBoost\uFF01\r"
+  Form_JPN:
+  - "-\r"
+  Form_ENG:
+  - "-\r"
+  Attribute_JPN:
+  - "-\r"
+  Attribute_ENG:
+  - "-\r"
+  Type_JPN:
+  - "-\r"
+  Type_ENG:
+  - "-\r"
+  CardSpriteName: BT7-105_P1
+  cardKind: 2
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: "[Main] Reveal the top 3 cards of your deck. You may play
+    1 black Digimon card with a play cost of 4 or less among them without paying
+    its memory cost. Trash the remaining cards. Then, place this card in your battle
+    area.  [Main] <Delay> (Trash this card in your battle area to activate the effect
+    below. You can't activate this effect the turn this card enters play.) Gain 2
+    memory.\r"
+  InheritedEffectDiscription_JPN: "\u3010\u30BB\u30AD\u30E5\u30EA\u30C6\u30A3\u3011\u3053\u306E\u30AB\u30FC\u30C9\u3092\u30D0\u30C8\u30EB\u30A8\u30EA\u30A2\u306B\u7F6E\u304F\u3002\r"
+  InheritedEffectDiscription_ENG: "-\r"
+  SecurityEffectDiscription_JPN: "\u3010\u30BB\u30AD\u30E5\u30EA\u30C6\u30A3\u3011\u3053\u306E\u30AB\u30FC\u30C9\u3092\u30D0\u30C8\u30EB\u30A8\u30EA\u30A2\u306B\u7F6E\u304F\u3002\r"
+  SecurityEffectDiscription_ENG: "[Security] Place this card in its owner's battle
+    area.\r"
+  CardEffectClassName: PrideMemoryBoost_BT7_105
+  DP: 0
+  rarity: 1
+  OverflowMemory: 0
+  CardID: BT7-105
+  MaxCountInDeck: 4

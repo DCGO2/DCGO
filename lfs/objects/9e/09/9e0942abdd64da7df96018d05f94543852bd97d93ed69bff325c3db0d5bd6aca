@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Kokomon-EX4-002_P1
+  m_EditorClassIdentifier: 
+  CardIndex: 3295
+  cardColors: 03000000
+  PlayCost: 0
+  EvoCosts: []
+  Level: 2
+  CardName_JPN: "\u30C1\u30E7\u30B3\u30E2\u30F3\r"
+  CardName_ENG: "Kokomon\r"
+  Form_JPN:
+  - "\u5E7C\u5E74\u671F\r"
+  Form_ENG:
+  - "In-Training\r"
+  Attribute_JPN:
+  - "-\r"
+  Attribute_ENG:
+  - "-\r"
+  Type_JPN:
+  - "\u30EC\u30C3\u30B5\u30FC\u578B\r"
+  Type_ENG:
+  - "Lesser\r"
+  CardSpriteName: EX4-002_P1
+  cardKind: 3
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: "-\r"
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: "[Your Turn][Once Per Turn] When an effect suspends
+    one of your Digimon, . (Draw 1 card from your deck.)\r"
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: "-\r"
+  CardEffectClassName: Chokomon_EX4_002
+  DP: 0
+  rarity: 1
+  OverflowMemory: 0
+  CardID: EX4-002
+  MaxCountInDeck: 4
