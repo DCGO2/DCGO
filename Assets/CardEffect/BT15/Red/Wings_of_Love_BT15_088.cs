@@ -6,7 +6,7 @@ using Photon;
 using System;
 using Photon.Pun;
 
-public class DualWingOfLove_BT15_088 : CEntity_Effect
+public class Wings_of_Love_BT15_088 : CEntity_Effect
 {
     public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
     {
@@ -21,40 +21,21 @@ public class DualWingOfLove_BT15_088 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Main] By placing 1 [Greymon] and 1 [MetalGreymon] from your trash as 1 of your [Agumon]'s bottom digivolution cards, that Digimon may digivolve into [WarGreymon] in your hand without paying the cost, ignoring its digivolution requirements.";
+                return "[Main] You may play 1 red Tamer card with a play cost of 4 or less from your hand without paying the cost. Then, if you have a Tamer with [Sora Takenouchi] in its name, return 1 red Digimon card from your trash to the hand.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
                 if (cardSource.IsTamer)
                 {
-                    if (cardSource.GetCostItself <= 4)
+                    if (cardSource.CardColors.Contains(CardColor.Red))
                     {
-                        if (cardSource.HasPlayCost)
+                        if (cardSource.GetCostItself <= 4)
                         {
                             if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                             {
-                                if (cardSource.CardColors.Contains(CardColor.Red))
-                                {
-                                    return true;
-                                }
+                                return true;
                             }
-                        }
-                    }
-                }
-
-                return false;
-            }
-
-            bool PermanentCondition(Permanent permanent)
-            {
-                if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
-                {
-                    if (permanent.IsTamer)
-                    {
-                        if (permanent.TopCard.ContainsCardName("Sora Takenouchi"))
-                        {
-                            return true;
                         }
                     }
                 }
@@ -69,6 +50,22 @@ public class DualWingOfLove_BT15_088 : CEntity_Effect
                     if (cardSource.CardColors.Contains(CardColor.Red))
                     {
                         return true;
+                    }
+                }
+
+                return false;
+            }
+
+            bool DoesPermanentExist(Permanent permanent)
+            {
+                if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
+                {
+                    if (permanent.IsTamer)
+                    {
+                        if (permanent.TopCard.ContainsCardName("Sora Takenouchi"))
+                        {
+                            return true;
+                        }
                     }
                 }
 
@@ -104,7 +101,7 @@ public class DualWingOfLove_BT15_088 : CEntity_Effect
                         mode: SelectHandEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                    selectHandEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
+                    selectHandEffect.SetUpCustomMessage("Select 1 Tamer card to play.", "The opponent is selecting 1 card to play.");
                     selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
 
                     yield return StartCoroutine(selectHandEffect.Activate());
@@ -119,11 +116,11 @@ public class DualWingOfLove_BT15_088 : CEntity_Effect
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedCards, activateClass: activateClass, payCost: false, isTapped: false, root: SelectCardEffect.Root.Hand, activateETB: true));
                 }
 
-                if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, PermanentCondition))
+                if (CardEffectCommons.HasMatchConditionPermanent(DoesPermanentExist))
                 {
                     if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition1))
                     {
-                        int maxCount = Math.Min(1, card.Owner.TrashCards.Count(CanSelectCardCondition1));
+                        int maxCount1 = Math.Min(1, card.Owner.TrashCards.Count(CanSelectCardCondition1));
 
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
@@ -134,8 +131,8 @@ public class DualWingOfLove_BT15_088 : CEntity_Effect
                             canNoSelect: () => false,
                             selectCardCoroutine: null,
                             afterSelectCardCoroutine: null,
-                            message: "Select 1 card to add to your hand.",
-                            maxCount: maxCount,
+                            message: "Select 1 red card to add to your hand.",
+                            maxCount: maxCount1,
                             canEndNotMax: false,
                             isShowOpponent: true,
                             mode: SelectCardEffect.Mode.AddHand,
@@ -148,6 +145,7 @@ public class DualWingOfLove_BT15_088 : CEntity_Effect
                         yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
                     }
                 }
+
             }
         }
 
@@ -161,7 +159,7 @@ public class DualWingOfLove_BT15_088 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Security] You may play 1 [Agumon] from your hand or trash without paying the cost. Then, add this card to the hand.";
+                return "[Security] You may play 1 [Biyomon] from your hand or trash without paying the cost. Then, add this card to the hand.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)

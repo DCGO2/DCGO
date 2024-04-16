@@ -22,7 +22,7 @@ public class Nyaromon_BT15_003 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Attacking][Once Per Turn] If this Digimon has [Unidentified] in its type, trigger <Draw 1>. (Draw 1 card from your deck.)";
+                return "[When Attacking][Once Per Turn] By trashing the top or bottom card of your security stack, gain 1 memory.";
             }
 
             bool CanUseCondition(Hashtable hashtable)

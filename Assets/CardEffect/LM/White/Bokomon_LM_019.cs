@@ -87,7 +87,8 @@ namespace DCGO.CardEffects.LM
                     {
                         if (permanent.TopCard.HasText("Gammamon") && !permanent.TopCard.CardNames.Contains("Bokomon"))
                         {
-                            return true;
+                            if (permanent.willBeRemoveField)
+                                return true;
                         }
                     }
 

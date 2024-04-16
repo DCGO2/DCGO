@@ -25,7 +25,7 @@ public class GarudamonAce_BT15_014 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Play] Delete 1 of your opponent's Digimon with 6000 DP or less.";
+                return "[On Play] You may play 1 red Tamer card with a play cost of 4 or less from your hand without paying the cost.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)
@@ -118,7 +118,7 @@ public class GarudamonAce_BT15_014 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Play] Delete 1 of your opponent's Digimon with 6000 DP or less.";
+                return "[When Digivolving] You may play 1 red Tamer card with a play cost of 4 or less from your hand without paying the cost.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)
@@ -212,7 +212,7 @@ public class GarudamonAce_BT15_014 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[All Turns][Once Per Turn] When you play a Tamer, you may play 1 level 3 Digimon card from your hand without paying the cost.";
+                return "[All Turns][Once Per Turn] When your Tamer card is played, delete 1 of your opponent's Digimon with [Blocker].";
             }
 
             bool PermanentCondition(Permanent permanent)

@@ -1668,10 +1668,11 @@ public class CardSource : MonoBehaviour
     }
     #endregion
 
-    #region whether this card has [Fortitude]
+    #region whether this card has [Blocker]
     public bool HasBlocker =>
         EffectList(EffectTiming.None)
-            .Some(cardEffect => cardEffect is BlockerClass
+            .Some(cardEffect => cardEffect is BlockerClass 
+                && cardEffect.CanUseCondition == null
                 && !cardEffect.IsInheritedEffect && !cardEffect.IsSecurityEffect);
     #endregion
 
@@ -1741,6 +1742,14 @@ public class CardSource : MonoBehaviour
             .Some(cardEffect => cardEffect is ActivateICardEffect
                 && !cardEffect.IsInheritedEffect && !cardEffect.IsSecurityEffect
                 && cardEffect.IsOnPlay);
+    #endregion
+
+    #region whether this card has [When Digivolving] effect
+    public bool HasWhenDigivolvingEffect =>
+        EffectList(EffectTiming.OnEnterFieldAnyone)
+            .Some(cardEffect => cardEffect is ActivateICardEffect
+                && !cardEffect.IsInheritedEffect && !cardEffect.IsSecurityEffect
+                && cardEffect.IsWhenDigivolving);
     #endregion
 
     #region whether this card has [Digisorption]

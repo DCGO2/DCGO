@@ -766,6 +766,7 @@ public enum EffectTiming
     OnDigivolutionCardReturnToDeckBottom,
     OnReturnCardsToLibraryFromTrash,
     OnPermamemtReturnedToHand,
+    OnReturnCardsToHandFromTrash,
 }
 #endregion
 

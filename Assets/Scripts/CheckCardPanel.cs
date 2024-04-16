@@ -7,6 +7,8 @@ using UnityEngine.EventSystems;
 using UnityEngine.Events;
 using DG.Tweening;
 using TMPro;
+using Photon.Pun;
+
 public class CheckCardPanel : MonoBehaviour
 {
     [Header("Message Text")]
@@ -194,7 +196,6 @@ public class CheckCardPanel : MonoBehaviour
         foreach (CardSource cardSource in root)
         {
             HandCard handCard = Instantiate(GManager.instance.handCardPrefab, scrollRect.content);
-
             handCard.gameObject.name = $"checkCardPanel_{cardSource.Owner.PlayerName}";
 
             handCard.GetComponent<Draggable_HandCard>().startScale = new Vector3(2.7f, 2.7f, 1);
@@ -244,10 +245,7 @@ public class CheckCardPanel : MonoBehaviour
                 #region left click
                 else if (Input.GetMouseButtonUp(0))
                 {
-                    if (OnClickAction != null)
-                    {
-                        OnClickAction()?.Invoke(handCard);
-                    }
+                    handCard.OnClickAction?.Invoke(handCard);
                 }
                 #endregion
             }
@@ -284,16 +282,105 @@ public class CheckCardPanel : MonoBehaviour
 
         yield return new WaitForSeconds(Time.deltaTime * 0.2f);
 
-        //GManager.instance.turnStateMachine.OpenTrashCardPanelAction?.Invoke();
+        foreach(HandCard handCard in handCards)
+        {
+            if (handCard.cardSource.CanDeclareSkill)
+            {
+                handCard.SetOrangeOutline();
+
+                handCard.AddClickTarget(OnClickHandCard);
+            }
+        }
+    }
+
+    public void OnClickHandCard(HandCard handCard)
+    {
+        if (handCard != null)
+        {
+            if (handCard.cardSource != null)
+            {
+                List<CardCommand> FieldUnitCommands = new List<CardCommand>();
+
+                #region Card Effects
+                List<ICardEffect> cardEffects = new List<ICardEffect>();
+                List<ICardEffect> cardEffects1 = new List<ICardEffect>();
+
+                foreach (ICardEffect cardEffect in handCard.cardSource.EffectList(EffectTiming.OnDeclaration))
+                {
+                    cardEffects1.Add(cardEffect);
+                    cardEffects.Add(cardEffect);
+                }
+
+                cardEffects.Reverse();
+
+                foreach (ICardEffect cardEffect in cardEffects)
+                {
+                    if (cardEffect is ActivateICardEffect)
+                    {
+                        CardCommand SkillCommand = new CardCommand(cardEffect.EffectName, OnClick_SetUseSkillUnit_RPC, cardEffect.CanUse(null), DataBase.CommandColor_Skill);
+                        FieldUnitCommands.Add(SkillCommand);
+
+                        void OnClick_SetUseSkillUnit_RPC()
+                        {
+                            #region Reset the card on the field
+                            foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players)
+                            {
+                                foreach (FieldPermanentCard fieldPermanentCard in player.FieldPermanentObjects)
+                                {
+                                    fieldPermanentCard.RemoveSelectEffect();
+                                    fieldPermanentCard.RemoveClickTarget();
+                                    fieldPermanentCard.RemoveDragTarget();
+                                    fieldPermanentCard.Outline_Select.gameObject.SetActive(false);
+                                    fieldPermanentCard.CloseCommandPanel();
+                                }
+                            }
+                            #endregion
+
+                            #region Reset the card in hand
+                            foreach (HandCard handCard1 in GManager.instance.turnStateMachine.gameContext.TurnPlayer.HandCardObjects)
+                            {
+                                handCard.Outline_Select.gameObject.SetActive(false);
+                                handCard1.RemoveSelectEffect();
+                                handCard1.RemoveClickTarget();
+                                handCard1.RemoveDragTarget();
+                            }
+                            #endregion
+
+                            #region Reset the card in trash
+                            foreach (HandCard trashCard in handCards)
+                            {
+                                trashCard.Outline_Select.gameObject.SetActive(false);
+                                trashCard.RemoveSelectEffect();
+                                trashCard.RemoveClickTarget();
+                                trashCard.RemoveDragTarget();
+                            }
+                            #endregion
+
+                            handCard.GetComponent<Draggable_HandCard>().CanPointerEnterExitAction = true;
+
+                            GManager.instance.turnStateMachine.photonView.RPC("SetActCardSkill", RpcTarget.All, handCard.cardSource.CardIndex, cardEffects1.IndexOf(cardEffect));
+
+                            CloseSelectCardPanel();
+                        }
+                    }
+                }
+                #endregion
+
+                handCard.handCardCommandPanel.SetUpCommandPanel(FieldUnitCommands, null, handCard);
+
+                handCard.AddClickTarget((_fieldUnitCard) => StartCoroutine(GManager.instance.turnStateMachine.SetMainPhase()));
+
+                handCard.Outline_Select.gameObject.SetActive(true);
+                handCard.SetOrangeOutline();
+            }
+        }
     }
 
     bool CanClose = true;
     public void CloseSelectCardPanel()
     {
         if (!CanClose)
-        {
             return;
-        }
 
         CanClose = false;
         ContinuousController.instance.StartCoroutine(CloseSelectCardPanelCoroutine());

@@ -6,7 +6,7 @@ using Photon;
 using System;
 using Photon.Pun;
 
-public class Piyomon_BT15_007 : CEntity_Effect
+public class Biyomon_BT15_007 : CEntity_Effect
 {
     public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
     {
@@ -21,7 +21,7 @@ public class Piyomon_BT15_007 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Start of Your Main Phase] If you have a Tamer with [Tai Kamiya] in its name, this Digimon may digivolve into [Greymon] in your hand without paying the cost.";
+                return "[Start of Your Main Phase] By trashing 1 Digimon with [Avian], [Bird], [Beast], or [Sovereign], other that [Sea Animal], in one of its traits in your hard, reveal the top 4 cards of your deck. Add 1 red card among them to your hand. Return the rest to the bottom of the deck.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)
@@ -142,7 +142,7 @@ public class Piyomon_BT15_007 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Your Turn][Once Per Turn] When a card is removed from your opponent's security stack, <Draw 1>.";
+                return "[Your Turn][Once Per Turn] When a card is removed from your opponent's security stack, gain 1 memory.";
             }
 
             bool CanUseCondition(Hashtable hashtable)
