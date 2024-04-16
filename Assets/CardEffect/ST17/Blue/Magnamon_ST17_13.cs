@@ -72,13 +72,24 @@ namespace DCGO.CardEffects.ST17
                     return false;
                 }
 
+                bool CanSelectPermanentCondition1(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                    {
+                        if ((permanent.IsDigimon && permanent.Level == 3 && card.CardColors.Contains(CardColor.Blue) || card.CardColors.Contains(CardColor.Black)) || (card.CardNames.Contains("Veemon") && permanent.Level == 3))
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
                         if (cardSource.IsDigimon)
                         {
                             if (CardEffectCommons.IsExistOnBattleArea(card))
                             {
-                            Debug.Log("Selecting");
                                 if (cardSource.CanPlayCardTargetFrame(card.PermanentOfThisCard().PermanentFrame, true, activateClass, root: SelectCardEffect.Root.Execution))
                                 {
                                     return true;
@@ -108,11 +119,6 @@ namespace DCGO.CardEffects.ST17
                     bool CanSelectPermanentCondition(Permanent permanent)
                     {
                         return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
-                    }
-
-                    bool CanSelectPermanentCondition1(Permanent permanent)
-                    {
-                        return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
                     }
 
                     bool CanUseCondition1(Hashtable hashtable)
