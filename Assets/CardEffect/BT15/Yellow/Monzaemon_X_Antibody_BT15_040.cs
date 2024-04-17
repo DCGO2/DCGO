@@ -1,10 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
-using Photon;
 using System;
-using Photon.Pun;
 
 public class Monzaemon_X_Antibody_BT15_040 : CEntity_Effect
 {
@@ -12,11 +9,12 @@ public class Monzaemon_X_Antibody_BT15_040 : CEntity_Effect
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+        #region Alternate Digivolution Requirement
         if (timing == EffectTiming.None)
         {
             bool PermanentCondition(Permanent targetPermanent)
             {
-                if (targetPermanent.TopCard.CardNames.Contains("Monzaemon") && targetPermanent.Level == 5 && !targetPermanent.TopCard.HasXAntibodyTraits)
+                if (targetPermanent.TopCard.ContainsCardName("Monzaemon") && targetPermanent.Level == 5 && !targetPermanent.TopCard.HasXAntibodyTraits)
                 {
                     return true;
                 }
@@ -30,7 +28,9 @@ public class Monzaemon_X_Antibody_BT15_040 : CEntity_Effect
                 card: card,
                 condition: null));
         }
+        #endregion
 
+        #region When Digivolving
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
@@ -45,7 +45,7 @@ public class Monzaemon_X_Antibody_BT15_040 : CEntity_Effect
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                if (cardSource.ContainsCardName("Numemon") || (cardSource.HasLevel && cardSource.Level <=3))
+                if (cardSource.CardNames.Contains("Numemon") || (cardSource.HasLevel && cardSource.Level <=3))
                 {
                     if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                     {
@@ -117,8 +117,10 @@ public class Monzaemon_X_Antibody_BT15_040 : CEntity_Effect
                 }
             }
         }
-        
-        if(timing == EffectTiming.OnEnterFieldAnyone)
+        #endregion
+
+        #region All Turns
+        if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Give opponent's Digimon -2000 DP for each Digimon", CanUseCondition, card);
@@ -201,11 +203,9 @@ public class Monzaemon_X_Antibody_BT15_040 : CEntity_Effect
 
                 }
             }
-
         }
-        
+        #endregion
 
         return cardEffects;
     }
-
 }

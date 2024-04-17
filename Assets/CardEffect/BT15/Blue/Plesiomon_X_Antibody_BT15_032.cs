@@ -39,7 +39,7 @@ public class Plesiomon_X_Antibody_BT15_032 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Digivolving] Return 1 of your opponent's Digimon to the bottom of their deck. (Trash all of the digivolution cards of that Digimon.)";
+                return "[When Digivolving] [When Attacking] [Once per Turn] Return 1 of your opponent's Digimon with as many or fewer digivolution cards as this Digimon to the hand.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
@@ -115,14 +115,11 @@ public class Plesiomon_X_Antibody_BT15_032 : CEntity_Effect
 
             bool PermanentCondition(Permanent permanent)
             {
-                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                if (CardEffectCommons.IsOpponentPermanent(permanent, card))
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (permanent.DigivolutionCards.Count <= card.PermanentOfThisCard().DigivolutionCards.Count)
                     {
-                        if (permanent.DigivolutionCards.Count <= card.PermanentOfThisCard().DigivolutionCards.Count)
-                        {
-                            return true;
-                        }
+                        return true;
                     }
                 }
 
