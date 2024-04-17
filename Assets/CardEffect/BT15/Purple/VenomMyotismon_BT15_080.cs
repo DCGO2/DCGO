@@ -17,7 +17,7 @@ public class VenomMyotismon_BT15_080 : CEntity_Effect
             cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
         }
 
-        if (timing == EffectTiming.OnEnterFieldAnyone)
+        if (timing == EffectTiming.OnEnterFieldAnyone || timing == EffectTiming.OnDestroyedAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Delete 1 level 5 or lower Digimon", CanUseCondition, card);

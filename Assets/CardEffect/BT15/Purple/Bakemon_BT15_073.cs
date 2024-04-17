@@ -31,14 +31,17 @@ public class Bakemon_BT15_073 : CEntity_Effect
 
             bool CanActivateCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.IsExistOnBattleArea(card) || CardEffectCommons.CanActivateOnDeletion(card))
+                if (card.Owner.LibraryCards.Count >= 1 || card.Owner.HandCards.Count >= 1)
                 {
-                    if (card.Owner.LibraryCards.Count >= 1)
+                    if(CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        return true;
+                        if (card.Owner.GetBattleAreaDigimons().Contains(card.PermanentOfThisCard()))
+                        {
+                            return true;
+                        }
                     }
 
-                    if (card.Owner.HandCards.Count >= 1)
+                    if (CardEffectCommons.CanActivateOnDeletion(card))
                     {
                         return true;
                     }

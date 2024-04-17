@@ -38,6 +38,11 @@ namespace DCGO.CardEffects.LM
 
                 bool HasNoUnsuspendDigimon()
                 {
+                    if(card.Owner.Enemy.GetBattleAreaDigimons().Count == 0)
+                    {
+                        return true;
+                    }
+
                     foreach (Permanent permanent in card.Owner.Enemy.GetBattleAreaDigimons())
                     {
                         if (!permanent.IsSuspended)
@@ -99,7 +104,7 @@ namespace DCGO.CardEffects.LM
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 Digimon card with [Angoramon] in its name from hand", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 activateClass.SetHashString("PlayAngoramon_LM_013");
                 cardEffects.Add(activateClass);
 

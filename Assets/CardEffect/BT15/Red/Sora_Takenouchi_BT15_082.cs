@@ -36,7 +36,12 @@ public class Sora_Takenouchi_BT15_082 : CEntity_Effect
 
             bool CardReturnedCondition(CardSource cardSource)
             {
-                return cardSource.CardColors.Contains(CardColor.Red);
+                if(cardSource.Owner == card.Owner)
+                {
+                    return cardSource.CardColors.Contains(CardColor.Red);
+                }
+
+                return false;
             }
 
             bool CanUseCondition(Hashtable hashtable)

@@ -244,7 +244,7 @@ public class WaruSeadramon_BT15_078 : CEntity_Effect
                         yield return null;
                     }
 
-                    if(selectedCards.Count > 0)
+                    if (selectedCards.Count > 0)
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
                                                 cardSources: selectedCards,
@@ -254,10 +254,26 @@ public class WaruSeadramon_BT15_078 : CEntity_Effect
                                                 root: SelectCardEffect.Root.Trash,
                                                 activateETB: false));
 
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.attackProcess.SwitchDefender(
+                        List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
+                    {
+                        new SelectionElement<bool>(message: $"Redirect Attack", value : true, spriteIndex: 0),
+                        new SelectionElement<bool>(message: $"Continue Attack", value : false, spriteIndex: 1),
+                    };
+
+                        string selectPlayerMessage = "Would you like to redirect the attack?";
+                        string notSelectPlayerMessage = "The opponent is selecting whether to redirect the attack.";
+
+                        GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                        if (GManager.instance.userSelectionManager.SelectedBoolValue)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.attackProcess.SwitchDefender(
                                 activateClass,
                                 false,
                                 selectedCards[0].PermanentOfThisCard()));
+                        }
                     }
                 }
             }
@@ -265,7 +281,7 @@ public class WaruSeadramon_BT15_078 : CEntity_Effect
         #endregion
 
         //Inherited Effect
-        if (timing == EffectTiming.OnDetermineDoSecurityCheck)
+        if (timing == EffectTiming.None)
         {
             cardEffects.Add(CardEffectFactory.RetaliationSelfEffect(isInheritedEffect: true, card: card, condition: null));
         }

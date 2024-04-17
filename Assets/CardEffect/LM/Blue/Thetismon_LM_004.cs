@@ -142,7 +142,7 @@ namespace DCGO.CardEffects.LM
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Unsuspend this Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 

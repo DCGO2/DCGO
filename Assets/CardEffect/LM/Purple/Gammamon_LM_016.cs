@@ -59,7 +59,11 @@ namespace DCGO.CardEffects.LM
                         {
                             if (CardEffectCommons.IsOwnerTurn(card))
                             {
-                                return true;
+                                if(CardEffectCommons.IsByEffect(hashtable, null))
+                                {
+                                    return true;
+                                }
+                                
                             }
                         }
                     }

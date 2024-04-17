@@ -255,12 +255,18 @@ public class Leviamon_X_Antibody_BT15_081 : CEntity_Effect
                 return false;
             }
             #endregion
+            
+            bool PermanentCondition(Permanent permanent)
+            {
+                return (permanent.IsDigimon || permanent.IsTamer);
+            }
 
             bool CanUseCondition(Hashtable hashtable)
             {
                 if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                 {
-                    if(card.Owner.GetBattleAreaPermanents().Count <= card.Owner.Enemy.GetBattleAreaPermanents().Count)
+
+                    if(card.Owner.GetBattleAreaPermanents().Count(PermanentCondition) <= card.Owner.Enemy.GetBattleAreaPermanents().Count(PermanentCondition))
                     {
                         return true;
                     }
