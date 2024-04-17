@@ -1,10 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
-using Photon;
 using System;
-using Photon.Pun;
+using System.Reflection;
+using UnityEngine;
 
 public class Apocalymon_BT15_102 : CEntity_Effect
 {
@@ -12,7 +11,7 @@ public class Apocalymon_BT15_102 : CEntity_Effect
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-        #region Before Pay Cost
+        #region Before Pay Cost - Condition Effect
         if (timing == EffectTiming.BeforePayCost)
         {
             ActivateClass activateClass = new ActivateClass();
@@ -52,6 +51,19 @@ public class Apocalymon_BT15_102 : CEntity_Effect
                 return false;
             }
 
+            bool CanNoSelect(CardSource cardSource)
+            {
+                if (cardSource != null)
+                {
+                    if (cardSource.PayingCost(SelectCardEffect.Root.Hand, null, checkAvailability: false) > cardSource.Owner.MaxMemoryCost)
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+
             bool CanUseCondition(Hashtable hashtable)
             {
                 if (CardEffectCommons.CanTriggerWhenPermanentWouldPlay(hashtable, CardCondition))
@@ -81,11 +93,11 @@ public class Apocalymon_BT15_102 : CEntity_Effect
 
                     List<CardSource> digivolutionCards = new List<CardSource>();
 
-                    bool CanSelectCardCondition1(CardSource cardSource)
+                    bool CanSelectTrashCardCondition(CardSource cardSource)
                     {
                         if (CanSelectCardCondition(cardSource))
                         {
-                            if (digivolutionCards.Count((cardSource1) => cardSource1.CardID == cardSource.CardID) == 0)
+                            if (digivolutionCards.Count((filteredCard) => filteredCard.CardID == cardSource.CardID) == 0)
                             {
                                 return true;
                             }
@@ -94,21 +106,22 @@ public class Apocalymon_BT15_102 : CEntity_Effect
                         return false;
                     }
 
-                if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, (cardSource) => CanSelectCardCondition1(cardSource)))
+                if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, (cardSource) => CanSelectTrashCardCondition(cardSource)))
                 {
+                    bool noSelect = CanNoSelect(CardEffectCommons.GetCardFromHashtable(_hashtable));
                     List<CardSource> selectedCards = new List<CardSource>();
 
-                    int maxCount = Math.Min(3 - digivolutionCards.Count, card.Owner.TrashCards.Count((cardSource) => CanSelectCardCondition1(cardSource)));
+                    int maxCount = Math.Min(3 - digivolutionCards.Count, card.Owner.TrashCards.Count((cardSource) => CanSelectTrashCardCondition(cardSource)));
 
                     if (maxCount >= 1)
                     {
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                         selectCardEffect.SetUp(
-                            canTargetCondition: CanSelectCardCondition1,
+                            canTargetCondition: CanSelectTrashCardCondition,
                             canTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
                             canEndSelectCondition: CanEndSelectCondition,
-                            canNoSelect: () => true,
+                            canNoSelect: () => noSelect,
                             selectCardCoroutine: SelectCardCoroutine,
                             afterSelectCardCoroutine: null,
                             message: "Select cards to place in Digivolution cards.",
@@ -269,6 +282,108 @@ public class Apocalymon_BT15_102 : CEntity_Effect
 
                     yield return null;
                 }
+            }
+        }
+        #endregion
+
+        #region Reduce Play Cost - Not Shown
+        if (timing == EffectTiming.None)
+        {
+            ChangeCostClass changeCostClass = new ChangeCostClass();
+            changeCostClass.SetUpICardEffect("Play Cost -4", CanUseCondition, card);
+            changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => true, isChangePayingCost: () => true);
+            changeCostClass.SetNotShowUI(true);
+            cardEffects.Add(changeCostClass);
+
+            bool CanSelectCardCondition(CardSource cardSource)
+            {
+                if (cardSource.IsDigimon)
+                {
+                    if (cardSource.CardTraits.Contains("Dark Masters") || cardSource.CardTraits.Contains("DarkMasters"))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            bool CanUseCondition(Hashtable hashtable)
+            {
+                if (card.Owner.HandCards.Contains(card))
+                {
+                    ICardEffect activateClass = card.EffectList(EffectTiming.BeforePayCost).Find(cardEffect => cardEffect.EffectName == "Placing 1 [Dark Masters] to get Play Cost -4");
+
+                    if (activateClass != null)
+                    {
+                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
+                        {
+                            return true;
+                        }
+                    }
+                }
+
+                return false;
+            }
+
+            int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
+            {
+                if (CardSourceCondition(cardSource))
+                {
+                    if (RootCondition(root))
+                    {
+                        if (PermanentsCondition(targetPermanents))
+                        {
+                            List<CardSource> trashSources = card.Owner.TrashCards.Filter(CanSelectCardCondition);
+                            int targetCount = (from trashCard in trashSources select trashCard.CardID).Distinct().Count();
+
+                            Cost -= targetCount * 4;
+                        }
+                    }
+                }
+
+                return Cost;
+            }
+
+            bool PermanentsCondition(List<Permanent> targetPermanents)
+            {
+                if (targetPermanents == null)
+                {
+                    return true;
+                }
+
+                else
+                {
+                    if (targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            bool CardSourceCondition(CardSource cardSource)
+            {
+                if (cardSource != null)
+                {
+                    if (cardSource == card)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            bool RootCondition(SelectCardEffect.Root root)
+            {
+                return true;
+            }
+
+            bool isUpDown()
+            {
+                return true;
             }
         }
         #endregion
