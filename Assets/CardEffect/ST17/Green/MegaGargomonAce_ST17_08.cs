@@ -206,11 +206,14 @@ namespace DCGO.CardEffects.ST17
 
                             bool PermanentCondition(Permanent permanent)
                             {
-                                if (permanent != null)
+                                if (permanent == selectedPermanent)
                                 {
                                     if (permanent.TopCard != null)
                                     {
-                                        return true;
+                                        if (permanent.IsDigimon || permanent.IsTamer)
+                                        {
+                                            return true;
+                                        }
                                     }
                                 }
 
@@ -222,7 +225,10 @@ namespace DCGO.CardEffects.ST17
 
                                 if (cardSource.Owner == card.Owner.Enemy)
                                 {
-                                    return true;
+                                    if (cardSource.IsDigimon || cardSource.IsTamer)
+                                    {
+                                        return true;
+                                    }
                                 }
 
                                 return false;
