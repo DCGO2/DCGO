@@ -113,12 +113,20 @@ namespace DCGO.CardEffects.ST17
 
                     string EffectDiscription1()
                     {
-                        return "Trigger <De-Digivolve 1> on up to 1 of your opponent's Digimon. (Trash a card from the top of one of your opponent's Digimon. If it has no digivolution cards, or becomes a level 3 Digimon, you can't trash any more cards.)";
+                        return "Trigger <De-Digivolve 1> 1 Digimon. (Trash a card from the top of one of your opponent's Digimon. If it has no digivolution cards, or becomes a level 3 Digimon, you can't trash any more cards.)";
                     }
 
                     bool CanSelectPermanentCondition(Permanent permanent)
                     {
-                        return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+                        if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                        {
+                            return true;
+                        }
+                        if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                        {
+                            return true;
+                        }
+                        return false;
                     }
 
                     bool CanUseCondition1(Hashtable hashtable)
@@ -247,13 +255,18 @@ namespace DCGO.CardEffects.ST17
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent.DigivolutionCards.Count((cardSource) => !cardSource.CanNotTrashFromDigivolutionCards(activateClass)) >= 1)
+                        if (permanent.DigivolutionCards.Count(CanSelectCardCondition) >= 1)
                         {
                             return true;
                         }
                     }
 
                     return false;
+                }
+
+                bool CanSelectCardCondition(CardSource cardSource)
+                {
+                    return !cardSource.CanNotTrashFromDigivolutionCards(activateClass);
                 }
 
                 bool CanSelectPermanentCondition1(Permanent permanent)
@@ -279,6 +292,11 @@ namespace DCGO.CardEffects.ST17
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                        {
+                            return true;
+                        }
+
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition1))
                         {
                             return true;
                         }

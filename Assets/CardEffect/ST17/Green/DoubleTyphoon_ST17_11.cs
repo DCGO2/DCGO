@@ -91,7 +91,7 @@ namespace DCGO.CardEffects.ST17
                     },
                     remainingCardsPlace: RemainingCardsPlace.DeckBottom,
                     activateClass: activateClass,
-                    canNoAction: true));
+                    canNoAction: false));
 
                     IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
@@ -262,13 +262,16 @@ namespace DCGO.CardEffects.ST17
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
-
-                    cardEffects.Add(CardEffectFactory.PlaceSelfDelayOptionSecurityEffect(card));
                 }
+            }
+
+            if (timing == EffectTiming.SecuritySkill)
+            {
+                cardEffects.Add(CardEffectFactory.PlaceSelfDelayOptionSecurityEffect(card));
             }
             #endregion
 
-            
+
             return cardEffects;
         }
     }
