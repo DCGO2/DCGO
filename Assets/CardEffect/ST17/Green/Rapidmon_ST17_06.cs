@@ -77,7 +77,7 @@ namespace DCGO.CardEffects.ST17
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card);
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -132,7 +132,7 @@ namespace DCGO.CardEffects.ST17
 
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeSecurityDigimonCardDPPlayerEffect(
                                 cardCondition: cardSource => cardSource.Owner == card.Owner.Enemy,
-                                changeValue: -2000,
+                                changeValue: -4000,
                                 effectDuration: EffectDuration.UntilOpponentTurnEnd,
                                 activateClass: activateClass));
                         }

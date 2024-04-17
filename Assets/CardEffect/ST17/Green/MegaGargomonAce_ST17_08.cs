@@ -266,7 +266,10 @@ namespace DCGO.CardEffects.ST17
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        return true;
+                        if (CardEffectCommons.CanTriggerWhenDigivolving(hashtable,card))
+                        {
+                            return true;
+                        }
                     }
 
                     return false;
@@ -326,11 +329,14 @@ namespace DCGO.CardEffects.ST17
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (CardEffectCommons.CanTriggerOnAttack(hashtable, card))
+                        if (CardEffectCommons.IsOwnerTurn(card))
                         {
-                            if (CardEffectCommons.CanUnsuspend(card.PermanentOfThisCard()))
+                            if (CardEffectCommons.CanTriggerOnAttack(hashtable, card))
                             {
-                                return true;
+                                if (CardEffectCommons.CanUnsuspend(card.PermanentOfThisCard()))
+                                {
+                                    return true;
+                                }
                             }
                         }
                     }

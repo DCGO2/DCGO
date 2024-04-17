@@ -75,7 +75,10 @@ public class Gargomon_ST17_05 : CEntity_Effect
             {
                 if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
-                    return true;
+                    if (CardEffectCommons.IsOwnerTurn(card))
+                    {
+                        return true;
+                    }
                 }
 
                 return false;
