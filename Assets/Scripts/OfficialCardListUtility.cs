@@ -352,7 +352,6 @@ public class OfficialCardListUtility
                     {
                         targetCardData[i] = targetCardData[i].Replace(" ", "").Replace("<divclass=\"card_name\">", "").Replace("</div>", "")
                         .Replace("&amp;", "&");
-
                         cEntity_Base.CardName_ENG = targetCardData[i].Replace("�I", "!");
                     }
 
@@ -1083,15 +1082,13 @@ public class OfficialCardListUtility
         cEntity_Base.EffectDiscription_JPN = GetTagRemovedString(cEntity_Base.EffectDiscription_JPN);
         cEntity_Base.InheritedEffectDiscription_JPN = GetTagRemovedString(cEntity_Base.InheritedEffectDiscription_JPN);
         cEntity_Base.SecurityEffectDiscription_JPN = GetTagRemovedString(cEntity_Base.SecurityEffectDiscription_JPN);
-
-        Debug.LogWarning(cEntity_Base.cardColors.Count);
         #endregion
     }
 
     static void AttachEnglishCardDataFromDigimonDev(CEntity_Base cEntity_Base)
     {
         string url = $"https://digimoncardgame.fandom.com/wiki/{cEntity_Base.CardID}";
-
+        Debug.Log(url);
         WebClient wc = new WebClient();
         wc.Encoding = Encoding.UTF8;
         string resultText = wc.DownloadString(url);

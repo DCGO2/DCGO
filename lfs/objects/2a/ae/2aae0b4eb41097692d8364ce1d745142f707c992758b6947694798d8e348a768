@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: MegaGargomon-ST17-08_P1
+  m_EditorClassIdentifier: 
+  CardIndex: 3280
+  cardColors: 0300000005000000
+  PlayCost: 7
+  EvoCosts:
+  - CardColor: 3
+    Level: 5
+    MemoryCost: 4
+  - CardColor: 5
+    Level: 5
+    MemoryCost: 4
+  Level: 6
+  CardName_JPN: "\u30BB\u30F3\u30C8\u30AC\u30EB\u30B4\u30E2\u30F3"
+  CardName_ENG: "MegaGargomon\r"
+  Form_JPN:
+  - "\u7A76\u6975\u4F53"
+  Form_ENG:
+  - "Mega\r"
+  Attribute_JPN:
+  - "\u30EF\u30AF\u30C1\u30F3\u7A2E"
+  Attribute_ENG:
+  - "Vaccine\r"
+  Type_JPN:
+  - "\u30DE\u30B7\u30FC\u30F3\u578B"
+  Type_ENG:
+  - "Machine\r"
+  CardSpriteName: ST17-08_P1
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: "[Digivolve] [Rapidmon] in name: Cost 5[Hand] [Counter]
+    <Blast Digivolve> (One of your Digimon may digivolve into this card without paying
+    the cost.) <Blocker> <Reboot> [When Digivolving] Suspend 2 of your opponent's
+    Digimon or Tamers. Then, 2 of their Digimon or Tamers can't unsuspend or digivolve
+    until the end of their turn. [When Digivolving] [End of Attack] [Once Per Turn]
+    You may unsuspend this Digimon.\r"
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: MegaGargomonAce_ST17_08
+  DP: 12000
+  rarity: 3
+  OverflowMemory: 4
+  CardID: ST17-08
+  MaxCountInDeck: 4
