@@ -64,7 +64,7 @@ public class Apocalymon_BT15_102 : CEntity_Effect
 
             bool CanActivateCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
+                if (CardEffectCommons.IsExistOnHand(card))
                 {
                     if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
                     {
