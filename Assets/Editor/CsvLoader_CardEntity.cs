@@ -64,6 +64,7 @@ public class CsvLoader_CardEntity : Editor
 
             IEnumerator CreateCardData(string CardImageName)
             {
+                
                 // CardEntity‚ instance created
                 CEntity_Base cardEntity = CreateInstance<CEntity_Base>();
 
@@ -329,15 +330,9 @@ public class CsvLoader_CardEntity : Editor
 
                 string folderPath = $"Assets/CardBaseEntity/{folderName_SetID}/{folderName_CardColor}/{folderName_CardKind}";
 
-                string filePath = $"{folderPath}/{fileName}".Trim().Replace("\t", "").Replace("\n", "").Replace(" ", "");
+                string filePath = $"{folderPath}/{fileName}".Trim().Replace("\t", "").Replace("\n", "").Replace("\r", "").Replace(" ", "");
 
-                
                 //ƒtƒHƒ‹ƒ_‚ª–³‚¯‚ê‚Îì¬
-                if (!Directory.Exists(folderPath))
-                {
-                    Directory.CreateDirectory(folderPath);
-                }
-
                 if (!Directory.Exists(folderPath))
                 {
                     Directory.CreateDirectory(folderPath);
@@ -354,7 +349,7 @@ public class CsvLoader_CardEntity : Editor
 
                 if (asset == null)
                 {
-                    // •Û‘¶æ‚ÌƒpƒX‚Éƒtƒ@ƒCƒ‹‚ª–³‚¯‚ê‚ÎV‹Kì¬
+                    // Attempt to create Asset
                     AssetDatabase.CreateAsset(cardEntity, filePath);
                 }
                 else
@@ -366,7 +361,7 @@ public class CsvLoader_CardEntity : Editor
 
                 AssetDatabase.Refresh();
 
-                Debug.Log($"{i}/{afterParse.Length - 1}:{cardImageName}‚Ìƒf[ƒ^ì¬‚ªŠ®—¹‚µ‚Ü‚µ‚½B");
+                Debug.Log($"{i}/{afterParse.Length - 1}:{cardImageName}‚Scriptable Object Created");
             }
         }
 
