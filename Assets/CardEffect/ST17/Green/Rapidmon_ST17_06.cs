@@ -130,13 +130,16 @@ namespace DCGO.CardEffects.ST17
                                 effectDuration: EffectDuration.UntilOpponentTurnEnd,
                                 activateClass: activateClass));
 
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeSecurityDigimonCardDPPlayerEffect(
+                            
+                        }
+
+                        
+                    }
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeSecurityDigimonCardDPPlayerEffect(
                                 cardCondition: cardSource => cardSource.Owner == card.Owner.Enemy,
                                 changeValue: -4000,
                                 effectDuration: EffectDuration.UntilOpponentTurnEnd,
                                 activateClass: activateClass));
-                        }
-                    }
                 }
             }
 
