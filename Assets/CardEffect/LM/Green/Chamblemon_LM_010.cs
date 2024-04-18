@@ -119,7 +119,7 @@ namespace DCGO.CardEffects.LM
                     return CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition) * 1000;
                 }
 
-                cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect(changeValue: DPIncrease(), isInheritedEffect: true, card: card, condition: Condition));
+                cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect(changeValue: DPIncrease(), isInheritedEffect: false, card: card, condition: Condition));
             }
             #endregion
 
