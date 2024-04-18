@@ -41,6 +41,11 @@ namespace DCGO.CardEffects.LM
 
                 bool HasNoUnsuspendDigimon()
                 {
+                    if (card.Owner.Enemy.GetBattleAreaDigimons().Count == 0)
+                    {
+                        return true;
+                    } 
+
                     foreach (Permanent permanent in card.Owner.Enemy.GetBattleAreaDigimons())
                     {
                         if (!permanent.IsSuspended)
