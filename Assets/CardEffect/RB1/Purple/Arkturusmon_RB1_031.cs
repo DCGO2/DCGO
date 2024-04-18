@@ -48,7 +48,7 @@ public class Arkturusmon_RB1_031 : CEntity_Effect
 
             bool CanSelectPermanentCondition(Permanent permanent)
             {
-                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
