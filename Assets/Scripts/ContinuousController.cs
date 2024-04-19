@@ -12,29 +12,29 @@ using System.Globalization;
 
 public class ContinuousController : MonoBehaviour
 {
-    [Header("ゲーム言語")]
+    [Header("game language")]
     // public Language language;
 
-    [Header("ゲームVer")]
+    [Header("Game version")]
     public float GameVer;
 
-    [Header("アップデートを無視する")]
+    [Header("ignore updates")]
     public bool IgnoreUpdate;
 
-    [Header("カードリスト")]
+    [Header("card list")]
     public CEntity_Base[] CardList = new CEntity_Base[] { };
 
-    [Header("カードIDでソートされたカードリスト")]
+    [Header("Card list sorted by card ID")]
     public CEntity_Base[] SortedCardList = new CEntity_Base[] { };
 
-    [Header("カード裏面画像")]
+    [Header("Card back image")]
     public Sprite ReverseCard;
     public Sprite ReverseCard_Digitama;
 
-    [Header("SEプレハブ")]
+    [Header("SE prefab")]
     public SoundObject soundObject;
 
-    [Header("デッキコード暗号化")]
+    [Header("deck code encryption")]
     public ShuffleDeckCode ShuffleDeckCode;
     DeckData _battleDeckData = null;
 
@@ -61,7 +61,7 @@ public class ContinuousController : MonoBehaviour
 
     public bool isRandomMatch { get; set; }
     [HideInInspector] public List<SkillInfo> nullSkillInfos = null;
-    public String GameVerString => GameVer.ToString(CultureInfo.InvariantCulture);
+    public String GameVerString => Application.version;//GameVer.ToString(CultureInfo.InvariantCulture);
     #region Key for property to save deck data for battle
     public static string DeckDataPropertyKey => "BattleDeckData";
     #endregion
@@ -467,7 +467,7 @@ public class ContinuousController : MonoBehaviour
     }
     public void LoadAutoMinDigivolutionCost()
     {
-        autoMinDigivolutionCost = PlayerPrefsUtil.GetBool(_autoMinDigivolutionCostKey, true);
+        autoMinDigivolutionCost = PlayerPrefsUtil.GetBool(_autoMinDigivolutionCostKey, false);
     }
     #endregion
 
