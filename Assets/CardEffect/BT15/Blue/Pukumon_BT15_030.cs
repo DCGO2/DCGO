@@ -21,7 +21,7 @@ public class Pukumon_BT15_030 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone || timing == EffectTiming.OnDestroyedAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Trash digivolution cards and retuen 1 Digimon without digivolution cards to the deck bottom", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Trash digivolution cards and return 1 Digimon without digivolution cards to the deck bottom", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 
@@ -73,10 +73,14 @@ public class Pukumon_BT15_030 : CEntity_Effect
                         return true;
                     }
 
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition1))
+                    if (CardEffectCommons.CanActivateOnDeletion(card))
                     {
-                        return true;
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                        {
+                            return true;
+                        }
                     }
+                    
                 }
 
                 return false;

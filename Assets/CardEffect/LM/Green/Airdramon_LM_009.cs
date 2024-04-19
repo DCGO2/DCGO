@@ -30,10 +30,7 @@ namespace DCGO.CardEffects.LM
                 {
                     if(CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent != card.PermanentOfThisCard())
-                        {
-                            return true;
-                        }
+                        return true;
                     }
 
                     return false;

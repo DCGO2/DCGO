@@ -28,15 +28,8 @@ public class Birdramon_BT15_013 : CEntity_Effect
                 {
                     if (cardSource.CardColors.Contains(CardColor.Red))
                     {
-                        if (cardSource.HasBirdTraits)
-                        {
+                        if (cardSource.HasAvianBeastAnimalTraits)
                             return true;
-                        }
-
-                        if (cardSource.HasBeastTraits)
-                        {
-                            return true;
-                        }
                     }
                 }
 

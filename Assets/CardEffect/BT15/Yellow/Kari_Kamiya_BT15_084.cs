@@ -98,7 +98,7 @@ public class Kari_Kamiya_BT15_084 : CEntity_Effect
 
         #region All turns
 
-        if (timing == EffectTiming.OnDiscardSecurity)
+        if (timing == EffectTiming.OnLoseSecurity)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Opponent's 1 Digimon gains Security Attack -1", CanUseCondition, card);
@@ -125,10 +125,9 @@ public class Kari_Kamiya_BT15_084 : CEntity_Effect
             {
                 if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
-                        if (CardEffectCommons.CanTriggerOnTrashSecurity(hashtable, cardEffect => cardEffect != null, CardCondition))
-                        {
-                             return true;
-                        }
+                    if (CardEffectCommons.CanTriggerWhenLoseSecurity(hashtable, player => player == card.Owner)){
+                        return true;
+                    }
                 }
 
                 return false;
