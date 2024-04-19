@@ -14,6 +14,7 @@ namespace DCGO.CardEffects.BT16
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Memory +1", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -21,19 +22,62 @@ namespace DCGO.CardEffects.BT16
                     return "[All Turns] [Once Per Turn] When another Digimon with <Blocker> is deleted, gain 1 memory.";
                 }
 
+                bool PermanentCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
+                    {
+                        if (permanent.IsDigimon)
+                        {
+                            if (permanent != card.PermanentOfThisCard())
+                            {
+                                if(permanent.HasBlocker)
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+
+                    return false;
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return true;
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return true;
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (card.Owner.CanAddMemory(activateClass))
+                        {
+                            List<Hashtable> hashtables = CardEffectCommons.GetHashtablesFromHashtable(hashtable);
+
+                            if (hashtables != null)
+                            {
+                                if (hashtables.Count >= 1)
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+
+                    return false;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return null;
+                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
                 }
             }
 
