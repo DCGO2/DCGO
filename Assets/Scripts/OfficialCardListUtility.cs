@@ -362,7 +362,7 @@ public class OfficialCardListUtility
 
                         if (!string.IsNullOrEmpty(targetCardData[i + 1]) && targetCardData[i + 1] != "-")
                         {
-                            cEntity_Base.Form_ENG.Add(targetCardData[i + 1]).CleanString();
+                            cEntity_Base.Form_ENG.Add(targetCardData[i + 1].CleanString());
                         }
                     }
 
@@ -373,7 +373,7 @@ public class OfficialCardListUtility
 
                         if (!string.IsNullOrEmpty(targetCardData[i + 1]) && targetCardData[i + 1] != "-")
                         {
-                            cEntity_Base.Attribute_ENG.Add(targetCardData[i + 1]).CleanString();
+                            cEntity_Base.Attribute_ENG.Add(targetCardData[i + 1].CleanString());
                         }
                     }
 
@@ -390,7 +390,7 @@ public class OfficialCardListUtility
                             {
                                 if (!string.IsNullOrEmpty(typeString))
                                 {
-                                    cEntity_Base.Type_ENG.Add(typeString).CleanString();
+                                    cEntity_Base.Type_ENG.Add(typeString.CleanString());
                                 }
                             }
                         }
