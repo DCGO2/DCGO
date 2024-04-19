@@ -58,7 +58,7 @@ public class CsvLoader_CardEntity : Editor
 
             int column = 0;
 
-            string cardImageName = parseByComma[column].CleanString().Replace(".jpg", "").Replace(".png", "").Trim();
+            string cardImageName = parseByComma[column].CleanTrimString().Replace(".jpg", "").Replace(".png", "").Trim();
             column++;
 
             yield return EditorCoroutineUtility.StartCoroutine(CreateCardData(cardImageName), this);
@@ -410,7 +410,7 @@ public static partial class StringExtensions
     /// <summary>
     /// Removes all instances of the specified string from the current string.
     /// </summary>
-    public static string CleanString(this string self)
+    public static string CleanTrimString(this string self)
     {
         string cleanString = self;
 
