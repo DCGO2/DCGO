@@ -36,7 +36,12 @@ public class Sora_Takenouchi_BT15_082 : CEntity_Effect
 
             bool CardReturnedCondition(CardSource cardSource)
             {
-                return cardSource.CardColors.Contains(CardColor.Red);
+                if(cardSource.Owner == card.Owner)
+                {
+                    return cardSource.CardColors.Contains(CardColor.Red);
+                }
+
+                return false;
             }
 
             bool CanUseCondition(Hashtable hashtable)
@@ -72,29 +77,9 @@ public class Sora_Takenouchi_BT15_082 : CEntity_Effect
                     if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false,
                             cardEffect: activateClass))
                     {
-                        if (cardSource.ContainsTraits("Avian"))
+                        if (cardSource.HasAvianBeastAnimalTraits)
                         {
                             return true;
-                        }
-                        if (cardSource.ContainsTraits("Bird"))
-                        {
-                            return true;
-                        }
-                        if (cardSource.ContainsTraits("Beast"))
-                        {
-                            return true;
-                        }
-                        if (cardSource.ContainsTraits("Animal"))
-                        {
-                            return true;
-                        }
-                        if (cardSource.ContainsTraits("Sovereign"))
-                        {
-                            return true;
-                        }
-                        if (cardSource.ContainsTraits("Sea Animal"))
-                        {
-                            return false;
                         }
                     }
                 }

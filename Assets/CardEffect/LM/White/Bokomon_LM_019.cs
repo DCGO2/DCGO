@@ -129,36 +129,25 @@ namespace DCGO.CardEffects.LM
 
                         if (CardEffectCommons.HasMatchConditionPermanent(PermanentCondition))
                         {
-                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(PermanentCondition));
-
-                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: PermanentCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: maxCount,
-                                canNoSelect: true,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: SelectPermanentCoroutine,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Custom,
-                                cardEffect: activateClass);
-
-                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to delete.", "The opponent is selecting 1 Digimon to delete.");
-
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                            IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                            if (_hashtable.ContainsKey("Permanents"))
                             {
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
-                                    targetPermanents: new List<Permanent>() { thisCardPermanent },
-                                    activateClass: activateClass,
-                                    successProcess: permanents => SuccessProcess(),
-                                    failureProcess: null));
+                                if (_hashtable["Permanents"] is List<Permanent>)
+                                {
+                                    List<Permanent> permanents = (List<Permanent>)_hashtable["Permanents"];
 
-                                IEnumerator SuccessProcess()
+                                    permanents = permanents.Filter(PermanentCondition);
+
+                                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
+                                        targetPermanents: permanents,
+                                        activateClass: activateClass,
+                                        successProcess: SuccessProcess,
+                                        failureProcess: null));
+                                }
+                            }
+
+                            IEnumerator SuccessProcess(List<Permanent> permanents)
+                            {
+                                foreach (Permanent permanent in permanents)
                                 {
                                     permanent.willBeRemoveField = false;
 
@@ -166,9 +155,9 @@ namespace DCGO.CardEffects.LM
                                     permanent.HideHandBounceEffect();
                                     permanent.HideDeckBounceEffect();
                                     permanent.HideWillRemoveFieldEffect();
-
-                                    yield return null;
                                 }
+
+                                yield return null;
                             }
                         }
                     }

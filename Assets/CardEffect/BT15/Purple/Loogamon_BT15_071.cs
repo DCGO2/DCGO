@@ -179,7 +179,7 @@ public class Loogamon_BT15_071 : CEntity_Effect
             {
                 if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
-                    if (card.Owner.MemoryForPlayer >= 1)
+                    if (card.Owner.Enemy.MemoryForPlayer >= 1)
                     {
                         return true;
                     }

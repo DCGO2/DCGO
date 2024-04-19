@@ -70,59 +70,63 @@ public class Holy_Arrow_BT15_093 : CEntity_Effect
 
                 if (card.Owner.SecurityCards.Count >= 1)
                 {
-                    List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
+                    List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
                     {
-                        new SelectionElement<bool>(message: $"Security Top", value : true, spriteIndex: 0),
-                        new SelectionElement<bool>(message: $"Security Bottom", value : false, spriteIndex: 1),
+                        new SelectionElement<int>(message: $"Security Top", value : 0, spriteIndex: 0),
+                        new SelectionElement<int>(message: $"Security Bottom", value : 1, spriteIndex: 0),
+                        new SelectionElement<int>(message: $"No Selection", value : 2, spriteIndex: 1),
                     };
 
                     string selectPlayerMessage = "Which will you trash the top or bottom card of the security?";
                     string notSelectPlayerMessage = "The opponent is selecting whether to trash the top or bottom card of security.";
 
-                    GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+                    GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
 
                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                    bool fromTop = GManager.instance.userSelectionManager.SelectedBoolValue;
+                    int selectionValue = GManager.instance.userSelectionManager.SelectedIntValue;
 
-                    yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
-                    player: card.Owner,
-                    destroySecurityCount: 1,
-                    cardEffect: activateClass,
-                    fromTop: fromTop).DestroySecurity());
-
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                    if(selectionValue != 2)
                     {
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+                        bool fromTop = selectionValue.Equals(0);
 
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                        yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
+                            player: card.Owner,
+                            destroySecurityCount: 1,
+                            cardEffect: activateClass,
+                            fromTop: fromTop).DestroySecurity());
 
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectPermanentCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: false,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: SelectPermanentCoroutine,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will get DP -6000.", "The opponent is selecting 1 Digimon that will get DP -6000.");
-
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                         {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: permanent, changeValue: -6000, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
+                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+
+                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                            selectPermanentEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: CanSelectPermanentCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: maxCount,
+                                canNoSelect: false,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: SelectPermanentCoroutine,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Custom,
+                                cardEffect: activateClass);
+
+                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will get DP -6000.", "The opponent is selecting 1 Digimon that will get DP -6000.");
+
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                            IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: permanent, changeValue: -6000, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
+                            }
                         }
-                    }
+                    }                 
                 }
             }
-
-
         }
 
         #endregion

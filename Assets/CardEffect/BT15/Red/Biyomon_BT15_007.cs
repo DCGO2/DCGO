@@ -28,15 +28,8 @@ public class Biyomon_BT15_007 : CEntity_Effect
             {
                 if (cardSource.IsDigimon)
                 {
-                    if (cardSource.HasBirdTraits)
-                    {
+                    if (cardSource.HasAvianBeastAnimalTraits)
                         return true;
-                    }
-
-                    if (cardSource.HasBeastTraits)
-                    {
-                        return true;
-                    }
                 }
 
                 return false;

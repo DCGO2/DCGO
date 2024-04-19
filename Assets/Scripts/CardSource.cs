@@ -1175,9 +1175,7 @@ public class CardSource : MonoBehaviour
     public bool ContainsTraits(string trait)
     {
         if (string.IsNullOrEmpty(trait))
-        {
             return false;
-        }
 
         string replaced = trait.Replace(" ", "");
 
@@ -1349,6 +1347,31 @@ public class CardSource : MonoBehaviour
             {
                 return true;
             }
+
+            return false;
+        }
+    }
+    #endregion
+
+    #region whether this card has at least 1 trait that contains "Avian", "Bird", "Beast", "Animal", "Sovereign", other than "Sea Animal"
+    public bool HasAvianBeastAnimalTraits
+    {
+        get
+        {
+            if (ContainsTraits("Avian"))
+                return true;
+
+            if (ContainsTraits("Bird"))
+                return true;
+
+            if (ContainsTraits("Beast"))
+                return true;
+
+            if (ContainsTraits("Animal") && !ContainsTraits("Sea Animal"))
+                return true;
+
+            if (ContainsTraits("Sovereign"))
+                return true;
 
             return false;
         }
