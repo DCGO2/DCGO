@@ -57,7 +57,15 @@ public class Leviamon_X_Antibody_BT15_081 : CEntity_Effect
             #region Opponent Digimon/Tamer Played/card is in trash condition
             bool PermanentCondition(Permanent permanent)
             {
-                return CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card);
+                if(CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card))
+                {
+                    if(permanent.TopCard.IsDigimon || permanent.TopCard.IsTamer)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
             }
 
             bool CanUseCondition(Hashtable hashtable)
