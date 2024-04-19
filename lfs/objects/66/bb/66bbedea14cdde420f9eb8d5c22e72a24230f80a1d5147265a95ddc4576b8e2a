@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Terriermon-ST17-02
+  m_EditorClassIdentifier: 
+  CardIndex: 3268
+  cardColors: 03000000
+  PlayCost: 3
+  EvoCosts:
+  - CardColor: 3
+    Level: 2
+    MemoryCost: 0
+  Level: 3
+  CardName_JPN: "\u30C6\u30EA\u30A2\u30E2\u30F3"
+  CardName_ENG: "Terriermon\r"
+  Form_JPN:
+  - "\u6210\u9577\u671F"
+  Form_ENG:
+  - "Rookie\r"
+  Attribute_JPN:
+  - "\u30EF\u30AF\u30C1\u30F3\u7A2E"
+  Attribute_ENG:
+  - "Vaccine\r"
+  Type_JPN:
+  - "\u7363\u578B"
+  Type_ENG:
+  - "Beast\r"
+  CardSpriteName: ST17-02
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: "[Digivolve] [Gummymon]: Cost 0[Main] [Once Per Turn] You
+    may play 1 green Tamer card or 1 level 3 Digimon card with [Lopmon] in its name
+    from your hand with the play cost reduced by 2.\r"
+  InheritedEffectDiscription_JPN: "\u3010\u304A\u4E92\u3044\u306E\u30BF\u30FC\u30F3\u3011\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u304C\u30EC\u30B9\u30C8\u72B6\u614B\u306E\u9593,\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u3092DP+1000\u3002"
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Terriermon_ST17_02
+  DP: 1000
+  rarity: 3
+  OverflowMemory: 0
+  CardID: ST17-02
+  MaxCountInDeck: 4

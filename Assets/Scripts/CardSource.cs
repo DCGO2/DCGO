@@ -1175,9 +1175,7 @@ public class CardSource : MonoBehaviour
     public bool ContainsTraits(string trait)
     {
         if (string.IsNullOrEmpty(trait))
-        {
             return false;
-        }
 
         string replaced = trait.Replace(" ", "");
 
@@ -1349,6 +1347,31 @@ public class CardSource : MonoBehaviour
             {
                 return true;
             }
+
+            return false;
+        }
+    }
+    #endregion
+
+    #region whether this card has at least 1 trait that contains "Avian", "Bird", "Beast", "Animal", "Sovereign", other than "Sea Animal"
+    public bool HasAvianBeastAnimalTraits
+    {
+        get
+        {
+            if (ContainsTraits("Avian"))
+                return true;
+
+            if (ContainsTraits("Bird"))
+                return true;
+
+            if (ContainsTraits("Beast"))
+                return true;
+
+            if (ContainsTraits("Animal") && !ContainsTraits("Sea Animal"))
+                return true;
+
+            if (ContainsTraits("Sovereign"))
+                return true;
 
             return false;
         }
@@ -1668,10 +1691,11 @@ public class CardSource : MonoBehaviour
     }
     #endregion
 
-    #region whether this card has [Fortitude]
+    #region whether this card has [Blocker]
     public bool HasBlocker =>
         EffectList(EffectTiming.None)
-            .Some(cardEffect => cardEffect is BlockerClass
+            .Some(cardEffect => cardEffect is BlockerClass 
+                && cardEffect.CanUseCondition == null
                 && !cardEffect.IsInheritedEffect && !cardEffect.IsSecurityEffect);
     #endregion
 
@@ -1741,6 +1765,14 @@ public class CardSource : MonoBehaviour
             .Some(cardEffect => cardEffect is ActivateICardEffect
                 && !cardEffect.IsInheritedEffect && !cardEffect.IsSecurityEffect
                 && cardEffect.IsOnPlay);
+    #endregion
+
+    #region whether this card has [When Digivolving] effect
+    public bool HasWhenDigivolvingEffect =>
+        EffectList(EffectTiming.OnEnterFieldAnyone)
+            .Some(cardEffect => cardEffect is ActivateICardEffect
+                && !cardEffect.IsInheritedEffect && !cardEffect.IsSecurityEffect
+                && cardEffect.IsWhenDigivolving);
     #endregion
 
     #region whether this card has [Digisorption]

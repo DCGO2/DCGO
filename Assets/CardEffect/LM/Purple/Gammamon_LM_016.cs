@@ -35,7 +35,15 @@ namespace DCGO.CardEffects.LM
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.HasText("Gammamon");
+                    if (cardSource.HasText("Gammamon"))
+                    {
+                        if (cardSource.CanPlayCardTargetFrame(card.PermanentOfThisCard().PermanentFrame, true, activateClass))
+                        {
+                            return true;
+                        }
+                    }
+                    
+                    return false;
                 }
 
                 bool PermanentCondition(Permanent permanent)
@@ -59,7 +67,11 @@ namespace DCGO.CardEffects.LM
                         {
                             if (CardEffectCommons.IsOwnerTurn(card))
                             {
-                                return true;
+                                if(CardEffectCommons.IsByEffect(hashtable, null))
+                                {
+                                    return true;
+                                }
+                                
                             }
                         }
                     }
@@ -74,7 +86,9 @@ namespace DCGO.CardEffects.LM
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                    if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
                         targetPermanent: card.PermanentOfThisCard(),
                         cardCondition: CanSelectCardCondition,
                         payCost: false,
@@ -84,6 +98,7 @@ namespace DCGO.CardEffects.LM
                         isHand: false,
                         activateClass: activateClass,
                         successProcess: null));
+                    }
                 }
             }
             #endregion

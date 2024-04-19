@@ -19,7 +19,7 @@ public class Birdramon_BT15_013 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Play] Return 1 Digimon card with [Agumon] in its name from your trash to your hand.";
+                return "[When Digivolving] Return 1 red Digimon card with [Avian], [Bird], [Beast], [Animal] or [Sovereign], other than [Sea Animal], in one of it's traits from your trash to the hand.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)
@@ -28,15 +28,8 @@ public class Birdramon_BT15_013 : CEntity_Effect
                 {
                     if (cardSource.CardColors.Contains(CardColor.Red))
                     {
-                        if (cardSource.HasBirdTraits)
-                        {
+                        if (cardSource.HasAvianBeastAnimalTraits)
                             return true;
-                        }
-
-                        if (cardSource.HasBeastTraits)
-                        {
-                            return true;
-                        }
                     }
                 }
 

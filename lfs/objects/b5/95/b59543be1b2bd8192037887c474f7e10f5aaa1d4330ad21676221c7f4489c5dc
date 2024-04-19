@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Rapidmon-ST17-06_P1
+  m_EditorClassIdentifier: 
+  CardIndex: 3276
+  cardColors: 0300000002000000
+  PlayCost: 7
+  EvoCosts:
+  - CardColor: 3
+    Level: 3
+    MemoryCost: 4
+  - CardColor: 2
+    Level: 3
+    MemoryCost: 4
+  Level: 4
+  CardName_JPN: "\u30E9\u30D4\u30C3\u30C9\u30E2\u30F3"
+  CardName_ENG: "Rapidmon\r"
+  Form_JPN:
+  - "\u30A2\u30FC\u30DE\u30FC\u4F53"
+  Form_ENG:
+  - "ArmorForm\r"
+  Attribute_JPN:
+  - "\u30EF\u30AF\u30C1\u30F3\u7A2E"
+  Attribute_ENG:
+  - "Vaccine\r"
+  Type_JPN:
+  - "\u8056\u9A0E\u58EB\u578B"
+  Type_ENG:
+  - "HolyWarrior\r"
+  CardSpriteName: ST17-06_P1
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: "[Digivolve] Lv.3 w/[Terriermon] in name: Cost 3<Blocker>
+    <Armor Purge> [All Turns] [Once Per Turn] When this Digimon becomes suspended,
+    1 of your opponent's Digimon and all of their Security Digimon get -4000 DP until
+    the end of their turn.\r"
+  InheritedEffectDiscription_JPN: "\u3010\u304A\u4E92\u3044\u306E\u30BF\u30FC\u30F3\u3011\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u304C\u30EC\u30B9\u30C8\u72B6\u614B\u306E\u9593,\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u3092DP+1000\u3002"
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Rapidmon_ST17_06
+  DP: 7000
+  rarity: 3
+  OverflowMemory: 0
+  CardID: ST17-06
+  MaxCountInDeck: 4

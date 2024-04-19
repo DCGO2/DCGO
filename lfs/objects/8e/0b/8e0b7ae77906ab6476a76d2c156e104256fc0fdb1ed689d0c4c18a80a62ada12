@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Magnamon-ST17-13
+  m_EditorClassIdentifier: 
+  CardIndex: 3286
+  cardColors: 0500000001000000
+  PlayCost: 7
+  EvoCosts:
+  - CardColor: 5
+    Level: 3
+    MemoryCost: 4
+  - CardColor: 1
+    Level: 3
+    MemoryCost: 4
+  Level: 4
+  CardName_JPN: "\u30DE\u30B0\u30CA\u30E2\u30F3"
+  CardName_ENG: "Magnamon\r"
+  Form_JPN:
+  - "\u30A2\u30FC\u30DE\u30FC\u4F53"
+  Form_ENG:
+  - "ArmorForm\r"
+  Attribute_JPN:
+  - "\u30D5\u30EA\u30FC"
+  Attribute_ENG:
+  - "Free\r"
+  Type_JPN:
+  - "\u8056\u9A0E\u58EB\u578B"
+  - "\u30ED\u30A4\u30E4\u30EB\u30CA\u30A4\u30C4"
+  Type_ENG:
+  - HolyWarrior
+  - "RoyalKnight\r"
+  CardSpriteName: ST17-13
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: "[Digivolve] [Veemon]: Cost 3[Security] <De-Digivolve 1>
+    1 Digimon. At the end of the battle, 1 of your Digimon may digivolve into this
+    card without paying the digivolution cost. <Blocker> <Armor Purge> [When Digivolving]
+    Trash the top digivolution card of 1 of your opponent's Digimon for each of that
+    Digimon's colors. Then, return 1 of your opponent's Digimon with no digivolution
+    cards to the hand.\r"
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Magnamon_ST17_13
+  DP: 7000
+  rarity: 3
+  OverflowMemory: 0
+  CardID: ST17-13
+  MaxCountInDeck: 4

@@ -13,21 +13,25 @@ public class WaruMonzaemon_BT15_065 : CEntity_Effect
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-        if(timing == EffectTiming.None)
+        #region Alternate Digivolution Requirement
+        if (timing == EffectTiming.None)
         {
             static bool PermanentCondition(Permanent targetPermanent)
             {
-                return targetPermanent.TopCard.CardNames.Contains("Numemon") && targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 4;
+                return targetPermanent.TopCard.ContainsCardName("Numemon") && targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 4;
             }
 
             cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
         }
+        #endregion
 
-        if(timing == EffectTiming.OnEnterFieldAnyone)
+        #region On Play - Place a card under this Digimon to gain effects.
+        if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Place a card under this Digimon to gain effects.", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+            activateClass.SetHashString("CantAttack_BT15_065");
             cardEffects.Add(activateClass);
 
             string EffectDiscription()
@@ -120,7 +124,7 @@ public class WaruMonzaemon_BT15_065 : CEntity_Effect
                         {
                             if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(Attacker, card))
                             {
-                                if (Attacker.TopCard.GetCostItself >= 5)
+                                if (Attacker.TopCard.GetCostItself <= 5)
                                 {
                                     if (Attacker.TopCard.HasPlayCost)
                                     {
@@ -147,13 +151,15 @@ public class WaruMonzaemon_BT15_065 : CEntity_Effect
                 }
             }
         }
+        #endregion
 
-        //On Play
+        #region On Play/When Digivolving - Trash 1 card from hand to DeDigivolve an opponent's Digimon.
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Trash 1 card from hand to DeDigivolve an opponent's Digimon.", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+            activateClass.SetHashString("DeDigivolve_BT15_065");
             cardEffects.Add(activateClass);
 
             string EffectDiscription()
@@ -173,8 +179,8 @@ public class WaruMonzaemon_BT15_065 : CEntity_Effect
 
             bool CanSelectPermanentCondition(Permanent permanent)
             {
-                if(permanent.TopCard.IsDigimon)
-                {
+                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                { 
                     if (permanent.TopCard.HasLevel)
                     {
                         return true;
@@ -185,7 +191,7 @@ public class WaruMonzaemon_BT15_065 : CEntity_Effect
 
             bool CanUseCondition(Hashtable hashtable)
             {
-                return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                return CardEffectCommons.CanTriggerOnPlay(hashtable, card) || CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
             }
 
             bool CanActivateCondition(Hashtable hashtable)
@@ -271,140 +277,32 @@ public class WaruMonzaemon_BT15_065 : CEntity_Effect
                     }
                 }
             }
-
-
         }
+        #endregion
 
-
-        //On Digivolve
-        if (timing == EffectTiming.OnEnterFieldAnyone)
-        {
-            ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Trash 1 card from hand to DeDigivolve an opponent's Digimon.", CanUseCondition, card);
-            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
-            cardEffects.Add(activateClass);
-
-            string EffectDiscription()
-            {
-                return "[When Digivolving] By trashing 1 card with [Numemon] in it's name in your hand or from the bottom of this Digimon's digivolution cards, [De-Digivolve 1] 1 of your opponent's Digimon.";
-            }
-
-            bool CanSelectCardCondition(CardSource cardSource)
-            {
-                if (cardSource.ContainsCardName("Numemon") || cardSource.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.ContainsCardName("Numemon")) >= 1)
-                {
-                    return true;
-                }
-
-                return false;
-            }
-
-            bool CanSelectPermanentCondition(Permanent permanent)
-            {
-                return CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card);
-            }
-
-            bool CanUseCondition(Hashtable hashtable)
-            {
-                return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
-            }
-
-            bool CanActivateCondition(Hashtable hashtable)
-            {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
-                {
-                    if (card.Owner.HandCards.Count >= 1)
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
-            }
-
-            IEnumerator ActivateCoroutine(Hashtable _hashtable)
-            {
-                if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
-                {
-                    bool discarded = false;
-
-                    int discardCount = 1;
-
-                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                    selectHandEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectCardCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: discardCount,
-                        canNoSelect: true,
-                        canEndNotMax: false,
-                        isShowOpponent: true,
-                        selectCardCoroutine: null,
-                        afterSelectCardCoroutine: AfterSelectCardCoroutine,
-                        mode: SelectHandEffect.Mode.Discard,
-                        cardEffect: activateClass);
-
-                    yield return StartCoroutine(selectHandEffect.Activate());
-
-                    IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
-                    {
-                        if (cardSources.Count >= 1)
-                        {
-                            discarded = true;
-
-                            yield return null;
-                        }
-                    }
-
-                    if (discarded)
-                    {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                        {
-                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-
-                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: CanSelectPermanentCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: maxCount,
-                                canNoSelect: false,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: SelectPermanentCoroutine,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Custom,
-                                cardEffect: activateClass);
-
-                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to De-Digivolve.", "The opponent is selecting 1 Digimon to De-Digivolve.");
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                            IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                            {
-                                Permanent selectedPermanent = permanent;
-
-                                yield return ContinuousController.instance.StartCoroutine(new IDegeneration(selectedPermanent, 1, activateClass).Degeneration());
-                            }
-                        }
-                    }
-                }
-            }
-
-            
-        }
-
+        #region Your Turn - When you have a [Monzaemon] or [Numemon] in play, this Digimon gains Security Atk +1.
         if (timing == EffectTiming.None)
         {
+            bool PermanentCondition(Permanent permanent)
+            {
+                if(permanent.IsDigimon)
+                {
+                    if (permanent.TopCard != card)
+                    {
+                        return permanent.TopCard.ContainsCardName("Monzaemon") || permanent.TopCard.ContainsCardName("Numemon");
+                    }
+                }
+
+                return false;
+            }
+
             bool Condition()
             {
                 if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
                     if (CardEffectCommons.IsOwnerTurn(card))
                     {
-                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.IsDigimon && permanent.TopCard.ContainsCardName("Monzaemon") || permanent.TopCard.ContainsCardName("Numemon")))
+                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, PermanentCondition))
                         {
                             return true;
                         }
@@ -416,7 +314,7 @@ public class WaruMonzaemon_BT15_065 : CEntity_Effect
 
             cardEffects.Add(CardEffectFactory.ChangeSelfSAttackStaticEffect(changeValue: 1, isInheritedEffect: true, card: card, condition: Condition));
         }
-
+        #endregion
 
         return cardEffects;
     }

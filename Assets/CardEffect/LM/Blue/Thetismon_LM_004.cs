@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace DCGO.CardEffects.LM
 {
@@ -20,7 +21,7 @@ namespace DCGO.CardEffects.LM
 
                 string EffectDiscription()
                 {
-                    return "[On Play] [When Digivolving] By trashing 2 blue cards fin your hand, unsuspend 1 of your Digimon and 1 of your [Kiyoshiro Higashimitarai], and this Digimon gains <Blocker> until the end of your opponent's turn.";
+                    return "[On Play] [When Digivolving] By trashing 2 blue cards in your hand, unsuspend 1 of your Digimon and 1 of your [Kiyoshiro Higashimitarai], and this Digimon gains <Blocker> until the end of your opponent's turn.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
@@ -43,7 +44,7 @@ namespace DCGO.CardEffects.LM
                     {
                         if (permanent.IsTamer)
                         {
-                            if(permanent.TopCard.CardNames.Contains("Kiyoshiro Higashimitarai"))
+                            if (permanent.TopCard.CardNames.Contains("Kiyoshiro Higashimitarai") || permanent.TopCard.CardNames.Contains("KiyoshiroHigashimitarai"))
                                 return true;
                         }
                     }
@@ -141,7 +142,7 @@ namespace DCGO.CardEffects.LM
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Unsuspend this Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 

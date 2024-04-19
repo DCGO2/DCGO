@@ -14,7 +14,7 @@ public class Omekamon_BT15_060 : CEntity_Effect
 
         if(timing == EffectTiming.None)
         {
-            cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(isInheritedEffect: true, card: card, condition: null));
+            cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
         }
 
         if(timing == EffectTiming.None)

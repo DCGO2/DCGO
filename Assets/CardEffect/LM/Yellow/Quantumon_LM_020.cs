@@ -286,32 +286,29 @@ namespace DCGO.CardEffects.LM
 
                             bool SkillCondition(ICardEffect cardEffect)
                             {
-                                    switch (selectedCategory)
-                                    { 
-                                        case CardKind.Digimon:
-                                        if (cardEffect.IsDigimonEffect)
+                                switch (selectedCategory)
+                                {
+                                    case CardKind.Digimon:
+                                        if (cardEffect.IsDigimonEffect || cardEffect.EffectSourceCard.IsDigimon)
                                         {
                                             return true;
                                         }
-                                            break;
-                                        case CardKind.Tamer:
-                                        if (cardEffect.IsTamerEffect)
+                                        break;
+                                    case CardKind.Tamer:
+                                        if (cardEffect.IsTamerEffect || cardEffect.EffectSourceCard.IsTamer)
                                         {
                                             return true;
                                         }
-                                            break;
-                                        case CardKind.Option:
-                                        if (cardEffect.EffectSourceCard.IsOption)
+                                        break;
+                                    case CardKind.Option:
+                                        if (cardEffect.EffectSourceCard.IsOption || cardEffect.EffectSourceCard.IsOption)
                                         {
                                             return true;
                                         }
-                                            break;
+                                        break;
                                     }
-                                
-
                                 return false;
                             }
-
                             yield return null;
                         }
                     }

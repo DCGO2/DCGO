@@ -139,7 +139,7 @@ namespace DCGO.CardEffects.LM
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        bool WinnerCondition(Permanent permanent) => permanent.cardSources.Contains(card) && permanent.TopCard.HasText("Angoramon");
+                        bool WinnerCondition(Permanent permanent) => permanent.TopCard.HasText("Angoramon");
                         bool LoserCondition(Permanent permanent) => CardEffectCommons.IsOpponentPermanent(permanent, card);
 
                         if (CardEffectCommons.CanTriggerWhenDeleteOpponentDigimonByBattle(hashtable: hashtable, winnerCondition: WinnerCondition, loserCondition: LoserCondition, isOnlyWinnerSurvive: false))

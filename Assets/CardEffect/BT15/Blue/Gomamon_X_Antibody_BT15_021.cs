@@ -39,17 +39,17 @@ public class Gomamon_X_Antibody_BT15_021 : CEntity_Effect
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                if (cardSource.CardTraits.Contains("Sea Beast"))
+                if (cardSource.ContainsTraits("Sea Beast"))
                 {
                     return true;
                 }
 
-                if (cardSource.CardTraits.Contains("Plesiosaur"))
+                if (cardSource.ContainsTraits("Plesiosaur"))
                 {
                     return true;
                 }
 
-                if (cardSource.CardTraits.Contains("Beastkin"))
+                if (cardSource.ContainsTraits("Beastkin"))
                 {
                     return true;
                 }

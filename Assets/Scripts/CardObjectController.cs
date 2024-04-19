@@ -12,7 +12,7 @@ using DG.Tweening;
 //Card-related operations
 public class CardObjectController : MonoBehaviour
 {
-    #region お互いのプレイヤーのデッキのカードを生成する
+    #region Generate cards for each player's deck
     public static IEnumerator CreatePlayerDecks(CardSource CardPrefab, GameContext gameContext)
     {
 
@@ -343,7 +343,7 @@ public class CardObjectController : MonoBehaviour
     }
     #endregion
 
-    #region カードを生成
+    #region generate card
     public static CardSource CreateCardSource(int _PlayerID, CEntity_Base cEntity_Base, bool isToken)
     {
         Player player = GManager.instance.turnStateMachine.gameContext.PlayerFromID(_PlayerID);
@@ -366,7 +366,7 @@ public class CardObjectController : MonoBehaviour
     }
     #endregion
 
-    #region カードをすべての領域から取り除く
+    #region Remove cards from all areas
     public static IEnumerator RemoveFromAllArea(CardSource cardSource)
     {
         cardSource.SetFace();
@@ -500,7 +500,7 @@ public class CardObjectController : MonoBehaviour
     }
     #endregion
 
-    #region 場を離れさせる
+    #region leave the place
     public static IEnumerator RemoveField(Permanent permanent, bool ignoreOverflow = false)
     {
         if (permanent == null) yield break;
@@ -538,12 +538,29 @@ public class CardObjectController : MonoBehaviour
     }
     #endregion
 
-    #region カードを手札に加える
+    #region add card to hand
     public static IEnumerator AddHandCards(List<CardSource> cardSources, bool isDraw, ICardEffect cardEffect)
     {
         if (cardSources.Count == 0) yield break;
 
+        bool isFromTrash = cardSources.Some(cardSource => CardEffectCommons.IsExistOnTrash(cardSource));
+
         cardSources = cardSources.Filter(cardSource => cardSource != null && !cardSource.Owner.HandCards.Contains(cardSource));
+
+        if (isFromTrash)
+        {
+            #region "Effect of "When a card is returned from the trash to the hand"
+
+            #region Hashtable Setting
+            System.Collections.Hashtable hashtable = new System.Collections.Hashtable()
+            {
+                {"CardSources", cardSources}
+            };
+            #endregion
+
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(hashtable, EffectTiming.OnReturnCardsToHandFromTrash));
+            #endregion
+        }
 
         foreach (CardSource cardSource in cardSources)
         {
@@ -675,7 +692,7 @@ public class CardObjectController : MonoBehaviour
     }
     #endregion
 
-    #region カードをトラッシュに置く
+    #region put the card in the trash
     public static IEnumerator AddTrashCard(CardSource cardSource)
     {
         if (!CardEffectCommons.IsExistOnTrash(cardSource))
@@ -697,7 +714,7 @@ public class CardObjectController : MonoBehaviour
     }
     #endregion
 
-    #region カードをまとめてトラッシュに置く
+    #region Put the cards together in the trash
     public static IEnumerator AddTrashCards(List<CardSource> cardSources)
     {
         List<CardSource> handCards = new List<CardSource>();
@@ -739,7 +756,7 @@ public class CardObjectController : MonoBehaviour
     }
     #endregion
 
-    #region カードを山札の上に置く
+    #region place a card on top of the deck
     public static IEnumerator AddLibraryTopCards(List<CardSource> cardSources, bool notAddLog = false)
     {
         if (cardSources.Count <= 0) yield break;
@@ -750,7 +767,7 @@ public class CardObjectController : MonoBehaviour
 
         if (isFromTrash)
         {
-            #region "カードがトラッシュから山札に戻った時"の効果
+            #region "Effect of "When a card is returned from the trash to the deck"
 
             #region Hashtable Setting
             System.Collections.Hashtable hashtable = new System.Collections.Hashtable()
@@ -821,7 +838,7 @@ public class CardObjectController : MonoBehaviour
     }
     #endregion
 
-    #region カードを山札の下に置く
+    #region put a card at the bottom of the deck
     public static IEnumerator AddLibraryBottomCards(List<CardSource> cardSources, bool notAddLog = false)
     {
         if (cardSources.Count <= 0) yield break;
@@ -915,7 +932,7 @@ public class CardObjectController : MonoBehaviour
     }
     #endregion
 
-    #region カードを処理領域に置く
+    #region Place the card in the processing area
     public static IEnumerator AddExecutingCard(CardSource cardSource)
     {
         if (!cardSource.Owner.ExecutingCards.Contains(cardSource))
@@ -934,7 +951,7 @@ public class CardObjectController : MonoBehaviour
     }
     #endregion
 
-    #region カードをセキュリティに追加する
+    #region Add card to security
     public static IEnumerator AddSecurityCard(CardSource cardSource, bool toTop = true)
     {
         if (!cardSource.Owner.SecurityCards.Contains(cardSource))
@@ -957,7 +974,7 @@ public class CardObjectController : MonoBehaviour
     }
     #endregion
 
-    #region デッキをシャッフル
+    #region Shuffle
     public static IEnumerator Shuffle(Player player)
     {
         ContinuousController.instance.PlaySE(GManager.instance.ShuffleSE);
@@ -968,7 +985,7 @@ public class CardObjectController : MonoBehaviour
     }
     #endregion
 
-    #region パーマネントを移動
+    #region move permanent
     public static IEnumerator MovePermanent(FieldCardFrame movingPermanentFrame)
     {
         if (movingPermanentFrame != null)
@@ -995,7 +1012,7 @@ public class CardObjectController : MonoBehaviour
                         player.FieldPermanents[newFrameID] = movingPermanent;
                         player.fieldCardFrames[newFrameID].SetFramePermanent(movingPermanent);
 
-                        #region アニメーション
+                        #region animation
                         bool end = false;
                         var sequence = DOTween.Sequence();
 
