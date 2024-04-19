@@ -162,10 +162,13 @@ public class MegaSeadramon_BT15_029 : CEntity_Effect
             {
                 if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                 {
-                    if (permanent.TopCard.CardColors.Contains(CardColor.Blue))
+                    if(permanent != card.PermanentOfThisCard())
                     {
-                        if (!permanent.TopCard.Equals(card))
-                            return true;
+                        if (permanent.TopCard.CardColors.Contains(CardColor.Blue))
+                        {
+                            if (!permanent.TopCard.Equals(card))
+                                return true;
+                        }
                     }
                 }
 

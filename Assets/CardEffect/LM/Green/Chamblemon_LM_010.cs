@@ -40,12 +40,12 @@ namespace DCGO.CardEffects.LM
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                        return CardEffectCommons.IsExistOnBattleArea(card);
+                    return CardEffectCommons.IsExistOnBattleArea(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermanentCondition))
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
 
@@ -119,7 +119,7 @@ namespace DCGO.CardEffects.LM
                     return CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition) * 1000;
                 }
 
-                cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect(changeValue: DPIncrease(), isInheritedEffect: true, card: card, condition: Condition));
+                cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect(changeValue: DPIncrease(), isInheritedEffect: false, card: card, condition: Condition));
             }
             #endregion
 

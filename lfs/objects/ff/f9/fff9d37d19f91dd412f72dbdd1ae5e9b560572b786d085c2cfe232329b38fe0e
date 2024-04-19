@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Lopmon-ST17-03
+  m_EditorClassIdentifier: 
+  CardIndex: 3270
+  cardColors: 03000000
+  PlayCost: 3
+  EvoCosts:
+  - CardColor: 3
+    Level: 2
+    MemoryCost: 0
+  Level: 3
+  CardName_JPN: "\u30ED\u30C3\u30D7\u30E2\u30F3"
+  CardName_ENG: "Lopmon\r"
+  Form_JPN:
+  - "\u6210\u9577\u671F"
+  Form_ENG:
+  - "Rookie\r"
+  Attribute_JPN:
+  - "\u30C7\u30FC\u30BF\u7A2E"
+  Attribute_ENG:
+  - "Data\r"
+  Type_JPN:
+  - "\u7363\u578B"
+  Type_ENG:
+  - "Beast\r"
+  CardSpriteName: ST17-03
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: "[Digivolve] [Kokomon]: Cost 0[Main] [Once Per Turn] 1 of
+    your Digimon gains <Alliance> for the turn.\r"
+  InheritedEffectDiscription_JPN: "\u3010\u304A\u4E92\u3044\u306E\u30BF\u30FC\u30F3\u3011\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u304C\u30EC\u30B9\u30C8\u72B6\u614B\u306E\u9593,\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u3092DP+1000\u3002"
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Lopmon_ST17_03
+  DP: 1000
+  rarity: 3
+  OverflowMemory: 0
+  CardID: ST17-03
+  MaxCountInDeck: 4
