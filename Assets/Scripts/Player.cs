@@ -946,7 +946,7 @@ public class Player : MonoBehaviour
     }
     #endregion
 
-    #region メモリーを+出来るか
+    #region Can you increase memory?
     public bool CanAddMemory(ICardEffect cardEffect)
     {
         if (this.MemoryForPlayer >= 10)
@@ -954,12 +954,12 @@ public class Player : MonoBehaviour
             return false;
         }
 
-        #region メモリーを+出来なくさせるする効果
+        #region Effects that impair memory
         foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
         {
             foreach (Permanent permanent in player.GetFieldPermanents())
             {
-                #region 場のパーマネントの効果
+                #region Effects of permanents in play
                 foreach (ICardEffect cardEffect1 in permanent.EffectList(EffectTiming.None))
                 {
                     if (cardEffect1 is ICannotAddMemoryEffect)
@@ -976,7 +976,7 @@ public class Player : MonoBehaviour
                 #endregion
             }
 
-            #region プレイヤーの効果
+            #region player effect
             foreach (ICardEffect cardEffect1 in player.EffectList(EffectTiming.None))
             {
                 if (cardEffect1 is ICannotAddMemoryEffect)
