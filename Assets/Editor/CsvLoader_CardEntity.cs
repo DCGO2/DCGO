@@ -8,6 +8,7 @@ using UnityEditor;
 using UnityEngine;
 using System.Linq;
 using System;
+using Codice.Client.Commands;
 
 [CustomEditor(typeof(LoadCSV_CardEntity))]
 public class CsvLoader_CardEntity : Editor
@@ -57,7 +58,7 @@ public class CsvLoader_CardEntity : Editor
 
             int column = 0;
 
-            string cardImageName = parseByComma[column].Replace(" ", "").Replace("\n", "").Replace("\t", "").Replace(".jpg", "").Replace(".png", "").Trim();
+            string cardImageName = parseByComma[column].CleanString().Replace(".jpg", "").Replace(".png", "").Trim();
             column++;
 
             yield return EditorCoroutineUtility.StartCoroutine(CreateCardData(cardImageName), this);
@@ -381,7 +382,7 @@ public class CsvLoader_CardEntity : Editor
 }
 
 /// <summary>
-/// string 型の拡張メソッドを管理するクラス
+/// string extension methods
 /// </summary>
 public static partial class StringExtensions
 {
@@ -404,6 +405,24 @@ public static partial class StringExtensions
         }
 
         return count;
+    }
+
+    /// <summary>
+    /// Removes all instances of the specified string from the current string.
+    /// </summary>
+    public static string CleanString(this string self)
+    {
+        string cleanString = self;
+
+        if (!string.IsNullOrEmpty(self))
+        {
+            foreach (string str in new string[] { " ", "\n", "\r", "\t" })
+            {
+                cleanString = cleanString.Replace(str, "");
+            }
+        }
+
+        return cleanString.Trim();
     }
 
 }

@@ -114,7 +114,7 @@ public class OfficialCardListUtility
                         targetCardData[i] = targetCardData[i].Replace("<divclass=\"card_name\">", "").Replace("</div>", "")
                             .Replace("?", "o").Replace("?", "e");
 
-                        cEntity_Base.CardName_JPN = targetCardData[i];
+                        cEntity_Base.CardName_JPN = targetCardData[i].CleanString();
 
                         if (cEntity_Base.CardName_JPN.Contains("ACE"))
                         {
@@ -122,14 +122,14 @@ public class OfficialCardListUtility
                         }
                     }
 
-                    //Form?
+                    //Form
                     if (targetCardData[i].Contains("<dt>形態</dt>"))
                     {
                         targetCardData[i + 1] = targetCardData[i + 1].Replace("<dd>", "").Replace("</dd>", "");
 
                         if (!string.IsNullOrEmpty(targetCardData[i + 1]) && targetCardData[i + 1] != "-")
                         {
-                            cEntity_Base.Form_JPN.Add(targetCardData[i + 1]);
+                            cEntity_Base.Form_JPN.Add(targetCardData[i + 1].CleanString());
                         }
                     }
 
@@ -140,7 +140,7 @@ public class OfficialCardListUtility
 
                         if (!string.IsNullOrEmpty(targetCardData[i + 1]) && targetCardData[i + 1] != "-")
                         {
-                            cEntity_Base.Attribute_JPN.Add(targetCardData[i + 1]);
+                            cEntity_Base.Attribute_JPN.Add(targetCardData[i + 1].CleanString());
                         }
                     }
 
@@ -157,7 +157,7 @@ public class OfficialCardListUtility
                             {
                                 if (!string.IsNullOrEmpty(typeString))
                                 {
-                                    cEntity_Base.Type_JPN.Add(typeString);
+                                    cEntity_Base.Type_JPN.Add(typeString.CleanString());
                                 }
                             }
                         }
@@ -352,7 +352,7 @@ public class OfficialCardListUtility
                     {
                         targetCardData[i] = targetCardData[i].Replace(" ", "").Replace("<divclass=\"card_name\">", "").Replace("</div>", "")
                         .Replace("&amp;", "&");
-                        cEntity_Base.CardName_ENG = targetCardData[i].Replace("�I", "!");
+                        cEntity_Base.CardName_ENG = targetCardData[i].Replace("�I", "!").CleanString();
                     }
 
                     //Form
@@ -362,7 +362,7 @@ public class OfficialCardListUtility
 
                         if (!string.IsNullOrEmpty(targetCardData[i + 1]) && targetCardData[i + 1] != "-")
                         {
-                            cEntity_Base.Form_ENG.Add(targetCardData[i + 1]);
+                            cEntity_Base.Form_ENG.Add(targetCardData[i + 1]).CleanString();
                         }
                     }
 
@@ -373,7 +373,7 @@ public class OfficialCardListUtility
 
                         if (!string.IsNullOrEmpty(targetCardData[i + 1]) && targetCardData[i + 1] != "-")
                         {
-                            cEntity_Base.Attribute_ENG.Add(targetCardData[i + 1]);
+                            cEntity_Base.Attribute_ENG.Add(targetCardData[i + 1]).CleanString();
                         }
                     }
 
@@ -390,7 +390,7 @@ public class OfficialCardListUtility
                             {
                                 if (!string.IsNullOrEmpty(typeString))
                                 {
-                                    cEntity_Base.Type_ENG.Add(typeString);
+                                    cEntity_Base.Type_ENG.Add(typeString).CleanString();
                                 }
                             }
                         }
@@ -1075,13 +1075,13 @@ public class OfficialCardListUtility
         }
         #endregion
 
-        #region �^�O���폜
-        cEntity_Base.EffectDiscription_ENG = GetTagRemovedString(cEntity_Base.EffectDiscription_ENG);
-        cEntity_Base.InheritedEffectDiscription_ENG = GetTagRemovedString(cEntity_Base.InheritedEffectDiscription_ENG);
-        cEntity_Base.SecurityEffectDiscription_ENG = GetTagRemovedString(cEntity_Base.SecurityEffectDiscription_ENG);
-        cEntity_Base.EffectDiscription_JPN = GetTagRemovedString(cEntity_Base.EffectDiscription_JPN);
-        cEntity_Base.InheritedEffectDiscription_JPN = GetTagRemovedString(cEntity_Base.InheritedEffectDiscription_JPN);
-        cEntity_Base.SecurityEffectDiscription_JPN = GetTagRemovedString(cEntity_Base.SecurityEffectDiscription_JPN);
+        #region Effect Description Remove Tags
+        cEntity_Base.EffectDiscription_ENG = cEntity_Base.EffectDiscription_ENG.GetTagRemovedString();
+        cEntity_Base.InheritedEffectDiscription_ENG = cEntity_Base.InheritedEffectDiscription_ENG.GetTagRemovedString();
+        cEntity_Base.SecurityEffectDiscription_ENG = cEntity_Base.SecurityEffectDiscription_ENG.GetTagRemovedString();
+        cEntity_Base.EffectDiscription_JPN = cEntity_Base.EffectDiscription_JPN.GetTagRemovedString();
+        cEntity_Base.InheritedEffectDiscription_JPN = cEntity_Base.InheritedEffectDiscription_JPN.GetTagRemovedString();
+        cEntity_Base.SecurityEffectDiscription_JPN = cEntity_Base.SecurityEffectDiscription_JPN.GetTagRemovedString();
         #endregion
     }
 
@@ -1150,7 +1150,7 @@ public class OfficialCardListUtility
 
                 else
                 {
-                    parseByEnter[i] = GetTagRemovedString(parseByEnter[i]);
+                    parseByEnter[i] = parseByEnter[i].GetTagRemovedString();
                 }
             }
         }
@@ -1274,4 +1274,54 @@ public class OfficialCardListUtility
 
         return text;
     }
+}
+
+/// <summary>
+/// string extension methods
+/// </summary>
+public static partial class StringExtensions
+{
+
+    /// <summary>
+    /// Removes all instances of the specified string from the current string.
+    /// </summary>
+    public static string CleanString(this string self)
+    {
+        string cleanString = self;
+
+        if (!string.IsNullOrEmpty(self))
+        {
+            foreach (string str in new string[] {"\n", "\r", "\t" })
+            {
+                cleanString = cleanString.Replace(str, "");
+            }
+        }
+
+        return cleanString;
+    }
+
+    /// <summary>
+    /// Removes all tags from the current string.
+    /// </summary>
+    public static string GetTagRemovedString(this string self)
+    {
+        if (!string.IsNullOrEmpty(self))
+        {
+            while (self.Contains("<") && self.Contains(">"))
+            {
+                int startIndex = self.IndexOf("<");
+
+                int endIndex = self.IndexOf(">");
+
+                string s = self.Substring(startIndex, endIndex - startIndex + 1);
+
+                self = self.Replace(s, "");
+            }
+
+            self = DataBase.ReplaceToASCII(self);
+        }
+
+        return self;
+    }
+
 }
