@@ -51,7 +51,7 @@ namespace DCGO.CardEffects.ST17
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    if ((targetPermanent.TopCard.CardNames.Contains("Terriermon") && targetPermanent.Level == 3))
+                    if ((targetPermanent.TopCard.ContainsCardName("Terriermon") && targetPermanent.Level == 3))
                     {
                         return true;
                     }

@@ -40,7 +40,7 @@ public class Monzaemon_X_Antibody_BT15_040 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Digivolving] If this Digimon has a card with [Monzaemon] in it's name or [X-Antibody] in it's digivolution cards, you may play 1 level 3 Digimon card from your hand without paying the cost.";
+                return "[When Digivolving] If a card with [Monzaemon] in its name or [X Antibody] is in this Digimon's digivolution cards, you may play 1 [Numemon] or 1 level 3 Digimon card from your hand without paying the cost.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)
@@ -67,7 +67,7 @@ public class Monzaemon_X_Antibody_BT15_040 : CEntity_Effect
                 {
                     if (card.Owner.HandCards.Count >= 1)
                     {
-                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardNames.Contains("Monzaemon") || cardSource.CardNames.Contains("X Antibody") || cardSource.CardNames.Contains("XAntibody")) >= 1)
+                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.ContainsCardName("Monzaemon") || cardSource.CardNames.Contains("X Antibody") || cardSource.CardNames.Contains("XAntibody")) >= 1)
                         {
                             return true;
                         }

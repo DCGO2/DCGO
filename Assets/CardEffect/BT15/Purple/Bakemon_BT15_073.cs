@@ -35,10 +35,8 @@ public class Bakemon_BT15_073 : CEntity_Effect
                 {
                     if(CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (card.Owner.GetBattleAreaDigimons().Contains(card.PermanentOfThisCard()))
-                        {
+                        if(CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card))
                             return true;
-                        }
                     }
 
                     if (CardEffectCommons.CanActivateOnDeletion(card))

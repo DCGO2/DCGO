@@ -281,7 +281,7 @@ public class WaruSeadramon_BT15_078 : CEntity_Effect
         #endregion
 
         //Inherited Effect
-        if (timing == EffectTiming.None)
+        if (timing == EffectTiming.OnDestroyedAnyone)
         {
             cardEffects.Add(CardEffectFactory.RetaliationSelfEffect(isInheritedEffect: true, card: card, condition: null));
         }
