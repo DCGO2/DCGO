@@ -11,6 +11,63 @@ public class Veemon_P_117 : CEntity_Effect
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+        #region Activate Cost Reduciton
+        ActivateClass costReduceClass = new ActivateClass();
+        costReduceClass.SetUpICardEffect("Digivolution Cost -1", CanUseReduceCondition, card);
+        costReduceClass.SetUpActivateClass(CanActivateCostReductionCondition, ActivateCostReductionCoroutine, 1, false, EffectDiscription2());
+        costReduceClass.SetIsInheritedEffect(true);
+        costReduceClass.SetNotShowUI(true);
+        costReduceClass.SetIsBackgroundProcess(true);
+        costReduceClass.SetHashString("DigivolutionCost-1_P_117");
+
+        string EffectDiscription2()
+        {
+            return "[Your Turn] [Once Per Turn] When this Digimon would digivolve into a Digimon card with the [Free] trait, if you have a Tamer, reduce the digivolution cost by 1.";
+        }
+
+        bool CardSourceCondition(CardSource cardSource)
+        {
+            return cardSource.CardTraits.Contains("Free");
+        }
+
+        bool CanUseReduceCondition(Hashtable hashtable)
+        {
+            if (CardEffectCommons.IsExistOnBattleArea(card))
+            {
+                if (CardEffectCommons.IsOwnerTurn(card))
+                {
+                    if (CardEffectCommons.CanTriggerWhenPermanentWouldDigivolveOfCard(hashtable, CardSourceCondition, card))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        bool CanActivateCostReductionCondition(Hashtable hashtable)
+        {
+            if (CardEffectCommons.IsExistOnBattleArea(card))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        IEnumerator ActivateCostReductionCoroutine(Hashtable _hashtable)
+        {
+            yield return null;
+        }
+
+        if (timing == EffectTiming.OnEnterFieldAnyone)
+        {
+            cardEffects.Add(costReduceClass);
+        }
+        #endregion
+
+        #region Cost reduction
         if (timing == EffectTiming.None)
         {
             ChangeCostClass changeCostClass = new ChangeCostClass();
@@ -68,11 +125,6 @@ public class Veemon_P_117 : CEntity_Effect
                 return targetPermanent == card.PermanentOfThisCard();
             }
 
-            bool CardSourceCondition(CardSource cardSource)
-            {
-                return cardSource.CardTraits.Contains("Free");
-            }
-
             bool RootCondition(SelectCardEffect.Root root)
             {
                 return true;
@@ -83,6 +135,7 @@ public class Veemon_P_117 : CEntity_Effect
                 return true;
             }
         }
+        #endregion
 
         if (timing == EffectTiming.OnAllyAttack)
         {
