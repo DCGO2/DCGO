@@ -45,6 +45,7 @@ public class OfficialCardListUtility
 
         bool hasAceName = false;
 
+        #region JPN card data parse
         foreach (string[] CardData in CardDatas_JPN)
         {
             if (CardData.Length >= 3)
@@ -318,6 +319,7 @@ public class OfficialCardListUtility
                 }
             }
         }
+        #endregion
 
         targetCardData = null;
 
@@ -340,7 +342,6 @@ public class OfficialCardListUtility
         {
             AttachEnglishCardDataFromDigimonDev(cEntity_Base);
         }
-
         else
         {
             for (int i = 0; i < targetCardData.Length; i++)
@@ -413,7 +414,7 @@ public class OfficialCardListUtility
                     }
 
                     //Inherited Effect Description
-                    if (targetCardData[i].Contains("<dt>Digivolveeffect</dt>") && !(cEntity_Base.cardKind == CardKind.Digimon && cEntity_Base.IsACE))
+                    if (targetCardData[i].Contains("<dt>InheritedEffect</dt>") && !(cEntity_Base.cardKind == CardKind.Digimon && cEntity_Base.IsACE))
                     {
                         targetCardData[i + 1] = targetCardData[i + 1].Replace("<dd>", "").Replace("</dd>", "");
 
@@ -424,7 +425,7 @@ public class OfficialCardListUtility
                     }
 
                     //Security Effect Description
-                    if (targetCardData[i].Contains("<dt>Securityeffect</dt>"))
+                    if (targetCardData[i].Contains("<dt>SecurityEffect</dt>"))
                     {
                         targetCardData[i + 1] = targetCardData[i + 1].Replace("<dd>", "").Replace("</dd>", "");
 
