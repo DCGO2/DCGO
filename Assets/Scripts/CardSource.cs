@@ -1208,17 +1208,12 @@ public class CardSource : MonoBehaviour
     {
         get
         {
-            if (CardTraits.Count((trait) => trait.Contains("Animal") && trait != "Sea Animal" && trait != "SeaAnimal") >= 1)
-            {
-                return true;
-            }
-
             if (ContainsTraits("Beast"))
             {
                 return true;
             }
 
-            if (ContainsTraits("Animal"))
+            if (ContainsTraits("Animal") && !ContainsTraits("Sea"))
             {
                 return true;
             }

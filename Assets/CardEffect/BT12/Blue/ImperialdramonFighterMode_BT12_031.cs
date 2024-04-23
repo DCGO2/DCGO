@@ -17,7 +17,8 @@ public class ImperialdramonFighterMode_BT12_031 : CEntity_Effect
         {
             bool PermanentCondition(Permanent targetPermanent)
             {
-                return targetPermanent.TopCard.CardNames.Contains("Imperialdramon: Dragon Mode") || targetPermanent.TopCard.CardNames.Contains("Imperialdramon:DragonMode");
+                return targetPermanent.TopCard.CardNames.Contains("Imperialdramon: Dragon Mode") || targetPermanent.TopCard.CardNames.Contains("Imperialdramon:DragonMode") ||
+                    targetPermanent.TopCard.CardNames.Contains("Imperialdramon Dragon Mode") || targetPermanent.TopCard.CardNames.Contains("ImperialdramonDragonMode");
             }
 
             cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 2, ignoreDigivolutionRequirement: false, card: card, condition: null));

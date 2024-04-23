@@ -120,7 +120,7 @@ public class Cutemon_BT11_034 : CEntity_Effect
 
                                 int maxCount = 1;
 
-                                if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.IsDigimon && permanent.TopCard.ContainsCardName("Dorulumon") || permanent.DigivolutionCards.Count((cardSource) => cardSource.CardNames.Contains("Dorulumon")) >= 1))
+                                if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.IsDigimon && (permanent.TopCard.ContainsCardName("Dorulumon") || permanent.DigivolutionCards.Count((cardSource) => cardSource.CardNames.Contains("Dorulumon")) >= 1)))
                                 {
                                     maxCount = 2;
                                 }
