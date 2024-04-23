@@ -46,7 +46,7 @@ public class Darkmaledramon_EX4_042 : CEntity_Effect
             {
                 if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(attacker, card))
                 {
-                    if (attacker.TopCard.CardNames.Contains("Knightmon") || attacker.TopCard.CardNames.Contains("Knightsmon"))
+                    if (attacker.TopCard.ContainsCardName("Knightmon") || attacker.TopCard.ContainsCardName("Knightsmon"))
                     {
                         if (attacker.IsDigimon)
                         {

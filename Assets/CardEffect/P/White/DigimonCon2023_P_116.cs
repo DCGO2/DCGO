@@ -116,7 +116,7 @@ public class DigimonCon2023_P_116 : CEntity_Effect
                                             mode: SelectCardEffect.Mode.AddHand,
                                             maxCount: -1,
                                             selectCardCoroutine: null),
-                                    remainingCardsPlace: RemainingCardsPlace.DeckTopOrBottom,
+                                    remainingCardsPlace: RemainingCardsPlace.DeckTop,
                                     activateClass: activateClass
                                 ));
             }
