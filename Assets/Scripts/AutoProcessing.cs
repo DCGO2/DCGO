@@ -451,10 +451,10 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
 
             GManager.instance.turnStateMachine.Passed = true;
 
-            //ターン終了時の効果
+            //Effect at end of turn
             yield return ContinuousController.instance.StartCoroutine(StackSkillInfos(null, EffectTiming.OnEndTurn));
 
-            //自動処理チェックタイミング
+            //Automatic processing check timing
             yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
 
             if (GManager.instance.turnStateMachine.gameContext.NonTurnPlayer.MemoryForPlayer >= TurnEndMinMemory)
