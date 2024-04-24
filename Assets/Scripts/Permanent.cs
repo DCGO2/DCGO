@@ -748,7 +748,7 @@ public class Permanent
     }
     #endregion
 
-    #region パーマネントの効果リスト
+    #region Permanent effect list
 
     #region このパーマネントの効果リスト
     public List<ICardEffect> EffectList(EffectTiming timing)
@@ -1633,7 +1633,28 @@ public class Permanent
     }
     #endregion
 
-    #region ブロッカーを持つか
+    #region Is Unblockable
+    public bool IsUnblockable
+    {
+        get
+        {
+            foreach (ICardEffect cardEffect in this.EffectList(EffectTiming.None))
+            {
+                if (cardEffect is CannotBlockClass)
+                {
+                    if (cardEffect.EffectName == "Can't Block")
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+    }
+    #endregion
+
+    #region Has Blocker
     public bool HasBlocker
     {
         get
@@ -1681,7 +1702,7 @@ public class Permanent
     }
     #endregion
 
-    #region ジャミングを持つか
+    #region Has Jamming
     public bool HasJamming
     {
         get
@@ -1949,7 +1970,7 @@ public class Permanent
     }
     #endregion
 
-    #region 進撃を持つか
+    #region Has Blitz
     public bool HasBlitz
     {
         get

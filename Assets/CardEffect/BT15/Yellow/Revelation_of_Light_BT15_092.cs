@@ -134,7 +134,7 @@ public class Revelation_of_Light_BT15_092 : CEntity_Effect
                         canNoSelect: () => true,
                         selectCardCoroutine: SelectCardCoroutine,
                         afterSelectCardCoroutine: AfterSelectCardCoroutine,
-                        message: "Select 1 Tamer to play.",
+                        message: "Select 1 Digimon to play.",
                         maxCount: maxCount,
                         canEndNotMax: false,
                         isShowOpponent: true,
@@ -164,17 +164,17 @@ public class Revelation_of_Light_BT15_092 : CEntity_Effect
                         }
 
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedCards, activateClass: activateClass, payCost: false, isTapped: false, root: SelectCardEffect.Root.Security, activateETB: true));
-
-                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, PermanentCondition))
-                        {
-                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(card, toTop: true));
-
-                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(card.Owner));
-
-                                yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(card.Owner).AddSecurity());
-                            
-                        }
                     }
+                }
+
+                if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, PermanentCondition))
+                {
+                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(card, toTop: true));
+
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(card.Owner));
+
+                    yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(card.Owner).AddSecurity());
+
                 }
             }
         }
