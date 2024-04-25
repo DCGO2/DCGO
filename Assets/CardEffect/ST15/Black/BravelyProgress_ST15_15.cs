@@ -21,7 +21,7 @@ public class BravelyProgress_ST15_15 : CEntity_Effect
             bool CanUseCondition(Hashtable hashtable)
             {
                 if (card.Owner.GetBattleAreaPermanents().Count(permanent =>
-                permanent.TopCard.ContainsCardName("Tai Kamiya") || permanent.IsTamer) >= 1)
+                permanent.TopCard.ContainsCardName("Tai Kamiya") && permanent.IsTamer) >= 1)
                 {
                     return true;
                 }

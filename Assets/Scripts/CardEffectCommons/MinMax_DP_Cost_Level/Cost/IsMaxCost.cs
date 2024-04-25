@@ -14,7 +14,7 @@ public partial class CardEffectCommons
         if (permanent.TopCard.Owner != owner) return false;
         if (!IsPermanentExistsOnOwnerBattleArea(permanent, permanent.TopCard)) return false;
         if (!permanent.IsDigimon && !permanent.IsTamer) return false;
-        if (IsDigimonOnly && permanent.IsTamer) return false;
+        //if (IsDigimonOnly && permanent.IsTamer) return false;
         if (!permanent.TopCard.HasPlayCost) return false;
 
         List<int> costs = permanent.TopCard.Owner.GetBattleAreaPermanents().Filter(permanent1 =>

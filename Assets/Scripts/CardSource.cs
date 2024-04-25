@@ -1690,7 +1690,6 @@ public class CardSource : MonoBehaviour
     public bool HasBlocker =>
         EffectList(EffectTiming.None)
             .Some(cardEffect => cardEffect is BlockerClass 
-                && cardEffect.CanUseCondition == null
                 && !cardEffect.IsInheritedEffect && !cardEffect.IsSecurityEffect);
     #endregion
 

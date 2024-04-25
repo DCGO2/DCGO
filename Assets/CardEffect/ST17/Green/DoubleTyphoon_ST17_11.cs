@@ -255,13 +255,10 @@ namespace DCGO.CardEffects.ST17
                             cardEffect: activateClass);
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                        cardEffects.Add(CardEffectFactory.PlaceSelfDelayOptionSecurityEffect(card));
                     }
                 }
-            }
-
-            if (timing == EffectTiming.SecuritySkill)
-            {
-                cardEffects.Add(CardEffectFactory.PlaceSelfDelayOptionSecurityEffect(card));
             }
             #endregion
 
