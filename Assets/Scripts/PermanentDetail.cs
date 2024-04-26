@@ -7,7 +7,6 @@ using DG.Tweening;
 using System.Threading.Tasks;
 using TMPro;
 using System.Linq;
-using static UnityEditor.VersionControl.Message;
 
 public class PermanentDetail : MonoBehaviour
 {
