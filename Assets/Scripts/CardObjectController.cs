@@ -585,7 +585,7 @@ public class CardObjectController : MonoBehaviour
         {
             List<Player> Players = addedCards.Map(cardSource => cardSource.Owner).Distinct().ToList();
 
-            #region "手札が増えた時"の効果
+            #region Effect of "When the number of cards in hand increases"
 
             #region Hashtable Setting
             System.Collections.Hashtable _hashtable = new System.Collections.Hashtable()
@@ -849,7 +849,7 @@ public class CardObjectController : MonoBehaviour
 
         if (isFromTrash)
         {
-            #region "カードがトラッシュから山札に戻った時"の効果
+            #region Effect of "When a card returns from the trash to the deck"
 
             #region Hashtable Setting
             System.Collections.Hashtable hashtable = new System.Collections.Hashtable()
@@ -1039,7 +1039,7 @@ public class CardObjectController : MonoBehaviour
 
                         if (!oldIsFrontLine)
                         {
-                            #region "育成エリアから移動した時"の効果
+                            #region Effect of "when moving from the training area"
 
                             #region Hashtable Setting
                             System.Collections.Hashtable hashtable = new System.Collections.Hashtable()

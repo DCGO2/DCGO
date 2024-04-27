@@ -2743,7 +2743,6 @@ public class DestroyPermanentsClass
 
         foreach (Permanent permanent in destroyTargetPermanents_Fixed)
         {
-            Debug.Log($"DESTORYED PERMANENT: {permanent.TopCard.BaseENGCardNameFromEntity}");
             #region record wheter to be deleted by battle
             if (battle != null)
             {
