@@ -37,7 +37,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region 効果処理中のスタック
+    #region Stack during effect processing
     public MultipleSkills executingMultipleSkills
     {
         get
@@ -55,7 +55,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region 効果をスタックに載せる
+    #region put the effect on the stack
     public void PutStackedSkill(SkillInfo skillInfo)
     {
         if (skillInfo == null) return;
@@ -119,10 +119,10 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
         GManager.instance.turnStateMachine.IsSelecting = true;
         GManager.instance.turnStateMachine.isSync = true;
 
-        //ルール処理
+        //Rule processing
         yield return ContinuousController.instance.StartCoroutine(RuleProcess());
 
-        //誘発効果処理
+        //Trigger effect processing
         yield return ContinuousController.instance.StartCoroutine(TriggeredSkillProcess(false, null));
 
         GManager.instance.turnStateMachine.IsSelecting = false;
@@ -130,7 +130,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region ルール処理
+    #region Rule processing
     public bool IsRuleProcessing { get; set; } = false;
 
     bool IsNotHavingDP(Permanent permanent)
@@ -206,26 +206,26 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
         }
     }
 
-    #region ルール処理を行う必要があるかどうか
+    #region Whether rule processing needs to be done
     bool DoRuleProcess()
     {
         if (IsRuleProcessing) return false;
 
-        #region ゲーム終了処理を行う必要があるかどうか
+        #region Whether it is necessary to perform game end processing
         if (GManager.instance.turnStateMachine.gameContext.Players.Count(player => player.IsLose) >= 1)
         {
             return true;
         }
         #endregion
 
-        #region DPを持たないカードをトラッシュする処理を行う必要があるかどうか
+        #region Is it necessary to discard cards without DP?
         if (CardEffectCommons.HasMatchConditionPermanent(IsNotHavingDP))
         {
             return true;
         }
         #endregion
 
-        #region デジモンのDP不足処理を行う必要があるかどうか
+        #region Is it necessary to deal with Digimon's DP shortage?
         if (CardEffectCommons.HasMatchConditionPermanent(IsDigimonLackDP, true))
         {
             return true;
@@ -236,9 +236,9 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region 各ルール処理
+    #region Each rule processing
 
-    #region ゲーム終了処理
+    #region Game end processing
     IEnumerator EndGameProcess()
     {
         foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players)
@@ -261,7 +261,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region DPを持たないカードをトラッシュする処理
+    #region Process of trashing cards without DP
     IEnumerator TrashNoDPPermanentProcess()
     {
         List<Permanent> DigitamaPermanents = GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer
@@ -291,7 +291,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region デジモンのDP不足処理
+    #region Digimon DP shortage handling
     IEnumerator DigimonLackDPProcess()
     {
         List<Permanent> LackPowerPermanents = GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer
@@ -314,7 +314,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
 
     #endregion
 
-    #region 誘発効果処理
+    #region Trigger effect processing
     public IEnumerator TriggeredSkillProcess(bool CheckNewTriggredSkill_mainStack, Func<List<SkillInfo>, SkillInfo, bool> skipCondition)
     {
         yield return ContinuousController.instance.StartCoroutine(ShrinkSecurityDigimonDisplay());
@@ -345,7 +345,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region 既に発揮された効果一覧
+    #region List of effects already achieved
     public List<SkillInfo> skillInfos_used
     {
         get
@@ -365,7 +365,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region 既に同じ効果が発揮されている
+    #region The same effect has already been achieved
     public static bool HasExecutedSameEffect(List<SkillInfo> skillInfos, SkillInfo skillInfo)
     {
         /*
@@ -381,7 +381,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region ターン終了のチェック
+    #region Check end of turn
     public IEnumerator EndTurnCheck()
     {
         if (GManager.instance.turnStateMachine.gameContext.TurnPhase != GameContext.phase.End)
@@ -395,7 +395,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region ターン終了になる最小メモリ
+    #region Minimum memory to end turn
     static int TurnEndMinMemory
     {
         get
@@ -425,7 +425,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region ターン終了処理
+    #region Turn end processing
     public IEnumerator EndTurnProcess()
     {
         if (GManager.instance.turnStateMachine.gameContext.TurnPhase != GameContext.phase.End)
