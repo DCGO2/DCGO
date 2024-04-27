@@ -669,11 +669,11 @@ public class DataBase : MonoBehaviour
                     new CardLimitCount("BT13-012", 1),
                     new CardLimitCount("EX4-019", 1),
                     new CardLimitCount("BT7-069", 1),
-                    // new CardLimitCount("BT14-002", 1),
-                    // new CardLimitCount("BT15-102", 1),
-                    // new CardLimitCount("EX5-015", 1),
-                    // new CardLimitCount("EX5-018", 1),
-                    // new CardLimitCount("EX5-062", 1),
+                    new CardLimitCount("BT14-002", 1),
+                    new CardLimitCount("BT15-102", 1),
+                    new CardLimitCount("EX5-015", 1),
+                    new CardLimitCount("EX5-018", 1),
+                    new CardLimitCount("EX5-062", 1),
                 },
                 new List<BannedPair>()
                 {

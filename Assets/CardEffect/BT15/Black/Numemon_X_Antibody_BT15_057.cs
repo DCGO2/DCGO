@@ -30,7 +30,7 @@ public class Numemon_X_Antibody_BT15_057 : CEntity_Effect
         {
             ActivateClass activateDeletion = new ActivateClass();
             activateDeletion.SetUpICardEffect("Play 1 [Numemon] from trash", CanUseOnDeletion, card);
-            activateDeletion.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+            activateDeletion.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
             activateDeletion.SetHashString("Play1NumemonFromTrash_BT15_057");
             cardEffects.Add(activateDeletion);
 
@@ -47,7 +47,7 @@ public class Numemon_X_Antibody_BT15_057 : CEntity_Effect
                     {
                         if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateDeletion))
                         {
-                            if (cardSource.CardNames.Contains("Numemon"))
+                            if (cardSource.ContainsCardName("Numemon"))
                             {
                                 return true;
                             }
@@ -157,7 +157,7 @@ public class Numemon_X_Antibody_BT15_057 : CEntity_Effect
                     {
                         if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateDeletion))
                         {
-                            if (cardSource.CardNames.Contains("Numemon"))
+                            if (cardSource.ContainsCardName("Numemon"))
                             {
                                 return true;
                             }

@@ -200,7 +200,7 @@ public class Apocalymon_BT15_102 : CEntity_Effect
 
                         if (selectedCards.Count >= 1)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(selectedCards, activateClass));
+                            GManager.instance.GetComponent<SelectDigiXrosClass>().AddDigivolutionCardInfos(new AddDigivolutionCardsInfo(activateClass, selectedCards));
 
                             yield return StartCoroutine(AfterSelectCardCoroutine(selectedCards));
                         }
