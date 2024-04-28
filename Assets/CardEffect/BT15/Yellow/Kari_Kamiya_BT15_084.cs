@@ -126,7 +126,10 @@ public class Kari_Kamiya_BT15_084 : CEntity_Effect
                 if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
                     if (CardEffectCommons.CanTriggerWhenLoseSecurity(hashtable, player => player == card.Owner)){
-                        return true;
+                        if (CardEffectCommons.IsByEffect(hashtable, null))
+                        {
+                            return true;
+                        }
                     }
                 }
 

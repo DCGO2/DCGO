@@ -112,30 +112,6 @@ public class ContinuousController : MonoBehaviour
     void LoadBanList()
     {
         BanList = DataBase.ENGBanList;
-
-        /*
-        string banlistText = StreamingAssetsUtility.GetText("BanList");
-
-        if (!string.IsNullOrEmpty(banlistText))
-        {
-            List<CEntity_Base> banlistDatasFromText = DeckCodeUtility.GetAllDeckCardsFromDeckBuilderDeckCode(banlistText, plusCount: 1);
-            List<CEntity_Base> distinctBanlistDatas = banlistDatasFromText.Distinct().ToList();
-            List<CardLimitCount> banlistDatas = new List<CardLimitCount>();
-
-            foreach (CEntity_Base cEntity_Base in distinctBanlistDatas)
-            {
-                int maxCount = banlistDatasFromText.Count(cEntity_Base1 => cEntity_Base1.CardID == cEntity_Base.CardID);
-                maxCount--;
-
-                if (maxCount >= 0)
-                {
-                    banlistDatas.Add(new CardLimitCount(cEntity_Base.CardID, maxCount));
-                }
-            }
-
-            BanList = banlistDatas;
-        }
-        */
     }
 
     async Task CreateTokenData()

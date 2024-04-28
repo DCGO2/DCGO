@@ -100,7 +100,7 @@ public class Permanent
     }
     #endregion
 
-    #region 進化元を全てトラッシュに置く
+    #region Place all evolution sources in the trash
     public IEnumerator DiscardEvoRoots(bool ignoreOverflow = false, bool putToTrash = true)
     {
         List<CardSource> evoRoots = DigivolutionCards.Clone();
@@ -145,7 +145,7 @@ public class Permanent
                 return false;
             }
 
-            #region DPを持たないようにする効果
+            #region Effect of not having DP
             foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players)
             {
                 foreach (Permanent permanent in player.GetFieldPermanents())
@@ -172,7 +172,7 @@ public class Permanent
     }
     #endregion
 
-    #region 基礎DP
+    #region Base DP
     public int BaseDP
     {
         get
@@ -748,7 +748,7 @@ public class Permanent
     }
     #endregion
 
-    #region パーマネントの効果リスト
+    #region Permanent effect list
 
     #region このパーマネントの効果リスト
     public List<ICardEffect> EffectList(EffectTiming timing)
@@ -1633,7 +1633,28 @@ public class Permanent
     }
     #endregion
 
-    #region ブロッカーを持つか
+    #region Is Unblockable
+    public bool IsUnblockable
+    {
+        get
+        {
+            foreach (ICardEffect cardEffect in this.EffectList(EffectTiming.None))
+            {
+                if (cardEffect is CannotBlockClass)
+                {
+                    if (cardEffect.EffectName == "Can't Block")
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+    }
+    #endregion
+
+    #region Has Blocker
     public bool HasBlocker
     {
         get
@@ -1681,7 +1702,7 @@ public class Permanent
     }
     #endregion
 
-    #region ジャミングを持つか
+    #region Has Jamming
     public bool HasJamming
     {
         get
@@ -1949,7 +1970,7 @@ public class Permanent
     }
     #endregion
 
-    #region 進撃を持つか
+    #region Has Blitz
     public bool HasBlitz
     {
         get
@@ -2305,12 +2326,12 @@ public class Permanent
                     return true;
                 }
 
-                #region デジモンとして扱う効果
+                #region Effect of treating it as a Digimon
                 foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
                 {
                     foreach (Permanent permanent in player.GetFieldPermanents())
                     {
-                        #region 場のパーマネントの効果
+                        #region Effects of permanents in play
                         foreach (ICardEffect cardEffect in permanent.EffectList_Added(EffectTiming.None))
                         {
                             if (cardEffect is ITreatAsDigimonEffect)
@@ -2327,7 +2348,7 @@ public class Permanent
                         #endregion
                     }
 
-                    #region プレイヤーの効果
+                    #region player effect
                     foreach (ICardEffect cardEffect in player.EffectList(EffectTiming.None))
                     {
                         if (cardEffect is ITreatAsDigimonEffect)

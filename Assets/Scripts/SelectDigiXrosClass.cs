@@ -934,6 +934,7 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
                     {
                         List<CardSource> underTamerCards = new List<CardSource>();
                         List<Permanent> digimonPermanents = new List<Permanent>();
+                        List<CardSource> trashCards = new List<CardSource>();
 
                         foreach (CardSource cardSource in info.cardSources)
                         {
@@ -946,6 +947,11 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
                             else if (isBattleAreaCard(cardSource))
                             {
                                 digimonPermanents.Add(cardSource.PermanentOfThisCard());
+                                addedCards.Add(cardSource);
+                            }
+                            else if (isTrashCard(cardSource))
+                            {
+                                trashCards.Add(cardSource);
                                 addedCards.Add(cardSource);
                             }
                         }
@@ -961,6 +967,11 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
                             {
                                 yield return ContinuousController.instance.StartCoroutine(new IPlacePermanentToDigivolutionCards(new List<Permanent[]>() { new Permanent[] { digimonPermanent, card.PermanentOfThisCard() } }, false, info.cardEffect).PlacePermanentToDigivolutionCards());
                             }
+                        }
+
+                        if (trashCards.Count >= 1)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(trashCards, info.cardEffect));
                         }
                     }
 

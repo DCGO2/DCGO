@@ -67,11 +67,11 @@ namespace DCGO.CardEffects.LM
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
@@ -89,38 +89,36 @@ namespace DCGO.CardEffects.LM
                         selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to Suspend.", "The opponent is selecting 1 Digimon to Suspend.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                    }
 
-                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectBlockerCondition))
+                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectBlockerCondition))
+                    {
+                        int blockerCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectBlockerCondition));
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectBlockerCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: blockerCount,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectBlockerPermanent,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to gain <Blocker>.", "The opponent is selecting 1 Digimon to gain <Blocker>.");
+
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                        IEnumerator SelectBlockerPermanent(Permanent permanent)
                         {
-                            int blockerCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectBlockerCondition));
-
-                            selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: CanSelectBlockerCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: blockerCount,
-                                canNoSelect: false,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: SelectBlockerPermanent,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Custom,
-                                cardEffect: activateClass);
-
-                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to gain <Blocker>.", "The opponent is selecting 1 Digimon to gain <Blocker>.");
-
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                            IEnumerator SelectBlockerPermanent(Permanent permanent)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBlocker(
-                                    targetPermanent: permanent,
-                                    EffectDuration.UntilOpponentTurnEnd,
-                                    activateClass: activateClass
-                                ));
-                            }
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBlocker(
+                                targetPermanent: permanent,
+                                EffectDuration.UntilOpponentTurnEnd,
+                                activateClass: activateClass
+                            ));
                         }
                     }
                 }                    

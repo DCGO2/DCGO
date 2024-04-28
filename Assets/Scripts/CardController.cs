@@ -2169,9 +2169,17 @@ public class HandBounceClaass
 
             yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveFromAllArea(topCard));
 
-            handCards.Add(topCard);
+            if (!topCard.IsDigiEgg)
+            {
+                handCards.Add(topCard);
 
-            BouncedPermanents.Add(permanent);
+                BouncedPermanents.Add(permanent);
+            }
+            else
+            {
+                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(new List<CardSource>() { topCard }));
+            }
+            
         }
 
         yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddHandCards(handCards, false, cardEffect));
@@ -2558,18 +2566,27 @@ public class IPutSecurityPermanent
 
         if (!topCard.IsToken)
         {
-            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(topCard));
-
-            if (!_toTop)
+            if (!topCard.IsDigiEgg)
             {
-                topCard.Owner.SecurityCards.Remove(topCard);
-                topCard.Owner.SecurityCards.Add(topCard);
+                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(topCard));
+
+                if (!_toTop)
+                {
+                    topCard.Owner.SecurityCards.Remove(topCard);
+                    topCard.Owner.SecurityCards.Add(topCard);
+                }
+
+                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(topCard.Owner));
+
+                yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(topCard.Owner).AddSecurity());
             }
-
-            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(topCard.Owner));
-
-            yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(topCard.Owner).AddSecurity());
+            else
+            {
+                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(new List<CardSource>() { topCard }));
+            }
+            
         }
+
         #endregion
     }
 }
@@ -3469,6 +3486,7 @@ public class IBattle
                 }
                 #endregion
 
+                
                 List<Permanent> _WinnerPermanents = new List<Permanent>();
                 List<Permanent> _LoserPermanents = new List<Permanent>();
 
@@ -3495,10 +3513,34 @@ public class IBattle
                 hashtable.Add("LoserCard", LoserCard);
                 hashtable.Add("battle", this);
 
+
                 // battle effect
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().BattleEffect(WinnerPermanents, LoserPermanents, LoserCard));
 
                 yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(LoserPermanents, hashtable).Destroy());
+
+                //Fix winner/loser permanents
+                int index = -1;
+                foreach (Permanent permanent in LoserPermanents)
+                {
+                    if(permanent.TopCard != null)
+                    {
+                        Debug.Log($"LoserPermanents: {LoserPermanents[0]}, {LoserPermanents[0].TopCard.name}");
+                        index = LoserPermanents.IndexOf(permanent);
+                    }
+                }
+
+                if(index >= 0)
+                {
+                    LoserPermanents.RemoveAt(index);
+                    _LoserPermanents.RemoveAt(index);
+
+                    Debug.Log($"LoserPermanents: {LoserPermanents.Count}, {LoserPermanents.Count}");
+                    hashtable["LoserPermanents"] = _LoserPermanents;
+                    hashtable["LoserPermanents_real"] = LoserPermanents;
+                }
+
+                
 
                 // "At the end of battle" effect
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(hashtable, EffectTiming.OnEndBattle));

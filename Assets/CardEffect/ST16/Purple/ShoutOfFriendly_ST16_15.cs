@@ -21,7 +21,7 @@ public class ShoutOfFriendly_ST16_15 : CEntity_Effect
 
             bool CanUseCondition(Hashtable hashtable)
             {
-                if (card.Owner.GetBattleAreaPermanents().Count(permanent => permanent.TopCard.ContainsCardName("Matt Ishida") || permanent.IsTamer) >= 1)
+                if (card.Owner.GetBattleAreaPermanents().Count(permanent => permanent.TopCard.ContainsCardName("Matt Ishida") && permanent.IsTamer) >= 1)
                 {
                     return true;
                 }
