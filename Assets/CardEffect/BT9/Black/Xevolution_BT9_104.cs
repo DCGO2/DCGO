@@ -42,6 +42,7 @@ public class Xevolution_BT9_104 : CEntity_Effect
                 return false;
             }
         }
+
         if (timing == EffectTiming.OptionSkill)
         {
             ActivateClass activateClass = new ActivateClass();
@@ -273,12 +274,11 @@ public class Xevolution_BT9_104 : CEntity_Effect
             }
         }
 
-
         if (timing == EffectTiming.SecuritySkill)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect($"Reveal the top 3 cards of deck", CanUseCondition, card);
-            activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+            activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, EffectDiscription());
             activateClass.SetIsSecurityEffect(true);
             cardEffects.Add(activateClass);
 

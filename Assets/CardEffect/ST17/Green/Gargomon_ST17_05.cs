@@ -2,9 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using Photon;
 using System;
-using Photon.Pun;
 
 public class Gargomon_ST17_05 : CEntity_Effect
 {
@@ -37,7 +35,7 @@ public class Gargomon_ST17_05 : CEntity_Effect
         {
             bool PermanentCondition(Permanent targetPermanent)
             {
-                if ((targetPermanent.TopCard.CardNames.Contains("Terriermon") && targetPermanent.Level == 3) || (targetPermanent.TopCard.CardNames.Contains("Lopmon") && targetPermanent.Level == 3))
+                if ((targetPermanent.TopCard.ContainsCardName("Terriermon") && targetPermanent.Level == 3) || (targetPermanent.TopCard.ContainsCardName("Lopmon") && targetPermanent.Level == 3))
                 {
                     return true;
                 }
@@ -109,7 +107,7 @@ public class Gargomon_ST17_05 : CEntity_Effect
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will get Rush.", "The opponent is selecting 1 Digimon that will get Rush.");
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will get Jamming.", "The opponent is selecting 1 Digimon that will get Jamming.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 

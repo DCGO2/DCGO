@@ -11,7 +11,7 @@ public partial class CardEffectCommons
         if (piercePermanent == null) return false;
         if (piercePermanent.TopCard == null) return false;
 
-        return CanTriggerWhenDeleteOpponentDigimonByBattle(hashtable: hashtable, winnerCondition: (permanent) => permanent.cardSources.Contains(piercePermanent.TopCard), loserCondition: (permanent) => IsOpponentPermanent(permanent, piercePermanent.TopCard), isOnlyWinnerSurvive: false);
+        return CanTriggerWhenDeleteOpponentDigimonByBattle(hashtable: hashtable, winnerCondition: (permanent) => permanent.cardSources.Contains(piercePermanent.TopCard), loserCondition: (permanent) => IsOpponentPermanent(permanent, piercePermanent.TopCard), isOnlyWinnerSurvive: true);
     }
     #endregion
 

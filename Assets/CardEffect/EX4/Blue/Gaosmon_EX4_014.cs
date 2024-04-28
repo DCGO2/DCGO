@@ -42,9 +42,12 @@ public class Gaosmon_EX4_014 : CEntity_Effect
             {
                 if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
                 {
-                    if (permanent.TopCard.CardTraits.Contains("Blue Flare") || permanent.TopCard.CardTraits.Contains("BlueFlare"))
+                    if (!permanent.TopCard.IsOption)
                     {
-                        return true;
+                        if (permanent.TopCard.CardTraits.Contains("Blue Flare") || permanent.TopCard.CardTraits.Contains("BlueFlare"))
+                        {
+                            return true;
+                        }
                     }
                 }
 

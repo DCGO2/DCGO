@@ -495,7 +495,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         }
         #endregion
 
-        #region セキュリティを設置
+        #region set up security
         foreach (Player player in gameContext.Players_ForNonTurnPlayer)
         {
             yield return StartCoroutine(new IAddSecurityFromLibrary(player, 5).AddSecurity());
@@ -522,7 +522,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region アクティブフェイズ
+    #region Active Phase
     IEnumerator ActivePhase()
     {
         foreach (Permanent permanent in gameContext.TurnPlayer.GetFieldPermanents())
@@ -605,7 +605,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region ドローフェイズ
+    #region Draw Phase
     IEnumerator DrawPhase()
     {
         //ターン終了チェック
@@ -650,7 +650,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region 育成フェイズ
+    #region Breeding Phase
     IEnumerator BreedingPhase()
     {
         //ターン終了チェック
@@ -797,7 +797,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region メインフェイズ
+    #region main phase
     CardSource PlayCard { get; set; } = null;
     int TargetFrameID { get; set; } = 0;
     int[] JogressEvoRootsFrameIDs { get; set; } = new int[0];
@@ -1299,7 +1299,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         #endregion
     }
 
-    #region メインフェイズの操作を追加
+    #region Added main phase operations
     public IEnumerator SetMainPhase()
     {
         if (isSync)
@@ -1316,12 +1316,12 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
         IsSelecting = false;
 
-        #region リセット
+        #region reset
 
         OffFieldCardTarget(gameContext.TurnPlayer);
         OffHandCardTarget(gameContext.TurnPlayer);
 
-        #region 手札のカードを再配置
+        #region rearrange cards in hand
         GManager.instance.You.HandTransform.GetComponent<GridLayoutGroup>().enabled = false;
 
         foreach (HandCard handCard in GManager.instance.You.HandCards.Map(cardSource => cardSource.ShowingHandCard).Filter(handCard => handCard != null)
@@ -1339,7 +1339,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
         foreach (Player player in gameContext.Players)
         {
-            #region 場のパーマネントをリセット
+            #region Reset permanents in play
             foreach (FieldPermanentCard fieldPermanentCard in player.FieldPermanentObjects)
             {
                 fieldPermanentCard.RemoveSelectEffect();
@@ -1349,7 +1349,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
             }
             #endregion
 
-            #region 手札のカードをリセット
+            #region Reset cards in hand
             foreach (HandCard handCard in player.HandCardObjects)
             {
                 handCard.RemoveSelectEffect();
@@ -1379,17 +1379,17 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         // added
         yield return new WaitWhile(() => isSync);
 
-        #region クリック・ドラッグ操作
+        #region Click/drag operation
         if (gameContext.TurnPlayer.isYou)
         {
-            #region 場のパーマネント
+            #region permanent of the place
             foreach (FieldPermanentCard fieldPermanentCard in gameContext.TurnPlayer.FieldPermanentObjects)
             {
                 if (fieldPermanentCard.gameObject.activeSelf && fieldPermanentCard.ThisPermanent.CanDeclareSkill() || fieldPermanentCard.ThisPermanent.CanAttack(null))
                 {
                     fieldPermanentCard.OnSelectEffect(1.1f);
 
-                    #region クリック操作を追加
+                    #region Add click operation
                     fieldPermanentCard.AddClickTarget((_fieldUnitCard) => StartCoroutine(OnClick_Select()));
 
                     IEnumerator OnClick_Select()
@@ -1401,7 +1401,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
                         IsSelecting = true;
 
-                        #region 他の場のカードをリセット
+                        #region Reset cards in other places
                         foreach (FieldPermanentCard _fieldPermanentCard in gameContext.TurnPlayer.FieldPermanentObjects)
                         {
                             if (_fieldPermanentCard != fieldPermanentCard)
@@ -1416,7 +1416,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                         }
                         #endregion
 
-                        #region 手札のカードをリセット
+                        #region Reset cards in hand
                         foreach (HandCard handCard in gameContext.TurnPlayer.HandCardObjects)
                         {
                             handCard.RemoveSelectEffect();
@@ -1427,7 +1427,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
                         List<CardCommand> FieldUnitCommands = new List<CardCommand>();
 
-                        #region 起動型効果
+                        #region activated effect
                         if (fieldPermanentCard.ThisPermanent.CanDeclareSkill())
                         {
                             List<ICardEffect> cardEffects = new List<ICardEffect>();
@@ -1450,7 +1450,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
                                     void OnClick_SetUseSkillPermanent_RPC()
                                     {
-                                        #region 場のカードをリセット
+                                        #region Reset cards on the field
                                         foreach (Player player in gameContext.Players)
                                         {
                                             foreach (FieldPermanentCard _fieldUnitCard in player.FieldPermanentObjects)
@@ -1470,7 +1470,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                         }
                         #endregion
 
-                        #region 攻撃
+                        #region attack
                         if (fieldPermanentCard.ThisPermanent.IsDigimon)
                         {
                             CardCommand SkillCommand = new CardCommand("Attack", () => StartCoroutine(OnClick_SetAttack_RPC()), fieldPermanentCard.ThisPermanent.CanAttack(null), DataBase.CommandColor_Attack);
@@ -1480,7 +1480,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                             {
                                 if (fieldPermanentCard.ThisPermanent.CanAttack(null))
                                 {
-                                    #region 場のカードをリセット
+                                    #region Reset cards on the field
                                     foreach (Player player in gameContext.Players)
                                     {
                                         foreach (FieldPermanentCard _fieldUnitCard in player.FieldPermanentObjects)
@@ -1497,7 +1497,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                     }
                                     #endregion
 
-                                    #region 直接攻撃のみ選択可能な場合
+                                    #region When only direct attack is available
                                     if (fieldPermanentCard.ThisPermanent.CanAttackTargetDigimon(null, null) && gameContext.NonTurnPlayer.GetBattleAreaDigimons().Count((permanent) => fieldPermanentCard.ThisPermanent.CanAttackTargetDigimon(permanent, null)) == 0)
                                     {
                                         if (fieldPermanentCard.ThisPermanent.CanAttackTargetDigimon(null, null))
@@ -1572,7 +1572,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                     }
                                     #endregion
 
-                                    #region 場のキャラを攻撃可能な場合
+                                    #region When it is possible to attack characters on the field
                                     else if (gameContext.NonTurnPlayer.GetBattleAreaDigimons().Count((permanent) => fieldPermanentCard.ThisPermanent.CanAttackTargetDigimon(permanent, null)) >= 1)
                                     {
                                         bool doAttack = false;
@@ -1954,17 +1954,17 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
             }
             #endregion
 
-            #region 手札のカード
+            #region cards in hand
             foreach (HandCard handCard in gameContext.TurnPlayer.HandCardObjects)
             {
-                #region ドラッグしてプレイ
+                #region drag and play
                 if (handCard.cardSource.CanPlayFromHandDuringMainPhase)
                 {
                     handCard.SetBlueOutline();
 
                     handCard.AddDragTarget(BeginDrag, OnDropCard, OnDragCard);
 
-                    #region ドラッグ開始時
+                    #region At the start of drag
                     void BeginDrag(HandCard handCard1)
                     {
                         if (isSync)
@@ -2473,7 +2473,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                     }
                     #endregion
 
-                    #region ドラッグ中
+                    #region While dragging
                     void OnDragCard(List<DropArea> dropAreas)
                     {
                         if (isSync)
@@ -2648,7 +2648,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                 }
                 #endregion
 
-                #region クリックして起動効果宣言
+                #region Click to declare activation effect
                 if (handCard.cardSource.CanDeclareSkill)
                 {
                     handCard.SetOrangeOutline();
@@ -2668,7 +2668,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
                         IsSelecting = true;
 
-                        #region 場のカードをリセット
+                        #region Reset cards on the field
                         foreach (FieldPermanentCard fieldPermanentCard in gameContext.TurnPlayer.FieldPermanentObjects)
                         {
                             fieldPermanentCard.RemoveSelectEffect();
@@ -2684,7 +2684,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                         }
                         #endregion
 
-                        #region 手札のカードをリセット
+                        #region Reset cards in hand
                         foreach (HandCard handCard1 in gameContext.TurnPlayer.HandCardObjects)
                         {
                             handCard.Outline_Select.gameObject.SetActive(false);
@@ -2696,7 +2696,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
                         List<CardCommand> FieldUnitCommands = new List<CardCommand>();
 
-                        #region 起動効果コマンドを開く
+                        #region Open launch effect command
                         if (handCard.cardSource.CanDeclareSkill)
                         {
                             List<ICardEffect> cardEffects = new List<ICardEffect>();
@@ -2719,7 +2719,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
                                     void OnClick_SetUseSkillUnit_RPC()
                                     {
-                                        #region 場のカードをリセット
+                                        #region Reset cards on the field
                                         foreach (Player player in gameContext.Players)
                                         {
                                             foreach (FieldPermanentCard fieldPermanentCard in player.FieldPermanentObjects)
@@ -2733,7 +2733,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                         }
                                         #endregion
 
-                                        #region 手札のカードをリセット
+                                        #region Reset cards in hand
                                         foreach (HandCard handCard1 in gameContext.TurnPlayer.HandCardObjects)
                                         {
                                             handCard.Outline_Select.gameObject.SetActive(false);
@@ -2907,7 +2907,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region UI表示・クリック・ドラッグ操作をリセット
+    #region Reset UI display/click/drag operations
     void ResetUI()
     {
         foreach (Player player in gameContext.Players)
@@ -3027,15 +3027,15 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
     #endregion
 
-    #region 終了フェイズ
+    #region end phase
     public bool Passed { get; set; } = true;
     IEnumerator EndPhase()
     {
-        #region ログ追加
+        #region Add log
         GManager.instance.playLog.AddLogString($"\nEnd Turn:\n{gameContext.TurnPlayer.PlayerName}\n");
         #endregion
 
-        #region 選択状態を解除
+        #region Deselect
         OffHandCardTarget(gameContext.TurnPlayer);
         OffFieldCardTarget(gameContext.TurnPlayer);
         #endregion
@@ -3048,10 +3048,10 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
         isFirstPlayerFirstTurn = false;
 
-        //自動処理チェックタイミング
+        //Automatic processing check timing
         yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
 
-        #region ターン終了時までの状態をリセット
+        #region Reset status until end of turn
         GManager.instance.attackProcess.AttackCount = 0;
 
         foreach (Player player in gameContext.Players)
@@ -3083,7 +3083,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         }
         #endregion
 
-        #region 効果の使用回数をリセット
+        #region Reset the number of times the effect is used
         foreach (CardSource cardSource in gameContext.ActiveCardList)
         {
             cardSource.cEntity_EffectController.InitUseCountThisTurn();
@@ -3123,7 +3123,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
     #endregion
     #endregion
 
-    #region ゲーム終了
+    #region Game over
     public bool endGame { get; set; } = false;
     public void OnClickSurrenderButton()
     {

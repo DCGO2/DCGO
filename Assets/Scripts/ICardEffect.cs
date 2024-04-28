@@ -286,7 +286,6 @@ public abstract class ICardEffect
                         {
                             return false;
                         }
-
                         if (!EffectSourceCard.PermanentOfThisCard().IsDigimon)
                         {
                             return false;
@@ -407,6 +406,11 @@ public abstract class ICardEffect
     public void SetIsInheritedEffect(bool isInheritatedEffect)
     {
         IsInheritedEffect = isInheritatedEffect;
+
+        if(IsInheritedEffect)
+        {
+            SetEffectSourcePermanent(_effectSourceCard.PermanentOfThisCard());
+        }
     }
     #endregion
 
@@ -688,7 +692,7 @@ public abstract class ICardEffect
     #endregion
 }
 
-#region 計算順
+#region Calculation order
 public enum CalculateOrder
 {
     UpValue,
@@ -699,7 +703,7 @@ public enum CalculateOrder
 }
 #endregion
 
-#region
+#region Effect Duration
 public enum EffectDuration
 {
     UntilEachTurnEnd,

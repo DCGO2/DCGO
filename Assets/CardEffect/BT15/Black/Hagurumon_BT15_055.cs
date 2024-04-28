@@ -21,7 +21,7 @@ public class Hagurumon_BT15_055 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Play] Reveal the top 4 cards of your deck. Add 1 card with [Vegetation] or [Plant] in its traits and 1 card with [Fairy] in its traits among them to your hand. Place the rest at the bottom of your deck in any order.";
+                return "[On Play] Reveal the top 3 cards of your deck. Add 1 card with the [Machine] or [Cyborg] trait and 1 black Tamer card among them to the hand. Return the rest to the bottom of the deck.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)

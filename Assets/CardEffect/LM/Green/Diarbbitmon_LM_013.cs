@@ -64,11 +64,11 @@ namespace DCGO.CardEffects.LM
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
                     if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermanentCondition))
                     {
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
@@ -86,13 +86,13 @@ namespace DCGO.CardEffects.LM
                         selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to Suspend.", "The opponent is selecting 1 Digimon to Suspend.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                    }
 
-                        if (card.Owner.CanAddMemory(activateClass))
+                    if (card.Owner.CanAddMemory(activateClass))
+                    {
+                        if (HasNoUnsuspendDigimon())
                         {
-                            if (HasNoUnsuspendDigimon())
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(2, activateClass));
-                            }
+                            yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(2, activateClass));
                         }
                     }
                 }

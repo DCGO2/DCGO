@@ -129,23 +129,25 @@ namespace DCGO.CardEffects.LM
 
                         if (CardEffectCommons.HasMatchConditionPermanent(PermanentCondition))
                         {
+                            List<Permanent> permanents = new List<Permanent>();
+
                             if (_hashtable.ContainsKey("Permanents"))
                             {
                                 if (_hashtable["Permanents"] is List<Permanent>)
                                 {
-                                    List<Permanent> permanents = (List<Permanent>)_hashtable["Permanents"];
+                                    permanents = (List<Permanent>)_hashtable["Permanents"];
 
                                     permanents = permanents.Filter(PermanentCondition);
 
                                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
-                                        targetPermanents: permanents,
+                                        targetPermanents: new List<Permanent>() { thisCardPermanent },
                                         activateClass: activateClass,
-                                        successProcess: SuccessProcess,
+                                        successProcess: permanents => SuccessProcess(),
                                         failureProcess: null));
                                 }
                             }
 
-                            IEnumerator SuccessProcess(List<Permanent> permanents)
+                            IEnumerator SuccessProcess()
                             {
                                 foreach (Permanent permanent in permanents)
                                 {
