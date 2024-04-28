@@ -29,12 +29,7 @@ public class Yokomon_BT15_001 : CEntity_Effect
             {
                 if (cardSource.IsDigimon)
                 {
-                    if (cardSource.HasBirdTraits)
-                    {
-                        return true;
-                    }
-
-                    if (cardSource.HasBeastTraits)
+                    if (cardSource.HasAvianBeastAnimalTraits)
                     {
                         return true;
                     }

@@ -27,7 +27,7 @@ namespace DCGO.CardEffects.ST17
                     return "[Main] Reveal the top 3 cards of your deck. Add 1 green Digimon card and 1 green Tamer card from among them to your hand. Place the remaining cards at the bottom of your deck in any order. Then, place this card in your battle area.";
                 }
 
-                bool CanSelectCardCondition(CardSource cardSource)
+                bool CanSelectDigimonCondition(CardSource cardSource)
                 {
                     if (cardSource.IsDigimon)
                     {
@@ -40,7 +40,7 @@ namespace DCGO.CardEffects.ST17
                     return false;
                 }
 
-                bool CanSelectCardCondition1(CardSource cardSource)
+                bool CanSelectTamerCondition(CardSource cardSource)
                 {
                     if(cardSource.IsTamer)
                     {
@@ -67,7 +67,7 @@ namespace DCGO.CardEffects.ST17
                     new SelectCardConditionClass[]
                     {
                         new SelectCardConditionClass(
-                            canTargetCondition:CanSelectCardCondition,
+                            canTargetCondition:CanSelectDigimonCondition,
                             canTargetCondition_ByPreSelecetedList:null,
                             canEndSelectCondition:null,
                             canNoSelect:false,
@@ -78,26 +78,20 @@ namespace DCGO.CardEffects.ST17
                             mode: SelectCardEffect.Mode.AddHand
                             ),
                             new SelectCardConditionClass(
-                            canTargetCondition:CanSelectCardCondition1,
+                            canTargetCondition:CanSelectTamerCondition,
                             canTargetCondition_ByPreSelecetedList:null,
                             canEndSelectCondition:null,
                             canNoSelect:false,
-                            selectCardCoroutine: SelectCardCoroutine,
+                            selectCardCoroutine: null,
                             message: "Select 1 Green Tamer card.",
                             maxCount: 1,
                             canEndNotMax:false,
-                            mode: SelectCardEffect.Mode.Custom
+                            mode: SelectCardEffect.Mode.AddHand
                             ),
                     },
                     remainingCardsPlace: RemainingCardsPlace.DeckBottom,
                     activateClass: activateClass,
                     canNoAction: false));
-
-                    IEnumerator SelectCardCoroutine(CardSource cardSource)
-                    {
-                        selectedCards.Add(cardSource);
-                        yield return null;
-                    }
 
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlaceDelayOptionCards(card: card, cardEffect: activateClass));
                 }
@@ -261,13 +255,10 @@ namespace DCGO.CardEffects.ST17
                             cardEffect: activateClass);
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                        cardEffects.Add(CardEffectFactory.PlaceSelfDelayOptionSecurityEffect(card));
                     }
                 }
-            }
-
-            if (timing == EffectTiming.SecuritySkill)
-            {
-                cardEffects.Add(CardEffectFactory.PlaceSelfDelayOptionSecurityEffect(card));
             }
             #endregion
 

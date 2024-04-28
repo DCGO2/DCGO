@@ -1208,17 +1208,12 @@ public class CardSource : MonoBehaviour
     {
         get
         {
-            if (CardTraits.Count((trait) => trait.Contains("Animal") && trait != "Sea Animal" && trait != "SeaAnimal") >= 1)
-            {
-                return true;
-            }
-
             if (ContainsTraits("Beast"))
             {
                 return true;
             }
 
-            if (ContainsTraits("Animal"))
+            if (ContainsTraits("Animal") && !ContainsTraits("Sea"))
             {
                 return true;
             }
@@ -1695,7 +1690,6 @@ public class CardSource : MonoBehaviour
     public bool HasBlocker =>
         EffectList(EffectTiming.None)
             .Some(cardEffect => cardEffect is BlockerClass 
-                && cardEffect.CanUseCondition == null
                 && !cardEffect.IsInheritedEffect && !cardEffect.IsSecurityEffect);
     #endregion
 

@@ -631,17 +631,19 @@ public class Player : MonoBehaviour
 
     public List<Permanent> GetBattleAreaDigimons()
     {
+        List<Permanent> battleAreaPermanents = GetBattleAreaPermanents();
         List<Permanent> GetBattleAreaDigimons = new List<Permanent>();
 
-        for (int i = 0; i < GetBattleAreaPermanents().Count; i++)
+
+        for (int i = 0; i < battleAreaPermanents.Count; i++)
         {
-            if (GetBattleAreaPermanents()[i] != null)
+            if (battleAreaPermanents[i] != null)
             {
-                if (GetBattleAreaPermanents()[i].TopCard != null)
+                if (battleAreaPermanents[i].TopCard != null)
                 {
-                    if (GetBattleAreaPermanents()[i].IsDigimon)
+                    if (battleAreaPermanents[i].IsDigimon)
                     {
-                        GetBattleAreaDigimons.Add(GetBattleAreaPermanents()[i]);
+                        GetBattleAreaDigimons.Add(battleAreaPermanents[i]);
                     }
                 }
             }

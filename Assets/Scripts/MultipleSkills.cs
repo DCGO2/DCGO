@@ -117,6 +117,7 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
             {
                 if (!skillInfo.CardEffect.CanActivate(skillInfo.Hashtable))
                 {
+                    //Debug.Log($"{skillInfo.CardEffect.EffectName} Can't Activate");
                     continue;
                 }
 
@@ -309,7 +310,7 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
                 }
                 #endregion
 
-                #region 効果の実行
+                #region Executing the effect
                 IEnumerator Activate(bool isCheckOptional)
                 {
                     if (_skillIndex < 0 || skillInfos_active.Count < _skillIndex)

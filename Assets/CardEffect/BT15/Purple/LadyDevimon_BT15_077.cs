@@ -230,7 +230,7 @@ public class LadyDevimon_BT15_077 : CEntity_Effect
         #endregion
 
         //Inherited Effect
-        if (timing == EffectTiming.None)
+        if (timing == EffectTiming.OnDestroyedAnyone)
         {
             cardEffects.Add(CardEffectFactory.RetaliationSelfEffect(isInheritedEffect: true, card: card, condition: null));
         }

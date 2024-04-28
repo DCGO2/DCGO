@@ -69,7 +69,7 @@ public class Tankdramon_EX3_051 : CEntity_Effect
                 List<CardSource> selectedCards = new List<CardSource>();
 
                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SimplifiedRevealDeckTopCardsAndSelect(
-                    revealCount: 5,
+                    revealCount: 3,
                     simplifiedSelectCardConditions:
                     new SimplifiedSelectCardConditionClass[]
                     {

@@ -7,6 +7,7 @@ using DG.Tweening;
 using System.Threading.Tasks;
 using TMPro;
 using System.Linq;
+
 public class PermanentDetail : MonoBehaviour
 {
     [Header("パネル")]
@@ -88,7 +89,7 @@ public class PermanentDetail : MonoBehaviour
 
         string effectString = "";
 
-        #region セキュリティアタック
+        #region security attack
         if (permanent.IsDigimon)
         {
             if (permanent.Strike_AllowMinus >= 0)
@@ -105,56 +106,63 @@ public class PermanentDetail : MonoBehaviour
         }
         #endregion
 
-        #region ブロッカー
+        #region unblockable
+        if (permanent.IsUnblockable)
+        {
+            effectString += $"- Unblockable\n";
+        }
+        #endregion
+
+        #region blocker
         if (permanent.HasBlocker)
         {
             effectString += $"- Blocker\n";
         }
         #endregion
 
-        #region 貫通
+        #region Pierce
         if (permanent.HasPierce)
         {
             effectString += $"- Pierce\n";
         }
         #endregion
 
-        #region 再起動
+        #region Reboot
         if (permanent.HasReboot)
         {
             effectString += $"- Reboot\n";
         }
         #endregion
 
-        #region 回避
+        #region Evade
         if (permanent.HasEvade)
         {
             effectString += $"- Evade\n";
         }
         #endregion
 
-        #region 速攻
+        #region Rush
         if (permanent.HasRush)
         {
             effectString += $"- Rush\n";
         }
         #endregion
 
-        #region 連携
+        #region Alliance
         if (permanent.HasAlliance)
         {
             effectString += $"- Alliance\n";
         }
         #endregion
 
-        #region 防壁
+        #region Barrier
         if (permanent.HasBarrier)
         {
             effectString += $"- Barrier\n";
         }
         #endregion
 
-        #region 道連れ
+        #region Retaliation
         if (permanent.HasRetaliation)
         {
             for (int i = 0; i < permanent.RetaliationCount; i++)
@@ -164,42 +172,56 @@ public class PermanentDetail : MonoBehaviour
         }
         #endregion
 
-        #region ジャミング
+        #region Jamming
         if (permanent.HasJamming)
         {
             effectString += $"- Jamming\n";
         }
         #endregion
 
-        #region 突進
+        #region Raid
         if (permanent.HasRaid)
         {
             effectString += $"- Raid\n";
         }
         #endregion
 
-        #region マインドリンク
+        #region Mind Link
         if (permanent.HasMindLink)
         {
             effectString += $"- Mind Link\n";
         }
         #endregion
 
-        #region 不屈
+        #region Fortitude
         if (permanent.HasFortitude)
         {
             effectString += $"- Fortitude\n";
         }
         #endregion
 
-        #region 進撃
+        #region Blitz
         if (permanent.HasBlitz)
         {
             effectString += $"- Blitz\n";
         }
         #endregion
 
-        #region セキュリティアタック変更
+        #region Collision
+        /*if (permanent.hascCollision)
+        {
+            effectString += $"- Collision\n";
+        }*/
+        #endregion
+
+        #region Partition
+        /*if (permanent.HasPartition)
+        {
+            effectString += $"- Partition\n";
+        }*/
+        #endregion
+
+        #region Security Attack Changes
         if (permanent.HasSecurityAttackChanges)
         {
             for (int i = 0; i < permanent.SecurityAttackChanges.Count; i++)
@@ -211,7 +233,7 @@ public class PermanentDetail : MonoBehaviour
         }
         #endregion
 
-        #region 効果
+        #region effect
         foreach (ICardEffect cardEffect in cardEffects)
         {
             if (cardEffect is IChangeSAttackEffect)

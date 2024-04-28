@@ -208,7 +208,7 @@ public class Leviamon_X_Antibody_BT15_081 : CEntity_Effect
             #region Card select conditions
             bool CanSelectTamerCondition(Permanent permanent)
             {
-                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card))
                 {
                     if (permanent.TopCard.IsTamer)
                     {

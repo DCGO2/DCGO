@@ -21,7 +21,7 @@ public class BlackTailmonUver_RB1_028 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Return 1 card from opponent's trash to deck bottom to Draw 1", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Return 1 Digimon card from opponent's trash to deck bottom to Draw 1", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
             cardEffects.Add(activateClass);
 
