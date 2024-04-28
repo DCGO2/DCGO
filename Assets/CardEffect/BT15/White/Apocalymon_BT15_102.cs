@@ -89,22 +89,20 @@ public class Apocalymon_BT15_102 : CEntity_Effect
 
             IEnumerator ActivateCoroutine(Hashtable _hashtable)
             {
-                    int digivolutionCardsCount = 0;
+                List<CardSource> digivolutionCards = new List<CardSource>();
 
-                    List<CardSource> digivolutionCards = new List<CardSource>();
-
-                    bool CanSelectTrashCardCondition(CardSource cardSource)
+                bool CanSelectTrashCardCondition(CardSource cardSource)
+                {
+                    if (CanSelectCardCondition(cardSource))
                     {
-                        if (CanSelectCardCondition(cardSource))
+                        if (digivolutionCards.Count((filteredCard) => filteredCard.CardID == cardSource.CardID) == 0)
                         {
-                            if (digivolutionCards.Count((filteredCard) => filteredCard.CardID == cardSource.CardID) == 0)
-                            {
-                                return true;
-                            }
+                            return true;
                         }
-
-                        return false;
                     }
+
+                    return false;
+                }
 
                 if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, (cardSource) => CanSelectTrashCardCondition(cardSource)))
                 {
@@ -202,10 +200,7 @@ public class Apocalymon_BT15_102 : CEntity_Effect
 
                         if (selectedCards.Count >= 1)
                         {
-                            foreach (CardSource selectedCard in selectedCards)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveFromAllArea(selectedCard));
-                            }
+                            GManager.instance.GetComponent<SelectDigiXrosClass>().AddDigivolutionCardInfos(new AddDigivolutionCardsInfo(activateClass, selectedCards));
 
                             yield return StartCoroutine(AfterSelectCardCoroutine(selectedCards));
                         }

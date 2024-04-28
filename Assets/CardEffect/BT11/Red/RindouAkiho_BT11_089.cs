@@ -96,12 +96,7 @@ public class RindouAkiho_BT11_089 : CEntity_Effect
                 {
                     if (permanent.TopCard.CardColors.Contains(CardColor.Red))
                     {
-                        if (permanent.TopCard.HasBirdTraits)
-                        {
-                            return true;
-                        }
-
-                        if (permanent.TopCard.HasBeastTraits)
+                        if (permanent.TopCard.HasAvianBeastAnimalTraits)
                         {
                             return true;
                         }

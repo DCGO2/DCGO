@@ -46,10 +46,7 @@ public class Hexebraumon_BT5_032 : CEntity_Effect
             {
                 if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                    {
-                        return true;
-                    }
+                    return true;
                 }
 
                 return false;

@@ -253,7 +253,7 @@ public class PrismGallet_P_096 : CEntity_Effect
                                         selectCardCoroutine: SelectCardCoroutine,
                                         afterSelectCardCoroutine: null,
                                         message: "Select cards from trash to place in Digivolution cards.",
-                                        maxCount: _maxCount,
+                                        maxCount: 1,
                                         canEndNotMax: true,
                                         isShowOpponent: true,
                                         mode: SelectCardEffect.Mode.Custom,
@@ -295,7 +295,7 @@ public class PrismGallet_P_096 : CEntity_Effect
                                         canTargetCondition: CanSelectTamerCondition,
                                         canTargetCondition_ByPreSelecetedList: null,
                                         canEndSelectCondition: null,
-                                        maxCount: _maxCount,
+                                        maxCount: 1,
                                         canNoSelect: true,
                                         canEndNotMax: true,
                                         selectPermanentCoroutine: SelectPermanentCoroutine,
@@ -334,7 +334,7 @@ public class PrismGallet_P_096 : CEntity_Effect
                                                         selectCardCoroutine: SelectCardCoroutine,
                                                         afterSelectCardCoroutine: null,
                                                         message: "Select digivolution cards.",
-                                                        maxCount: _maxCount,
+                                                        maxCount: 1,
                                                         canEndNotMax: true,
                                                         isShowOpponent: true,
                                                         mode: SelectCardEffect.Mode.Custom,
@@ -458,7 +458,6 @@ public class PrismGallet_P_096 : CEntity_Effect
                 }
             }
         }
-
 
         if (timing == EffectTiming.SecuritySkill)
         {

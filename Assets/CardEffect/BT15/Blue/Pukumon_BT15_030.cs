@@ -66,22 +66,22 @@ public class Pukumon_BT15_030 : CEntity_Effect
 
             bool CanActivateCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.IsExistOnBattleArea(card) || CardEffectCommons.CanActivateOnDeletion(card))
+                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                 {
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        return true;
-                    }
-
-                    if (CardEffectCommons.CanActivateOnDeletion(card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                        if (CardEffectCommons.CanTriggerOnPlay(hashtable, card))
                         {
                             return true;
                         }
                     }
-                    
+
+                    if (CardEffectCommons.CanActivateOnDeletion(card))
+                    {
+                        return true;
+                    }
                 }
+                    
 
                 return false;
             }

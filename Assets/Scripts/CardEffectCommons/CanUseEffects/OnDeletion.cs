@@ -88,14 +88,11 @@ public partial class CardEffectCommons
     #region Can activate [On Deletion] effect(inherited)
     public static bool CanActivateOnDeletionInherited(Hashtable hashtable, CardSource card)
     {
-        if (IsExistOnTrash(card))
+        if (IsTopCardInTrashOnDeletion(hashtable))
         {
-            if (IsTopCardInTrashOnDeletion(hashtable))
+            if (IsTopCardSamePermanent(hashtable, card))
             {
-                if (IsTopCardSamePermanent(hashtable, card))
-                {
-                    return true;
-                }
+                return true;
             }
         }
 
@@ -103,7 +100,7 @@ public partial class CardEffectCommons
     }
     #endregion
 
-    #region Whether TopCard is in trash when check [On Deletion] effect
+        #region Whether TopCard is in trash when check [On Deletion] effect
     public static bool IsTopCardInTrashOnDeletion(Hashtable hashtable)
     {
         List<Hashtable> hashtables = GetHashtablesFromHashtable(hashtable);

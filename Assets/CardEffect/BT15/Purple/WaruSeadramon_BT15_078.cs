@@ -134,7 +134,7 @@ public class WaruSeadramon_BT15_078 : CEntity_Effect
 
                         bool CanActivateCondition1(Hashtable hashtable)
                         {
-                            if (CardEffectCommons.CanActivateOnDeletion(card))
+                            if (CardEffectCommons.CanActivateOnDeletion(cardSource))
                             {
                                 return true;
                             }
@@ -281,9 +281,9 @@ public class WaruSeadramon_BT15_078 : CEntity_Effect
         #endregion
 
         //Inherited Effect
-        if (timing == EffectTiming.None)
+        if (timing == EffectTiming.OnDestroyedAnyone)
         {
-            cardEffects.Add(CardEffectFactory.RetaliationSelfEffect(isInheritedEffect: true, card: card, condition: null));
+            cardEffects.Add(CardEffectFactory.PierceSelfEffect(isInheritedEffect: true, card: card, condition: null));
         }
 
         return cardEffects;

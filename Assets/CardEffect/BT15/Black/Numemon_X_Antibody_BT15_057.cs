@@ -25,20 +25,56 @@ public class Numemon_X_Antibody_BT15_057 : CEntity_Effect
         }
         #endregion
 
-        #region All Turns
-        if(timing == EffectTiming.None)
+        #region All Turns - On Deletion
+        if (timing == EffectTiming.OnDestroyedAnyone)
         {
-            bool CardSourceCondition(CardSource cardSource)
-            {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
-                {
+            ActivateClass activateDeletion = new ActivateClass();
+            activateDeletion.SetUpICardEffect("Play 1 [Numemon] from trash", CanUseOnDeletion, card);
+            activateDeletion.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+            activateDeletion.SetHashString("Play1NumemonFromTrash_BT15_057");
+            cardEffects.Add(activateDeletion);
 
-                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.ContainsCardName("Numemon")) >= 1)
+            string EffectDiscription()
+            {
+                return "[On Deletion] You may play 1 Digimon with [Numemon] in it's name from your trash suspended without paying its memory cost.";
+            }
+
+            bool CanSelectCardCondition(CardSource cardSource)
+            {
+                if (cardSource != null)
+                {
+                    if (cardSource.Owner == card.Owner)
+                    {
+                        if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateDeletion))
+                        {
+                            if (cardSource.ContainsCardName("Numemon"))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+
+                return false;
+            }
+
+            bool CanUseOnDeletion(Hashtable hashtable)
+            {
+                if(CardEffectCommons.CanTriggerOnDeletion(hashtable, card))
+                {
+                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => (cardSource.ContainsCardName("Numemon") || cardSource.CardNames.Contains("XAntibody") || cardSource.CardNames.Contains("X Antibody"))) >= 1)
                     {
                         return true;
                     }
+                }
+                return false;
+            }
 
-                    if(card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardNames.Contains("XAntibody")) >= 1)
+            bool CanActivateCondition(Hashtable hashtable)
+            {
+                if (CardEffectCommons.CanActivateOnDeletion(card))
+                {
+                    if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, (cardSource) => CanSelectCardCondition(cardSource)))
                     {
                         return true;
                     }
@@ -47,118 +83,48 @@ public class Numemon_X_Antibody_BT15_057 : CEntity_Effect
                 return false;
             }
 
-            AddSkillClass addSkillClass = new AddSkillClass();
-            addSkillClass.SetUpICardEffect("Play 1 [Numemon] from trash", CanUseCondition, card);
-            addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
-            card.Owner.UntilOpponentTurnEndEffects.Add((_timing) => addSkillClass);
-
-            bool CanUseCondition(Hashtable hashtable)
+            IEnumerator ActivateCoroutine(Hashtable _hashtable)
             {
-                return true;
-            }
-
-            List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming _timing)
-            {
-                if (_timing == EffectTiming.OnDestroyedAnyone)
+                if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, (cardSource) => CanSelectCardCondition(cardSource)))
                 {
-                    ActivateClass activateDeletion = new ActivateClass();
-                    activateDeletion.SetUpICardEffect("Play 1 [Numemon] from trash", CanUseOnDeletion, cardSource);
-                    activateDeletion.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-                    cardEffects.Add(activateDeletion);
+                    int maxCount = Math.Min(1, card.Owner.TrashCards.Count((cardSource) => CanSelectCardCondition(cardSource)));
 
-                    if (cardSource.PermanentOfThisCard() != null)
+                    List<CardSource> selectedCards = new List<CardSource>();
+
+                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                    selectCardEffect.SetUp(
+                                canTargetCondition: CanSelectCardCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                canNoSelect: () => true,
+                                selectCardCoroutine: SelectCardCoroutine,
+                                afterSelectCardCoroutine: null,
+                                message: "Select 1 card to play.",
+                                maxCount: maxCount,
+                                canEndNotMax: false,
+                                isShowOpponent: true,
+                                mode: SelectCardEffect.Mode.Custom,
+                                root: SelectCardEffect.Root.Trash,
+                                customRootCardList: null,
+                                canLookReverseCard: true,
+                                selectPlayer: card.Owner,
+                                cardEffect: activateDeletion);
+
+                    selectCardEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
+                    selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
+
+                    yield return StartCoroutine(selectCardEffect.Activate());
+
+                    IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
-                        activateDeletion.SetEffectSourcePermanent(cardSource.PermanentOfThisCard());
+                        selectedCards.Add(cardSource);
+
+                        yield return null;
                     }
 
-                    string EffectDiscription()
-                    {
-                        return "[On Deletion] You may play 1 Digimon with [Numemon] in it's name from your trash suspended without paying its memory cost.";
-                    }
-
-                    bool CanSelectCardCondition(CardSource cardSource)
-                    {
-                        if (cardSource != null)
-                        {
-                            if (cardSource.Owner == card.Owner)
-                            {
-                                if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateDeletion))
-                                {
-                                    if (cardSource.CardNames.Contains("Numemon"))
-                                    {
-                                        return true;
-                                    }
-                                }
-                            }
-                        }
-
-                        return false;
-                    }
-
-                    bool CanUseOnDeletion(Hashtable hashtable)
-                    {
-                        return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
-                    }
-
-                    bool CanActivateCondition(Hashtable hashtable)
-                    {
-                        if (CardEffectCommons.CanActivateOnDeletion(card))
-                        {
-                            if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, (cardSource) => CanSelectCardCondition(cardSource)))
-                            {
-                                return true;
-                            }
-                        }
-
-                        return false;
-                    }
-
-                    IEnumerator ActivateCoroutine(Hashtable _hashtable)
-                    {
-                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, (cardSource) => CanSelectCardCondition(cardSource)))
-                        {
-                            int maxCount = Math.Min(1, card.Owner.TrashCards.Count((cardSource) => CanSelectCardCondition(cardSource)));
-
-                            List<CardSource> selectedCards = new List<CardSource>();
-
-                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                            selectCardEffect.SetUp(
-                                        canTargetCondition: CanSelectCardCondition,
-                                        canTargetCondition_ByPreSelecetedList: null,
-                                        canEndSelectCondition: null,
-                                        canNoSelect: () => true,
-                                        selectCardCoroutine: SelectCardCoroutine,
-                                        afterSelectCardCoroutine: null,
-                                        message: "Select 1 card to play.",
-                                        maxCount: maxCount,
-                                        canEndNotMax: false,
-                                        isShowOpponent: true,
-                                        mode: SelectCardEffect.Mode.Custom,
-                                        root: SelectCardEffect.Root.Trash,
-                                        customRootCardList: null,
-                                        canLookReverseCard: true,
-                                        selectPlayer: card.Owner,
-                                        cardEffect: activateDeletion);
-
-                            selectCardEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
-                            selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
-
-                            yield return StartCoroutine(selectCardEffect.Activate());
-
-                            IEnumerator SelectCardCoroutine(CardSource cardSource)
-                            {
-                                selectedCards.Add(cardSource);
-
-                                yield return null;
-                            }
-
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedCards, activateClass: activateDeletion, payCost: false, isTapped: false, root: SelectCardEffect.Root.Trash, activateETB: true));
-                        }
-                    }
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedCards, activateClass: activateDeletion, payCost: false, isTapped: false, root: SelectCardEffect.Root.Trash, activateETB: true));
                 }
-
-                return cardEffects;
             }
         }
         #endregion
@@ -191,7 +157,7 @@ public class Numemon_X_Antibody_BT15_057 : CEntity_Effect
                     {
                         if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateDeletion))
                         {
-                            if (cardSource.CardNames.Contains("Numemon"))
+                            if (cardSource.ContainsCardName("Numemon"))
                             {
                                 return true;
                             }

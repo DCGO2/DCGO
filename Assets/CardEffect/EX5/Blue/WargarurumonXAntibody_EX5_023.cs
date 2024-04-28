@@ -128,7 +128,7 @@ public class WargarurumonXAntibody_EX5_023 : CEntity_Effect
                                         canTargetCondition: CanSelectCardCondition,
                                         canTargetCondition_ByPreSelecetedList: null,
                                         canEndSelectCondition: null,
-                                        canNoSelect: () => false,
+                                        canNoSelect: () => true,
                                         selectCardCoroutine: null,
                                         afterSelectCardCoroutine: null,
                                         message: "Select 1 card to add to your hand.",

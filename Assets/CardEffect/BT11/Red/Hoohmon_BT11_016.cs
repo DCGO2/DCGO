@@ -184,12 +184,7 @@ public class Hoohmon_BT11_016 : CEntity_Effect
                         {
                             if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                             {
-                                if (cardSource.HasBirdTraits)
-                                {
-                                    return true;
-                                }
-
-                                if (cardSource.HasBeastTraits)
+                                if (cardSource.HasAvianBeastAnimalTraits)
                                 {
                                     return true;
                                 }

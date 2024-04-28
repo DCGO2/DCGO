@@ -13,7 +13,7 @@ public class CEntity_EffectController : MonoBehaviour
     public CEntity_Effect cEntity_Effect { get; set; }
     #endregion
 
-    #region 効果リストを取得
+    #region Get effect list
     public List<ICardEffect> GetCardEffects_ExceptAddedEffects(EffectTiming timing, CardSource card)
     {
         List<ICardEffect> GetCardEffects = new List<ICardEffect>();
@@ -42,15 +42,15 @@ public class CEntity_EffectController : MonoBehaviour
 
         if (!isDigivolutionCard)
         {
-            // 他のカードの効果によって追加された効果
+            // Effects added by other card effects
             if (timing != EffectTiming.None)
             {
-                #region 他のカードの効果によって追加された効果
+                #region Effects added by other card effects
                 foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
                 {
                     if (player != null)
                     {
-                        #region 場のパーマネントの効果
+                        #region Effects of permanents in play
                         foreach (Permanent permanent in player.GetFieldPermanents())
                         {
                             if (permanent.TopCard.cEntity_EffectController.cEntity_Effect != null)
@@ -76,7 +76,8 @@ public class CEntity_EffectController : MonoBehaviour
 
                                             if (cardEffect.CanUse(null))
                                             {
-                                                GetCardEffects = ((IAddSkillEffect)cardEffect).GetCardEffect(card, GetCardEffects, timing);
+                                                if (!card.CanNotBeAffected(cardEffect))
+                                                    GetCardEffects = ((IAddSkillEffect)cardEffect).GetCardEffect(card, GetCardEffects, timing);
                                             }
                                         }
                                     }
@@ -85,7 +86,7 @@ public class CEntity_EffectController : MonoBehaviour
                         }
                         #endregion
 
-                        #region プレイヤーによって追加された効果
+                        #region Effects added by players
                         foreach (ICardEffect cardEffect in player.EffectList(EffectTiming.None))
                         {
                             if (cardEffect is IAddSkillEffect)
@@ -102,7 +103,7 @@ public class CEntity_EffectController : MonoBehaviour
                 #endregion
             }
 
-            // 自分によって追加される場合のみEffectTiming.Noneについて探索
+            // Explore about EffectTiming.None only if added by me
             else
             {
                 if (thisPermanent != null)
@@ -146,18 +147,18 @@ public class CEntity_EffectController : MonoBehaviour
     }
     #endregion
 
-    #region そのターン中の使用回数をリセット
+    #region Reset the number of uses during that turn
     public void InitUseCountThisTurn()
     {
         UseEffectsThisTurn = new List<ICardEffect>();
     }
     #endregion
 
-    #region カード効果をセット
+    #region set card effects
     public void AddCardEffect(string ID, string ClassName)
     {
         ID = ID.Split("-")[0];
-        #region カード効果クラスのインスタンスを生成してセット
+        #region Generate and set an instance of the card effect class
         bool CanAttachEffectComponent()
         {
             if (string.IsNullOrEmpty(ClassName)) return false;
@@ -201,7 +202,7 @@ public class CEntity_EffectController : MonoBehaviour
     }
     #endregion
 
-    #region その効果をこのターンに使用した回数を取得
+    #region Gets the number of times the effect was used this turn
     public int GetUseCountThisTurn(ICardEffect cardEffect)
     {
         int useCount = 0;
@@ -218,14 +219,14 @@ public class CEntity_EffectController : MonoBehaviour
     }
     #endregion
 
-    #region その効果がこのターン中の使用上限回数に達しているかどうか
+    #region Whether the effect has reached the maximum number of times it can be used this turn.
     public bool isOverMaxCountPerTurn(ICardEffect cardEffect, int MaxCountPerTurn)
     {
         return GetUseCountThisTurn(cardEffect) >= MaxCountPerTurn;
     }
     #endregion
 
-    #region このターンに使った効果に登録
+    #region Register as effects used this turn
     public void RegisterUseEfffectThisTurn(ICardEffect cardEffect)
     {
         UseEffectsThisTurn.Add(cardEffect);

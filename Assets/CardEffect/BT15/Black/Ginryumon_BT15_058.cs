@@ -56,9 +56,12 @@ public class Ginryumon_BT15_058 : CEntity_Effect
             {
                 if(CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent,card))
                 {
-                    if (permanent.TopCard.GetCostItself <= card.PermanentOfThisCard().TopCard.GetCostItself)
+                    if(permanent.IsDigimon || permanent.IsTamer)
                     {
-                        return true;
+                        if(permanent.TopCard.GetCostItself <= card.PermanentOfThisCard().TopCard.GetCostItself)
+                        {
+                            return true;
+                        }
                     }
                 }
                 return false;

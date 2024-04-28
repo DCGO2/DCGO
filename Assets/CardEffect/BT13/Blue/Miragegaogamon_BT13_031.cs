@@ -108,7 +108,7 @@ public class Miragegaogamon_BT13_031 : CEntity_Effect
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Play 1 [Thomas H. Norstein] from hand", CanUseCondition, card);
-            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
             activateClass.SetHashString("Play_BT13_031");
             cardEffects.Add(activateClass);
 

@@ -227,7 +227,7 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
 
         if (active())
         {
-            #region トラッシュのカードを表示
+            #region Show trash cards
             if (_cardEffect != null)
             {
                 if (_cardEffect.EffectSourceCard != null)
@@ -266,7 +266,7 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
 
             if (_selectPlayer.isYou)
             {
-                #region メッセージ表示
+                #region Message display
                 if (!string.IsNullOrEmpty(_customMessage))
                 {
                     GManager.instance.commandText.OpenCommandText(_customMessage, _isdigiXros);
@@ -315,7 +315,7 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
 
                 bool forcesSelection = false;
 
-                #region 強制選択
+                #region forced selection
                 if (!_canNoSelect && !_canEndNotMax)
                 {
                     int canSelectCount = 0;
@@ -376,7 +376,7 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
 
                     CheckEndSelect();
 
-                    #region 場のパーマネントがクリックされた時の処理
+                    #region Processing when a permanent on the field is clicked
                     void OnClickFieldPermanentCard(FieldPermanentCard feldPermanentCard)
                     {
                         if (PreSelectedPermanents.Contains(feldPermanentCard.ThisPermanent))
@@ -429,10 +429,10 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
                     }
                     #endregion
 
-                    #region 選択を終了できるかの判定とアウトライン表示
+                    #region Determining whether the selection can be completed and displaying the outline
                     void CheckEndSelect()
                     {
-                        #region 終了できるかによってUI表示
+                        #region UI display depending on whether it can be terminated
                         if (CanEndSelect(PreSelectedPermanents))
                         {
                             GManager.instance.selectCommandPanel.SetUpCommandButton(new List<Command_SelectCommand>()
@@ -448,7 +448,7 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
                         }
                         #endregion
 
-                        #region 選択リストによってアウトライン表示
+                        #region Outline display by selection list
                         foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players)
                         {
                             foreach (Permanent permanent in player.GetFieldPermanents())
@@ -527,7 +527,7 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
                     #endregion
                 }
 
-                #region 選択終了
+                #region Selection finished
                 void EndSelect_RPC()
                 {
                     foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players)
@@ -565,7 +565,7 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
 
             else
             {
-                #region メッセージ表示
+                #region Message display
                 if (!string.IsNullOrEmpty(_customMessage_Enemy))
                 {
                     GManager.instance.commandText.OpenCommandText(_customMessage_Enemy, _isdigiXros);
@@ -638,11 +638,11 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
                 #endregion
             }
 
-            //選択が完了するまで待機
-            yield return new WaitWhile(() => !_endSelect);
+            //Wait until selection is complete
+                        yield return new WaitWhile(() => !_endSelect);
             _endSelect = false;
 
-            #region リセット
+            #region reset
             foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players)
             {
                 GManager.instance.turnStateMachine.OffFieldCardTarget(player);
@@ -684,14 +684,14 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
 
                         fieldPermanentCard.OnSelectEffect(1.1f);
 
-                        #region ターゲット矢印表示
+                        #region target arrow display
                         if (_cardEffect != null)
                         {
                             if (_cardEffect.EffectSourceCard != null)
                             {
                                 if (_cardEffect.EffectSourceCard.PermanentOfThisCard() == null)
                                 {
-                                    #region 処理領域のカード
+                                    #region processing area card
                                     if (_cardEffect.EffectSourceCard.Owner.ExecutingCards.Contains(_cardEffect.EffectSourceCard) || _cardEffect.EffectSourceCard.Owner.brainStormObject.BrainStormHandCards.Count((handCard) => handCard.cardSource == _cardEffect.EffectSourceCard && handCard.gameObject.activeSelf) >= 1)
                                     {
                                         if (_cardEffect.EffectSourceCard.Owner.isYou)
@@ -714,7 +714,7 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
                                     }
                                     #endregion
 
-                                    #region トラッシュまたはロストゾーンまたはデッキのカード
+                                    #region Cards in the trash or lost zone or deck
                                     else if (_cardEffect.EffectSourceCard.Owner.TrashCards.Contains(_cardEffect.EffectSourceCard) || _cardEffect.EffectSourceCard.Owner.LostCards.Contains(_cardEffect.EffectSourceCard) || _cardEffect.EffectSourceCard.Owner.LibraryCards.Contains(_cardEffect.EffectSourceCard))
                                     {
                                         if (_cardEffect.EffectSourceCard.Owner.isYou)
@@ -737,7 +737,7 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
                                     }
                                     #endregion
 
-                                    #region 手札のカード
+                                    #region cards in hand
                                     else if (_cardEffect.EffectSourceCard.Owner.HandCards.Contains(_cardEffect.EffectSourceCard) && (_cardEffect.IsDeclarative || _cardEffect.EffectName.Contains("Digisorption")))
                                     {
 
@@ -762,7 +762,7 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
                                     }
                                     #endregion
 
-                                    #region その他のエリアのカード
+                                    #region Other area cards
                                     else
                                     {
 
@@ -772,7 +772,7 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
 
                                 else
                                 {
-                                    #region 場のキャラのカード
+                                    #region character card in place
                                     if (_cardEffect.EffectSourceCard.PermanentOfThisCard().ShowingPermanentCard != null)
                                     {
                                         yield return GManager.instance.OnTargetArrow(
@@ -789,7 +789,7 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
                         yield return new WaitForSeconds(0.2f);
                         #endregion
 
-                        #region 選択されたユニットに対して処理を行う
+                        #region Perform processing on the selected unit
                         if (_selectPermanentCoroutine != null)
                         {
                             yield return StartCoroutine(_selectPermanentCoroutine(targetPermanent));
@@ -836,7 +836,7 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
                         }
                     }
 
-                    #region ログ追加
+                    #region Add log
                     if (_targetPermanents.Count >= 1)
                     {
                         log += "\n";
