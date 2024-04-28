@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace DCGO.CardEffects.BT16
 {
-    public class Rapidmon_EX2_027 : CEntity_Effect
+    public class RapidmonXAntibody_BT16_101 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
@@ -80,12 +80,17 @@ namespace DCGO.CardEffects.BT16
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    List<Permanent> suspendTargetPermanents =
-                        GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer
-                        .Map(player => player.GetBattleAreaPermanents().Filter(CanSelectPermanentCondition))
-                        .Flat();
+                    List<Permanent> tappedPermanents = new List<Permanent>();
 
-                    yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(suspendTargetPermanents, CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
+                    foreach (Permanent permanent in card.Owner.Enemy.GetBattleAreaDigimons())
+                    {
+                        if (!permanent.TopCard.CanNotBeAffected(activateClass))
+                        {
+                            tappedPermanents.Add(permanent);
+                        }
+                    }
+
+                    yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(tappedPermanents, CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
 
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
@@ -176,7 +181,7 @@ namespace DCGO.CardEffects.BT16
             {
                 bool PermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
+                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent,card))
                     {
                         if(permanent.IsDigimon)
                         {
