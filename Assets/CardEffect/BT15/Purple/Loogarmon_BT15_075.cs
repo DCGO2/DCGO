@@ -50,7 +50,7 @@ public class Loogarmon_BT15_075 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Digivolving] Delete 1 of your opponent's Digimon with 4000 DP or less. If an opponent's Digimon isn't deleted by this effect, you may digivolve this Digimon into a level 6 Digimon card with [Gallantmon] in its name in your hand for its digivolution cost. When this Digimon would digivolve with this effect, reduce the digivolution cost by 1.";
+                return "[When Digivolving][When Attacking] By trashing 1 card in your hand, this Digimon gets +2000 DP for the turn. If a Tamer card with the [SoC] trait is in this Digimon's digivolution cards, <Draw 1>.";
             }
 
             bool CanUseCondition(Hashtable hashtable)
