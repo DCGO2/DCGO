@@ -57,11 +57,12 @@ namespace DCGO.CardEffects.LM
 
                         if (!cardSource.IsToken)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(cardSource));
-
                             yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(cardSource.Owner));
 
-                            yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(cardSource.Owner).AddSecurity());
+                            yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(
+                                    permanent,
+                                    CardEffectCommons.CardEffectHashtable(activateClass),
+                                    true).PutSecurity());
                         }
                     }
                 }
