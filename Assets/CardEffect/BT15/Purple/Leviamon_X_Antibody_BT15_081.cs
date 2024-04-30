@@ -271,16 +271,7 @@ public class Leviamon_X_Antibody_BT15_081 : CEntity_Effect
 
             bool CanUseCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                {
-
-                    if(card.Owner.GetBattleAreaPermanents().Count(PermanentCondition) <= card.Owner.Enemy.GetBattleAreaPermanents().Count(PermanentCondition))
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
+                return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
             }
 
             bool CanActivateCondition(Hashtable hashtable)
@@ -294,28 +285,31 @@ public class Leviamon_X_Antibody_BT15_081 : CEntity_Effect
                 {
                     List<Permanent> selectedPermanents = new List<Permanent>();
 
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectTamerCondition))
+                    if (card.Owner.GetBattleAreaPermanents().Count(PermanentCondition) <= card.Owner.Enemy.GetBattleAreaPermanents().Count(PermanentCondition))
                     {
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectTamerCondition));
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectTamerCondition))
+                        {
+                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectTamerCondition));
 
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectTamerCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: false,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: SelectPermanentCoroutine,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
-                            cardEffect: activateClass);
+                            selectPermanentEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: CanSelectTamerCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: maxCount,
+                                canNoSelect: false,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: SelectPermanentCoroutine,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Custom,
+                                cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Tamer to delete.", "The opponent is selecting 1 Tamer to delete.");
+                            selectPermanentEffect.SetUpCustomMessage("Select 1 Tamer to delete.", "The opponent is selecting 1 Tamer to delete.");
 
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                        }
                     }
 
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectLevel3Condition))

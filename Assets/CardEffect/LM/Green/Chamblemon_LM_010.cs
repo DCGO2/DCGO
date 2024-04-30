@@ -10,7 +10,7 @@ namespace DCGO.CardEffects.LM
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region OnPlay
+            #region On Play
             if(timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
