@@ -311,7 +311,7 @@ namespace DCGO.CardEffects.BT16
                                 reduceCostTuple: (reduceCost: 1, reduceCostCardCondition: null),
                                 fixedCostTuple: null,
                                 ignoreDigivolutionRequirementFixedCost: -1,
-                                isHand: true,
+                                isHand: false,
                                 activateClass: activateClass,
                                 successProcess: null));
                         }

@@ -6,7 +6,7 @@ using Photon;
 using System;
 using Photon.Pun;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.BT16
 {
     public class Chaosmon_BT16_036 : CEntity_Effect
     {
