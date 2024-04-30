@@ -40,35 +40,107 @@ public class Loogarmon_BT15_075 : CEntity_Effect
         }
         #endregion
 
-        #region When Digivolving/On Attack
-        if (timing == EffectTiming.OnEnterFieldAnyone || timing == EffectTiming.OnAllyAttack)
+        #region When Digivolving/When Attacking Shared
+        string EffectSharedDiscription()
+        {
+            return "[When Digivolving][When Attacking] By trashing 1 card in your hand, this Digimon gets +2000 DP for the turn. If a Tamer card with the [SoC] trait is in this Digimon's digivolution cards, <Draw 1>.";
+        }
+
+        bool CanActivateSharedCondition(Hashtable hashtable)
+        {
+            if (CardEffectCommons.IsExistOnBattleArea(card))
+            {
+                if (card.Owner.HandCards.Count >= 1)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        #endregion
+
+        #region When Digivolving
+        if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("DP +2000 and Draw 1", CanUseCondition, card);
-            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+            activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, true, EffectSharedDiscription());
             cardEffects.Add(activateClass);
-
-            string EffectDiscription()
-            {
-                return "[When Digivolving][When Attacking] By trashing 1 card in your hand, this Digimon gets +2000 DP for the turn. If a Tamer card with the [SoC] trait is in this Digimon's digivolution cards, <Draw 1>.";
-            }
 
             bool CanUseCondition(Hashtable hashtable)
             {
-                return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card) || CardEffectCommons.CanTriggerOnAttack(hashtable, card);
+                return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
             }
 
-            bool CanActivateCondition(Hashtable hashtable)
+            IEnumerator ActivateCoroutine(Hashtable _hashtable)
             {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
+                if (card.Owner.HandCards.Count >= 1)
                 {
-                    if (card.Owner.HandCards.Count >= 1)
+                    bool discarded = false;
+
+                    int discardCount = 1;
+
+                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                    selectHandEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: cardSource => true,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: discardCount,
+                        canNoSelect: true,
+                        canEndNotMax: false,
+                        isShowOpponent: true,
+                        selectCardCoroutine: null,
+                        afterSelectCardCoroutine: AfterSelectCardCoroutine,
+                        mode: SelectHandEffect.Mode.Discard,
+                        cardEffect: activateClass);
+
+                    yield return StartCoroutine(selectHandEffect.Activate());
+
+                    IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
                     {
-                        return true;
+                        if (cardSources.Count >= 1)
+                        {
+                            discarded = true;
+
+                            yield return null;
+                        }
+                    }
+
+                    if (discarded)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
+                                targetPermanent: card.PermanentOfThisCard(),
+                                changeValue: 2000,
+                                effectDuration: EffectDuration.UntilEachTurnEnd,
+                                activateClass: activateClass));
+
+                        if (CardEffectCommons.IsExistOnBattleArea(card))
+                        {
+                            if (card.PermanentOfThisCard().DigivolutionCards.Some(cardSource => cardSource.IsTamer && cardSource.CardTraits.Contains("SoC")))
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
+                            }
+                        }
                     }
                 }
+            }
+        }
+        #endregion
 
-                return false;
+        #region When Attack
+        if (timing == EffectTiming.OnAllyAttack)
+        {
+            ActivateClass activateClass = new ActivateClass();
+            activateClass.SetUpICardEffect("DP +2000 and Draw 1", CanUseCondition, card);
+            activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, true, EffectSharedDiscription());
+            cardEffects.Add(activateClass);
+
+            bool CanUseCondition(Hashtable hashtable)
+            {
+                return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
             }
 
             IEnumerator ActivateCoroutine(Hashtable _hashtable)

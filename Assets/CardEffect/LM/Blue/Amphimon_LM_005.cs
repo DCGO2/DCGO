@@ -17,7 +17,51 @@ namespace DCGO.CardEffects.LM
                 cardEffects.Add(CardEffectFactory.BlastDigivolveEffect(card: card, condition: null));
             }
 
-            #region OnPlay/When Digivolving
+            #region On Play/When Digivolving Shared
+            string EffectDiscription()
+            {
+                return "[On Play] [When Digivolving] You may trash up to 4 blue cards in your hand. For each one, trash any 1 card under your opponent's Digimon or Tamers. Then, return 1 of their Digimon or Tamers without cards under it to the hand.";
+            }
+
+            bool CanSelectCardTrashingCondition(CardSource cardSource)
+            {
+                if (cardSource.CardColors.Contains(CardColor.Blue))
+                {
+                    return true;
+                }
+                return false;
+            }
+
+            #region trashing sources conditions
+
+            bool CanSelectBounceCondition(Permanent permanent)
+            {
+                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card))
+                {
+                    if (permanent.DigivolutionCards.Count() == 0)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+            #endregion
+
+            bool CanActivateCondition(Hashtable hashtable)
+            {
+                if (CardEffectCommons.IsExistOnBattleArea(card))
+                {
+                    if (card.Owner.HandCards.Count >= 1)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            #endregion
+
+            #region On Play
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -25,21 +69,6 @@ namespace DCGO.CardEffects.LM
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
-                {
-                    return "[On Play] [When Digivolving] You may trash up to 4 blue cards in your hand. For each one, trash any 1 card under your opponent's Digimon or Tamers. Then, return 1 of their Digimon or Tamers without cards under it to the hand.";
-                }
-
-                bool CanSelectCardTrashingCondition(CardSource cardSource)
-                {
-                    if (cardSource.CardColors.Contains(CardColor.Blue))
-                    {
-                        return true;
-                    }
-                    return false;
-                }
-
-                #region trashing sources conditions
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
                     return !cardSource.CanNotTrashFromDigivolutionCards(activateClass);
@@ -49,44 +78,122 @@ namespace DCGO.CardEffects.LM
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card))
                     {
-                        if (permanent.DigivolutionCards.Count(CanSelectCardCondition) >= 1)
+                        if (!permanent.TopCard.IsDigiEgg)
                         {
-                            return true;
+                            if (permanent.DigivolutionCards.Count(CanSelectCardCondition) >= 1)
+                            {
+                                return true;
+                            }
                         }
                     }
 
                     return false;
                 }
-
-                bool CanSelectBounceCondition(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card))
-                    {
-                        if (permanent.DigivolutionCards.Count() == 0)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-                #endregion
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card) || CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
 
-                bool CanActivateCondition(Hashtable hashtable)
+                IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    List<CardSource> discardedCards = new List<CardSource>();
+
+                    int maxCount = Math.Min(4, card.Owner.HandCards.Count(CanSelectCardCondition));
+                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                    selectHandEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanSelectCardTrashingCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: maxCount,
+                        canNoSelect: true,
+                        canEndNotMax: true,
+                        isShowOpponent: true,
+                        selectCardCoroutine: null,
+                        afterSelectCardCoroutine: AfterSelectCardCoroutine,
+                        mode: SelectHandEffect.Mode.Discard,
+                        cardEffect: activateClass);
+
+                    yield return StartCoroutine(selectHandEffect.Activate());
+
+                    IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
                     {
-                        if (card.Owner.HandCards.Count >= 1)
+                        discardedCards = cardSources.Clone();
+
+                        yield return null;
+                    }
+
+                    foreach (CardSource cardSource in discardedCards)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SelectTrashDigivolutionCards(
+                            permanentCondition: CanSelectPermanentCondition,
+                            cardCondition: CanSelectCardCondition,
+                            maxCount: 1,
+                            canNoTrash: false,
+                            isFromOnly1Permanent: true,
+                            activateClass: activateClass
+                        ));
+                    }
+
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectBounceCondition))
+                    {
+                        int maxBounceCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectBounceCondition));
+
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectBounceCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: maxBounceCount,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: null,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Bounce,
+                            cardEffect: activateClass);
+
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                    }
+                }
+            }
+            #endregion
+
+            #region When Digivolving
+            if (timing == EffectTiming.OnEnterFieldAnyone)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Trash sources, return 1 Digimon/Tamer to hand", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                cardEffects.Add(activateClass);
+
+                bool CanSelectCardCondition(CardSource cardSource)
+                {
+                    return !cardSource.CanNotTrashFromDigivolutionCards(activateClass);
+                }
+
+                bool CanSelectPermanentCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card))
+                    {
+                        if (!permanent.TopCard.IsDigiEgg)
                         {
-                            return true;
+                            if (permanent.DigivolutionCards.Count(CanSelectCardCondition) >= 1)
+                            {
+                                return true;
+                            }
                         }
                     }
+
                     return false;
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -157,14 +264,14 @@ namespace DCGO.CardEffects.LM
             #endregion
 
             #region When Attacking
-            if(timing == EffectTiming.OnAllyAttack)
+            if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Security Attack +1", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateAttackCondition, ActivateCoroutine, -1, true, AttackDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string AttackDescription()
                 {
                     return "[When Attacking] By returning 3 cards with [Jellymon] in their texts from your trash to the bottom of your deck, this Digimon gains <Security A. +1> for the turn.";
                 }
@@ -179,7 +286,7 @@ namespace DCGO.CardEffects.LM
                     return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
                 }
 
-                bool CanActivateCondition(Hashtable hashtable)
+                bool CanActivateAttackCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {

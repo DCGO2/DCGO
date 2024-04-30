@@ -17,10 +17,10 @@ namespace DCGO.CardEffects.LM
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play this card for reduced cost", CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, TrashEffectDiscription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string TrashEffectDiscription()
                 {
                     return "[Trash] [Main] By returning 1 of your Tamers to the bottom of the deck, play this card with the play cost reduced by the play cost of the returned Tamer.";
                 }
@@ -176,18 +176,31 @@ namespace DCGO.CardEffects.LM
             }
             #endregion
 
-            #region OnPlay/When Digivolving
-            if(timing == EffectTiming.OnEnterFieldAnyone)
+            #region On Play/When Digivolving Shared
+            string EffectDiscription()
+            {
+                return "[On Play] [When Digivolving] Trash the bottom 3 digivolution cards of 1 of your opponent's Digimon. Then, until the end of their turn, none of their Digimon with no digivolution cards can't attack.";
+            }
+
+            
+
+            bool CanActivateCondition(Hashtable hashtable)
+            {
+                if (CardEffectCommons.IsExistOnBattleArea(card))
+                {
+                    return true;
+                }
+                return false;
+            }
+            #endregion
+
+            #region On Play
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(card.BaseENGCardNameFromEntity, CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
-
-                string EffectDiscription()
-                {
-                    return "[On Play] [When Digivolving] Trash the bottom 3 digivolution cards of 1 of your opponent's Digimon. Then, until the end of their turn, none of their Digimon with no digivolution cards can't attack.";
-                }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
@@ -204,16 +217,7 @@ namespace DCGO.CardEffects.LM
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card) || CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        return true;
-                    }
-                    return false;
+                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -247,19 +251,6 @@ namespace DCGO.CardEffects.LM
                         }
                     }
 
-                    bool AttackerCondition(Permanent attacker)
-                    {
-                        if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(attacker, card))
-                        {
-                            if (attacker.HasNoDigivolutionCards)
-                            {
-                                return true;
-                            }
-                        }
-
-                        return false;
-                    }
-
                     bool DefenderCondition(Permanent defender)
                     {
                         return true;
@@ -279,6 +270,84 @@ namespace DCGO.CardEffects.LM
                     }
 
                     
+                }
+            }
+            #endregion
+
+            #region When Digivolving
+            if (timing == EffectTiming.OnEnterFieldAnyone)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect(card.BaseENGCardNameFromEntity, CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                cardEffects.Add(activateClass);
+
+                bool CanSelectPermanentCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                    {
+                        if (permanent.DigivolutionCards.Count((cardSource) => !cardSource.CanNotTrashFromDigivolutionCards(activateClass)) >= 1)
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                {
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                    {
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectPermanentCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will trash digivolution cards.", "The opponent is selecting 1 Digimon that will trash digivolution cards.");
+
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                        {
+                            Permanent selectedPermanent = permanent;
+
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: selectedPermanent, trashCount: 3, isFromTop: false, activateClass: activateClass));
+                        }
+                    }
+
+                    bool DefenderCondition(Permanent defender)
+                    {
+                        return true;
+                    }
+
+                    foreach (Permanent permanent in card.Owner.Enemy.GetBattleAreaDigimons())
+                    {
+                        if (permanent.DigivolutionCards.Count == 0)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotAttack(
+                                targetPermanent: permanent,
+                                defenderCondition: DefenderCondition,
+                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                                activateClass: activateClass,
+                                effectName: "Can't Attack"));
+                        }
+                    }
                 }
             }
             #endregion
