@@ -79,9 +79,9 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanSelectCardToReturnToHand(CardSource cardSource)
                 {
-                    if(card.CardColors.Count == 2 && (card.CardColors.Contains(CardColor.Red) || card.CardColors.Contains(CardColor.Purple)))
+                    if(cardSource.CardColors.Count == 2 && (cardSource.CardColors.Contains(CardColor.Red) || cardSource.CardColors.Contains(CardColor.Purple)))
                     {
-                        if (card.HasLevel && card.Level <= 6)
+                        if (cardSource.HasLevel && cardSource.Level <= 6)
                         {
                             return true;
                         }
@@ -199,11 +199,14 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanSelectCardToReturnToHand(CardSource cardSource)
                 {
-                    if (card.CardColors.Count == 2 && (card.CardColors.Contains(CardColor.Red) || card.CardColors.Contains(CardColor.Purple)))
+                    if (cardSource.CardColors.Count == 2 && (cardSource.CardColors.Contains(CardColor.Red) || cardSource.CardColors.Contains(CardColor.Purple)))
                     {
-                        if (card.HasLevel && card.Level <= 6)
+                        if (cardSource.HasLevel && cardSource.Level <= 6)
                         {
-                            return true;
+                            if (cardSource.IsDigimon)
+                            {
+                                return true;
+                            }
                         }
                     }
 

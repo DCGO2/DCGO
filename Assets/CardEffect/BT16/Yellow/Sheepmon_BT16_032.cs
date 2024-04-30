@@ -24,7 +24,7 @@ namespace DCGO.CardEffects.BT16
             #endregion
 
             #region All Turns
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnAttackTargetChanged)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("End an attack when an attack target is switched.", CanUseCondition, card);
