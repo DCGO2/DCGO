@@ -43,6 +43,7 @@ public class Ouryumon_BT15_067 : CEntity_Effect
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Play 1 Digimon card with the [Beast Dragon] or [DigiPolice] trait with 5000DP or less from your hand.", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+            activateClass.SetHashString("PlayDigimon_BT15_067");
             cardEffects.Add(activateClass);
 
             string EffectDiscription()
