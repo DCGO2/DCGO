@@ -24,12 +24,12 @@ namespace DCGO.CardEffects.BT16
 
                 string EffectDiscription()
                 {
-                    return "[Main] Reveal the top 3 cards of your deck. Add 1 green Digimon card and 1 green Tamer card from among them to your hand. Place the remaining cards at the bottom of your deck in any order. Then, place this card in your battle area.";
+                    return "[Main] Reveal the top 4 cards of your deck. Add 1 yellow card or 1 card with the [Four Great Dragons] trait among them to your hand. Place the remaining cards at the bottom of your deck in any order. Then, place this card in your battle area.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Yellow) || cardSource.CardTraits.Contains("Four Great Dragons"))
+                    if (cardSource.CardColors.Contains(CardColor.Yellow) || cardSource.CardTraits.Contains("FourGreatDragons"))
                     {
                         return true;
                     }
@@ -97,16 +97,13 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
-                    {
                         if (card.Owner.HandCards.Count >= 1)
                         {
-                            if (cardSource.CardNames.Contains("Trial of the Four Great Dragons"))
+                            if (cardSource.CardNames.Contains("TrialoftheFourGreatDragons"))
                             {
                                 return true;
                             }
                         }
-                    }
 
                     return false;
                 }
@@ -124,7 +121,7 @@ namespace DCGO.CardEffects.BT16
                 {
                     if(card.Owner.HandCards.Count >=1)
                     {
-                        if(card.CardTraits.Contains("Four Great Dragons"))
+                        if(card.CardTraits.Contains("FourGreatDragons"))
                         {
                             return true;
                         }
@@ -204,18 +201,15 @@ namespace DCGO.CardEffects.BT16
                                     mode: SelectHandEffect.Mode.Custom,
                                     cardEffect: activateClass);
 
-                                selectHandEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
+                                selectHandEffect.SetUpCustomMessage("Select 1 card to place in the battle area.", "The opponent is selecting 1 place in the battle area.");
                                 selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
 
                                 yield return StartCoroutine(selectHandEffect.Activate());
 
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                                cardSources: selectedCards,
-                                activateClass: activateClass,
-                                payCost: false,
-                                isTapped: false,
-                                root: SelectCardEffect.Root.Hand,
-                                activateETB: true));
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlaceDelayOptionCards(
+                                card: selectedCards[0],
+                                cardEffect: activateClass,
+                                root: SelectCardEffect.Root.Hand));
                             }
 
                             else
