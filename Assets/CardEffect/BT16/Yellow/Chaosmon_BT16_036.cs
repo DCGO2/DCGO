@@ -116,14 +116,34 @@ namespace DCGO.CardEffects.BT16
                 cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
             }
 
-            if(timing == EffectTiming.WhenPermanentWouldBeDeleted)
+            if(timing == EffectTiming.WhenRemoveField)
             {
+                bool CanSelectFirstSourceCondition(CardSource card)
+                {
+                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardColors.Contains(CardColor.Black) && cardSource.Level == 6) >= 1)
+                    {
+                        return true;
+                    }
+
+                    return false;
+                }
+
+                bool CanSelectSecondSourceCondition(CardSource card)
+                {
+                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardColors.Contains(CardColor.Yellow) && cardSource.Level == 6) >= 1)
+                    {
+                        return true;
+                    }
+
+                    return false;
+                }
+
                 cardEffects.Add(CardEffectFactory.PartitionSelfEffect
                     (isInheritedEffect: false, 
                     card: card, 
                     condition: null, 
-                    canSelectFirstSourceCondition: null, 
-                    canSelectSecondSourceCondition: null));
+                    canSelectFirstSourceCondition: CanSelectFirstSourceCondition, 
+                    canSelectSecondSourceCondition: CanSelectSecondSourceCondition));
             }
             #endregion
 
