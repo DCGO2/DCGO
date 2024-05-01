@@ -407,7 +407,7 @@ public abstract class ICardEffect
     {
         IsInheritedEffect = isInheritatedEffect;
 
-        if(IsInheritedEffect)
+        if(IsInheritedEffect && IsOnDeletion)
         {
             SetEffectSourcePermanent(_effectSourceCard.PermanentOfThisCard());
         }
