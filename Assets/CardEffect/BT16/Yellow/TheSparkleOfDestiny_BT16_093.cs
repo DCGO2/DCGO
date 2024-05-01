@@ -65,7 +65,7 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        if (card.ContainsCardName("Rapidmon") || card.ContainsCardName("Gargomon"))
+                        if (permanent.TopCard.ContainsCardName("Rapidmon") || permanent.TopCard.ContainsCardName("Gargomon"))
                         {
                             foreach (CardSource cardSource in card.Owner.HandCards)
                             {
