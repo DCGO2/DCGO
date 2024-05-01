@@ -93,12 +93,24 @@ namespace DCGO.CardEffects.BT16
                 }
 
                 cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(isInheritedEffect: true, card: card, condition: Condition));
-                cardEffects.Add(CardEffectFactory.BarrierSelfEffect(isInheritedEffect: true, card: card, condition: Condition));
             }
 
             if (timing == EffectTiming.WhenPermanentWouldBeDeleted)
             {
-                cardEffects.Add(CardEffectFactory.BarrierSelfEffect(isInheritedEffect: true, card: card, condition: null));
+                bool Condition()
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (card.PermanentOfThisCard().TopCard.HasText("Pulsemon"))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                cardEffects.Add(CardEffectFactory.BarrierSelfEffect(isInheritedEffect: true, card: card, condition: Condition));
             }
             #endregion
 
