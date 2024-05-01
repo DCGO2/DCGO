@@ -206,7 +206,7 @@ namespace DCGO.CardEffects.BT16
 
                         yield return ContinuousController.instance.StartCoroutine(new IDegeneration(
                             selectedPermanent,
-                            1,
+                            3,
                             activateClass).Degeneration());
                     }
 
