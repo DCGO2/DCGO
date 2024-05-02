@@ -27,7 +27,11 @@ public class Sparrowmon_BT10_060 : CEntity_Effect
             {
                 if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
-                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => (permanent != card.PermanentOfThisCard() && (permanent.IsDigimon || permanent.IsTamer) && (permanent.TopCard.CardTraits.Contains("Xros Heart") || permanent.TopCard.CardTraits.Contains("XrosHeart") || permanent.TopCard.CardTraits.Contains("Twilight"))))
+                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => 
+                        permanent != card.PermanentOfThisCard() && 
+                        (permanent.IsDigimon || permanent.IsTamer) && 
+                        (permanent.TopCard.CardTraits.Contains("Xros Heart") || 
+                        permanent.TopCard.CardTraits.Contains("XrosHeart") || permanent.TopCard.CardTraits.Contains("Twilight"))))
                     {
                         return true;
                     }

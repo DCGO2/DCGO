@@ -62,8 +62,11 @@ namespace DCGO.CardEffects.ST17
                 {
                     if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
                     {
-                        if (permanent.IsDigimon)
-                            return true;
+                        if(!permanent.TopCard.CanNotBeAffected(activateClass))
+                        {
+                            if (permanent.IsDigimon)
+                                return true;
+                        }
                     }
 
                     return false;

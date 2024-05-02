@@ -57,10 +57,7 @@ namespace DCGO.CardEffects.ST17
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                        {
-                            return true;
-                        }
+                        return true;
                     }
 
                     return false;
@@ -115,62 +112,34 @@ namespace DCGO.CardEffects.ST17
                         }
                     }
 
-                        ActivateClass activateClass1 = new ActivateClass();
-                        activateClass1.SetUpICardEffect("Can't be deleted and can't return to hand or deck by opponent's effect", CanUseCondition, card);
-                        activateClass1.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, null);
-                        activateClass1.SetHashString("GainEffect_ST17_07");
-                        cardEffects.Add(activateClass1);
-
-                        bool CanUseCondition(Hashtable hashtable)
+                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.TopCard.CardColors.Contains(CardColor.Green) && permanent.IsTamer))
+                    {
+                        bool CardEffectCondition(ICardEffect cardEffect)
                         {
-                            if (CardEffectCommons.IsExistOnBattleArea(card))
-                            {
-                                if (CardEffectCommons.IsOwnerTurn(card))
-                                {
-                                if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.TopCard.CardColors.Contains(CardColor.Green) && permanent.IsTamer))
-                                {
-                                    return true;
-                                }
-                            }
-                            }
-
-                            return false;
+                            return CardEffectCommons.IsOpponentEffect(cardEffect, card);
                         }
 
-                        bool CanActivateCondition(Hashtable hashtable)
-                        {
-                            return CardEffectCommons.IsExistOnBattleArea(card);
-                        }
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotBeDeletedByEffect(
+                            targetPermanent: card.PermanentOfThisCard(),
+                            cardEffectCondition: CardEffectCondition,
+                            effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                            activateClass: activateClass,
+                            effectName: "Can't be deleted by opponent's effects"));
 
-                        IEnumerator ActivateCoroutine(Hashtable _hashtable)
-                        {
-                            bool CardEffectCondition(ICardEffect cardEffect)
-                            {
-                                return CardEffectCommons.IsOpponentEffect(cardEffect, card);
-                            }
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotReturnToHand(
+                            targetPermanent: card.PermanentOfThisCard(),
+                            cardEffectCondition: CardEffectCondition,
+                            effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                            activateClass: activateClass,
+                            effectName: "Can't return to hand by opponent's effects"));
 
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotBeDeletedByEffect(
-                                targetPermanent: card.PermanentOfThisCard(),
-                                cardEffectCondition: CardEffectCondition,
-                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                                activateClass: activateClass,
-                                effectName: "Can't be deleted by opponent's effects"));
-
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotReturnToHand(
-                                targetPermanent: card.PermanentOfThisCard(),
-                                cardEffectCondition: CardEffectCondition,
-                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                                activateClass: activateClass,
-                                effectName: "Can't return to hand by opponent's effects"));
-
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotReturnToDeck(
-                                targetPermanent: card.PermanentOfThisCard(),
-                                cardEffectCondition: CardEffectCondition,
-                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                                activateClass: activateClass,
-                                effectName: "Can't return to deck by opponent's effects"));
-                        }
-                    
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotReturnToDeck(
+                            targetPermanent: card.PermanentOfThisCard(),
+                            cardEffectCondition: CardEffectCondition,
+                            effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                            activateClass: activateClass,
+                            effectName: "Can't return to deck by opponent's effects"));
+                    }
                 }
             }
 
@@ -203,10 +172,7 @@ namespace DCGO.CardEffects.ST17
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                        {
-                            return true;
-                        }
+                        return true;
                     }
 
                     return false;
@@ -261,61 +227,31 @@ namespace DCGO.CardEffects.ST17
                         }
                     }
 
-                    ActivateClass activateClass1 = new ActivateClass();
-                    activateClass1.SetUpICardEffect("Can't be deleted and can't return to hand or deck by opponent's effect", CanUseCondition, card);
-                    activateClass1.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, null);
-                    activateClass1.SetHashString("GainEffect_ST17_07");
-                    cardEffects.Add(activateClass1);
-
-                    bool CanUseCondition(Hashtable hashtable)
+                    bool CardEffectCondition(ICardEffect cardEffect)
                     {
-                        if (CardEffectCommons.IsExistOnBattleArea(card))
-                        {
-                            if (CardEffectCommons.IsOwnerTurn(card))
-                            {
-                                if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.TopCard.CardColors.Contains(CardColor.Green) && permanent.IsTamer))
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-
-                        return false;
+                        return CardEffectCommons.IsOpponentEffect(cardEffect, card);
                     }
 
-                    bool CanActivateCondition(Hashtable hashtable)
-                    {
-                        return CardEffectCommons.IsExistOnBattleArea(card);
-                    }
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotBeDeletedByEffect(
+                        targetPermanent: card.PermanentOfThisCard(),
+                        cardEffectCondition: CardEffectCondition,
+                        effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                        activateClass: activateClass,
+                        effectName: "Can't be deleted by opponent's effects"));
 
-                    IEnumerator ActivateCoroutine(Hashtable _hashtable)
-                    {
-                        bool CardEffectCondition(ICardEffect cardEffect)
-                        {
-                            return CardEffectCommons.IsOpponentEffect(cardEffect, card);
-                        }
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotReturnToHand(
+                        targetPermanent: card.PermanentOfThisCard(),
+                        cardEffectCondition: CardEffectCondition,
+                        effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                        activateClass: activateClass,
+                        effectName: "Can't return to hand by opponent's effects"));
 
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotBeDeletedByEffect(
-                            targetPermanent: card.PermanentOfThisCard(),
-                            cardEffectCondition: CardEffectCondition,
-                            effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                            activateClass: activateClass,
-                            effectName: "Can't be deleted by opponent's effects"));
-
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotReturnToHand(
-                            targetPermanent: card.PermanentOfThisCard(),
-                            cardEffectCondition: CardEffectCondition,
-                            effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                            activateClass: activateClass,
-                            effectName: "Can't return to hand by opponent's effects"));
-
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotReturnToDeck(
-                            targetPermanent: card.PermanentOfThisCard(),
-                            cardEffectCondition: CardEffectCondition,
-                            effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                            activateClass: activateClass,
-                            effectName: "Can't return to deck by opponent's effects"));
-                    }
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotReturnToDeck(
+                        targetPermanent: card.PermanentOfThisCard(),
+                        cardEffectCondition: CardEffectCondition,
+                        effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                        activateClass: activateClass,
+                        effectName: "Can't return to deck by opponent's effects"));
 
                 }
             }
