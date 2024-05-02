@@ -11,16 +11,10 @@ public partial class CardEffectCommons
     {
         if (IsExistOnBattleArea(cardSource))
         {
-            if (cardSource.PermanentOfThisCard().CanAttack(activateClass))
-            {
                 if (cardSource.Owner.Enemy.GetBattleAreaDigimons().Count >= 1)
                 {
-                    if (!GManager.instance.attackProcess.IsAttacking)
-                    {
-                        return true;
-                    }
+                return true;
                 }
-            }
         }
 
         return false;
