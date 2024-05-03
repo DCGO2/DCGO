@@ -111,11 +111,6 @@ public class Kari_Kamiya_BT15_084 : CEntity_Effect
                 return "[All Turns] When an effect removes a card from your security stack, by suspending this Tamer, 1 of your opponent's Digimon gains [Security A-1] until the end of your opponent's turn.";
             }
 
-            bool CardCondition(CardSource cardSource)
-            {
-                return true;
-            }
-
             bool CanSelectPermanentCondition(Permanent permanent)
             {
                 return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
@@ -125,8 +120,9 @@ public class Kari_Kamiya_BT15_084 : CEntity_Effect
             {
                 if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
-                    if (CardEffectCommons.CanTriggerWhenLoseSecurity(hashtable, player => player == card.Owner)){
-                        if (CardEffectCommons.IsByEffect(hashtable, null))
+                    if (CardEffectCommons.CanTriggerWhenLoseSecurity(hashtable, player => player == card.Owner))
+                    {
+                        if (!GManager.instance.attackProcess.IsAttacking && !GManager.instance.attackProcess.DoSecurityCheck)
                         {
                             return true;
                         }
