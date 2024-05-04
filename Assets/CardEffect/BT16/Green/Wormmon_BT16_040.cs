@@ -214,7 +214,7 @@ namespace DCGO.CardEffects.BT16
                                 reduceCostTuple: (reduceCost: 1, reduceCostCardCondition: null),
                                 fixedCostTuple: null,
                                 ignoreDigivolutionRequirementFixedCost: -1,
-                                isHand: true,
+                                isHand: false,
                                 activateClass: activateClass,
                                 successProcess: null));
                         }
@@ -229,7 +229,7 @@ namespace DCGO.CardEffects.BT16
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("1 of your Digimon may Digivolve", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
-                activateClass.SetHashString("Digivolve_BT16_030");
+                activateClass.SetHashString("Digivolve_BT16_040");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -333,7 +333,7 @@ namespace DCGO.CardEffects.BT16
                                 reduceCostTuple: (reduceCost: 1, reduceCostCardCondition: null),
                                 fixedCostTuple: null,
                                 ignoreDigivolutionRequirementFixedCost: -1,
-                                isHand: true,
+                                isHand: false,
                                 activateClass: activateClass,
                                 successProcess: null));
                         }

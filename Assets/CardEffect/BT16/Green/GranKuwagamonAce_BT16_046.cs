@@ -38,7 +38,7 @@ namespace DCGO.CardEffects.BT16
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Suspend Digimon or tamers and activate effects", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -90,7 +90,7 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (CardEffectCommons.HasMatchConditionPermanent(PermanentCondition))
                     {
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(PermanentCondition));
+                        int maxCount = Math.Min(2, CardEffectCommons.MatchConditionPermanentCount(PermanentCondition));
 
                         Permanent selectedPermanent = null;
 
