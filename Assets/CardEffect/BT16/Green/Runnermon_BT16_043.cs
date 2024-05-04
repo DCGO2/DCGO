@@ -6,7 +6,7 @@ using Photon;
 using System;
 using Photon.Pun;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.BT16
 {
     public class Runnermon_BT16_043 : CEntity_Effect
     {

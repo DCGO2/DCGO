@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.BT16
 {
     public class TerriermonXAntibody_BT16_038 : CEntity_Effect
     {

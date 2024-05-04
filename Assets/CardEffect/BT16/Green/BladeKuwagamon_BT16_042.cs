@@ -64,7 +64,11 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return true;
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        return true;
+                    }
+                    return false;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
