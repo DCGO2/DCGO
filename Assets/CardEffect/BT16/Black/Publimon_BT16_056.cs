@@ -150,10 +150,10 @@ namespace DCGO.CardEffects
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash top or bottom of opponents security", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateAllTurnsCondition, ActivateCoroutine, 1, false, EffectAllTurnsDiscription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectAllTurnsDiscription()
                 {
                     return "[All Turns] [Once Per Turn] When a card is added to your opponent's security stack, if they have 3 or more security cards, trash the top or bottom card of their security stack.";
                 }
@@ -169,7 +169,7 @@ namespace DCGO.CardEffects
                     return false;
                 }
 
-                bool CanActivateCondition(Hashtable hashtable)
+                bool CanActivateAllTurnsCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card);
                 }
