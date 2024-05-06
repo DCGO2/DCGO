@@ -197,7 +197,7 @@ public class Leviamon_X_Antibody_BT15_081 : CEntity_Effect
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Delete 1 Tamer and 1 level 3, 5, and 7  Digimon", CanUseCondition, card);
-            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 
             string EffectDiscription()
