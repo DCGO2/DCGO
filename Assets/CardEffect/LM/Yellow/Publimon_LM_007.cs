@@ -44,26 +44,7 @@ namespace DCGO.CardEffects.LM
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(card.PermanentOfThisCard()));
-
-                        CardSource cardSource = card.PermanentOfThisCard().TopCard;
-                        Permanent permanent = card.PermanentOfThisCard();
-
-                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveFromAllArea(cardSource));
-
-                        permanent.ShowingPermanentCard.ShowPermanentData(true);
-
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().RemoveDigivolveRootEffect(cardSource, permanent));
-
-                        if (!cardSource.IsToken)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(cardSource.Owner));
-
-                            yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(
-                                    permanent,
-                                    CardEffectCommons.CardEffectHashtable(activateClass),
-                                    true).PutSecurity());
-                        }
+                        yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(card.PermanentOfThisCard(), CardEffectCommons.CardEffectHashtable(activateClass), toTop: true).PutSecurity());
                     }
                 }
             }

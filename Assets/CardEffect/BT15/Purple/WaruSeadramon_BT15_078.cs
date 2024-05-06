@@ -14,7 +14,7 @@ public class WaruSeadramon_BT15_078 : CEntity_Effect
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("All Opponents digimon, gain Memory -1", CanUseCondition, card);
-            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 
             string EffectDiscription()

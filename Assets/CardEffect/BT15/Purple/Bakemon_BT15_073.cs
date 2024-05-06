@@ -34,12 +34,10 @@ public class Bakemon_BT15_073 : CEntity_Effect
 
             bool CanActivateCondition(Hashtable hashtable)
             {
-                if (card.Owner.LibraryCards.Count >= 1 || card.Owner.HandCards.Count >= 1)
+                if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
-                    if (CardEffectCommons.CanActivateOnDeletion(card))
-                    {
+                    if (CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card))
                         return true;
-                    }
                 }
 
                 return false;
@@ -90,13 +88,9 @@ public class Bakemon_BT15_073 : CEntity_Effect
 
             bool CanActivateCondition(Hashtable hashtable)
             {
-                if (card.Owner.LibraryCards.Count >= 1 || card.Owner.HandCards.Count >= 1)
+                if (CardEffectCommons.CanActivateOnDeletion(card))
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card))
-                            return true;
-                    }
+                    return true;
                 }
 
                 return false;

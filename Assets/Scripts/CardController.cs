@@ -2498,13 +2498,14 @@ public class IPutSecurityPermanent
     bool _toTop = false;
     public IEnumerator PutSecurity()
     {
+        Debug.Log("PutSecurity");
         if (_permanent == null) yield break;
         if (_permanent.TopCard == null) yield break;
-
+        Debug.Log("PutSecurity 1");
         ICardEffect cardEffect = CardEffectCommons.GetCardEffectFromHashtable(_hashtable);
 
         if (_permanent.TopCard.CanNotBeAffected(cardEffect) || !_permanent.TopCard.Owner.CanAddSecurity(cardEffect)) yield break;
-
+        Debug.Log("PutSecurity 2");
         #region "When permanents would remove field" effect
 
         yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.StackSkillInfos(
@@ -2528,10 +2529,10 @@ public class IPutSecurityPermanent
             _permanent.HideWillRemoveFieldEffect();
         }
         #endregion
-
+        Debug.Log("PutSecurity 3");
         CardSource topCard = _permanent.TopCard;
         if (topCard == null) yield break;
-
+        Debug.Log("PutSecurity 4");
         #region add log
         string log = "";
 
@@ -2558,26 +2559,28 @@ public class IPutSecurityPermanent
             }
         }
         #endregion
-
+        Debug.Log("PutSecurity 5");
         #region place permanent to security
         yield return ContinuousController.instance.StartCoroutine(_permanent.DiscardEvoRoots());
-
+        Debug.Log("PutSecurity 6");
         yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveField(_permanent));
-
+        Debug.Log("PutSecurity 7");
         if (!topCard.IsToken)
         {
+            Debug.Log("PutSecurity 8");
             if (!topCard.IsDigiEgg)
             {
+                Debug.Log("PutSecurity 9");
                 yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(topCard));
-
+                Debug.Log("PutSecurity 10");
                 if (!_toTop)
                 {
                     topCard.Owner.SecurityCards.Remove(topCard);
                     topCard.Owner.SecurityCards.Add(topCard);
                 }
-
+                Debug.Log("PutSecurity 11");
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(topCard.Owner));
-
+                Debug.Log("PutSecurity 12");
                 yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(topCard.Owner).AddSecurity());
             }
             else
@@ -2586,7 +2589,7 @@ public class IPutSecurityPermanent
             }
             
         }
-
+        Debug.Log("PutSecurity 13");
         #endregion
     }
 }
@@ -3525,7 +3528,6 @@ public class IBattle
                 {
                     if(permanent.TopCard != null)
                     {
-                        Debug.Log($"LoserPermanents: {LoserPermanents[0]}, {LoserPermanents[0].TopCard.name}");
                         index = LoserPermanents.IndexOf(permanent);
                     }
                 }
@@ -3535,7 +3537,6 @@ public class IBattle
                     LoserPermanents.RemoveAt(index);
                     _LoserPermanents.RemoveAt(index);
 
-                    Debug.Log($"LoserPermanents: {LoserPermanents.Count}, {LoserPermanents.Count}");
                     hashtable["LoserPermanents"] = _LoserPermanents;
                     hashtable["LoserPermanents_real"] = LoserPermanents;
                 }
