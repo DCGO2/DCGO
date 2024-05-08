@@ -29,6 +29,7 @@ namespace DCGO.CardEffects.BT16
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("End an attack when an attack target is switched.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetHashString("StopAttack_BT16-032");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
