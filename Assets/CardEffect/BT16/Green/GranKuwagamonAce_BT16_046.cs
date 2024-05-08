@@ -175,6 +175,7 @@ namespace DCGO.CardEffects.BT16
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Give 1 Digimon Security A+1.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetHashString("Sec+1_BT16-046");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
