@@ -36,6 +36,7 @@ namespace DCGO.CardEffects.BT16
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Suspend 1 Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetHashString("Suspend_BT16-040");
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 

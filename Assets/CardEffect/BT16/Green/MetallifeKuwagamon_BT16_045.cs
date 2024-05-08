@@ -132,6 +132,7 @@ namespace DCGO.CardEffects.BT16
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Switch attack target", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetHashString("SwitchTarget_BT16-045");
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 

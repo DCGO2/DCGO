@@ -133,7 +133,7 @@ namespace DCGO.CardEffects.BT16
                 activateClass.SetUpICardEffect("Unsuspend this Digimon.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
-                activateClass.SetHashString("Inherit_BT16_034");
+                activateClass.SetHashString("Unsuspend_BT16_044");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

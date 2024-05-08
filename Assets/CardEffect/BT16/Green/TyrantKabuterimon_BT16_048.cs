@@ -268,6 +268,7 @@ namespace DCGO.CardEffects.BT16
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Suspend your 1 Digimon to return an opponent's Digimon to the bottom of the deck.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetHashString("EOT_BT16-048");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
