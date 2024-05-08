@@ -55,7 +55,7 @@ public class Revelation_of_Light_BT15_092 : CEntity_Effect
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Play 1 Digimon from security", CanUseCondition, card);
-            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+            activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 
             string EffectDiscription()
@@ -82,16 +82,6 @@ public class Revelation_of_Light_BT15_092 : CEntity_Effect
             bool CanUseCondition(Hashtable hashtable)
             {
                 return CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card);
-            }
-
-            bool CanActivateCondition(Hashtable hashtable)
-            {
-                if (card.Owner.SecurityCards.Count >= 1)
-                {
-                    return true;
-                }
-
-                return false;
             }
 
             bool PermanentCondition(Permanent permanent)
@@ -169,8 +159,11 @@ public class Revelation_of_Light_BT15_092 : CEntity_Effect
 
                 if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, PermanentCondition))
                 {
-                    yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(card.PermanentOfThisCard(), CardEffectCommons.CardEffectHashtable(activateClass), toTop: true).PutSecurity());
-                    
+                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(card, toTop: false));
+
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(card.Owner));
+
+                    yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(card.Owner).AddSecurity());
                 }
             }
         }

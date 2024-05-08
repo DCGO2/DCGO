@@ -37,7 +37,10 @@ public class Izzy_Izumi_BT15_085 : CEntity_Effect
                 {
                     if (permanent.TopCard.CardTraits.Contains("Insectoid"))
                     {
-                        return true;
+                        if (permanent.IsSuspended)
+                        {
+                            return true;
+                        }
                     }
                 }
 

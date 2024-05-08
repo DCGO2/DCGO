@@ -65,13 +65,9 @@ namespace DCGO.CardEffects.LM
                     {
                         if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition))
                         {
-                            if (CardEffectCommons.IsOwnerTurn(card))
+                            if (CardEffectCommons.IsByEffect(hashtable, null))
                             {
-                                if(CardEffectCommons.IsByEffect(hashtable, null))
-                                {
-                                    return true;
-                                }
-                                
+                                return true;
                             }
                         }
                     }
