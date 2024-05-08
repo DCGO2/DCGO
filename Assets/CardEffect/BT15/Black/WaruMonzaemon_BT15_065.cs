@@ -459,7 +459,7 @@ public class WaruMonzaemon_BT15_065 : CEntity_Effect
                             canEndNotMax: false,
                             isShowOpponent: true,
                             mode: SelectCardEffect.Mode.Discard,
-                            root: SelectCardEffect.Root.DigivolutionCards,
+                            root: SelectCardEffect.Root.Custom,
                             customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
                             canLookReverseCard: true,
                             selectPlayer: card.Owner,

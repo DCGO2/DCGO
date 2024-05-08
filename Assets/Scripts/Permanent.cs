@@ -1416,9 +1416,9 @@ public class Permanent
             }
         }
 
-        #region 「ブロックできない」効果
+        #region "Unblockable" effect
 
-        #region 場のパーマネントの効果
+        #region Effects of permanents in play
         foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players)
         {
             foreach (Permanent permanent in player.GetFieldPermanents())
@@ -1431,6 +1431,8 @@ public class Permanent
                         {
                             if (((ICannotBlockEffect)cardEffect).CannotBlock(AttackingPermanent, this))
                             {
+                                return false;
+
                                 if (!TopCard.CanNotBeAffected(cardEffect))
                                 {
                                     return false;
@@ -1443,7 +1445,7 @@ public class Permanent
         }
         #endregion
 
-        #region プレイヤーの効果
+        #region player effect
         foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players)
         {
             foreach (ICardEffect cardEffect in player.EffectList(EffectTiming.None))

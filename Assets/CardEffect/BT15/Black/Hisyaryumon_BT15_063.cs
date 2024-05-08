@@ -43,8 +43,9 @@ public class Hisyaryumon_BT15_063 : CEntity_Effect
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Unsuspend a Digimon with the [Beast Dragon] or [DigiPolice] trait.", CanUseCondition, card);
-            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
             activateClass.SetIsInheritedEffect(true);
+            activateClass.SetHashString("unsuspend_BT15_063");
             cardEffects.Add(activateClass);
 
             string EffectDiscription()
@@ -204,6 +205,7 @@ public class Hisyaryumon_BT15_063 : CEntity_Effect
 
 
         }
+
         return cardEffects;
     }
 }
