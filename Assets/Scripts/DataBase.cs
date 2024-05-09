@@ -243,6 +243,10 @@ public class DataBase : MonoBehaviour
                     cardListID.Add("522020");
                     break;
 
+                case "BT16":
+                    cardListID.Add("522021");
+                    break;
+
                 case "P":
                     cardListID.Add("522007");
                     cardListID.Add("522901");
@@ -410,6 +414,10 @@ public class DataBase : MonoBehaviour
                     cardListID.Add("503201");
                     break;
 
+                case "BT16":
+                    cardListID.Add("503022");
+                    break;
+
                 case "P":
                     cardListID.Add("503008");
                     cardListID.Add("503901");
@@ -483,7 +491,7 @@ public class DataBase : MonoBehaviour
 
     public static string BarrierEffectDiscription()
     {
-        return "<Barrier? (When this Digimon would be deleted in battle, by trashing the top card of your security stack, prevent that deletion.)";
+        return "<Barrier> (When this Digimon would be deleted in battle, by trashing the top card of your security stack, prevent that deletion.)";
     }
 
     public static string BlastDigivolveEffectDiscription()
@@ -499,6 +507,16 @@ public class DataBase : MonoBehaviour
     public static string AllianceEffectDiscription()
     {
         return "<Alliance> (When this Digimon attacks, by suspending 1 of your other Digimon, this Digimon adds the suspended Digimon's DP and gains <Security Attack +1> for the attack.)";
+    }
+
+    public static string PartitionEffectDiscription()
+    {
+        return "<Partition> (When this Digimon with 1 of each specified card in its digivolution cards would leave the battle area other than by one of your effects or in battle, you may play 1 of each card without paying their costs)";
+    }
+
+    public static string CollisionEffectDiscription()
+    {
+        return "<Collision> (During this Digimon's attack, all of your opponent's Digimon gain <Blocker>, and your opponent blocks if possible)";
     }
 
     public static string ReplaceToASCII(string text)
