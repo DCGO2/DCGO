@@ -50,7 +50,7 @@ public class TestWWW : MonoBehaviour
 
     IEnumerator GetCardListTexts(bool isEnglish)
     {
-        Debug.Log("テキストファイル取得開始");
+        Debug.Log("Start Downloading Text");
 
         yield return StartCoroutine(getCardListText(SetID));
 
@@ -213,7 +213,7 @@ public class TestWWW : MonoBehaviour
                 sw.Flush();// StreamWriterのバッファに書き出し残しがないか確認
                 sw.Close();// ファイルを閉じる
                 Debug.Log(Application.dataPath + $"/TextAsset/{CardListID}.txt");
-                Debug.Log($"保存:{SetID},{CardListID}");
+                Debug.Log($"Complete:{SetID},{CardListID}");
 
                 yield return new WaitForSeconds(0.5f);
             }
