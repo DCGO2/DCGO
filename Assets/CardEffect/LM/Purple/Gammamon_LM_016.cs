@@ -133,7 +133,7 @@ namespace DCGO.CardEffects.LM
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanActivateOnDeletion(card))
+                    if (CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card))
                     {
                         if (card.Owner.HandCards.Count >= 1)
                         {
