@@ -150,7 +150,7 @@ namespace DCGO.CardEffects.BT16
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Draw 1", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("Draw1_BT16_067");
                 cardEffects.Add(activateClass);
