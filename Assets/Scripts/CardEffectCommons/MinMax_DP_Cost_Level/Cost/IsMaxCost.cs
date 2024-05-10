@@ -16,11 +16,21 @@ public partial class CardEffectCommons
         if (!permanent.IsDigimon && !permanent.IsTamer) return false;
         if (!permanent.TopCard.HasPlayCost) return false;
 
-        List<int> costs = permanent.TopCard.Owner.GetBattleAreaPermanents().Filter(permanent1 =>
-            (permanent1.IsDigimon || permanent1.IsTamer)
-            && (IsDigimonOnly && permanent1.IsDigimon)
-            && permanent1.TopCard.HasPlayCost)
-            .Map(permanent1 => permanent1.TopCard.GetCostItself);
+        List<Permanent> permanents = permanent.TopCard.Owner.GetBattleAreaPermanents();
+        List<int> costs = new List<int>();
+
+        if (IsDigimonOnly)
+        {
+            costs = permanent.TopCard.Owner.GetBattleAreaPermanents().Filter(permanent1 =>
+                permanent1.IsDigimon && permanent1.TopCard.HasPlayCost)
+                .Map(permanent1 => permanent1.TopCard.GetCostItself);
+        }
+        else
+        {
+            costs = permanent.TopCard.Owner.GetBattleAreaPermanents().Filter(permanent1 =>
+                (permanent1.IsDigimon || permanent1.IsTamer) && permanent1.TopCard.HasPlayCost)
+                .Map(permanent1 => permanent1.TopCard.GetCostItself);
+        }
 
         return costs.Count >= 1 && permanent.TopCard.GetCostItself == costs.Max();
     }

@@ -175,7 +175,7 @@ public class Numemon_X_Antibody_BT15_057 : CEntity_Effect
 
             bool CanActivateCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.CanActivateOnDeletion(card))
+                if (CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card))
                 {
                     if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, (cardSource) => CanSelectCardCondition(cardSource)))
                     {
