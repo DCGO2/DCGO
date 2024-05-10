@@ -16378,6 +16378,97 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 377469160}
   m_CullTransparentMesh: 0
+--- !u!21 &381457407
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Shapes2D Material
+  m_Shader: {fileID: 4800000, guid: 44f74e30da9814584b2fdcdbe799e51a, type: 3}
+  m_ValidKeywords:
+  - FILL_SOLID_COLOR
+  - RECTANGLE
+  m_InvalidKeywords:
+  - _EMISSION
+  m_LightmapFlags: 1
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 3000
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BumpMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailAlbedoMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _BumpScale: 1
+    - _ColorMask: 15
+    - _Cutoff: 0.5
+    - _DetailNormalMapScale: 1
+    - _DstBlend: 0
+    - _GlossMapScale: 1
+    - _Glossiness: 0.5
+    - _GlossyReflections: 1
+    - _Metallic: 0
+    - _Mode: 0
+    - _OcclusionStrength: 1
+    - _Parallax: 0.02
+    - _Shapes2D_DstAlpha: 1
+    - _Shapes2D_DstBlend: 10
+    - _Shapes2D_SrcAlpha: 1
+    - _Shapes2D_SrcBlend: 1
+    - _SmoothnessTextureChannel: 0
+    - _SpecularHighlights: 1
+    - _SrcBlend: 1
+    - _Stencil: 0
+    - _StencilComp: 8
+    - _StencilOp: 0
+    - _StencilReadMask: 255
+    - _StencilWriteMask: 255
+    - _UVSec: 0
+    - _ZWrite: 1
+    m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1001 &381832772
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -40492,97 +40583,6 @@ MonoBehaviour:
   _fontSize_JPN: -1
   _text_ENG: Language
   _text_JPN: "\u8A00\u8A9E\u8A2D\u5B9A"
---- !u!21 &988983326
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Shapes2D Material
-  m_Shader: {fileID: 4800000, guid: 44f74e30da9814584b2fdcdbe799e51a, type: 3}
-  m_ValidKeywords:
-  - FILL_SOLID_COLOR
-  - RECTANGLE
-  m_InvalidKeywords:
-  - _EMISSION
-  m_LightmapFlags: 1
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3000
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _BumpMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _DetailAlbedoMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _DetailMask:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _DetailNormalMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _EmissionMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MetallicGlossMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _OcclusionMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _ParallaxMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _BumpScale: 1
-    - _ColorMask: 15
-    - _Cutoff: 0.5
-    - _DetailNormalMapScale: 1
-    - _DstBlend: 0
-    - _GlossMapScale: 1
-    - _Glossiness: 0.5
-    - _GlossyReflections: 1
-    - _Metallic: 0
-    - _Mode: 0
-    - _OcclusionStrength: 1
-    - _Parallax: 0.02
-    - _Shapes2D_DstAlpha: 1
-    - _Shapes2D_DstBlend: 10
-    - _Shapes2D_SrcAlpha: 1
-    - _Shapes2D_SrcBlend: 1
-    - _SmoothnessTextureChannel: 0
-    - _SpecularHighlights: 1
-    - _SrcBlend: 1
-    - _Stencil: 0
-    - _StencilComp: 8
-    - _StencilOp: 0
-    - _StencilReadMask: 255
-    - _StencilWriteMask: 255
-    - _UVSec: 0
-    - _ZWrite: 1
-    m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-  m_BuildTextureStacks: []
 --- !u!1 &989440038
 GameObject:
   m_ObjectHideFlags: 0
@@ -43301,38 +43301,41 @@ MonoBehaviour:
   _anim: {fileID: 1049396037}
   _verText: {fileID: 1512034762}
   _localizeTMPro: {fileID: 1232193649}
-  _text_ENG: "Updates:\r\n\t- Leviamon (X Antibody)(BT15) fixed when digivolving
-    to be mandatory effect.\r\n\t- Kari Kamiya (BT15) Fixed issue where Kari would
-    not trigger when an effect would\r\n\t  trash security in the When Attacking
-    timing.\r\n\t- Warumonzaemon (BT15) fixed issue wiht trashing digivolution source
-    not executing\r\n\t  De-Digivolve\r\n\t- Revelation of Light (BT15) Fixed issue
-    with it not adding to security at 0 security cards.\r\n\t- Espimon (LM) Fixed
-    issue where you can select both blocker and a tamer during search\r\n\t- Grandis
-    Scissor (BT9) Fixed mis translation issue for effect to be optional\r\n\t- Mist
-    Barrier (BT15) Fixed issue where effect should be optional\r\n\t- Kimeramon (BT8)
-    Updated tooltip text for DP minus effect\r\n\t- Fixed rule process for inherited
-    [On Deletion] effects activating.\r\n\t- Bakemon (BT15) fixed issue which reversed
-    conditions for when digivolving and on\r\n\t  deletion.\r\n\t- Waruseadramon
-    (BT15) fixed issue where all turns effect was not once per turn.\r\n\t- Seventh
-    Lightning (BT15) fixed issue where trash effect was not triggering during\r\n\t 
-    opponents turn.\r\n\t- Ginryumon (BT15) fixed issue where suspension was only
-    lasting till next unsuspend\r\n\t  phase.\r\n\t- Publimon (LM) fixed issue where
-    End Of Attack effect would not place itself into\r\n\t  security, while security
-    was at 0.\r\n\t- Kyokyomon (BT15) updated effect text\r\n\t- Matt Ishida (BT15)
-    updated effect text\r\n\t- Updated DCGO logo (higher quality)\r\n\t- Updated
-    visual effects to have higher quality\r\n\r\nKnown Issues:\r\n\t- Piercing activates
-    through Barrier\r\n\t- Fanglongmon (EX5) digimon effects from Secuirty or other
-    sources not working\r\n\t- Dragomon (EX5) - Timing issue if digimon played by
-    effect is deleted before all turns\r\n\t  effect activates\r\n\t- Gankoomon (X
-    Antibody) (BT10) When Digivolving does not prevent bouncing to hand \r\n\t  or
-    deck\r\n\t- Quantumon (LM) Awaiting ruling for being immune to its own ESS effects.\r\n\t-
-    Veemon (P) able to trigger twice in a turn when armor purge was activated\r\n\t-
-    Belphemon: Rage mode (BT13) timing issue occurs when an attack is started at
-    End of\r\n\t  Turn timing\r\n\t- Takato Matsuki (EX2) timing issue with deletion
-    causes game to freeze\r\n\t- Giant Missile (ST17) Game freezes when attempting
-    to put a card to bottom of deck\r\n\t  when deck size is 0\r\n\t- Crimson Flare
-    (BT11) Effect fails when an on deletion ESS is selected\r\n\t- DNA does not properly
-    reset all once per turn effects\r"
+  _text_ENG: "Updates:\r\n\t- Revelation of Light (BT15) Fixed issue where effect
+    was not placing into security.\r\n\t- Warumonzaemon (BT15) Fixed when digivolving
+    effect not resolving after trashing a\r\n\t  source.\r\n\t- Veemon (BT15) Fixed
+    issue where reduction effect could be used multiple times per\r\n\t  turn.\r\n\t-
+    Takato (EX2) Fixed issue where Blitz would attempt to activate even though digimon\r\n\t 
+    was no longer in play.\r\n\t- Crimson Flare (BT11) Fixed on deletion effect (from
+    ESS) will trigger properly\r\n\t- Gammamon (LM) Fixed issue where it would not
+    work on opponents turn.\r\n\t- Arcturusmon (RB1) Changed On Deletion effect to
+    be mandatory.\r\n\t- Mother D-Reaper (EX2) Fixed issue where it was able to block
+    unblockable Digimon.\r\n\t- Waruseadramon (BT15) fixed issue where trash effect
+    was not triggering during\r\n\t  opponents turn.\r\n\t- Ginryumon (BT15) Fixed
+    issue with activating both of its effect the same turn.\r\n\t- Ryudamon (BT15)
+    Fixed issue with activating both of its effect the same turn.\r\n\t- Hisyaryumon(BT15)
+    Fixed issue with activating both of its effect the same turn,\r\n\t  unsuspend
+    effect is now mandatory. \r\n\t- Garurumon (BT15) Fixed text error in effect
+    tooltip.\r\n\t- Izzy Izumi (BT15) Fixed issue where redirect could target an
+    unsuspended digimon.\r\n\t- Apocalymon (BT15) Fixed issue where End of Turn effect
+    could be triggered more than\r\n\t  once.\r\n\t- Adjusted min/max cost effect,
+    when including tamers or not.\r\n\t- DNA Digivolving will now correctly reset
+    once per turn effects.\r\n\t- Piercing now properly does not trigger after Barrier
+    is used.\r\n\r\nKnown Issues:\r\n\t- Fanglongmon (EX5) digimon effects from Secuirty
+    or other sources not working.\r\n\t- Dragomon (EX5) - Timing issue if digimon
+    played by effect is deleted before all turns\r\n\t  effect activates.\r\n\t-
+    Gankoomon (X Antibody) (BT10) When Digivolving does not prevent bouncing to hand
+    \r\n\t  or deck.\r\n\t- Quantumon (LM) Awaiting ruling for being immune to its
+    own ESS effects.\r\n\t- Belphemon: Rage mode (BT13) timing issue occurs when
+    an attack is started at End of\r\n\t  Turn timing.\r\n\t- Giant Missile (ST17)
+    Game freezes when attempting to put a card to bottom of deck\r\n\t  when deck
+    size is 0.\r\n\t- Magnadramon (BT15) All Turns effect does not trigger.\r\n\t-
+    Rapidmon (ST17-07) Some instances of protection being granted without a green\r\n\t 
+    tamer.\r\n\t- Gizmon AT (BT13) Delete to reduce play cost is not optional\r\n\t-
+    Shu-Chong Wong (EX2) Start of turn effect will not draw a card if you are at
+    10\r\n\t  memory.\r\n\t- Lunamon (EX5) does not allow you to digivolve when you
+    play the proper tamer.\r\n\t- Dedigivolve to tamer during security battle will
+    still proceed with battle.\r"
   _text_JPN: 
   _scroll: {fileID: 1566222603}
 --- !u!224 &1049396036
@@ -66027,7 +66030,7 @@ MonoBehaviour:
   m_Vertical: 1
   m_MovementType: 2
   m_Elasticity: 0.1
-  m_Inertia: 1
+  m_Inertia: 0
   m_DecelerationRate: 0.135
   m_ScrollSensitivity: 100
   m_Viewport: {fileID: 889398605}
@@ -108259,7 +108262,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 988983326}
+  m_Material: {fileID: 381457407}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
