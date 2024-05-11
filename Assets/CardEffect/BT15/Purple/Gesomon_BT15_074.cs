@@ -17,24 +17,49 @@ public class Gesomon_BT15_074 : CEntity_Effect
             cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
         }
 
-        #region On Play/When Digivolving
+        #region On Play/When Digivolving Shared
+        string EffectSharedDiscription()
+        {
+            return "[On Play] [When Digivolving] Your opponent may trash 1 Digimon card in their hand. If they don't, gain 1 memory.";
+        }
+
+        bool CanSelectCardCondition(CardSource cardSource)
+        {
+            if (cardSource.Owner == card.Owner.Enemy)
+            {
+                if (cardSource.IsDigimon)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        #endregion
+
+        #region On Play
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Opponent trashes 1 Digimon card, or you gain Memory +1", CanUseCondition, card);
-            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectSharedDiscription());
             cardEffects.Add(activateClass);
 
-            string EffectDiscription()
+            bool CanUseCondition(Hashtable hashtable)
             {
-                return "[On Play] [When Digivolving] Your opponent may trash 1 Digimon card in their hand. If they don't, gain 1 memory.";
+                return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
             }
 
-            bool CanSelectCardCondition(CardSource cardSource)
+            bool CanActivateCondition(Hashtable hashtable)
             {
-                if (cardSource.Owner == card.Owner.Enemy)
+                if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
-                    if (cardSource.IsDigimon)
+                    if (card.Owner.Enemy.HandCards.Count >= 1)
+                    {
+                        return true;
+                    }
+
+                    if (card.Owner.CanAddMemory(activateClass))
                     {
                         return true;
                     }
@@ -43,9 +68,62 @@ public class Gesomon_BT15_074 : CEntity_Effect
                 return false;
             }
 
+            IEnumerator ActivateCoroutine(Hashtable _hashtable)
+            {
+                bool discarded = false;
+
+                if (card.Owner.Enemy.HandCards.Count >= 1)
+                {
+                    int discardCount = 1;
+
+                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                    selectHandEffect.SetUp(
+                        selectPlayer: card.Owner.Enemy,
+                        canTargetCondition: CanSelectCardCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: discardCount,
+                        canNoSelect: true,
+                        canEndNotMax: false,
+                        isShowOpponent: true,
+                        selectCardCoroutine: null,
+                        afterSelectCardCoroutine: AfterSelectCardCoroutine,
+                        mode: SelectHandEffect.Mode.Discard,
+                        cardEffect: activateClass);
+
+                    yield return StartCoroutine(selectHandEffect.Activate());
+
+                    IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
+                    {
+                        if (cardSources.Count >= 1)
+                        {
+                            discarded = true;
+
+                            yield return null;
+                        }
+                    }
+                }
+
+                if (!discarded)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
+                }
+            }
+        }
+        #endregion
+
+        #region When Digivolving
+        if (timing == EffectTiming.OnEnterFieldAnyone)
+        {
+            ActivateClass activateClass = new ActivateClass();
+            activateClass.SetUpICardEffect("Opponent trashes 1 Digimon card, or you gain Memory +1", CanUseCondition, card);
+            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectSharedDiscription());
+            cardEffects.Add(activateClass);
+
             bool CanUseCondition(Hashtable hashtable)
             {
-                return CardEffectCommons.CanTriggerOnPlay(hashtable, card) || CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
             }
 
             bool CanActivateCondition(Hashtable hashtable)

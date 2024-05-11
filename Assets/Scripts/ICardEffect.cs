@@ -406,11 +406,6 @@ public abstract class ICardEffect
     public void SetIsInheritedEffect(bool isInheritatedEffect)
     {
         IsInheritedEffect = isInheritatedEffect;
-
-        if(IsInheritedEffect)
-        {
-            SetEffectSourcePermanent(_effectSourceCard.PermanentOfThisCard());
-        }
     }
     #endregion
 

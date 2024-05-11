@@ -22,14 +22,15 @@ namespace DCGO.CardEffects.LM
                     return "[On Play] Reveal the top 3 cards of your deck. Add 1 card with <Blocker> or 1 Tamer card among them to the hand. Return the rest to the bottom of the deck.";
                 }
 
-                bool CanSelectBlockerCondition(CardSource cardSource)
+                bool CanSelectCondition(CardSource cardSource)
                 {
-                    return cardSource.HasBlocker;
-                }
 
-                bool CanSelectTamerCondition(CardSource cardSource)
-                {
-                    return cardSource.IsTamer;
+                    if(cardSource.HasBlocker || cardSource.IsTamer)
+                    {
+                        return true;
+                    }
+
+                    return false;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -58,14 +59,8 @@ namespace DCGO.CardEffects.LM
                         new SimplifiedSelectCardConditionClass[]
                         {
                         new SimplifiedSelectCardConditionClass(
-                            canTargetCondition:CanSelectBlockerCondition,
-                            message: "Select 1 card with [Blocker].",
-                            mode: SelectCardEffect.Mode.AddHand,
-                            maxCount: 1,
-                            selectCardCoroutine: null),
-                        new SimplifiedSelectCardConditionClass(
-                            canTargetCondition:CanSelectTamerCondition,
-                            message:  "Select 1 Tamer card.",
+                            canTargetCondition:CanSelectCondition,
+                            message: "Select 1 card with <Blocker> or 1 Tamer.",
                             mode: SelectCardEffect.Mode.AddHand,
                             maxCount: 1,
                             selectCardCoroutine: null),

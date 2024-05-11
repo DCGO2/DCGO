@@ -1237,6 +1237,11 @@ public class PlayPermanentClass
                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateFieldPermanentCardEffect(permanent.ShowingPermanentCard, isDigiXros: false, jogressEvoRoots: evoRootTops.ToArray()));
 
                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(evoRootTops, "DNA Digivolution Cards", true, true));
+
+                    foreach (CardSource evolutionCard in permanent.DigivolutionCards)
+                    {
+                        evolutionCard.cEntity_EffectController.InitUseCountThisTurn();
+                    }
                 }
             }
 
@@ -2500,7 +2505,6 @@ public class IPutSecurityPermanent
     {
         if (_permanent == null) yield break;
         if (_permanent.TopCard == null) yield break;
-
         ICardEffect cardEffect = CardEffectCommons.GetCardEffectFromHashtable(_hashtable);
 
         if (_permanent.TopCard.CanNotBeAffected(cardEffect) || !_permanent.TopCard.Owner.CanAddSecurity(cardEffect)) yield break;
@@ -2531,7 +2535,6 @@ public class IPutSecurityPermanent
 
         CardSource topCard = _permanent.TopCard;
         if (topCard == null) yield break;
-
         #region add log
         string log = "";
 
@@ -2561,7 +2564,6 @@ public class IPutSecurityPermanent
 
         #region place permanent to security
         yield return ContinuousController.instance.StartCoroutine(_permanent.DiscardEvoRoots());
-
         yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveField(_permanent));
 
         if (!topCard.IsToken)
@@ -2577,16 +2579,13 @@ public class IPutSecurityPermanent
                 }
 
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(topCard.Owner));
-
                 yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(topCard.Owner).AddSecurity());
             }
             else
             {
                 yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(new List<CardSource>() { topCard }));
             }
-            
         }
-
         #endregion
     }
 }
@@ -3525,7 +3524,6 @@ public class IBattle
                 {
                     if(permanent.TopCard != null)
                     {
-                        Debug.Log($"LoserPermanents: {LoserPermanents[0]}, {LoserPermanents[0].TopCard.name}");
                         index = LoserPermanents.IndexOf(permanent);
                     }
                 }
@@ -3535,12 +3533,9 @@ public class IBattle
                     LoserPermanents.RemoveAt(index);
                     _LoserPermanents.RemoveAt(index);
 
-                    Debug.Log($"LoserPermanents: {LoserPermanents.Count}, {LoserPermanents.Count}");
                     hashtable["LoserPermanents"] = _LoserPermanents;
                     hashtable["LoserPermanents_real"] = LoserPermanents;
                 }
-
-                
 
                 // "At the end of battle" effect
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(hashtable, EffectTiming.OnEndBattle));

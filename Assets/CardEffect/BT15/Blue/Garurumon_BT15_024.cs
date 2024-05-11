@@ -39,7 +39,7 @@ public class Garurumon_BT15_024 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("This Digimon digivolves", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Draw 1 or Play 1 tamer", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
             cardEffects.Add(activateClass);
 

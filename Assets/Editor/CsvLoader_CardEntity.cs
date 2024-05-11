@@ -8,7 +8,6 @@ using UnityEditor;
 using UnityEngine;
 using System.Linq;
 using System;
-using Codice.Client.Commands;
 
 [CustomEditor(typeof(LoadCSV_CardEntity))]
 public class CsvLoader_CardEntity : Editor
