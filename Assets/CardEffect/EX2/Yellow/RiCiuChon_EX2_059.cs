@@ -150,10 +150,7 @@ public class RiCiuChon_EX2_059 : CEntity_Effect
             {
                 if (isExistOnField(card))
                 {
-                    if (card.Owner.CanAddMemory(activateClass))
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
-                    }
+                    yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
                 }
             }
         }
