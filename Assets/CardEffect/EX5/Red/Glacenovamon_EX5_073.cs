@@ -281,7 +281,7 @@ public class Glacenovamon_EX5_073 : CEntity_Effect
         if (timing == EffectTiming.WhenRemoveField)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Prevent this Digimon from being deleted or returned to hand or deck", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Prevent this Digimon from being leaving the battle area by opponent's effect", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
             activateClass.SetHashString("Substitute_EX5_073");
             cardEffects.Add(activateClass);

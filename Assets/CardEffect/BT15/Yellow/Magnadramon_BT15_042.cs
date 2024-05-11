@@ -42,6 +42,8 @@ public class Magnadramon_BT15_042 : CEntity_Effect
                 {
                     if (CardEffectCommons.CanTriggerWhenLoseSecurity(hashtable, player => player == card.Owner))
                     {
+                        return true;
+
                         if (card.Owner.SecurityCards.Count() <= 3)
                         {
                             return true;
@@ -63,9 +65,9 @@ public class Magnadramon_BT15_042 : CEntity_Effect
 
             IEnumerator ActivateCoroutine(Hashtable _hashtable)
             {
-                if (card.Owner.CanAddSecurity(activateClass))
-                {
-                    if (card.Owner.SecurityCards.Count <= 3)
+                 if (card.Owner.SecurityCards.Count <= 3)
+                 {
+                    if (card.Owner.CanAddSecurity(activateClass))
                     {
                         if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
                         {
@@ -154,15 +156,11 @@ public class Magnadramon_BT15_042 : CEntity_Effect
                                         yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(card.Owner).AddSecurity());
                                     }
                                 }
-
                             }
-
                         }
-
                     }
                 }
             }
-
         }
         #endregion
 
