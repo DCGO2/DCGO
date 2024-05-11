@@ -436,7 +436,7 @@ public class Permanent
     }
     #endregion
 
-    #region DPマイナス効果を受けないか
+    #region Will it not receive negative DP effect?
     public bool ImmuneFromDPMinus(ICardEffect cardEffect)
     {
         foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players)
@@ -457,10 +457,7 @@ public class Permanent
                     }
                 }
             }
-        }
 
-        foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players)
-        {
             foreach (ICardEffect cardEffect1 in player.EffectList(EffectTiming.None))
             {
                 if (cardEffect1 is IImmuneFromDPMinusEffect)
@@ -480,7 +477,7 @@ public class Permanent
     }
     #endregion
 
-    #region 手札に戻らないか
+    #region Can be returned to your hand?
     public bool CannotReturnToHand(ICardEffect cardEffect)
     {
         foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players)
@@ -500,6 +497,20 @@ public class Permanent
                         }
                     }
                 }
+
+                foreach (ICardEffect cardEffect1 in player.EffectList(EffectTiming.None))
+                {
+                    if (cardEffect1 is ICannotReturnToHandEffect)
+                    {
+                        if (cardEffect1.CanUse(null))
+                        {
+                            if (((ICannotReturnToHandEffect)cardEffect1).CannotReturnToHand(this, cardEffect))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -507,7 +518,7 @@ public class Permanent
     }
     #endregion
 
-    #region 山札に戻らないか
+    #region Can be returned to deck?
     public bool CannotReturnToLibrary(ICardEffect cardEffect)
     {
         foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players)
@@ -515,6 +526,20 @@ public class Permanent
             foreach (Permanent permanent in player.GetFieldPermanents())
             {
                 foreach (ICardEffect cardEffect1 in permanent.EffectList(EffectTiming.None))
+                {
+                    if (cardEffect1 is ICannotReturnToLibraryEffect)
+                    {
+                        if (cardEffect1.CanUse(null))
+                        {
+                            if (((ICannotReturnToLibraryEffect)cardEffect1).CannotReturnToLibrary(this, cardEffect))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+
+                foreach (ICardEffect cardEffect1 in player.EffectList(EffectTiming.None))
                 {
                     if (cardEffect1 is ICannotReturnToLibraryEffect)
                     {
@@ -1432,11 +1457,6 @@ public class Permanent
                             if (((ICannotBlockEffect)cardEffect).CannotBlock(AttackingPermanent, this))
                             {
                                 return false;
-
-                                if (!TopCard.CanNotBeAffected(cardEffect))
-                                {
-                                    return false;
-                                }
                             }
                         }
                     }

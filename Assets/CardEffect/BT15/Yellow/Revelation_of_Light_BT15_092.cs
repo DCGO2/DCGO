@@ -159,7 +159,7 @@ public class Revelation_of_Light_BT15_092 : CEntity_Effect
 
                 if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, PermanentCondition))
                 {
-                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(card, toTop: false));
+                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(card, toTop: true));
 
                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(card.Owner));
 

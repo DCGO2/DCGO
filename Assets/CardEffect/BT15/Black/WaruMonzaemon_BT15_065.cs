@@ -5,7 +5,6 @@ using UnityEngine;
 using Photon;
 using System;
 using Photon.Pun;
-using System.Runtime.Remoting;
 
 public class WaruMonzaemon_BT15_065 : CEntity_Effect
 {

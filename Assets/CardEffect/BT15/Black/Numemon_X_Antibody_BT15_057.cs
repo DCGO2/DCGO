@@ -5,7 +5,6 @@ using UnityEngine;
 using Photon;
 using System;
 using Photon.Pun;
-using System.Runtime.Remoting;
 
 public class Numemon_X_Antibody_BT15_057 : CEntity_Effect
 {

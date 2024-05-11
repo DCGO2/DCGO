@@ -30,7 +30,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
     public int TurnCount { get; set; } = 0;
     public bool isSecurityCehck { get; set; } = false;
 
-    #region 初期化
+    #region Initialization
 
 
     public IEnumerator Init()
@@ -297,7 +297,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region ターンの進行を管理
+    #region Manage turn progress
     public IEnumerator GameStateMachine()
     {
         yield return StartCoroutine(StartGame());
@@ -334,7 +334,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region ゲーム開始時
+    #region At the start of the game
     public bool DoneStartGame { get; set; } = false;
 
     bool _isRedraw = false;
@@ -822,12 +822,12 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
             goto EndMainPhase;
         }
 
-        #region ログ追加
+        #region Add log
         GManager.instance.playLog.AddLogString($"\nMain Phase:\n{gameContext.TurnPlayer.PlayerName}\n");
 
         #endregion
 
-        #region 手札のカードと場のカードの選択状態をリセット
+        #region Reset the selection status of cards in your hand and cards on the field.
         OffHandCardTarget(gameContext.TurnPlayer);
         OffFieldCardTarget(gameContext.TurnPlayer);
         #endregion
@@ -841,10 +841,10 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
         yield return new WaitWhile(() => !GManager.instance.showPhaseNotificationObject.isClose);
 
-        // メインフェイズ開始時の効果
+        // Effects at the start of main phase
         yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(null, EffectTiming.OnStartMainPhase));
 
-        // 自動処理チェックタイミング
+        // Automatic processing check timing
         yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
 
         isSync = false;
@@ -878,7 +878,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
             return false;
         }
 
-        #region ターンプレイヤーが選択できるまで繰り返し
+        #region Repeat until turn player selects
         while (!endGame)
         {
             yield return GManager.instance.photonWaitController.StartWait("SetHandCardPlayablity");
@@ -1206,7 +1206,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
     EndMainPhase:;
 
-        #region メインフェイズ終了
+        #region Main phase ends
         GManager.instance.selectCommandPanel.CloseSelectCommandPanel();
         GManager.instance.commandText.CloseCommandText();
 
@@ -1234,19 +1234,19 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         ResetMainPhaseParameter();
         #endregion
 
-        //自動処理チェックタイミング
+        //Automatic processing check timing
         yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
 
         //ターン終了
 
-        #region パラメータリセット
+        #region Parameter reset
         void ResetMainPhaseParameter()
         {
             GManager.instance.OffTargetArrow();
 
             GManager.instance.memoryObject.OffMemoryPredictionLine();
 
-            #region 手札のカードと場のカードと枠の表示をリセット
+            #region Reset the display of cards in hand, cards on the field, and frames
             foreach (Player player in gameContext.Players)
             {
                 foreach (FieldCardFrame fieldCardFrame in player.fieldCardFrames)
@@ -1276,7 +1276,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
             }
             #endregion
 
-            #region 手札と場のカードをリセット
+            #region Reset cards in hand and field
             OffHandCardTarget(gameContext.TurnPlayer);
             OffFieldCardTarget(gameContext.TurnPlayer);
 
@@ -2960,7 +2960,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region 起動効果パーマネント決定
+    #region Activation effect permanent determination
     [PunRPC]
     public void SetActSkill(int permanentIndex, int skillIndex)
     {
@@ -2973,7 +2973,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region 起動効果カード決定
+    #region Activation effect card determination
     [PunRPC]
     public void SetActCardSkill(int cardIndex, int skillIndex)
     {
@@ -2986,7 +2986,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region プレイカード決定
+    #region Play card decision
     [PunRPC]
     public void SetPlayCard(int cardIndex, int TargetFrameID, int[] JogressEvoRootsFrameIDs, int BurstTamerFrameID)
     {
@@ -3010,7 +3010,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region 攻撃パーマネント決定
+    #region Attack permanent determination
     [PunRPC]
     public void SetAttackingPermaent(int permanentIndex, int attackTargetPermanentIndex)
     {

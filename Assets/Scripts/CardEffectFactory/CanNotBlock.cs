@@ -98,12 +98,9 @@ public partial class CardEffectFactory
         {
             if (CardEffectCommons.IsPermanentExistsOnBattleArea(defender))
             {
-                if (!defender.TopCard.CanNotBeAffected(cannotBlockClass))
+                if (defenderCondition == null || defenderCondition(defender))
                 {
-                    if (defenderCondition == null || defenderCondition(defender))
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
 
