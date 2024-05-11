@@ -1,48 +1,42 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 using System.Linq;
+using Photon;
+using System;
+using Photon.Pun;
 
 namespace DCGO.CardEffects.BT16
 {
-    public class Arukenimon_BT16_072 : CEntity_Effect
+    public class Mummymon_BT16_073 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Blocker
+            #region Retaliation
             if (timing == EffectTiming.None)
             {
-                cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.RetaliationSelfEffect(isInheritedEffect: false, card: card, condition: null));
             }
             #endregion
 
             #region On Play
-            if (timing == EffectTiming.OnEnterFieldAnyone)
+            if (timing == EffectTiming.None)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Reveal top 5 and trash 2 purple cards.", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Draw 2 and trash 2.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[On Play] Reveal the top 5 cards of your deck. Trash 2 purple cards among them. Return the rest to the bottom of the deck.";
-                }
-
-                bool CanSelectCardCondition(CardSource cardSource)
-                {
-                    if (cardSource.CardColors.Contains(CardColor.Purple))
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return "[On Play] <Draw 2> and trash 2 cards in your hand.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnPlay(hashtable,card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -53,6 +47,11 @@ namespace DCGO.CardEffects.BT16
                         {
                             return true;
                         }
+
+                        if (card.Owner.HandCards.Count >= 1)
+                        {
+                            return true;
+                        }
                     }
 
                     return false;
@@ -60,21 +59,30 @@ namespace DCGO.CardEffects.BT16
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SimplifiedRevealDeckTopCardsAndSelect(
-                    revealCount: 5,
-                    simplifiedSelectCardConditions:
-                    new SimplifiedSelectCardConditionClass[]
+                    yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 2, activateClass).Draw());
+
+                    if (card.Owner.HandCards.Count >= 1)
                     {
-                        new SimplifiedSelectCardConditionClass(
-                            canTargetCondition:CanSelectCardCondition,
-                            message: "Select 2 purple cards to trash.",
-                            mode: SelectCardEffect.Mode.Discard,
-                            maxCount: 2,
-                            selectCardCoroutine: null)
-                    },
-                    remainingCardsPlace: RemainingCardsPlace.DeckBottom,
-                    activateClass: activateClass
-                ));
+                        int discardCount = Math.Min(2, card.Owner.HandCards.Count);
+
+                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                        selectHandEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: (cardSource) => true,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: discardCount,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            selectCardCoroutine: null,
+                            afterSelectCardCoroutine: null,
+                            mode: SelectHandEffect.Mode.Discard,
+                            cardEffect: activateClass);
+
+                        yield return StartCoroutine(selectHandEffect.Activate());
+                    }
                 }
             }
             #endregion
@@ -122,7 +130,7 @@ namespace DCGO.CardEffects.BT16
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.CanActivateOnDeletion(card))
-                    { 
+                    {
                         if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
                         {
                             return true;
