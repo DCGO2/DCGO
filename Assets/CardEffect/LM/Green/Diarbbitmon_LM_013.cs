@@ -18,43 +18,45 @@ namespace DCGO.CardEffects.LM
                 cardEffects.Add(CardEffectFactory.BlastDigivolveEffect(card: card, condition: null));
             }
 
-            #region OnPlay/When Digivolving
+            #region On Play/When Digivolving Shared
+            string SharedEffectDiscription()
+            {
+                return "[On Play] [When Digivolving] Suspend 1 of your opponent's Digimon. Then, if they have no unsuspended Digimon, gain 2 memory.";
+            }
+
+            bool CanSelectSharedPermanentCondition(Permanent permanent)
+            {
+                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+            }
+
+            bool HasNoUnsuspendDigimon()
+            {
+                if (card.Owner.Enemy.GetBattleAreaDigimons().Count == 0)
+                {
+                    return true;
+                }
+
+                foreach (Permanent permanent in card.Owner.Enemy.GetBattleAreaDigimons())
+                {
+                    if (!permanent.IsSuspended)
+                        return false;
+                }
+
+                return true;
+            }
+            #endregion
+
+            #region On Play
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Gain Memory +2", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, SharedEffectDiscription());
                 cardEffects.Add(activateClass);
-
-                string EffectDiscription()
-                {
-                    return "[On Play] [When Digivolving] Suspend 1 of your opponent's Digimon. Then, if they have no unsuspended Digimon, gain 2 memory.";
-                }
-
-                bool CanSelectPermanentCondition(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
-                }
-
-                bool HasNoUnsuspendDigimon()
-                {
-                    if(card.Owner.Enemy.GetBattleAreaDigimons().Count == 0)
-                    {
-                        return true;
-                    }
-
-                    foreach (Permanent permanent in card.Owner.Enemy.GetBattleAreaDigimons())
-                    {
-                        if (!permanent.IsSuspended)
-                            return false;
-                    }
-
-                    return true;
-                }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card) || CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -66,13 +68,68 @@ namespace DCGO.CardEffects.LM
                 {
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                    if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermanentCondition))
+                    if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectSharedPermanentCondition))
                     {
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectSharedPermanentCondition));
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectPermanentCondition,
+                            canTargetCondition: CanSelectSharedPermanentCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: maxCount,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: null,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Tap,
+                            cardEffect: activateClass);
+
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to Suspend.", "The opponent is selecting 1 Digimon to Suspend.");
+
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                    }
+
+                    if (card.Owner.CanAddMemory(activateClass))
+                    {
+                        if (HasNoUnsuspendDigimon())
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(2, activateClass));
+                        }
+                    }
+                }
+            }
+            #endregion
+
+            #region When Digivolving
+            if (timing == EffectTiming.OnEnterFieldAnyone)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Gain Memory +2", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, SharedEffectDiscription());
+                cardEffects.Add(activateClass);
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleArea(card);
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                    if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectSharedPermanentCondition))
+                    {
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectSharedPermanentCondition));
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectSharedPermanentCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,

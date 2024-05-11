@@ -250,7 +250,6 @@ namespace DCGO.CardEffects.LM
             }
             #endregion
 
-
             return cardEffects;
         }
     }

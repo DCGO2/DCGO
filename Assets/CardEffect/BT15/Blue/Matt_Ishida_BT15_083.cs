@@ -89,7 +89,7 @@ public class Matt_Ishida_BT15_083 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Your Turn][Once Per Turn] When one of your Digimons effects adds cards to your hand, this Digimon gets +1000 DP for the turn.";
+                return "[Your Turn] When one of your Digimon's effects adds cards to your hand, by suspending this Tamer, gain 1 memory.";
             }
 
             bool CanUseCondition(Hashtable hashtable)

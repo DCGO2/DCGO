@@ -49,7 +49,7 @@ public class ResultObject : MonoBehaviour
             }
         }
 
-        else
+        else if (Winner != null)
         {
             ContinuousController.instance.PlaySE(GManager.instance.LoseSE);
 
@@ -63,37 +63,42 @@ public class ResultObject : MonoBehaviour
                     ResultText.text = "You have surrendered.";
                 }
             }
+        }
+        else
+        {
+            WinImage.gameObject.SetActive(false);
+            LoseImage.gameObject.SetActive(true);
+
+            bool isDisconnected = true;
+
+            if (PhotonNetwork.IsConnected)
+            {
+                if (PhotonNetwork.PlayerList.Length == 2)
+                {
+                    isDisconnected = false;
+                }
+
+                if (GManager.instance.IsAI)
+                {
+                    isDisconnected = false;
+                }
+
+                WinImage.gameObject.SetActive(true);
+                LoseImage.gameObject.SetActive(false);
+            }
+
+            if (isDisconnected)
+            {
+                log += $"\nDisconnected";
+
+                ResultText.text = "Disconnected.";
+            }
 
             else
             {
-                bool isDisconnected = true;
+                log += $"\nDraw";
 
-                if (PhotonNetwork.IsConnected)
-                {
-                    if (PhotonNetwork.PlayerList.Length == 2)
-                    {
-                        isDisconnected = false;
-                    }
-
-                    if (GManager.instance.IsAI)
-                    {
-                        isDisconnected = false;
-                    }
-                }
-
-                if (isDisconnected)
-                {
-                    log += $"\nDisconnected";
-
-                    ResultText.text = "Disconnected.";
-                }
-
-                else
-                {
-                    log += $"\nDraw";
-
-                    ResultText.text = "Draw.";
-                }
+                ResultText.text = "Draw.";
             }
         }
 

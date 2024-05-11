@@ -5,7 +5,6 @@ using UnityEngine;
 using Photon;
 using System;
 using Photon.Pun;
-using System.Runtime.Remoting;
 
 public class Megadramon_BT15_064 : CEntity_Effect
 {

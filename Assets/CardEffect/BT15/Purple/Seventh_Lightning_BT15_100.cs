@@ -76,13 +76,9 @@ public class Seventh_Lightning_BT15_100 : CEntity_Effect
             {
                 if (CardEffectCommons.IsExistOnTrash(card))
                 {
-                    if (CardEffectCommons.IsOwnerTurn(card))
+                    if (CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, PermanentCondition))
                     {
-                        if (CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, PermanentCondition))
-                        {
-                            return true;
-
-                        }
+                        return true;
                     }
                 }
 

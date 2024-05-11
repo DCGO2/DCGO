@@ -45,6 +45,7 @@ public class Ginryumon_BT15_058 : CEntity_Effect
             activateClass.SetUpICardEffect("Suspend opponent's Digimon or Tamers with play cost less than this Digimon.", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
             activateClass.SetIsInheritedEffect(true);
+            activateClass.SetHashString("suspend_BT15_058_inherited");
             cardEffects.Add(activateClass);
 
             string EffectDiscription()
@@ -204,9 +205,12 @@ public class Ginryumon_BT15_058 : CEntity_Effect
                         {
                             if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition1))
                             {
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCantUnsuspendNextActivePhase(
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotUnsuspend(
                                         targetPermanent: selectedPermanent,
-                                        activateClass: activateClass
+                                        effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                                        activateClass: activateClass,
+                                        condition: null,
+                                        effectName: "Can't unsuspend"
                                     ));
                             }
                         }
@@ -297,9 +301,12 @@ public class Ginryumon_BT15_058 : CEntity_Effect
                         {
                             if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition1))
                             {
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCantUnsuspendNextActivePhase(
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotUnsuspend(
                                         targetPermanent: selectedPermanent,
-                                        activateClass: activateClass
+                                        effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                                        activateClass: activateClass,
+                                        condition: null,
+                                        effectName: "Can't unsuspend"
                                     ));
                             }
                         }

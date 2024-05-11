@@ -28,49 +28,92 @@ public class Plesiomon_X_Antibody_BT15_032 : CEntity_Effect
                 condition: null));
         }
 
-        #region When Digivolving/On Attack
-        if (timing == EffectTiming.OnEnterFieldAnyone || timing == EffectTiming.OnAllyAttack)
+        #region When Attacking/When Digivolving Shared
+        string EffectSharedDescription()
         {
-            ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Return 1 Digimon to hand", CanUseCondition, card);
-            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
-            activateClass.SetHashString("Bounce_BT15_032");
-            cardEffects.Add(activateClass);
+            return "[When Digivolving] [When Attacking] [Once per Turn] Return 1 of your opponent's Digimon with as many or fewer digivolution cards as this Digimon to the hand.";
+        }
 
-            string EffectDiscription()
-            {
-                return "[When Digivolving] [When Attacking] [Once per Turn] Return 1 of your opponent's Digimon with as many or fewer digivolution cards as this Digimon to the hand.";
-            }
-
-            bool CanSelectPermanentCondition(Permanent permanent)
-            {
-                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (permanent.DigivolutionCards.Count <= card.PermanentOfThisCard().DigivolutionCards.Count)
-                        {
-                            return true;
-                        }
-                    }
-                }
-
-                return false;
-            }
-
-            bool CanUseCondition(Hashtable hashtable)
-            {
-                return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card) || CardEffectCommons.CanTriggerOnAttack(hashtable, card); 
-            }
-
-            bool CanActivateCondition(Hashtable hashtable)
+        bool CanSelectPermanentCondition(Permanent permanent)
+        {
+            if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
             {
                 if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
-                    return true;
+                    if (permanent.DigivolutionCards.Count <= card.PermanentOfThisCard().DigivolutionCards.Count)
+                    {
+                        return true;
+                    }
                 }
+            }
 
-                return false;
+            return false;
+        }
+
+        bool CanActivateSharedCondition(Hashtable hashtable)
+        {
+            if (CardEffectCommons.IsExistOnBattleArea(card))
+            {
+                return true;
+            }
+
+            return false;
+        }
+        #endregion
+
+        #region When Digivolving
+        if (timing == EffectTiming.OnEnterFieldAnyone)
+        {
+            ActivateClass activateClass = new ActivateClass();
+            activateClass.SetUpICardEffect("Return 1 Digimon to hand", CanUseCondition, card);
+            activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, 1, false, EffectSharedDescription());
+            activateClass.SetHashString("Bounce_BT15_032");
+            cardEffects.Add(activateClass);
+
+            bool CanUseCondition(Hashtable hashtable)
+            {
+                return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card); 
+            }
+
+            IEnumerator ActivateCoroutine(Hashtable _hashtable)
+            {
+                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                {
+                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                    selectPermanentEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanSelectPermanentCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: maxCount,
+                        canNoSelect: false,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: null,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Bounce,
+                        cardEffect: activateClass);
+
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                }
+            }
+        }
+        #endregion
+
+        #region When Attacking
+        if (timing == EffectTiming.OnAllyAttack)
+        {
+            ActivateClass activateClass = new ActivateClass();
+            activateClass.SetUpICardEffect("Return 1 Digimon to hand", CanUseCondition, card);
+            activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, 1, false, EffectSharedDescription());
+            activateClass.SetHashString("Bounce_BT15_032");
+            cardEffects.Add(activateClass);
+
+            bool CanUseCondition(Hashtable hashtable)
+            {
+                return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
             }
 
             IEnumerator ActivateCoroutine(Hashtable _hashtable)
