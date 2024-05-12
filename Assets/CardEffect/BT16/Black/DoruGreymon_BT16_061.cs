@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DCGO.CardEffects.BT16
 {
@@ -44,7 +45,83 @@ namespace DCGO.CardEffects.BT16
             #endregion
 
             #region All Turns
+            if (timing == EffectTiming.OnAttackTargetChanged)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Digivolve this digimon", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                cardEffects.Add(activateClass);
 
+                string EffectDiscription()
+                {
+                    return "[All Turns] When an attack target is switched, this Digimon with a Tamer card with the [SoC] trait in its digivolution cards may digivolve into a Digimon card with the [Beast Dragon], [Undead] or [SoC] trait in your hand without paying the cost.";
+                }
+
+                bool HasTamerCardCondition(CardSource cardSource)
+                {
+                    if (cardSource.CardTraits.Contains("SoC"))
+                    {
+                        if (cardSource.IsTamer)
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                bool CanSelectCardCondition(CardSource cardSource)
+                {
+                    if (cardSource.HasBeastDragonTraits || cardSource.CardTraits.Contains("Undead") || cardSource.CardTraits.Contains("SoC"))
+                    {
+                        if (cardSource.IsDigimon)
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (card.PermanentOfThisCard().DigivolutionCards.Count(HasTamerCardCondition) >= 1)
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                       targetPermanent: card.PermanentOfThisCard(),
+                       cardCondition: CanSelectCardCondition,
+                       payCost: false,
+                       reduceCostTuple: null,
+                       fixedCostTuple: null,
+                       ignoreDigivolutionRequirementFixedCost: -1,
+                       isHand: true,
+                       activateClass: activateClass,
+                       successProcess: null));
+                }
+            }
             #endregion
 
             #region All Turns - ESS
@@ -131,33 +208,6 @@ namespace DCGO.CardEffects.BT16
             }
             #endregion
 
-            if (timing == EffectTiming.None)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
-                cardEffects.Add(activateClass);
-
-                string EffectDiscription()
-                {
-                    return "";
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return true;
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    return true;
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    yield return null;
-                }
-            }
 
             return cardEffects;
         }
