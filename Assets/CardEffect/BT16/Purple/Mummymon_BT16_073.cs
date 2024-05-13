@@ -122,6 +122,15 @@ namespace DCGO.CardEffects.BT16
                     return false;
                 }
 
+                bool PermanentCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
@@ -142,51 +151,54 @@ namespace DCGO.CardEffects.BT16
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    int maxCount = 1;
-
-                    List<CardSource> selectedCards = new List<CardSource>();
-
-                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                    selectCardEffect.SetUp(
-                        canTargetCondition: CanSelectCardCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        canNoSelect: () => true,
-                        selectCardCoroutine: SelectCardCoroutine,
-                        afterSelectCardCoroutine: null,
-                        message: "Select 1 card to play.",
-                        maxCount: maxCount,
-                        canEndNotMax: false,
-                        isShowOpponent: true,
-                        mode: SelectCardEffect.Mode.Custom,
-                        root: SelectCardEffect.Root.Trash,
-                        customRootCardList: null,
-                        canLookReverseCard: true,
-                        selectPlayer: card.Owner,
-                        cardEffect: activateClass);
-
-                    selectCardEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
-                    selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
-
-                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-
-                    IEnumerator SelectCardCoroutine(CardSource cardSource)
+                    if (CardEffectCommons.HasMatchConditionPermanent(PermanentCondition))
                     {
-                        selectedCards.Add(cardSource);
+                        int maxCount = 1;
 
-                        yield return null;
+                        List<CardSource> selectedCards = new List<CardSource>();
+
+                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                        selectCardEffect.SetUp(
+                            canTargetCondition: CanSelectCardCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            canNoSelect: () => true,
+                            selectCardCoroutine: SelectCardCoroutine,
+                            afterSelectCardCoroutine: null,
+                            message: "Select 1 card to play.",
+                            maxCount: maxCount,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            mode: SelectCardEffect.Mode.Custom,
+                            root: SelectCardEffect.Root.Trash,
+                            customRootCardList: null,
+                            canLookReverseCard: true,
+                            selectPlayer: card.Owner,
+                            cardEffect: activateClass);
+
+                        selectCardEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
+                        selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
+
+                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+
+                        IEnumerator SelectCardCoroutine(CardSource cardSource)
+                        {
+                            selectedCards.Add(cardSource);
+
+                            yield return null;
+                        }
+
+                        SelectCardEffect.Root root = SelectCardEffect.Root.Trash;
+
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
+                            cardSources: selectedCards,
+                            activateClass: activateClass,
+                            payCost: false,
+                            isTapped: false,
+                            root: root,
+                            activateETB: true));
                     }
-
-                    SelectCardEffect.Root root = SelectCardEffect.Root.Trash;
-
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                        cardSources: selectedCards,
-                        activateClass: activateClass,
-                        payCost: false,
-                        isTapped: false,
-                        root: root,
-                        activateETB: true));
                 }
             }
             #endregion
