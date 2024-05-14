@@ -22,7 +22,7 @@ namespace DCGO.CardEffects.BT16
             #endregion
 
             #region On Play
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Draw 2 and trash 2.", CanUseCondition, card);

@@ -30,7 +30,7 @@ namespace DCGO.CardEffects.BT16
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Delete an opponent's Digimon with 6000 DP or less, if the effect didn't delete, play a level 4 or lower SoC Digimon.", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Delete an opponent's Digimon with 6000 DP or less, if the effect didn't delete, play a level 4 or lower [SoC] card.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -48,7 +48,7 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (CardEffectCommons.IsExistOnTrash(cardSource))
                     {
-                        if (cardSource.Level <= 4 && cardSource.ContainsTraits("SoC"))
+                        if (cardSource.Level <= 4 && cardSource.ContainsTraits("SoC") && (cardSource.IsDigimon || cardSource.IsDigiEgg))
                         {
                             return true;
                         }
@@ -162,7 +162,51 @@ namespace DCGO.CardEffects.BT16
                 }
             }
             #endregion
-            
+
+            #region End of Attack - Inherited Effect
+            if (timing == EffectTiming.OnEndAttack)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Unsuspend this Digimon.", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetIsInheritedEffect(true);
+                activateClass.SetHashString("Unsuspend_BT16_076");
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[End of Attack] [Once Per Turn] If your opponent has 1 or more memory, unsuspend this Digimon.";
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (card.Owner.Enemy.MemoryForPlayer >= 1)
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                {
+
+                    Permanent selectedPermanent = card.PermanentOfThisCard();
+
+                    yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { selectedPermanent }, activateClass).Unsuspend());
+
+                }
+            }
+            #endregion
+
             return cardEffects;
         }
     }
