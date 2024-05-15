@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.netpyoung.webp": {
+      "version": "https://github.com/netpyoung/unity.webp.git?path=unity_project/Assets/unity.webp#0.3.10",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "a502ba690d177f11db4a01043620948229f72574"
+    },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
       "depth": 0,
