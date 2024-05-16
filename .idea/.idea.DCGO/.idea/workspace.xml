@@ -4,12 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1f770e58-b781-4cb0-ad93-4c50994f611d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.DCGO/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.DCGO/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Opening.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Opening.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/LobbyManager_RandomMatch.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/LobbyManager_RandomMatch.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/ProjectSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/ProjectSettings.asset" afterDir="false" />
-    </list>
+    <list default="true" id="1f770e58-b781-4cb0-ad93-4c50994f611d" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -104,7 +99,7 @@
       <workItem from="1704380154591" duration="3621000" />
       <workItem from="1705445110111" duration="617000" />
       <workItem from="1707092728240" duration="644000" />
-      <workItem from="1715820047500" duration="22060000" />
+      <workItem from="1715820047500" duration="22601000" />
     </task>
     <servers />
   </component>
