@@ -13,7 +13,7 @@ namespace DCGO.CardEffects.BT16
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Trash a card to gain 2 memory.", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Trash a card to gain 1 memory.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
