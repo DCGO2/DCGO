@@ -2,15 +2,9 @@
 using UnityEngine;
 using System.IO;
 using System;
-using System.Text;
 using System.Threading.Tasks;
 using UnityEngine.Networking;
-using UnityEditor.PackageManager;
-using System.Security.Policy;
 using WebP;
-using UnityEngine.Rendering;
-using System.Data;
-using UnityEngine.XR;
 
 public class StreamingAssetsUtility
 {
