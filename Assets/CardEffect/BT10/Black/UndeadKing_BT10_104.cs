@@ -21,7 +21,7 @@ public class UndeadKing_BT10_104 : CEntity_Effect
             bool CanUseCondition(Hashtable hashtable)
             {
                 return card.Owner.GetBattleAreaPermanents().Some(permanet =>
-                    permanet.TopCard.CardNames.Contains("Nene Amano") || permanet.TopCard.CardNames.Contains("NeneAmano"));
+                    permanet.TopCard.ContainsCardName("Nene Amano") || permanet.TopCard.ContainsCardName("NeneAmano"));
             }
 
             bool CardCondition(CardSource cardSource)
@@ -44,7 +44,7 @@ public class UndeadKing_BT10_104 : CEntity_Effect
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                if (cardSource.CardNames.Contains("DarkKnightmon"))
+                if (cardSource.ContainsCardName("DarkKnightmon"))
                 {
                     if (CardEffectCommons.CanPlayAsNewPermanent(
                         cardSource: cardSource,
@@ -71,7 +71,7 @@ public class UndeadKing_BT10_104 : CEntity_Effect
                     card.Owner,
                     activateClass).AddTrashCardsFromLibraryTop());
 
-                #region ƒfƒWƒNƒƒX‚Åƒgƒ‰ƒbƒVƒ…‚ğ‘I‘ğ‰Â”\
+                #region ï¿½fï¿½Wï¿½Nï¿½ï¿½ï¿½Xï¿½Åƒgï¿½ï¿½ï¿½bï¿½Vï¿½ï¿½ï¿½ï¿½Iï¿½ï¿½ï¿½Â”\
                 AddMaxTrashCountDigiXrosClass addMaxTrashCountDigiXrosClass = new AddMaxTrashCountDigiXrosClass();
                 addMaxTrashCountDigiXrosClass.SetUpICardEffect("Can select DigiXros cards from trash", CanUseCondition1, card);
                 addMaxTrashCountDigiXrosClass.SetUpAddMaxTrashCountDigiXrosClass(getMaxTrashCount: GetCount);
@@ -146,7 +146,7 @@ public class UndeadKing_BT10_104 : CEntity_Effect
                         activateETB: true));
                 }
 
-                #region ƒfƒWƒNƒƒX‚Åƒgƒ‰ƒbƒVƒ…‚ğ‘I‘ğ‰Â”\‰ğœ
+                #region ï¿½fï¿½Wï¿½Nï¿½ï¿½ï¿½Xï¿½Åƒgï¿½ï¿½ï¿½bï¿½Vï¿½ï¿½ï¿½ï¿½Iï¿½ï¿½ï¿½Â”\ï¿½ï¿½ï¿½ï¿½
                 card.Owner.UntilCalculateFixedCostEffect.Remove(getCardEffect);
                 #endregion
             }

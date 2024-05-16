@@ -78,7 +78,7 @@ namespace DCGO.CardEffects.LM
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card))
                     {
-                        if (!permanent.TopCard.IsDigiEgg)
+                        if (!permanent.TopCard.IsDigiEgg || !permanent.TopCard.IsOption)
                         {
                             if (permanent.DigivolutionCards.Count(CanSelectCardCondition) >= 1)
                             {
@@ -179,7 +179,7 @@ namespace DCGO.CardEffects.LM
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card))
                     {
-                        if (!permanent.TopCard.IsDigiEgg)
+                        if (!permanent.TopCard.IsDigiEgg || !permanent.TopCard.IsOption)
                         {
                             if (permanent.DigivolutionCards.Count(CanSelectCardCondition) >= 1)
                             {

@@ -116,7 +116,7 @@ public class Ardamon_BT7_014 : CEntity_Effect
                 {
                     if (CardEffectCommons.IsOwnerTurn(card))
                     {
-                        if (card.PermanentOfThisCard().TopCard.CardTraits.Contains("Hybrid") || card.PermanentOfThisCard().TopCard.CardTraits.Contains("TenWarriors") || card.PermanentOfThisCard().TopCard.CardTraits.Contains("Ten Warriors"))
+                        if (card.PermanentOfThisCard().TopCard.ContainsTraits("Hybrid") || card.PermanentOfThisCard().TopCard.ContainsTraits("TenWarriors") || card.PermanentOfThisCard().TopCard.ContainsTraits("Ten Warriors"))
                         {
                             if (card != card.PermanentOfThisCard().TopCard)
                             {
