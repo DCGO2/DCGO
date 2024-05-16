@@ -225,8 +225,8 @@ public class PhotonWaitController : MonoBehaviour
         {
             key += "_" + PhotonNetwork.CurrentRoom.Name;
         }
-        
-        key += "_" + UnityEngine.Random.Range(0, 9999999).ToString();
+        //TODO Currently Disabled For Alpha Testing To Fix Xross Issues
+        //key += "_" + UnityEngine.Random.Range(0, 9999999).ToString();
 
         keys.Add(key);
 
