@@ -40,7 +40,7 @@ public class Ponechessmon_BT13_035 : CEntity_Effect
             {
                 if (cardSource != null)
                 {
-                    if (cardSource.ContainsCardName("Chessmon"))
+                    if (cardSource.CardNames.Contains("Chessmon"))
                     {
                         if (cardSource.IsDigimon)
                         {

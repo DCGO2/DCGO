@@ -42,17 +42,7 @@ public class Solgarumon_BT14_079 : CEntity_Effect
                     {
                         if (cardSource.HasLevel)
                         {
-                            if (cardSource.CardTraits.Contains("Dark Animal"))
-                            {
-                                return true;
-                            }
-
-                            if (cardSource.CardTraits.Contains("DarkAnimal"))
-                            {
-                                return true;
-                            }
-
-                            if (cardSource.CardTraits.Contains("SoC"))
+                            if (cardSource.CardTraits.Contains("Dark Animal") || cardSource.CardTraits.Contains("DarkAnimal") || cardSource.CardTraits.Contains("SoC"))
                             {
                                 return true;
                             }
@@ -215,17 +205,7 @@ public class Solgarumon_BT14_079 : CEntity_Effect
             {
                 if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
                 {
-                    if (permanent.TopCard.CardTraits.Contains("Dark Animal"))
-                    {
-                        return true;
-                    }
-
-                    if (permanent.TopCard.CardTraits.Contains("DarkAnimal"))
-                    {
-                        return true;
-                    }
-
-                    if (permanent.TopCard.CardTraits.Contains("SoC"))
+                    if (permanent.TopCard.CardTraits.Contains("Dark Animal") || permanent.TopCard.CardTraits.Contains("DarkAnimal") ||permanent.TopCard.CardTraits.Contains("SoC"))
                     {
                         return true;
                     }

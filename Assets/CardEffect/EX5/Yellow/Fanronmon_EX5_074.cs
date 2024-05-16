@@ -360,6 +360,11 @@ public class Fanronmon_EX5_074 : CEntity_Effect
                     {
                         return true;
                     }
+
+                    if (cardEffect.IsDigimonEffect && cardEffect.IsSecurityEffect)
+                    {
+                        return true;
+                    }
                 }
 
                 return false;

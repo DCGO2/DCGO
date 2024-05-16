@@ -54,10 +54,7 @@ public class Pukumon_BT15_030 : CEntity_Effect
                 {
                     if (permanent.DigivolutionCards.Count((cardSource) => !cardSource.CanNotTrashFromDigivolutionCards(activateClass)) >= 1)
                     {
-                        if (!permanent.TopCard.CanNotBeAffected(activateClass))
-                        {
-                            return true;
-                        }
+                        return true;
                     }
                 }
 
