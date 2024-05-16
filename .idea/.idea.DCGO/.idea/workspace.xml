@@ -5,21 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1f770e58-b781-4cb0-ad93-4c50994f611d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.DCGO/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.DCGO/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.DCGO/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.DCGO/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Opening.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Opening.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/ContinuousController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/ContinuousController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/DigiXrosEffectObject.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/DigiXrosEffectObject.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/EvolutionEffectObject.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/EvolutionEffectObject.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/GManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/GManager.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/LobbyManager_RandomMatch.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/LobbyManager_RandomMatch.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/PhotonWaitController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/PhotonWaitController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/SelectDigiXrosClass.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/SelectDigiXrosClass.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/StreamingAssetsUtility.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/StreamingAssetsUtility.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Packages/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/Packages/manifest.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Packages/packages-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/Packages/packages-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/PackageManagerSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/PackageManagerSettings.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/ProjectSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/ProjectSettings.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -115,7 +104,7 @@
       <workItem from="1704380154591" duration="3621000" />
       <workItem from="1705445110111" duration="617000" />
       <workItem from="1707092728240" duration="644000" />
-      <workItem from="1715820047500" duration="16268000" />
+      <workItem from="1715820047500" duration="22060000" />
     </task>
     <servers />
   </component>
