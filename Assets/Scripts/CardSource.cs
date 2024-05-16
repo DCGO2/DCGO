@@ -1392,6 +1392,21 @@ public class CardSource : MonoBehaviour
     }
     #endregion
 
+    #region whether this card has "SoC" trait
+    public bool HasSocTraits
+    {
+        get
+        {
+            if (CardTraits.Contains("SoC"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+    #endregion
+
     #region whether this card has at least 1 trait that contains "Beast Dragon"
     public bool HasBeastDragonTraits
     {
