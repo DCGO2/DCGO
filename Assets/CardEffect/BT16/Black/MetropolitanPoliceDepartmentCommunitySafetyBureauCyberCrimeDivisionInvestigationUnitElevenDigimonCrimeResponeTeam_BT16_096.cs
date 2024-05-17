@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.BT16
 {
     public class MetropolitanPoliceDepartmentCommunitySafetyBureauCyberCrimeDivisionInvestigationUnitElevenDigimonCrimeResponeTeam_BT16_096 : CEntity_Effect
     {
