@@ -146,6 +146,10 @@ public class Analogman_BT11_092 : CEntity_Effect
 
             bool PermanentCondition(Permanent permanent)
             {
+                if (permanent.IsDigimon || permanent.IsTamer)
+                {
+                    return false;
+                }
                 return CardEffectCommons.IsOpponentPermanent(permanent, card);
             }
 
