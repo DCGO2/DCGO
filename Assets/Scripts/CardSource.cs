@@ -1407,6 +1407,26 @@ public class CardSource : MonoBehaviour
     }
     #endregion
 
+    #region whether this card has "D-Brigade"/"DigiPolice trait
+    public bool HasDBrigadeorDigiPoliceTraits
+    {
+        get
+        {
+            if (CardTraits.Contains("D-Brigade"))
+            {
+                return true;
+            }
+
+            if (CardTraits.Contains("DigiPolice"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+    #endregion
+
     #region whether this card has at least 1 trait that contains "Beast Dragon"
     public bool HasBeastDragonTraits
     {
