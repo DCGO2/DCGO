@@ -21,7 +21,7 @@ public class UndeadKing_BT10_104 : CEntity_Effect
             bool CanUseCondition(Hashtable hashtable)
             {
                 return card.Owner.GetBattleAreaPermanents().Some(permanet =>
-                    permanet.TopCard.ContainsCardName("Nene Amano") || permanet.TopCard.ContainsCardName("NeneAmano"));
+                    permanet.TopCard.CardNames.Contains("Nene Amano") || permanet.TopCard.CardNames.Contains("NeneAmano"));
             }
 
             bool CardCondition(CardSource cardSource)

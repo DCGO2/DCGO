@@ -31,7 +31,20 @@ public class Fenrirugamon_BT14_081 : CEntity_Effect
                     {
                         if (cardSource.HasLevel)
                         {
-                            return true;
+                            if (cardSource.CardTraits.Contains("Dark Animal"))
+                            {
+                                return true;
+                            }
+
+                            if (cardSource.CardTraits.Contains("DarkAnimal"))
+                            {
+                                return true;
+                            }
+
+                            if (cardSource.CardTraits.Contains("SoC"))
+                            {
+                                return true;
+                            }
                         }
                     }
                 }

@@ -31,22 +31,22 @@ public class Moonmon_EX5_002 : CEntity_Effect
                 {
                     if (permanent.IsTamer)
                     {
-                        if (permanent.TopCard.ContainsTraits("Light Fang"))
+                        if (permanent.TopCard.CardTraits.Contains("Light Fang"))
                         {
                             return true;
                         }
 
-                        if (permanent.TopCard.ContainsTraits("LightFung"))
+                        if (permanent.TopCard.CardTraits.Contains("LightFang"))
                         {
                             return true;
                         }
 
-                        if (permanent.TopCard.ContainsTraits("Night Claw"))
+                        if (permanent.TopCard.CardTraits.Contains("Night Claw"))
                         {
                             return true;
                         }
 
-                        if (permanent.TopCard.ContainsTraits("NightClaw"))
+                        if (permanent.TopCard.CardTraits.Contains("NightClaw"))
                         {
                             return true;
                         }

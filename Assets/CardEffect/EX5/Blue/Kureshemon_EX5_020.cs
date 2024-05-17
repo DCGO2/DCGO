@@ -24,7 +24,7 @@ public class Kureshemon_EX5_020 : CEntity_Effect
                         return true;
                     }
 
-                    if (targetPermanent.TopCard.CardTraits.Contains("LightFung"))
+                    if (targetPermanent.TopCard.CardTraits.Contains("LightFang"))
                     {
                         return true;
                     }

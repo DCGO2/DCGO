@@ -16,7 +16,7 @@ public class BaalmonXAntibody_BT12_082 : CEntity_Effect
         {
             bool PermanentCondition(Permanent targetPermanent)
             {
-                return targetPermanent.TopCard.ContainsCardName("Baalmon");
+                return targetPermanent.TopCard.CardNames.Contains("Baalmon");
             }
 
             cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 0, ignoreDigivolutionRequirement: false, card: card, condition: null));
@@ -40,12 +40,12 @@ public class BaalmonXAntibody_BT12_082 : CEntity_Effect
                 {
                     if (cardSource.Owner == card.Owner)
                     {
-                        if (cardSource.ContainsCardName("X Antibody"))
+                        if (cardSource.CardNames.Contains("X Antibody"))
                         {
                             return true;
                         }
 
-                        if (cardSource.ContainsCardName("XAntibody"))
+                        if (cardSource.CardNames.Contains("XAntibody"))
                         {
                             return true;
                         }

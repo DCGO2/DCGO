@@ -120,10 +120,11 @@ public class Megadramon_BT15_064 : CEntity_Effect
                 {
                     if (permanent.TopCard.GetCostItself <= 3)
                     {
-                        if (permanent.IsDigimon || permanent.IsTamer)
+                        if (!permanent.TopCard.IsDigiEgg || !permanent.TopCard.IsOption)
                         {
                             return true;
                         }
+                        
                     }
                 }
 

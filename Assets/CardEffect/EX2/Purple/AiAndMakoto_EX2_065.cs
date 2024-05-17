@@ -30,7 +30,7 @@ public class AiAndMakoto_EX2_065 : CEntity_Effect
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                return cardSource.ContainsCardName("Beelzemon Blast Mode") || cardSource.ContainsCardName("BeelzemonBlastMode");
+                return cardSource.CardNames.Contains("Beelzemon Blast Mode") || cardSource.CardNames.Contains("BeelzemonBlastMode");
             }
 
             bool PermanentCondition(Permanent permanent) => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
