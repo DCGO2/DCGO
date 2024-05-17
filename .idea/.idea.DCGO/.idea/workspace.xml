@@ -6,23 +6,13 @@
   <component name="ChangeListManager">
     <list default="true" id="1f770e58-b781-4cb0-ad93-4c50994f611d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.DCGO/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.DCGO/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardBaseEntity/ST5/Black/Digimon/コマンドラモン-ST5-05.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardBaseEntity/ST5/Black/Digimon/コマンドラモン-ST5-05.asset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT10/Black/UndeadKing_BT10_104.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT10/Black/UndeadKing_BT10_104.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT12/Blue/ImperialdramonFighterMode_BT12_031.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT12/Blue/ImperialdramonFighterMode_BT12_031.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT12/Purple/BaalmonXAntibody_BT12_082.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT12/Purple/BaalmonXAntibody_BT12_082.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT13/Purple/GizmonAT_BT13_083.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT13/Purple/GizmonAT_BT13_083.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT13/Yellow/Ponechessmon_BT13_035.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT13/Yellow/Ponechessmon_BT13_035.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT14/Purple/Fenrirugamon_BT14_081.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT14/Purple/Fenrirugamon_BT14_081.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT14/Purple/Solgarumon_BT14_079.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT14/Purple/Solgarumon_BT14_079.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT15/Black/Megadramon_BT15_064.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT15/Black/Megadramon_BT15_064.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT15/Blue/Pukumon_BT15_030.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT15/Blue/Pukumon_BT15_030.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT7/Red/Ardamon_BT7_014.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT7/Red/Ardamon_BT7_014.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/CardEffect/EX2/Purple/AiAndMakoto_EX2_065.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/EX2/Purple/AiAndMakoto_EX2_065.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/EX3/Blue/Sourai_EX3_067.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/EX3/Blue/Sourai_EX3_067.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/EX4/Green/Blackcentgargomon_EX4_037.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/EX4/Green/Blackcentgargomon_EX4_037.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/EX5/Blue/Kureshemon_EX5_020.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/EX5/Blue/Kureshemon_EX5_020.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/CardEffect/EX5/Blue/Moonmon_EX5_002.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/EX5/Blue/Moonmon_EX5_002.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/EX5/Yellow/Fanronmon_EX5_074.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/EX5/Yellow/Fanronmon_EX5_074.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/LM/Blue/Amphimon_LM_005.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/LM/Blue/Amphimon_LM_005.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -118,7 +108,7 @@
       <workItem from="1704380154591" duration="3621000" />
       <workItem from="1705445110111" duration="617000" />
       <workItem from="1707092728240" duration="644000" />
-      <workItem from="1715820047500" duration="27171000" />
+      <workItem from="1715820047500" duration="29773000" />
     </task>
     <servers />
   </component>
