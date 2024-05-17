@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.BT16
 {
     public class Dorugoramon_BT16_064 : CEntity_Effect
     {
@@ -48,7 +49,7 @@ namespace DCGO.CardEffects
             #endregion
 
             #region When Digivolving
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("", CanUseCondition, card);
@@ -58,6 +59,27 @@ namespace DCGO.CardEffects
                 string EffectDiscription()
                 {
                     return "[When Digivolving] If this Digimon has a Tamer card with the [SoC] trait in its digivolution cards, delete 1 of your opponent's unsuspended Digimon or Tamers.";
+                }
+
+                bool HasTamerWithTrait(CardSource cardSource)
+                {
+                    return cardSource.HasSocTraits;
+                }
+
+                bool CanSelectPermanentCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card))
+                    {
+                        if(permanent.IsDigimon || permanent.IsTamer)
+                        {
+                            if (!permanent.IsSuspended)
+                            {
+                                return true;
+                            }
+                        }
+                    }
+
+                    return false;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -72,6 +94,24 @@ namespace DCGO.CardEffects
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    if(card.PermanentOfThisCard().DigivolutionCards.Count(HasTamerWithTrait) > 0)
+                    {
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectPermanentCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: null,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Destroy,
+                            cardEffect: activateClass);
+                    }
+
                     yield return null;
                 }
             }
