@@ -6,13 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="1f770e58-b781-4cb0-ad93-4c50994f611d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.DCGO/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.DCGO/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT10/Black/UndeadKing_BT10_104.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT10/Black/UndeadKing_BT10_104.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT12/Blue/ImperialdramonFighterMode_BT12_031.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT12/Blue/ImperialdramonFighterMode_BT12_031.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT14/Purple/Fenrirugamon_BT14_081.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT14/Purple/Fenrirugamon_BT14_081.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT15/Black/Megadramon_BT15_064.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT15/Black/Megadramon_BT15_064.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/EX2/Purple/AiAndMakoto_EX2_065.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/EX2/Purple/AiAndMakoto_EX2_065.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/EX5/Blue/Kureshemon_EX5_020.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/EX5/Blue/Kureshemon_EX5_020.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/EX5/Blue/Moonmon_EX5_002.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/EX5/Blue/Moonmon_EX5_002.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT11/Black/Analogman_BT11_092.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT11/Black/Analogman_BT11_092.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -108,7 +102,7 @@
       <workItem from="1704380154591" duration="3621000" />
       <workItem from="1705445110111" duration="617000" />
       <workItem from="1707092728240" duration="644000" />
-      <workItem from="1715820047500" duration="29773000" />
+      <workItem from="1715820047500" duration="30965000" />
     </task>
     <servers />
   </component>
