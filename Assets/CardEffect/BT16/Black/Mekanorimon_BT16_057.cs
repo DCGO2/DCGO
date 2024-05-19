@@ -23,124 +23,126 @@ namespace DCGO.CardEffects.BT16
             #endregion
 
             #region On Play
-            ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("<De-Digivolve 1>", CanUseCondition, card);
-            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
-            cardEffects.Add(activateClass);
-
-            string EffectDiscription()
+            if(timing == EffectTiming.OnEnterFieldAnyone)
             {
-                return "[On Play] By placing 1 of your other Digimon with the [DigiPolice] trait as this Digimon's bottom digivolution card, <De-Digivolve 1> 1 of your opponent's Digimon.";
-            }
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("<De-Digivolve 1>", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                cardEffects.Add(activateClass);
 
-            bool CanSelectPermanentCondition(Permanent permanent)
-            {
-                if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                string EffectDiscription()
                 {
-                    if (permanent != card.PermanentOfThisCard())
+                    return "[On Play] By placing 1 of your other Digimon with the [DigiPolice] trait as this Digimon's bottom digivolution card, <De-Digivolve 1> 1 of your opponent's Digimon.";
+                }
+
+                bool CanSelectPermanentCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent.TopCard.CardTraits.Contains("DigiPolice"))
+                        if (permanent != card.PermanentOfThisCard())
+                        {
+                            if (permanent.TopCard.CardTraits.Contains("DigiPolice"))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+
+                    return false;
+                }
+
+                bool CanSelectOpponentPermanentCondition(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                         {
                             return true;
                         }
                     }
+
+                    return false;
                 }
 
-                return false;
-            }
-
-            bool CanSelectOpponentPermanentCondition(Permanent permanent)
-            {
-                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
-            }
-
-            bool CanUseCondition(Hashtable hashtable)
-            {
-                return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-            }
-
-            bool CanActivateCondition(Hashtable hashtable)
-            {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        return true;
-                    }
-                }
-
-                return false;
-            }
-
-            IEnumerator ActivateCoroutine(Hashtable hashtable)
-            {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
-                {
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                    {
-                        int maxCount = 1;
-
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectPermanentCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: true,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: null,
-                            afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
-                            mode: SelectPermanentEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                        if(card.PermanentOfThisCard().cardSources.Count > 1)
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                         {
-                            if(CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentPermanentCondition))
-                            {
-                                selectPermanentEffect.SetUp(
-                                    selectPlayer: card.Owner,
-                                    canTargetCondition: CanSelectOpponentPermanentCondition,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    maxCount: maxCount,
-                                    canNoSelect: false,
-                                    canEndNotMax: false,
-                                    selectPermanentCoroutine: null,
-                                    afterSelectPermanentCoroutine: AfterSelectOpponentPermanentCoroutine,
-                                    mode: SelectPermanentEffect.Mode.Custom,
-                                    cardEffect: activateClass);
+                            int maxCount = 1;
 
-                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                            selectPermanentEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: CanSelectPermanentCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: maxCount,
+                                canNoSelect: true,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: null,
+                                afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
+                                mode: SelectPermanentEffect.Mode.Custom,
+                                cardEffect: activateClass);
+
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                            if (card.PermanentOfThisCard().cardSources.Count > 1)
+                            {
+                                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentPermanentCondition))
+                                {
+                                    selectPermanentEffect.SetUp(
+                                        selectPlayer: card.Owner,
+                                        canTargetCondition: CanSelectOpponentPermanentCondition,
+                                        canTargetCondition_ByPreSelecetedList: null,
+                                        canEndSelectCondition: null,
+                                        maxCount: maxCount,
+                                        canNoSelect: false,
+                                        canEndNotMax: false,
+                                        selectPermanentCoroutine: null,
+                                        afterSelectPermanentCoroutine: AfterSelectOpponentPermanentCoroutine,
+                                        mode: SelectPermanentEffect.Mode.Custom,
+                                        cardEffect: activateClass);
+
+                                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                                }
                             }
                         }
                     }
+
+                    yield return null;
                 }
 
-                yield return null;
-            }
-
-            IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
-            {
-                foreach(Permanent permanent in permanents)
+                IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(
-                        new List<CardSource>() { permanent.TopCard },
-                        activateClass));
+                    foreach (Permanent permanent in permanents)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(
+                            new List<CardSource>() { permanent.TopCard },
+                            activateClass));
+                    }
                 }
-            }
 
-            IEnumerator AfterSelectOpponentPermanentCoroutine(List<Permanent> permanents)
-            {
-                foreach (Permanent permanent in permanents)
+                IEnumerator AfterSelectOpponentPermanentCoroutine(List<Permanent> permanents)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(new IDegeneration(permanent, 1, activateClass).Degeneration());
+                    foreach (Permanent permanent in permanents)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(new IDegeneration(permanent, 1, activateClass).Degeneration());
+                    }
                 }
             }
-
             #endregion
 
             #region Your Turn
