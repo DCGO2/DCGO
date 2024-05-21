@@ -227,7 +227,10 @@ public class PhotonWaitController : MonoBehaviour
         }
         //TODO Currently Disabled For Alpha Testing To Fix Xross Issues
         //key += "_" + UnityEngine.Random.Range(0, 9999999).ToString();
-
+        int synchronizedSeed = PhotonNetwork.CurrentRoom.Name.GetHashCode() + waitCount;
+        System.Random random = new System.Random(synchronizedSeed);
+        key += "_" + random.Next(0, 9999999).ToString();
+        
         keys.Add(key);
 
         if (!GManager.instance.IsAI)
