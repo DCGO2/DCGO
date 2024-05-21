@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
+using UnityEngine;
 
 namespace DCGO.CardEffects.BT16
 {
@@ -15,6 +17,7 @@ namespace DCGO.CardEffects.BT16
                 activateClass.SetUpICardEffect("Memory +1", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
+                activateClass.SetHashString("BT16-005-Memory+1");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -43,8 +46,10 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
+                    Debug.Log($"CanUseCondition: {CardEffectCommons.IsExistOnBattleArea(card)}");
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
+                        Debug.Log($"CanUseCondition: {CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition)}");
                         if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition))
                         {
                             return true;
@@ -56,14 +61,18 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
+                    Debug.Log($"CanActivateCondition: {CardEffectCommons.IsExistOnBattleArea(card)}");
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
+                        Debug.Log($"CanActivateCondition: {card.Owner.CanAddMemory(activateClass)}");
                         if (card.Owner.CanAddMemory(activateClass))
                         {
+                            Debug.Log($"CanActivateCondition");
                             List<Hashtable> hashtables = CardEffectCommons.GetHashtablesFromHashtable(hashtable);
 
                             if (hashtables != null)
                             {
+                                Debug.Log($"CanActivateCondition: {hashtables.Count}");
                                 if (hashtables.Count >= 1)
                                 {
                                     return true;
@@ -77,6 +86,7 @@ namespace DCGO.CardEffects.BT16
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    Debug.Log($"ActivateCoroutine");
                     List<Hashtable> hashtables = CardEffectCommons.GetHashtablesFromHashtable(hashtable);
 
                     if (hashtables != null)
