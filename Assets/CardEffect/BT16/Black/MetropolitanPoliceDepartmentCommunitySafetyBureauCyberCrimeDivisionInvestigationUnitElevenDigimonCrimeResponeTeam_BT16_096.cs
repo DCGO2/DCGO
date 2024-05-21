@@ -91,34 +91,39 @@ namespace DCGO.CardEffects.BT16
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    List<CardSource> selectedCards = new List<CardSource>();
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: new List<Permanent>() { card.PermanentOfThisCard() }, activateClass: activateClass, successProcess: permanents => SuccessProcess(), failureProcess: null));
 
-                    if (card.Owner.LibraryCards.Count >= 1)
+                    IEnumerator SuccessProcess()
                     {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SimplifiedRevealDeckTopCardsAndSelect(
-                        revealCount: 3,
-                        simplifiedSelectCardConditions:
-                        new SimplifiedSelectCardConditionClass[]
+                        List<CardSource> selectedCards = new List<CardSource>();
+
+                        if (card.Owner.LibraryCards.Count >= 1)
                         {
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SimplifiedRevealDeckTopCardsAndSelect(
+                            revealCount: 3,
+                            simplifiedSelectCardConditions:
+                            new SimplifiedSelectCardConditionClass[]
+                            {
                         new SimplifiedSelectCardConditionClass(
                             canTargetCondition:CanSelectCardCondition,
                             message: "Select 1 Digimon card.",
                             mode: SelectCardEffect.Mode.Custom,
                             maxCount: 1,
                             selectCardCoroutine: SelectCardCoroutine),
-                        },
-                        remainingCardsPlace: RemainingCardsPlace.DeckTop,
-                        activateClass: activateClass));
+                            },
+                            remainingCardsPlace: RemainingCardsPlace.DeckTop,
+                            activateClass: activateClass));
+                        }
+
+                        IEnumerator SelectCardCoroutine(CardSource cardSource)
+                        {
+                            selectedCards.Add(cardSource);
+
+                            yield return null;
+                        }
+
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedCards, activateClass: activateClass, payCost: false, isTapped: false, root: SelectCardEffect.Root.Hand, activateETB: true));
                     }
-
-                    IEnumerator SelectCardCoroutine(CardSource cardSource)
-                    {
-                        selectedCards.Add(cardSource);
-
-                        yield return null;
-                    }
-
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedCards, activateClass: activateClass, payCost: false, isTapped: false, root: SelectCardEffect.Root.Hand, activateETB: true));
                 }
             }
             #endregion

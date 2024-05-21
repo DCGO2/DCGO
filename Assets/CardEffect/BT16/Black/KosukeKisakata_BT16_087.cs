@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 using System.Linq;
 
 namespace DCGO.CardEffects.BT16
@@ -103,7 +104,7 @@ namespace DCGO.CardEffects.BT16
             if (timing == EffectTiming.OnEndTurn)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play 1 [Shuu Yulin] from this Digimon's digivolution cards", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Play 1 [Kosuke Kisakata] from this Digimon's digivolution cards", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
@@ -133,8 +134,10 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
+                    Debug.Log($"CanUseCondition: {CardEffectCommons.IsExistOnBattleArea(card)}");
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
+                        Debug.Log($"CanUseCondition: true");
                         return true;
                     }
 
@@ -143,10 +146,13 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
+                    Debug.Log($"CanActivateCondition: {CardEffectCommons.IsExistOnBattleArea(card)}");
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
+                        Debug.Log($"CanActivateCondition: {card.PermanentOfThisCard().DigivolutionCards.Count(CanSelectCardCondition)}");
                         if (card.PermanentOfThisCard().DigivolutionCards.Count(CanSelectCardCondition) >= 1)
                         {
+                            Debug.Log($"CanActivateCondition: true");
                             return true;
                         }
                     }
@@ -156,14 +162,18 @@ namespace DCGO.CardEffects.BT16
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
+                    Debug.Log($"ActivateCoroutine: {CardEffectCommons.IsExistOnBattleArea(card)}");
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
+                        Debug.Log($"ActivateCoroutine: {card.BaseENGCardNameFromEntity}");
                         Permanent selectedPermanent = card.PermanentOfThisCard();
-
+                        Debug.Log($"ActivateCoroutine: {(selectedPermanent != null)}");
                         if (selectedPermanent != null)
                         {
+                            Debug.Log($"ActivateCoroutine: {selectedPermanent.DigivolutionCards.Count(CanSelectCardCondition)}");
                             if (selectedPermanent.DigivolutionCards.Count(CanSelectCardCondition) >= 1)
                             {
+                                Debug.Log($"ActivateCoroutine: TRUE");
                                 int maxCount = 1;
 
                                 List<CardSource> selectedCards = new List<CardSource>();

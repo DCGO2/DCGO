@@ -38,9 +38,9 @@ namespace DCGO.CardEffects.BT16
             #endregion
 
             #region Collision
-            if(timing == EffectTiming.None)
+            if(timing == EffectTiming.OnAllyAttack)
             {
-                cardEffects.Add(CardEffectFactory.CollisionSelfStaticEffect(false,card));
+                cardEffects.Add(CardEffectFactory.CollisionSelfStaticEffect(false,card, null));
             }
             #endregion
 

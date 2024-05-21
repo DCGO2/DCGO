@@ -43,8 +43,8 @@ namespace DCGO.CardEffects.BT16
             #region Collision - Blocker
             if(timing == EffectTiming.None)
             {
-                cardEffects.Add(CardEffectFactory.CollisionSelfStaticEffect(false,card));
-                cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(false,card,null));
+                cardEffects.Add(CardEffectFactory.CollisionSelfStaticEffect(false, card, null));
+                cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(false, card, null));
             }
             #endregion
 
@@ -52,7 +52,7 @@ namespace DCGO.CardEffects.BT16
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Delete Unsuspended Digimon or Tamer", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -121,7 +121,7 @@ namespace DCGO.CardEffects.BT16
             if(timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Unsuspend this Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("BT16_064_Unsuspend");
                 cardEffects.Add(activateClass);

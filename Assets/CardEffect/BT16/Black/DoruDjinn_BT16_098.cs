@@ -93,12 +93,10 @@ namespace DCGO.CardEffects.BT16
 
                             yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                         }
-
-                        List<Permanent> destroyTargetPermanents = card.Owner.Enemy.GetBattleAreaDigimons().Filter(LowestPlayCostCondition);
-                        yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(destroyTargetPermanents, CardEffectCommons.CardEffectHashtable(activateClass)).Destroy());
                     }
 
-                    yield return null;
+                    List<Permanent> destroyTargetPermanents = card.Owner.Enemy.GetBattleAreaDigimons().Filter(LowestPlayCostCondition);
+                    yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(destroyTargetPermanents, CardEffectCommons.CardEffectHashtable(activateClass)).Destroy());
                 }
             }
             #endregion

@@ -28,9 +28,9 @@ namespace DCGO.CardEffects.BT16
                     {
                         if (permanent.IsDigimon)
                         {
-                            if (permanent != card.PermanentOfThisCard())
+                            if (permanent.HasBlocker) 
                             {
-                                if(permanent.HasBlocker)
+                                if (permanent != card.PermanentOfThisCard())
                                 {
                                     return true;
                                 }
@@ -77,7 +77,12 @@ namespace DCGO.CardEffects.BT16
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
+                    List<Hashtable> hashtables = CardEffectCommons.GetHashtablesFromHashtable(hashtable);
+
+                    if (hashtables != null)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(hashtables.Count, activateClass));
+                    }
                 }
             }
 

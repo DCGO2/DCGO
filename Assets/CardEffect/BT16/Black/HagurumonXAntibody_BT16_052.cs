@@ -22,7 +22,8 @@ namespace DCGO.CardEffects.BT16
             }
             #endregion
 
-            if (timing == EffectTiming.None)
+            #region When Digivolving
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 [KoHagurumon] token", CanUseCondition, card);
@@ -57,9 +58,10 @@ namespace DCGO.CardEffects.BT16
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayKoHagurumonToken(activateClass));
                 }
             }
+            #endregion
 
             #region Inherited Effect
-            cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(false, card, null));
+            cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(true, card, null));
             #endregion
 
             return cardEffects;

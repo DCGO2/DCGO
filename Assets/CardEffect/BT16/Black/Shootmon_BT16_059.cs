@@ -45,33 +45,25 @@ namespace DCGO.CardEffects.BT16
 
                 string EffectDiscription()
                 {
-                    return "[On Play] <De-Digivolve 1> 1 of your opponent's Digimon with DP less than or equal to this Digimon's DP. Then, delete 1 Digimon with a play cost of 3 or less.";
-                }
-
-                bool CanSelectDeDigivolvePermanentCondition(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                    {
-                        if (permanent.DP <= card.PermanentOfThisCard().DP)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return "[On Play] If you have 3 or more security cards, <De-Digivolve 1> 1 of your opponent's Digimon. If you have 3 or fewer security cards, delete 1 of your opponent's Digimon with a play cost of 6 or less.";
                 }
 
                 bool CanSelectDeletePermanentCondition(Permanent permanent)
                 {
                     if(CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                     {
-                        if(permanent.TopCard.HasPlayCost && permanent.TopCard.GetCostItself <= 3)
+                        if(permanent.TopCard.HasPlayCost && permanent.TopCard.GetCostItself <= 6)
                         {
                             return true;
                         }
                     }
 
                     return false;
+                }
+
+                bool CanSelectDeDigivolvePermanentCondition(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -88,7 +80,7 @@ namespace DCGO.CardEffects.BT16
                 {
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectDeDigivolvePermanentCondition))
+                    if(card.Owner.SecurityCards.Count >= 3)
                     {
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
@@ -104,31 +96,34 @@ namespace DCGO.CardEffects.BT16
                             cardEffect: activateClass);
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                    }
 
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectDeletePermanentCondition))
-                    {
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectDeletePermanentCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: 1,
-                            canNoSelect: false,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: null,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Destroy,
-                            cardEffect: activateClass);
-
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                    }
-
-                    IEnumerator AfterSelectDedigivolveCoroutine(List<Permanent> permanents)
-                    {
-                        foreach (Permanent permanent in permanents)
+                        IEnumerator AfterSelectDedigivolveCoroutine(List<Permanent> permanents)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(new IDegeneration(permanent, 1, activateClass).Degeneration());
+                            foreach (Permanent permanent in permanents)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(new IDegeneration(permanent, 1, activateClass).Degeneration());
+                            }
+                        }
+                    }
+
+                    if(card.Owner.SecurityCards.Count <= 3)
+                    {
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectDeletePermanentCondition))
+                        {
+                            selectPermanentEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: CanSelectDeletePermanentCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: 1,
+                                canNoSelect: false,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: null,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Destroy,
+                                cardEffect: activateClass);
+
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                         }
                     }
                 }
@@ -146,27 +141,14 @@ namespace DCGO.CardEffects.BT16
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] <De-Digivolve 1> 1 of your opponent's Digimon with DP less than or equal to this Digimon's DP. Then, delete 1 Digimon with a play cost of 3 or less.";
-                }
-
-                bool CanSelectDeDigivolvePermanentCondition(Permanent permanent)
-                {
-                    if(CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                    {
-                        if(permanent.DP <= card.PermanentOfThisCard().DP)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return "[When Digivolving] If you have 3 or more security cards, <De-Digivolve 1> 1 of your opponent's Digimon. If you have 3 or fewer security cards, delete 1 of your opponent's Digimon with a play cost of 6 or less.";
                 }
 
                 bool CanSelectDeletePermanentCondition(Permanent permanent)
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent.TopCard.HasPlayCost && permanent.TopCard.GetCostItself <= 3)
+                        if (permanent.TopCard.HasPlayCost && permanent.TopCard.GetCostItself <= 6)
                         {
                             return true;
                         }
@@ -175,9 +157,14 @@ namespace DCGO.CardEffects.BT16
                     return false;
                 }
 
+                bool CanSelectDeDigivolvePermanentCondition(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -189,7 +176,7 @@ namespace DCGO.CardEffects.BT16
                 {
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectDeDigivolvePermanentCondition))
+                    if (card.Owner.SecurityCards.Count >= 3)
                     {
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
@@ -205,31 +192,34 @@ namespace DCGO.CardEffects.BT16
                             cardEffect: activateClass);
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                    }
 
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectDeletePermanentCondition))
-                    {
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectDeletePermanentCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: 1,
-                            canNoSelect: false,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: null,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Destroy,
-                            cardEffect: activateClass);
-
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                    }
-
-                    IEnumerator AfterSelectDedigivolveCoroutine(List<Permanent> permanents)
-                    {
-                        foreach (Permanent permanent in permanents)
+                        IEnumerator AfterSelectDedigivolveCoroutine(List<Permanent> permanents)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(new IDegeneration(permanent, 1, activateClass).Degeneration());
+                            foreach (Permanent permanent in permanents)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(new IDegeneration(permanent, 1, activateClass).Degeneration());
+                            }
+                        }
+                    }
+
+                    if (card.Owner.SecurityCards.Count <= 3)
+                    {
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectDeletePermanentCondition))
+                        {
+                            selectPermanentEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: CanSelectDeletePermanentCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: 1,
+                                canNoSelect: false,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: null,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Destroy,
+                                cardEffect: activateClass);
+
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                         }
                     }
                 }
@@ -242,6 +232,7 @@ namespace DCGO.CardEffects.BT16
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Unsuspend this digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetIsInheritedEffect(true);
 
                 cardEffects.Add(activateClass);
 
