@@ -10,6 +10,7 @@ namespace DCGO.CardEffects.BT16
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region Shared Effect
             string EffectDiscription()
             {
                 return "[All Turns] All of your other Digimon with the [D-Brigade] or [DigiPolice] trait get +1000 DP.";
@@ -40,13 +41,14 @@ namespace DCGO.CardEffects.BT16
 
                 return false;
             }
+            #endregion
 
             #region All Turns
             if (timing == EffectTiming.None)
             {
                 cardEffects.Add(CardEffectFactory.ChangeDPStaticEffect(
                 permanentCondition: PermanentCondition,
-                changeValue: 2000,
+                changeValue: 1000,
                 isInheritedEffect: false,
                 card: card,
                 condition: Condition,
@@ -59,7 +61,7 @@ namespace DCGO.CardEffects.BT16
             {
                 cardEffects.Add(CardEffectFactory.ChangeDPStaticEffect(
                 permanentCondition: PermanentCondition,
-                changeValue: 2000,
+                changeValue: 1000,
                 isInheritedEffect: true,
                 card: card,
                 condition: Condition,

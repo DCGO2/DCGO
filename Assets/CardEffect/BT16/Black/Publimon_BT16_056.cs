@@ -1,43 +1,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.BT16
 {
     public class Publimon_BT16_056 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
-
-            #region On Play/When Digivolving Shared
-            string EffectDiscription()
-            {
-                return "[On Play] [When Digivolving] You may place the top card of 1 of your opponent's Digimon with the [Vaccine] trait at the top of your opponent's security stack.";
-            }
-
-            bool CanSelectPermanentCondition(Permanent permanent)
-            {
-                if(CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                {
-                    if(permanent.TopCard.CardTraits.Contains("Vaccine"))
-                        return true;
-                }
-
-                return false;
-            }
-
-            bool CanActivateCondition(Hashtable hashtable)
-            {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
-                {
-                    if (CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition) >= 1)
-                        return true;
-                }
-
-                return true;
-            }
-            #endregion
 
             #region On Play
             if (timing == EffectTiming.OnEnterFieldAnyone)
@@ -47,9 +19,36 @@ namespace DCGO.CardEffects
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
+                string EffectDiscription()
+                {
+                    return "[On Play] [When Digivolving] You may place the top card of 1 of your opponent's Digimon with the [Vaccine] trait at the top of your opponent's security stack.";
+                }
+
+                bool CanSelectPermanentCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                    {
+                        if (permanent.TopCard.CardTraits.Contains("Vaccine"))
+                            return true;
+                    }
+
+                    return false;
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition) >= 1)
+                            return true;
+                    }
+
+                    return true;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -100,9 +99,36 @@ namespace DCGO.CardEffects
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
+                string EffectDiscription()
+                {
+                    return "[On Play] [When Digivolving] You may place the top card of 1 of your opponent's Digimon with the [Vaccine] trait at the top of your opponent's security stack.";
+                }
+
+                bool CanSelectPermanentCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                    {
+                        if (permanent.TopCard.CardTraits.Contains("Vaccine"))
+                            return true;
+                    }
+
+                    return false;
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition) >= 1)
+                        return true;
+                    }
+
+                    return true;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -151,6 +177,7 @@ namespace DCGO.CardEffects
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash top or bottom of opponents security", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateAllTurnsCondition, ActivateCoroutine, 1, false, EffectAllTurnsDiscription());
+                activateClass.SetHashString("Publimon_BT16_056_AllTurns");
                 cardEffects.Add(activateClass);
 
                 string EffectAllTurnsDiscription()
@@ -197,7 +224,7 @@ namespace DCGO.CardEffects
                     bool toTop = GManager.instance.userSelectionManager.SelectedBoolValue;
 
                     yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
-                        player: card.Owner,
+                        player: card.Owner.Enemy,
                         destroySecurityCount: 1,
                         cardEffect: activateClass,
                         fromTop: toTop).DestroySecurity());

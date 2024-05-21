@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.BT16
 {
     public class KoHagurumon_BT16_052_token : CEntity_Effect
     {
