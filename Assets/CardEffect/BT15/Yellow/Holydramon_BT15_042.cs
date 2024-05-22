@@ -14,7 +14,7 @@ public class Holydramon_BT15_042 : CEntity_Effect
     if (timing == EffectTiming.OnEnterFieldAnyone)
     {
       ActivateClass activateClass = new ActivateClass();
-      activateClass.SetUpICardEffect("Trash the top card of your security so that opponent's 1 Digimon gains DP -9000", CanUseCondition, card);
+      activateClass.SetUpICardEffect("Trash the top card of your security so that opponent's 1 Digimon gains DP -9000 until the end of their turn", CanUseCondition, card);
       activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
       cardEffects.Add(activateClass);
 
