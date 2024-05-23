@@ -70,7 +70,7 @@ namespace DCGO.CardEffects.BT16
                                 {
                                     Debug.Log("Looping through effects");
                                     ActivateClass activateClass1 = new ActivateClass();
-                                    activateClass1.SetUpICardEffect("", CanUseCondition2, cardSource1.PermanentOfThisCard().TopCard);
+                                    activateClass1.SetUpICardEffect(cardEffect.EffectName, CanUseCondition2, card);
                                     activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDiscription1());
                                     activateClass1.SetIsInheritedEffect(true);
                                     activateClass1.SetEffectSourcePermanent(cardSource1.PermanentOfThisCard());
@@ -97,16 +97,18 @@ namespace DCGO.CardEffects.BT16
                                         yield return ContinuousController.instance.StartCoroutine(((ActivateICardEffect)cardEffect).Activate(hashtable));
                                     }
 
+
                                     CardEffectCommons.AddEffectToPermanent(
                                         targetPermanent: cardSource1.PermanentOfThisCard(),
                                         effectDuration: EffectDuration.UntilOwnerTurnEnd,
                                         card: card,
                                         cardEffect: activateClass1,
                                         timing: EffectTiming.OnEndAttack);
+
                                 }
                             }
-
                         }
+                        
                     }
                     yield return null;
                 }
