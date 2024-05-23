@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace DCGO.CardEffects.BT16
 {
-    public class Garudamon_XAntibody_BT16_011 : CEntity_Effect
+    public class GarudamonXAntibody_BT16_011 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {

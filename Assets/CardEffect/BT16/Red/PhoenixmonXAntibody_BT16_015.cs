@@ -8,7 +8,7 @@ using Photon.Pun;
 
 namespace DCGO.CardEffects.BT16
 {
-    public class Phoenixmon_XAntibody_BT16_015 : CEntity_Effect
+    public class PhoenixmonXAntibody_BT16_015 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
@@ -30,63 +30,86 @@ namespace DCGO.CardEffects.BT16
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Add End of attack to on deletion", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Opponent's 1 Digimon gains effect", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[All Turns] When a card is removed from your opponentfs security stack, gain 1 memory.";
+                    return "";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.IsOwnerTurn(card))
-                        {
-                            if (CardEffectCommons.CanTriggerOnAttack(hashtable, card))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-                    return false;
+                    return CardEffectCommons.CanTriggerOnAttack(hashtable,card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) =>
-                        (cardSource.IsDigimon && cardSource.ContainsCardName("Phoenixmon"))
-                        || cardSource.CardNames.Contains("X Antibody") || cardSource.CardNames.Contains("XAntibody")) >= 1)
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
                         return true;
                     }
+
                     return false;
                 }
 
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
+                    Debug.Log("Running Coroutine");
 
-                    List<ICardEffect> candidateEffects = card.PermanentOfThisCard().EffectList(EffectTiming.OnDestroyedAnyone)
-                        .Clone()
-                        .Filter(cardEffect => cardEffect != null && cardEffect is ActivateICardEffect && !cardEffect.IsSecurityEffect && cardEffect.IsOnDeletion);
-
-                    foreach (ICardEffect cardEffect in candidateEffects)
+                    if(CardEffectCommons.IsOwnerTurn(card))
                     {
-                        Debug.Log(candidateEffects);
+                        Debug.Log("IsOwnerTurn");
 
-                                CardEffectCommons.AddEffectToPermanent(
-                                targetPermanent: card.PermanentOfThisCard(),
-                                effectDuration: EffectDuration.UntilOwnerTurnEnd,
-                                card: card,
-                                cardEffect: cardEffect,
-                                timing: EffectTiming.OnEndAttack);
+                        foreach (CardSource cardSource1 in card.PermanentOfThisCard().DigivolutionCards)
+                        {
+                            foreach (ICardEffect cardEffect in cardSource1.PermanentOfThisCard().EffectList(EffectTiming.OnDestroyedAnyone))
+                            {
+                                if (!cardEffect.IsSecurityEffect && cardEffect.IsOnDeletion && cardEffect.IsInheritedEffect)
+                                {
+                                    Debug.Log("Looping through effects");
+                                    ActivateClass activateClass1 = new ActivateClass();
+                                    activateClass1.SetUpICardEffect("", CanUseCondition2, cardSource1.PermanentOfThisCard().TopCard);
+                                    activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDiscription1());
+                                    activateClass1.SetIsInheritedEffect(true);
+                                    activateClass1.SetEffectSourcePermanent(cardSource1.PermanentOfThisCard());
+
+                                    string EffectDiscription1()
+                                    {
+                                        return cardEffect.EffectDiscription;
+                                    }
+
+                                    bool CanUseCondition2(Hashtable hashtable1)
+                                    {
+                                        return CardEffectCommons.CanTriggerOnEndAttack(hashtable1, card);
+                                    }
+
+                                    bool CanActivateCondition1(Hashtable hashtable1)
+                                    {
+                                        Debug.Log("Test");
+                                        return CardEffectCommons.IsExistOnBattleArea(card);
+                                    }
+
+                                    IEnumerator ActivateCoroutine1(Hashtable hashtable)
+                                    {
+                                        Debug.Log("Activating Added effect");
+                                        yield return ContinuousController.instance.StartCoroutine(((ActivateICardEffect)cardEffect).Activate(hashtable));
+                                    }
+
+                                    CardEffectCommons.AddEffectToPermanent(
+                                        targetPermanent: cardSource1.PermanentOfThisCard(),
+                                        effectDuration: EffectDuration.UntilOwnerTurnEnd,
+                                        card: card,
+                                        cardEffect: activateClass1,
+                                        timing: EffectTiming.OnEndAttack);
+                                }
+                            }
+
+                        }
                     }
-
                     yield return null;
                 }
-            
             }
             #endregion
 

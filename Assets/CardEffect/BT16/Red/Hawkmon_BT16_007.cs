@@ -50,10 +50,13 @@ namespace DCGO.CardEffects.BT16
                     {
                         if (permanent != card.PermanentOfThisCard())
                         {
-                            if (permanent.TopCard.CardColors.Contains(CardColor.Yellow) ||
-                                permanent.TopCard.ContainsTraits("Free"))
+                            if (permanent.IsDigimon)
                             {
-                                return true;
+                                if (permanent.TopCard.CardColors.Contains(CardColor.Yellow) ||
+                                    permanent.TopCard.ContainsTraits("Free"))
+                                {
+                                    return true;
+                                }
                             }
                         }
                     }

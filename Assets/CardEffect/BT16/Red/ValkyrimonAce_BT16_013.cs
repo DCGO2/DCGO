@@ -8,7 +8,7 @@ using Photon.Pun;
 
 namespace DCGO.CardEffects.BT16
 {
-    public class Valkyrimon_BT16_013 : CEntity_Effect
+    public class ValkyrimonAce_BT16_013 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {

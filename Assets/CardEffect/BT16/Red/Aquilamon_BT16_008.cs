@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DCGO.CardEffects.BT16
 {
-    public class NewEntityEffect : CEntity_Effect
+    public class Aquilamon_BT16_008 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
@@ -21,20 +21,10 @@ namespace DCGO.CardEffects.BT16
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    if (targetPermanent.TopCard.CardNames.Contains("Hawkmon"))
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return targetPermanent.TopCard.CardNames.Contains("Hawkmon");
                 }
 
-                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
-                    permanentCondition: PermanentCondition,
-                    digivolutionCost: 2,
-                    ignoreDigivolutionRequirement: false,
-                    card: card,
-                    condition: null));
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 2, ignoreDigivolutionRequirement: false, card: card, condition: null));
             }
             #endregion
 
@@ -48,7 +38,7 @@ namespace DCGO.CardEffects.BT16
 
                 string EffectDiscription()
                 {
-                    return "[On Play] [When Attacking] Delete 1 of your opponent's Digimon with 3000 DP or less.";
+                    return "[On Play] [When Digivolving] Delete 1 of your opponent's Digimon with 3000 DP or less.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -63,7 +53,7 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card))
+                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                     {
                         if (permanent.DP <= 3000)
                         {
@@ -77,10 +67,7 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                        {
-                            return true;
-                        }
+                        return true;
                     }
 
                     return false;
@@ -99,13 +86,14 @@ namespace DCGO.CardEffects.BT16
                             canTargetCondition: CanSelectPermanentCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: -1,
+                            maxCount: 1,
                             canNoSelect: false,
                             canEndNotMax: false,
                             selectPermanentCoroutine: null,
                             afterSelectPermanentCoroutine: null,
                             mode: SelectPermanentEffect.Mode.Destroy,
                             cardEffect: activateClass);
+
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
                 }
@@ -119,6 +107,7 @@ namespace DCGO.CardEffects.BT16
                 activateClass.SetUpICardEffect("Suspend 1 of your opponent's Digimon.", CanUseCondition, card);
                 activateClass.SetIsInheritedEffect(true);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetHashString("Suspend_BT16_008");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -170,6 +159,7 @@ namespace DCGO.CardEffects.BT16
                             afterSelectPermanentCoroutine: null,
                             mode: SelectPermanentEffect.Mode.Tap,
                             cardEffect: activateClass);
+
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
                 }
