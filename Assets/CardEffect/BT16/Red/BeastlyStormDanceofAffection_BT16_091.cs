@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace DCGO.CardEffects.BT16
 {
-    public class BeastlyStormDanceofAffection_BT16_091 : CEntity_Effect
+    public class BeastlyStormDanceOfAffection_BT16_091 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
@@ -192,8 +192,7 @@ namespace DCGO.CardEffects.BT16
 
                                                 yield return ContinuousController.instance.StartCoroutine(playCard.PlayCard());
 
-                                                if (CardEffectCommons.IsExistOnBattleArea(card))
-                                                {
+
                                                     List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
                                                     {
                                                         new SelectionElement<bool>(message: $"Yes", value : true, spriteIndex: 0),
@@ -231,7 +230,7 @@ namespace DCGO.CardEffects.BT16
                                                     }
 
 
-                                                }
+                                                
                                             }
                                         }
                                     }

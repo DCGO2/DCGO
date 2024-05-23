@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace DCGO.CardEffects.BT16
 {
-    public class YoleiInoueandKariKamiya_BT16_084 : CEntity_Effect
+    public class YoleiInoueAndKariKamiya_BT16_084 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
@@ -38,7 +38,11 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return true;
+                    if (CardEffectCommons.IsOwnerTurn(card))
+                    {
+                        return true;
+                    }
+                    return false;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -175,13 +179,13 @@ namespace DCGO.CardEffects.BT16
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Gain 1 Memory | If DNA Digivolving give -3000 DP", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[Your Turn] When one of your Digimon digivolves into a black or yellow Digimon, by suspending this Tamer, gain 1 memory. If DNA digivolving, 1 of your opponent's Digimon gets -3000 DP for the turn.";
+                    return "[Your Turn] When one of your Digimon digivolves into a red or yellow Digimon, by suspending this Tamer, gain 1 memory. If DNA digivolving, 1 of your opponent's Digimon gets -3000 DP for the turn.";
                 }
 
                 bool PermanentCondition(Permanent permanent, Hashtable hashtable)

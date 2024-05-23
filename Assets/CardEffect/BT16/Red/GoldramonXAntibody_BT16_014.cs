@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace DCGO.CardEffects.BT16
 {
-    public class Goldramon_xAntibody_BT16_014 : CEntity_Effect
+    public class GoldramonXAntibody_BT16_014 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {

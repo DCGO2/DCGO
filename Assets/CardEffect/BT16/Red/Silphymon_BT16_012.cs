@@ -175,7 +175,7 @@ namespace DCGO.CardEffects.BT16
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("DP -5000 and delete 1 Digimon with 5000 DP or less", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Give 1 of your opponent's Digimon -7000 DP.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 activateClass.SetHashString("Minus7000DP_BT16_012");
                 cardEffects.Add(activateClass);
