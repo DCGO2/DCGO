@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 using System.Linq;
 
 namespace DCGO.CardEffects.BT16
@@ -259,6 +260,11 @@ namespace DCGO.CardEffects.BT16
                     return "[When Digivolving] By trashing 1 card in your hand, <Draw 1>. Then, if this Digimon has a Tamer with the [SoC] trait in its digivolution cards, 1 of your opponent's Digimon gains \"[Start of Your Main Phase] This Digimon attacks.\" until the end of their turn.";
                 }
 
+                bool CanSelectCardCondition(CardSource cardSource)
+                {
+                    return true;
+                }
+
                 bool HasTamerCardCondition(CardSource cardSource)
                 {
                     if (cardSource.CardTraits.Contains("SoC"))
@@ -289,48 +295,50 @@ namespace DCGO.CardEffects.BT16
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    bool trashed = false;
+                    bool discarded = false;
 
-                    SelectCardEffect selectCardEffect = ContinuousController.instance.GetComponent<SelectCardEffect>();
-
-                    selectCardEffect.SetUp(
-                        canTargetCondition: null,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        canNoSelect: null,
-                        selectCardCoroutine: SelectCardCoroutine,
-                        afterSelectCardCoroutine: null,
-                        message: "Select 1 card to trash",
-                        maxCount: 1,
-                        canEndNotMax: false,
-                        isShowOpponent: false,
-                        mode: SelectCardEffect.Mode.Discard,
-                        root: SelectCardEffect.Root.Hand,
-                        customRootCardList: null,
-                        canLookReverseCard: false,
-                        selectPlayer: card.Owner,
-                        cardEffect: activateClass);
-
-                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-
-                    IEnumerator SelectCardCoroutine(CardSource cardSource)
+                    if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
                     {
-                        if (cardSource != null)
-                            trashed = true;
+                        int discardCount = 1;
 
-                        yield return null;
+                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                        selectHandEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectCardCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: discardCount,
+                            canNoSelect: true,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            selectCardCoroutine: null,
+                            afterSelectCardCoroutine: AfterSelectCardCoroutine,
+                            mode: SelectHandEffect.Mode.Discard,
+                            cardEffect: activateClass);
+
+                        yield return StartCoroutine(selectHandEffect.Activate());
+
+                        IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
+                        {
+                            if (cardSources.Count >= 1)
+                            {
+                                discarded = true;
+
+                                yield return null;
+                            }
+                        }
                     }
 
-                    if (trashed)
+                    if (discarded)
                     {
-                        if (card.Owner.LibraryCards.Count > 0)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
-                        }
+                        yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
 
                         #region Has Tamer with [SoC] Trait - grant Start of Your Main Phase Effect
+                        Debug.Log($"Has Tamer: {card.PermanentOfThisCard().DigivolutionCards.Count(HasTamerCardCondition)}");
                         if (card.PermanentOfThisCard().DigivolutionCards.Count(HasTamerCardCondition) >= 1)
                         {
+                            Debug.Log($"Has Match Permanent: {CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition)}");
                             if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                             {
                                 int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
