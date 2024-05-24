@@ -9,18 +9,14 @@ public partial class CardEffectCommons
     #region Can activate [Collision]
     public static bool CanActivateCollision(CardSource cardSource)
     {
-        Debug.Log($"CanActivateCollision: {IsExistOnBattleArea(cardSource)}");
         if (IsExistOnBattleArea(cardSource))
         {
-            Debug.Log($"CanActivateCollision: {cardSource.Owner.Enemy.GetBattleAreaDigimons().Count}");
             if (cardSource.Owner.Enemy.GetBattleAreaDigimons().Count >= 1)
             {
-                Debug.Log($"CanActivateCollision: {GManager.instance.attackProcess.IsAttacking}");
                 if (GManager.instance.attackProcess.IsAttacking)
                 {
                     return true;
                 }
-            }
         }
 
         return false;
