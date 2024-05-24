@@ -17,13 +17,14 @@ public partial class CardEffectCommons
                 {
                     return true;
                 }
+            }
         }
 
         return false;
     }
     #endregion
 
-    #region Effect process of [Blitz]
+    #region Effect process of [Collision]
     public static IEnumerator CollisionProcess(CardSource cardSource, ICardEffect activateClass, Func<IEnumerator> beforeOnAttackCoroutine = null)
     {
         if (CanActivateCollision(cardSource))

@@ -14,7 +14,7 @@ namespace DCGO.CardEffects.BT16
 
             if (timing == EffectTiming.OnAllyAttack)
             {
-                cardEffects.Add(CardEffectFactory.CollisionStaticEffect(isInheritedEffect: false, card: card));
+                cardEffects.Add(CardEffectFactory.CollisionSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
             }
 
             if (timing == EffectTiming.WhenPermanentWouldBeDeleted)
