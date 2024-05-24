@@ -7,24 +7,27 @@ using UnityEngine;
 public partial class CardEffectFactory
 {
     #region Static effect of [Collision] on oneself
-    public static ActivateClass CollisionSelfStaticEffect(bool isInheritedEffect, CardSource card, Func<IEnumerator> beforeOnAttackCoroutine = null)
+    public static ActivateClass CollisionSelfStaticEffect(bool isInheritedEffect, CardSource card, Func<bool> condition)
     {
-        bool PermanentCondition(Permanent permanent) => permanent == card.PermanentOfThisCard();
+        Permanent targetPermanent = card.PermanentOfThisCard();
 
         bool CanUseCondition()
         {
             if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
             {
-                if(card.Owner.Enemy.GetBattleAreaDigimons().Count() > 0)
+                if (card.Owner.Enemy.GetBattleAreaDigimons().Count() > 0)
                 {
-                    return true;
+                    if (condition == null || condition())
+                    {
+                        return true;
+                    }
                 }
             }
 
             return false;
         }
 
-        return CollisionStaticEffect(isInheritedEffect: isInheritedEffect, card: card, beforeOnAttackCoroutine: beforeOnAttackCoroutine);
+        return CollisionStaticEffect(isInheritedEffect: isInheritedEffect, card: card, condition: CanUseCondition);
     }
     #endregion
 
@@ -32,11 +35,11 @@ public partial class CardEffectFactory
     public static ActivateClass CollisionStaticEffect(
         bool isInheritedEffect,
         CardSource card,
-        Func<IEnumerator> beforeOnAttackCoroutine = null)
+        Func<bool> condition)
     {
         ActivateClass activateClass = new ActivateClass();
         activateClass.SetUpICardEffect("Collision", CanUseCondition, card);
-        activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+        activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
         activateClass.SetIsInheritedEffect(isInheritedEffect);
 
         string EffectDiscription()
@@ -46,7 +49,15 @@ public partial class CardEffectFactory
 
         bool CanUseCondition(Hashtable hashtable)
         {
-            return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
+            if(CardEffectCommons.CanTriggerOnAttack(hashtable, card))
+            {
+                if (condition == null || condition())
+                {
+                    return true;
+                }
+            }
+            
+            return false;
         }
 
         bool CanActivateCondition(Hashtable hashtable)
@@ -56,7 +67,7 @@ public partial class CardEffectFactory
 
         IEnumerator ActivateCoroutine(Hashtable _hashtable)
         {
-            return CardEffectCommons.CollisionProcess(card, activateClass, beforeOnAttackCoroutine);
+            return CardEffectCommons.CollisionProcess(card, activateClass);
         }
 
         return activateClass;
