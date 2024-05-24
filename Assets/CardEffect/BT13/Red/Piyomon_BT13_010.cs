@@ -58,7 +58,10 @@ public class Piyomon_BT13_010 : CEntity_Effect
                 {
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
-                        return true;
+                        if (CardEffectCommons.CanTriggerOnPlay(hashtable, card))
+                        {
+                            return true;
+                        }
                     }
                 }
 

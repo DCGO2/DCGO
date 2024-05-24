@@ -193,6 +193,7 @@ public class Ryudamon_BT15_056 : CEntity_Effect
             activateClass.SetUpICardEffect("Suspend opponent's Digimon or Tamers with play cost less than this Digimon.", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
             activateClass.SetIsInheritedEffect(true);
+            activateClass.SetHashString("suspend_BT15_056_inherited");
             cardEffects.Add(activateClass);
 
             string EffectDiscription()

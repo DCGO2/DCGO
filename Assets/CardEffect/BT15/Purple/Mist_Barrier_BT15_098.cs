@@ -138,7 +138,7 @@ public class Mist_Barrier_BT15_098 : CEntity_Effect
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Play 1 Digimon", CanUseCondition, card);
-            activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+            activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, EffectDiscription());
             cardEffects.Add(activateClass);
 
             #region Delay Effect - When deleted

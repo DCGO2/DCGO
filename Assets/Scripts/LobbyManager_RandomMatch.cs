@@ -32,6 +32,7 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
     string RandomRoomName;
 
     bool endLoadingText = false;
+    private bool isCoroutineRunning = false;
 
     //String that must be included in the random match room
     string RandomKey
@@ -115,9 +116,10 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
         startJoin = false;
         DoneCompleteMatching = false;
         ContinuousController.instance.LoadingTextCoroutine = null;
-        ReturnButton.SetActive(false);
+        ReturnButton.SetActive(true);
         MessageText.text = "";
-        TimeText.gameObject.SetActive(false);
+        TimeText.gameObject.SetActive(true);
+        StartCoroutine(TimeCountUp());
         timer = 0;
         count = true;
 
@@ -147,6 +149,7 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
 
         while (!DoneCompleteMatching)
         {
+            time += (int)Time.deltaTime;
             string min = (time / 60).ToString();
             string sec = (time % 60).ToString();
 
@@ -173,7 +176,7 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
     #region Connect to Photon and Lobby
     IEnumerator ConnectCoroutine()
     {
-        yield return StartCoroutine(loadingObject.StartLoading("Now Loading"));
+        //yield return StartCoroutine(loadingObject.StartLoading("Now Loading"));
 
         if (ContinuousController.instance.BattleDeckData != null)
         {
@@ -371,7 +374,7 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
     {
         if (ReturnButton != null)
         {
-            ReturnButton.SetActive(false);
+            ReturnButton.SetActive(true);
         }
 
         //If there is no room, make room.
@@ -391,10 +394,15 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
     #endregion
 
 
-    IEnumerator SetWaitingText(string defultString)
+    private IEnumerator SetWaitingText(string defaultString)
     {
-        float waitTime = 0.18f;
+        if (isCoroutineRunning)
+        {
+            yield break; // Exit if already running
+        }
 
+        isCoroutineRunning = true;
+        float waitTime = 0.18f;
         int count = 0;
 
         while (!endLoadingText)
@@ -406,7 +414,7 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
                 count = 0;
             }
 
-            MessageText.text = defultString;
+            MessageText.text = defaultString;
 
             for (int i = 0; i < count; i++)
             {
@@ -415,6 +423,22 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
 
             yield return new WaitForSeconds(waitTime);
         }
+
+        isCoroutineRunning = false;
+    }
+
+    public void StartLoadingText(string defaultString)
+    {
+        if (!isCoroutineRunning)
+        {
+            endLoadingText = false; // Ensure the flag is reset when starting
+            StartCoroutine(SetWaitingText(defaultString));
+        }
+    }
+
+    public void StopLoadingText()
+    {
+        endLoadingText = true;
     }
 
     bool count = true;
@@ -448,6 +472,10 @@ public class LobbyManager_RandomMatch : MonoBehaviourPunCallbacks
                     ReturnButtonButton.enabled = true;
                 }
             }
+        }
+        else
+        {
+            ReturnButtonButton.enabled = true;
         }
 
         if (DoneCompleteMatching)

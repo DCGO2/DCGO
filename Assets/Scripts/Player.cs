@@ -765,7 +765,7 @@ public class Player : MonoBehaviour
 
     #region プレイヤーに掛かっている効果
 
-    #region プレイヤーに掛かっている全ての効果
+    #region All effects on the player
     public List<ICardEffect> EffectList(EffectTiming timing)
     {
         List<ICardEffect> PlayerEffects = new List<ICardEffect>();

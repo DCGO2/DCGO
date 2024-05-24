@@ -36,7 +36,7 @@ public class Moonmon_EX5_002 : CEntity_Effect
                             return true;
                         }
 
-                        if (permanent.TopCard.CardTraits.Contains("LightFung"))
+                        if (permanent.TopCard.CardTraits.Contains("LightFang"))
                         {
                             return true;
                         }

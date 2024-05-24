@@ -23,7 +23,7 @@ public class Kyokyomon_BT15_005 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Opponent's Turn][Once Per Turn] When an opponent's Digimon becomes unsuspended, <De-Digivolve 1> that Digimon.";
+                return "[Opponent's Turn] [Once Per Turn] When a Digimon becomes unsuspended, <Draw 1>.";
             }
 
             bool PermanentCondition(Permanent permanent)

@@ -5,7 +5,6 @@ using UnityEngine;
 using Photon;
 using System;
 using Photon.Pun;
-using System.Runtime.Remoting;
 
 public class Megadramon_BT15_064 : CEntity_Effect
 {
@@ -45,7 +44,7 @@ public class Megadramon_BT15_064 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Attacking][De-Digivolve] 1ÅÑn 1 of your opponent's Digimon (Trash up to 1 card from the top of one of your opponent's Digimon. If it has no digivolution cards, or becomes a level 3 Digimon, you can't trash any more cards).";
+                return "[When Attacking][De-Digivolve] 1ÔøΩÔøΩn 1 of your opponent's Digimon (Trash up to 1 card from the top of one of your opponent's Digimon. If it has no digivolution cards, or becomes a level 3 Digimon, you can't trash any more cards).";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
@@ -121,7 +120,11 @@ public class Megadramon_BT15_064 : CEntity_Effect
                 {
                     if (permanent.TopCard.GetCostItself <= 3)
                     {
-                        return true;
+                        if (!permanent.TopCard.IsDigiEgg || !permanent.TopCard.IsOption)
+                        {
+                            return true;
+                        }
+                        
                     }
                 }
 

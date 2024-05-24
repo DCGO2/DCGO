@@ -43210,33 +43210,27 @@ MonoBehaviour:
   _anim: {fileID: 1049396037}
   _verText: {fileID: 1512034762}
   _localizeTMPro: {fileID: 1232193649}
-  _text_ENG: "Updates:\r\n\t- BT15 cards added\r\n\t- LM cards added\r\n\t- ST17
-    added\r\n\t- DigiEgg cards will now return to DigiEgg deck instead of security
-    or hand\r\n\t- Unblockable added to a card details panel\r\n\t- Changed how checking
-    for the max of DP/Cost is done\r\n\t- Large variety of card bugs fixed (BT1-BT14,
-    EX1-EX5, ST1-ST16, RB1)\n\t- \rUpdated Banlist, Fixed Numemon X, Fixed Apocalymon\n\t-
-    Fixed rule process for inherited [On Deletion] effects activating\n\t- Updated
-    DCGO logo (higher quality)\r\n\t- Added new game play settings:\r\n\t\t- Automatically
-    determine the order in which effects are exerted\r\n\t\t- Automatically determine
-    the order in which revealed cards are placed at \n\t\t   the bottom of the deck\r\n\t\t-
-    Automatically determines the order in which revealed cards are placed on \n\t\t  
-    the top of the deck\r\n\t\t- Automatic selection of the lowest digivolving cost\r\n\t\t-
-    Automatic selection of the highest number of cards\r\n\t\t- automatic hatch in
-    breeding phase\r\n\t- Removed some game play settings:\r\n\t\t- Automate some
-    of the selections\r\n\r\nKnown Issues:\r\n\t- Dragomon (EX5-060) - If the digimon
-    played by opponent is deleted between trigger\n\t   and activation of all turns
-    effect, all turns effect does not activate.\r\n\t- Takato Matsuki (EX2-056) -
-    When attempting to suspend it after you delete something\n                  
-    that deletes your Guil/Growl/Gallant it seems to cause a game freeze.\r\n\t-
-    Fanglongmon (EX5-074) - Protection doesn't work against Digimon effects when
-    using\n\t   a tamer effect to trigger such as Hina Kurihara (EX3-065).\r\n\t-
-    Effects that trigger at [End Of Turn] will activate AFTER an attack that is declared\n\t  
-    During [End Of Turn], when they should activate BEFORE the attack.\n\t   (see
-    Arresterdramon: Superior Mode)\r\n\t- Not all effects are listed under the Digimons
-    detail panel. Effects that are include\n\t   (keywords, DP +/-, security +/-,
-    skills gained). \r\n\t- Effects listed under the Digimon details panel do not
-    consider any conditions of the\n\t   effect, just that it exists. (see Aldamon(BT7-014)
-    ESS)."
+  _text_ENG: "Updates:\r\n\t- Revelation of Light (BT15) Fixed issue where effect
+    was not placing to top of security\r\n\t- Crimson Flare (BT11) Fixed on deletion
+    effect (from ESS) will trigger properly.\r\n\t- Mother D-Reaper (EX2) Fixed issue
+    where it was able to block unblockable Digimon.\r\n\t- Fixed issue where player
+    effects preventing returning to hand/deck would not resolve.\r\n\t- Piercing
+    now properly does not trigger after Barrier is used.\r\n\t- Updated scripting
+    backend for better runtime results.\r\n\r\nKnown Issues:\r\n\t- Fanglongmon (EX5)
+    digimon effects from Secuirty or other sources not working.\r\n\t- Dragomon (EX5)
+    - Timing issue if digimon played by effect is deleted before all turns\r\n\t 
+    effect activates.\r\n\t- Quantumon (LM) Awaiting ruling for being immune to its
+    own ESS effects.\r\n\t- Giant Missile (ST17) Game freezes when attempting to
+    put a card to bottom of deck\r\n\t  when deck size is 0.\r\n\t- Magnadramon (BT15)
+    All Turns effect does not trigger.\r\n\t- Rapidmon (ST17-07) Some instances of
+    protection being granted without a green\r\n\t  tamer.\r\n\t- Gizmon AT (BT13)
+    Delete to reduce play cost is not optional\r\n\t- Shu-Chong Wong (EX2) Start
+    of turn effect will not draw a card if you are at 10\r\n\t  memory.\r\n\t- Lunamon
+    (EX5) does not allow you to digivolve when you play the proper tamer.\r\n\t-
+    Some cards with alliance do not show up in search, when searching for \"Alliance\".\r\n\t-
+    Dedigivolve to tamer during security battle will still proceed with battle.\r\n\t-
+    Piercing does trigger after Barrier is used.\r\n\t- Some card effects do not
+    show up in a cards details, mainly effects granted by other\r\n\t  cards.\r"
   _text_JPN: 
   _scroll: {fileID: 1566222603}
 --- !u!224 &1049396036
@@ -65931,7 +65925,7 @@ MonoBehaviour:
   m_Vertical: 1
   m_MovementType: 2
   m_Elasticity: 0.1
-  m_Inertia: 1
+  m_Inertia: 0
   m_DecelerationRate: 0.135
   m_ScrollSensitivity: 100
   m_Viewport: {fileID: 889398605}
@@ -85766,97 +85760,6 @@ ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 198618510969473888, guid: 64a6cbeea983a514b99bd6020afe62b6, type: 3}
   m_PrefabInstance: {fileID: 438718058}
   m_PrefabAsset: {fileID: 0}
---- !u!21 &1959998981
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Shapes2D Material
-  m_Shader: {fileID: 4800000, guid: 44f74e30da9814584b2fdcdbe799e51a, type: 3}
-  m_ValidKeywords:
-  - FILL_SOLID_COLOR
-  - RECTANGLE
-  m_InvalidKeywords:
-  - _EMISSION
-  m_LightmapFlags: 1
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3000
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _BumpMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _DetailAlbedoMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _DetailMask:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _DetailNormalMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _EmissionMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MetallicGlossMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _OcclusionMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _ParallaxMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _BumpScale: 1
-    - _ColorMask: 15
-    - _Cutoff: 0.5
-    - _DetailNormalMapScale: 1
-    - _DstBlend: 0
-    - _GlossMapScale: 1
-    - _Glossiness: 0.5
-    - _GlossyReflections: 1
-    - _Metallic: 0
-    - _Mode: 0
-    - _OcclusionStrength: 1
-    - _Parallax: 0.02
-    - _Shapes2D_DstAlpha: 1
-    - _Shapes2D_DstBlend: 10
-    - _Shapes2D_SrcAlpha: 1
-    - _Shapes2D_SrcBlend: 1
-    - _SmoothnessTextureChannel: 0
-    - _SpecularHighlights: 1
-    - _SrcBlend: 1
-    - _Stencil: 0
-    - _StencilComp: 8
-    - _StencilOp: 0
-    - _StencilReadMask: 255
-    - _StencilWriteMask: 255
-    - _UVSec: 0
-    - _ZWrite: 1
-    m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-  m_BuildTextureStacks: []
 --- !u!1 &1962182280
 GameObject:
   m_ObjectHideFlags: 0
@@ -90599,6 +90502,97 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2062587030}
   m_CullTransparentMesh: 1
+--- !u!21 &2064281896
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Shapes2D Material
+  m_Shader: {fileID: 4800000, guid: 44f74e30da9814584b2fdcdbe799e51a, type: 3}
+  m_ValidKeywords:
+  - FILL_SOLID_COLOR
+  - RECTANGLE
+  m_InvalidKeywords:
+  - _EMISSION
+  m_LightmapFlags: 1
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 3000
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BumpMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailAlbedoMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _BumpScale: 1
+    - _ColorMask: 15
+    - _Cutoff: 0.5
+    - _DetailNormalMapScale: 1
+    - _DstBlend: 0
+    - _GlossMapScale: 1
+    - _Glossiness: 0.5
+    - _GlossyReflections: 1
+    - _Metallic: 0
+    - _Mode: 0
+    - _OcclusionStrength: 1
+    - _Parallax: 0.02
+    - _Shapes2D_DstAlpha: 1
+    - _Shapes2D_DstBlend: 10
+    - _Shapes2D_SrcAlpha: 1
+    - _Shapes2D_SrcBlend: 1
+    - _SmoothnessTextureChannel: 0
+    - _SpecularHighlights: 1
+    - _SrcBlend: 1
+    - _Stencil: 0
+    - _StencilComp: 8
+    - _StencilOp: 0
+    - _StencilReadMask: 255
+    - _StencilWriteMask: 255
+    - _UVSec: 0
+    - _ZWrite: 1
+    m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1 &2066844762
 GameObject:
   m_ObjectHideFlags: 0
@@ -108254,7 +108248,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 1959998981}
+  m_Material: {fileID: 2064281896}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}

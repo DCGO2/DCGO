@@ -111,10 +111,8 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
                     }
                 }
                 #endregion
-            }
 
-            foreach (SkillInfo skillInfo in StackedSkillInfos)
-            {
+                #region Check if the effect can be activated
                 if (!skillInfo.CardEffect.CanActivate(skillInfo.Hashtable))
                 {
                     //Debug.Log($"{skillInfo.CardEffect.EffectName} Can't Activate");
@@ -144,6 +142,7 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
                 }
 
                 skillInfos_active.Add(skillInfo);
+                #endregion
             }
 
             skillInfos_active = skillInfos_active.Filter(skillInfo => skillInfo != null && skillInfo.CardEffect != null
@@ -339,7 +338,7 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
                     {
                         if (cardEffect.CanActivate(hashtable))
                         {
-                            // 割り込み処理なら
+                            // For interrupt processing
                             if (IsCutinEffect(CheckNewTriggredSkill_mainStack))
                             {
                                 // GManager.instance.autoProcessing.AddCutinEffect(cardEffect);
@@ -368,7 +367,7 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
                 }
                 #endregion
 
-                //ルール処理
+                //Rule processing
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.RuleProcess());
 
                 if (GManager.instance.turnStateMachine.endGame)
@@ -376,7 +375,7 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
                     yield break;
                 }
 
-                #region 新しく誘発した効果があればそちらを先に解決
+                #region If there are any newly triggered effects, resolve those first.
                 if (!CheckNewTriggredSkill_mainStack)
                 {
                     yield return ContinuousController.instance.StartCoroutine(_autoProcessing.TriggeredSkillProcess(CheckNewTriggredSkill_mainStack, skipCondition));

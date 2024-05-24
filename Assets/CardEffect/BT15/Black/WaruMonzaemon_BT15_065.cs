@@ -5,7 +5,6 @@ using UnityEngine;
 using Photon;
 using System;
 using Photon.Pun;
-using System.Runtime.Remoting;
 
 public class WaruMonzaemon_BT15_065 : CEntity_Effect
 {
@@ -153,7 +152,7 @@ public class WaruMonzaemon_BT15_065 : CEntity_Effect
         }
         #endregion
 
-        #region On Play/When Digivolving - Trash 1 card from hand to DeDigivolve an opponent's Digimon.
+        #region On Play - Trash 1 card from hand to DeDigivolve an opponent's Digimon.
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
@@ -191,7 +190,7 @@ public class WaruMonzaemon_BT15_065 : CEntity_Effect
 
             bool CanUseCondition(Hashtable hashtable)
             {
-                return CardEffectCommons.CanTriggerOnPlay(hashtable, card) || CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
             }
 
             bool CanActivateCondition(Hashtable hashtable)
@@ -209,29 +208,266 @@ public class WaruMonzaemon_BT15_065 : CEntity_Effect
 
             IEnumerator ActivateCoroutine(Hashtable _hashtable)
             {
-                if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
+                bool canSelectHand = card.Owner.HandCards.Count(CanSelectCardCondition) >= 1;
+                bool canSelectDigivolutionCards = CardEffectCommons.IsExistOnBattleArea(card)
+                && card.PermanentOfThisCard().DigivolutionCards.Count(CanSelectCardCondition) >= 1;
+
+                if (canSelectHand || canSelectDigivolutionCards)
                 {
+                    if (canSelectHand && canSelectDigivolutionCards)
+                    {
+                        List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
+                        {
+                            new SelectionElement<bool>(message: $"From hand", value : true, spriteIndex: 0),
+                            new SelectionElement<bool>(message: $"From digivolution cards", value : false, spriteIndex: 1),
+                        };
+
+                        string selectPlayerMessage = "From which area do you play a card?";
+                        string notSelectPlayerMessage = "The opponent is choosing from which area to play a card.";
+
+                        GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+                    }
+                    else
+                    {
+                        GManager.instance.userSelectionManager.SetBool(canSelectHand);
+                    }
+
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                    bool fromHand = GManager.instance.userSelectionManager.SelectedBoolValue;
+
                     bool discarded = false;
 
                     int discardCount = 1;
 
-                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                    if (fromHand)
+                    {
+                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
-                    selectHandEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectCardCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: discardCount,
-                        canNoSelect: true,
-                        canEndNotMax: false,
-                        isShowOpponent: true,
-                        selectCardCoroutine: null,
-                        afterSelectCardCoroutine: AfterSelectCardCoroutine,
-                        mode: SelectHandEffect.Mode.Discard,
-                        cardEffect: activateClass);
+                        selectHandEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectCardCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: discardCount,
+                            canNoSelect: true,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            selectCardCoroutine: null,
+                            afterSelectCardCoroutine: AfterSelectCardCoroutine,
+                            mode: SelectHandEffect.Mode.Discard,
+                            cardEffect: activateClass);
 
-                    yield return StartCoroutine(selectHandEffect.Activate());
+                        yield return StartCoroutine(selectHandEffect.Activate());
+                    }
+                    else
+                    {
+                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                        selectCardEffect.SetUp(
+                            canTargetCondition: CanSelectCardCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            canNoSelect: () => true,
+                            selectCardCoroutine: null,
+                            afterSelectCardCoroutine: AfterSelectCardCoroutine,
+                            message: "Select 1 card to trash.",
+                            maxCount: discardCount,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            mode: SelectCardEffect.Mode.Discard,
+                            root: SelectCardEffect.Root.DigivolutionCards,
+                            customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
+                            canLookReverseCard: true,
+                            selectPlayer: card.Owner,
+                            cardEffect: activateClass);
+
+                        selectCardEffect.SetUpCustomMessage("Select 1 digivolution card to trash.", "The opponent is selecting 1 digivolution card to trash.");
+
+                        yield return StartCoroutine(selectCardEffect.Activate());
+                    }
+
+                    IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
+                    {
+                        if (cardSources.Count >= 1)
+                        {
+                            discarded = true;
+
+                            yield return null;
+                        }
+                    }
+
+                    if (discarded)
+                    {
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                        {
+                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+
+                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                            selectPermanentEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: CanSelectPermanentCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: maxCount,
+                                canNoSelect: false,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: SelectPermanentCoroutine,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Custom,
+                                cardEffect: activateClass);
+
+                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to De-Digivolve.", "The opponent is selecting 1 Digimon to De-Digivolve.");
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                            IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                            {
+                                Permanent selectedPermanent = permanent;
+
+                                yield return ContinuousController.instance.StartCoroutine(new IDegeneration(selectedPermanent, 1, activateClass).Degeneration());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region When Digivolving - Trash 1 card from hand to DeDigivolve an opponent's Digimon.
+        if (timing == EffectTiming.OnEnterFieldAnyone)
+        {
+            ActivateClass activateClass = new ActivateClass();
+            activateClass.SetUpICardEffect("Trash 1 card from hand to DeDigivolve an opponent's Digimon.", CanUseCondition, card);
+            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+            activateClass.SetHashString("DeDigivolve_BT15_065");
+            cardEffects.Add(activateClass);
+
+            string EffectDiscription()
+            {
+                return "[On Play] [When Digivolving] By trashing 1 card with [Numemon] in it's name in your hand or from the bottom of this Digimon's digivolution cards, [De-Digivolve 1] 1 of your opponent's Digimon.";
+            }
+
+            bool CanSelectCardCondition(CardSource cardSource)
+            {
+                if (cardSource.ContainsCardName("Numemon"))
+                {
+                    return true;
+                }
+
+                return false;
+            }
+
+            bool CanSelectPermanentCondition(Permanent permanent)
+            {
+                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                {
+                    if (permanent.TopCard.HasLevel)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            bool CanUseCondition(Hashtable hashtable)
+            {
+                return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+            }
+
+            bool CanActivateCondition(Hashtable hashtable)
+            {
+                if (CardEffectCommons.IsExistOnBattleArea(card))
+                {
+                    if (card.Owner.HandCards.Count >= 1)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            IEnumerator ActivateCoroutine(Hashtable _hashtable)
+            {
+                bool canSelectHand = card.Owner.HandCards.Count(CanSelectCardCondition) >= 1;
+                bool canSelectDigivolutionCards = CardEffectCommons.IsExistOnBattleArea(card)
+                && card.PermanentOfThisCard().DigivolutionCards.Count(CanSelectCardCondition) >= 1;
+
+                if (canSelectHand || canSelectDigivolutionCards)
+                {
+                    if (canSelectHand && canSelectDigivolutionCards)
+                    {
+                        List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
+                        {
+                            new SelectionElement<bool>(message: $"From hand", value : true, spriteIndex: 0),
+                            new SelectionElement<bool>(message: $"From digivolution cards", value : false, spriteIndex: 1),
+                        };
+
+                        string selectPlayerMessage = "From which area do you play a card?";
+                        string notSelectPlayerMessage = "The opponent is choosing from which area to play a card.";
+
+                        GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+                    }
+                    else
+                    {
+                        GManager.instance.userSelectionManager.SetBool(canSelectHand);
+                    }
+
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                    bool fromHand = GManager.instance.userSelectionManager.SelectedBoolValue;
+
+                    bool discarded = false;
+
+                    int discardCount = 1;
+
+                    if (fromHand)
+                    {
+                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                        selectHandEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectCardCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: discardCount,
+                            canNoSelect: true,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            selectCardCoroutine: null,
+                            afterSelectCardCoroutine: AfterSelectCardCoroutine,
+                            mode: SelectHandEffect.Mode.Discard,
+                            cardEffect: activateClass);
+
+                        yield return StartCoroutine(selectHandEffect.Activate());
+                    }
+                    else
+                    {
+                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                        selectCardEffect.SetUp(
+                            canTargetCondition: CanSelectCardCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            canNoSelect: () => true,
+                            selectCardCoroutine: null,
+                            afterSelectCardCoroutine: AfterSelectCardCoroutine,
+                            message: "Select 1 card to trash.",
+                            maxCount: discardCount,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            mode: SelectCardEffect.Mode.Discard,
+                            root: SelectCardEffect.Root.Custom,
+                            customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
+                            canLookReverseCard: true,
+                            selectPlayer: card.Owner,
+                            cardEffect: activateClass);
+
+                        selectCardEffect.SetUpCustomMessage("Select 1 digivolution card to trash.", "The opponent is selecting 1 digivolution card to trash.");
+
+                        yield return StartCoroutine(selectCardEffect.Activate());
+                    }
 
                     IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
                     {
