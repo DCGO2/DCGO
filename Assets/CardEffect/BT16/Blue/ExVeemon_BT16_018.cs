@@ -13,6 +13,7 @@ namespace DCGO.CardEffects.BT16
             {
                 case EffectTiming.None:
                     #region Alternate Digivolution Requirement
+                    
                     bool PermanentCondition(Permanent targetPermanent)
                     {
                         return targetPermanent.TopCard.CardNames.Contains("Veemon");
@@ -25,6 +26,7 @@ namespace DCGO.CardEffects.BT16
                         card: card,
                         condition: null)
                     );
+                    
                     #endregion
                     
                     #region Inherited Effect
