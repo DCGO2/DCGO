@@ -134,10 +134,8 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    Debug.Log($"CanUseCondition: {CardEffectCommons.IsExistOnBattleArea(card)}");
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        Debug.Log($"CanUseCondition: true");
                         return true;
                     }
 
@@ -146,13 +144,10 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    Debug.Log($"CanActivateCondition: {CardEffectCommons.IsExistOnBattleArea(card)}");
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        Debug.Log($"CanActivateCondition: {card.PermanentOfThisCard().DigivolutionCards.Count(CanSelectCardCondition)}");
                         if (card.PermanentOfThisCard().DigivolutionCards.Count(CanSelectCardCondition) >= 1)
                         {
-                            Debug.Log($"CanActivateCondition: true");
                             return true;
                         }
                     }
@@ -162,18 +157,13 @@ namespace DCGO.CardEffects.BT16
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    Debug.Log($"ActivateCoroutine: {CardEffectCommons.IsExistOnBattleArea(card)}");
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        Debug.Log($"ActivateCoroutine: {card.BaseENGCardNameFromEntity}");
                         Permanent selectedPermanent = card.PermanentOfThisCard();
-                        Debug.Log($"ActivateCoroutine: {(selectedPermanent != null)}");
                         if (selectedPermanent != null)
                         {
-                            Debug.Log($"ActivateCoroutine: {selectedPermanent.DigivolutionCards.Count(CanSelectCardCondition)}");
                             if (selectedPermanent.DigivolutionCards.Count(CanSelectCardCondition) >= 1)
                             {
-                                Debug.Log($"ActivateCoroutine: TRUE");
                                 int maxCount = 1;
 
                                 List<CardSource> selectedCards = new List<CardSource>();
