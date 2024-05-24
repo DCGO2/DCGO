@@ -6,6 +6,8 @@ using UnityEngine.UI;
 using DG.Tweening;
 using UnityEngine.EventSystems;
 using TMPro;
+using System;
+
 public class FieldPermanentCard : MonoBehaviour
 {
     [Header("選択状態アウトライン")]
@@ -239,7 +241,7 @@ public class FieldPermanentCard : MonoBehaviour
     float _requiredTime = 0.0f;
     bool _pressing = false;
 
-    #region クリック時の処理
+    #region Processing on click
 
     #region クリックされた時の処理
     public void OnClick()
@@ -285,7 +287,7 @@ public class FieldPermanentCard : MonoBehaviour
     #endregion
     #endregion
 
-    #region パーマネントデータをセット
+    #region Set permanent data
     public void SetPermanentData(Permanent permanent, bool updateIsTapped)
     {
         ThisPermanent = permanent;
@@ -294,7 +296,7 @@ public class FieldPermanentCard : MonoBehaviour
     }
     #endregion
 
-    #region パーマネントデータをUIに反映
+    #region Reflect permanent data on UI
     bool _oldTurnSuspendedCards = false;
     public async void ShowPermanentData(bool updateIsTapped)
     {
@@ -500,12 +502,14 @@ public class FieldPermanentCard : MonoBehaviour
     }
     #endregion
 
-    #region カードデータを自動で反映
+    #region Automatically reflect card data
     int _frameCount = 0;
     int _updateFrame = 75;
     public bool destroyed { get; set; } = false;
     public bool skipDestroy { get; set; } = false;
     public bool skipUpdate { get; set; } = false;
+
+    //TODO: Pretty poor gargage collection, need to optimize - MB
     private void LateUpdate()
     {
         if (skipUpdate)
@@ -513,7 +517,7 @@ public class FieldPermanentCard : MonoBehaviour
             return;
         }
 
-        #region 例外チェック
+        #region exception check
         if (destroyed)
         {
             return;
@@ -534,7 +538,7 @@ public class FieldPermanentCard : MonoBehaviour
         }
         #endregion
 
-        //スキル名
+        //Skill name
         if (SkillNameText.transform.parent.gameObject.activeSelf)
         {
             RotateSkillNameText();
@@ -565,7 +569,7 @@ public class FieldPermanentCard : MonoBehaviour
             _updateFrame = 75;
         }
 
-        #region 長押しの取得
+        #region Get long press
 #if !UNITY_EDITOR && UNITY_ANDROID
         if (pressing)
         {
@@ -578,7 +582,7 @@ public class FieldPermanentCard : MonoBehaviour
 #endif
         #endregion
 
-        #region 数フレームに一度だけ反映
+        #region Reflected only once every few frames
         _frameCount++;
 
         if (_frameCount < _updateFrame)
