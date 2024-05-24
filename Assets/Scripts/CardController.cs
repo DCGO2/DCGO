@@ -2534,7 +2534,13 @@ public class IPutSecurityPermanent
         #endregion
 
         CardSource topCard = _permanent.TopCard;
-        if (topCard == null) yield break;
+
+        if (_permanent.willBeRemoveField)
+            yield break;
+
+        if (topCard == null) 
+            yield break;
+
         #region add log
         string log = "";
 
