@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace DCGO.CardEffects.BT16
 {
@@ -133,7 +134,15 @@ namespace DCGO.CardEffects.BT16
 
                 bool SkillCondition(ICardEffect cardEffect)
                 {
-                    return CardEffectCommons.IsOpponentEffect(cardEffect, card);
+                    if(CardEffectCommons.IsOpponentEffect(cardEffect, card))
+                    {
+                        if (cardEffect.IsDigimonEffect)
+                        {
+                            return true;
+                        }
+                    }
+                        
+                    return false;
                 }
                 #endregion
 
@@ -224,15 +233,31 @@ namespace DCGO.CardEffects.BT16
             #endregion
 
             #region Partition
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.WhenRemoveField)
             {
                 bool CanSelectFirstSourceCondition(CardSource cardSource)
                 {
+                    if (cardSource.CardColors.Contains(CardColor.Black))
+                    {
+                        if (cardSource.HasLevel && cardSource.Level == 4)
+                        {
+                            return true;
+                        }
+                    }
+
                     return true;
                 }
 
                 bool CanSelectSecondSourceCondition(CardSource cardSource)
                 {
+                    if (cardSource.CardColors.Contains(CardColor.Yellow))
+                    {
+                        if (cardSource.HasLevel && cardSource.Level == 4)
+                        {
+                            return true;
+                        }
+                    }
+
                     return true;
                 }
 
@@ -247,15 +272,31 @@ namespace DCGO.CardEffects.BT16
             #endregion
 
             #region Partition - Inherited
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.WhenPermanentWouldBeDeleted)
             {
                 bool CanSelectFirstSourceCondition(CardSource cardSource)
                 {
+                    if (cardSource.CardColors.Contains(CardColor.Black))
+                    {
+                        if (cardSource.HasLevel && cardSource.Level == 4)
+                        {
+                            return true;
+                        }
+                    }
+
                     return true;
                 }
 
                 bool CanSelectSecondSourceCondition(CardSource cardSource)
                 {
+                    if (cardSource.CardColors.Contains(CardColor.Yellow))
+                    {
+                        if (cardSource.HasLevel && cardSource.Level == 4)
+                        {
+                            return true;
+                        }
+                    }
+
                     return true;
                 }
 
