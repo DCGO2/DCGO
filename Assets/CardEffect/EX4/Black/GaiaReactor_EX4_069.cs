@@ -75,6 +75,7 @@ public class GaiaReactor_EX4_069 : CEntity_Effect
                     .Flat()
                     .Filter(permanent => !selectedPermanents.Contains(permanent)
                         && !permanent.TopCard.CanNotBeAffected(activateClass)
+                        && !permanent.IsTamer
                         && permanent.CanBeDestroyedBySkill(activateClass));
 
                 yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(destroyTargetPermanents, CardEffectCommons.CardEffectHashtable(activateClass)).Destroy());

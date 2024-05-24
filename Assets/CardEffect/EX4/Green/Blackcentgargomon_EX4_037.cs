@@ -15,7 +15,19 @@ public class Blackcentgargomon_EX4_037 : CEntity_Effect
         {
             bool PermanentCondition(Permanent targetPermanent)
             {
-                return targetPermanent.TopCard.ContainsCardName("Rapidmon") || (targetPermanent.TopCard.CardColors.Contains(CardColor.Green) && targetPermanent.TopCard.CardColors.Count == 2 && targetPermanent.TopCard.HasLevel && targetPermanent.Level == 5);
+                if(targetPermanent.TopCard.ContainsCardName("Rapidmon") && targetPermanent.TopCard.HasLevel && targetPermanent.Level == 5)
+                {
+                    return true;
+                }
+
+                if (targetPermanent.TopCard.CardColors.Contains(CardColor.Green) &&
+                    targetPermanent.TopCard.CardColors.Count == 2 && targetPermanent.TopCard.HasLevel &&
+                    targetPermanent.Level == 5)
+                {
+                    return true;
+                }
+
+                return false;
             }
 
             cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 4, ignoreDigivolutionRequirement: false, card: card, condition: null));

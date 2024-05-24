@@ -52,7 +52,7 @@ public class Kureniamumon_BT3_075 : CEntity_Effect
                 return CardEffectCommons.IsExistOnBattleArea(card);
             }
 
-            string effectName = "Your Diogimon with Blocker can't be deleted by opponent's effects";
+            string effectName = "Your Digimon with Blocker can't be deleted by opponent's effects";
 
             cardEffects.Add(CardEffectFactory.CanNotBeDestroyedBySkillStaticEffect(
                 permanentCondition: PermanentCondition,

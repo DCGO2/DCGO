@@ -248,7 +248,7 @@ public class Kimeramon_BT8_084 : CEntity_Effect
                                 mode: SelectPermanentEffect.Mode.Custom,
                                 cardEffect: activateClass);
 
-                            selectPermanentEffect.SetUpCustomMessage($"Select 1 Digimon to DP -{minusDP}.", $"The opponent is selecting 1 Digimon to DP -{minusDP}.");
+                            selectPermanentEffect.SetUpCustomMessage($"Select up to 4 Digimon to DP -{minusDP}.", $"The opponent is selecting up to 4 Digimon to DP -{minusDP}.");
 
                             yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 

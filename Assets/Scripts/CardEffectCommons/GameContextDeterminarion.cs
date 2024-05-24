@@ -9,9 +9,12 @@ public partial class CardEffectCommons
     #region Whether the card is in the field
     public static bool IsExistOnField(CardSource card)
     {
-        if (card.PermanentOfThisCard() != null)
+        if(card != null)
         {
-            return true;
+            if (card.PermanentOfThisCard() != null)
+            {
+                return true;
+            }
         }
 
         return false;

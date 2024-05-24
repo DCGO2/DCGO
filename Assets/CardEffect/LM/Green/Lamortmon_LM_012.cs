@@ -10,48 +10,50 @@ namespace DCGO.CardEffects.LM
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region OnPlay/When Digivolving
+            #region On Play/When Digivolving Shared
+            string EffectSharedDiscription()
+            {
+                return "[On Play] [When Digivolving] Suspend 1 of your opponent's Digimon. Then, if they have no unsuspended Digimon, 1 of their Digimon can't unsuspend until the end of their turn.";
+            }
+
+            bool CanSelectSharedPermanentCondition(Permanent permanent)
+            {
+                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+            }
+
+            bool CanSelectSharedUnsuspendCondition(Permanent permanent)
+            {
+                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                {
+                    return HasNoUnsuspendDigimon();
+                }
+
+                return false;
+            }
+
+            bool HasNoUnsuspendDigimon()
+            {
+                foreach (Permanent permanent in card.Owner.Enemy.GetBattleAreaDigimons())
+                {
+                    if (!permanent.IsSuspended)
+                        return false;
+                }
+
+                return true;
+            }
+            #endregion
+
+            #region On Play
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Can't Unsuspend", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectSharedDiscription());
                 cardEffects.Add(activateClass);
-
-                string EffectDiscription()
-                {
-                    return "[On Play] [When Digivolving] Suspend 1 of your opponent's Digimon. Then, if they have no unsuspended Digimon, 1 of their Digimon can't unsuspend until the end of their turn.";
-                }
-
-                bool CanSelectPermanentCondition(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
-                }
-
-                bool CanSelectUnsuspendCondition(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                    {
-                        return HasNoUnsuspendDigimon();
-                    }
-
-                    return false;
-                }
-
-                bool HasNoUnsuspendDigimon()
-                {
-                    foreach (Permanent permanent in card.Owner.Enemy.GetBattleAreaDigimons())
-                    {
-                        if (!permanent.IsSuspended)
-                            return false;
-                    }
-
-                    return true;
-                }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card) || CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -63,13 +65,13 @@ namespace DCGO.CardEffects.LM
                 {
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                    if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermanentCondition))
+                    if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectSharedPermanentCondition))
                     {
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectSharedPermanentCondition));
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectPermanentCondition,
+                            canTargetCondition: CanSelectSharedPermanentCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,
@@ -85,15 +87,94 @@ namespace DCGO.CardEffects.LM
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
 
-                    if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectUnsuspendCondition))
+                    if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectSharedUnsuspendCondition))
                     {
-                        int blockerCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectUnsuspendCondition));
+                        int blockerCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectSharedUnsuspendCondition));
 
                         selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectUnsuspendCondition,
+                            canTargetCondition: CanSelectSharedUnsuspendCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: blockerCount,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectBlockerPermanent,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that can't unsuspend.", "The opponent is selecting 1 Digimon that can't unsuspend.");
+
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                        IEnumerator SelectBlockerPermanent(Permanent permanent)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCantUnsuspendUntilOpponentTurnEnd(
+                                targetPermanent: permanent,
+                                activateClass: activateClass
+                            ));
+                        }
+                    }
+                }
+            }
+            #endregion
+
+            #region When Digivolving
+            if (timing == EffectTiming.OnEnterFieldAnyone)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Can't Unsuspend", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectSharedDiscription());
+                cardEffects.Add(activateClass);
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleArea(card);
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                    if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectSharedPermanentCondition))
+                    {
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectSharedPermanentCondition));
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectSharedPermanentCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: maxCount,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: null,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Tap,
+                            cardEffect: activateClass);
+
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to Suspend.", "The opponent is selecting 1 Digimon to Suspend.");
+
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                    }
+
+                    if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectSharedUnsuspendCondition))
+                    {
+                        int blockerCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectSharedUnsuspendCondition));
+
+                        selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectSharedUnsuspendCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: blockerCount,

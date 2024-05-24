@@ -149,7 +149,7 @@ public class BaalmonXAntibody_BT12_082 : CEntity_Effect
                 {
                     if (card.Owner.GetBattleAreaDigimons().Contains(card.PermanentOfThisCard()))
                     {
-                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardNames.Contains("Baalmon") || cardSource.CardNames.Contains("X Antibody") || cardSource.CardNames.Contains("XAntibody")) >= 1)
+                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.ContainsCardName("Baalmon") || cardSource.ContainsCardName("X Antibody") || cardSource.ContainsCardName("XAntibody")) >= 1)
                         {
                             if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                             {
@@ -218,17 +218,17 @@ public class BaalmonXAntibody_BT12_082 : CEntity_Effect
                 {
                     if (CardEffectCommons.IsOwnerTurn(card))
                     {
-                        if (card.PermanentOfThisCard().TopCard.CardTraits.Contains("Wizard"))
+                        if (card.PermanentOfThisCard().TopCard.ContainsTraits("Wizard"))
                         {
                             return true;
                         }
 
-                        if (card.PermanentOfThisCard().TopCard.CardTraits.Contains("Demon Lord"))
+                        if (card.PermanentOfThisCard().TopCard.ContainsTraits("Demon Lord"))
                         {
                             return true;
                         }
 
-                        if (card.PermanentOfThisCard().TopCard.CardTraits.Contains("DemonLord"))
+                        if (card.PermanentOfThisCard().TopCard.ContainsTraits("DemonLord"))
                         {
                             return true;
                         }

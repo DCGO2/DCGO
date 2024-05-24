@@ -5,7 +5,6 @@ using System.Linq;
 using Photon;
 using System;
 using Photon.Pun;
-using System.Drawing.Printing;
 
 public class Airdramon_BT15_059 : CEntity_Effect
 {

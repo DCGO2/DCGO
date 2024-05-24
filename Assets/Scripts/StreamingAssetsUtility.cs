@@ -2,8 +2,10 @@
 using UnityEngine;
 using System.IO;
 using System;
-using System.Text;
 using System.Threading.Tasks;
+using UnityEngine.Networking;
+using WebP;
+
 public class StreamingAssetsUtility
 {
     public static async Task<byte[]> ReadFile(string path)
@@ -27,22 +29,101 @@ public class StreamingAssetsUtility
 
     public static async Task<Sprite> GetSprite(string fileName, bool isCard = false, bool isLauncher = false)
     {
-        string path = Path.Combine(GetStreamingAssetPath(isLauncher), $"{fileName}.jpg").Replace("\\", "/");
-        Debug.Log(path);
-        if (!File.Exists(path))
-        {
-            path = Path.Combine(GetStreamingAssetPath(isLauncher), $"{fileName}.png").Replace("\\", "/");
-        }
+        string path = "";
 
         if (isCard)
         {
-            path = Path.Combine(GetStreamingAssetPath(isLauncher), $"Card/{fileName}.png").Replace("\\", "/");
-
-            if (!File.Exists(path))
+            if (fileName.Contains("-token"))
             {
-                path = Path.Combine(GetStreamingAssetPath(isLauncher), $"Card/{fileName}.jpg").Replace("\\", "/");
+                return await GetTokenImageData(Path.Combine(GetStreamingAssetPath(isLauncher), $"Card/{fileName}.png").Replace("\\", "/"));
+            }
+            else
+            {
+                path = Path.Combine(GetStreamingAssetPath(isLauncher), $"Card/{fileName}.webp").Replace("\\", "/");
+
+                if (!File.Exists(path))
+                {
+                    return await GetCardImageData(fileName, path);
+                }
+                else 
+                {
+                    return await GetCardImageDataLocal(path);
+                }
             }
         }
+        else
+        {
+            return await GetSpriteImage(fileName, isLauncher);
+        }
+
+        /*    if (isCard)
+        {
+            if (fileName.Contains("-token"))
+            {
+                return await GetTokenImageData(Path.Combine(GetStreamingAssetPath(isLauncher), $"Card/{fileName}.png").Replace("\\", "/"));
+            }
+            else
+            {
+                
+            }            
+        }
+        else
+        {
+            path = Path.Combine(GetStreamingAssetPath(isLauncher), $"{fileName}.jpg").Replace("\\", "/");
+
+            if (!File.Exists(path))
+                path = Path.Combine(GetStreamingAssetPath(isLauncher), $"{fileName}.png").Replace("\\", "/");
+
+            if (File.Exists(path))
+            {
+                byte[] imageBuff = await ReadFile(path);
+                Texture2D tex = BinaryToTexture(imageBuff);
+
+                Sprite sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), Vector2.zero);
+
+                return sprite;
+            }
+        }
+        
+        await Task.Yield();
+
+        if (File.Exists(path))
+        {
+            byte[] imageBuff = await ReadFile(path);
+            Texture2D tex;
+            Sprite sprite = null;
+
+            if (isCard)
+            {
+                tex = Texture2DExt.CreateTexture2DFromWebP(imageBuff, lMipmaps: true, lLinear: false, lError: out WebP.Error lError);
+
+                if (lError == WebP.Error.Success)
+                {
+                    sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), Vector2.zero);
+                }
+                else
+                {
+                    Debug.LogError("Webp Load Error : " + lError.ToString());
+                }
+            }
+            else
+            {
+                tex = BinaryToTexture(imageBuff);
+                sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), Vector2.zero);
+            }
+
+            return sprite;
+        }*/
+
+        return null;
+    }
+
+    public static async Task<Sprite> GetSpriteImage(string fileName, bool isLauncher = false)
+    {
+        string path = Path.Combine(GetStreamingAssetPath(isLauncher), $"{fileName}.jpg").Replace("\\", "/");
+
+        if(!File.Exists(path))
+            path = Path.Combine(GetStreamingAssetPath(isLauncher), $"{fileName}.png").Replace("\\", "/");
 
         if (File.Exists(path))
         {
@@ -56,25 +137,83 @@ public class StreamingAssetsUtility
 
         return null;
     }
+
+    public static async Task<Sprite> GetTokenImageData(string path)
+    {
+        if (File.Exists(path))
+        {
+            byte[] imageBuff = await ReadFile(path);
+            Texture2D tex = BinaryToTexture(imageBuff);
+
+            Sprite sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), Vector2.zero);
+            return sprite;
+        }
+
+        return null;
+    }
+
+    public static async Task<Sprite> GetCardImageDataLocal(string path)
+    {
+        if (File.Exists(path))
+        {
+            byte[] imageBuff = await ReadFile(path);
+            Texture2D texture = Texture2DExt.CreateTexture2DFromWebP(imageBuff, lMipmaps: true, lLinear: false, lError: out WebP.Error lError);
+
+            if (lError == WebP.Error.Success)
+            {
+                Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
+
+                return sprite;
+            }
+        }
+
+        return null;
+    }
+
+    public static async Task<Sprite> GetCardImageData(string fileName, string filePath)
+    {
+        string urlPath = $"https://raw.githubusercontent.com/TakaOtaku/Digimon-Card-App/main/src/assets/images/cards/{fileName}.webp";
+
+        UnityWebRequest webReq_CardImage = UnityWebRequest.Get(urlPath);
+        UnityWebRequestAsyncOperation operation = webReq_CardImage.SendWebRequest();
+
+        while (!operation.isDone)
+        {
+            await Task.Yield();
+        }
+
+        Debug.Log($"WebRequest isDone: {fileName}");
+        if (webReq_CardImage.result == UnityWebRequest.Result.ConnectionError)
+            return null;
+        else if (webReq_CardImage.result == UnityWebRequest.Result.ProtocolError)
+            return null;
+        else
+        {
+            File.WriteAllBytes(filePath, webReq_CardImage.downloadHandler.data);
+
+            Texture2D texture = Texture2DExt.CreateTexture2DFromWebP(webReq_CardImage.downloadHandler.data, lMipmaps: true, lLinear: false, lError: out WebP.Error lError);
+
+            if (lError == WebP.Error.Success)
+            {
+                Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
+
+                return sprite;
+            }
+
+            return null;
+        }
+    }
+
     #endregion
 
     public static bool IsCardExists(CEntity_Base cEntity_Base)
     {
-        string path = Path.Combine(GetStreamingAssetPath(false), $"Card/{cEntity_Base.CardSpriteName}.png").Replace("\\", "/");
+        string path = Path.Combine(GetStreamingAssetPath(false), $"Card/{cEntity_Base.CardSpriteName}.webp").Replace("\\", "/");
 
-        if (File.Exists(path))
-        {
-            return true;
-        }
+        if (cEntity_Base.CardSpriteName.Contains("token"))
+            path = Path.Combine(GetStreamingAssetPath(false), $"Card/{cEntity_Base.CardSpriteName}.png").Replace("\\", "/");
 
-        path = Path.Combine(GetStreamingAssetPath(false), $"Card/{cEntity_Base.CardSpriteName}.jpg").Replace("\\", "/");
-
-        if (File.Exists(path))
-        {
-            return true;
-        }
-
-        return false;
+        return File.Exists(path);
     }
 
     #region テキストファイルの取得

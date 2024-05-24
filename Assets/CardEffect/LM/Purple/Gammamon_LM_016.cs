@@ -65,13 +65,9 @@ namespace DCGO.CardEffects.LM
                     {
                         if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition))
                         {
-                            if (CardEffectCommons.IsOwnerTurn(card))
+                            if (CardEffectCommons.IsByEffect(hashtable, null))
                             {
-                                if(CardEffectCommons.IsByEffect(hashtable, null))
-                                {
-                                    return true;
-                                }
-                                
+                                return true;
                             }
                         }
                     }
@@ -137,7 +133,7 @@ namespace DCGO.CardEffects.LM
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanActivateOnDeletion(card))
+                    if (CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card))
                     {
                         if (card.Owner.HandCards.Count >= 1)
                         {

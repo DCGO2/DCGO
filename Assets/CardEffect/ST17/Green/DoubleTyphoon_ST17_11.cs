@@ -255,9 +255,11 @@ namespace DCGO.CardEffects.ST17
                             cardEffect: activateClass);
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                        cardEffects.Add(CardEffectFactory.PlaceSelfDelayOptionSecurityEffect(card));
                     }
+
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlaceDelayOptionCards(
+                                card: card,
+                                cardEffect: activateClass));
                 }
             }
             #endregion
