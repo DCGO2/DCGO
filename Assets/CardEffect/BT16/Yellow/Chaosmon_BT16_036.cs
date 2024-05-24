@@ -118,24 +118,30 @@ namespace DCGO.CardEffects.BT16
 
             if(timing == EffectTiming.WhenRemoveField)
             {
-                bool CanSelectFirstSourceCondition(CardSource card)
+                bool CanSelectFirstSourceCondition(CardSource cardSource)
                 {
-                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardColors.Contains(CardColor.Black) && cardSource.Level == 6) >= 1)
+                    if (cardSource.CardColors.Contains(CardColor.Black))
                     {
-                        return true;
+                        if (cardSource.HasLevel && cardSource.Level == 6)
+                        {
+                            return true;
+                        }
                     }
 
-                    return false;
+                    return true;
                 }
 
-                bool CanSelectSecondSourceCondition(CardSource card)
+                bool CanSelectSecondSourceCondition(CardSource cardSource)
                 {
-                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardColors.Contains(CardColor.Yellow) && cardSource.Level == 6) >= 1)
+                    if (cardSource.CardColors.Contains(CardColor.Yellow))
                     {
-                        return true;
+                        if (cardSource.HasLevel && cardSource.Level == 6)
+                        {
+                            return true;
+                        }
                     }
 
-                    return false;
+                    return true;
                 }
 
                 cardEffects.Add(CardEffectFactory.PartitionSelfEffect
