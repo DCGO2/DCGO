@@ -900,11 +900,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3683f4827b8c26a47a2a5944b11b24aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SetID: ST17
+  SetID: BT16
   minCardID: 1
-  maxCardID: 13
+  maxCardID: 102
   minParallelID: 0
-  maxParallelID: 1
+  maxParallelID: 2
 --- !u!4 &952339082
 Transform:
   m_ObjectHideFlags: 0

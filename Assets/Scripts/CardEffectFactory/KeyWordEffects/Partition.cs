@@ -34,13 +34,18 @@ public partial class CardEffectFactory
 
         ActivateClass activateClass = new ActivateClass();
         activateClass.SetUpICardEffect("Partition", CanUseCondition, card);
-        activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, DataBase.PartitionEffectDiscription());
+        activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
         activateClass.SetHashString($"Partition_{card.CardID}" + (isInheritedEffect ? "_inherited" : ""));
         activateClass.SetIsInheritedEffect(isInheritedEffect);
 
+        string EffectDiscription()
+        {
+            return DataBase.PartitionEffectDiscription();
+        }
+
         bool CanUseCondition(Hashtable hashtable)
         {
-            if (CardEffectCommons.CanTriggerFortitude(hashtable, card))
+            if (CardEffectCommons.CanTriggerPartition(hashtable, card))
             {
                 if (condition == null || condition())
                 {
@@ -53,7 +58,18 @@ public partial class CardEffectFactory
 
         bool CanActivateCondition(Hashtable hashtable)
         {
-            return CardEffectCommons.CanActivatePartition(targetPermanent);
+            if (CardEffectCommons.CanActivatePartition(targetPermanent))
+            {
+                if (firstSourceCondition == null || targetPermanent.DigivolutionCards.Count(firstSourceCondition) >= 1)
+                {
+                    if (secondSourceCondition == null || targetPermanent.DigivolutionCards.Count(secondSourceCondition) >= 1)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
         IEnumerator ActivateCoroutine(Hashtable _hashtable)

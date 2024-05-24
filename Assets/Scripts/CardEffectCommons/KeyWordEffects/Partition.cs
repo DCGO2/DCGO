@@ -27,7 +27,7 @@ public partial class CardEffectCommons
     {
         if (IsPermanentExistsOnBattleArea(permanent))
         {
-            if (permanent.DigivolutionCards.Count >= 1)
+            if (permanent.DigivolutionCards.Count >= 2)
             {
                 return true;
             }
@@ -66,9 +66,6 @@ public partial class CardEffectCommons
 
                 if (_permanent.TopCard != null)
                 {
-
-                    //int maxCount = Math.Min(1, MatchConditionPermanentCount(CanSelectCardCondition));
-
                     SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
                     selectCardEffect.SetUp(
                             canTargetCondition: CanSelectFristSourceCondition,
@@ -82,15 +79,16 @@ public partial class CardEffectCommons
                             canEndNotMax: false,
                             isShowOpponent: false,
                             mode: SelectCardEffect.Mode.Custom,
-                            root: SelectCardEffect.Root.DigivolutionCards,
-                            customRootCardList: _permanent.cardSources,
+                            root: SelectCardEffect.Root.Custom,
+                            customRootCardList: _permanent.DigivolutionCards,
                             canLookReverseCard: true,
                             selectPlayer: topCard.Owner,
                             cardEffect: activateClass);
 
                     yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 
-                    selectCardEffect.SetUp(
+                    SelectCardEffect selectSecondCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+                    selectSecondCardEffect.SetUp(
                             canTargetCondition: CanSelectSecondSourceCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
@@ -102,13 +100,13 @@ public partial class CardEffectCommons
                             canEndNotMax: false,
                             isShowOpponent: false,
                             mode: SelectCardEffect.Mode.Custom,
-                            root: SelectCardEffect.Root.DigivolutionCards,
-                            customRootCardList: _permanent.cardSources,
+                            root: SelectCardEffect.Root.Custom,
+                            customRootCardList: _permanent.DigivolutionCards,
                             canLookReverseCard: true,
                             selectPlayer: topCard.Owner,
                             cardEffect: activateClass);
 
-                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                    yield return ContinuousController.instance.StartCoroutine(selectSecondCardEffect.Activate());
 
                     IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
@@ -117,15 +115,15 @@ public partial class CardEffectCommons
                         yield return null;
                     }
                 }
-                
-                foreach(CardSource card in selectedCards)
+
+                if(selectedCards.Count == 2)
                 {
                     yield return ContinuousController.instance.StartCoroutine(PlayPermanentCards(
-                        cardSources: new List<CardSource>() { card },
+                        cardSources: selectedCards,
                         activateClass: activateClass,
                         payCost: false,
                         isTapped: false,
-                        root: SelectCardEffect.Root.Trash,
+                        root: SelectCardEffect.Root.DigivolutionCards,
                         activateETB: true));
                 }
 
