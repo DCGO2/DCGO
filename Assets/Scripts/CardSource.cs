@@ -1457,6 +1457,26 @@ public class CardSource : MonoBehaviour
     }
     #endregion
 
+    #region whether this card has at least 1 trait that contains "Light Fang/Night Claw"
+    public bool HasLightFangOrNightClawTraits
+    {
+        get
+        {
+            if (ContainsTraits("Light Fang"))
+            {
+                return true;
+            }
+
+            if (ContainsTraits("Night Claw"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+    #endregion
+
     #region whether this card has the string in text
     public bool HasText(string text)
     {

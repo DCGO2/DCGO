@@ -80,7 +80,7 @@ namespace DCGO.CardEffects.BT16
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if(card.Owner.SecurityCards.Count >=3)
+                    if(card.Owner.SecurityCards.Count >= 3)
                     {
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(PermanentCondition));
 
@@ -134,7 +134,7 @@ namespace DCGO.CardEffects.BT16
 
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: permanent, changeValue: -4000, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonSAttack(targetPermanent: permanent, changeValue: -2, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
                         }
                     }
                 }
@@ -249,7 +249,7 @@ namespace DCGO.CardEffects.BT16
 
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: permanent, changeValue: -4000, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonSAttack(targetPermanent: permanent, changeValue: -2, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
                         }
                     }
                 }
