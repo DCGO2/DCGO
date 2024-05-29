@@ -75,9 +75,12 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (card.HasDBrigadeorDigiPoliceTraits)
                     {
-                        if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
+                        if(card.HasPlayCost && card.GetCostItself <= 4)
                         {
-                            return true;
+                            if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
+                            {
+                                return true;
+                            }
                         }
                     }
 
