@@ -506,7 +506,7 @@ public class CardSource : MonoBehaviour
     #endregion
 
     #region get card cost of itself (refered by card effects)
-    public int GetCostItself => Math.Max(0, GetChangedCostItselef(BasePlayCostFromEntity, SelectCardEffect.Root.None, new List<Permanent>()));
+    public int GetCostItself => Math.Max(0, GetChangedCostItselef(BasePlayCostFromEntity, SelectCardEffect.Root.None, new List<Permanent>() { PermanentOfThisCard()}));
     #endregion
 
     #region get card cost of itself taking into account card effects
@@ -583,14 +583,13 @@ public class CardSource : MonoBehaviour
 
         changeCostCardEffects_IsUpDown
             .ForEach(cardEffect => Cost = ((IChangeCostEffect)cardEffect).GetCost(Cost, this, root, targetPermanents));
-
         #endregion
 
         return Math.Max(0, Cost);
     }
     #endregion
 
-    #region get card cost to pay of itself taking into account card effects
+        #region get card cost to pay of itself taking into account card effects
     public int GetChangedPayingCost(int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents, bool checkAvailability = false)
     {
         #region card effects that changes card cost to pay
