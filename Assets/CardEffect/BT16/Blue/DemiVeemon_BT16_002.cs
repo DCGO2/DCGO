@@ -8,25 +8,22 @@ namespace DCGO.CardEffects.BT16
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
-            
-            switch (timing)
+
+            if(timing == EffectTiming.None)
             {
-                case EffectTiming.None:
+                bool PermanentCondition()
                 {
-                    string EffectDiscription()
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        return "[All Turns] While this Digimon has 2 or more colors, it gets +1000 DP.";
+                        if(card.PermanentOfThisCard().TopCard.CardColors.Count >= 2)
+                        {
+                            return true;
+                        }
                     }
-                    
-                    bool PermanentCondition()
-                    {
-                        return CardEffectCommons.IsExistOnBattleArea(card)
-                               && card.PermanentOfThisCard().TopCard.CardColors.Count >= 2;
-                    }
-                    
-                    cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect(1000, true, card, PermanentCondition));
-                    break;
+                    return false;
                 }
+
+                cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect(1000, true, card, PermanentCondition));
             }
             
             return cardEffects;
