@@ -11,192 +11,336 @@ namespace DCGO.CardEffects.BT16
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
             
-            switch (timing)
+            #region Alternate Digivolution Requirement
+            if (timing == EffectTiming.None)
             {
-                case EffectTiming.None:
+                bool PermanentCondition(Permanent targetPermanent)
                 {
-                    #region Alternate Digivolution Requirement
+                    return targetPermanent.TopCard.ContainsCardName("Tokomon");
+                }
+                
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
+                    permanentCondition: PermanentCondition,
+                    digivolutionCost: 0,
+                    ignoreDigivolutionRequirement: false,
+                    card: card,
+                    condition: null));
+                
+                #region Inherited Effect
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Trash 1 digivolution card", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false,
+                    EffectDiscription());
+                activateClass.SetIsInheritedEffect(true);
+                cardEffects.Add(activateClass);
+                
+                string EffectDiscription()
+                {
+                    return "[When Attacking] Trash the top digivolution card of 1 of your opponent's Digimon.";
+                }
+                
+                bool CanSelectPermanentCondition(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
+                           && permanent.DigivolutionCards.Count(cardSource =>
+                               !cardSource.CanNotTrashFromDigivolutionCards(activateClass)) >= 1;
+                }
+                
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
+                }
+                
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleArea(card) &&
+                           CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
+                }
+                
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    var maxCount = Math.Min(1,
+                        CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+                    var selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
                     
-                    bool PermanentCondition(Permanent targetPermanent)
+                    selectPermanentEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanSelectPermanentCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: maxCount,
+                        canNoSelect: false,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: SelectPermanentCoroutine,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Custom,
+                        cardEffect: activateClass);
+                    
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will trash digivolution cards.",
+                        "The opponent is selecting 1 Digimon that will trash digivolution cards.");
+                    
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                    yield break;
+                    
+                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
-                        return targetPermanent.TopCard.ContainsCardName("Tokomon");
+                        yield return ContinuousController.instance.StartCoroutine(
+                            CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: permanent,
+                                trashCount: 1, isFromTop: true, activateClass: activateClass));
                     }
-                    
-                    cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
-                        permanentCondition: PermanentCondition,
-                        digivolutionCost: 0,
-                        ignoreDigivolutionRequirement: false,
-                        card: card,
-                        condition: null));
-                    
-                    #endregion
-                    
-                    
-                    #region Inherited Effect
-                    
-                    ActivateClass activateClass = new ActivateClass();
-                    activateClass.SetUpICardEffect("Trash 1 digivolution card", CanUseCondition, card);
-                    activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false,
-                        EffectDiscription());
-                    activateClass.SetIsInheritedEffect(true);
-                    cardEffects.Add(activateClass);
-                    
-                    string EffectDiscription()
+                }
+                #endregion
+            }
+            #endregion
+            
+            #region Start of Main Phase
+            if (timing == EffectTiming.OnStartMainPhase)
+            {
+                var activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("1 of your Digimon may Digivolve", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[Start of Main Phase] If it's your turn, 1 of your Digimon may digivolve into a level 4 Digimon card with the [Angel] or [Free] trait from your hand with the digivolution cost reduced by 1.";
+                }
+
+
+                bool CanSelectCardCondition(CardSource cardSource)
+                {
+                    return (cardSource.CardTraits.Contains("Angel") || cardSource.CardTraits.Contains("Free"))
+                           && cardSource.HasLevel && cardSource.Level == 4;
+                }
+
+                bool CanSelectPermanentCondition(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                           && card.Owner.HandCards.Select(cardSource => 
+                               CanSelectCardCondition(cardSource) 
+                               && cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass)
+                               ).FirstOrDefault();
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleArea(card) && CardEffectCommons.IsOwnerTurn(card);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleArea(card)
+                           && CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermanentCondition);
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
-                        return "[When Attacking] Trash the top digivolution card of 1 of your opponent's Digimon.";
-                    }
-                    
-                    bool CanSelectPermanentCondition(Permanent permanent)
-                    {
-                        return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                               && permanent.DigivolutionCards.Count(cardSource =>
-                                   !cardSource.CanNotTrashFromDigivolutionCards(activateClass)) >= 1;
-                    }
-                    
-                    bool CanUseCondition(Hashtable hashtable)
-                    {
-                        return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
-                    }
-                    
-                    bool CanActivateCondition(Hashtable hashtable)
-                    {
-                        return CardEffectCommons.IsExistOnBattleArea(card) &&
-                               CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
-                    }
-                    
-                    IEnumerator ActivateCoroutine(Hashtable hashtable)
-                    {
-                        var maxCount = Math.Min(1,
-                            CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-                        var selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-                        
+                        Permanent selectedPermanent = null;
+
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
                             canTargetCondition: CanSelectPermanentCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: false,
+                            maxCount: 1,
+                            canNoSelect: true,
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine,
                             afterSelectPermanentCoroutine: null,
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
-                        
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will trash digivolution cards.",
-                            "The opponent is selecting 1 Digimon that will trash digivolution cards.");
-                        
+
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will digivolve.", "The opponent is selecting 1 Digimon that will digivolve.");
+
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                        yield break;
-                        
+
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(
-                                CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: permanent,
-                                    trashCount: 1, isFromTop: true, activateClass: activateClass));
+                            selectedPermanent = permanent;
+
+                            yield return null;
                         }
-                    }
-                    
-                    #endregion
-                    
-                    break;
-                }
-                case EffectTiming.OnEnterFieldAnyone:
-                case EffectTiming.OnStartMainPhase:
-                {
-                    #region Start of Main Phase Effect
-                    var activateClass = new ActivateClass();
-                    activateClass.SetUpICardEffect("1 of your Digimon may Digivolve", CanUseCondition, card);
-                    activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
-                    cardEffects.Add(activateClass);
 
-                    string EffectDiscription()
-                    {
-                        return "[Start of Main Phase] If it's your turn, 1 of your Digimon may digivolve into a level 4 Digimon card with the [Angel] or [Free] trait from your trash with the digivolution cost reduced by 1.";
-                    }
-
-
-                    bool CanSelectCardCondition(CardSource cardSource)
-                    {
-                        return (cardSource.CardTraits.Contains("Angel") || cardSource.CardTraits.Contains("Free"))
-                               && cardSource.HasLevel && cardSource.Level == 4;
-                    }
-
-                    bool CanSelectPermanentCondition(Permanent permanent)
-                    {
-                        return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                               && card.Owner.HandCards.Select(cardSource => 
-                                   CanSelectCardCondition(cardSource) 
-                                   && cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass)
-                                   ).FirstOrDefault();
-                    }
-
-                    bool CanUseCondition(Hashtable hashtable)
-                    {
-                        return CardEffectCommons.IsExistOnBattleArea(card) && CardEffectCommons.IsOwnerTurn(card);
-                    }
-
-                    bool CanActivateCondition(Hashtable hashtable)
-                    {
-                        return CardEffectCommons.IsExistOnBattleArea(card)
-                               && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition)
-                               && card.Owner.TrashCards.Count >= 1;
-                    }
-
-                    IEnumerator ActivateCoroutine(Hashtable hashtable)
-                    {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                        if (selectedPermanent != null)
                         {
-                            Permanent selectedPermanent = null;
-
-                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-
-                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: CanSelectPermanentCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: maxCount,
-                                canNoSelect: true,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: SelectPermanentCoroutine,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Custom,
-                                cardEffect: activateClass);
-
-                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will digivolve.", "The opponent is selecting 1 Digimon that will digivolve.");
-
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                            IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                            {
-                                selectedPermanent = permanent;
-
-                                yield return null;
-                            }
-
-                            if (selectedPermanent != null)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                                    targetPermanent: selectedPermanent,
-                                    cardCondition: CanSelectCardCondition,
-                                    payCost: true,
-                                    reduceCostTuple: (reduceCost: 1, reduceCostCardCondition: null),
-                                    fixedCostTuple: null,
-                                    ignoreDigivolutionRequirementFixedCost: -1,
-                                    isHand: false,
-                                    activateClass: activateClass,
-                                    successProcess: null));
-                            }
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                                targetPermanent: selectedPermanent,
+                                cardCondition: CanSelectCardCondition,
+                                payCost: true,
+                                reduceCostTuple: (reduceCost: 1, reduceCostCardCondition: null),
+                                fixedCostTuple: null,
+                                ignoreDigivolutionRequirementFixedCost: -1,
+                                isHand: false,
+                                activateClass: activateClass,
+                                successProcess: null));
                         }
                     }
-                    #endregion
-                    
-                    break;
                 }
             }
+            #endregion
+            
+            #region On Play Effect
+            if (timing == EffectTiming.OnEnterFieldAnyone)
+            {
+                var activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("1 of your Digimon may Digivolve", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetHashString("Patamon_BT16_016_OnPlay");
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[On Play] If it's your turn, 1 of your Digimon may digivolve into a level 4 Digimon card with the [Angel] or [Free] trait from your hand with the digivolution cost reduced by 1.";
+                }
+
+
+                bool CanSelectCardCondition(CardSource cardSource)
+                {
+                    return (cardSource.CardTraits.Contains("Angel") || cardSource.CardTraits.Contains("Free"))
+                           && cardSource.HasLevel && cardSource.Level == 4;
+                }
+
+                bool CanSelectPermanentCondition(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                           && card.Owner.HandCards.Select(cardSource => 
+                               CanSelectCardCondition(cardSource) 
+                               && cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass)
+                               ).FirstOrDefault();
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsOwnerTurn(card) && CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleArea(card)
+                           && CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermanentCondition);
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                    {
+                        Permanent selectedPermanent = null;
+
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectPermanentCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: true,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will digivolve.", "The opponent is selecting 1 Digimon that will digivolve.");
+
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                        {
+                            selectedPermanent = permanent;
+
+                            yield return null;
+                        }
+
+                        if (selectedPermanent != null)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                                targetPermanent: selectedPermanent,
+                                cardCondition: CanSelectCardCondition,
+                                payCost: true,
+                                reduceCostTuple: (reduceCost: 1, reduceCostCardCondition: null),
+                                fixedCostTuple: null,
+                                ignoreDigivolutionRequirementFixedCost: -1,
+                                isHand: false,
+                                activateClass: activateClass,
+                                successProcess: null));
+                        }
+                    }
+                }
+            }
+            #endregion
+            
+            #region Inherited Effect
+            if (timing == EffectTiming.OnAllyAttack)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Trash 1 digivolution card", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false,
+                    EffectDiscription());
+                activateClass.SetIsInheritedEffect(true);
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[When Attacking] Trash the top digivolution card of 1 of your opponent's Digimon.";
+                }
+
+                bool CanSelectPermanentCondition(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
+                           && permanent.DigivolutionCards.Count(cardSource =>
+                               !cardSource.CanNotTrashFromDigivolutionCards(activateClass)) >= 1;
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleArea(card) &&
+                           CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    var maxCount = Math.Min(1,
+                        CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+                    var selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                    selectPermanentEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanSelectPermanentCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: maxCount,
+                        canNoSelect: false,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: SelectPermanentCoroutine,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will trash digivolution cards.",
+                        "The opponent is selecting 1 Digimon that will trash digivolution cards.");
+
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                    yield break;
+
+                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(
+                            CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: permanent,
+                                trashCount: 1, isFromTop: true, activateClass: activateClass));
+                    }
+                }
+            }
+            #endregion
 
             return cardEffects;
         }

@@ -37,6 +37,7 @@ namespace DCGO.CardEffects.BT16
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("This Digimon digivolves into a Digimon card from security", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetHashString("MagnaAngemon_BT16_024_OnPlay_WhenDigivolving");
                 cardEffects.Add(activateClass);
                 
                 string EffectDiscription()
@@ -49,7 +50,7 @@ namespace DCGO.CardEffects.BT16
                 
                 bool CanSelectCardDigivolutionCondition(CardSource cardSource)
                 {
-                    if (cardSource.CardTraits.Contains("Angel") || cardSource.CardTraits.Contains("Three Great Angels"))
+                    if (cardSource.CardTraits.Contains("Angel") || cardSource.CardTraits.Contains("Three Great Angels") || cardSource.CardTraits.Contains("ThreeGreatAngels"))
                     {
                         if (cardSource.IsDigimon)
                         {
@@ -78,15 +79,7 @@ namespace DCGO.CardEffects.BT16
                 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.IsOwnerTurn(card))
-                        {
-                            return true;
-                        }
-                    }
-                    
-                    return false;
+                    return CardEffectCommons.IsOwnerTurn(card) && (CardEffectCommons.CanTriggerOnPlay(hashtable, card) || CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card));
                 }
                 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -106,6 +99,8 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (card.Owner.SecurityCards.Count >= 1)
                     {
+                        int maxCount = Math.Min(1, card.Owner.SecurityCards.Count);
+                        
                         CardSource selectedCard = null;
                         
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
@@ -118,7 +113,7 @@ namespace DCGO.CardEffects.BT16
                             selectCardCoroutine: SelectCardCoroutine,
                             afterSelectCardCoroutine: null,
                             message: "Select 1 card to digivolve.",
-                            maxCount: 1,
+                            maxCount: maxCount,
                             canEndNotMax: false,
                             isShowOpponent: true,
                             mode: SelectCardEffect.Mode.Custom,
@@ -173,6 +168,8 @@ namespace DCGO.CardEffects.BT16
                                         {
                                             List<CardSource> selectedCards = new List<CardSource>();
                                             
+                                            maxCount = 1;
+                                            
                                             SelectHandEffect selectHandEffect =
                                                 GManager.instance.GetComponent<SelectHandEffect>();
                                             
@@ -181,7 +178,7 @@ namespace DCGO.CardEffects.BT16
                                                 canTargetCondition: CanSelectCardRecoverCondition,
                                                 canTargetCondition_ByPreSelecetedList: null,
                                                 canEndSelectCondition: null,
-                                                maxCount: 1,
+                                                maxCount: maxCount,
                                                 canNoSelect: true,
                                                 canEndNotMax: false,
                                                 isShowOpponent: true,
