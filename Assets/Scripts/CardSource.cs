@@ -1307,7 +1307,7 @@ public class CardSource : MonoBehaviour
         }
     }
     #endregion
-
+    
     #region whether this card has at least 1 trait that contains "Angel"
     public bool HasAngelTraits
     {
@@ -1317,32 +1317,61 @@ public class CardSource : MonoBehaviour
             {
                 return true;
             }
-
+            
             if (ContainsTraits("Cherub"))
             {
                 return true;
             }
-
+            
             if (ContainsTraits("Throne"))
             {
                 return true;
             }
-
+            
             if (ContainsTraits("Authority"))
             {
                 return true;
             }
-
+            
             if (ContainsTraits("Seraph"))
             {
                 return true;
             }
-
+            
             if (ContainsTraits("Virtue"))
             {
                 return true;
             }
-
+            
+            return false;
+        }
+    }
+    #endregion
+    
+    #region whether this card has 1 of the "Angel", "Archangel" or "Three Great Angels" trait
+    public bool HasAngelTraitRestrictive
+    {
+        get
+        {
+            if (ContainsTraits("Three Great Angels") || ContainsTraits("ThreeGreatAngels"))
+            {
+                return true;
+            }
+            
+            if (ContainsTraits("Archangel"))
+            {
+                return true;
+            }
+            
+            if (CardTraits.Count(trait => 
+                    (trait.Contains("Angel") || trait.Contains("angel"))
+                    && trait != "Archangel"
+                    && trait != "Fallen Angel" && trait != "FallenAngel"
+                    && trait != "Three Great Angels" && trait != "ThreeGreatAngels") >= 1)
+            {
+                return true;
+            }
+            
             return false;
         }
     }
@@ -1406,7 +1435,7 @@ public class CardSource : MonoBehaviour
         }
     }
     #endregion
-
+    
     #region whether this card has at least 1 trait that contains "DigiPolice"
     public bool HasDigiPoliceTraits
     {
@@ -1416,10 +1445,15 @@ public class CardSource : MonoBehaviour
             {
                 return true;
             }
-
+            
             return false;
         }
     }
+    #endregion
+    
+    #region whether this card has at least 1 trait that contains "Light Fang" or "Night Claw"
+    public bool HasLightFangNightClawTraits => ContainsTraits("Light Fang") || ContainsTraits("Night Claw");
+    
     #endregion
 
     #region whether this card has the string in text
@@ -1463,9 +1497,13 @@ public class CardSource : MonoBehaviour
         return false;
     }
     #endregion
-
+    
     #region whether this card has <Save> in text
     public bool HasSaveText => HasText("<Save>");
+    #endregion
+    
+    #region whether this card has "Pulsemon" in text
+    public bool HasPulsemonText => HasText("Pulsemon");
     #endregion
 
     #region card names checked when digixros
@@ -1985,6 +2023,30 @@ public class CardSource : MonoBehaviour
 
     #region whether this card has level
     public bool HasLevel => _cEntity_Base == null || _cEntity_Base.HasLevel;
+    #endregion
+    
+    #region whether this card is level 3
+    
+    public bool IsLevel3 => (_cEntity_Base == null || _cEntity_Base.HasLevel) && _cEntity_Base.Level == 3;
+    
+    #endregion
+    
+    #region whether this card is level 4
+    
+    public bool IsLevel4 => (_cEntity_Base == null || _cEntity_Base.HasLevel) && _cEntity_Base.Level == 4;
+    
+    #endregion
+    
+    #region whether this card is level 5
+    
+    public bool IsLevel5 => (_cEntity_Base == null || _cEntity_Base.HasLevel) && _cEntity_Base.Level == 5;
+    
+    #endregion
+    
+    #region whether this card is level 6
+    
+    public bool IsLevel6 => (_cEntity_Base == null || _cEntity_Base.HasLevel) && _cEntity_Base.Level == 6;
+    
     #endregion
 
     #region DigiXros requirement
