@@ -97,6 +97,8 @@ namespace DCGO.CardEffects.BT16
                         // DNA digivolve
                         if (card.Owner.GetBattleAreaDigimons().Count >= 2)
                         {
+                            bool DNADigivolved = false;
+
                             if (card.Owner.HandCards.Count(CanSelectDNACardCondition) >= 1)
                             {
                                 List<CardSource> selectedDNACards = new List<CardSource>();
@@ -189,48 +191,49 @@ namespace DCGO.CardEffects.BT16
                                                     activateETB: true);
 
                                                 playCard.SetJogress(_jogressEvoRootsFrameIDs);
-
+                                                DNADigivolved = true;
                                                 yield return ContinuousController.instance.StartCoroutine(playCard.PlayCard());
 
+                                                
+                                            }
 
-                                                    List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
+                                            if(DNADigivolved)
+                                            {
+                                                List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
                                                     {
                                                         new SelectionElement<bool>(message: $"Yes", value : true, spriteIndex: 0),
                                                         new SelectionElement<bool>(message: $"No", value : false, spriteIndex: 1),
                                                     };
 
-                                                    string selectPlayerMessage = "Will you give this Digimon [Security A+1] and must attack a player?";
-                                                    string notSelectPlayerMessage = "The opponent is choosing effects.";
+                                                string selectPlayerMessage = "Will you give this Digimon [Security A+1] and must attack a player?";
+                                                string notSelectPlayerMessage = "The opponent is choosing effects.";
 
-                                                    GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+                                                GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
 
-                                                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+                                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                                                    bool willGiveEffects = GManager.instance.userSelectionManager.SelectedBoolValue;
+                                                bool willGiveEffects = GManager.instance.userSelectionManager.SelectedBoolValue;
 
-                                                    if (willGiveEffects)
+                                                if (willGiveEffects)
+                                                {
+                                                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonSAttack(selectedCard.PermanentOfThisCard(), 1, EffectDuration.UntilEachTurnEnd, activateClass));
+
+                                                    if (selectedCard.PermanentOfThisCard() != null)
                                                     {
-                                                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonSAttack(selectedCard.PermanentOfThisCard(), 1, EffectDuration.UntilEachTurnEnd, activateClass));
-
-                                                        if (selectedCard.PermanentOfThisCard() != null)
+                                                        if (selectedCard.PermanentOfThisCard().CanAttack(activateClass))
                                                         {
-                                                            if (selectedCard.PermanentOfThisCard().CanAttack(activateClass))
-                                                            {
-                                                                SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
+                                                            SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
 
-                                                                selectAttackEffect.SetUp(
-                                                                    attacker: selectedCard.PermanentOfThisCard(),
-                                                                    canAttackPlayerCondition: () => true,
-                                                                    defenderCondition: (permanent) => false,
-                                                                    cardEffect: activateClass);
+                                                            selectAttackEffect.SetUp(
+                                                                attacker: selectedCard.PermanentOfThisCard(),
+                                                                canAttackPlayerCondition: () => true,
+                                                                defenderCondition: (permanent) => false,
+                                                                cardEffect: activateClass);
 
-                                                                yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
-                                                            }
+                                                            yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
                                                         }
                                                     }
-
-
-                                                
+                                                }
                                             }
                                         }
                                     }
