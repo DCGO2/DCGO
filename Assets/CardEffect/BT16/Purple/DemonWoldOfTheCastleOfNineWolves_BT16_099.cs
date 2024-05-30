@@ -219,32 +219,36 @@ namespace DCGO.CardEffects.BT16
                     }
                     #endregion
 
-                    if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
+                    if (card.Owner.TrashCards.Count(CanSelectCardCondition) >= 1)
                     {
                         List<CardSource> selectedCards = new List<CardSource>();
 
                         int maxCount = 1;
 
-                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
-                        selectHandEffect.SetUp(
+                        selectCardEffect.SetUp(
                             selectPlayer: card.Owner,
                             canTargetCondition: CanSelectCardCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,
-                            canNoSelect: true,
+                            message: "Select 1 card to play.",
+                            canNoSelect: () => true,
                             canEndNotMax: false,
                             isShowOpponent: true,
                             selectCardCoroutine: SelectCardCoroutine,
                             afterSelectCardCoroutine: null,
-                            mode: SelectHandEffect.Mode.Custom,
+                            mode: SelectCardEffect.Mode.Custom,
+                            root: SelectCardEffect.Root.Trash,
+                            customRootCardList: null,
+                            canLookReverseCard: false,
                             cardEffect: activateClass);
 
-                        selectHandEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
-                        selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
+                        selectCardEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
+                        selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
 
-                        yield return StartCoroutine(selectHandEffect.Activate());
+                        yield return StartCoroutine(selectCardEffect.Activate());
 
                         IEnumerator SelectCardCoroutine(CardSource cardSource)
                         {
