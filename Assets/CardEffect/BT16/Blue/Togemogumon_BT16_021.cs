@@ -44,7 +44,7 @@ namespace DCGO.CardEffects.BT16
             if (timing == EffectTiming.OnTappedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Trash digivolution cards & stun 1 Digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Trash 1 digivolution card & stun 1 Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
                 
@@ -54,7 +54,15 @@ namespace DCGO.CardEffects.BT16
                            "their Digimon. Then, 1 of their Digimon with no digivolution cards can't attack or block until the end of their turn.";
                 }
                 
-                bool CanSelectPermanentCondition(Permanent permanent)
+                bool CanSelectPermanentSourceStripCondition(Permanent permanent)
+                {
+                    
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
+                           && permanent.DigivolutionCards.Count(cardSource =>
+                               !cardSource.CanNotTrashFromDigivolutionCards(activateClass)) >= 1;
+                }
+                
+                bool CanSelectPermanentStunCondition(Permanent permanent)
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                     {
@@ -92,30 +100,56 @@ namespace DCGO.CardEffects.BT16
 
             IEnumerator ActivateCoroutine(Hashtable _hashtable)
             {
-                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                
+                var selectPermanentSourceStripEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                
+                selectPermanentSourceStripEffect.SetUp(
+                    selectPlayer: card.Owner,
+                    canTargetCondition: CanSelectPermanentSourceStripCondition,
+                    canTargetCondition_ByPreSelecetedList: null,
+                    canEndSelectCondition: null,
+                    maxCount: 1,
+                    canNoSelect: false,
+                    canEndNotMax: false,
+                    selectPermanentCoroutine: SelectPermanentSourceStripCoroutine,
+                    afterSelectPermanentCoroutine: null,
+                    mode: SelectPermanentEffect.Mode.Custom,
+                    cardEffect: activateClass);
+                
+                selectPermanentSourceStripEffect.SetUpCustomMessage("Select 1 Digimon that will trash digivolution cards.",
+                    "The opponent is selecting 1 Digimon that will trash digivolution cards.");
+                
+                yield return ContinuousController.instance.StartCoroutine(selectPermanentSourceStripEffect.Activate());
+                
+                IEnumerator SelectPermanentSourceStripCoroutine(Permanent permanent)
                 {
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-
-                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                    selectPermanentEffect.SetUp(
+                    yield return ContinuousController.instance.StartCoroutine(
+                        CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: permanent,
+                            trashCount: 1, isFromTop: true, activateClass: activateClass));
+                }
+                
+                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentStunCondition))
+                {
+                    SelectPermanentEffect selectPermanentStunEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                    
+                    selectPermanentStunEffect.SetUp(
                         selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectPermanentCondition,
+                        canTargetCondition: CanSelectPermanentStunCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
-                        maxCount: maxCount,
+                        maxCount: 1,
                         canNoSelect: false,
                         canEndNotMax: false,
-                        selectPermanentCoroutine: SelectPermanentCoroutine,
+                        selectPermanentCoroutine: SelectPermanentStunCoroutine,
                         afterSelectPermanentCoroutine: null,
                         mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
+                    
+                    selectPermanentStunEffect.SetUpCustomMessage("Select 1 Digimon that will get effects.", "The opponent is selecting 1 Digimon that will get effects.");
 
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will get effects.", "The opponent is selecting 1 Digimon that will get effects.");
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentStunEffect.Activate());
 
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                    IEnumerator SelectPermanentStunCoroutine(Permanent permanent)
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotAttack(
                             targetPermanent: permanent,

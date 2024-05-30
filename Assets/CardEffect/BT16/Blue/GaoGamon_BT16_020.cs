@@ -32,12 +32,13 @@ namespace DCGO.CardEffects.BT16
             }
             #endregion
 
-            #region On Play/When Digivolving
+            #region When Digivolving
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Draw 1 card, then Memory +1", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetHashString("GaoGamon_BT16_020_When_Digivolving");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -55,7 +56,7 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (card.Owner.Enemy.HandCards.Count >= 8 || card.PermanentOfThisCard().DigivolutionCards.Count >= 3)
+                        if (GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer.Count(player => player.LibraryCards.Count >= 1) >= 1)
                         {
                             return true;
                         }
@@ -66,7 +67,18 @@ namespace DCGO.CardEffects.BT16
                 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
+                    foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
+                    {
+                        if (player.LibraryCards.Count >= 1)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(new DrawClass(player, 1, activateClass).Draw());
+                        }
+                    }
+                    
+                    if (card.Owner.Enemy.HandCards.Count >= 8 || card.PermanentOfThisCard().DigivolutionCards.Count >= 3)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
+                    }
                 }
             }
             #endregion
