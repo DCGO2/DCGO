@@ -258,9 +258,9 @@ namespace DCGO.CardEffects.BT16
                     if(card.Owner.SecurityCards.Count <= 2)
                     {
                         yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(
-                        card.PermanentOfThisCard(),
-                        CardEffectCommons.CardEffectHashtable(activateClass),
-                        toTop: false).PutSecurity());
+                            card.PermanentOfThisCard(),
+                            CardEffectCommons.CardEffectHashtable(activateClass),
+                            toTop: false).PutSecurity());
                     }
                 }
             }
