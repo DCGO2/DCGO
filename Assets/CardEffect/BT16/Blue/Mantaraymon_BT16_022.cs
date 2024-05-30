@@ -59,7 +59,8 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanSelectPermanentDebuffCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
+                           permanent.DigivolutionCards.Count == 0;
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)

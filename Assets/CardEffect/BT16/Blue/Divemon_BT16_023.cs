@@ -124,7 +124,7 @@ namespace DCGO.CardEffects.BT16
                                     canEndNotMax: false,
                                     selectPermanentCoroutine: null,
                                     afterSelectPermanentCoroutine: null,
-                                    mode: SelectPermanentEffect.Mode.Bounce,
+                                    mode: SelectPermanentEffect.Mode.PutLibraryBottom,
                                     cardEffect: activateClass);
                                 
                                 yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
