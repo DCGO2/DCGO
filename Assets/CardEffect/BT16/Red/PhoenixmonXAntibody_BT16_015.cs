@@ -34,11 +34,12 @@ namespace DCGO.CardEffects.BT16
             #endregion
 
             #region Your Turn
-            if (timing == EffectTiming.OnAllyAttack)
+            if (timing == EffectTiming.AfterEffectsActivate || timing == EffectTiming.OnStartTurn || timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Opponent's 1 Digimon gains effect", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Add [End of Attack] to all of this Digimon's [On Deletion] effects.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetIsBackgroundProcess(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -48,18 +49,22 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnAttack(hashtable,card);
+                    return true;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        return true;
+                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardNames.Contains("Phoenixmon") || cardSource.CardNames.Contains("X Antibody") || cardSource.CardNames.Contains("XAntibody")) >= 1)
+                        {
+                            return true;
+                        }
                     }
 
                     return false;
                 }
+
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
@@ -67,12 +72,14 @@ namespace DCGO.CardEffects.BT16
                     {
                         List<ICardEffect> onDeletionEffects = card.PermanentOfThisCard().EffectList(EffectTiming.OnDestroyedAnyone).Where(x => x.IsOnDeletion && !x.IsSecurityEffect).ToList();
 
-                        foreach (ICardEffect cardEffect in onDeletionEffects)
+
+                        foreach (ICardEffect cardEffect1 in onDeletionEffects)
                         {
                             ActivateClass activateEndofAttack = new ActivateClass();
-                            activateEndofAttack.SetUpICardEffect(cardEffect.EffectName, CanUseEndOfAttackCondition, card);
-                            activateEndofAttack.SetUpActivateClass(CanActivateEndOfAttackCondition, ActivateEndOfAttackCoroutine, -1, false, cardEffect.EffectDiscription);
-                            activateEndofAttack.SetIsInheritedEffect(cardEffect.IsInheritedEffect);
+                            activateEndofAttack.SetUpICardEffect(cardEffect1.EffectName, CanUseEndOfAttackCondition, card);
+                            activateEndofAttack.SetUpActivateClass(CanActivateEndOfAttackCondition, ActivateEndOfAttackCoroutine, -1, false, cardEffect1.EffectDiscription);
+                            activateEndofAttack.SetIsInheritedEffect(cardEffect1.IsInheritedEffect);
+                            activateEndofAttack.SetHashString(cardEffect1.EffectName + "EndOfAttack");
                             activateEndofAttack.SetEffectSourcePermanent(card.PermanentOfThisCard());
 
                             bool CanUseEndOfAttackCondition(Hashtable hashtable1)
@@ -87,15 +94,17 @@ namespace DCGO.CardEffects.BT16
 
                             IEnumerator ActivateEndOfAttackCoroutine(Hashtable hashtable)
                             {
-                                yield return ContinuousController.instance.StartCoroutine(((ActivateICardEffect)cardEffect).Activate(hashtable));
+                                yield return ContinuousController.instance.StartCoroutine(((ActivateICardEffect)cardEffect1).Activate(hashtable));
                             }
 
+
                             CardEffectCommons.AddEffectToPermanent(
-                                targetPermanent: card.PermanentOfThisCard(),
-                                effectDuration: EffectDuration.UntilOwnerTurnEnd,
-                                card: card,
-                                cardEffect: activateEndofAttack,
-                                timing: EffectTiming.OnEndAttack);
+                                       targetPermanent: card.PermanentOfThisCard(),
+                                       effectDuration: EffectDuration.UntilOwnerTurnEnd,
+                                       card: card,
+                                       cardEffect: activateEndofAttack,
+                                       timing: EffectTiming.OnEndAttack);
+
                         }
 
                         /*foreach (CardSource cardSource1 in card.PermanentOfThisCard().DigivolutionCards)

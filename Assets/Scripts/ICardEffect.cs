@@ -771,6 +771,7 @@ public enum EffectTiming
     OnReturnCardsToLibraryFromTrash,
     OnPermamemtReturnedToHand,
     OnReturnCardsToHandFromTrash,
+    AfterEffectsActivate,
 }
 #endregion
 
