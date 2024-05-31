@@ -34,6 +34,7 @@ namespace DCGO.CardEffects.BT16
             #endregion
 
             #region Your Turn
+
             if (timing == EffectTiming.AfterEffectsActivate || timing == EffectTiming.OnStartTurn || timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -72,6 +73,15 @@ namespace DCGO.CardEffects.BT16
                     {
                         List<ICardEffect> onDeletionEffects = card.PermanentOfThisCard().EffectList(EffectTiming.OnDestroyedAnyone).Where(x => x.IsOnDeletion && !x.IsSecurityEffect).ToList();
 
+                        foreach(Func<EffectTiming, ICardEffect> cardEffect in card.PermanentOfThisCard().UntilOwnerTurnEndEffects)
+                        {
+                            if(cardEffect(EffectTiming.OnEndAttack).HashString.Contains("EndOfAttack_BT16_015"))
+                            {
+                                card.PermanentOfThisCard().UntilOwnerTurnEndEffects.Remove(CardEffectCommons.GetCardEffectByEffectTiming(EffectTiming.OnEndAttack,cardEffect(EffectTiming.OnEndAttack)));
+                            }
+                        }
+                       
+                        card.PermanentOfThisCard().UntilOwnerTurnEndEffects.Clear();
 
                         foreach (ICardEffect cardEffect1 in onDeletionEffects)
                         {
@@ -79,7 +89,7 @@ namespace DCGO.CardEffects.BT16
                             activateEndofAttack.SetUpICardEffect(cardEffect1.EffectName, CanUseEndOfAttackCondition, card);
                             activateEndofAttack.SetUpActivateClass(CanActivateEndOfAttackCondition, ActivateEndOfAttackCoroutine, -1, false, cardEffect1.EffectDiscription);
                             activateEndofAttack.SetIsInheritedEffect(cardEffect1.IsInheritedEffect);
-                            activateEndofAttack.SetHashString(cardEffect1.EffectName + "EndOfAttack");
+                            activateEndofAttack.SetHashString("EndOfAttack_BT16_015");
                             activateEndofAttack.SetEffectSourcePermanent(card.PermanentOfThisCard());
 
                             bool CanUseEndOfAttackCondition(Hashtable hashtable1)
@@ -96,7 +106,6 @@ namespace DCGO.CardEffects.BT16
                             {
                                 yield return ContinuousController.instance.StartCoroutine(((ActivateICardEffect)cardEffect1).Activate(hashtable));
                             }
-
 
                             CardEffectCommons.AddEffectToPermanent(
                                        targetPermanent: card.PermanentOfThisCard(),
@@ -153,7 +162,7 @@ namespace DCGO.CardEffects.BT16
                                 }
                             }
                         }*/
-                        
+
                     }
                     yield return null;
                 }
