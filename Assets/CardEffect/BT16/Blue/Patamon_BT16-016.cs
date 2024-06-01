@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.BT16
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsCardName("Tokomon");
+                    return targetPermanent.TopCard.CardNames.Contains("Tokomon");
                 }
                 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
@@ -25,74 +25,9 @@ namespace DCGO.CardEffects.BT16
                     ignoreDigivolutionRequirement: false,
                     card: card,
                     condition: null));
-                
-                #region Inherited Effect
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Trash 1 digivolution card", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false,
-                    EffectDiscription());
-                activateClass.SetIsInheritedEffect(true);
-                cardEffects.Add(activateClass);
-                
-                string EffectDiscription()
-                {
-                    return "[When Attacking] Trash the top digivolution card of 1 of your opponent's Digimon.";
-                }
-                
-                bool CanSelectPermanentCondition(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                           && permanent.DigivolutionCards.Count(cardSource =>
-                               !cardSource.CanNotTrashFromDigivolutionCards(activateClass)) >= 1;
-                }
-                
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
-                }
-                
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleArea(card) &&
-                           CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
-                }
-                
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    var maxCount = Math.Min(1,
-                        CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-                    var selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-                    
-                    selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectPermanentCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: maxCount,
-                        canNoSelect: false,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: SelectPermanentCoroutine,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Custom,
-                        cardEffect: activateClass);
-                    
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will trash digivolution cards.",
-                        "The opponent is selecting 1 Digimon that will trash digivolution cards.");
-                    
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                    yield break;
-                    
-                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(
-                            CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: permanent,
-                                trashCount: 1, isFromTop: true, activateClass: activateClass));
-                    }
-                }
-                #endregion
             }
             #endregion
-            
+
             #region Start of Main Phase
             if (timing == EffectTiming.OnStartMainPhase)
             {
@@ -279,8 +214,7 @@ namespace DCGO.CardEffects.BT16
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash 1 digivolution card", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false,
-                    EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
@@ -291,9 +225,7 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                           && permanent.DigivolutionCards.Count(cardSource =>
-                               !cardSource.CanNotTrashFromDigivolutionCards(activateClass)) >= 1;
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -309,8 +241,7 @@ namespace DCGO.CardEffects.BT16
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    var maxCount = Math.Min(1,
-                        CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+                    var maxCount = Math.Min(1,CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
                     var selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
