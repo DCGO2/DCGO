@@ -223,7 +223,7 @@ public class ContinuousController : MonoBehaviour
         KoHagurumonToken = new CEntity_Base()
         {
             cardColors = new List<CardColor>() { CardColor.Black },
-            PlayCost = 0,
+            PlayCost = -1,
             Level = 0,
             CardName_JPN = "",
             CardName_ENG = "KoHagurumon",

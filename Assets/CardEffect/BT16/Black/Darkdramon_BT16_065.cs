@@ -13,8 +13,6 @@ namespace DCGO.CardEffects.BT16
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            
-
             bool HasBossTraitInPlay(Permanent permanent)
             {
                 if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
@@ -26,6 +24,16 @@ namespace DCGO.CardEffects.BT16
                             return true;
                         }
                     }
+                }
+
+                return false;
+            }
+
+            bool CanSelectDBrigadeCondition(CardSource cardSource)
+            {
+                if (cardSource.IsDigimon)
+                {
+                    return cardSource.CardTraits.Contains("D-Brigade");
                 }
 
                 return false;
@@ -43,11 +51,6 @@ namespace DCGO.CardEffects.BT16
                 string EffectDiscription()
                 {
                     return "When this card would be played, if there is a Digimon with the [Boss] trait, reduce the play cost by 6. By returning 6 cards with the [D-Brigade] trait from your trash to the top of the deck, reduce the play cost by 6.";
-                }
-
-                bool CanSelectCardCondition(CardSource cardSource)
-                {
-                    return cardSource.CardTraits.Contains("D-Brigade");
                 }
 
                 bool CardCondition(CardSource cardSource)
@@ -90,7 +93,7 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (CardEffectCommons.IsExistOnHand(card))
                     {
-                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
+                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectDBrigadeCondition))
                         {
                             return true;
                         }
@@ -101,27 +104,35 @@ namespace DCGO.CardEffects.BT16
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    List<CardSource> digivolutionCards = new List<CardSource>();
+                    bool CanSelectTrashCardCondition(CardSource cardSource)
+                    {
+                        if (CanSelectDBrigadeCondition(cardSource))
+                        {
+                            return true;
+                        }
 
-                    if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
+                        return false;
+                    }
+
+                    if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, (cardSource) => CanSelectTrashCardCondition(cardSource)))
                     {
                         bool noSelect = CanNoSelect(CardEffectCommons.GetCardFromHashtable(_hashtable));
                         List<CardSource> selectedCards = new List<CardSource>();
 
-                        int maxCount = Math.Min(6, card.Owner.TrashCards.Count(CanSelectCardCondition));
+                        int maxCount = 6;
 
-                        if (maxCount >= 6)
+                        if (maxCount >= 1)
                         {
                             SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                             selectCardEffect.SetUp(
-                                canTargetCondition: CanSelectCardCondition,
+                                canTargetCondition: CanSelectTrashCardCondition,
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
                                 canNoSelect: () => noSelect,
                                 selectCardCoroutine: SelectCardCoroutine,
                                 afterSelectCardCoroutine: null,
-                                message: "Select cards to place on top of deck.",
+                                message: "Select cards to place in Digivolution cards.",
                                 maxCount: maxCount,
                                 canEndNotMax: true,
                                 isShowOpponent: true,
@@ -156,7 +167,7 @@ namespace DCGO.CardEffects.BT16
                         }
 
                         ChangeCostClass changeCostClass = new ChangeCostClass();
-                        changeCostClass.SetUpICardEffect("Play Cost -6", CanUseCondition1, card);
+                        changeCostClass.SetUpICardEffect("Play Cost -1", CanUseCondition1, card);
                         changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
                         card.Owner.UntilCalculateFixedCostEffect.Add((_timing) => changeCostClass);
 
@@ -173,16 +184,14 @@ namespace DCGO.CardEffects.BT16
                                 {
                                     if (PermanentsCondition(targetPermanents))
                                     {
-                                        List<CardSource> trashSources = card.Owner.TrashCards.Filter(CanSelectCardCondition);
-                                        int targetCount = 0;
+                                        int targetCost = 0;
 
-                                        if(CardEffectCommons.HasMatchConditionPermanent(HasBossTraitInPlay))
-                                            targetCount += 6;
+                                        if(CardEffectCommons.HasMatchConditionOwnersPermanent(card, HasBossTraitInPlay))
+                                            targetCost += 6;
 
-                                        if (trashSources.Count >= 6)
-                                            targetCount += 6;
+                                        targetCost += cardSources.Count * 1;
 
-                                        Cost -= targetCount;
+                                        Cost -= targetCost;
                                     }
                                 }
                             }
@@ -235,15 +244,11 @@ namespace DCGO.CardEffects.BT16
             if (timing == EffectTiming.None)
             {
                 ChangeCostClass changeCostClass = new ChangeCostClass();
-                changeCostClass.SetUpICardEffect("Play Cost -6", CanUseCondition, card);
+                changeCostClass.SetUpICardEffect("Play Cost -1", CanUseCondition, card);
                 changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => true, isChangePayingCost: () => true);
                 changeCostClass.SetNotShowUI(true);
                 cardEffects.Add(changeCostClass);
 
-                bool CanSelectCardCondition(CardSource cardSource)
-                {
-                    return cardSource.CardTraits.Contains("D-Brigade");
-                }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
@@ -253,7 +258,7 @@ namespace DCGO.CardEffects.BT16
 
                         if (activateClass != null)
                         {
-                            if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
+                            if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectDBrigadeCondition))
                             {
                                 return true;
                             }
@@ -271,13 +276,10 @@ namespace DCGO.CardEffects.BT16
                         {
                             if (PermanentsCondition(targetPermanents))
                             {
-                                List<CardSource> trashSources = card.Owner.TrashCards.Filter(CanSelectCardCondition);
-                                int targetCount = 0;
+                                List<CardSource> trashSources = card.Owner.TrashCards.Filter(CanSelectDBrigadeCondition);
+                                int targetCount = (from trashCard in trashSources select trashCard.CardID).Count();
 
-                                if (CardEffectCommons.HasMatchConditionPermanent(HasBossTraitInPlay))
-                                    targetCount += 6;
-
-                                if (trashSources.Count >= 6)
+                                if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, HasBossTraitInPlay))
                                     targetCount += 6;
 
                                 Cost -= targetCount;
@@ -453,7 +455,7 @@ namespace DCGO.CardEffects.BT16
 
                 string EffectDiscription()
                 {
-                    return "[On Play] Reveal the top 3 cards of your deck. Delete 1 of your opponent's Digimon with play cost less than or equal to the play cost of 1 of the cards among them. Trash the revealed cards.";
+                    return "[When Digivolving] Reveal the top 3 cards of your deck. Delete 1 of your opponent's Digimon with play cost less than or equal to the play cost of 1 of the cards among them. Trash the revealed cards.";
                 }
 
                 bool RevealSelectCardCondition(CardSource cardSource)
@@ -591,7 +593,7 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return true;
+                    return CardEffectCommons.IsOwnerTurn(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -704,7 +706,6 @@ namespace DCGO.CardEffects.BT16
                 }
             }
             #endregion
-
 
             return cardEffects;
         }
