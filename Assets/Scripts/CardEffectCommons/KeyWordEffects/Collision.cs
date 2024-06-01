@@ -7,18 +7,15 @@ using UnityEngine;
 public partial class CardEffectCommons
 {
     #region Can activate [Collision]
-    public static bool CanActivateCollision(CardSource cardSource, ICardEffect activateClass)
+    public static bool CanActivateCollision(CardSource cardSource)
     {
         if (IsExistOnBattleArea(cardSource))
         {
-            if (cardSource.PermanentOfThisCard().CanAttack(activateClass))
+            if (cardSource.Owner.Enemy.GetBattleAreaDigimons().Count >= 1)
             {
-                if (cardSource.Owner.Enemy.GetBattleAreaDigimons().Count >= 1)
+                if (GManager.instance.attackProcess.IsAttacking)
                 {
-                    if (!GManager.instance.attackProcess.IsAttacking)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
         }
@@ -27,67 +24,66 @@ public partial class CardEffectCommons
     }
     #endregion
 
-    #region Effect process of [Blitz]
+    #region Effect process of [Collision]
     public static IEnumerator CollisionProcess(CardSource cardSource, ICardEffect activateClass, Func<IEnumerator> beforeOnAttackCoroutine = null)
     {
-        if (CanActivateCollision(cardSource, activateClass))
+        if (CanActivateCollision(cardSource))
         {
-            foreach(Permanent enemyDigimon in cardSource.Owner.Enemy.GetBattleAreaDigimons())
+            foreach (Permanent enemyDigimon in cardSource.Owner.Enemy.GetBattleAreaDigimons())
             {
-                if (!enemyDigimon.TopCard.CanNotBeAffected(activateClass))
-                {
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBlocker(
+                if (enemyDigimon.TopCard.CanNotBeAffected(activateClass))
+                    continue;
+
+                yield return ContinuousController.instance.StartCoroutine(GainBlocker(
                         targetPermanent: enemyDigimon,
                         effectDuration: EffectDuration.UntilEndAttack,
                         activateClass: activateClass));
+            }
 
-                    int maxCount = 1;
+            int maxCount = 1;
 
-                    Permanent selectedPermanent = null;
+            Permanent selectedPermanent = null;
 
-                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                    selectPermanentEffect.SetUp(
-                        selectPlayer: cardSource.Owner.Enemy,
-                        canTargetCondition: CanSelectBlockerCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: maxCount,
-                        canNoSelect: false,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: SelectPermanentCoroutine,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Custom,
-                        cardEffect: null);
+            selectPermanentEffect.SetUp(
+                selectPlayer: cardSource.Owner.Enemy,
+                canTargetCondition: CanSelectBlockerCondition,
+                canTargetCondition_ByPreSelecetedList: null,
+                canEndSelectCondition: null,
+                maxCount: maxCount,
+                canNoSelect: false,
+                canEndNotMax: false,
+                selectPermanentCoroutine: SelectPermanentCoroutine,
+                afterSelectPermanentCoroutine: null,
+                mode: SelectPermanentEffect.Mode.Custom,
+                cardEffect: null);
 
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will block.", "The opponent is selecting 1 Digimon that will block.");
-                    selectPermanentEffect.SetUpCustomBackButtonMessage("Not Block");
+            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will block.", "The opponent is selecting 1 Digimon that will block.");
 
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                    bool CanSelectBlockerCondition(Permanent permanent)
+            bool CanSelectBlockerCondition(Permanent permanent)
+            {
+                if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
+                {
+                    if (permanent.TopCard.Owner.isYou)
                     {
-                        if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
+                        if (permanent.HasBlocker && permanent.CanBlock(cardSource.PermanentOfThisCard()))
                         {
-                            if (permanent.TopCard.Owner.isYou)
-                            {
-                                if (permanent.HasBlocker && permanent.CanBlock(cardSource.PermanentOfThisCard()))
-                                {
-                                    return true;
-                                }
-                            }
+                            return true;
                         }
-
-                        return false;
-                    }
-
-                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                    {
-                        selectedPermanent = permanent;
-
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.attackProcess.SwitchDefender(null, true, selectedPermanent));
                     }
                 }
+
+                return false;
+            }
+
+            IEnumerator SelectPermanentCoroutine(Permanent permanent)
+            {
+                selectedPermanent = permanent;
+
+                yield return ContinuousController.instance.StartCoroutine(GManager.instance.attackProcess.SwitchDefender(null, true, selectedPermanent));
             }
         }
     }
