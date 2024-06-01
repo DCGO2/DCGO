@@ -192,7 +192,7 @@ namespace DCGO.CardEffects.BT16
 
                                                 yield return ContinuousController.instance.StartCoroutine(playCard.PlayCard());
 
-                                                if (CardEffectCommons.IsExistOnBattleArea(card))
+                                                if (CardEffectCommons.IsExistOnBattleArea(selectedCard))
                                                 {
                                                     if (card.Owner.LibraryCards.Count >= 1)
                                                     {

@@ -8,7 +8,7 @@ using UnityEditor;
 public partial class CardEffectCommons
 {
     #region Play cards as new permanents
-    public static IEnumerator PlayPermanentCards(List<CardSource> cardSources, ICardEffect activateClass, bool payCost, bool isTapped, SelectCardEffect.Root root, bool activateETB, bool isBreedingArea = false)
+    public static IEnumerator PlayPermanentCards(List<CardSource> cardSources, ICardEffect activateClass, bool payCost, bool isTapped, SelectCardEffect.Root root, bool activateETB, bool isBreedingArea = false, int fixedCost = -1)
     {
         if (cardSources == null) yield break;
 
@@ -36,8 +36,11 @@ public partial class CardEffectCommons
             playCardClass.SetIsBreedingArea();
         }
 
+        playCardClass.SetFixedCost(fixedCost);
+
         yield return ContinuousController.instance.StartCoroutine(playCardClass.PlayCard());
     }
+
     #endregion
 
     #region Play option cards

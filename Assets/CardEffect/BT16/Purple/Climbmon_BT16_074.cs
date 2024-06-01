@@ -86,31 +86,34 @@ namespace DCGO.CardEffects.BT16
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 2, activateClass).Draw());
-
-                    if (card.Owner.HandCards.Count >= 1)
+                    if(card.Owner.SecurityCards.Count >= 3)
                     {
-                        int discardCount = Math.Min(1, card.Owner.HandCards.Count);
+                        yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 2, activateClass).Draw());
 
-                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                        if (card.Owner.HandCards.Count >= 1)
+                        {
+                            int discardCount = Math.Min(1, card.Owner.HandCards.Count);
 
-                        selectHandEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: (cardSource) => true,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: discardCount,
-                            canNoSelect: false,
-                            canEndNotMax: false,
-                            isShowOpponent: true,
-                            selectCardCoroutine: null,
-                            afterSelectCardCoroutine: null,
-                            mode: SelectHandEffect.Mode.Discard,
-                            cardEffect: activateClass);
+                            SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
-                        yield return StartCoroutine(selectHandEffect.Activate());
+                            selectHandEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: (cardSource) => true,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: discardCount,
+                                canNoSelect: false,
+                                canEndNotMax: false,
+                                isShowOpponent: true,
+                                selectCardCoroutine: null,
+                                afterSelectCardCoroutine: null,
+                                mode: SelectHandEffect.Mode.Discard,
+                                cardEffect: activateClass);
+
+                            yield return StartCoroutine(selectHandEffect.Activate());
+                        }
                     }
-
+                    
                     if (card.Owner.SecurityCards.Count <= 3)
                     {
 

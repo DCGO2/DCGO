@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace DCGO.CardEffects.BT16
+namespace DCGO.CardEffects.Tokens
 {
     public class KoHagurumon_BT16_052_token : CEntity_Effect
     {
@@ -9,32 +9,36 @@ namespace DCGO.CardEffects.BT16
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            string DecoyDiscription()
+            #region Decoy
+            if (timing == EffectTiming.WhenPermanentWouldBeDeleted)
             {
-                return "<Decoy (Black)> (When one of your other Black Digimon would be deleted by an opponent's effect, you may delete this Digimon to prevent that deletion.)";
-            }
-
-            bool CanSelectDecoyPermanentCondition(Permanent permanent)
-            {
-                if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                string DecoyDiscription()
                 {
-                    if (permanent != card.PermanentOfThisCard())
+                    return "<Decoy (Black)> (When one of your other Black Digimon would be deleted by an opponent's effect, you may delete this Digimon to prevent that deletion.)";
+                }
+
+                bool CanSelectDecoyPermanentCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent.TopCard.CardColors.Contains(CardColor.Black))
+                        if (permanent != card.PermanentOfThisCard())
                         {
-                            if (permanent.willBeRemoveField)
+                            if (permanent.TopCard.CardColors.Contains(CardColor.Black))
                             {
-                                return true;
+                                if (permanent.willBeRemoveField)
+                                {
+                                    return true;
+                                }
                             }
                         }
                     }
+
+                    return false;
                 }
 
-                return false;
+                cardEffects.Add(CardEffectFactory.DecoySelfEffect(isInheritedEffect: false, card: card, condition: null, permanentCondition: CanSelectDecoyPermanentCondition, effectName: "Decoy ([Black])", effectDiscription: DecoyDiscription()));
             }
-
-            cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(false, card, null));            
-            cardEffects.Add(CardEffectFactory.DecoySelfEffect(isInheritedEffect: false, card: card, condition: null, permanentCondition: CanSelectDecoyPermanentCondition, effectName: "Decoy ([Bagra Army])", effectDiscription: DecoyDiscription()));
+            #endregion
 
             if (timing == EffectTiming.None)
             {
@@ -44,6 +48,7 @@ namespace DCGO.CardEffects.BT16
                 }
 
                 cardEffects.Add(CardEffectFactory.CanNotAttackSelfStaticEffect(defenderCondition: null, isInheritedEffect: false, card: card, condition: Condition, effectName: "Can't Attack"));
+                cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(false, card, null));
             }
 
             return cardEffects;
