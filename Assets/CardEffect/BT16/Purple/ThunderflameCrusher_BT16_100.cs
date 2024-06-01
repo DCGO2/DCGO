@@ -233,6 +233,7 @@ namespace DCGO.CardEffects.BT16
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
@@ -257,10 +258,11 @@ namespace DCGO.CardEffects.BT16
 
                     if(card.Owner.SecurityCards.Count <= 2)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(
-                            card.PermanentOfThisCard(),
-                            CardEffectCommons.CardEffectHashtable(activateClass),
-                            toTop: false).PutSecurity());
+                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(card, toTop: false));
+
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(card.Owner));
+
+                        yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(card.Owner).AddSecurity());
                     }
                 }
             }
