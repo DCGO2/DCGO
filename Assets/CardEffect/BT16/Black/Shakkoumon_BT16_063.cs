@@ -248,7 +248,7 @@ namespace DCGO.CardEffects.BT16
                         }
                     }
 
-                    return true;
+                    return false;
                 }
 
                 bool CanSelectSecondSourceCondition(CardSource cardSource)
@@ -261,7 +261,7 @@ namespace DCGO.CardEffects.BT16
                         }
                     }
 
-                    return true;
+                    return false;
                 }
 
                 cardEffects.Add(CardEffectFactory.PartitionSelfEffect(
