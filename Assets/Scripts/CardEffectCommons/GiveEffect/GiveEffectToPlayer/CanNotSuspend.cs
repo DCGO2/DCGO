@@ -48,7 +48,7 @@ public partial class CardEffectCommons
             return !isOnlyActivePhase || GManager.instance.turnStateMachine.gameContext.TurnPhase == GameContext.phase.Active;
         }
 
-        CanNotUnsuspendClass canNotSuspendClass = CardEffectFactory.CantUnsuspendStaticEffect(
+        CanNotSuspendClass canNotSuspendClass = CardEffectFactory.CantSuspendStaticEffect(
             permanentCondition: PermanentCondition,
             isInheritedEffect: false,
             card: card,
