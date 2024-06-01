@@ -722,20 +722,14 @@ MonoBehaviour:
   _anim: {fileID: 6458252331221896218}
   _verText: {fileID: 6458252331833269909}
   _localizeTMPro: {fileID: 6458252332150589230}
-  _text_ENG: "Known Issues:\r\n\t- Dinobeemon (BT16) Needs errata\r\n\t- Publimon
-    (BT16) When Digivolving effect triggered in raising\r\n\t- Darkdramon (BT16)
-    Cost reduction not working\r\n\t- Blue (BT16) Not included\r\n\t- Red  (BT16)
-    Not included\r\n\t- White (BT16) Not included\r\n\r\nUpdates:\r\n\t- BT16 cards
-    added\r\n\t- Angemon Ace \r\n\t- GaiaReactor \r\n\t- BT13 Biyomon\r\n\t- Analog
-    Man \r\n \t- Craniamon (BT13) - text update \r\n\t- GizmonAT  \r\n\t- Fenriloogamon
-    (BT14-081)\r\n\t- Soloogamon (BT14-079)\r\n\t- Megadramon (BT15-064) \r\n\t-
-    Pukumon (BT15-030) \r\n\t- Sourai (EX3-067) \r\n\t- BlackMegagargo (EX4-037)
-    \r\n\t- Fanglogmon (EX5-074) \r\n\t- Amphimon (LM-005)\r\n\t- Ability to back
-    out of matchmaking\r\n\t- Fixed issue with On Deletion Inheritables\r\n\t- Fixed
-    issue with When Removed from battle area protection not triggering for being\r\n\t 
-    put in security\r\n\t- New image loading system\r\n\t\t- Uses webp files\r\n\t\t-
-    Loads all card images as they are needed\r\n\t\t- No need to worry about card
-    images to run"
+  _text_ENG: "Known Issues:\r\n\t- Mummymon(BT16) Retaliation does not work\r\n\t-
+    Publimon (BT16) When Digivolving effect triggered in raising\r\n\t- See other
+    issues in bug tracking document\r\n\r\nUpdates:\r\n\t- All BT16 cards added\r\n\t-
+    Bug fixes to all BT16 cards\r\n\t- Ability to back out of matchmaking\r\n\t-
+    Fixed issue with On Deletion Inheritables\r\n\t- Fixed issue with When Removed
+    from battle area protection not triggering for being\r\n\t  put in security\r\n\t-
+    New image loading system\r\n\t\t- Uses webp files\r\n\t\t- Loads all card images
+    as they are needed\r\n\t\t- No need to worry about card images to run"
   _text_JPN: 
   _scroll: {fileID: 6458252331812644436}
 --- !u!1 &6458252331574147166

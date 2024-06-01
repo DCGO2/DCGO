@@ -283,19 +283,12 @@ namespace DCGO.CardEffects.BT16
             #region Inherit
             if (timing == EffectTiming.None)
             {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Opponent's Security Digimon get DP -3000", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
-                activateClass.SetIsInheritedEffect(true);
-                activateClass.SetHashString("DP-3000_BT16_031_inhetited");
-                cardEffects.Add(activateClass);
-
-                string EffectDiscription()
+                bool CardCondition(CardSource cardSource)
                 {
-                    return "[Your Turn] All of your opponent's Security Digimon get -3000 DP.";
+                    return cardSource.Owner == card.Owner.Enemy;
                 }
 
-                bool CanUseCondition(Hashtable hashtable)
+                bool Condition()
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
@@ -304,23 +297,16 @@ namespace DCGO.CardEffects.BT16
                             return true;
                         }
                     }
-
                     return false;
                 }
 
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleArea(card);
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeSecurityDigimonCardDPPlayerEffect(
-                        cardCondition: cardSource => cardSource.Owner == card.Owner.Enemy,
-                        changeValue: -3000,
-                        effectDuration: EffectDuration.UntilOwnerTurnEnd,
-                        activateClass: activateClass));
-                }
+                cardEffects.Add(CardEffectFactory.ChangeSecurityDigimonCardDPStaticEffect(
+                    cardCondition: CardCondition,
+                    changeValue: -3000,
+                    isInheritedEffect: true,
+                    card: card,
+                    condition: Condition,
+                    effectName: "Opponent's Security Digimon gains DP -3000"));
             }
             #endregion
 

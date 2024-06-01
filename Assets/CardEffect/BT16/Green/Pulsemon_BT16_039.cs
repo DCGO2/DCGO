@@ -31,7 +31,7 @@ namespace DCGO.CardEffects.BT16
 
                 string EffectDiscription()
                 {
-                    return "[On Play] Reveal the top 4 cards of your deck. Add 1 card with [Pulsemon] in its text and 1 card with the [Abaddin Electronics] trait among them to your hand. Place the rest at the bottom of your deck in any order.";
+                    return "[On Play] Reveal the top 4 cards of your deck. Add 1 card with [Pulsemon] in its text and 1 card with the [Abadin Electronics] trait among them to your hand. Place the rest at the bottom of your deck in any order.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
@@ -45,11 +45,11 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanSelectSecondCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.CardTraits.Contains("Abaddin Electronics"))
+                    if (cardSource.CardTraits.Contains("Abadin Electronics"))
                     {
                         return true;
                     }
-                    if (cardSource.CardTraits.Contains("AbaddinElectronics"))
+                    if (cardSource.CardTraits.Contains("AbadinElectronics"))
                     {
                         return true;
                     }
@@ -89,7 +89,7 @@ namespace DCGO.CardEffects.BT16
                             selectCardCoroutine: null),
                         new SimplifiedSelectCardConditionClass(
                             canTargetCondition:CanSelectSecondCardCondition,
-                            message:"Select 1 card with [Abaddin Electronics] in its traits.",
+                            message:"Select 1 card with [Abadin Electronics] in its traits.",
                             mode: SelectCardEffect.Mode.AddHand,
                             maxCount: 1,
                             selectCardCoroutine: null),

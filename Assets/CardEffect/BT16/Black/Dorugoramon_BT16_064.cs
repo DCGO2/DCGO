@@ -41,10 +41,9 @@ namespace DCGO.CardEffects.BT16
             #endregion
 
             #region Collision - Blocker
-            if(timing == EffectTiming.None)
+            if(timing == EffectTiming.OnAllyAttack)
             {
                 cardEffects.Add(CardEffectFactory.CollisionSelfStaticEffect(false, card, null));
-                cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(false, card, null));
             }
             #endregion
 
@@ -110,6 +109,9 @@ namespace DCGO.CardEffects.BT16
                             afterSelectPermanentCoroutine: null,
                             mode: SelectPermanentEffect.Mode.Destroy,
                             cardEffect: activateClass);
+
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
                     }
 
                     yield return null;

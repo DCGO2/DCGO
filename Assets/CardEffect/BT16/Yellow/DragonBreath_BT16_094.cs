@@ -173,6 +173,7 @@ namespace DCGO.CardEffects.BT16
                             bool decision = GManager.instance.userSelectionManager.SelectedBoolValue;
 
                             List<CardSource> selectedCards = new List<CardSource>();
+                            bool discarded = false;
 
                             IEnumerator SelectCardCoroutine(CardSource cardSource)
                             {
@@ -216,8 +217,6 @@ namespace DCGO.CardEffects.BT16
                             {
                                 int discardCount = 1;
 
-                                bool discarded = false;
-
                                 SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
                                 selectHandEffect.SetUp(
@@ -245,43 +244,43 @@ namespace DCGO.CardEffects.BT16
                                         yield return null;
                                     }
                                 }
+                            }
 
-                                if (discarded)
+                            if (discarded || selectedCards.Count > 0)
+                            {
+                                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                                 {
-                                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+
+                                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                                    selectPermanentEffect.SetUp(
+                                        selectPlayer: card.Owner,
+                                        canTargetCondition: CanSelectPermanentCondition,
+                                        canTargetCondition_ByPreSelecetedList: null,
+                                        canEndSelectCondition: null,
+                                        maxCount: maxCount,
+                                        canNoSelect: true,
+                                        canEndNotMax: false,
+                                        selectPermanentCoroutine: SelectPermanentCoroutine,
+                                        afterSelectPermanentCoroutine: null,
+                                        mode: SelectPermanentEffect.Mode.Custom,
+                                        cardEffect: activateClass);
+
+                                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to give -7000 DP.", "The opponent is selecting 1 Digimon to give -7000 DP.");
+
+                                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
                                     {
-                                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+                                        Permanent selectedPermanent = permanent;
 
-                                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                                        selectPermanentEffect.SetUp(
-                                            selectPlayer: card.Owner,
-                                            canTargetCondition: CanSelectPermanentCondition,
-                                            canTargetCondition_ByPreSelecetedList: null,
-                                            canEndSelectCondition: null,
-                                            maxCount: maxCount,
-                                            canNoSelect: true,
-                                            canEndNotMax: false,
-                                            selectPermanentCoroutine: SelectPermanentCoroutine,
-                                            afterSelectPermanentCoroutine: null,
-                                            mode: SelectPermanentEffect.Mode.Custom,
-                                            cardEffect: activateClass);
-
-                                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to give -7000 DP.", "The opponent is selecting 1 Digimon to give -7000 DP.");
-
-                                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                                        {
-                                            Permanent selectedPermanent = permanent;
-
-                                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
-                                                selectedPermanent,
-                                                -7000,
-                                                EffectDuration.UntilEachTurnEnd,
-                                                activateClass)
-                                                );
-                                        }
+                                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
+                                            selectedPermanent,
+                                            -7000,
+                                            EffectDuration.UntilEachTurnEnd,
+                                            activateClass)
+                                            );
                                     }
                                 }
                             }

@@ -243,7 +243,12 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return card.HasText("Pulsemon");
+                    if(CardEffectCommons.CanTriggerOnEndAttack(hashtable, card))
+                    {
+                        return card.HasText("Pulsemon");
+                    }
+
+                    return false;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
