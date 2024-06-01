@@ -167,6 +167,60 @@ namespace DCGO.CardEffects.BT16
                     yield return null;
                 }
             }
+
+            if (timing == EffectTiming.BeforePayCost)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetHashString("");
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "";
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (CardEffectCommons.IsOwnerTurn(card))
+                        {
+                            if (CardEffectCommons.CanTriggerWhenPermanentWouldDigivolveOfCard(hashtable, null, card))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+
+                    return false;
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        return true;
+                    }
+
+                    return false;
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                {
+                    foreach (Func<EffectTiming, ICardEffect> cardEffect in card.PermanentOfThisCard().UntilOwnerTurnEndEffects)
+                    {
+                        if (cardEffect(EffectTiming.OnEndAttack).HashString.Contains("EndOfAttack_BT16_015"))
+                        {
+                            card.PermanentOfThisCard().UntilOwnerTurnEndEffects.Remove(CardEffectCommons.GetCardEffectByEffectTiming(EffectTiming.OnEndAttack, cardEffect(EffectTiming.OnEndAttack)));
+                        }
+                    }
+
+                    card.PermanentOfThisCard().UntilOwnerTurnEndEffects.Clear();
+                    yield return null;
+                }
+            }
             #endregion
 
             #region On Deletion
