@@ -52,20 +52,29 @@ namespace DCGO.CardEffects.BT16
                     );
                     break;
                 case EffectTiming.OnEnterFieldAnyone:
-                    var activateClass = new ActivateClass();
-                    activateClass.SetUpICardEffect("Select 1 of your Digimon to gain battle protection", CanUseCondition, card);
-                    activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
-                    cardEffects.Add(activateClass);
+                    var activatePlayClass = new ActivateClass();
+                    activatePlayClass.SetUpICardEffect("Select 1 of your Digimon to gain battle protection", CanUsePlayCondition, card);
+                    activatePlayClass.SetUpActivateClass(CanActivateCondition, ActivatePlayCoroutine, -1, true, EffectDiscription());
+                    cardEffects.Add(activatePlayClass);
+
+                    var activateDigivolveClass = new ActivateClass();
+                    activateDigivolveClass.SetUpICardEffect("Select 1 of your Digimon to gain battle protection", CanUseDigivolveCondition, card);
+                    activateDigivolveClass.SetUpActivateClass(CanActivateCondition, ActivateDigivolveCoroutine, -1, true, EffectDiscription());
+                    cardEffects.Add(activateDigivolveClass);
 
                     string EffectDiscription()
                     {
                         return "[On Play] [When Digivolving] 1 of your Digimon can't be deleted in battle until the end of your opponent's turn.";
                     }
 
-                    bool CanUseCondition(Hashtable hashtable)
+                    bool CanUsePlayCondition(Hashtable hashtable)
                     {
-                        return CardEffectCommons.CanTriggerOnPlay(hashtable, card)
-                               || CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                        return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                    }
+
+                    bool CanUseDigivolveCondition(Hashtable hashtable)
+                    {
+                        return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                     }
 
                     bool CanActivateCondition(Hashtable hashtable)
@@ -78,7 +87,7 @@ namespace DCGO.CardEffects.BT16
                         return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
                     }
 
-                    IEnumerator ActivateCoroutine(Hashtable hashtable)
+                    IEnumerator ActivatePlayCoroutine(Hashtable hashtable)
                     {
                         var selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
                         
@@ -93,7 +102,7 @@ namespace DCGO.CardEffects.BT16
                             selectPermanentCoroutine: SelectPermanentCoroutine,
                             afterSelectPermanentCoroutine: null,
                             mode: SelectPermanentEffect.Mode.Custom,
-                            cardEffect: activateClass);
+                            cardEffect: activatePlayClass);
                         
                         selectPermanentEffect.SetUpCustomMessage(
                             "Select 1 Digimon that will get effects.",
@@ -108,10 +117,51 @@ namespace DCGO.CardEffects.BT16
                                 targetPermanent: permanent,
                                 canNotBeDestroyedByBattleCondition: CanNotBeDestroyedByBattleCondition,
                                 effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                                activateClass: activateClass,
+                                activateClass: activatePlayClass,
                                 effectName: "Can't be deleted in battle"));
                             yield break;
                             
+                            bool CanNotBeDestroyedByBattleCondition(Permanent permanent1, Permanent attackingPermanent, Permanent defendingPermanent, CardSource defendingCard)
+                            {
+                                return permanent == attackingPermanent || permanent == defendingPermanent;
+                            }
+                        }
+                    }
+
+                    IEnumerator ActivateDigivolveCoroutine(Hashtable hashtable)
+                    {
+                        var selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectPermanentCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateDigivolveClass);
+
+                        selectPermanentEffect.SetUpCustomMessage(
+                            "Select 1 Digimon that will get effects.",
+                            "The opponent is selecting 1 Digimon that will get effects.");
+
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                        yield break;
+
+                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotBeDeletedByBattle(
+                                targetPermanent: permanent,
+                                canNotBeDestroyedByBattleCondition: CanNotBeDestroyedByBattleCondition,
+                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                                activateClass: activateDigivolveClass,
+                                effectName: "Can't be deleted in battle"));
+                            yield break;
+
                             bool CanNotBeDestroyedByBattleCondition(Permanent permanent1, Permanent attackingPermanent, Permanent defendingPermanent, CardSource defendingCard)
                             {
                                 return permanent == attackingPermanent || permanent == defendingPermanent;

@@ -17,7 +17,10 @@ namespace DCGO.CardEffects.BT16
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.HasLightFangNightClawTraits;
+                    if(targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 3)
+                        return targetPermanent.TopCard.HasLightFangNightClawTraits;
+
+                    return false;
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
@@ -43,8 +46,7 @@ namespace DCGO.CardEffects.BT16
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] Both players draw 1 card from their decks. Then, if your opponent has 8 " +
-                           "or more cards in their hand or this Digimon has 3 or more digivolution cards, gain 1 memory.";
+                    return "[When Digivolving] Both players draw 1 card from their decks. Then, if your opponent has 8 or more cards in their hand or this Digimon has 3 or more digivolution cards, gain 1 memory.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -53,16 +55,8 @@ namespace DCGO.CardEffects.BT16
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer.Count(player => player.LibraryCards.Count >= 1) >= 1)
-                        {
-                            return true;
-                        }
-                    }
-                    
-                    return false;
+                {                   
+                    return CardEffectCommons.IsExistOnBattleArea(card);
                 }
                 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
