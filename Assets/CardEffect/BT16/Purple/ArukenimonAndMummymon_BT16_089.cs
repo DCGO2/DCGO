@@ -353,6 +353,13 @@ namespace DCGO.CardEffects.BT16
 
             #endregion
 
+            #region Security Skill
+            if (timing == EffectTiming.SecuritySkill)
+            {
+                cardEffects.Add(CardEffectFactory.PlaySelfTamerSecurityEffect(card));
+            }
+            #endregion
+
             return cardEffects;
         }
     }

@@ -90,7 +90,24 @@ public class Lampmon_BT12_044 : CEntity_Effect
         {
             int count()
             {
-                return card.Owner.Enemy.GetBattleAreaDigimons().Count((permanent) => permanent.HasSecurityAttackChanges);
+                if (CardEffectCommons.IsExistOnBattleArea(card))
+                {
+                    return card.Owner.Enemy.GetBattleAreaDigimons().Count((permanent) => permanent.HasSecurityAttackChanges);
+                }
+
+                return 0;
+            }
+
+            bool PermanentCondition(Permanent permanent)
+            {
+                if(CardEffectCommons.IsExistOnBattleArea(card))
+                {
+                    if (permanent == card.PermanentOfThisCard())
+                    {
+                        return true;
+                    }
+                }
+                return false;
             }
 
             bool Condition()
@@ -109,13 +126,79 @@ public class Lampmon_BT12_044 : CEntity_Effect
                 return false;
             }
 
-            cardEffects.Add(CardEffectFactory.ChangeSelfSAttackStaticEffect<Func<int>>(
-                changeValue: () => count(),
-                isInheritedEffect: false,
-                card: card,
-                condition: Condition));
+            cardEffects.Add(CardEffectFactory.ChangeSAttackStaticEffect<Func<int>>(PermanentCondition, changeValue: () => 1 * count(), isInheritedEffect: false, card: card, condition: Condition));
         }
 
+        /*
+        if (timing == EffectTiming.AfterEffectsActivate || timing == EffectTiming.OnStartTurn || timing == EffectTiming.OnEnterFieldAnyone || timing == EffectTiming.OnUseOption)
+        {
+
+            ActivateClass activateClass = new ActivateClass();
+            activateClass.SetUpICardEffect("Gain Security Attack", CanUseCondition, card);
+            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+            activateClass.SetIsBackgroundProcess(true);
+            cardEffects.Add(activateClass);
+            
+            int count()
+            {
+                return card.Owner.Enemy.GetBattleAreaDigimons().Count((permanent) => permanent.HasSecurityAttackChanges);
+            }
+
+            string EffectDiscription()
+            {
+                return "[Your Turn] This Digimon gains [Security A+1] for each of your opponent's Digimon with [Security Attack].";
+            }
+
+            bool CanUseCondition(Hashtable hashtable)
+            {
+                return true;
+            }
+
+            bool CanActivateCondition(Hashtable hashtable)
+            {
+                if (CardEffectCommons.IsExistOnBattleArea(card))
+                {
+                    if (CardEffectCommons.IsOwnerTurn(card))
+                    {
+                        if (count() >= 1)
+                        {
+                            return true;
+                        }
+                    }
+                }
+
+                return false;
+            }
+
+            IEnumerator ActivateCoroutine(Hashtable hashtable)
+            {
+                if (card.PermanentOfThisCard().Strike < count())
+                {
+                    for (int i = 0; i <= count(); i++)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectFactory.ChangeSAttackStaticEffect(
+                        targetPermanent: card.PermanentOfThisCard(),
+                        changeValue: 1,
+                        effectDuration: EffectDuration.UntilEachTurnEnd,
+                        activateClass: activateClass, activateAnimation: false));
+                    }
+                }
+
+                if(card.PermanentOfThisCard().Strike > count())
+                {
+                    for(int i= 0; i <= count();i++)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonSAttack(
+                        targetPermanent: card.PermanentOfThisCard(),
+                        changeValue: -1,
+                        effectDuration: EffectDuration.UntilEachTurnEnd,
+                        activateClass: activateClass, activateAnimation: false));
+                    }
+                }
+
+            }
+        }
+        */
         return cardEffects;
     }
 }

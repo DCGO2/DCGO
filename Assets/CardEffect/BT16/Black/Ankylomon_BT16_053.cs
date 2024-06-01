@@ -98,7 +98,7 @@ namespace DCGO.CardEffects.BT16
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotAttack(
                             targetPermanent: permanent,
                             defenderCondition: DefenderCondition,
-                            effectDuration: EffectDuration.UntilOwnerTurnEnd,
+                            effectDuration: EffectDuration.UntilOpponentTurnEnd,
                             activateClass: activateClass,
                             effectName: "Can't Attack to player"));
                     }
@@ -175,7 +175,7 @@ namespace DCGO.CardEffects.BT16
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotAttack(
                             targetPermanent: permanent,
                             defenderCondition: DefenderCondition,
-                            effectDuration: EffectDuration.UntilOwnerTurnEnd,
+                            effectDuration: EffectDuration.UntilOpponentTurnEnd,
                             activateClass: activateClass,
                             effectName: "Can't Attack to player"));
                     }

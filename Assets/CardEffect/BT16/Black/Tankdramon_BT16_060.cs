@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 using System.Linq;
 
 namespace DCGO.CardEffects.BT16
@@ -80,72 +81,21 @@ namespace DCGO.CardEffects.BT16
 
                         if (costReduction > 0)
                         {
-                            foreach (Permanent permanent in GManager.instance.Opponent.GetBattleAreaDigimons())
+                            bool PermanentCondition(Permanent permanent)
                             {
-                                ChangeCostClass changeCostClass = new ChangeCostClass();
-                                changeCostClass.SetUpICardEffect($"Play Cost -{costReduction}", CanUseChangeCostCondition, permanent.TopCard);
-                                changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
-                                permanent.TopCard.Owner.UntilEachTurnEndEffects.Add((_timing) => changeCostClass);
+                                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
                             }
 
-                            bool CanUseChangeCostCondition(Hashtable hashtable)
-                            {
-                                return true;
-                            }
-
-                            int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
-                            {
-                                if (CardSourceCondition(cardSource))
-                                {
-                                    if (RootCondition(root))
-                                    {
-                                        if (PermanentsCondition(targetPermanents))
-                                        {
-                                            Cost -= costReduction;
-                                        }
-                                    }
-                                }
-
-                                return Cost;
-                            }
-
-                            bool PermanentsCondition(List<Permanent> targetPermanents)
-                            {
-                                if (targetPermanents != null)
-                                {
-                                    return true;
-                                }
-
-                                return false;
-                            }
-
-                            bool CardSourceCondition(CardSource cardSource)
-                            {
-                                if (cardSource != null)
-                                {
-                                    if (cardSource.Owner == card.Owner.Enemy)
-                                    {
-                                        return true;
-                                    }
-                                }
-
-                                return false;
-                            }
-
-                            bool RootCondition(SelectCardEffect.Root root)
-                            {
-                                return true;
-                            }
-
-                            bool isUpDown()
-                            {
-                                return true;
-                            }
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangePlayCostPlayerEffect(
+                                permanentCondition: PermanentCondition,
+                                changeValue: -costReduction,
+                                setFixedCost: false,
+                                effectDuration: EffectDuration.UntilEachTurnEnd,
+                                activateClass: activateClass));
                         }
 
                         yield return null;
                     }
-
 
                     if (CardEffectCommons.MatchConditionOpponentsPermanentCount(card, PermanentCondition) > 0)
                     {
@@ -176,8 +126,8 @@ namespace DCGO.CardEffects.BT16
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Reduce opponent's Digimon cost, then delete a 6 cost or less Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpICardEffect("Reduce opponent's Digimon cost, then delete a 4 cost or less Digimon", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -242,72 +192,21 @@ namespace DCGO.CardEffects.BT16
 
                         if (costReduction > 0)
                         {
-                            foreach (Permanent permanent in GManager.instance.Opponent.GetBattleAreaDigimons())
+                            bool PermanentCondition(Permanent permanent)
                             {
-                                ChangeCostClass changeCostClass = new ChangeCostClass();
-                                changeCostClass.SetUpICardEffect($"Play Cost -{costReduction}", CanUseChangeCostCondition, permanent.TopCard);
-                                changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
-                                permanent.TopCard.Owner.UntilEachTurnEndEffects.Add((_timing) => changeCostClass);
+                                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
                             }
 
-                            bool CanUseChangeCostCondition(Hashtable hashtable)
-                            {
-                                return true;
-                            }
-
-                            int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
-                            {
-                                if (CardSourceCondition(cardSource))
-                                {
-                                    if (RootCondition(root))
-                                    {
-                                        if (PermanentsCondition(targetPermanents))
-                                        {
-                                            Cost -= costReduction;
-                                        }
-                                    }
-                                }
-
-                                return Cost;
-                            }
-
-                            bool PermanentsCondition(List<Permanent> targetPermanents)
-                            {
-                                if (targetPermanents != null)
-                                {
-                                    return true;
-                                }
-
-                                return false;
-                            }
-
-                            bool CardSourceCondition(CardSource cardSource)
-                            {
-                                if (cardSource != null)
-                                {
-                                    if (cardSource.Owner == card.Owner.Enemy)
-                                    {
-                                        return true;
-                                    }
-                                }
-
-                                return false;
-                            }
-
-                            bool RootCondition(SelectCardEffect.Root root)
-                            {
-                                return true;
-                            }
-
-                            bool isUpDown()
-                            {
-                                return true;
-                            }
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangePlayCostPlayerEffect(
+                                permanentCondition: PermanentCondition,
+                                changeValue: -costReduction,
+                                setFixedCost: false,
+                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                                activateClass: activateClass));
                         }
 
                         yield return null;
                     }
-
 
                     if (CardEffectCommons.MatchConditionOpponentsPermanentCount(card, PermanentCondition) > 0)
                     {
@@ -365,8 +264,12 @@ namespace DCGO.CardEffects.BT16
                     {
                         if (permanent.TopCard != card)
                         {
-                            if(permanent.TopCard.CardTraits.Contains("D-Brigade") || permanent.TopCard.CardTraits.Contains("DigiPolice")){
-                                return true;
+                            if (permanent.TopCard.IsDigimon)
+                            {
+                                if (permanent.TopCard.CardTraits.Contains("D-Brigade") || permanent.TopCard.CardTraits.Contains("DigiPolice"))
+                                {
+                                    return true;
+                                }
                             }
                         }
                     }

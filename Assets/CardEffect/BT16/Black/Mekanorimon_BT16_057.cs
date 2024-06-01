@@ -152,7 +152,7 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (CardEffectCommons.IsOwnerTurn(card))
                     {
-                        if(card.PermanentOfThisCard().DigivolutionCards.Count > 0)
+                        if(card.PermanentOfThisCard().DigivolutionCards.Count == 0)
                         {
                             return true;
                         }

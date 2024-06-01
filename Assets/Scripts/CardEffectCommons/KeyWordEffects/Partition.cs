@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 
 public partial class CardEffectCommons
 {
@@ -80,7 +81,7 @@ public partial class CardEffectCommons
                             isShowOpponent: false,
                             mode: SelectCardEffect.Mode.Custom,
                             root: SelectCardEffect.Root.Custom,
-                            customRootCardList: _permanent.DigivolutionCards,
+                            customRootCardList: _permanent.DigivolutionCards.Where(CanSelectFristSourceCondition).ToList(),
                             canLookReverseCard: true,
                             selectPlayer: topCard.Owner,
                             cardEffect: activateClass);
@@ -101,7 +102,7 @@ public partial class CardEffectCommons
                             isShowOpponent: false,
                             mode: SelectCardEffect.Mode.Custom,
                             root: SelectCardEffect.Root.Custom,
-                            customRootCardList: _permanent.DigivolutionCards,
+                            customRootCardList: _permanent.DigivolutionCards.Where(CanSelectSecondSourceCondition).ToList(),
                             canLookReverseCard: true,
                             selectPlayer: topCard.Owner,
                             cardEffect: activateClass);
