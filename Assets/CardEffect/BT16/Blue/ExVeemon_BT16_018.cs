@@ -123,7 +123,7 @@ namespace DCGO.CardEffects.BT16
                             
                             bool CanNotBeDestroyedByBattleCondition(Permanent permanent1, Permanent attackingPermanent, Permanent defendingPermanent, CardSource defendingCard)
                             {
-                                return permanent == attackingPermanent || permanent == defendingPermanent;
+                                return permanent1 == attackingPermanent || permanent1 == defendingPermanent;
                             }
                         }
                     }
