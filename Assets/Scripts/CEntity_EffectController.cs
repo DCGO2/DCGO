@@ -161,10 +161,22 @@ public class CEntity_EffectController : MonoBehaviour
         #region Generate and set an instance of the card effect class
         bool CanAttachEffectComponent()
         {
-            if (string.IsNullOrEmpty(ClassName)) return false;
+            if (string.IsNullOrEmpty(ClassName)) 
+                return false;
+
             if (Type.GetType(ClassName) == null)
             {
-                if (Type.GetType($"DCGO.CardEffects.{ID}.{ClassName}") == null) return false;
+                if (!ClassName.Contains("token"))
+                {
+                    if (Type.GetType($"DCGO.CardEffects.{ID}.{ClassName}") == null)
+                        return false;
+                }
+                else
+                {
+                    if (Type.GetType($"DCGO.CardEffects.Tokens.{ClassName}") == null)
+                        return false;
+                }
+                
             }
 
             return true;
@@ -177,7 +189,13 @@ public class CEntity_EffectController : MonoBehaviour
             Type t = Type.GetType(ClassName);
 
             if (t == null)
-                t = Type.GetType($"DCGO.CardEffects.{ID}.{ClassName}");
+            {
+                if (!ClassName.Contains("token"))
+                    t = Type.GetType($"DCGO.CardEffects.{ID}.{ClassName}");
+                else
+                    t = Type.GetType($"DCGO.CardEffects.Tokens.{ClassName}");
+            }
+                
 
             Component component = this.gameObject.AddComponent(t);
 

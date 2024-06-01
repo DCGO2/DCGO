@@ -67,7 +67,7 @@ public partial class CardEffectCommons
             {
                 if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
                 {
-                    if (permanent.TopCard.Owner.isYou)
+                    if (!permanent.TopCard.Owner.isYou)
                     {
                         if (permanent.HasBlocker && permanent.CanBlock(cardSource.PermanentOfThisCard()))
                         {

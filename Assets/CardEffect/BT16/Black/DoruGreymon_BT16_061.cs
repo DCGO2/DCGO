@@ -188,8 +188,8 @@ namespace DCGO.CardEffects.BT16
                             canEndSelectCondition: null,
                             canNoSelect: () => false,
                             selectCardCoroutine: null,
-                            afterSelectCardCoroutine: null,
-                            message: "",
+                            afterSelectCardCoroutine: AfterSelectCardCoroutine,
+                            message: "Select 1 card to play",
                             maxCount: 1,
                             canEndNotMax: false,
                             isShowOpponent:false,
@@ -203,7 +203,20 @@ namespace DCGO.CardEffects.BT16
 
                         yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
                     }
-                    yield return null;
+
+                    IEnumerator AfterSelectCardCoroutine(List<CardSource> selectedCardSources)
+                    {
+                        if (selectedCardSources.Count >= 1)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
+                                cardSources:selectedCardSources,
+                                activateClass: activateClass,
+                                payCost: false,
+                                isTapped: false,
+                                root: SelectCardEffect.Root.Trash,
+                                activateETB:false));
+                        }
+                    }
                 }
             }
             #endregion

@@ -107,7 +107,7 @@ namespace DCGO.CardEffects.BT16
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Unaffected by effects of your opponent's Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -120,12 +120,9 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (card == card.PermanentOfThisCard().TopCard)
+                        if (cardSource == card.PermanentOfThisCard().TopCard)
                         {
-                            if (cardSource == card.PermanentOfThisCard().TopCard)
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
 
@@ -134,14 +131,20 @@ namespace DCGO.CardEffects.BT16
 
                 bool SkillCondition(ICardEffect cardEffect)
                 {
-                    if(CardEffectCommons.IsOpponentEffect(cardEffect, card))
+                    if (cardEffect != null)
                     {
-                        if (cardEffect.IsDigimonEffect)
+                        if (cardEffect.EffectSourceCard != null)
                         {
-                            return true;
+                            if (cardEffect.EffectSourceCard.Owner == card.Owner.Enemy)
+                            {
+                                if (cardEffect.IsDigimonEffect)
+                                {
+                                    return true;
+                                }
+                            }
                         }
                     }
-                        
+
                     return false;
                 }
                 #endregion
@@ -245,7 +248,7 @@ namespace DCGO.CardEffects.BT16
                         }
                     }
 
-                    return true;
+                    return false;
                 }
 
                 bool CanSelectSecondSourceCondition(CardSource cardSource)
@@ -258,7 +261,7 @@ namespace DCGO.CardEffects.BT16
                         }
                     }
 
-                    return true;
+                    return false;
                 }
 
                 cardEffects.Add(CardEffectFactory.PartitionSelfEffect(

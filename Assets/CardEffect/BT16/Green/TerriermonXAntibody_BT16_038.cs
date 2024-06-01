@@ -38,7 +38,16 @@ namespace DCGO.CardEffects.BT16
 
                 bool PermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card);
+
+                    if(CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
+                    {
+                        if(permanent == card.PermanentOfThisCard())
+                        {
+                            return true;
+                        }
+                    }
+
+                    return true;
                 }
 
                 bool CardCondition(CardSource cardSource)

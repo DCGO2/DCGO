@@ -340,6 +340,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
                         CheckNewTriggredSkill_mainStack,
                         skipCondition));
                 }
+                yield return ContinuousController.instance.StartCoroutine(StackSkillInfos(null, EffectTiming.AfterEffectsActivate));
             }
         }
     }
