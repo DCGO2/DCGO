@@ -13,8 +13,6 @@ namespace DCGO.CardEffects.BT16
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            
-
             bool HasBossTraitInPlay(Permanent permanent)
             {
                 if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
@@ -595,7 +593,7 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return true;
+                    return CardEffectCommons.IsOwnerTurn(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -708,7 +706,6 @@ namespace DCGO.CardEffects.BT16
                 }
             }
             #endregion
-
 
             return cardEffects;
         }
