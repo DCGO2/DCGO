@@ -43,7 +43,7 @@ public class HolyangemonAce_BT14_037 : CEntity_Effect
             {
                 if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
-                    if (card.Owner.SecurityCards.Count < 5)
+                    if (card.Owner.SecurityCards.Count <= 5)
                     {
                         if (card.Owner.CanAddSecurity(activateClass))
                         {

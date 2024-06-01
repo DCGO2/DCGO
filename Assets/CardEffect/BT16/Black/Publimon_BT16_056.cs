@@ -80,10 +80,30 @@ namespace DCGO.CardEffects.BT16
                         {
                             if (permanent != null)
                             {
-                                yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(
-                                    permanent: permanent,
-                                    hashtable: hashtable,
-                                    toTop: true).PutSecurity());
+                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveFromAllArea(permanent.TopCard));
+
+                                permanent.ShowingPermanentCard.ShowPermanentData(true);
+
+                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().RemoveDigivolveRootEffect(permanent.TopCard, permanent));
+
+                                if (!permanent.TopCard.IsToken)
+                                {
+                                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(permanent.TopCard));
+
+                                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(permanent.TopCard.Owner));
+
+                                    yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(permanent.TopCard.Owner).AddSecurity());
+
+                                    permanent.willBeRemoveField = false;
+
+                                    if (permanent.ShowingPermanentCard != null)
+                                    {
+                                        if (permanent.ShowingPermanentCard.WillBeDeletedObject != null)
+                                        {
+                                            permanent.ShowingPermanentCard.WillBeDeletedObject.SetActive(false);
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -160,10 +180,30 @@ namespace DCGO.CardEffects.BT16
                         {
                             if (permanent != null)
                             {
-                                yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(
-                                    permanent: permanent,
-                                    hashtable: hashtable,
-                                    toTop: true).PutSecurity());
+                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveFromAllArea(permanent.TopCard));
+
+                                permanent.ShowingPermanentCard.ShowPermanentData(true);
+
+                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().RemoveDigivolveRootEffect(permanent.TopCard, permanent));
+
+                                if (!permanent.TopCard.IsToken)
+                                {
+                                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(permanent.TopCard));
+
+                                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(permanent.TopCard.Owner));
+
+                                    yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(permanent.TopCard.Owner).AddSecurity());
+
+                                    permanent.willBeRemoveField = false;
+
+                                    if (permanent.ShowingPermanentCard != null)
+                                    {
+                                        if (permanent.ShowingPermanentCard.WillBeDeletedObject != null)
+                                        {
+                                            permanent.ShowingPermanentCard.WillBeDeletedObject.SetActive(false);
+                                        }
+                                    }
+                                }
                             }
                         }
                     }

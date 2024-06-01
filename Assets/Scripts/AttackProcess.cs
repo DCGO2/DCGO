@@ -401,6 +401,12 @@ public class AttackProcess : MonoBehaviourPunCallbacks
             }
             #endregion
 
+            //end attack
+            if (IsEndAttack)
+            {
+                goto EndAttack;
+            }
+
             if (AttackingPermanent.TopCard == null)
             {
                 goto EndAttack;

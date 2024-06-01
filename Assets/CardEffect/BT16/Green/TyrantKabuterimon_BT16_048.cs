@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.BT16
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.GetCostItself >= 13 && targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 6 && targetPermanent.TopCard.CardTraits.Contains("Insectoid");
+                    return targetPermanent.TopCard.GetCostItself <= 13 && targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 6 && targetPermanent.TopCard.CardTraits.Contains("Insectoid");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 2, ignoreDigivolutionRequirement: true, card: card, condition: null));
