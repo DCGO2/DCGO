@@ -98,7 +98,31 @@ namespace DCGO.CardEffects.BT16
                 }
 
                 cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(isInheritedEffect: true, card: card, condition: Condition));
+              
+            }
+
+            if (timing == EffectTiming.OnDetermineDoSecurityCheck)
+            {
+                bool Condition()
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (card.PermanentOfThisCard().TopCard.HasXAntibodyTraits)
+                        {
+                            return true;
+                        }
+
+                        if (card.PermanentOfThisCard().TopCard.HasSocTraits)
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
                 cardEffects.Add(CardEffectFactory.PierceSelfEffect(isInheritedEffect: true, card: card, condition: Condition));
+
             }
 
             if (timing == EffectTiming.OnEndTurn)
