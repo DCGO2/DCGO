@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.BT16
 {
     public class ImperialdramonFighterModeAce_BT16_027 : CEntity_Effect
     {
