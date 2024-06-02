@@ -141,7 +141,48 @@ namespace DCGO.CardEffects.BT16
                             {
                                 return true;
                             }
+                        }
+                    }
 
+                    return false;
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        return true;
+                    }
+
+                    return false;
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(2, activateClass));
+                }
+            }
+
+            if (timing == EffectTiming.OnEndBattle)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Memory +2", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetIsInheritedEffect(false);
+                activateClass.SetHashString("Memory+2_BT16_101");
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[All Turns][Once Per Turn] When an opponent's Digimon is deleted in battle or by dropping to 0 DP, gain 2 memory.";
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (CardEffectCommons.IsOwnerTurn(card))
+                        {
                             bool WinnerCondition(Permanent permanent) => CardEffectCommons.IsOwnerPermanent(permanent, card);
                             bool LoserCondition(Permanent permanent) => CardEffectCommons.IsOpponentPermanent(permanent, card);
 
@@ -167,10 +208,12 @@ namespace DCGO.CardEffects.BT16
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(2, activateClass));
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(2, activateClass));
+                    }
                 }
             }
-
             #endregion
 
             #region All Turns

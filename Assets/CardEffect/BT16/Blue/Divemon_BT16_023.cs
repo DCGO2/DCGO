@@ -134,70 +134,74 @@ namespace DCGO.CardEffects.BT16
                 }
             }
             #endregion
-            
-            #region Inherited Effect
-            if (timing == EffectTiming.OnAllyAttack)
+
+            #region Inherit
+            if (timing == EffectTiming.OnEndAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Trash 1 digivolution card", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false,
-                    EffectDiscription());
+                activateClass.SetUpICardEffect("Unsuspend this Digimon.", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
+                activateClass.SetHashString("Unsuspend_BT16_023");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[When Attacking] Trash the top digivolution card of 1 of your opponent's Digimon.";
-                }
-
-                bool CanSelectPermanentCondition(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                           && permanent.DigivolutionCards.Count(cardSource =>
-                               !cardSource.CanNotTrashFromDigivolutionCards(activateClass)) >= 1;
+                    return "[End of Attack][Once per turn] If this Digimon has [Pulsemon] in its text, by trashing the top card of your security stack, unsuspend this Digimon.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnEndAttack(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card) &&
-                           CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (card.PermanentOfThisCard().TopCard.HasText("Pulsemon"))
+                        {
+                            if (card.Owner.SecurityCards.Count >= 1)
+                            {
+                                if (CardEffectCommons.CanUnsuspend(card.PermanentOfThisCard()))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+
+                    return false;
                 }
 
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                bool PermanentCondition(Permanent permanent)
                 {
-                    var maxCount = Math.Min(1,
-                        CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-                    var selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                    selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectPermanentCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: maxCount,
-                        canNoSelect: false,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: SelectPermanentCoroutine,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Custom,
-                        cardEffect: activateClass);
-
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will trash digivolution cards.",
-                        "The opponent is selecting 1 Digimon that will trash digivolution cards.");
-
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                    yield break;
-
-                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                    if (permanent == card.PermanentOfThisCard())
                     {
-                        yield return ContinuousController.instance.StartCoroutine(
-                            CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: permanent,
-                                trashCount: 1, isFromTop: true, activateClass: activateClass));
+                        if (card.PermanentOfThisCard().TopCard.HasText("Pulsemon"))
+                        {
+                            if (CardEffectCommons.CanUnsuspend(card.PermanentOfThisCard()))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                    return false;
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
+                    player: card.Owner,
+                    destroySecurityCount: 1,
+                    cardEffect: activateClass,
+                    fromTop: true).DestroySecurity());
+
+                    if (CardEffectCommons.HasMatchConditionPermanent(PermanentCondition))
+                    {
+                        Permanent selectedPermanent = card.PermanentOfThisCard();
+
+                        yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { selectedPermanent }, activateClass).Unsuspend());
                     }
                 }
             }

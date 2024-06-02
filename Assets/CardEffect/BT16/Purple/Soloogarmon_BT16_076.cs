@@ -260,6 +260,89 @@ namespace DCGO.CardEffects.BT16
             }
             #endregion
 
+            #region All Turns
+            if (timing == EffectTiming.OnDestroyedAnyone)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Digivolve into [FenriLoogamon] from your trash.", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[All Turns] When one of your other Digimon with the [SoC] trait is deleted, this Digimon with a Tamer with the [SoC] trait in its digivolution cardsmay digivolve into [FenriLoogamon] from your trash without paying the cost.";
+                }
+
+                bool PermanentCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
+                    {
+                        if (permanent != card.PermanentOfThisCard())
+                        {
+                            if (permanent.TopCard.CardTraits.Contains("SoC"))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+
+                    return false;
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (CardEffectCommons.IsOwnerTurn(card))
+                        {
+                            if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+
+                    return false;
+                }
+
+                bool CanSelectFenriInTrash(CardSource cardSource)
+                {
+                    if (cardSource.CardNames.Contains("FenriLoogamon"))
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => (cardSource.CardTraits.Contains("SoC") && cardSource.IsTamer)) >= 1)
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                    targetPermanent: card.PermanentOfThisCard(),
+                    cardCondition: cardSource => CanSelectFenriInTrash(cardSource),
+                    payCost: false,
+                    reduceCostTuple: null,
+                    fixedCostTuple: null,
+                    ignoreDigivolutionRequirementFixedCost: -1,
+                    isHand: false,
+                    activateClass: activateClass,
+                    successProcess: null));
+                }
+            }
+            #endregion
+
             return cardEffects;
         }
     }
