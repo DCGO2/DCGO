@@ -249,18 +249,18 @@ namespace DCGO.CardEffects.BT16
             if (timing == EffectTiming.SecuritySkill)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play 1 [Aquilamon] or [Gatomon]", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Play 1 [Hawkmon] or [Salamon]", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[Security] You may play 1 [Aquilamon] or [Gatomon] from your hand without paying the cost. Then, add this card to the hand.";
+                    return "[Security] You may play 1 [Hawkmon] or [Salamon] from your hand or trash without paying the cost. Then, add this card to the hand.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.CardNames.Contains("Aquilamon") || cardSource.CardNames.Contains("Gatomon"))
+                    if (cardSource.CardNames.Contains("Hawkmon") || cardSource.CardNames.Contains("Salamon"))
                     {
                         if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                         {
