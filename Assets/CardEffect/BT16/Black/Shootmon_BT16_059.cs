@@ -230,47 +230,69 @@ namespace DCGO.CardEffects.BT16
             if (timing == EffectTiming.OnEndAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Unsuspend this digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Unsuspend this Digimon by trashing the top card of your security.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
-
+                activateClass.SetHashString("Inherit_BT16_059");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[End of Attack] [Once Per Turn] If this Digimon has [Pulsemon] in its text, by trashing the top card of your security stack, unsuspend this Digimon.";
+                    return "[End of Attack] [Once per turn] If this Digimon has [Pulsemon] in its text, by trashing the top card of your security stack, unsuspend this Digimon.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if(CardEffectCommons.CanTriggerOnEndAttack(hashtable, card))
+                    return CardEffectCommons.CanTriggerOnEndAttack(hashtable, card);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        return card.HasText("Pulsemon");
+                        if (card.PermanentOfThisCard().TopCard.HasText("Pulsemon"))
+                        {
+                            if (card.Owner.SecurityCards.Count >= 1)
+                            {
+                                if (CardEffectCommons.CanUnsuspend(card.PermanentOfThisCard()))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
                     }
 
                     return false;
                 }
 
-                bool CanActivateCondition(Hashtable hashtable)
+                bool PermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card);
+                    if (permanent == card.PermanentOfThisCard())
+                    {
+                        if (card.PermanentOfThisCard().TopCard.HasText("Pulsemon"))
+                        {
+                            if (CardEffectCommons.CanUnsuspend(card.PermanentOfThisCard()))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                    return false;
                 }
 
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    if(CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if(card.Owner.SecurityCards.Count > 0)
-                        {
-                            //TODO: change this to allow the player to choose if they want to trash security card or not, and then unsuspend IF they did
-                            yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
-                                    player: card.Owner,
-                                    destroySecurityCount: 1,
-                                    cardEffect: activateClass,
-                                    fromTop: true).DestroySecurity());
+                    yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
+                    player: card.Owner,
+                    destroySecurityCount: 1,
+                    cardEffect: activateClass,
+                    fromTop: true).DestroySecurity());
 
-                            yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() }, activateClass).Unsuspend());
-                        }
+                    if (CardEffectCommons.HasMatchConditionPermanent(PermanentCondition))
+                    {
+                        Permanent selectedPermanent = card.PermanentOfThisCard();
+
+                        yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { selectedPermanent }, activateClass).Unsuspend());
                     }
                 }
             }
