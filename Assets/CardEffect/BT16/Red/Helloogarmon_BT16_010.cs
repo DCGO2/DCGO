@@ -37,6 +37,13 @@ namespace DCGO.CardEffects.BT16
             }
             #endregion
 
+            #region Retaliation
+            if (timing == EffectTiming.OnDestroyedAnyone)
+            {
+                cardEffects.Add(CardEffectFactory.RetaliationSelfEffect(isInheritedEffect: false, card: card, condition: null));
+            }
+            #endregion
+
             #region End of Opponent's Turn
             if (timing == EffectTiming.OnEndTurn)
             {
@@ -159,12 +166,7 @@ namespace DCGO.CardEffects.BT16
                 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -174,9 +176,9 @@ namespace DCGO.CardEffects.BT16
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, (cardSource) => CanSelectCardCondition(cardSource)))
+                    if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
                     {
-                        int maxCount = Math.Min(1, card.Owner.TrashCards.Count((cardSource) => CanSelectCardCondition(cardSource)));
+                        int maxCount = Math.Min(1, card.Owner.TrashCards.Count(CanSelectCardCondition));
 
                         List<CardSource> selectedCards = new List<CardSource>();
 

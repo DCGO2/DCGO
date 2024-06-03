@@ -15,7 +15,7 @@ namespace DCGO.CardEffects.BT16
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Retaliation
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 cardEffects.Add(CardEffectFactory.RetaliationSelfEffect(isInheritedEffect: false, card: card, condition: null));
             }
