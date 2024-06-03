@@ -148,12 +148,14 @@ namespace DCGO.CardEffects.BT16
                                     PlayCardClass playCardClass = new PlayCardClass(
                                         cardSources: new List<CardSource>() { selectedCard },
                                         hashtable: CardEffectCommons.CardEffectHashtable(activateClass),
-                                        payCost: false,
+                                        payCost: true,
                                         targetPermanent: card.PermanentOfThisCard(),
                                         isTapped: false,
                                         root: SelectCardEffect.Root.Security,
                                         activateETB: true);
-                                    
+
+                                    playCardClass.SetReducedCost(2);
+
                                     yield return ContinuousController.instance.StartCoroutine(playCardClass.PlayCard());
                                 }
                                 
