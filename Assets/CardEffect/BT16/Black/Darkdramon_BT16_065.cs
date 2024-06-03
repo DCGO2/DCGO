@@ -382,47 +382,45 @@ namespace DCGO.CardEffects.BT16
                     int costDeletion = 0;
 
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.RevealDeckTopCardsAndProcessForAll(
-                        revealCount: 3,
-                        simplifiedSelectCardCondition:
-                        new SimplifiedSelectCardConditionClass(
-                            canTargetCondition: RevealSelectCardCondition,
-                            message: "Select play cost to use",
-                            mode: SelectCardEffect.Mode.Custom,
-                            maxCount: -1,
-                            selectCardCoroutine: SelectCardCoroutine),
-                        remainingCardsPlace: RemainingCardsPlace.Trash,
-                        activateClass: activateClass,
-                        revealedCardsCoroutine: null
-                    ));
+                            revealCount: 3,
+                            simplifiedSelectCardCondition:
+                            new SimplifiedSelectCardConditionClass(
+                                canTargetCondition: RevealSelectCardCondition,
+                                message: "Select play cost to use",
+                                mode: SelectCardEffect.Mode.Discard,
+                                maxCount: -1,
+                                selectCardCoroutine: SelectCardCoroutine),
+                            remainingCardsPlace: RemainingCardsPlace.Trash,
+                            activateClass: activateClass,
+                            revealedCardsCoroutine: null
+                        ));
 
                     IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
                         costDeletion = cardSource.GetCostItself;
 
-                        if(CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermanentCondition))
-                        {
-                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: CanSelectPermanentCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: 1,
-                                canNoSelect: false,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: null,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Destroy,
-                                cardEffect: activateClass);
-
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                        }
-                        
-
-
                         yield return null;
                     }
+
+                    if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermanentCondition))
+                    {
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectPermanentCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: null,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Destroy,
+                            cardEffect: activateClass);
+
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                    }                
 
                     bool CanSelectPermanentCondition(Permanent permanent)
                     {
@@ -494,46 +492,44 @@ namespace DCGO.CardEffects.BT16
                     int costDeletion = 0;
 
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.RevealDeckTopCardsAndProcessForAll(
-                        revealCount: 3,
-                        simplifiedSelectCardCondition:
-                        new SimplifiedSelectCardConditionClass(
-                            canTargetCondition: RevealSelectCardCondition,
-                            message: "Select play cost to use",
-                            mode: SelectCardEffect.Mode.Custom,
-                            maxCount: -1,
-                            selectCardCoroutine: SelectCardCoroutine),
-                        remainingCardsPlace: RemainingCardsPlace.Trash,
-                        activateClass: activateClass,
-                        revealedCardsCoroutine: null
-                    ));
+                            revealCount: 3,
+                            simplifiedSelectCardCondition:
+                            new SimplifiedSelectCardConditionClass(
+                                canTargetCondition: RevealSelectCardCondition,
+                                message: "Select play cost to use",
+                                mode: SelectCardEffect.Mode.Discard,
+                                maxCount: -1,
+                                selectCardCoroutine: SelectCardCoroutine),
+                            remainingCardsPlace: RemainingCardsPlace.Trash,
+                            activateClass: activateClass,
+                            revealedCardsCoroutine: null
+                        ));
 
                     IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
                         costDeletion = cardSource.GetCostItself;
 
-                        if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermanentCondition))
-                        {
-                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: CanSelectPermanentCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: 1,
-                                canNoSelect: false,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: null,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Destroy,
-                                cardEffect: activateClass);
-
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                        }
-
-
-
                         yield return null;
+                    }
+
+                    if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermanentCondition))
+                    {
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectPermanentCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: null,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Destroy,
+                            cardEffect: activateClass);
+
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
 
                     bool CanSelectPermanentCondition(Permanent permanent)
