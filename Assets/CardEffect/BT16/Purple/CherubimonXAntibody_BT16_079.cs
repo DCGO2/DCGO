@@ -39,7 +39,7 @@ namespace DCGO.CardEffects.BT16
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play a level 4 or lower Digimon from your hand or trash.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
-                activateClass.SetHashString("AttackingDigimon_BT16_079");
+                activateClass.SetHashString("PlayDigimon_BT16_079");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -218,7 +218,7 @@ namespace DCGO.CardEffects.BT16
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play a level 4 or lower Digimon from your hand or trash.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
-                activateClass.SetHashString("DigivovleDigimon_BT16_079");
+                activateClass.SetHashString("PlayDigimon_BT16_079");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
