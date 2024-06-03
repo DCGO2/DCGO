@@ -262,6 +262,7 @@ namespace DCGO.CardEffects.BT16
                     {
                         if(card.Owner.SecurityCards.Count > 0)
                         {
+                            //TODO: change this to allow the player to choose if they want to trash security card or not, and then unsuspend IF they did
                             yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
                                     player: card.Owner,
                                     destroySecurityCount: 1,
