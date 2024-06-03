@@ -27,6 +27,8 @@ public partial class CardEffectCommons
     #region Effect process of [Collision]
     public static IEnumerator CollisionProcess(CardSource cardSource, ICardEffect activateClass, Func<IEnumerator> beforeOnAttackCoroutine = null)
     {
+        List<Permanent> enemyDigimons = new List<Permanent>();
+
         if (CanActivateCollision(cardSource))
         {
             foreach (Permanent enemyDigimon in cardSource.Owner.Enemy.GetBattleAreaDigimons())
@@ -38,9 +40,13 @@ public partial class CardEffectCommons
                         targetPermanent: enemyDigimon,
                         effectDuration: EffectDuration.UntilEndAttack,
                         activateClass: activateClass));
+
+                GManager.instance.attackProcess.IsBlocking = true;
             }
 
-            int maxCount = 1;
+
+
+            /*int maxCount = 1;
 
             Permanent selectedPermanent = null;
 
@@ -57,7 +63,7 @@ public partial class CardEffectCommons
                 selectPermanentCoroutine: SelectPermanentCoroutine,
                 afterSelectPermanentCoroutine: null,
                 mode: SelectPermanentEffect.Mode.Custom,
-                cardEffect: null);
+                cardEffect: activateClass);
 
             selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will block.", "The opponent is selecting 1 Digimon that will block.");
 
@@ -84,7 +90,7 @@ public partial class CardEffectCommons
                 selectedPermanent = permanent;
 
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.attackProcess.SwitchDefender(null, true, selectedPermanent));
-            }
+            }*/
         }
     }
     #endregion

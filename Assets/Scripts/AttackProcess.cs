@@ -295,7 +295,7 @@ public class AttackProcess : MonoBehaviourPunCallbacks
                     canTargetCondition_ByPreSelecetedList: null,
                     canEndSelectCondition: null,
                     maxCount: maxCount,
-                    canNoSelect: true,
+                    canNoSelect: (!IsBlocking),
                     canEndNotMax: false,
                     selectPermanentCoroutine: SelectPermanentCoroutine,
                     afterSelectPermanentCoroutine: null,
@@ -303,7 +303,9 @@ public class AttackProcess : MonoBehaviourPunCallbacks
                     cardEffect: null);
 
                 selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will block.", "The opponent is selecting 1 Digimon that will block.");
-                selectPermanentEffect.SetUpCustomBackButtonMessage("Not Block");
+                
+                if(!IsBlocking)
+                    selectPermanentEffect.SetUpCustomBackButtonMessage("Not Block");
 
                 yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 

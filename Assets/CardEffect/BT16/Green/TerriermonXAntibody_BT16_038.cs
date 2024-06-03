@@ -47,7 +47,7 @@ namespace DCGO.CardEffects.BT16
                         }
                     }
 
-                    return true;
+                    return false;
                 }
 
                 bool CardCondition(CardSource cardSource)
