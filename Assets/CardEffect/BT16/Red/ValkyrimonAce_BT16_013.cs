@@ -47,7 +47,7 @@ namespace DCGO.CardEffects.BT16
 
                 string EffectDiscription()
                 {
-                    return "[On Play] [When Digivolving] Until the end of your opponent's next turn, all of your opponent's Digimon get -5000DP.";
+                    return "[On Play] [When Digivolving] All of your opponent's Digimon get -5000DP for the turn.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -75,7 +75,7 @@ namespace DCGO.CardEffects.BT16
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDPPlayerEffect(
                         permanentCondition: PermanentCondition,
                         changeValue: -5000,
-                        effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                        effectDuration: EffectDuration.UntilEachTurnEnd,
                         activateClass: activateClass));
                 }
             }
