@@ -130,7 +130,7 @@ namespace DCGO.CardEffects.BT16
                                     {
                                         if (!selectedPermanent.oldIsTapped_playCard)
                                         {
-                                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCantUnsuspendUntilOpponentTurnEnd(
+                                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCantUnsuspendNextActivePhase(
                                                 targetPermanent: selectedPermanent,
                                                 activateClass: activateClass
                                             ));
