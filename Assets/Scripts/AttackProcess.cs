@@ -396,18 +396,11 @@ public class AttackProcess : MonoBehaviourPunCallbacks
                     GManager.instance.autoProcessing.PutStackedSkill(skillInfos_Pierce[0]);
                 }
                 #endregion
-
+                
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.TriggeredSkillProcess(true, null));
-
                 GManager.instance.turnStateMachine.IsSelecting = true;
             }
             #endregion
-
-            //end attack
-            if (IsEndAttack)
-            {
-                goto EndAttack;
-            }
 
             if (AttackingPermanent.TopCard == null)
             {

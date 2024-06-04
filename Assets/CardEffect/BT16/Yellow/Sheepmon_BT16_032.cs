@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 using System.Linq;
 
 namespace DCGO.CardEffects.BT16
@@ -62,6 +63,7 @@ namespace DCGO.CardEffects.BT16
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    Debug.Log("SHEEPMON: END ATTACK");
                     GManager.instance.attackProcess.IsEndAttack = true;
 
                     yield return null;
