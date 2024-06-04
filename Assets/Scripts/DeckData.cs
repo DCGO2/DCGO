@@ -13,12 +13,12 @@ public class DeckData
 
     public static int CardKindCellLength = (int)Math.Ceiling(Mathf.Log(maxCardKind, m));
 
-    #region  コンストラクタ
+    #region  constructor
     public DeckData(string DeckCode)
     {
         List<int> _DeckCardIDs = new List<int>();
         List<int> _DigitamaDeckCardIDs = new List<int>();
-        //コンマで区切り
+        //separated by commas
         string[] parseByComma = DeckCode.Split(',');
 
         List<int> DistinctDeckCardIDs = new List<int>();
@@ -29,16 +29,16 @@ public class DeckData
 
         for (int i = 0; i < parseByComma.Length; i++)
         {
-            //デッキ名
+            //deck name
             if (i == 0)
             {
                 DeckName = parseByComma[i];
             }
 
-            //デッキのカード(重複なし)
+            //Cards in the deck(no duplicates)
             else if (i == 1)
             {
-                //2文字ごとに区切り
+                //Separate every 2 characters
                 string[] SplitText = SplitClass.Split(parseByComma[i], CardKindCellLength);
 
                 for (int j = 0; j < SplitText.Length; j++)
@@ -47,32 +47,32 @@ public class DeckData
                 }
             }
 
-            //カード各種の枚数
+            //Number of each type of card
             else if (i == 2)
             {
-                //m進数の文字列
+                //m-ary string
                 string x_m = parseByComma[i];
 
                 if (!string.IsNullOrEmpty(x_m))
                 {
-                    //m進数をn進数に変換
+                    //Convert m-ary number to n-ary number
                     string x_n = ConvertBinaryNumber.NKStringToNString(x_m, n, log_n_m);
 
-                    //n進数の文字列を1文字ずつ区切り
+                    //Separate n-ary string by character
                     string[] Split_x_n = SplitClass.Split(x_n, 1);
 
                     for (int j = 0; j < Split_x_n.Length; j++)
                     {
-                        //n進数をintに変換
+                        //Convert n-ary number to int
                         DistinctDeckCardCounts.Add(ConvertBinaryNumber.NStringToInt(Split_x_n[j], n) + 1);
                     }
                 }
             }
 
-            //デジタマデッキのカード(重複なし)
+            //Digitama deck cards (no duplicates)
             else if (i == 3)
             {
-                //2文字ごとに区切り
+                //Separate every 2 characters
                 string[] SplitText = SplitClass.Split(parseByComma[i], CardKindCellLength);
 
                 for (int j = 0; j < SplitText.Length; j++)
@@ -81,29 +81,29 @@ public class DeckData
                 }
             }
 
-            //カード各種の枚数
+            //Number of each type of card
             else if (i == 4)
             {
-                //m進数の文字列
+                //m-ary string
                 string x_m = parseByComma[i];
 
                 if (!string.IsNullOrEmpty(x_m))
                 {
-                    //m進数をn進数に変換
+                    //Convert m-ary number to n-ary number
                     string x_n = ConvertBinaryNumber.NKStringToNString(x_m, n, log_n_m);
 
-                    //n進数の文字列を1文字ずつ区切り
+                    //Separate n-ary string by character
                     string[] Split_x_n = SplitClass.Split(x_n, 1);
 
                     for (int j = 0; j < Split_x_n.Length; j++)
                     {
-                        //n進数をintに変換
+                        //Convert n-ary number to int
                         DistinctDigitamaDeckCardCounts.Add(ConvertBinaryNumber.NStringToInt(Split_x_n[j], n) + 1);
                     }
                 }
             }
 
-            //キーカードID
+            //key card id
             else if (i == 5)
             {
                 if (int.TryParse(parseByComma[i], out int value))
@@ -140,7 +140,7 @@ public class DeckData
     }
     #endregion
 
-    #region デッキ名
+    #region deck name
     string _deckName = "";
     public string DeckName
     {
@@ -161,7 +161,7 @@ public class DeckData
     }
     #endregion
 
-    #region デッキに含まれるカードリスト
+    #region List of cards included in the deck
     public List<CEntity_Base> DeckCards()
     {
         List<CEntity_Base> deckCards = new List<CEntity_Base>();
@@ -183,7 +183,7 @@ public class DeckData
     }
     #endregion
 
-    #region デジタマデッキに含まれるカードリスト
+    #region List of cards included in the Digitama deck
     public List<CEntity_Base> DigitamaDeckCards()
     {
         List<CEntity_Base> deckCards = new List<CEntity_Base>();
@@ -202,7 +202,7 @@ public class DeckData
     }
     #endregion
 
-    #region デッキの全カード
+    #region all cards in the deck
     public List<CEntity_Base> AllDeckCards()
     {
         List<CEntity_Base> AllDeckCards = new List<CEntity_Base>();
@@ -221,7 +221,7 @@ public class DeckData
     }
     #endregion
 
-    #region キーカード
+    #region key card
     public int KeyCardId { get; set; } = -1;
 
     public CEntity_Base KeyCard
@@ -270,7 +270,7 @@ public class DeckData
     }
     #endregion
 
-    #region デッキに含まれるカードIDリスト
+    #region List of card IDs included in the deck
     public List<int> DeckCardIDs { get; set; } = new List<int>();
     public List<int> DigitamaDeckCardIDs { get; set; } = new List<int>();
 
@@ -372,7 +372,7 @@ public class DeckData
 
     #endregion
 
-    #region カードリストをソート
+    #region Sort card list
 
     public static List<CEntity_Base> SortedDeckCardsList(List<CEntity_Base> DeckCards)
     {
@@ -436,13 +436,13 @@ public class DeckData
     }
     #endregion
 
-    #region 256進数のデッキコードを取得
-    #region デッキ名とデッキのカードから256進数のデッキコードを取得
+    #region Get 256 hexadecimal deck code
+    #region Get the 256-decimal deck code from the deck name and deck card.
     public static string GetDeckCode(string _DeckName, List<CEntity_Base> _DeckCards, List<CEntity_Base> _DigitamaDeckCards, CEntity_Base keyCard)
     {
         string _DeckDataString = null;
 
-        //デッキ名
+        //deck name
         _DeckDataString += _DeckName + ",";
 
         SetDeckCard(_DeckCards);
@@ -458,14 +458,14 @@ public class DeckData
             _DeckDataString += $"-1,";
         }
 
-        //Debug.Log($"生デッキコード:{_DeckDataString}");
+        //Debug.Log($"raw deck cord:{_DeckDataString}");
 
         void SetDeckCard(List<CEntity_Base> cEntity_Bases)
         {
-            //カードリストを重複なしリストにする
+            //Make the card list a non-duplicate list
             List<CEntity_Base> DistinctDeckCards = cEntity_Bases.Distinct().ToList();
 
-            //重複なしのカードIDリストを登録
+            //Register a card ID list without duplicates
             foreach (CEntity_Base cardData in DistinctDeckCards)
             {
                 _DeckDataString += cardData.CardIndex_String;
@@ -473,7 +473,7 @@ public class DeckData
 
             _DeckDataString += ",";
 
-            //各カードの種類のカード枚数を保存(1減らす)
+            //Save the number of cards of each card type (reduce by 1)
             List<int> _DistinctDeckCardCounts = new List<int>();
 
             foreach (CEntity_Base cardData in DistinctDeckCards)
@@ -483,14 +483,14 @@ public class DeckData
 
             string x_n = null;
 
-            //デッキ内のカード枚数をn進数に変換
+            //Convert the number of cards in the deck to n-ary number
 
             for (int i = 0; i < _DistinctDeckCardCounts.Count; i++)
             {
                 x_n += ConvertBinaryNumber.IntToNString(_DistinctDeckCardCounts[i], n);
             }
 
-            //桁数がlog(n)m桁になるように0埋め
+            //Fill with 0s so that the number of digits is log(n)m digits
             if (x_n != null)
             {
                 while (x_n.Count() % log_n_m != 0)
@@ -499,7 +499,7 @@ public class DeckData
                 }
             }
 
-            //n進数をm進数に変換
+            //Convert n-ary number to m-ary number
             if (x_n != null)
             {
                 string x_m = ConvertBinaryNumber.NStringToNKString(x_n, n, log_n_m);
@@ -513,7 +513,7 @@ public class DeckData
     }
     #endregion
 
-    #region このデッキのデッキコードを取得
+    #region Get the deck code for this deck
     public string GetThisDeckCode()
     {
         return DeckData.GetDeckCode(DeckName, DeckCards(), DigitamaDeckCards(), KeyCard);
@@ -521,7 +521,7 @@ public class DeckData
     #endregion
     #endregion
 
-    #region その文字列がデッキコードとして適するか
+    #region Is the string suitable as a deck code?
     public static bool IsValidDeckCode(string DeckCode)
     {
         if (!DeckCode.Contains(","))
@@ -617,10 +617,10 @@ public class DeckData
     }
     #endregion
 
-    #region このデッキデータが対戦に使えるかどうか
+    #region Can this deck data be used in battle?
     public bool IsValidDeckData()
     {
-        //デッキ枚数はちょうど50枚
+        //The number of cards in the deck is exactly 50.
         if (DeckCards().Count != 50)
         {
             return false;
@@ -651,14 +651,14 @@ public class DeckData
     }
     #endregion
 
-    #region 空白のデッキコード
+    #region blank deck code
     public static DeckData EmptyDeckData()
     {
         return new DeckData("");
     }
     #endregion
 
-    #region インポートしたデッキデータを修正
+    #region Correct imported deck data
     public DeckData ModifiedDeckData()
     {
         List<CEntity_Base> deckCards = new List<CEntity_Base>();
@@ -682,7 +682,7 @@ public class DeckData
 
         List<CEntity_Base> modifiedList(List<CEntity_Base> cEntity_Bases)
         {
-            //カードリストを重複なしのリストにする
+            //Make the card list a non-duplicate list
             List<CEntity_Base> DistinctDeckCards = cEntity_Bases.Distinct().ToList();
 
             List<CEntity_Base> DistinctDeckCards1 = new List<CEntity_Base>();
@@ -702,7 +702,7 @@ public class DeckData
                 deckCards.Add(cEntity_Base);
             }
 
-            //規定枚数以上のカードを抜く
+            //Remove more than the specified number of cards
             foreach (CEntity_Base cEntity_Base in DistinctDeckCards1)
             {
                 while (cEntity_Base.SameCardIDCount(deckCards) > cEntity_Base.MaxCountInDeck)
@@ -741,7 +741,7 @@ public class DeckData
     }
     #endregion
 
-    #region デッキ名を修正
+    #region Fixed deck name
     public static string ValidateDeckName(string deckName)
     {
         if (String.IsNullOrEmpty(deckName))
@@ -762,12 +762,15 @@ public class DeckData
             deckName = deckName.Replace(error, "");
         }
 
+        var filter = new ProfanityFilter.ProfanityFilter();
+        deckName = filter.CensorString(deckName);
+
         return deckName;
     }
     #endregion
 }
 
-#region 文字列を分割
+#region split string
 public static class SplitClass
 {
     public static string[] Split(this string str, int count)

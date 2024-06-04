@@ -55,67 +55,6 @@ public class StreamingAssetsUtility
         {
             return await GetSpriteImage(fileName, isLauncher);
         }
-
-        /*    if (isCard)
-        {
-            if (fileName.Contains("-token"))
-            {
-                return await GetTokenImageData(Path.Combine(GetStreamingAssetPath(isLauncher), $"Card/{fileName}.png").Replace("\\", "/"));
-            }
-            else
-            {
-                
-            }            
-        }
-        else
-        {
-            path = Path.Combine(GetStreamingAssetPath(isLauncher), $"{fileName}.jpg").Replace("\\", "/");
-
-            if (!File.Exists(path))
-                path = Path.Combine(GetStreamingAssetPath(isLauncher), $"{fileName}.png").Replace("\\", "/");
-
-            if (File.Exists(path))
-            {
-                byte[] imageBuff = await ReadFile(path);
-                Texture2D tex = BinaryToTexture(imageBuff);
-
-                Sprite sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), Vector2.zero);
-
-                return sprite;
-            }
-        }
-        
-        await Task.Yield();
-
-        if (File.Exists(path))
-        {
-            byte[] imageBuff = await ReadFile(path);
-            Texture2D tex;
-            Sprite sprite = null;
-
-            if (isCard)
-            {
-                tex = Texture2DExt.CreateTexture2DFromWebP(imageBuff, lMipmaps: true, lLinear: false, lError: out WebP.Error lError);
-
-                if (lError == WebP.Error.Success)
-                {
-                    sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), Vector2.zero);
-                }
-                else
-                {
-                    Debug.LogError("Webp Load Error : " + lError.ToString());
-                }
-            }
-            else
-            {
-                tex = BinaryToTexture(imageBuff);
-                sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), Vector2.zero);
-            }
-
-            return sprite;
-        }*/
-
-        return null;
     }
 
     public static async Task<Sprite> GetSpriteImage(string fileName, bool isLauncher = false)
@@ -165,6 +104,10 @@ public class StreamingAssetsUtility
 
                 return sprite;
             }
+            else
+            {
+                Debug.Log(lError.ToString());
+            }
         }
 
         return null;
@@ -189,7 +132,8 @@ public class StreamingAssetsUtility
             return null;
         else
         {
-            File.WriteAllBytes(filePath, webReq_CardImage.downloadHandler.data);
+            if(!File.Exists(filePath))
+                File.WriteAllBytes(filePath, webReq_CardImage.downloadHandler.data);
 
             Texture2D texture = Texture2DExt.CreateTexture2DFromWebP(webReq_CardImage.downloadHandler.data, lMipmaps: true, lLinear: false, lError: out WebP.Error lError);
 
