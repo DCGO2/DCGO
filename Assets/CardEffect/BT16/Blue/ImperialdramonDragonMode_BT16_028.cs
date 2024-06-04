@@ -29,7 +29,7 @@ namespace DCGO.CardEffects.BT16
             #endregion
 
             #region When Digivolving
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("1 of your opponent's Digimon/Tamer can't unsuspend.", CanUseCondition, card);
