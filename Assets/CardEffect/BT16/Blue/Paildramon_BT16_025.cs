@@ -11,7 +11,7 @@ namespace DCGO.CardEffects.BT16
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Partition - Inherited
-            if(timing == EffectTiming.WhenPermanentWouldBeDeleted)
+            if(timing == EffectTiming.WhenRemoveField)
             {
                 bool CanSelectFirstSourceCondition(CardSource cardSource)
                 {
