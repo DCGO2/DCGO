@@ -68,7 +68,7 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PermanentCondition))
+                        if (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PermanentCondition) || CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, PermanentCondition))
                         {
                             if (CardEffectCommons.IsOwnerTurn(card))
                             {
