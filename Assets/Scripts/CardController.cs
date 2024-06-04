@@ -3432,6 +3432,11 @@ public class IBattle
 
                 GManager.instance.turnStateMachine.IsSelecting = true;
 
+                //Preemptive end battle if the attack process is ended
+                if(GManager.instance.attackProcess.IsEndAttack)
+                    yield break;
+                
+
                 #region battle with permanent
                 if (DefendingPermanent != null)
                 {
