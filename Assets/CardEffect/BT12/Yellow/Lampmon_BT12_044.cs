@@ -12,6 +12,7 @@ public class Lampmon_BT12_044 : CEntity_Effect
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+        #region When Digivolving
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
@@ -83,55 +84,38 @@ public class Lampmon_BT12_044 : CEntity_Effect
                             activateClass: activateClass));
                     }
                 }
-            }
-        }
 
-        /*
-        if (timing == EffectTiming.None)
-        {
-            int count()
-            {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
+                //Initial check for your turn effect
+
+                int count()
                 {
                     return card.Owner.Enemy.GetBattleAreaDigimons().Count((permanent) => permanent.HasSecurityAttackChanges);
                 }
 
-                return 0;
-            }
+                List<ICardEffect> SecFromLamp = card.PermanentOfThisCard().EffectList(EffectTiming.None).Where(x => x.HashString == "SecAttackFromLampEffect").ToList();
 
-            bool PermanentCondition(Permanent permanent)
-            {
-                if(CardEffectCommons.IsExistOnBattleArea(card))
+
+                if (count() > SecFromLamp.Count())
                 {
-                    if (permanent == card.PermanentOfThisCard())
+                    int timesToRunLoop = count() - SecFromLamp.Count();
+
+                    for (int i = 0; i < timesToRunLoop; i++)
                     {
-                        return true;
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonSAttack(
+                        targetPermanent: card.PermanentOfThisCard(),
+                        changeValue: 1,
+                        effectDuration: EffectDuration.UntilEachTurnEnd,
+                        activateClass: activateClass,
+                        activateAnimation: false,
+                        hashstring: "SecAttackFromLampEffect"));
                     }
                 }
-                return false;
             }
-
-            bool Condition()
-            {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
-                {
-                    if (CardEffectCommons.IsOwnerTurn(card))
-                    {
-                        if (count() >= 1)
-                        {
-                            return true;
-                        }
-                    }
-                }
-
-                return false;
-            }
-
-            cardEffects.Add(CardEffectFactory.ChangeSAttackStaticEffect<Func<int>>(PermanentCondition, changeValue: () => 1 * count(), isInheritedEffect: false, card: card, condition: Condition));
         }
-        */
-        
-        if (timing == EffectTiming.AfterEffectsActivate || timing == EffectTiming.OnStartTurn || timing == EffectTiming.OnEnterFieldAnyone || timing == EffectTiming.OnUseOption || timing == EffectTiming.OptionSkill)
+        #endregion
+
+        #region Your Turn
+        if (timing == EffectTiming.AfterEffectsActivate || timing == EffectTiming.OnStartTurn || timing == EffectTiming.OnEnterFieldAnyone || timing == EffectTiming.OnUseOption || timing == EffectTiming.OptionSkill || timing == EffectTiming.SecuritySkill)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Gain Security Attack", CanUseCondition, card);
@@ -174,11 +158,6 @@ public class Lampmon_BT12_044 : CEntity_Effect
             {
                 List<ICardEffect> SecFromLamp = card.PermanentOfThisCard().EffectList(EffectTiming.None).Where(x => x.HashString == "SecAttackFromLampEffect").ToList();
 
-                if(SecFromLamp.Count() == count())
-                {
-                    //yield break;
-                }
-
                 if(count() > SecFromLamp.Count())
                 {
                     int timesToRunLoop = count() - SecFromLamp.Count();
@@ -194,23 +173,10 @@ public class Lampmon_BT12_044 : CEntity_Effect
                         hashstring: "SecAttackFromLampEffect"));
                     }
                 }
-
-                /*
-                for (int i = 0; i < count(); i++)
-                {
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonSAttack(
-                    targetPermanent: card.PermanentOfThisCard(),
-                    changeValue: 1,
-                    effectDuration: EffectDuration.UntilEachTurnEnd,
-                    activateClass: activateClass, 
-                    activateAnimation: false, 
-                    hashstring: "SecAttackFromLampEffect"));
-                }
-                */
-
             }
         }
-        
+        #endregion
+
         return cardEffects;
     }
 }
