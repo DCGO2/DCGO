@@ -73,11 +73,13 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (card.HasDBrigadeorDigiPoliceTraits)
+                    if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                     {
-                        if(card.HasPlayCost && card.GetCostItself <= 4)
+                        Debug.Log($"SelectCondion ({cardSource.BaseENGCardNameFromEntity}): Can Play as new permanent - {cardSource.HasDBrigadeorDigiPoliceTraits}");
+                        if (cardSource.HasDBrigadeorDigiPoliceTraits)
                         {
-                            if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
+                            Debug.Log($"SelectCondion ({cardSource.BaseENGCardNameFromEntity}): has right traits");
+                            if (cardSource.HasPlayCost && cardSource.GetCostItself <= 4)
                             {
                                 return true;
                             }
@@ -114,7 +116,7 @@ namespace DCGO.CardEffects.BT16
                             maxCount: 1,
                             selectCardCoroutine: SelectCardCoroutine),
                             },
-                            remainingCardsPlace: RemainingCardsPlace.DeckTop,
+                            remainingCardsPlace: RemainingCardsPlace.Trash,
                             activateClass: activateClass));
                         }
 

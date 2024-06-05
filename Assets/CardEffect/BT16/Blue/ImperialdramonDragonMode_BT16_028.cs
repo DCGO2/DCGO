@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.BT16
 {
     public class ImperialdramonDragonMode_BT16_028 : CEntity_Effect
     {
@@ -29,7 +29,7 @@ namespace DCGO.CardEffects
             #endregion
 
             #region When Digivolving
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("1 of your opponent's Digimon/Tamer can't unsuspend.", CanUseCondition, card);

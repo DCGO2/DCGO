@@ -60,7 +60,7 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card))
+                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                     {
                         return true;
                     }

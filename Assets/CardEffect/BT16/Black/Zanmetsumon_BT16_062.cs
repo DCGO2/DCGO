@@ -219,26 +219,25 @@ namespace DCGO.CardEffects.BT16
                             yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                         }
 
-                        if (card.PermanentOfThisCard().cardSources.Count > 1)
-                        {
-                            if (CardEffectCommons.HasMatchConditionPermanent(CanSelectDeletePermanentCondition))
-                            {
-                                selectPermanentEffect.SetUp(
-                                    selectPlayer: card.Owner,
-                                    canTargetCondition: CanSelectDeletePermanentCondition,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    maxCount: maxCount,
-                                    canNoSelect: false,
-                                    canEndNotMax: false,
-                                    selectPermanentCoroutine: null,
-                                    afterSelectPermanentCoroutine: null,
-                                    mode: SelectPermanentEffect.Mode.Destroy,
-                                    cardEffect: activateClass);
 
-                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                            }
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectDeletePermanentCondition))
+                        {
+                            selectPermanentEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: CanSelectDeletePermanentCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: maxCount,
+                                canNoSelect: false,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: null,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Destroy,
+                                cardEffect: activateClass);
+
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                         }
+                        
                     }
 
                     yield return null;

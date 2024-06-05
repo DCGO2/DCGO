@@ -155,6 +155,11 @@ public class PlayCardClass
         _fixedCost = FixedCost;
     }
 
+    public void SetReducedCost(int ReducedCost)
+    {
+        _reducedCost = ReducedCost;
+    }
+
     public void SetAddSecurityEndOption()
     {
         _addSecurityEndOption = true;
@@ -175,6 +180,7 @@ public class PlayCardClass
     bool _showEffect = false;
     bool _ignoreLevel = false;
     int _fixedCost = -1;
+    int _reducedCost = 0;
     int[] _jogressEvoRootsFrameIDs = null;
     int _burstTamerFrameID = -1;
     bool _addSecurityEndOption = false;
@@ -379,9 +385,14 @@ public class PlayCardClass
                                     {
                                         if (cost <= card.Owner.MaxMemoryCost)
                                         {
-                                            CostList.Add(cost);
+                                            int evoCost = cost;
+
+                                            if(_reducedCost > 0)
+                                                evoCost -= _reducedCost;
+
+                                            CostList.Add(evoCost);
                                         }
-                                    }
+                                    } 
                                 }
 
                                 else
@@ -3420,6 +3431,11 @@ public class IBattle
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
 
                 GManager.instance.turnStateMachine.IsSelecting = true;
+
+                //Preemptive end battle if the attack process is ended
+                if(GManager.instance.attackProcess.IsEndAttack)
+                    yield break;
+                
 
                 #region battle with permanent
                 if (DefendingPermanent != null)

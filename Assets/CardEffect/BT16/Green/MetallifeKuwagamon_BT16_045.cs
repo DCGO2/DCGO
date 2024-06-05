@@ -19,7 +19,7 @@ namespace DCGO.CardEffects.BT16
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Suspend and gain DP", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription()) ;
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -63,30 +63,50 @@ namespace DCGO.CardEffects.BT16
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionPermanent(PermanentCondition))
+                    List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
+                        {
+                            new SelectionElement<bool>(message: $"Yes", value : true, spriteIndex: 0),
+                            new SelectionElement<bool>(message: $"No", value : false, spriteIndex: 1),
+                        };
+
+                    string selectPlayerMessage = "Will you suspend 1 Digimon?";
+                    string notSelectPlayerMessage = "The opponent is choosing whether or not to suspend a Digimon.";
+
+                    GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                    bool willSuspend = GManager.instance.userSelectionManager.SelectedBoolValue;
+
+                    if (willSuspend)
                     {
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(PermanentCondition));
+                        if (CardEffectCommons.HasMatchConditionPermanent(PermanentCondition))
+                        {
 
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(PermanentCondition));
 
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: PermanentCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: false,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: null,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Tap,
-                            cardEffect: activateClass);
+                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to suspend.", "The opponent is selecting 1 Digimon to suspend.");
+                            selectPermanentEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: PermanentCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: maxCount,
+                                canNoSelect: false,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: null,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Tap,
+                                cardEffect: activateClass);
 
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to suspend.", "The opponent is selecting 1 Digimon to suspend.");
 
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                        }
                     }
+
                     if (CardEffectCommons.HasMatchConditionPermanent(PermanentConditionForSecondEffect))
                     {
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(PermanentConditionForSecondEffect));

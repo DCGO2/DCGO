@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.BT16
 {
     public class Paildramon_BT16_025 : CEntity_Effect
     {
@@ -11,7 +11,7 @@ namespace DCGO.CardEffects
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Partition - Inherited
-            if(timing == EffectTiming.WhenPermanentWouldBeDeleted)
+            if(timing == EffectTiming.WhenRemoveField)
             {
                 bool CanSelectFirstSourceCondition(CardSource cardSource)
                 {

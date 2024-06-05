@@ -260,7 +260,7 @@ namespace DCGO.CardEffects.BT16
             if(timing == EffectTiming.OnEndAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Unsuspend this Digimon.", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Unsuspend this Digimon by trashing the top card of your security.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("Inherit_BT16_034");
@@ -268,7 +268,7 @@ namespace DCGO.CardEffects.BT16
 
                 string EffectDiscription()
                 {
-                    return "[End of Attack][Once per turn] If this Digimon has [Pulsemon] in its text, by trashing the top card of your security stack, unsuspend this Digimon.";
+                    return "[End of Attack] [Once per turn] If this Digimon has [Pulsemon] in its text, by trashing the top card of your security stack, unsuspend this Digimon.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

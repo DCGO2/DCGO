@@ -5,12 +5,12 @@ using System;
 
 namespace DCGO.CardEffects.BT16
 {
-    public class GaoGamon_BT16_020 : CEntity_Effect
+    public class Gaogamon_BT16_020 : CEntity_Effect
     {
         
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
-            var cardEffects = new List<ICardEffect>();
+            List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Alternate Digivolution Requirement, Inherited Effect
             if(timing == EffectTiming.None)

@@ -27,7 +27,7 @@ namespace DCGO.CardEffects.BT16
             #endregion
 
             #region On Play / When Digivolving
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash sources and give effects.", CanUseCondition, card);
@@ -87,10 +87,7 @@ namespace DCGO.CardEffects.BT16
                     {
                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                         {
-                            if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardNames.Contains("Gesomon") || cardSource.CardNames.Contains("X Antibody") || cardSource.CardNames.Contains("XAntibody")) >= 1)
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
 
@@ -99,7 +96,7 @@ namespace DCGO.CardEffects.BT16
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition) && card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardNames.Contains("Gesomon") || cardSource.CardNames.Contains("X Antibody") || cardSource.CardNames.Contains("XAntibody")) >= 1)
                     {
                         int maxCountToTrash = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
 

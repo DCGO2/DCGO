@@ -246,13 +246,13 @@ namespace DCGO.CardEffects.BT16
                                         mode: SelectPermanentEffect.Mode.Custom,
                                         cardEffect: activateClass);
 
-                                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will get DP -7000.", "The opponent is selecting 1 Digimon that will get DP -5000.");
+                                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will get DP -7000.", "The opponent is selecting 1 Digimon that will get DP -7000.");
 
                                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
                                     IEnumerator SelectPermanentCoroutine(Permanent permanent)
                                     {
-                                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: permanent, changeValue: -5000, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
+                                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: permanent, changeValue: -7000, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
                                     }
                                 }
                             }

@@ -109,7 +109,7 @@ namespace DCGO.CardEffects.BT16
                                 reduceCostTuple: (reduceCost: 1, reduceCostCardCondition: null),
                                 fixedCostTuple: null,
                                 ignoreDigivolutionRequirementFixedCost: -1,
-                                isHand: false,
+                                isHand: true,
                                 activateClass: activateClass,
                                 successProcess: null));
                         }
@@ -200,7 +200,7 @@ namespace DCGO.CardEffects.BT16
                                 reduceCostTuple: (reduceCost: 1, reduceCostCardCondition: null),
                                 fixedCostTuple: null,
                                 ignoreDigivolutionRequirementFixedCost: -1,
-                                isHand: false,
+                                isHand: true,
                                 activateClass: activateClass,
                                 successProcess: null));
                         }

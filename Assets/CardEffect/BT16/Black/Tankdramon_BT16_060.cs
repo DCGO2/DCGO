@@ -283,10 +283,7 @@ namespace DCGO.CardEffects.BT16
                     {
                         if (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PermanentCondition))
                         {
-                            if (CardEffectCommons.IsByEffect(hashtable, null))
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
 

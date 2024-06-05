@@ -18,8 +18,8 @@ namespace DCGO.CardEffects.BT16
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpICardEffect("Return all Tamers, then play a Tamer and [Ukkomon] from your trash.", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -190,7 +190,7 @@ namespace DCGO.CardEffects.BT16
             {
                 
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Attack with this Digimon without suspending", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Return 1 Digi-Egg to delete 1 opponent Digimon with the lowest level and play a level 4 Digimon.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("Effect_BT16_083");
                 cardEffects.Add(activateClass);
@@ -198,7 +198,7 @@ namespace DCGO.CardEffects.BT16
 
                 string EffectDiscription()
                 {
-                    return "[End of Your Turn][Once Per Turn] By returning 1 Digi-Egg card from your trash to the bottom of your Digi-Egg deck, delete 1 of your opponent's Digimon with the lowest level. Then you may play 1 level 4 or lower Digimon card from your hand to the breeding area without paying the cost.";
+                    return "[End of Your Turn] [Once Per Turn] By returning 1 Digi-Egg card from your trash to the bottom of your Digi-Egg deck, delete 1 of your opponent's Digimon with the lowest level. Then you may play 1 level 4 or lower Digimon card from your hand to the breeding area without paying the cost.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -226,32 +226,24 @@ namespace DCGO.CardEffects.BT16
                     return false;
                 }
 
-                bool CanSelectCardCondition(CardSource card)
+                bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if(card.IsDigiEgg)
+                    if(cardSource.IsDigiEgg)
                     {
                         return true;
                     }
                     return false;
                 }
 
-                bool CanSelectLevel4InHand(CardSource card)
+                bool CanSelectLevel4InHand(CardSource cardSource)
                 {
-                    if (card.IsDigimon)
+                    if (cardSource.IsDigimon)
                     {
-                        if(card.HasLevel)
+                        if(cardSource.HasLevel)
                         {
-                            if(card.Level <= 4)
+                            if(cardSource.Level <= 4)
                             {
-                                if (CardEffectCommons.CanPlayAsNewPermanent(
-                                    cardSource: card,
-                                    payCost: false,
-                                    cardEffect: activateClass,
-                                    isBreedingArea: true))
-                                {
-                                    return true;
-                                }
-                                
+                                return true;
                             }
                         }
                     }
@@ -317,24 +309,15 @@ namespace DCGO.CardEffects.BT16
                                     maxCount: maxCount,
                                     canNoSelect: true,
                                     canEndNotMax: false,
-                                    selectPermanentCoroutine: SelectPermanentCoroutine,
+                                    selectPermanentCoroutine: null,
                                     afterSelectPermanentCoroutine: null,
-                                    mode: SelectPermanentEffect.Mode.Custom,
+                                    mode: SelectPermanentEffect.Mode.Destroy,
                                     cardEffect: activateClass);
 
                                 selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to delete.", "The opponent is selecting 1 Digimon to delete.");
 
                                 yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                                IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                                {
-                                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: new List<Permanent>() { permanent }, activateClass: activateClass, successProcess: permanents => SuccessProcess(), failureProcess: null));
-
-                                    IEnumerator SuccessProcess()
-                                    {
-                                        yield return null;
-                                    }
-                                }
                             }
                         }
                     }
@@ -349,7 +332,7 @@ namespace DCGO.CardEffects.BT16
 
                         selectHandEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectCardCondition,
+                            canTargetCondition: CanSelectLevel4InHand,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,
@@ -383,7 +366,6 @@ namespace DCGO.CardEffects.BT16
                             isBreedingArea: true));
                     }
 
-                    yield return null;
                 }
                 
             }

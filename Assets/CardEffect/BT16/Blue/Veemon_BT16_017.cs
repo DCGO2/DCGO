@@ -31,8 +31,7 @@ namespace DCGO.CardEffects.BT16
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Memory +1", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false,
-                    EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -44,6 +43,7 @@ namespace DCGO.CardEffects.BT16
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)
                            && permanent != card.PermanentOfThisCard()
+                           && permanent.IsDigimon
                            && (permanent.TopCard.CardColors.Contains(CardColor.Green)
                                || permanent.TopCard.ContainsTraits("Free"));
                 }
