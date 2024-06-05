@@ -41,7 +41,8 @@ public partial class CardEffectFactory
         T changeValue,
         bool isInheritedEffect,
         CardSource card,
-        Func<bool> condition)
+        Func<bool> condition,
+        string hashstring = null)
     {
         bool PermanentCondition(Permanent permanent)
         {
@@ -53,7 +54,8 @@ public partial class CardEffectFactory
             changeValue: changeValue,
             isInheritedEffect: isInheritedEffect,
             card: card,
-            condition: condition
+            condition: condition,
+            hashstring: hashstring
         );
     }
 
@@ -62,7 +64,8 @@ public partial class CardEffectFactory
         T changeValue,
         bool isInheritedEffect,
         CardSource card,
-        Func<bool> condition)
+        Func<bool> condition,
+        string hashstring = null)
     {
         bool isInt = typeof(T) == typeof(int);
         bool isIntFunc = typeof(T) == typeof(Func<int>);
@@ -79,6 +82,11 @@ public partial class CardEffectFactory
         ChangeSAttackClass changeSAttackClass = new ChangeSAttackClass();
         changeSAttackClass.SetUpICardEffect("", CanUseCondition, card);
         changeSAttackClass.SetUpChangeSAttackClass(changeSAttackFunc: ChangeSAttack, permanentCondition: PermanentCondition, isUpDown: _isUpDown);
+
+        if (hashstring != null)
+        {
+            changeSAttackClass.SetHashString(hashstring);
+        }
 
         if (isInheritedEffect)
         {

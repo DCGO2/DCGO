@@ -86,6 +86,7 @@ public class Lampmon_BT12_044 : CEntity_Effect
             }
         }
 
+        /*
         if (timing == EffectTiming.None)
         {
             int count()
@@ -128,11 +129,10 @@ public class Lampmon_BT12_044 : CEntity_Effect
 
             cardEffects.Add(CardEffectFactory.ChangeSAttackStaticEffect<Func<int>>(PermanentCondition, changeValue: () => 1 * count(), isInheritedEffect: false, card: card, condition: Condition));
         }
-
-        /*
-        if (timing == EffectTiming.AfterEffectsActivate || timing == EffectTiming.OnStartTurn || timing == EffectTiming.OnEnterFieldAnyone || timing == EffectTiming.OnUseOption)
+        */
+        
+        if (timing == EffectTiming.AfterEffectsActivate || timing == EffectTiming.OnStartTurn || timing == EffectTiming.OnEnterFieldAnyone || timing == EffectTiming.OnUseOption || timing == EffectTiming.OptionSkill)
         {
-
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Gain Security Attack", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
@@ -172,33 +172,45 @@ public class Lampmon_BT12_044 : CEntity_Effect
 
             IEnumerator ActivateCoroutine(Hashtable hashtable)
             {
-                if (card.PermanentOfThisCard().Strike < count())
+                List<ICardEffect> SecFromLamp = card.PermanentOfThisCard().EffectList(EffectTiming.None).Where(x => x.HashString == "SecAttackFromLampEffect").ToList();
+
+                if(SecFromLamp.Count() == count())
                 {
-                    for (int i = 0; i <= count(); i++)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectFactory.ChangeSAttackStaticEffect(
-                        targetPermanent: card.PermanentOfThisCard(),
-                        changeValue: 1,
-                        effectDuration: EffectDuration.UntilEachTurnEnd,
-                        activateClass: activateClass, activateAnimation: false));
-                    }
+                    //yield break;
                 }
 
-                if(card.PermanentOfThisCard().Strike > count())
+                if(count() > SecFromLamp.Count())
                 {
-                    for(int i= 0; i <= count();i++)
+                    int timesToRunLoop = count() - SecFromLamp.Count();
+
+                    for (int i = 0; i < timesToRunLoop; i++)
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonSAttack(
                         targetPermanent: card.PermanentOfThisCard(),
-                        changeValue: -1,
+                        changeValue: 1,
                         effectDuration: EffectDuration.UntilEachTurnEnd,
-                        activateClass: activateClass, activateAnimation: false));
+                        activateClass: activateClass,
+                        activateAnimation: false,
+                        hashstring: "SecAttackFromLampEffect"));
                     }
                 }
 
+                /*
+                for (int i = 0; i < count(); i++)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonSAttack(
+                    targetPermanent: card.PermanentOfThisCard(),
+                    changeValue: 1,
+                    effectDuration: EffectDuration.UntilEachTurnEnd,
+                    activateClass: activateClass, 
+                    activateAnimation: false, 
+                    hashstring: "SecAttackFromLampEffect"));
+                }
+                */
+
             }
         }
-        */
+        
         return cardEffects;
     }
 }
