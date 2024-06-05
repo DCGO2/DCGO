@@ -123,8 +123,11 @@ namespace DCGO.CardEffects.BT16
 
                     IEnumerator SuccessProcess()
                     {
-                        if(CardEffectCommons.IsExistOnBattleArea(card))
+                        bool attemptedToDeletedUnsuspended = false;
+
+                        if (CardEffectCommons.IsExistOnBattleArea(card))
                         {
+
                             if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentUnsuspendedDigimon))
                             {
                                 int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectOpponentUnsuspendedDigimon));
@@ -157,9 +160,11 @@ namespace DCGO.CardEffects.BT16
 
                                     yield return null;
                                 }
-                                
-                                
+
+
                                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: deleteTargetPermanents, activateClass: activateClass, successProcess: null, failureProcess: FailureProcess));
+
+                                attemptedToDeletedUnsuspended = true;
 
                                 IEnumerator FailureProcess()
                                 {
@@ -195,16 +200,52 @@ namespace DCGO.CardEffects.BT16
                                                     deleteTargetPermanents.Add(permanent);
                                                 }
 
-                                                yield return null;
+                                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: deleteTargetPermanents, activateClass: activateClass, successProcess: null, failureProcess: null));
                                             }
-
-
-                                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: deleteTargetPermanents, activateClass: activateClass, successProcess: null, failureProcess: null));
                                         }
                                     }
                                 }
                             }
+
+                            if (!CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentUnsuspendedDigimon) && CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentTamer) && attemptedToDeletedUnsuspended == false)
+                            {
+
+                                int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectOpponentTamer));
+
+                                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                                selectPermanentEffect.SetUp(
+                                    selectPlayer: card.Owner,
+                                    canTargetCondition: CanSelectOpponentTamer,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    maxCount: maxCount,
+                                    canNoSelect: false,
+                                    canEndNotMax: false,
+                                    selectPermanentCoroutine: null,
+                                    afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
+                                    mode: SelectPermanentEffect.Mode.Custom,
+                                    cardEffect: activateClass);
+
+                                selectPermanentEffect.SetUpCustomMessage("Select 1 Tamer to delete.", "The opponent is selecting 1 Tamer to delete.");
+
+                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                                IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
+                                {
+                                    foreach (Permanent permanent in permanents)
+                                    {
+                                        deleteTargetPermanents.Add(permanent);
+                                    }
+
+                                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: deleteTargetPermanents, activateClass: activateClass, successProcess: null, failureProcess: null));
+                                }
+
+                            }
                         }
+
+                        
+                        
                     }
 
                     

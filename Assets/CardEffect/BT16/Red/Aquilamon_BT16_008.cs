@@ -101,7 +101,7 @@ namespace DCGO.CardEffects.BT16
             #endregion
 
             #region Inherit
-            if (timing == EffectTiming.OnUseAttack)
+            if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Suspend 1 of your opponent's Digimon.", CanUseCondition, card);

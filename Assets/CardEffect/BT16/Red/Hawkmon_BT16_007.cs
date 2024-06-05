@@ -68,7 +68,7 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PermanentCondition))
+                        if (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PermanentCondition) || CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, PermanentCondition))
                         {
                             if (CardEffectCommons.IsOwnerTurn(card))
                             {
@@ -101,10 +101,10 @@ namespace DCGO.CardEffects.BT16
             #endregion
             
             #region inherited effect
-            if (timing == EffectTiming.OnUseAttack)
+            if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Suspend 1", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Suspend 1 of your opponent's Digimon", CanUseCondition, card);
                 activateClass.SetIsInheritedEffect(true);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);

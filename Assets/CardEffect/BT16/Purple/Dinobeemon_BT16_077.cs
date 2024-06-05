@@ -114,7 +114,7 @@ namespace DCGO.CardEffects.BT16
 
             #region Partition & Partition Inherit
 
-            if(timing == EffectTiming.WhenPermanentWouldBeDeleted)
+            if(timing == EffectTiming.WhenRemoveField)
             {
 
                 bool CanSelectFirstSource(CardSource cardSource)
@@ -139,7 +139,7 @@ namespace DCGO.CardEffects.BT16
             
             }
 
-            if (timing == EffectTiming.WhenPermanentWouldBeDeleted)
+            if (timing == EffectTiming.WhenRemoveField)
             {
 
                 bool CanSelectFirstSource(CardSource cardSource)

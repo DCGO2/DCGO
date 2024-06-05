@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.BT16
 {
     public class InvincibleDragonInsectFusion_BT16_092 : CEntity_Effect
     {

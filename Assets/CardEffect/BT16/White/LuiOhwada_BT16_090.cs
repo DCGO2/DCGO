@@ -40,10 +40,7 @@ namespace DCGO.CardEffects.BT16
                     {
                         if (permanent.TopCard.CardNames.Contains("Ukkomon"))
                         {
-                            if (!permanent.IsToken)
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
 
@@ -59,7 +56,6 @@ namespace DCGO.CardEffects.BT16
                             return true;
                         }
                     }
-                    
 
                     return false;
                 }
@@ -68,14 +64,7 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (cardSource.CardNames.Contains("BigUkkomon"))
                     {
-                        if (CardEffectCommons.CanPlayAsNewPermanent(
-                            cardSource: card,
-                            payCost: false,
-                            cardEffect: activateClass,
-                            isBreedingArea: true))
-                        {
-                            return true;
-                        }
+                        return true;
                     }
                     return false;
                 }
@@ -93,7 +82,13 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        return true;
+                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermanentCondition) && card.Owner.GetBreedingAreaPermanents().Count(CanSelectBreedingAreaDigimon) >= 1)
+                        {
+                            if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
+                            {
+                                return true;
+                            }
+                        }
                     }
                     return false;
                 }
@@ -132,113 +127,113 @@ namespace DCGO.CardEffects.BT16
                             {
                                 ukkomonDeleted = true;
 
-                                yield return null;
-                            }
-                        }
-                    }
+                                if (card.Owner.GetBreedingAreaPermanents().Count(CanSelectBreedingAreaDigimon) >= 1)
+                                {
 
-                    if (card.Owner.GetBreedingAreaPermanents().Count(CanSelectBreedingAreaDigimon) >= 1)
-                    {
-
-                        List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
+                                    List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
                         {
                             new SelectionElement<bool>(message: $"Yes", value : true, spriteIndex: 0),
                             new SelectionElement<bool>(message: $"No", value : false, spriteIndex: 1),
                         };
 
-                        string selectPlayerMessage = "Will you trash breeding area Digimon to play [BigUkkomon] from your hand?";
-                        string notSelectPlayerMessage = "The opponent is choosing whether or not to trash cards.";
+                                    string selectPlayerMessage = "Will you trash breeding area Digimon to play [BigUkkomon] from your hand?";
+                                    string notSelectPlayerMessage = "The opponent is choosing whether or not to trash cards.";
 
-                        GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+                                    GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
 
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+                                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                        bool trashBreedingAreaDigimon = GManager.instance.userSelectionManager.SelectedBoolValue; 
+                                    bool trashBreedingAreaDigimon = GManager.instance.userSelectionManager.SelectedBoolValue;
 
-                        if (trashBreedingAreaDigimon)
-                        {
-                            List<Permanent> DigitamaPermanents = card.Owner.GetBreedingAreaPermanents()
-                                            .Filter(permanent => permanent.IsDigimon)
-                                            .Filter(permanent => !permanent.TopCard.CanNotBeAffected(activateClass))
-                                            .Clone();
+                                    if (trashBreedingAreaDigimon)
+                                    {
+                                        List<Permanent> DigitamaPermanents = card.Owner.GetBreedingAreaPermanents()
+                                                        .Filter(permanent => permanent.IsDigimon)
+                                                        .Clone();
 
-                            if (DigitamaPermanents.Count >= 1)
-                            {
-                                foreach (Permanent permanent in DigitamaPermanents)
-                                {
-                                    yield return ContinuousController.instance.StartCoroutine(permanent.DiscardEvoRoots());
+                                        if (DigitamaPermanents.Count >= 1)
+                                        {
+                                            foreach (Permanent permanent in DigitamaPermanents)
+                                            {
+                                                yield return ContinuousController.instance.StartCoroutine(permanent.DiscardEvoRoots());
 
-                                    CardSource cardSource = permanent.TopCard;
+                                                CardSource cardSource = permanent.TopCard;
 
-                                    ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(new List<CardSource>() { cardSource }, "Cards put to trash", true, true));
+                                                ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(new List<CardSource>() { cardSource }, "Cards put to trash", true, true));
 
-                                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveField(permanent));
-                                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddTrashCard(cardSource));
-                                    breedingAreaPermanentDeleted = true;
+
+                                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveField(permanent));
+                                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddTrashCard(cardSource));
+                                                breedingAreaPermanentDeleted = true;
+                                            }
+                                        }
+                                    }
+
+                                    if (ukkomonDeleted && breedingAreaPermanentDeleted)
+                                    {
+                                        if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
+                                        {
+                                            List<CardSource> selectedCards = new List<CardSource>();
+
+                                            int maxCount = 1;
+
+                                            SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                                            selectHandEffect.SetUp(
+                                                selectPlayer: card.Owner,
+                                                canTargetCondition: CanSelectCardCondition,
+                                                canTargetCondition_ByPreSelecetedList: null,
+                                                canEndSelectCondition: null,
+                                                maxCount: maxCount,
+                                                canNoSelect: true,
+                                                canEndNotMax: false,
+                                                isShowOpponent: true,
+                                                selectCardCoroutine: SelectCardCoroutine,
+                                                afterSelectCardCoroutine: null,
+                                                mode: SelectHandEffect.Mode.Custom,
+                                                cardEffect: activateClass);
+
+                                            selectHandEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
+                                            selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
+
+                                            yield return StartCoroutine(selectHandEffect.Activate());
+
+                                            IEnumerator SelectCardCoroutine(CardSource cardSource)
+                                            {
+                                                selectedCards.Add(cardSource);
+
+                                                yield return null;
+                                            }
+
+
+                                            PlayCardClass playCard = new PlayCardClass(
+                                                                cardSources: new List<CardSource>() { selectedCards[0] },
+                                                                hashtable: CardEffectCommons.CardEffectHashtable(activateClass),
+                                                                payCost: true,
+                                                                targetPermanent: null,
+                                                                isTapped: false,
+                                                                root: SelectCardEffect.Root.Hand,
+                                                                activateETB: true
+                                                                );
+
+
+                                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
+                                                cardSources: playCard.CardSources,
+                                                activateClass: activateClass,
+                                                payCost: true,
+                                                isTapped: false,
+                                                root: SelectCardEffect.Root.Hand,
+                                                activateETB: true,
+                                                isBreedingArea: true,
+                                                fixedCost: 3));
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
 
-                    if(ukkomonDeleted && breedingAreaPermanentDeleted)
-                    {
-                        if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
-                        {
-                            List<CardSource> selectedCards = new List<CardSource>();
-
-                            int maxCount = 1;
-
-                            SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                            selectHandEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: CanSelectCardCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: maxCount,
-                                canNoSelect: true,
-                                canEndNotMax: false,
-                                isShowOpponent: true,
-                                selectCardCoroutine: SelectCardCoroutine,
-                                afterSelectCardCoroutine: null,
-                                mode: SelectHandEffect.Mode.Custom,
-                                cardEffect: activateClass);
-
-                            selectHandEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
-                            selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
-
-                            yield return StartCoroutine(selectHandEffect.Activate());
-
-                            IEnumerator SelectCardCoroutine(CardSource cardSource)
-                            {
-                                selectedCards.Add(cardSource);
-
-                                yield return null;
-                            }
-
-
-                            PlayCardClass playCard = new PlayCardClass(
-                                                cardSources: new List<CardSource>() { selectedCards[0] },
-                                                hashtable: CardEffectCommons.CardEffectHashtable(activateClass),
-                                                payCost: true,
-                                                targetPermanent: null,
-                                                isTapped: false,
-                                                root: SelectCardEffect.Root.Hand,
-                                                activateETB: true
-                                                );
-
-
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                                cardSources: playCard.CardSources,
-                                activateClass: activateClass,
-                                payCost: true,
-                                isTapped: false,
-                                root: SelectCardEffect.Root.Hand,
-                                activateETB: true,
-                                isBreedingArea: true,
-                                fixedCost: 3));
-                        }
-                    }
+                   
                 }
             }
             #endregion

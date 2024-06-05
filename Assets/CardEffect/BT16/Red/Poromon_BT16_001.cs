@@ -10,7 +10,7 @@ namespace DCGO.CardEffects.BT16
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Inherit
-            if (timing == EffectTiming.OnUseAttack)
+            if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete opponent's Digimon with 2000 DP or less.", CanUseCondition, card);
@@ -42,7 +42,7 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card))
+                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                     {
                         if (permanent.DP <= 2000)
                         {
