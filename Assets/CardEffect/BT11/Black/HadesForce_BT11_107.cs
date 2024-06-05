@@ -294,7 +294,8 @@ public class HadesForce_BT11_107 : CEntity_Effect
 
             bool CanSelectPermanentCondition(Permanent permanent)
             {
-                return CardEffectCommons.IsMaxCost(permanent, card.Owner.Enemy, true);
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) && 
+                           CardEffectCommons.IsMaxCost(permanent, card.Owner.Enemy, true);
             }
 
             bool CanUseCondition(Hashtable hashtable)
