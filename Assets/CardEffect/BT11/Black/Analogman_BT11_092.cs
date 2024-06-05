@@ -131,12 +131,9 @@ public class Analogman_BT11_092 : CEntity_Effect
                 {
                     if (permanent.TopCard.CardTraits.Contains("Machine"))
                     {
-                        if (permanent.TopCard.Level == 6)
+                        if (permanent.TopCard.HasLevel && permanent.TopCard.Level == 6)
                         {
-                            if (permanent.TopCard.HasLevel)
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
                 }
@@ -146,10 +143,6 @@ public class Analogman_BT11_092 : CEntity_Effect
 
             bool PermanentCondition(Permanent permanent)
             {
-                if (permanent.IsDigimon || permanent.IsTamer)
-                {
-                    return false;
-                }
                 return CardEffectCommons.IsOpponentPermanent(permanent, card);
             }
 
