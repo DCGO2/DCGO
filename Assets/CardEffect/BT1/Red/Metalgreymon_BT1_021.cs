@@ -21,7 +21,7 @@ public class Metalgreymon_BT1_021 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Attacking] Gain 3 memory. At end of turnÅClose 3 memory.";
+                return "[When Attacking] Gain 3 memory. At end of turnÅ lose 3 memory.";
             }
 
             bool CanUseCondition(Hashtable hashtable)
