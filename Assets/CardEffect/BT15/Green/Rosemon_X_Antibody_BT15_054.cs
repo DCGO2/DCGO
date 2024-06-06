@@ -150,6 +150,7 @@ public class Rosemon_X_Antibody_BT15_054 : CEntity_Effect
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Suspend 1 of your Opponent's Digimon", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+            activateClass.SetHashString("Suspend1WhenPlayed_BT15_054");
             cardEffects.Add(activateClass);
 
             string EffectDiscription()
@@ -214,6 +215,7 @@ public class Rosemon_X_Antibody_BT15_054 : CEntity_Effect
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Suspend 1 of your Opponent's Digimon", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+            activateClass.SetHashString("Suspend1FromBreeding_BT15_054");
             cardEffects.Add(activateClass);
 
             string EffectDiscription()

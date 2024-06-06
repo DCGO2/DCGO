@@ -26,7 +26,14 @@ public class Cannondramon_BT15_018 : CEntity_Effect
 
             bool CanSelectPermanentCondition(Permanent permanent)
             {
-                return CardEffectCommons.IsMinDP(permanent, card.Owner.Enemy);
+                if (CardEffectCommons.IsMinDP(permanent, card.Owner.Enemy))
+                {
+                    if(permanent.IsDigimon)
+                    {
+                        return true;
+                    }
+                }
+                return false;
             }
 
             bool CanUseCondition(Hashtable hashtable)
@@ -96,7 +103,14 @@ public class Cannondramon_BT15_018 : CEntity_Effect
 
             bool CanSelectPermanentCondition(Permanent permanent)
             {
-                return CardEffectCommons.IsMaxCost(permanent, card.Owner.Enemy, true);
+                if(CardEffectCommons.IsMaxCost(permanent, card.Owner.Enemy, true))
+                {
+                    if (permanent.IsDigimon)
+                    {
+                        return true;
+                    }
+                }
+                return false;
             }
 
             bool CanUseCondition(Hashtable hashtable)

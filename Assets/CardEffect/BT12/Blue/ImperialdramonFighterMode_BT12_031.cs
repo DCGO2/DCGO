@@ -58,7 +58,8 @@ public class ImperialdramonFighterMode_BT12_031 : CEntity_Effect
                 {
                     if (cardSource.Owner == card.Owner)
                     {
-                        if (cardSource.CardNames.Contains("Imperialdramon: Dragon Mode") || cardSource.CardNames.Contains("Imperialdramon:DragonMode"))
+                        if (cardSource.CardNames.Contains("Imperialdramon: Dragon Mode") || cardSource.CardNames.Contains("Imperialdramon:DragonMode") || 
+                            cardSource.CardNames.Contains("Imperialdramon Dragon Mode") || cardSource.CardNames.Contains("ImperialdramonDragonMode"))
                         {
                             return true;
                         }
