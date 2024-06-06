@@ -519,18 +519,6 @@ public class WaruMonzaemon_BT15_065 : CEntity_Effect
         #region Your Turn - When you have a [Monzaemon] or [Numemon] in play, this Digimon gains Security Atk +1.
         if (timing == EffectTiming.None)
         {
-            bool PermanentCondition(Permanent permanent)
-            {
-                if(permanent.IsDigimon)
-                {
-                    if (permanent.TopCard != card)
-                    {
-                        return permanent.TopCard.ContainsCardName("Monzaemon") || permanent.TopCard.ContainsCardName("Numemon");
-                    }
-                }
-
-                return false;
-            }
 
             bool Condition()
             {
@@ -538,7 +526,7 @@ public class WaruMonzaemon_BT15_065 : CEntity_Effect
                 {
                     if (CardEffectCommons.IsOwnerTurn(card))
                     {
-                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, PermanentCondition))
+                        if (card.PermanentOfThisCard().TopCard.ContainsCardName("Monzaemon") || card.PermanentOfThisCard().TopCard.ContainsCardName("Numemomn"))
                         {
                             return true;
                         }

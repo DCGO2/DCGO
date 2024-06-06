@@ -12,6 +12,29 @@ public class CorializeBlust_BT7_100 : CEntity_Effect
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+        if (timing == EffectTiming.SecuritySkill)
+        {
+            ActivateClass activateClass = new ActivateClass();
+            activateClass.SetUpICardEffect($"Add this card to hand", CanUseCondition, card);
+            activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+            activateClass.SetIsSecurityEffect(true);
+            cardEffects.Add(activateClass);
+
+            string EffectDiscription()
+            {
+                return "[Security] Add this card to its owner's hand.";
+            }
+            bool CanUseCondition(Hashtable hashtable)
+            {
+                return CardEffectCommons.CanTriggerSecurityEffect(hashtable, card);
+            }
+
+            IEnumerator ActivateCoroutine(Hashtable _hashtable)
+            {
+                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.AddThisCardToHand(card, activateClass));
+            }
+        }
+
         if (timing == EffectTiming.None)
         {
             int count()
@@ -33,7 +56,7 @@ public class CorializeBlust_BT7_100 : CEntity_Effect
             {
                 if (card.Owner.HandCards.Contains(card))
                 {
-                    if (count() >= 1)
+                    if (count() >= 0)
                     {
                         changeCostClass.SetEffectName($"Play Cost is {count()}");
 

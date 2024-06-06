@@ -15,10 +15,10 @@ public class Pulsemon_BT7_032 : CEntity_Effect
         if (timing == EffectTiming.OnAllyAttack)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Memory +1", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Memory +2", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
             activateClass.SetIsInheritedEffect(true);
-            activateClass.SetHashString("Memory+1_BT7_032");
+            activateClass.SetHashString("Memory+2_BT7_032");
             cardEffects.Add(activateClass);
 
             string EffectDiscription()
@@ -46,7 +46,7 @@ public class Pulsemon_BT7_032 : CEntity_Effect
 
             IEnumerator ActivateCoroutine(Hashtable _hashtable)
             {
-                yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
+                yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(2, activateClass));
             }
         }
 

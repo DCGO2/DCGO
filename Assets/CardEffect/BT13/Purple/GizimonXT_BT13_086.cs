@@ -16,7 +16,7 @@ public class GizimonXT_BT13_086 : CEntity_Effect
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Delete your 1 level 4 Digimon to get Play Cost -6", CanUseCondition, card);
-            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
             activateClass.SetHashString("PlayCost-6_BT13_086");
             cardEffects.Add(activateClass);
 
