@@ -88,16 +88,19 @@ public class Revelation_of_Light_BT15_092 : CEntity_Effect
             {
                 if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
                 {
-                    if (permanent.IsTamer)
+                    if (card.Owner.CanAddSecurity(activateClass))
                     {
-                        if (permanent.TopCard.ContainsCardName("Kari Kamiya"))
+                        if (permanent.IsTamer)
                         {
-                            return true;
-                        }
+                            if (permanent.TopCard.ContainsCardName("Kari Kamiya"))
+                            {
+                                return true;
+                            }
 
-                        if (permanent.TopCard.ContainsCardName("KariKamiya"))
-                        {
-                            return true;
+                            if (permanent.TopCard.ContainsCardName("KariKamiya"))
+                            {
+                                return true;
+                            }
                         }
                     }
                 }
@@ -164,6 +167,7 @@ public class Revelation_of_Light_BT15_092 : CEntity_Effect
                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(card.Owner));
 
                     yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(card.Owner).AddSecurity());
+
                 }
             }
         }

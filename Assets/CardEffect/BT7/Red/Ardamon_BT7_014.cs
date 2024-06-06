@@ -118,25 +118,24 @@ public class Ardamon_BT7_014 : CEntity_Effect
                     {
                         if (card.PermanentOfThisCard().TopCard.ContainsTraits("Hybrid") || card.PermanentOfThisCard().TopCard.ContainsTraits("TenWarriors") || card.PermanentOfThisCard().TopCard.ContainsTraits("Ten Warriors"))
                         {
-                            if (card != card.PermanentOfThisCard().TopCard)
+
+                            if (cardEffect != null)
                             {
-                                if (cardEffect != null)
+                                if (cardEffect.EffectSourceCard != null)
                                 {
-                                    if (cardEffect.EffectSourceCard != null)
+                                    if (cardEffect.EffectSourceCard.IsOption)
                                     {
-                                        if (cardEffect.EffectSourceCard.IsOption)
+                                        if (cardEffect.IsSecurityEffect)
                                         {
-                                            if (cardEffect.IsSecurityEffect)
+                                            if (GManager.instance.attackProcess.AttackingPermanent == card.PermanentOfThisCard())
                                             {
-                                                if (GManager.instance.attackProcess.AttackingPermanent == card.PermanentOfThisCard())
-                                                {
-                                                    return true;
-                                                }
+                                                return true;
                                             }
                                         }
                                     }
                                 }
                             }
+                            
                         }
                     }
                 }

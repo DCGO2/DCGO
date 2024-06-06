@@ -40,25 +40,20 @@ public class Ponechessmon_BT13_035 : CEntity_Effect
             {
                 if (cardSource != null)
                 {
-                    if (cardSource.CardNames.Contains("Chessmon"))
+                    if (cardSource.IsDigimon)
                     {
-                        if (cardSource.IsDigimon)
+                        if (cardSource.Level <= maxLevel())
                         {
-                            if (cardSource.Level <= maxLevel())
+                            if (cardSource.ContainsCardName("Chessmon"))
                             {
-                                if (cardSource.HasLevel)
+                                if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                                 {
-                                    if (cardSource.Owner == card.Owner)
-                                    {
-                                        if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
-                                        {
-                                            return true;
-                                        }
-                                    }
+                                    return true;
                                 }
                             }
+                            
                         }
-                    }
+                    } 
                 }
 
                 return false;
