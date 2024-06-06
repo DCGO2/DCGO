@@ -19,6 +19,7 @@ public class Salamon_BT15_034 : CEntity_Effect
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Give an opponent's Digimon card -2000 DP.", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+            activateClass.SetHashString("-2000DP_BT15_034");
             activateClass.SetIsInheritedEffect(true);
             cardEffects.Add(activateClass);
 
@@ -38,12 +39,10 @@ public class Salamon_BT15_034 : CEntity_Effect
 
             bool CanUseCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
+
+                if (CardEffectCommons.CanTriggerWhenLoseSecurity(hashtable, player => player == card.Owner))
                 {
-                    if (CardEffectCommons.CanTriggerWhenLoseSecurity(hashtable, player => player == card.Owner))
-                    {
-                        return true;
-                    }
+                    return true;
                 }
                 return false;
             }

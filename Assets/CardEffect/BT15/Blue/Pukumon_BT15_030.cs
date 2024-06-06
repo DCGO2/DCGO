@@ -68,8 +68,6 @@ public class Pukumon_BT15_030 : CEntity_Effect
 
             bool CanActivateCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
                         if (CardEffectCommons.CanTriggerOnPlay(hashtable, card))
@@ -77,8 +75,6 @@ public class Pukumon_BT15_030 : CEntity_Effect
                             return true;
                         }
                     }
-                }
-
 
                 return false;
             }
