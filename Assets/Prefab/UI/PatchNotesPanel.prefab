@@ -722,14 +722,22 @@ MonoBehaviour:
   _anim: {fileID: 6458252331221896218}
   _verText: {fileID: 6458252331833269909}
   _localizeTMPro: {fileID: 6458252332150589230}
-  _text_ENG: "Known Issues:\r\n\t- Mummymon(BT16) Retaliation does not work\r\n\t-
-    Publimon (BT16) When Digivolving effect triggered in raising\r\n\t- See other
-    issues in bug tracking document\r\n\r\nUpdates:\r\n\t- All BT16 cards added\r\n\t-
-    Bug fixes to all BT16 cards\r\n\t- Ability to back out of matchmaking\r\n\t-
-    Fixed issue with On Deletion Inheritables\r\n\t- Fixed issue with When Removed
-    from battle area protection not triggering for being\r\n\t  put in security\r\n\t-
+  _text_ENG: "Known Issues:\r\n\t- When revealing 2 of the same card, sometimes the
+    2nd one will remain white\r\n\t- Card image animations not supported (at this
+    time)\r\n\t- Magnamon (X antibody) (BT16-102) - Does not trigger When Digivolving
+    when being\r\n\t  placed under sources by Jesmon GX.\r\n\t- See other issues
+    in bug tracking document\r\n\r\nUpdates:\r\n\t- All BT16 cards added\r\n\t- Ability
+    to back out of matchmaking\r\n\t- Profanity filter for username and deck name\r\n\t-
     New image loading system\r\n\t\t- Uses webp files\r\n\t\t- Loads all card images
-    as they are needed\r\n\t\t- No need to worry about card images to run"
+    as they are needed\r\n\t\t- No need to worry about card images to run game\r\n\r\nCard
+    Updates:\r\n\t- PawnChessmon (BT13)\r\n\t- Gizmon XT (BT13)\r\n\t- Cannondramon
+    (BT15)\r\n\t- Garurumon (BT15)\r\n\t- Pukumon (BT15)\r\n\t- Salamon (BT15)\r\n\t-
+    Magnadramon (BT15)\r\n\t- WaruMonzaemon (BT15)\r\n\t- Revelation of Light (BT15)\r\n\t-
+    Aldamon (BT7)\r\n\t- Pulsemon (BT7)\r\n\t- Qualialise Blaze (BT7)\r\n\t- Ai &
+    Mako (EX2)\r\n\t- Rosemon (X Antibody) (BT15)\r\n\t- WereGarurumon (BT1-040)\r\n\t-
+    Shoutmon X5 (BT10-013)\r\n\t- SkullBaluchimon (BT10-104)\r\n\t- Importal Ruler
+    (BT10-080)\r\n\t- Analogman (BT11-092)\r\n\t- Hades Force (BT11-107)\r\n\t- Imperialdramon
+    Fighter Mode (BT12-031)"
   _text_JPN: 
   _scroll: {fileID: 6458252331812644436}
 --- !u!1 &6458252331574147166
