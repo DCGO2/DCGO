@@ -56,10 +56,14 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (CardEffectCommons.CanTriggerWhenPermanentWouldPlay(hashtable, CardCondition))
                     {
-                        if (CardEffectCommons.IsOwnerTurn(card))
+                        if (card.Owner.HandCards.Count(CardCondition) >= 1)
                         {
-                            return true;
+                            if (CardEffectCommons.IsOwnerTurn(card))
+                            {
+                                return true;
+                            }
                         }
+                        
                     }
 
                     return false;

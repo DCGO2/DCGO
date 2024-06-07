@@ -54,7 +54,9 @@ namespace DCGO.CardEffects.BT16
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     if(CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card))
-                        return CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectOpponentsDigimon);
+                    {
+                        return true;
+                    }
 
                     return false;
                 }
@@ -66,7 +68,7 @@ namespace DCGO.CardEffects.BT16
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if(CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectOpponentsDigimon))
+                    if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectOpponentsDigimon))
                     {
                         Permanent selectedPermanent = null;
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
@@ -103,7 +105,11 @@ namespace DCGO.CardEffects.BT16
                                 condition: null,
                                 effectName: "Your Digimon can't unsuspend"));
                         }
+                    }
 
+
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
                         Permanent suspendedPermanent = null;
                         SelectPermanentEffect selectSuspendEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
@@ -130,7 +136,7 @@ namespace DCGO.CardEffects.BT16
                             yield return null;
                         }
 
-                        if (selectedPermanent != null)
+                        if (suspendedPermanent != null)
                         {
                             yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(
                                 new List<Permanent>() { card.PermanentOfThisCard() },
@@ -138,6 +144,7 @@ namespace DCGO.CardEffects.BT16
                         }
                     }
                 }
+
             }
             #endregion
 

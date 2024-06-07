@@ -20,7 +20,7 @@ namespace DCGO.CardEffects.BT16
                         return true;
                     }
 
-                    if(targetPermanent.TopCard.Level == 4 && targetPermanent.TopCard.ContainsTraits("SoC"))
+                    if(targetPermanent.TopCard.Level == 4 && targetPermanent.TopCard.CardTraits.Contains("SoC"))
                     {
                         return true;
                     }
@@ -139,7 +139,7 @@ namespace DCGO.CardEffects.BT16
 
                 bool SelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.HasPlayCost && cardSource.BasePlayCostFromEntity <= 5)
+                    if (cardSource.HasPlayCost && cardSource.GetCostItself <= 5)
                     {
                         if (cardSource.CardTraits.Contains("X Antibody") || cardSource.CardTraits.Contains("XAntibody"))
                         {

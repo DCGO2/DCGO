@@ -149,7 +149,7 @@ namespace DCGO.CardEffects.BT16
             #endregion
 
             #region When Digivolving
-            if (timing == EffectTiming.OnAllyAttack)
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Suspend all your opponent's digimon", CanUseCondition, card);
