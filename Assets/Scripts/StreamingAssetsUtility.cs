@@ -134,6 +134,7 @@ public class StreamingAssetsUtility
             return null;
         else
         {
+            Debug.Log($"WebRequest Successful: Checking local file - {File.Exists(filePath)}");
             if(!File.Exists(filePath))
                 File.WriteAllBytes(filePath, webReq_CardImage.downloadHandler.data);
 
@@ -144,6 +145,10 @@ public class StreamingAssetsUtility
                 Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
 
                 return sprite;
+            }
+            else
+            {
+                Debug.Log($"Failed to convert: {lError.ToString()}");
             }
 
             return null;
