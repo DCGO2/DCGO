@@ -95,9 +95,11 @@ public class StreamingAssetsUtility
     {
         if (File.Exists(path))
         {
+            Debug.Log($"File Exists Locally: {path}");
             byte[] imageBuff = await ReadFile(path);
+            Debug.Log($"Grabbing image bytes: {imageBuff}");
             Texture2D texture = Texture2DExt.CreateTexture2DFromWebP(imageBuff, lMipmaps: true, lLinear: false, lError: out WebP.Error lError);
-
+            Debug.Log($"Converting WebP to Texture2D: {texture}");
             if (lError == WebP.Error.Success)
             {
                 Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
