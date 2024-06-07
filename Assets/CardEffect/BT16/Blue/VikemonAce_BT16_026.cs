@@ -107,6 +107,8 @@ namespace DCGO.CardEffects.BT16
                             yield return null;
                         }
                     }
+
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotSuspendPlayerEffect(CantSuspendCondition, EffectDuration.UntilOpponentTurnEnd, activateClass, isOnlyActivePhase: false, "Can't Suspend"));
                 }
             }
             #endregion
@@ -186,12 +188,14 @@ namespace DCGO.CardEffects.BT16
                             yield return null;
                         }
                     }
+
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotSuspendPlayerEffect(CantSuspendCondition, EffectDuration.UntilOpponentTurnEnd, activateClass, isOnlyActivePhase: false, "Can't Suspend"));
                 }
             }
             #endregion
 
             #region When Attacking
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete 1 of your opponent's Digimon", CanUseCondition, card);

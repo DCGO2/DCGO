@@ -91,7 +91,7 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        foreach (CardSource cardSource in card.Owner.HandCards)
+                        foreach (CardSource cardSource in card.Owner.TrashCards)
                         {
                             if (CanSelectCardCondition(cardSource))
                             {
@@ -218,7 +218,7 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        foreach (CardSource cardSource in card.Owner.HandCards)
+                        foreach (CardSource cardSource in card.Owner.TrashCards)
                         {
                             if (CanSelectCardCondition(cardSource))
                             {

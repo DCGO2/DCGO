@@ -15,7 +15,7 @@ namespace DCGO.CardEffects.BT16
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.CardNames.Contains("Imperialdramon: Dragon Mode");
+                    return targetPermanent.TopCard.CardNames.Contains("Imperialdramon: Dragon Mode") || targetPermanent.TopCard.CardNames.Contains("Imperialdramon:DragonMode");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(

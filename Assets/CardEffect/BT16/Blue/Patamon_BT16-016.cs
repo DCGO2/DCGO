@@ -50,11 +50,21 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                           && card.Owner.HandCards.Select(cardSource => 
-                               CanSelectCardCondition(cardSource) 
-                               && cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass)
-                               ).FirstOrDefault();
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                    {
+                        foreach (CardSource cardSource in card.Owner.HandCards)
+                        {
+                            if (CanSelectCardCondition(cardSource))
+                            {
+                                if (cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+
+                    return false;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -141,11 +151,21 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                           && card.Owner.HandCards.Select(cardSource => 
-                               CanSelectCardCondition(cardSource) 
-                               && cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass)
-                               ).FirstOrDefault();
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                    {
+                        foreach (CardSource cardSource in card.Owner.HandCards)
+                        {
+                            if (CanSelectCardCondition(cardSource))
+                            {
+                                if (cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+
+                    return false;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

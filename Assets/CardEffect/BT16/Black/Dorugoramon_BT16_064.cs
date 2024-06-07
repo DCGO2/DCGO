@@ -62,7 +62,7 @@ namespace DCGO.CardEffects.BT16
 
                 bool HasTamerWithTrait(CardSource cardSource)
                 {
-                    return cardSource.HasSocTraits;
+                    return cardSource.HasSocTraits && cardSource.IsTamer;
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
