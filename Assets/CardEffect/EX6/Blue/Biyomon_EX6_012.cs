@@ -10,6 +10,7 @@ namespace DCGO.CardEffects.EX6
             List<ICardEffect> cardEffects = new List<ICardEffect>();
             
             #region Static Effect, Inherited Effect
+            
             if (timing == EffectTiming.None)
             {
                 // Blocker Static Effect
@@ -24,6 +25,7 @@ namespace DCGO.CardEffects.EX6
                     card: card,
                     condition: null));
             }
+            
             #endregion
             
             return cardEffects;
