@@ -12,6 +12,10 @@ namespace DCGO.CardEffects.BT16
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            List<PartitionCondition> partitionConditions = new List<PartitionCondition>();
+            partitionConditions.Add(new PartitionCondition(4, CardColor.Purple));
+            partitionConditions.Add(new PartitionCondition(4, CardColor.Red));
+
             #region DNA Digivolution
             if (timing == EffectTiming.None)
             {
@@ -116,52 +120,22 @@ namespace DCGO.CardEffects.BT16
 
             if (timing == EffectTiming.WhenRemoveField)
             {
-
-                bool CanSelectFirstSource(CardSource cardSource)
-                {
-                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardColors.Contains(CardColor.Purple) && cardSource.HasLevel && cardSource.Level == 4) >= 1)
-                    {
-                        return true;
-                    }
-                    return false;
-                }
-
-                bool CanSelectSecondSource(CardSource cardSource)
-                {
-                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardColors.Contains(CardColor.Red) && cardSource.HasLevel && cardSource.Level == 4) >= 1)
-                    {
-                        return true;
-                    }
-                    return false;
-                }
-
-                cardEffects.Add(CardEffectFactory.PartitionSelfEffect(false, card, null, CanSelectFirstSource, CanSelectSecondSource));
-
+                cardEffects.Add(CardEffectFactory.PartitionSelfEffect(
+                    isInheritedEffect: false,
+                    card: card,
+                    condition: null,
+                    cardSourceConditions: partitionConditions)
+                );
             }
 
             if (timing == EffectTiming.WhenRemoveField)
             {
-
-                bool CanSelectFirstSource(CardSource cardSource)
-                {
-                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardColors.Contains(CardColor.Purple) && cardSource.HasLevel && cardSource.Level == 4) >= 1)
-                    {
-                        return true;
-                    }
-                    return false;
-                }
-
-                bool CanSelectSecondSource(CardSource cardSource)
-                {
-                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardColors.Contains(CardColor.Red) && cardSource.HasLevel && cardSource.Level == 4) >= 1)
-                    {
-                        return true;
-                    }
-                    return false;
-                }
-
-                cardEffects.Add(CardEffectFactory.PartitionSelfEffect(true, card, null, CanSelectFirstSource, CanSelectSecondSource));
-
+                cardEffects.Add(CardEffectFactory.PartitionSelfEffect(
+                    isInheritedEffect: true,
+                    card: card,
+                    condition: null,
+                    cardSourceConditions: partitionConditions)
+                );
             }
             #endregion
 
