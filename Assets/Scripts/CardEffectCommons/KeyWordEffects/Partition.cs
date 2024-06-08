@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using UnityEngine;
 
 public partial class CardEffectCommons
 {
@@ -39,9 +40,9 @@ public partial class CardEffectCommons
     #endregion
 
     #region Effect process of [Partition]
-    public static IEnumerator PartitionProcess(ICardEffect activateClass, Permanent permanent, Func<CardSource, bool> CanSelectFirstSourceCondition, Func<CardSource, bool> CanSelectSecondSourceCondition)
+    public static IEnumerator PartitionProcess(ICardEffect activateClass, Permanent permanent, List<CardSource> firstSources, List<CardSource> secondSources)
     {
-        yield return ContinuousController.instance.StartCoroutine(new PartitionClass(permanent).Partition(activateClass, CanSelectFirstSourceCondition, CanSelectSecondSourceCondition));
+        yield return ContinuousController.instance.StartCoroutine(new PartitionClass(permanent).Partition(activateClass, firstSources, secondSources));
     }
     #endregion
 
@@ -56,7 +57,7 @@ public partial class CardEffectCommons
         Permanent _permanent = null;
 
 
-        public IEnumerator Partition(ICardEffect activateClass, Func<CardSource, bool> CanSelectFristSourceCondition, Func<CardSource, bool> CanSelectSecondSourceCondition)
+        public IEnumerator Partition(ICardEffect activateClass, List<CardSource> firstSources, List<CardSource> secondSources)
         {
             if (_permanent != null)
             {
@@ -65,54 +66,69 @@ public partial class CardEffectCommons
 
                 List<CardSource> selectedCards = new List<CardSource>();
 
+                bool CanSelectCondition(CardSource source)
+                {
+                    return true;
+                }
+
                 if (_permanent.TopCard != null)
                 {
-                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-                    selectCardEffect.SetUp(
-                            canTargetCondition: CanSelectFristSourceCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            canNoSelect: () => false,
-                            selectCardCoroutine: SelectCardCoroutine,
-                            afterSelectCardCoroutine: null,
-                            message: "Select card to play",
-                            maxCount: 1,
-                            canEndNotMax: false,
-                            isShowOpponent: false,
-                            mode: SelectCardEffect.Mode.Custom,
-                            root: SelectCardEffect.Root.Custom,
-                            customRootCardList: _permanent.DigivolutionCards.Where(CanSelectFristSourceCondition).ToList(),
-                            canLookReverseCard: true,
-                            selectPlayer: topCard.Owner,
-                            cardEffect: activateClass);
+                    if (firstSources.Count > 1)
+                    {
+                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+                        selectCardEffect.SetUp(
+                                canTargetCondition: CanSelectCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                canNoSelect: () => false,
+                                selectCardCoroutine: SelectCardCoroutine,
+                                afterSelectCardCoroutine: null,
+                                message: "Select card to play",
+                                maxCount: 1,
+                                canEndNotMax: false,
+                                isShowOpponent: false,
+                                mode: SelectCardEffect.Mode.Custom,
+                                root: SelectCardEffect.Root.Custom,
+                                customRootCardList: firstSources,
+                                canLookReverseCard: true,
+                                selectPlayer: topCard.Owner,
+                                cardEffect: activateClass);
 
-                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                    }
+                    else
+                        selectedCards.AddRange(firstSources);
 
-                    SelectCardEffect selectSecondCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-                    selectSecondCardEffect.SetUp(
-                            canTargetCondition: CanSelectSecondSourceCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            canNoSelect: () => false,
-                            selectCardCoroutine: SelectCardCoroutine,
-                            afterSelectCardCoroutine: null,
-                            message: "Select card to play",
-                            maxCount: 1,
-                            canEndNotMax: false,
-                            isShowOpponent: false,
-                            mode: SelectCardEffect.Mode.Custom,
-                            root: SelectCardEffect.Root.Custom,
-                            customRootCardList: _permanent.DigivolutionCards.Where(CanSelectSecondSourceCondition).ToList(),
-                            canLookReverseCard: true,
-                            selectPlayer: topCard.Owner,
-                            cardEffect: activateClass);
+                    if(secondSources.Count > 1)
+                    { 
+                        SelectCardEffect selectSecondCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+                        selectSecondCardEffect.SetUp(
+                                canTargetCondition: CanSelectCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                canNoSelect: () => false,
+                                selectCardCoroutine: SelectCardCoroutine,
+                                afterSelectCardCoroutine: null,
+                                message: "Select card to play",
+                                maxCount: 1,
+                                canEndNotMax: false,
+                                isShowOpponent: false,
+                                mode: SelectCardEffect.Mode.Custom,
+                                root: SelectCardEffect.Root.Custom,
+                                customRootCardList: secondSources,
+                                canLookReverseCard: true,
+                                selectPlayer: topCard.Owner,
+                                cardEffect: activateClass);
 
-                    yield return ContinuousController.instance.StartCoroutine(selectSecondCardEffect.Activate());
+                        yield return ContinuousController.instance.StartCoroutine(selectSecondCardEffect.Activate());
+                    }
+                    else
+                        selectedCards.AddRange(secondSources);
 
                     IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
                         selectedCards.Add(cardSource);
-
+                        secondSources = secondSources.Except(selectedCards).ToList();
                         yield return null;
                     }
                 }

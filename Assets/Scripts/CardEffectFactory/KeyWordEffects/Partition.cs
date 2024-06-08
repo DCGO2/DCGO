@@ -4,12 +4,54 @@ using System;
 using System.Linq;
 using UnityEngine;
 
+public class PartitionCondition
+{
+    public int Level;
+    public CardColor Color;
+
+    public PartitionCondition(int level, CardColor color)
+    {
+        Level = level;
+        Color = color;
+    }
+}
 public partial class CardEffectFactory
 {
     #region Trigger effect of [Partition] on oneself
-    public static ActivateClass PartitionSelfEffect(bool isInheritedEffect, CardSource card, Func<bool> condition, Func<CardSource, bool> canSelectFirstSourceCondition, Func<CardSource, bool> canSelectSecondSourceCondition)
+    public static ActivateClass PartitionSelfEffect(bool isInheritedEffect, CardSource card, Func<bool> condition, List<PartitionCondition> cardSourceConditions)
     {
         Permanent targetPermanent = card.PermanentOfThisCard();
+        List<CardSource> sourceOneCard = targetPermanent.cardSources
+            .Clone()
+            .Filter(source =>
+                source.CardColors.Contains(cardSourceConditions[0].Color)
+                && (source.HasLevel && source.Level == cardSourceConditions[0].Level));
+
+        List<CardSource> sourceTwoCard = targetPermanent.cardSources
+            .Clone()
+            .Filter(source =>
+                source.CardColors.Contains(cardSourceConditions[1].Color)
+                && (source.HasLevel && source.Level == cardSourceConditions[1].Level));
+
+        Debug.Log(sourceOneCard.Count + " ++ " + sourceTwoCard.Count);
+        foreach (CardSource cardSource in sourceOneCard)
+            Debug.Log($"First Source Options: {cardSource.BaseENGCardNameFromEntity}");
+
+        foreach (CardSource cardSource in sourceTwoCard)
+            Debug.Log($"Second Source Options: {cardSource.BaseENGCardNameFromEntity}");
+
+        if (sourceOneCard.Count == 1)
+            sourceTwoCard = sourceTwoCard.Except(sourceOneCard).ToList();
+
+        if (sourceTwoCard.Count == 1)
+            sourceOneCard = sourceOneCard.Except(sourceTwoCard).ToList();
+
+        Debug.Log(sourceOneCard.Count + " ++ " + sourceTwoCard.Count);
+        foreach (CardSource cardSource in sourceOneCard)
+            Debug.Log($"First Source Options: {cardSource.BaseENGCardNameFromEntity}");
+
+        foreach (CardSource cardSource in sourceTwoCard)
+            Debug.Log($"Second Source Options: {cardSource.BaseENGCardNameFromEntity}");
 
         bool CanUseCondition()
         {
@@ -21,12 +63,12 @@ public partial class CardEffectFactory
             return false;
         }
 
-        return PartitionEffect(targetPermanent: targetPermanent, isInheritedEffect: isInheritedEffect, condition: CanUseCondition, firstSourceCondition: canSelectFirstSourceCondition, secondSourceCondition: canSelectSecondSourceCondition, card);
+        return PartitionEffect(targetPermanent: targetPermanent, isInheritedEffect: isInheritedEffect, condition: CanUseCondition, firstSourceCards: sourceOneCard, secondSourceCards: sourceTwoCard, card);
     }
     #endregion
 
     #region Trigger effect of [Partition]
-    public static ActivateClass PartitionEffect(Permanent targetPermanent, bool isInheritedEffect, Func<bool> condition, Func<CardSource, bool> firstSourceCondition, Func<CardSource, bool> secondSourceCondition, CardSource card)
+    public static ActivateClass PartitionEffect(Permanent targetPermanent, bool isInheritedEffect, Func<bool> condition, List<CardSource> firstSourceCards, List<CardSource> secondSourceCards, CardSource card)
     {
         if (targetPermanent == null) return null;
         if (targetPermanent.TopCard == null) return null;
@@ -60,9 +102,9 @@ public partial class CardEffectFactory
         {
             if (CardEffectCommons.CanActivatePartition(targetPermanent))
             {
-                if (firstSourceCondition == null || targetPermanent.DigivolutionCards.Count(firstSourceCondition) >= 1)
+                if (firstSourceCards == null || firstSourceCards.Count > 0)
                 {
-                    if (secondSourceCondition == null || targetPermanent.DigivolutionCards.Count(secondSourceCondition) >= 1)
+                    if (secondSourceCards == null || secondSourceCards.Count > 0)
                     {
                         return true;
                     }
@@ -74,7 +116,7 @@ public partial class CardEffectFactory
 
         IEnumerator ActivateCoroutine(Hashtable _hashtable)
         {
-            return CardEffectCommons.PartitionProcess(activateClass, targetPermanent, firstSourceCondition, secondSourceCondition);
+            return CardEffectCommons.PartitionProcess(activateClass, targetPermanent, firstSourceCards, secondSourceCards);
         }
 
         return activateClass;
