@@ -85,12 +85,14 @@ namespace DCGO.CardEffects.EX6
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     // Draw 1
-                    yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
+                    yield return ContinuousController.instance.StartCoroutine(
+                        new DrawClass(card.Owner, 1, activateClass).Draw());
                     
                     // Gain 1 memory if played from digivolution cards
                     if (CardEffectCommons.IsFromDigimonDigivolutionCards(hashtable))
                     {
-                        yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
+                        yield return ContinuousController.instance.StartCoroutine(
+                            card.Owner.AddMemory(1, activateClass));
                     }
                 }
             }
