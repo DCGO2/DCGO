@@ -53,7 +53,7 @@ namespace DCGO.CardEffects.BT16
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    if (targetPermanent.TopCard.CardNames.Contains("Magnamon") && targetPermanent.TopCard.CardColors.Count == 2)
+                    if (targetPermanent.TopCard.ContainsCardName("Magnamon") && targetPermanent.TopCard.CardColors.Count == 2)
                     {
                         return true;
                     }
