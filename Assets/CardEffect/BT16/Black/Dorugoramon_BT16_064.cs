@@ -40,8 +40,8 @@ namespace DCGO.CardEffects.BT16
             }
             #endregion
 
-            #region Collision - Blocker
-            if(timing == EffectTiming.OnAllyAttack)
+            #region Collision
+            if (timing == EffectTiming.OnCounterTiming)
             {
                 cardEffects.Add(CardEffectFactory.CollisionSelfStaticEffect(false, card, null));
             }
