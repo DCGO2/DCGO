@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.EX6
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(
-                    "You may place 1 level 3 blue Digimon card from your hand as this Digimon's bottom digivolution card.",
+                    "Place 1 level 3 blue Digimon card from your hand as this Digimon's bottom digivolution card.",
                     CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true,
                     EffectDescription());
@@ -27,6 +27,22 @@ namespace DCGO.CardEffects.EX6
                 {
                     return
                         "[When Attacking][Once Per Turn] You may place 1 level 3 blue Digimon card from your hand as this Digimon's bottom digivolution card.";
+                }
+                
+                bool CanSelectCardCondition(CardSource cardSource)
+                {
+                    if (cardSource.IsDigimon)
+                    {
+                        if (cardSource.IsLevel3)
+                        {
+                            if (cardSource.CardColors.Contains(CardColor.Blue))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                    
+                    return false;
                 }
                 
                 bool CanUseCondition(Hashtable hashtable)
@@ -47,26 +63,11 @@ namespace DCGO.CardEffects.EX6
                     return false;
                 }
                 
-                bool CanSelectCardCondition(CardSource cardSource)
-                {
-                    if (cardSource.IsDigimon)
-                    {
-                        if (cardSource.IsLevel3)
-                        {
-                            if (cardSource.CardColors.Contains(CardColor.Blue))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-                    
-                    return false;
-                }
-                
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
+                        // If there is a blue level 3 Digimon card in hand, select that card
                         if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
                         {
                             List<CardSource> selectedCards = new List<CardSource>();
@@ -103,6 +104,7 @@ namespace DCGO.CardEffects.EX6
                                 yield return null;
                             }
                             
+                            // Add that card to bottom of digivolution cards
                             if (selectedCards.Count >= 1)
                             {
                                 yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard()
