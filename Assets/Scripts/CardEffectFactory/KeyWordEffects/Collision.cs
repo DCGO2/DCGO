@@ -49,14 +49,11 @@ public partial class CardEffectFactory
 
         bool CanUseCondition(Hashtable hashtable)
         {
-            if(CardEffectCommons.CanTriggerOnAttack(hashtable, card))
+            if (condition == null || condition())
             {
-                if (condition == null || condition())
-                {
-                    return true;
-                }
+                return true;
             }
-            
+
             return false;
         }
 

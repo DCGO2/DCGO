@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 using System.Linq;
 
 namespace DCGO.CardEffects.BT16
@@ -38,8 +39,8 @@ namespace DCGO.CardEffects.BT16
             #endregion
 
             #region Collision
-            if(timing == EffectTiming.OnAllyAttack)
-            {
+            if(timing == EffectTiming.OnCounterTiming)
+            {                
                 cardEffects.Add(CardEffectFactory.CollisionSelfStaticEffect(false,card, null));
             }
             #endregion
