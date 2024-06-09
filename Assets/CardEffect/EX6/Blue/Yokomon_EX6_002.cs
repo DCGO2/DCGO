@@ -1,42 +1,119 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.EX6
 {
     public class Yokomon_EX6_002 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
-
-            if (timing == EffectTiming.None)
+            
+            #region Inherited Effect
+            
+            if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpICardEffect(
+                    "You may place 1 level 3 blue Digimon card from your hand as this Digimon's bottom digivolution card.",
+                    CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true,
+                    EffectDescription());
+                activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
-
-                string EffectDiscription()
+                
+                string EffectDescription()
                 {
-                    return "";
+                    return
+                        "[When Attacking][Once Per Turn] You may place 1 level 3 blue Digimon card from your hand as this Digimon's bottom digivolution card.";
                 }
-
+                
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return true;
+                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
                 }
-
+                
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return true;
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (card.Owner.HandCards.Count >= 1)
+                        {
+                            return true;
+                        }
+                    }
+                    
+                    return false;
                 }
-
+                
+                bool CanSelectCardCondition(CardSource cardSource)
+                {
+                    if (cardSource.IsDigimon)
+                    {
+                        if (cardSource.IsLevel3)
+                        {
+                            if (cardSource.CardColors.Contains(CardColor.Blue))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                    
+                    return false;
+                }
+                
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return null;
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
+                        {
+                            List<CardSource> selectedCards = new List<CardSource>();
+                            
+                            int maxCount = 1;
+                            
+                            SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                            
+                            selectHandEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: CanSelectCardCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: maxCount,
+                                canNoSelect: true,
+                                canEndNotMax: false,
+                                isShowOpponent: true,
+                                selectCardCoroutine: SelectCardCoroutine,
+                                afterSelectCardCoroutine: null,
+                                mode: SelectHandEffect.Mode.Custom,
+                                cardEffect: activateClass);
+                            
+                            selectHandEffect.SetUpCustomMessage(
+                                "Select 1 card to place on the bottom of digivolution cards.",
+                                "The opponent is selecting 1 card to place on the bottom of digivolution cards.");
+                            selectHandEffect.SetUpCustomMessage_ShowCard("Digivolution Card");
+                            
+                            yield return StartCoroutine(selectHandEffect.Activate());
+                            
+                            IEnumerator SelectCardCoroutine(CardSource cardSource)
+                            {
+                                selectedCards.Add(cardSource);
+                                
+                                yield return null;
+                            }
+                            
+                            if (selectedCards.Count >= 1)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard()
+                                    .AddDigivolutionCardsBottom(selectedCards, activateClass));
+                            }
+                        }
+                    }
                 }
             }
-
+            
+            #endregion
+            
             return cardEffects;
         }
     }
