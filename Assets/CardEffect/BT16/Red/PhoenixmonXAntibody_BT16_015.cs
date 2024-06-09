@@ -57,7 +57,7 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardNames.Contains("Phoenixmon") || cardSource.CardNames.Contains("X Antibody") || cardSource.CardNames.Contains("XAntibody")) >= 1)
+                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardNames.Contains("Phoenixmon") || cardSource.CardNames.Contains("X Antibody") || cardSource.CardNames.Contains("XAntibody") || cardSource.CardNames.Contains("X Antibody Proto Form")) >= 1)
                         {
                             return true;
                         }
