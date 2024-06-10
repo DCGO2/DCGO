@@ -15,7 +15,7 @@ namespace DCGO.CardEffects.BT16
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    if (targetPermanent.TopCard.CardNames.Contains("DoruGreymon"))
+                    if (targetPermanent.TopCard.ContainsCardName("DoruGreymon"))
                     {
                         return true;
                     }
