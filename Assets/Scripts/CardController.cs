@@ -2546,7 +2546,7 @@ public class IPutSecurityPermanent
 
         CardSource topCard = _permanent.TopCard;
 
-        if (_permanent.willBeRemoveField)
+        if (!_permanent.willBeRemoveField)
             yield break;
 
         if (topCard == null) 
