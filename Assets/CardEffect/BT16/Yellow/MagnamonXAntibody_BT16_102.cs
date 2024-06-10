@@ -299,12 +299,13 @@ namespace DCGO.CardEffects.BT16
                         {
                             Hashtable effectHashtable = CardEffectCommons.WhenDigivolvingCheckHashtableOfCard(selectedEffect.EffectSourceCard);
 
-                            yield return ContinuousController.instance.StartCoroutine(
+                            if (selectedEffect.IsDisabled)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(
                                 ((ActivateICardEffect)selectedEffect).Activate_Optional_Effect_Execute(effectHashtable));
-
+                            }
                         }
                     }
-
                 }
             }
             #endregion

@@ -307,11 +307,7 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanSelectFenriInTrash(CardSource cardSource)
                 {
-                    if (cardSource.CardNames.Contains("FenriLoogamon"))
-                    {
-                        return true;
-                    }
-                    return false;
+                    return cardSource.ContainsCardName("FenriLoogamon");
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -331,7 +327,7 @@ namespace DCGO.CardEffects.BT16
                 {
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
                     targetPermanent: card.PermanentOfThisCard(),
-                    cardCondition: cardSource => CanSelectFenriInTrash(cardSource),
+                    cardCondition: CanSelectFenriInTrash,
                     payCost: false,
                     reduceCostTuple: null,
                     fixedCostTuple: null,
