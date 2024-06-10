@@ -137,7 +137,7 @@ namespace DCGO.CardEffects.BT16
                     {
                         if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition))
                         {
-                            if (CardEffectCommons.IsDPZeroDelete(hashtable))
+                            if (!CardEffectCommons.IsByEffect(hashtable,null))
                             {
                                 return true;
                             }
