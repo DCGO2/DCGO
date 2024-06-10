@@ -16,12 +16,12 @@ namespace DCGO.CardEffects.BT16
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    if (targetPermanent.TopCard.CardNames.Contains("Dorugamon"))
+                    if (targetPermanent.TopCard.ContainsCardName("Dorugamon"))
                     {
                         return true;
                     }
 
-                    if(targetPermanent.TopCard.Level == 4 && targetPermanent.TopCard.CardTraits.Contains("SoC"))
+                    if(targetPermanent.TopCard.Level == 4 && targetPermanent.TopCard.ContainsTraits("SoC"))
                     {
                         return true;
                     }

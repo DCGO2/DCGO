@@ -249,7 +249,7 @@ namespace DCGO.CardEffects.BT16
                                 yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(
                                     permanent,
                                     CardEffectCommons.CardEffectHashtable(activateClass),
-                                    true).PutSecurity());
+                                    false).PutSecurity());
                             }
                         }
                     }
