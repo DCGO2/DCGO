@@ -22,7 +22,8 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (targetPermanent.TopCard.ContainsTraits("SoC"))
                     {
-                        return true;
+                        if(targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 4)
+                            return true;
                     }
 
                     return false;
