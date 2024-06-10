@@ -72,7 +72,7 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card)
+                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
