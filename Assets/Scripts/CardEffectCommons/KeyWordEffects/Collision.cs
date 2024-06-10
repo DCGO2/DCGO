@@ -27,11 +27,11 @@ public partial class CardEffectCommons
     #region Effect process of [Collision]
     public static IEnumerator CollisionProcess(CardSource cardSource, ICardEffect activateClass, Func<IEnumerator> beforeOnAttackCoroutine = null)
     {
-        List<Permanent> enemyDigimons = new List<Permanent>();
+        List<Permanent> enemyDigimons = cardSource.Owner.Enemy.GetBattleAreaDigimons();
 
         if (CanActivateCollision(cardSource))
         {
-            foreach (Permanent enemyDigimon in cardSource.Owner.Enemy.GetBattleAreaDigimons())
+            foreach (Permanent enemyDigimon in enemyDigimons)
             {
                 if (enemyDigimon.TopCard.CanNotBeAffected(activateClass))
                     continue;
@@ -39,58 +39,11 @@ public partial class CardEffectCommons
                 yield return ContinuousController.instance.StartCoroutine(GainBlocker(
                         targetPermanent: enemyDigimon,
                         effectDuration: EffectDuration.UntilEndAttack,
-                        activateClass: activateClass));
-
+                        activateClass: activateClass));  
+            }   
+            
+            if(HasMatchConditionOpponentsPermanent(cardSource,permanent => permanent.HasBlocker))
                 GManager.instance.attackProcess.IsBlocking = true;
-            }
-
-
-
-            /*int maxCount = 1;
-
-            Permanent selectedPermanent = null;
-
-            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-            selectPermanentEffect.SetUp(
-                selectPlayer: cardSource.Owner.Enemy,
-                canTargetCondition: CanSelectBlockerCondition,
-                canTargetCondition_ByPreSelecetedList: null,
-                canEndSelectCondition: null,
-                maxCount: maxCount,
-                canNoSelect: false,
-                canEndNotMax: false,
-                selectPermanentCoroutine: SelectPermanentCoroutine,
-                afterSelectPermanentCoroutine: null,
-                mode: SelectPermanentEffect.Mode.Custom,
-                cardEffect: activateClass);
-
-            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will block.", "The opponent is selecting 1 Digimon that will block.");
-
-            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-            bool CanSelectBlockerCondition(Permanent permanent)
-            {
-                if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
-                {
-                    if (!permanent.TopCard.Owner.isYou)
-                    {
-                        if (permanent.HasBlocker && permanent.CanBlock(cardSource.PermanentOfThisCard()))
-                        {
-                            return true;
-                        }
-                    }
-                }
-
-                return false;
-            }
-
-            IEnumerator SelectPermanentCoroutine(Permanent permanent)
-            {
-                selectedPermanent = permanent;
-
-                yield return ContinuousController.instance.StartCoroutine(GManager.instance.attackProcess.SwitchDefender(null, true, selectedPermanent));
-            }*/
         }
     }
     #endregion

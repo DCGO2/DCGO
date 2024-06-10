@@ -87,22 +87,9 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card))
                     {
-                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardNames.Contains("Magnamon(X-Antibody)") || cardSource.CardTraits.Contains("ArmorForm")) >= 1)
-                        {
-                            if (CardEffectCommons.IsExistOnBattleArea(card))
-                            {
-                                return true;
-                            }
-                        }
-
-                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardTraits.Contains("ArmorForm")) >= 1)
-                        {
-                            if (CardEffectCommons.IsExistOnBattleArea(card))
-                            {
-                                return true;
-                            }
-                        }
+                        return CardEffectCommons.IsExistOnBattleArea(card);
                     }
+
                     return false;
                 }
 
@@ -125,74 +112,72 @@ namespace DCGO.CardEffects.BT16
 
                     if (selectedPermanent != null)
                     {
-
-                        CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
-                        canNotAffectedClass.SetUpICardEffect("Isn't affected by opponent's effects", CanUseCondition1, card);
-                        canNotAffectedClass.SetUpCanNotAffectedClass(CardCondition: CardCondition, SkillCondition: SkillCondition);
-                        selectedPermanent.UntilOpponentTurnEndEffects.Add((_timing) => canNotAffectedClass);
-
-                        bool CanUseCondition1(Hashtable hashtable)
+                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardNames.Contains("Magnamon(X-Antibody)") || cardSource.CardTraits.Contains("ArmorForm")) >= 1)
                         {
-                            return CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent);
-                        }
+                            CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
+                            canNotAffectedClass.SetUpICardEffect("Isn't affected by opponent's effects", CanUseCondition1, card);
+                            canNotAffectedClass.SetUpCanNotAffectedClass(CardCondition: CardCondition, SkillCondition: SkillCondition);
+                            selectedPermanent.UntilOpponentTurnEndEffects.Add((_timing) => canNotAffectedClass);
 
-                        bool CardCondition(CardSource cardSource)
-                        {
-                            if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
+                            bool CanUseCondition1(Hashtable hashtable)
                             {
-                                if (cardSource == selectedPermanent.TopCard)
-                                {
-                                    return true;
-                                }
+                                return CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent);
                             }
 
-                            return false;
-                        }
-
-                        bool SkillCondition(ICardEffect cardEffect)
-                        {
-                            if (cardEffect != null)
+                            bool CardCondition(CardSource cardSource)
                             {
-                                if (cardEffect.EffectSourceCard != null)
+                                if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
                                 {
-                                    if (cardEffect.EffectSourceCard.Owner == card.Owner.Enemy)
+                                    if (cardSource == selectedPermanent.TopCard)
                                     {
-                                        if (cardEffect.IsDigimonEffect)
+                                        return true;
+                                    }
+                                }
+
+                                return false;
+                            }
+
+                            bool SkillCondition(ICardEffect cardEffect)
+                            {
+                                if (cardEffect != null)
+                                {
+                                    if (cardEffect.EffectSourceCard != null)
+                                    {
+                                        if (cardEffect.EffectSourceCard.Owner == card.Owner.Enemy)
                                         {
-                                            return true;
-                                        }
-                                        if (cardEffect.EffectSourceCard.IsOption)
-                                        {
-                                            return true;
-                                        }
-                                        if (cardEffect.IsTamerEffect)
-                                        {
-                                            return true;
+                                            if (cardEffect.IsDigimonEffect)
+                                            {
+                                                return true;
+                                            }
+                                            if (cardEffect.EffectSourceCard.IsOption)
+                                            {
+                                                return true;
+                                            }
+                                            if (cardEffect.IsTamerEffect)
+                                            {
+                                                return true;
+                                            }
                                         }
                                     }
                                 }
+
+                                return false;
                             }
 
-                            return false;
-                        }
 
-
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
-                            targetPermanent: selectedPermanent,
-                            changeValue: 3000,
-                            effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                            activateClass: activateClass));
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
+                                targetPermanent: selectedPermanent,
+                                changeValue: 3000,
+                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                                activateClass: activateClass));
+                        }                            
 
                         if (CardEffectCommons.CanUnsuspend(selectedPermanent))
                         {
                             yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { selectedPermanent }, activateClass).Unsuspend());
                         }
-
                     }
                 }
-
-
-
             }
 
             #endregion
