@@ -301,6 +301,7 @@ public partial class CardEffectCommons
         if (targetPermanent == null) yield break;
         if (targetPermanent.TopCard == null) yield break;
         if (targetPermanent.DigivolutionCards.Count((cardSource) => !cardSource.CanNotTrashFromDigivolutionCards(activateClass)) == 0) yield break;
+        Debug.Log($"Trashing Digivolution Cards From Top/Bottom: Target Can Not Be Affected - {targetPermanent.TopCard.CanNotBeAffected(activateClass)}");
         if (targetPermanent.TopCard.CanNotBeAffected(activateClass)) yield break;
         if (trashCount <= 0) yield break;
 
