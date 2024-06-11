@@ -26,7 +26,8 @@ namespace DCGO.CardEffects.BT16
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete [Ukkomon] and breeding area Digimon to play [BigUkkomon]", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetHashString("Play_ST16_090");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -62,7 +63,7 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.CardNames.Contains("BigUkkomon"))
+                    if (cardSource.ContainsCardName("Big Ukkomon"))
                     {
                         return true;
                     }
@@ -73,17 +74,11 @@ namespace DCGO.CardEffects.BT16
                 {
                     if(CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        return true;
-                    }
-                    return false;
-                }
+                        Debug.Log($"CAN USE: {CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermanentCondition)} - {card.Owner.GetBreedingAreaPermanents().Count(CanSelectBreedingAreaDigimon)}");
 
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
                         if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermanentCondition) && card.Owner.GetBreedingAreaPermanents().Count(CanSelectBreedingAreaDigimon) >= 1)
                         {
+                            Debug.Log($"CAN USE: {card.Owner.HandCards.Count(CanSelectCardCondition)}");
                             if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
                             {
                                 return true;
