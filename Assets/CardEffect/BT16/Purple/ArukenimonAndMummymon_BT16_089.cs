@@ -49,7 +49,14 @@ namespace DCGO.CardEffects.BT16
 
                 bool CardCondition(CardSource cardSource)
                 {
-                    return cardSource.CardNames.Contains("Mummymon") || cardSource.CardNames.Contains("Arukenimon");
+                    if (cardSource.CardNames.Contains("Mummymon") || cardSource.CardNames.Contains("Arukenimon"))
+                    {
+                        if(CardEffectCommons.IsExistOnHand(cardSource))
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -58,10 +65,7 @@ namespace DCGO.CardEffects.BT16
                     {
                         if (card.Owner.HandCards.Count(CardCondition) >= 1)
                         {
-                            if (CardEffectCommons.IsOwnerTurn(card))
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                         
                     }

@@ -156,6 +156,25 @@ namespace DCGO.CardEffects.BT16
                     return false;
                 }
 
+                bool CanSelectPermanentCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                    {
+                        foreach (CardSource cardSource in card.Owner.TrashCards)
+                        {
+                            if (SelectCardCondition(cardSource))
+                            {
+                                if (cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+
+                    return false;
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
@@ -179,7 +198,7 @@ namespace DCGO.CardEffects.BT16
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (card.Owner.HandCards.Exists(SelectCardCondition))
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 

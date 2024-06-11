@@ -31,14 +31,15 @@ namespace DCGO.CardEffects.BT16
             #region Start of Main Phase
             if (timing == EffectTiming.OnStartMainPhase)
             {
-                var activateClass = new ActivateClass();
+                ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("1 of your Digimon may Digivolve", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetHashString("Patamon_BT16_016_OnPlay");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[Start of Main Phase] If it's your turn, 1 of your Digimon may digivolve into a level 4 Digimon card with the [Angel] or [Free] trait from your hand with the digivolution cost reduced by 1.";
+                    return "[Start of your Main Phase] If it's your turn, 1 of your Digimon may digivolve into a level 4 Digimon card with the [Angel] or [Free] trait from your hand with the digivolution cost reduced by 1.";
                 }
 
 
@@ -69,13 +70,28 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card) && CardEffectCommons.IsOwnerTurn(card);
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (CardEffectCommons.IsOwnerTurn(card))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card)
-                           && CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermanentCondition);
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -131,7 +147,7 @@ namespace DCGO.CardEffects.BT16
             #region On Play Effect
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
-                var activateClass = new ActivateClass();
+                ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("1 of your Digimon may Digivolve", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("Patamon_BT16_016_OnPlay");
@@ -175,8 +191,15 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card)
-                           && CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermanentCondition);
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (card.Owner.HandCards.Count(CanSelectCardCondition) >=1)
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
