@@ -81,8 +81,6 @@ namespace DCGO.CardEffects.BT16
                             }
                         }
                        
-                        card.PermanentOfThisCard().UntilOwnerTurnEndEffects.Clear();
-
                         foreach (ICardEffect cardEffect1 in onDeletionEffects)
                         {
                             ActivateClass activateEndofAttack = new ActivateClass();
@@ -118,54 +116,6 @@ namespace DCGO.CardEffects.BT16
                                        timing: EffectTiming.OnEndAttack);
 
                         }
-
-                        /*foreach (CardSource cardSource1 in card.PermanentOfThisCard().DigivolutionCards)
-                        {
-                            foreach (ICardEffect cardEffect in cardSource1.PermanentOfThisCard().EffectList(EffectTiming.OnDestroyedAnyone))
-                            {
-                                if (!cardEffect.IsSecurityEffect && cardEffect.IsOnDeletion && cardEffect.IsInheritedEffect)
-                                {
-                                    Debug.Log("Looping through effects");
-                                    ActivateClass activateClass1 = new ActivateClass();
-                                    activateClass1.SetUpICardEffect(cardEffect.EffectName, CanUseCondition2, card);
-                                    activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDiscription1());
-                                    activateClass1.SetIsInheritedEffect(true);
-                                    activateClass1.SetEffectSourcePermanent(cardSource1.PermanentOfThisCard());
-
-                                    string EffectDiscription1()
-                                    {
-                                        return cardEffect.EffectDiscription;
-                                    }
-
-                                    bool CanUseCondition2(Hashtable hashtable1)
-                                    {
-                                        return CardEffectCommons.CanTriggerOnEndAttack(hashtable1, card);
-                                    }
-
-                                    bool CanActivateCondition1(Hashtable hashtable1)
-                                    {
-                                        Debug.Log("Test");
-                                        return CardEffectCommons.IsExistOnBattleArea(card);
-                                    }
-
-                                    IEnumerator ActivateCoroutine1(Hashtable hashtable)
-                                    {
-                                        Debug.Log("Activating Added effect");
-                                        yield return ContinuousController.instance.StartCoroutine(((ActivateICardEffect)cardEffect).Activate(hashtable));
-                                    }
-
-
-                                    CardEffectCommons.AddEffectToPermanent(
-                                        targetPermanent: cardSource1.PermanentOfThisCard(),
-                                        effectDuration: EffectDuration.UntilOwnerTurnEnd,
-                                        card: card,
-                                        cardEffect: activateClass1,
-                                        timing: EffectTiming.OnEndAttack);
-
-                                }
-                            }
-                        }*/
-
                     }
                     yield return null;
                 }
