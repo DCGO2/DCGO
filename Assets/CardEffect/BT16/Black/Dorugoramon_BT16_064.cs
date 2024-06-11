@@ -93,7 +93,7 @@ namespace DCGO.CardEffects.BT16
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if(card.PermanentOfThisCard().DigivolutionCards.Count(HasTamerWithTrait) > 0)
+                    if(card.PermanentOfThisCard().DigivolutionCards.Count(HasTamerWithTrait) >= 1)
                     {
                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                         {
