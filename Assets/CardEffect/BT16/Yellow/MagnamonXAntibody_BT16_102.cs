@@ -145,18 +145,7 @@ namespace DCGO.CardEffects.BT16
                                     {
                                         if (cardEffect.EffectSourceCard.Owner == card.Owner.Enemy)
                                         {
-                                            if (cardEffect.IsDigimonEffect)
-                                            {
-                                                return true;
-                                            }
-                                            if (cardEffect.EffectSourceCard.IsOption)
-                                            {
-                                                return true;
-                                            }
-                                            if (cardEffect.IsTamerEffect)
-                                            {
-                                                return true;
-                                            }
+                                            return true;
                                         }
                                     }
                                 }
