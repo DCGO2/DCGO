@@ -94,6 +94,9 @@ namespace DCGO.CardEffects.BT16
 
                             bool CanUseEndOfAttackCondition(Hashtable hashtable1)
                             {
+                                if (card.PermanentOfThisCard().TopCard != card)
+                                    return false;
+
                                 return CardEffectCommons.CanTriggerOnEndAttack(hashtable1, card);
                             }
 
