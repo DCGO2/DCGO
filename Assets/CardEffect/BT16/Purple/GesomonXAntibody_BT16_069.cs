@@ -85,7 +85,7 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentToNoSuspend) || CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                         {
                             return true;
                         }
@@ -254,7 +254,7 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentToNoSuspend) || CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                         {
                             return true;
                         }
