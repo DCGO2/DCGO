@@ -2645,8 +2645,7 @@ public class DestroyPermanentsClass
         && permanent.TopCard != null
         && (cardEffect == null ||
         (!permanent.TopCard.CanNotBeAffected(cardEffect) 
-        && permanent.CanBeDestroyedBySkill(cardEffect)
-        && permanent.CanBeRemoved())));
+        && permanent.CanBeDestroyedBySkill(cardEffect))));
 
         if (_destroytargetPermanents.Count == 0) yield break;
 
