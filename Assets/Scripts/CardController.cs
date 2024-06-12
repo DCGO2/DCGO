@@ -1914,7 +1914,7 @@ public class DeckBottomBounceClass
         && (cardEffect == null ||
         (!permanent.TopCard.CanNotBeAffected(cardEffect) 
         && !permanent.CannotReturnToLibrary(cardEffect)
-        && !permanent.CanBeRemoved())));
+        && permanent.CanBeRemoved())));
 
         if (_deckBounceTargetPermanents.Count == 0) yield break;
 
@@ -2048,7 +2048,7 @@ public class HandBounceClaass
         && (cardEffect == null ||
         (!permanent.TopCard.CanNotBeAffected(cardEffect) 
         && !permanent.CannotReturnToHand(cardEffect)
-        && !permanent.CanBeRemoved())));
+        && permanent.CanBeRemoved())));
 
         if (_bounceTargetPermanents.Count == 0) yield break;
 
