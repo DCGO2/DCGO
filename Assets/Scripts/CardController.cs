@@ -2523,7 +2523,9 @@ public class IPutSecurityPermanent
         ICardEffect cardEffect = CardEffectCommons.GetCardEffectFromHashtable(_hashtable);
 
         if (_permanent.TopCard.CanNotBeAffected(cardEffect) || !_permanent.TopCard.Owner.CanAddSecurity(cardEffect)) yield break;
+        if (!_permanent.CanBeRemoved()) yield break;
 
+        _permanent.willBeRemoveField = true;
         #region "When permanents would remove field" effect
 
         yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.StackSkillInfos(
