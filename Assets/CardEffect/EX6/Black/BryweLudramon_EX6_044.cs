@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DCGO.CardEffects
 {
@@ -9,33 +11,268 @@ namespace DCGO.CardEffects
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region Alternate Digivolution
             if (timing == EffectTiming.None)
             {
+                static bool PermanentCondition(Permanent targetPermanent)
+                {
+                    if (targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 5)
+                    {
+                        return targetPermanent.TopCard.ContainsTraits("Legend-Arms");
+                    }
+
+                    return false;
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
+                    permanentCondition: PermanentCondition,
+                    digivolutionCost: 4,
+                    ignoreDigivolutionRequirement: false,
+                    card: card,
+                    condition: null));
+            }
+            #endregion
+
+            #region Blocker/Reboot
+            if (timing == EffectTiming.None)
+            {
+                cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(
+                                isInheritedEffect: false,
+                                card: card,
+                                condition: null));
+
+                cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(
+                isInheritedEffect: true,
+                card: card,
+                condition: null));
+
+                cardEffects.Add(CardEffectFactory.RebootSelfStaticEffect(
+                    isInheritedEffect: false,
+                    card: card,
+                    condition: null));
+            }
+
+            #endregion
+
+            #region Hand - Main
+            if (timing == EffectTiming.OnDeclaration)
+            {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpICardEffect("<De-Digivolve 1> all of your opponent's Digimon", CanUseCondition, card);
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "";
+                    return "[Hand][Main] By paying 3 cost and placing this card as the bottom digivolution card of 1 of your Digimon that's level 6 or has the [Legend-Arms] trait, <De-Digivolve 1> all of your opponent's Digimon with as much or less DP than that Digimon.";
+                }
+
+                bool IsLevel6OrHasLegendArmsTrait(Permanent targetPermanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(targetPermanent, card))
+                    {
+                        if (targetPermanent.TopCard.HasLevel && targetPermanent.Level == 6)
+                            return true;
+
+                        if (targetPermanent.TopCard.ContainsTraits("Legend-Arms"))
+                            return true;
+                    }
+
+                    return false;
+                }
+
+                bool IsEnemyPermanent(Permanent permanent)
+                {
+                    if(CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)){
+                        if(permanent.HasDP && permanent.DP <= card.PermanentOfThisCard().DP)
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return true;
-                }
+                    if (CardEffectCommons.IsExistOnHand(card))
+                    {
+                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsLevel6OrHasLegendArmsTrait))
+                        {
+                            return true;
+                        }
+                    }
 
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    return true;
+                    return false;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return null;
+                    Permanent selectedPermanent = null;
+
+                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(-3, activateClass));
+
+                    if (CardEffectCommons.HasMatchConditionPermanent(IsLevel6OrHasLegendArmsTrait))
+                    {
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(IsLevel6OrHasLegendArmsTrait));
+
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: IsLevel6OrHasLegendArmsTrait,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: maxCount,
+                            canNoSelect: true,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to add bottom digivolution source.", "The opponent is selecting 1 Digimon to add bottom digivolution source.");
+
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                        {
+                            selectedPermanent = permanent;
+                            yield return null;
+                        }
+                    }
+
+                    if (selectedPermanent != null)
+                    {
+                        List<Permanent> enemyPermanents = card.Owner.Enemy.GetBattleAreaDigimons().Where(IsEnemyPermanent).ToList();
+
+                        foreach(Permanent permanent in enemyPermanents)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(new IDegeneration(permanent, 1, activateClass).Degeneration());
+                        }
+                    }
                 }
             }
+            #endregion
+
+            #region When Digivolving
+            if (timing == EffectTiming.OnEnterFieldAnyone)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Unaffected by opponents Digimon", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[When Digivolving] 1 of your Digimon isn't affected by your opponent's Digimon effects until the end of your opponent's turn.";
+                }
+
+                bool IsYourDigimon(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    Permanent selectedPermanent = null;
+
+                    if (CardEffectCommons.HasMatchConditionPermanent(IsYourDigimon))
+                    {
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(IsYourDigimon));
+
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: IsYourDigimon,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: maxCount,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to add bottom digivolution source.", "The opponent is selecting 1 Digimon to add bottom digivolution source.");
+
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                        {
+                            selectedPermanent = permanent;
+                            yield return null;
+                        }
+                    }
+
+                    if(selectedPermanent != null)
+                    {
+                        CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
+                        canNotAffectedClass.SetUpICardEffect("Isn't affected by opponent's Digimon's effects", CanUseCondition, card);
+                        canNotAffectedClass.SetUpCanNotAffectedClass(CardCondition: CardCondition, SkillCondition: SkillCondition);
+                        cardEffects.Add(canNotAffectedClass);
+
+                        bool CanUseCondition(Hashtable hashtable)
+                        {
+                            return CardEffectCommons.IsExistOnBattleArea(card);
+                        }
+
+                        bool CardCondition(CardSource cardSource)
+                        {
+                            if (cardSource == card)
+                            {
+                                if (CardEffectCommons.IsExistOnBattleArea(card))
+                                {
+                                    if (cardSource == card.PermanentOfThisCard().TopCard)
+                                    {
+                                        return true;
+                                    }
+                                }
+                            }
+
+                            return false;
+                        }
+
+                        bool SkillCondition(ICardEffect cardEffect)
+                        {
+                            if (CardEffectCommons.IsOpponentEffect(cardEffect, card))
+                            {
+                                if (cardEffect.IsDigimonEffect)
+                                {
+                                    return true;
+                                }
+
+                                if (cardEffect.IsDigimonEffect && cardEffect.IsSecurityEffect)
+                                {
+                                    return true;
+                                }
+                            }
+
+                            return false;
+                        }
+                    }
+                }
+            }
+            #endregion
+
+            #region Opponent's Turn - ESS
+            if (timing == EffectTiming.None)
+            {
+                //TODO: add dorumon BT16 protection effect here
+            }
+            #endregion
 
             return cardEffects;
         }
