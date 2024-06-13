@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.EX6
 {
     public class Lopmon_EX6_032 : CEntity_Effect
     {

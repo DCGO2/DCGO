@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.EX6
 {
     public class Turuiemon_EX6_033 : CEntity_Effect
     {

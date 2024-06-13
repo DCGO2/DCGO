@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.EX6
 {
     public class Antylamon_EX6_034 : CEntity_Effect
     {
@@ -89,34 +89,28 @@ namespace DCGO.CardEffects
                 {
                     if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
                     {
-                        int maxCount = Math.Min(1, card.Owner.HandCards.Count(CanSelectCardCondition));
-
                         List<CardSource> selectedCards = new List<CardSource>();
 
-                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
-                        selectCardEffect.SetUp(
-                                    canTargetCondition: CanSelectCardCondition,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    canNoSelect: () => true,
-                                    selectCardCoroutine: SelectCardCoroutine,
-                                    afterSelectCardCoroutine: null,
-                                    message: "Select 1 card to play.",
-                                    maxCount: maxCount,
-                                    canEndNotMax: false,
-                                    isShowOpponent: true,
-                                    mode: SelectCardEffect.Mode.Custom,
-                                    root: SelectCardEffect.Root.Hand,
-                                    customRootCardList: null,
-                                    canLookReverseCard: true,
-                                    selectPlayer: card.Owner,
-                                    cardEffect: activateClass);
+                        selectHandEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectCardCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: true,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            selectCardCoroutine: SelectCardCoroutine,
+                            afterSelectCardCoroutine: null,
+                            mode: SelectHandEffect.Mode.Custom,
+                            cardEffect: activateClass);
 
-                        selectCardEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
-                        selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
+                        selectHandEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
+                        selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
 
-                        yield return StartCoroutine(selectCardEffect.Activate());
+                        yield return StartCoroutine(selectHandEffect.Activate());
 
                         IEnumerator SelectCardCoroutine(CardSource cardSource)
                         {
@@ -146,10 +140,10 @@ namespace DCGO.CardEffects
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(card.PermanentOfThisCard(), card))
+                {                  
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
                     {
-                        if (card.PermanentOfThisCard().IsSuspended)
+                        if (permanent.IsSuspended)
                         {
                             return true;
                         }
