@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.EX6
 {
     public class Ludomon_EX6_038 : CEntity_Effect
     {
@@ -104,6 +104,10 @@ namespace DCGO.CardEffects
 
                         if (selectedPermanent != null)
                         {
+                            yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(
+                                new List<CardSource>() { card },
+                                activateClass));
+
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
                                 targetPermanent: selectedPermanent, 
                                 changeValue: 2000, 
