@@ -33,10 +33,10 @@ namespace DCGO.CardEffects
             #endregion
 
             #region Hand - Main
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnDeclaration)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("", CanUseCondition, card);
+                activateClass.SetUpICardEffect("+2000 DP", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -74,6 +74,8 @@ namespace DCGO.CardEffects
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(-1, activateClass));
+
                     if (CardEffectCommons.HasMatchConditionPermanent(IsLevel3OrHasLegendArmsTrait))
                     {
                         Permanent selectedPermanent = null;
