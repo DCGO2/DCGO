@@ -181,7 +181,7 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if(CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, IsOpponentDigimon))
+                    if(CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, IsOpponentDigimon) || CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, IsOpponentDigimon))
                     {
                         if (CardEffectCommons.IsByEffect(hashtable, null))
                         {

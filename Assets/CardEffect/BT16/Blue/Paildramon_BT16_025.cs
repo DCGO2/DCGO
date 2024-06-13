@@ -240,7 +240,7 @@ namespace DCGO.CardEffects.BT16
                         yield return null;
                     }
 
-                    bool suspendedPermanent = false;
+                    bool suspendedPermanent = true;
 
                     if (selectedPermanent != null)
                     {
@@ -250,7 +250,7 @@ namespace DCGO.CardEffects.BT16
                             {
                                 if (!selectedPermanent.IsSuspended && selectedPermanent.CanSuspend)
                                 {
-                                    suspendedPermanent = true;
+                                    suspendedPermanent = false;
                                 }
                             }
                         }
