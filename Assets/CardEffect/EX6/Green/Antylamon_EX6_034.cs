@@ -264,7 +264,7 @@ namespace DCGO.CardEffects
             }
             #endregion
 
-                return cardEffects;
+            return cardEffects;
         }
     }
 }
