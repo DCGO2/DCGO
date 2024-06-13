@@ -31,7 +31,12 @@ namespace DCGO.CardEffects.EX6
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return card.PermanentOfThisCard().DigivolutionCards.Count(HasLegendArms) > 0;
+                    if (CardEffectCommons.IsOwnerTurn(card))
+                    {
+                        return card.PermanentOfThisCard().DigivolutionCards.Count(HasLegendArms) > 0;
+                    }
+
+                    return false;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -43,30 +48,27 @@ namespace DCGO.CardEffects.EX6
                 {
                     CardSource selectedSource = null;
 
-                    if (card.PermanentOfThisCard().DigivolutionCards.Count(HasLegendArms) > 0)
-                    {
-                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
-                        selectCardEffect.SetUp(
-                            canTargetCondition: null,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            canNoSelect: () => true,
-                            selectCardCoroutine: SelectCardCoroutine,
-                            afterSelectCardCoroutine: null,
-                            message: "Select 1 card with [Legend-Arms] trait to hand",
-                            maxCount: 1,
-                            canEndNotMax: false,
-                            isShowOpponent: true,
-                            mode: SelectCardEffect.Mode.AddHand,
-                            root: SelectCardEffect.Root.DigivolutionCards,
-                            customRootCardList: card.PermanentOfThisCard().DigivolutionCards.Where(HasLegendArms).ToList(),
-                            canLookReverseCard: false,
-                            selectPlayer: card.Owner,
-                            cardEffect: activateClass);
+                    selectCardEffect.SetUp(
+                        canTargetCondition: null,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        canNoSelect: () => true,
+                        selectCardCoroutine: SelectCardCoroutine,
+                        afterSelectCardCoroutine: null,
+                        message: "Select 1 card with [Legend-Arms] trait to hand",
+                        maxCount: 1,
+                        canEndNotMax: false,
+                        isShowOpponent: true,
+                        mode: SelectCardEffect.Mode.AddHand,
+                        root: SelectCardEffect.Root.Custom,
+                        customRootCardList: card.PermanentOfThisCard().DigivolutionCards.Where(HasLegendArms).ToList(),
+                        canLookReverseCard: false,
+                        selectPlayer: card.Owner,
+                        cardEffect: activateClass);
 
-                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-                    }
+                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 
                     IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {

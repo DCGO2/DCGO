@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.EX6
 {
     public class RaijiLudomon_EX6_042 : CEntity_Effect
     {
@@ -147,22 +147,26 @@ namespace DCGO.CardEffects
                             }
                         }
 
-                        if(selectedEnemy != null)
+                        if (selectedEnemy != null)
                         {
+                            yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(
+                                new List<CardSource>() { card },
+                                activateClass));
+
                             ActivateClass activateClass1 = new ActivateClass();
-                            activateClass1.SetUpICardEffect("Attack with this Digimon", CanUseCondition1, selectedEnemy.TopCard);
+                            activateClass1.SetUpICardEffect("Attack with this Digimon", CanUseCondition1, selectedPermanent.TopCard);
                             activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDiscription1());
-                            activateClass1.SetEffectSourcePermanent(selectedEnemy);
-                            selectedEnemy.UntilOwnerTurnEndEffects.Add(GetCardEffect);
+                            activateClass1.SetEffectSourcePermanent(selectedPermanent);
+                            selectedPermanent.UntilOwnerTurnEndEffects.Add(GetCardEffect);
 
                             if (!selectedEnemy.TopCard.CanNotBeAffected(activateClass))
                             {
-                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(selectedEnemy));
+                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(selectedPermanent));
                             }
 
                             string EffectDiscription1()
                             {
-                                return "[Start of Your Main Phase] This Digimon attacks.";
+                                return "[Start of Your Main Phase] Attack with this Digimon.";
                             }
 
                             bool CanUseCondition1(Hashtable hashtable1)
@@ -185,9 +189,9 @@ namespace DCGO.CardEffects
                             {
                                 if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
                                 {
-                                    if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
+                                    if (!selectedEnemy.TopCard.CanNotBeAffected(activateClass))
                                     {
-                                        if (selectedPermanent.CanAttack(activateClass1))
+                                        if (selectedEnemy.CanAttack(activateClass1))
                                         {
                                             return true;
                                         }
@@ -201,7 +205,7 @@ namespace DCGO.CardEffects
                             {
                                 if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
                                 {
-                                    if (selectedPermanent.CanAttack(activateClass1))
+                                    if (selectedEnemy.CanAttack(activateClass1))
                                     {
                                         SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
 

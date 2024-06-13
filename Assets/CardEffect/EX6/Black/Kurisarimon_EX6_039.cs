@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.EX6
 {
     public class Kurisarimon_EX6_039 : CEntity_Effect
     {
