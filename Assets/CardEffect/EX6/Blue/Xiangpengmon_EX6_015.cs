@@ -339,9 +339,9 @@ namespace DCGO.CardEffects.EX6
                         {
                             if (CardEffectCommons.CanTriggerOnAddDigivolutionCard(
                                     hashtable: hashtable,
-                                    permanentCondition: permanent => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card),
+                                    permanentCondition: permanent => permanent == card.PermanentOfThisCard(),
                                     cardEffectCondition: cardEffect =>
-                                        cardEffect.EffectSourceCard != null,
+                                        cardEffect != null,
                                     cardCondition: null))
                             {
                                 return true;
