@@ -199,7 +199,7 @@ namespace DCGO.CardEffects.EX6
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to add bottom digivolution source.", "The opponent is selecting 1 Digimon to add bottom digivolution source.");
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will not be affected by the effect's of your opponent's Digimon.", "The opponent is selecting 1 Digimon that will not be affected by the effect's of your Digimon.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
