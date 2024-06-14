@@ -181,7 +181,7 @@ namespace DCGO.CardEffects.EX6
             
             #endregion
             
-            #region Opponents Turn - ESS
+            #region Your Turn - ESS
             
             if (timing == EffectTiming.None)
             {
