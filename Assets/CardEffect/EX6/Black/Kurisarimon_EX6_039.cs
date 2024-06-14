@@ -324,12 +324,9 @@ namespace DCGO.CardEffects.EX6
                 {
                     if (CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card))
                     {
-                        if (card.PermanentOfThisCard().TopCard.ContainsTraits("Unidentified"))
+                        if (card.Owner.fieldCardFrames.Count((frame) => frame.IsEmptyFrame()) >= 1)
                         {
-                            if (card.Owner.fieldCardFrames.Count((frame) => frame.IsEmptyFrame()) >= 1)
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
 
@@ -338,7 +335,19 @@ namespace DCGO.CardEffects.EX6
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayDiaboromonToken(activateClass));
+                    List<Hashtable> deletionHashtables = CardEffectCommons.GetHashtablesFromHashtable(_hashtable);
+
+                    if (deletionHashtables.Count > 0)
+                    {
+                        Hashtable hash = deletionHashtables[0];
+                        if (hash.ContainsKey("TopCard") && hash["TopCard"] is CardSource)
+                        {
+                            CardSource source = (CardSource)hash["TopCard"];
+
+                            if (card.ContainsTraits("Unidentified"))
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayDiaboromonToken(activateClass));
+                        }
+                    }
                 }
             }
             #endregion

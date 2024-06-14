@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 using System.Linq;
 
 namespace DCGO.CardEffects.EX6
@@ -111,9 +112,20 @@ namespace DCGO.CardEffects.EX6
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    if(card.PermanentOfThisCard().TopCard.ContainsTraits("Unidentified"))
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayDiaboromonToken(activateClass));
+                {              
+                    List<Hashtable> deletionHashtables = CardEffectCommons.GetHashtablesFromHashtable(hashtable);
+
+                    if(deletionHashtables.Count > 0)
+                    {
+                        Hashtable hash = deletionHashtables[0];
+                        if (hash.ContainsKey("TopCard") && hash["TopCard"] is CardSource)
+                        {
+                            CardSource source = (CardSource)hash["TopCard"];
+
+                            if(card.ContainsTraits("Unidentified"))
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayDiaboromonToken(activateClass));
+                        }
+                    }
                 }
             }
             #endregion

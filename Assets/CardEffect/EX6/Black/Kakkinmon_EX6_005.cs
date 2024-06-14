@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 using System.Linq;
 
 namespace DCGO.CardEffects.EX6
@@ -46,43 +47,35 @@ namespace DCGO.CardEffects.EX6
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    CardSource selectedSource = null;
-
                     SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                     selectCardEffect.SetUp(
-                        canTargetCondition: null,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        canNoSelect: () => true,
-                        selectCardCoroutine: SelectCardCoroutine,
-                        afterSelectCardCoroutine: null,
-                        message: "Select 1 card with [Legend-Arms] trait to hand",
-                        maxCount: 1,
-                        canEndNotMax: false,
-                        isShowOpponent: true,
-                        mode: SelectCardEffect.Mode.AddHand,
-                        root: SelectCardEffect.Root.Custom,
-                        customRootCardList: card.PermanentOfThisCard().DigivolutionCards.Where(HasLegendArms).ToList(),
-                        canLookReverseCard: false,
-                        selectPlayer: card.Owner,
-                        cardEffect: activateClass);
+                                canTargetCondition: HasLegendArms,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                canNoSelect: () => true,
+                                selectCardCoroutine: null,
+                                afterSelectCardCoroutine: AfterSelectCardCoroutine,
+                                message: "Select 1 digivolution card to add to your hand.",
+                                maxCount: 1,
+                                canEndNotMax: false,
+                                isShowOpponent: true,
+                                mode: SelectCardEffect.Mode.AddHand,
+                                root: SelectCardEffect.Root.Custom,
+                                customRootCardList: card.PermanentOfThisCard().DigivolutionCards.Where(HasLegendArms).ToList(),
+                                canLookReverseCard: false,
+                                selectPlayer: card.Owner,
+                                cardEffect: activateClass);
 
                     yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 
-                    IEnumerator SelectCardCoroutine(CardSource cardSource)
+                    IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
                     {
-                        if (cardSource != null)
-                            selectedSource = cardSource;
+                        if (cardSources.Count > 0)
+                            yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
 
                         yield return null;
                     }
-
-                    if(selectedSource != null)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
-                    }
-
                 }
             }
             #endregion

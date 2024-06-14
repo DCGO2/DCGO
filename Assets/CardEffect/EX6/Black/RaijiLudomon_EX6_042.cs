@@ -154,14 +154,14 @@ namespace DCGO.CardEffects.EX6
                                 activateClass));
 
                             ActivateClass activateClass1 = new ActivateClass();
-                            activateClass1.SetUpICardEffect("Attack with this Digimon", CanUseCondition1, selectedPermanent.TopCard);
+                            activateClass1.SetUpICardEffect("Attack with this Digimon", CanUseCondition1, selectedEnemy.TopCard);
                             activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDiscription1());
-                            activateClass1.SetEffectSourcePermanent(selectedPermanent);
-                            selectedPermanent.UntilOwnerTurnEndEffects.Add(GetCardEffect);
+                            activateClass1.SetEffectSourcePermanent(selectedEnemy);
+                            selectedEnemy.UntilOwnerTurnEndEffects.Add(GetCardEffect);
 
                             if (!selectedEnemy.TopCard.CanNotBeAffected(activateClass))
                             {
-                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(selectedPermanent));
+                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(selectedEnemy));
                             }
 
                             string EffectDiscription1()
@@ -171,11 +171,11 @@ namespace DCGO.CardEffects.EX6
 
                             bool CanUseCondition1(Hashtable hashtable1)
                             {
-                                if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
+                                if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedEnemy))
                                 {
-                                    if (selectedPermanent.TopCard.Owner.GetBattleAreaDigimons().Contains(selectedPermanent))
+                                    if (selectedEnemy.TopCard.Owner.GetBattleAreaDigimons().Contains(selectedEnemy))
                                     {
-                                        if (GManager.instance.turnStateMachine.gameContext.TurnPlayer == selectedPermanent.TopCard.Owner)
+                                        if (GManager.instance.turnStateMachine.gameContext.TurnPlayer == selectedEnemy.TopCard.Owner)
                                         {
                                             return true;
                                         }
@@ -210,7 +210,7 @@ namespace DCGO.CardEffects.EX6
                                         SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
 
                                         selectAttackEffect.SetUp(
-                                            attacker: selectedPermanent,
+                                            attacker: selectedEnemy,
                                             canAttackPlayerCondition: () => true,
                                             defenderCondition: (permanent) => true,
                                             cardEffect: activateClass1);
