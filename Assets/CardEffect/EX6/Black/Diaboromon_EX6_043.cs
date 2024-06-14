@@ -58,7 +58,7 @@ namespace DCGO.CardEffects.EX6
 
                 string EffectDiscription()
                 {
-                    return "[Start of Your Main Phase] You may play 1 [Diaboromon] (Digimon | 14 Cost | Level 6 | White | Mega | Unknown | Unidentified | DP3000) Token without paying the cost.";
+                    return "[When Digivolving] You may play 1 [Diaboromon] (Digimon | 14 Cost | Level 6 | White | Mega | Unknown | Unidentified | DP3000) Token without paying the cost.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -91,7 +91,8 @@ namespace DCGO.CardEffects.EX6
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Activate 1 [When Digivolving] effect", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetHashString("PlayToken_EX6_043");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -116,30 +117,111 @@ namespace DCGO.CardEffects.EX6
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    //TODO: Add Magnamon X BT16 effect here
-                    yield return null;
+                    List<ICardEffect> candidateEffects = card.PermanentOfThisCard().EffectList(EffectTiming.OnEnterFieldAnyone)
+                        .Clone()
+                        .Filter(cardEffect => cardEffect != null && cardEffect is ActivateICardEffect && !cardEffect.IsSecurityEffect && cardEffect.IsWhenDigivolving);
+
+                    if (candidateEffects.Count >= 1)
+                    {
+                        ICardEffect selectedEffect = null;
+
+                        if (candidateEffects.Count == 1)
+                        {
+                            selectedEffect = candidateEffects[0];
+                        }
+
+                        else
+                        {
+                            List<SkillInfo> skillInfos = candidateEffects
+                                .Map(cardEffect => new SkillInfo(cardEffect, null, EffectTiming.None));
+
+                            List<CardSource> cardSources = candidateEffects
+                                .Map(cardEffect => cardEffect.EffectSourceCard);
+
+                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                            selectCardEffect.SetUp(
+                                canTargetCondition: (cardSource) => true,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                canNoSelect: () => false,
+                                selectCardCoroutine: null,
+                                afterSelectCardCoroutine: null,
+                                message: "Select 1 effect to activate.",
+                                maxCount: 1,
+                                canEndNotMax: false,
+                                isShowOpponent: false,
+                                mode: SelectCardEffect.Mode.Custom,
+                                root: SelectCardEffect.Root.Custom,
+                                customRootCardList: cardSources,
+                                canLookReverseCard: true,
+                                selectPlayer: card.Owner,
+                                cardEffect: activateClass);
+
+                            selectCardEffect.SetNotShowCard();
+                            selectCardEffect.SetUpSkillInfos(skillInfos);
+                            selectCardEffect.SetUpAfterSelectIndexCoroutine(AfterSelectIndexCoroutine);
+
+                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+
+                            IEnumerator AfterSelectIndexCoroutine(List<int> selectedIndexes)
+                            {
+                                if (selectedIndexes.Count == 1)
+                                {
+                                    selectedEffect = candidateEffects[selectedIndexes[0]];
+                                    yield return null;
+                                }
+                            }
+                        }
+
+                        if (selectedEffect != null)
+                        {
+                            Hashtable effectHashtable = CardEffectCommons.WhenDigivolvingCheckHashtableOfCard(selectedEffect.EffectSourceCard);
+
+                            yield return ContinuousController.instance.StartCoroutine(
+                                ((ActivateICardEffect)selectedEffect).Activate_Optional_Effect_Execute(effectHashtable));
+
+                        }
+                    }
                 }
             }
 
             if (timing == EffectTiming.None)
             {
-                foreach(Permanent permanent in card.Owner.GetBattleAreaDigimons())
+                bool CanUseCondition()
                 {
-                    if(permanent.TopCard == card)
-                        continue;
-
-                    if(!permanent.HasBlocker)
-                        cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(
-                            isInheritedEffect: false,
-                            card: permanent.TopCard,
-                            condition: null));
-
-                    if (!permanent.HasJamming)
-                        cardEffects.Add(CardEffectFactory.JammingSelfStaticEffect(
-                            isInheritedEffect: false,
-                            card: permanent.TopCard,
-                            condition: null));
+                    return CardEffectCommons.IsExistOnBattleArea(card);
                 }
+
+                bool PermanentCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                    {
+                        if (permanent != card.PermanentOfThisCard())
+                        {
+                            if (permanent.TopCard.ContainsCardName("Diaboromon"))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+
+                    return false;
+                }
+
+                cardEffects.Add(CardEffectFactory.BlockerStaticEffect(
+                    permanentCondition: PermanentCondition,
+                    isInheritedEffect: false,
+                    card: card,
+                    condition: CanUseCondition
+                ));
+
+                cardEffects.Add(CardEffectFactory.JammingStaticEffect(
+                    permanentCondition: PermanentCondition,
+                    isInheritedEffect: false,
+                    card: card,
+                    condition: CanUseCondition
+                ));
             }
             #endregion
 

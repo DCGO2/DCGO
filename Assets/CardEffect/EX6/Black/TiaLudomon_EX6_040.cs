@@ -74,8 +74,6 @@ namespace DCGO.CardEffects.EX6
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(-1, activateClass));
-                    
                     if (CardEffectCommons.HasMatchConditionPermanent(IsLevel3OrHasLegendArmsTrait))
                     {
                         Permanent selectedPermanent = null;
@@ -109,6 +107,8 @@ namespace DCGO.CardEffects.EX6
 
                         if (selectedPermanent != null)
                         {
+                            yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(-1, activateClass));
+
                             yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(
                                 new List<CardSource>() { card },
                                 activateClass));

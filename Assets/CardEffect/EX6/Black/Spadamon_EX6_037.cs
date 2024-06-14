@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 using System.Linq;
 
 namespace DCGO.CardEffects.EX6
@@ -16,7 +17,7 @@ namespace DCGO.CardEffects.EX6
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.CardNames.Contains("Shakuttomon") && targetPermanent.TopCard.CardNames.Contains("Kakkinmon");
+                    return targetPermanent.TopCard.ContainsCardName("Shakuttomon") || targetPermanent.TopCard.ContainsCardName("Kakkinmon");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
@@ -145,46 +146,36 @@ namespace DCGO.CardEffects.EX6
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    CardSource selectedSource = null;
-
                     if (card.Owner.HandCards.Count(HasLegendArmInTrait) > 0)
                     {
-                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
-                        selectCardEffect.SetUp(
-                            canTargetCondition: null,
+                        selectHandEffect.SetUp(
+                            canTargetCondition: HasLegendArmInTrait,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            canNoSelect: () => true,
-                            selectCardCoroutine: SelectCardCoroutine,
-                            afterSelectCardCoroutine: null,
-                            message: "Discard 1 card with [Legend-Arms] trait to hand",
+                            canNoSelect: true,
+                            selectCardCoroutine: null,
+                            afterSelectCardCoroutine: AfterSelectCardCoroutine,
                             maxCount: 1,
                             canEndNotMax: false,
                             isShowOpponent: true,
-                            mode: SelectCardEffect.Mode.Discard,
-                            root: SelectCardEffect.Root.Hand,
-                            customRootCardList: card.Owner.HandCards.Where(HasLegendArmInTrait).ToList(),
-                            canLookReverseCard: false,
+                            mode: SelectHandEffect.Mode.Discard,
                             selectPlayer: card.Owner,
                             cardEffect: activateClass);
 
-                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                        selectHandEffect.SetUpCustomMessage("Select 1 card with [Legend-Arms] trait to discard.", "The opponent is selecting 1 card with [Legend-Arms] trait to discard.");
+                        
+                        yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
 
-                        IEnumerator SelectCardCoroutine(CardSource cardSource)
+                        IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
                         {
-                            if (cardSource != null)
-                                selectedSource = cardSource;
+                            if (cardSources.Count > 0)
+                                yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 2, activateClass).Draw());
 
                             yield return null;
                         }
-
-                        if (selectedSource != null)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 2, activateClass).Draw());
-                        }
                     }
-                    yield return null;
                 }
             }
             #endregion

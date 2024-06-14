@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace DCGO.CardEffects.EX6
 {
@@ -81,18 +82,6 @@ namespace DCGO.CardEffects.EX6
                     return false;
                 }
 
-                bool IsEnemyPermanent(Permanent permanent)
-                {
-                    if(CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)){
-                        if(permanent.HasDP && permanent.DP <= card.PermanentOfThisCard().DP)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnHand(card))
@@ -109,8 +98,6 @@ namespace DCGO.CardEffects.EX6
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     Permanent selectedPermanent = null;
-
-                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(-3, activateClass));
 
                     if (CardEffectCommons.HasMatchConditionPermanent(IsLevel6OrHasLegendArmsTrait))
                     {
@@ -144,11 +131,13 @@ namespace DCGO.CardEffects.EX6
 
                     if (selectedPermanent != null)
                     {
+                        yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(-3, activateClass));
+
                         yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(
                                 new List<CardSource>() { card },
                                 activateClass));
 
-                        List<Permanent> enemyPermanents = card.Owner.Enemy.GetBattleAreaDigimons().Where(IsEnemyPermanent).ToList();
+                        List<Permanent> enemyPermanents = card.Owner.Enemy.GetBattleAreaDigimons().Where(x => x.DP <= selectedPermanent.DP).ToList();
 
                         foreach(Permanent permanent in enemyPermanents)
                         {
