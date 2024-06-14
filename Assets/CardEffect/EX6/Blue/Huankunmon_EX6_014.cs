@@ -370,10 +370,8 @@ namespace DCGO.CardEffects.EX6
                         {
                             if (permanent.TopCard.CardColors.Contains(CardColor.Blue))
                             {
-                                if (!permanent.IsToken)
-                                {
+                                if (!permanent.TopCard.Equals(card))
                                     return true;
-                                }
                             }
                         }
                     }
@@ -406,6 +404,8 @@ namespace DCGO.CardEffects.EX6
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
+                        List<CardSource> selectedCards = new List<CardSource>();
+                        
                         // If there is another blue Digimon in owner Battle Area  
                         int maxCount = Math.Min(1,
                             CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
@@ -426,32 +426,29 @@ namespace DCGO.CardEffects.EX6
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
                         
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to place in digivolution cards.",
-                            "The opponent is selecting 1 Digimon to place in digivolution cards.");
+                        selectPermanentEffect.SetUpCustomMessage(
+                            "Select 1 card to place on bottom of digivolution cards.",
+                            "The opponent is selecting 1 card to place on bottom of digivolution cards.");
                         
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                         
-                        IEnumerator SelectPermanentCoroutine(Permanent selectedPermanent)
+                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
-                            CardSource topCard = selectedPermanent.TopCard;
+                            selectedCards.Add(permanent.TopCard);
                             
-                            // Place that card as the bottom digivolution card of this Digimon
+                            yield return null;
+                        }
+                        
+                        if (selectedCards.Count >= 1)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard()
+                                .AddDigivolutionCardsBottom(
+                                    selectedCards,
+                                    activateClass));
+                            
                             yield return ContinuousController.instance.StartCoroutine(
-                                new IPlacePermanentToDigivolutionCards(
-                                    new List<Permanent[]>()
-                                        { new Permanent[] { selectedPermanent, card.PermanentOfThisCard() } }, false,
-                                    activateClass).PlacePermanentToDigivolutionCards());
-                            
-                            // Then unsuspend this Digimon
-                            if (selectedPermanent.TopCard == null && CardEffectCommons.IsExistOnBattleArea(card))
-                            {
-                                if (card.PermanentOfThisCard().DigivolutionCards.Contains(topCard))
-                                {
-                                    yield return ContinuousController.instance.StartCoroutine(
-                                        new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() },
-                                            activateClass).Unsuspend());
-                                }
-                            }
+                                new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() },
+                                    activateClass).Unsuspend());
                         }
                     }
                 }

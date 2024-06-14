@@ -39,6 +39,49 @@ namespace DCGO.CardEffects.EX6
             
             #endregion
             
+            #region On Play/When Digivolving Shared
+            
+            string EffectSharedDescription()
+            {
+                return
+                    "[On Play] [When Digivolving] You may place up to 3 of your other blue Digimon as this Digimon's bottom digivolution cards. Then, return all other level 4 or lower Digimon to the hand. For each card placed in this Digimon's digivolution cards, add 1 to the level this effect may return.";
+            }
+            
+            bool CanSelectSharedOwnPermanentCondition(Permanent permanent)
+            {
+                if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                {
+                    if (permanent != card.PermanentOfThisCard())
+                    {
+                        if (permanent.TopCard.CardColors.Contains(CardColor.Blue))
+                        {
+                            if (!permanent.TopCard.Equals(card))
+                                return true;
+                        }
+                    }
+                }
+                
+                return false;
+            }
+            
+            bool CanActivateSharedCondition(Hashtable hashtable)
+            {
+                if (CardEffectCommons.IsExistOnBattleArea(card))
+                {
+                    if (!card.PermanentOfThisCard().IsToken)
+                    {
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectSharedOwnPermanentCondition))
+                        {
+                            return true;
+                        }
+                    }
+                }
+                
+                return false;
+            }
+            
+            #endregion
+            
             #region On Play/ When Digivolving
             
             // On Play
@@ -48,72 +91,31 @@ namespace DCGO.CardEffects.EX6
                 activateClass.SetUpICardEffect(
                     "You may place up to 3 of your other blue Digimon as this Digimon's bottom digivolution cards. Then, return all other level 4 or lower Digimon to the hand. For each card placed in this Digimon's digivolution cards, add 1 to the level this effect may return.",
                     CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true,
-                    EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, true,
+                    EffectSharedDescription());
                 cardEffects.Add(activateClass);
-                
-                string EffectDescription()
-                {
-                    return
-                        "[On Play] You may place up to 3 of your other blue Digimon as this Digimon's bottom digivolution cards. Then, return all other level 4 or lower Digimon to the hand. For each card placed in this Digimon's digivolution cards, add 1 to the level this effect may return.";
-                }
-                
-                bool CanSelectPermanentCondition(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
-                    {
-                        if (permanent != card.PermanentOfThisCard())
-                        {
-                            if (permanent.TopCard.CardColors.Contains(CardColor.Blue))
-                            {
-                                if (!permanent.IsToken)
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-                    
-                    return false;
-                }
                 
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
                 
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (!card.PermanentOfThisCard().IsToken)
-                        {
-                            if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-                    
-                    return false;
-                }
-                
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CanActivateSharedCondition(hashtable))
                     {
+                        List<CardSource> selectedCards = new List<CardSource>();
+                        
                         // If there is other blue Digimon in owner Battle Area  
                         int maxCount = Math.Min(3,
-                            CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-                        
-                        int choiceCount = 0;
+                            CardEffectCommons.MatchConditionPermanentCount(CanSelectSharedOwnPermanentCondition));
                         
                         SelectPermanentEffect selectPermanentEffect =
                             GManager.instance.GetComponent<SelectPermanentEffect>();
                         
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectPermanentCondition,
+                            canTargetCondition: CanSelectSharedOwnPermanentCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: CanEndSelectCondition,
                             maxCount: maxCount,
@@ -125,8 +127,8 @@ namespace DCGO.CardEffects.EX6
                             cardEffect: activateClass);
                         
                         selectPermanentEffect.SetUpCustomMessage(
-                            "Select up to 3 Digimon to place in digivolution cards.",
-                            "The opponent is selecting up to 3 Digimon to place in digivolution cards.");
+                            "Select up to 3 Digimon to place on bottom of digivolution cards.",
+                            "The opponent is selecting up to 3 Digimon to place on bottom of digivolution cards.");
                         
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                         
@@ -142,27 +144,30 @@ namespace DCGO.CardEffects.EX6
                         
                         IEnumerator SelectPermanentCoroutine(Permanent selectedPermanent)
                         {
-                            choiceCount++;
+                            selectedCards.Add(selectedPermanent.TopCard);
                             
-                            // Place the cards as the bottom digivolution cards of this Digimon
-                            yield return ContinuousController.instance.StartCoroutine(
-                                new IPlacePermanentToDigivolutionCards(
-                                    new List<Permanent[]>()
-                                        { new Permanent[] { selectedPermanent, card.PermanentOfThisCard() } }, false,
-                                    activateClass).PlacePermanentToDigivolutionCards());
+                            yield return null;
                         }
                         
-                        bool PermanentConditionEnemy(Permanent enemyPermanent)
+                        if (selectedCards.Count >= 1)
                         {
-                            return enemyPermanent.Level <= 4 + choiceCount;
+                            yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard()
+                                .AddDigivolutionCardsBottom(
+                                    selectedCards,
+                                    activateClass));
+                            
+                            bool PermanentConditionEnemy(Permanent enemyPermanent)
+                            {
+                                return enemyPermanent.Level <= 4 + selectedCards.Count;
+                            }
+                            
+                            // Return all opponent's Digimon with a level lower or equal to 4 plus the number of chosen Digimon
+                            List<Permanent> bounceTargetPermanents = card.Owner.Enemy.GetBattleAreaDigimons()
+                                .Filter(PermanentConditionEnemy);
+                            yield return ContinuousController.instance.StartCoroutine(
+                                new HandBounceClaass(bounceTargetPermanents,
+                                    CardEffectCommons.CardEffectHashtable(activateClass)).Bounce());
                         }
-                        
-                        // Return all opponent's Digimon with a level lower or equal to 4 plus the number of chosen Digimon
-                        List<Permanent> bounceTargetPermanents = card.Owner.Enemy.GetBattleAreaDigimons()
-                            .Filter(PermanentConditionEnemy);
-                        yield return ContinuousController.instance.StartCoroutine(
-                            new HandBounceClaass(bounceTargetPermanents,
-                                CardEffectCommons.CardEffectHashtable(activateClass)).Bounce());
                     }
                 }
             }
@@ -174,72 +179,31 @@ namespace DCGO.CardEffects.EX6
                 activateClass.SetUpICardEffect(
                     "You may place up to 3 of your other blue Digimon as this Digimon's bottom digivolution cards. Then, return all other level 4 or lower Digimon to the hand. For each card placed in this Digimon's digivolution cards, add 1 to the level this effect may return.",
                     CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true,
-                    EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, true,
+                    EffectSharedDescription());
                 cardEffects.Add(activateClass);
-                
-                string EffectDescription()
-                {
-                    return
-                        "[When Digivolving] You may place up to 3 of your other blue Digimon as this Digimon's bottom digivolution cards. Then, return all other level 4 or lower Digimon to the hand. For each card placed in this Digimon's digivolution cards, add 1 to the level this effect may return.";
-                }
-                
-                bool CanSelectPermanentCondition(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
-                    {
-                        if (permanent != card.PermanentOfThisCard())
-                        {
-                            if (permanent.TopCard.CardColors.Contains(CardColor.Blue))
-                            {
-                                if (!permanent.IsToken)
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-                    
-                    return false;
-                }
                 
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
                 
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (!card.PermanentOfThisCard().IsToken)
-                        {
-                            if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-                    
-                    return false;
-                }
-                
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CanActivateSharedCondition(hashtable))
                     {
+                        List<CardSource> selectedCards = new List<CardSource>();
+                        
                         // If there is other blue Digimon in owner Battle Area  
                         int maxCount = Math.Min(3,
-                            CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-                        
-                        int choiceCount = 0;
+                            CardEffectCommons.MatchConditionPermanentCount(CanSelectSharedOwnPermanentCondition));
                         
                         SelectPermanentEffect selectPermanentEffect =
                             GManager.instance.GetComponent<SelectPermanentEffect>();
                         
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectPermanentCondition,
+                            canTargetCondition: CanSelectSharedOwnPermanentCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: CanEndSelectCondition,
                             maxCount: maxCount,
@@ -251,8 +215,8 @@ namespace DCGO.CardEffects.EX6
                             cardEffect: activateClass);
                         
                         selectPermanentEffect.SetUpCustomMessage(
-                            "Select up to 3 Digimon to place in digivolution cards.",
-                            "The opponent is selecting up to 3 Digimon to place in digivolution cards.");
+                            "Select up to 3 Digimon to place on bottom of digivolution cards.",
+                            "The opponent is selecting up to 3 Digimon to place on bottom of digivolution cards.");
                         
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                         
@@ -268,27 +232,30 @@ namespace DCGO.CardEffects.EX6
                         
                         IEnumerator SelectPermanentCoroutine(Permanent selectedPermanent)
                         {
-                            choiceCount++;
+                            selectedCards.Add(selectedPermanent.TopCard);
                             
-                            // Place the cards as the bottom digivolution cards of this Digimon
-                            yield return ContinuousController.instance.StartCoroutine(
-                                new IPlacePermanentToDigivolutionCards(
-                                    new List<Permanent[]>()
-                                        { new Permanent[] { selectedPermanent, card.PermanentOfThisCard() } }, false,
-                                    activateClass).PlacePermanentToDigivolutionCards());
+                            yield return null;
                         }
                         
-                        bool PermanentConditionEnemy(Permanent enemyPermanent)
+                        if (selectedCards.Count >= 1)
                         {
-                            return enemyPermanent.Level <= 4 + choiceCount;
+                            yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard()
+                                .AddDigivolutionCardsBottom(
+                                    selectedCards,
+                                    activateClass));
+                            
+                            bool PermanentConditionEnemy(Permanent enemyPermanent)
+                            {
+                                return enemyPermanent.Level <= 4 + selectedCards.Count;
+                            }
+                            
+                            // Return all opponent's Digimon with a level lower or equal to 4 plus the number of chosen Digimon
+                            List<Permanent> bounceTargetPermanents = card.Owner.Enemy.GetBattleAreaDigimons()
+                                .Filter(PermanentConditionEnemy);
+                            yield return ContinuousController.instance.StartCoroutine(
+                                new HandBounceClaass(bounceTargetPermanents,
+                                    CardEffectCommons.CardEffectHashtable(activateClass)).Bounce());
                         }
-                        
-                        // Return all opponent's Digimon with a level lower or equal to 4 plus the number of chosen Digimon
-                        List<Permanent> bounceTargetPermanents = card.Owner.Enemy.GetBattleAreaDigimons()
-                            .Filter(PermanentConditionEnemy);
-                        yield return ContinuousController.instance.StartCoroutine(
-                            new HandBounceClaass(bounceTargetPermanents,
-                                CardEffectCommons.CardEffectHashtable(activateClass)).Bounce());
                     }
                 }
             }
