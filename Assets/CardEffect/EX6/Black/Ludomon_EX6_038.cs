@@ -172,7 +172,7 @@ namespace DCGO.CardEffects.EX6
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (!CardEffectCommons.IsOwnerTurn(card))
+                        if (CardEffectCommons.IsOpponentTurn(card))
                         {
                             return true;
                         }
