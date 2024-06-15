@@ -127,12 +127,13 @@ public partial class CardEffectCommons
         ICardEffect cardEffect,
         SelectCardEffect.Root root = SelectCardEffect.Root.Hand,
         bool isBreedingArea = false,
-        bool isPlayOption = false) =>
+        bool isPlayOption = false,
+        int fixedCost = -1) =>
     cardSource != null &&
     (isPlayOption || !cardSource.IsOption)
     && cardSource.Owner.fieldCardFrames.Some((frame) =>
     frame.IsEmptyFrame()
-    && cardSource.CanPlayCardTargetFrame(frame, payCost, cardEffect, root, isBreedingArea: isBreedingArea));
+    && cardSource.CanPlayCardTargetFrame(frame, payCost, cardEffect, root, isBreedingArea: isBreedingArea, fixedCost:fixedCost));
 
     #endregion
 

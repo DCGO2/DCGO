@@ -18,7 +18,8 @@ public partial class CardEffectCommons
             cardSource: cardSource,
             payCost: payCost,
             cardEffect: activateClass,
-            isBreedingArea: isBreedingArea));
+            isBreedingArea: isBreedingArea,
+            fixedCost: fixedCost));
 
         if (cardSources.Count == 0) yield break;
 
@@ -32,12 +33,10 @@ public partial class CardEffectCommons
                 activateETB: activateETB);
 
         if (isBreedingArea)
-        {
             playCardClass.SetIsBreedingArea();
-        }
 
         playCardClass.SetFixedCost(fixedCost);
-
+        
         yield return ContinuousController.instance.StartCoroutine(playCardClass.PlayCard());
     }
 
