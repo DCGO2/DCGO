@@ -198,7 +198,7 @@ namespace DCGO.CardEffects.BT16
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionPermanent(SelectCardCondition))
+                    if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, SelectCardCondition))
                     {
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
