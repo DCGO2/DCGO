@@ -19,7 +19,7 @@ namespace DCGO.CardEffects.ST17
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    if ((targetPermanent.TopCard.CardNames.Contains("Rapidmon") && targetPermanent.Level == 4))
+                    if ((targetPermanent.TopCard.ContainsCardName("Rapidmon") && targetPermanent.Level == 4))
                     {
                         return true;
                     }
@@ -33,7 +33,7 @@ namespace DCGO.CardEffects.ST17
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    if ((targetPermanent.TopCard.CardNames.Contains("Rapidmon") && targetPermanent.Level == 5))
+                    if ((targetPermanent.TopCard.ContainsCardName("Rapidmon") && targetPermanent.Level == 5))
                     {
                         return true;
                     }

@@ -1912,7 +1912,9 @@ public class DeckBottomBounceClass
         permanent != null
         && permanent.TopCard != null
         && (cardEffect == null ||
-        (!permanent.TopCard.CanNotBeAffected(cardEffect) && !permanent.CannotReturnToLibrary(cardEffect))));
+        (!permanent.TopCard.CanNotBeAffected(cardEffect) 
+        && !permanent.CannotReturnToLibrary(cardEffect)
+        && permanent.CanBeRemoved())));
 
         if (_deckBounceTargetPermanents.Count == 0) yield break;
 
@@ -2044,7 +2046,9 @@ public class HandBounceClaass
         permanent != null
         && permanent.TopCard != null
         && (cardEffect == null ||
-        (!permanent.TopCard.CanNotBeAffected(cardEffect) && !permanent.CannotReturnToHand(cardEffect))));
+        (!permanent.TopCard.CanNotBeAffected(cardEffect) 
+        && !permanent.CannotReturnToHand(cardEffect)
+        && permanent.CanBeRemoved())));
 
         if (_bounceTargetPermanents.Count == 0) yield break;
 
@@ -2519,7 +2523,9 @@ public class IPutSecurityPermanent
         ICardEffect cardEffect = CardEffectCommons.GetCardEffectFromHashtable(_hashtable);
 
         if (_permanent.TopCard.CanNotBeAffected(cardEffect) || !_permanent.TopCard.Owner.CanAddSecurity(cardEffect)) yield break;
+        if (!_permanent.CanBeRemoved()) yield break;
 
+        _permanent.willBeRemoveField = true;
         #region "When permanents would remove field" effect
 
         yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.StackSkillInfos(
@@ -2546,7 +2552,7 @@ public class IPutSecurityPermanent
 
         CardSource topCard = _permanent.TopCard;
 
-        if (_permanent.willBeRemoveField)
+        if (!_permanent.willBeRemoveField)
             yield break;
 
         if (topCard == null) 
@@ -2638,7 +2644,8 @@ public class DestroyPermanentsClass
         permanent != null
         && permanent.TopCard != null
         && (cardEffect == null ||
-        (!permanent.TopCard.CanNotBeAffected(cardEffect) && permanent.CanBeDestroyedBySkill(cardEffect))));
+        (!permanent.TopCard.CanNotBeAffected(cardEffect) 
+        && permanent.CanBeDestroyedBySkill(cardEffect))));
 
         if (_destroytargetPermanents.Count == 0) yield break;
 

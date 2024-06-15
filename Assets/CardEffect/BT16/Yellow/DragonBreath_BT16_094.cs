@@ -278,7 +278,7 @@ namespace DCGO.CardEffects.BT16
                                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
                                             selectedPermanent,
                                             -7000,
-                                            EffectDuration.UntilEachTurnEnd,
+                                            EffectDuration.UntilOpponentTurnEnd,
                                             activateClass)
                                             );
                                     }
@@ -308,10 +308,7 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent.CanSelectBySkill(activateClass))
-                        {
-                            return true;
-                        }
+                        return true;
                     }
 
                     return false;
@@ -343,6 +340,10 @@ namespace DCGO.CardEffects.BT16
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
+                        selectPermanentEffect.SetUpCustomMessage(
+                        "Select 1 Digimon that will get DP -7000.",
+                        "The opponent is selecting 1 Digimon that will get DP -7000.");
+
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
@@ -352,17 +353,15 @@ namespace DCGO.CardEffects.BT16
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
                                 selectedPermanent,
                                 -7000,
-                                EffectDuration.UntilEachTurnEnd,
+                                EffectDuration.UntilOpponentTurnEnd,
                                 activateClass)
                                 );
+                     
                         }
                     }
-                }
-            }
 
-            if (timing == EffectTiming.SecuritySkill)
-            {
-                cardEffects.Add(CardEffectFactory.PlaceSelfDelayOptionSecurityEffect(card));
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlaceDelayOptionCards(card: card, cardEffect: activateClass));
+                }
             }
             #endregion
 
