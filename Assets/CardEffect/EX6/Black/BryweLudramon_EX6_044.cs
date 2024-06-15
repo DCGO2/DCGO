@@ -271,8 +271,6 @@ namespace DCGO.CardEffects.EX6
                 canNotBeRemovedClass.SetIsInheritedEffect(true);
                 selectedPermanent.UntilOpponentTurnEndEffects.Add((_timing) => canNotBeRemovedClass);
 
-                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateBuffEffect(selectedPermanent));
-
                 bool CanUseProtectionCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
