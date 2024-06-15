@@ -13,9 +13,9 @@ namespace DCGO.CardEffects.BT16
 
             #region Collision and Armor Purge
 
-            if (timing == EffectTiming.OnAllyAttack)
+            if (timing == EffectTiming.OnCounterTiming)
             {
-                cardEffects.Add(CardEffectFactory.CollisionSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.CollisionSelfStaticEffect(false, card, null));
             }
 
             if (timing == EffectTiming.WhenPermanentWouldBeDeleted)

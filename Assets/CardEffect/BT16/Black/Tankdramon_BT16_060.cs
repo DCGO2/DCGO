@@ -201,7 +201,7 @@ namespace DCGO.CardEffects.BT16
                                 permanentCondition: PermanentCondition,
                                 changeValue: -costReduction,
                                 setFixedCost: false,
-                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                                effectDuration: EffectDuration.UntilEachTurnEnd,
                                 activateClass: activateClass));
                         }
 

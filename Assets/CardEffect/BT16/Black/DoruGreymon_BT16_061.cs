@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 using System.Linq;
 
 namespace DCGO.CardEffects.BT16
@@ -15,7 +16,7 @@ namespace DCGO.CardEffects.BT16
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    if (targetPermanent.TopCard.CardNames.Contains("Dorugamon"))
+                    if (targetPermanent.TopCard.ContainsCardName("Dorugamon"))
                     {
                         return true;
                     }
@@ -38,8 +39,8 @@ namespace DCGO.CardEffects.BT16
             #endregion
 
             #region Collision
-            if(timing == EffectTiming.OnAllyAttack)
-            {
+            if(timing == EffectTiming.OnCounterTiming)
+            {                
                 cardEffects.Add(CardEffectFactory.CollisionSelfStaticEffect(false,card, null));
             }
             #endregion
@@ -139,7 +140,7 @@ namespace DCGO.CardEffects.BT16
 
                 bool SelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.HasPlayCost && cardSource.BasePlayCostFromEntity <= 5)
+                    if (cardSource.HasPlayCost && cardSource.GetCostItself <= 5)
                     {
                         if (cardSource.CardTraits.Contains("X Antibody") || cardSource.CardTraits.Contains("XAntibody"))
                         {
@@ -149,6 +150,25 @@ namespace DCGO.CardEffects.BT16
                         if (cardSource.ContainsTraits("SoC"))
                         {
                             return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                bool CanSelectPermanentCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                    {
+                        foreach (CardSource cardSource in card.Owner.TrashCards)
+                        {
+                            if (SelectCardCondition(cardSource))
+                            {
+                                if (cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass))
+                                {
+                                    return true;
+                                }
+                            }
                         }
                     }
 
@@ -178,7 +198,7 @@ namespace DCGO.CardEffects.BT16
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (card.Owner.HandCards.Exists(SelectCardCondition))
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 

@@ -270,7 +270,7 @@ namespace DCGO.CardEffects.BT16
 
                 string EffectDiscription()
                 {
-                    return "[All Turns] When one of your other Digimon with the [SoC] trait is deleted, this Digimon with a Tamer with the [SoC] trait in its digivolution cardsmay digivolve into [FenriLoogamon] from your trash without paying the cost.";
+                    return "[All Turns] When one of your other Digimon with the [SoC] trait is deleted, this Digimon with a Tamer with the [SoC] trait in its digivolution cards may digivolve into [FenriLoogamon] from your trash without paying the cost.";
                 }
 
                 bool PermanentCondition(Permanent permanent)
@@ -293,13 +293,10 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (CardEffectCommons.IsOwnerTurn(card))
+                        if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition))
                         {
-                            if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition))
-                            {
-                                return true;
-                            }
-                        }
+                            return true;
+                        } 
                     }
 
                     return false;
@@ -307,11 +304,7 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanSelectFenriInTrash(CardSource cardSource)
                 {
-                    if (cardSource.CardNames.Contains("FenriLoogamon"))
-                    {
-                        return true;
-                    }
-                    return false;
+                    return cardSource.ContainsCardName("FenriLoogamon");
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -331,7 +324,7 @@ namespace DCGO.CardEffects.BT16
                 {
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
                     targetPermanent: card.PermanentOfThisCard(),
-                    cardCondition: cardSource => CanSelectFenriInTrash(cardSource),
+                    cardCondition: CanSelectFenriInTrash,
                     payCost: false,
                     reduceCostTuple: null,
                     fixedCostTuple: null,

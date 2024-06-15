@@ -16,7 +16,7 @@ public class Wendigomon_ST17_04 : CEntity_Effect
         {
             bool PermanentCondition(Permanent targetPermanent)
             {
-                if((targetPermanent.TopCard.CardNames.Contains("Terriermon") && targetPermanent.Level == 3) || (targetPermanent.TopCard.CardNames.Contains("Lopmon") && targetPermanent.Level == 3))
+                if((targetPermanent.TopCard.ContainsCardName("Terriermon") && targetPermanent.Level == 3) || (targetPermanent.TopCard.ContainsCardName("Lopmon") && targetPermanent.Level == 3))
                 {
                     return true;
                 }

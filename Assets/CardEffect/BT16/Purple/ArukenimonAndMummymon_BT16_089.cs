@@ -49,17 +49,25 @@ namespace DCGO.CardEffects.BT16
 
                 bool CardCondition(CardSource cardSource)
                 {
-                    return cardSource.CardNames.Contains("Mummymon") || cardSource.CardNames.Contains("Arukenimon");
+                    if (cardSource.CardNames.Contains("Mummymon") || cardSource.CardNames.Contains("Arukenimon"))
+                    {
+                        if(CardEffectCommons.IsExistOnHand(cardSource))
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.CanTriggerWhenPermanentWouldPlay(hashtable, CardCondition))
                     {
-                        if (CardEffectCommons.IsOwnerTurn(card))
+                        if (card.Owner.HandCards.Count(CardCondition) >= 1)
                         {
                             return true;
                         }
+                        
                     }
 
                     return false;

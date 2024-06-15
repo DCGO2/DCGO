@@ -10,48 +10,24 @@ namespace DCGO.CardEffects.BT16
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            List<PartitionCondition> partitionConditions = new List<PartitionCondition>();
+            partitionConditions.Add(new PartitionCondition(4, CardColor.Blue));
+            partitionConditions.Add(new PartitionCondition(4, CardColor.Green));
+
             #region Partition - Inherited
-            if(timing == EffectTiming.WhenRemoveField)
+            if (timing == EffectTiming.WhenRemoveField)
             {
-                bool CanSelectFirstSourceCondition(CardSource cardSource)
-                {
-                    if(cardSource.HasLevel && cardSource.Level == 4)
-                    {
-                        if(cardSource.CardColors.Contains(CardColor.Blue))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
-                bool CanSelectSecondSourceCondition(CardSource cardSource)
-                {
-                    if (cardSource.HasLevel && cardSource.Level == 4)
-                    {
-                        if (cardSource.CardColors.Contains(CardColor.Green))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
-                cardEffects.Add(CardEffectFactory.PartitionSelfEffect(
-                    isInheritedEffect: false,
-                    card:card,
-                    condition:null,
-                    canSelectFirstSourceCondition: CanSelectFirstSourceCondition,
-                    canSelectSecondSourceCondition: CanSelectSecondSourceCondition));
-
-                cardEffects.Add(CardEffectFactory.PartitionSelfEffect(
-                    isInheritedEffect: true,
+                cardEffects.Add(CardEffectFactory.PartitionSelfEffect
+                    (isInheritedEffect: false,
                     card: card,
                     condition: null,
-                    canSelectFirstSourceCondition: CanSelectFirstSourceCondition,
-                    canSelectSecondSourceCondition: CanSelectSecondSourceCondition));
+                    cardSourceConditions: partitionConditions));
+
+                cardEffects.Add(CardEffectFactory.PartitionSelfEffect
+                    (isInheritedEffect: true,
+                    card: card,
+                    condition: null,
+                    cardSourceConditions: partitionConditions));
             }
             #endregion
 
@@ -149,7 +125,7 @@ namespace DCGO.CardEffects.BT16
             #endregion
 
             #region When Digivolving
-            if (timing == EffectTiming.OnAllyAttack)
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Suspend all your opponent's digimon", CanUseCondition, card);
@@ -264,7 +240,7 @@ namespace DCGO.CardEffects.BT16
                         yield return null;
                     }
 
-                    bool suspendedPermanent = false;
+                    bool suspendedPermanent = true;
 
                     if (selectedPermanent != null)
                     {
@@ -274,7 +250,7 @@ namespace DCGO.CardEffects.BT16
                             {
                                 if (!selectedPermanent.IsSuspended && selectedPermanent.CanSuspend)
                                 {
-                                    suspendedPermanent = true;
+                                    suspendedPermanent = false;
                                 }
                             }
                         }
