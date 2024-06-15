@@ -263,7 +263,44 @@ namespace DCGO.CardEffects.EX6
             #region Opponent's Turn - ESS
             if (timing == EffectTiming.None)
             {
-                //TODO: add dorumon BT16 protection effect here
+                Permanent selectedPermanent = card.PermanentOfThisCard();
+
+                CanNotBeRemovedClass canNotBeRemovedClass = new CanNotBeRemovedClass();
+                canNotBeRemovedClass.SetUpICardEffect("Can't leave battle area except by deletion effect", CanUseProtectionCondition, card);
+                canNotBeRemovedClass.SetUpCanNotBeRemovedClass(permanentCondition: PermanentCondition);
+                canNotBeRemovedClass.SetIsInheritedEffect(true);
+                selectedPermanent.UntilOpponentTurnEndEffects.Add((_timing) => canNotBeRemovedClass);
+
+                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateBuffEffect(selectedPermanent));
+
+                bool CanUseProtectionCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
+                    {
+                        if (selectedPermanent.TopCard.CardNames.Contains("Ragnalordmon"))
+                        {
+                            if (!CardEffectCommons.IsByEffect(hashtable, cardEffect => CardEffectCommons.IsOwnerEffect(cardEffect, card)))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+
+                    return true;
+                }
+
+                bool PermanentCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
+                    {
+                        if (permanent == selectedPermanent)
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
             }
             #endregion
 

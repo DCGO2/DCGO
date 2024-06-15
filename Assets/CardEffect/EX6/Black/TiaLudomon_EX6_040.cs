@@ -42,14 +42,14 @@ namespace DCGO.CardEffects.EX6
 
                 string EffectDiscription()
                 {
-                    return "[Hand] [Main] By paying 1 cost and placing this card as the bottom digivolution card of 1 of your Digimon that's level 3 or has the [Legend-Arms] trait, that Digimon gets +2000 DP until the end of your opponent's turn.";
+                    return "[Hand] [Main] By paying 1 cost and placing this card as the bottom digivolution card of 1 of your Digimon that's level 4 or has the [Legend-Arms] trait, that Digimon gets +2000 DP until the end of your opponent's turn.";
                 }
 
                 bool IsLevel3OrHasLegendArmsTrait(Permanent targetPermanent)
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(targetPermanent, card))
                     {
-                        if (targetPermanent.TopCard.HasLevel && targetPermanent.Level == 3)
+                        if (targetPermanent.TopCard.HasLevel && targetPermanent.Level == 4)
                             return true;
 
                         if (targetPermanent.TopCard.ContainsTraits("Legend-Arms"))
