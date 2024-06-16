@@ -213,7 +213,7 @@ namespace DCGO.CardEffects.EX6
                     if(selectedPermanent != null)
                     {
                         CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
-                        canNotAffectedClass.SetUpICardEffect("Isn't affected by opponent's Digimon's effects", CanUseConditionImmunity, selectedPermanent.TopCard);
+                        canNotAffectedClass.SetUpICardEffect("Isn't affected by opponent's Digimon's effects", CanUseConditionImmunity, card);
                         canNotAffectedClass.SetUpCanNotAffectedClass(CardCondition: CardCondition, SkillCondition: SkillCondition);
                         cardEffects.Add(canNotAffectedClass);
 
