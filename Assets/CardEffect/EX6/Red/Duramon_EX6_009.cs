@@ -146,7 +146,7 @@ namespace DCGO.CardEffects.EX6
                 activateClass.SetUpICardEffect("Gain <Raid> and <Piercing>", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false,
                     EffectDiscription());
-                activateClass.SetHashString("GainEffects_EX6_008");
+                activateClass.SetHashString("GainEffects_EX6_009");
                 cardEffects.Add(activateClass);
                 
                 string EffectDiscription()

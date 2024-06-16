@@ -8,35 +8,57 @@ namespace DCGO.CardEffects.EX6
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
-
-            if (timing == EffectTiming.None)
+            
+            #region Your Turn - ESS
+            
+            if (timing == EffectTiming.OnAddDigivolutionCards)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpICardEffect("Gain 1 Memory", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false,
+                    EffectDescription());
+                activateClass.SetHashString("Gain1Memory_EX6_001");
                 cardEffects.Add(activateClass);
-
-                string EffectDiscription()
+                
+                string EffectDescription()
                 {
-                    return "";
+                    return
+                        "[Your Turn] [Once Per Turn] When an effect places a card with the [Legend-Arms] trait in this Digimon's digivolution cards, gain 1 memory.";
                 }
-
+                
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return true;
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (CardEffectCommons.IsOwnerTurn(card))
+                        {
+                            if (CardEffectCommons.CanTriggerOnAddDigivolutionCard(
+                                    hashtable: hashtable,
+                                    permanentCondition: permanent => permanent == card.PermanentOfThisCard(),
+                                    cardEffectCondition: cardEffect => cardEffect.EffectSourceCard != null,
+                                    cardCondition: cardSource => cardSource.ContainsTraits("Legend-Arms")))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                    
+                    return false;
                 }
-
+                
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return true;
+                    return CardEffectCommons.IsExistOnBattleArea(card);
                 }
-
+                
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return null;
+                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
                 }
             }
-
+            
+            #endregion
+            
             return cardEffects;
         }
     }
