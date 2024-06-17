@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Photon;
-using Photon.Pun;
+﻿using Photon.Pun;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.Rendering;
+using UnityEngine;
 
 
 public class AutoProcessing : MonoBehaviourPunCallbacks
@@ -612,7 +610,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
     #region Activate background effects
     public static IEnumerator ActivateBackgroundEffects(Hashtable hashtable, EffectTiming timing, Func<ICardEffect, bool> cardEffectCondition = null)
     {
-        #region プレイヤーの効果
+        #region Player effect
         foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
         {
             foreach (ICardEffect cardEffect in player.EffectList(timing).Filter(cardEffect => cardEffectCondition == null || cardEffectCondition(cardEffect)))
@@ -632,7 +630,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
         }
         #endregion
 
-        #region 場のパーマネントの効果
+        #region Effects of permanents in play
         foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
         {
 
@@ -656,7 +654,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
         }
         #endregion
 
-        #region トラッシュのカードの効果
+        #region Trash card effect
         foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
         {
             foreach (CardSource cardSource in player.TrashCards)
@@ -679,7 +677,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
         }
         #endregion
 
-        #region 手札のカードの効果
+        #region Effects of cards in hand
         foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
         {
             foreach (CardSource cardSource in player.HandCards)
@@ -747,7 +745,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
     #region Activate background effects of cards
     public static IEnumerator ActivateBackgroundEffectsOfCards(Hashtable hashtable, EffectTiming timing, List<CardSource> cardSources, Func<ICardEffect, bool> cardEffectCondition = null)
     {
-        #region カードリストの効果
+        #region Effect of card list
         foreach (CardSource cardSource in cardSources)
         {
             if (cardSource.PermanentOfThisCard() == null)

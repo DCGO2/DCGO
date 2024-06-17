@@ -730,7 +730,7 @@ public class Permanent
                 yield return ContinuousController.instance.StartCoroutine(ShowingPermanentCard.ShowAddDigivolutionCardEffect());
             }
 
-            #region "進化元が増えた時"の効果
+            #region Effect of "when the number of evolution sources increases"
 
             #region Hashtable Setting
             Hashtable hashtable = new Hashtable()

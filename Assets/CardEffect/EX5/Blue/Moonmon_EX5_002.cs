@@ -17,6 +17,7 @@ public class Moonmon_EX5_002 : CEntity_Effect
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("This Digimon digivolves", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+            activateClass.SetIsInheritedEffect(true);
             activateClass.SetHashString("Digivolve_EX5_002");
             cardEffects.Add(activateClass);
 
@@ -67,8 +68,10 @@ public class Moonmon_EX5_002 : CEntity_Effect
                 {
                     if (CardEffectCommons.IsOwnerTurn(card))
                     {
+                        Debug.Log($"USE CONDITION: {CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PermanentCondition)}");
                         if (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PermanentCondition))
                         {
+                            Debug.Log($"USE CONDITION: TRUE");
                             return true;
                         }
                     }
@@ -83,6 +86,7 @@ public class Moonmon_EX5_002 : CEntity_Effect
                 {
                     if (card.Owner.HandCards.Count >= 1)
                     {
+                        Debug.Log($"ACTIVATE CONDITION: TRUE");
                         return true;
                     }
                 }
