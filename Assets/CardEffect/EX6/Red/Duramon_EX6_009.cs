@@ -81,8 +81,6 @@ namespace DCGO.CardEffects.EX6
                 {
                     Permanent selectedPermanent = null;
                     
-                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(-2, activateClass));
-                    
                     if (CardEffectCommons.HasMatchConditionPermanent(IsLevel5OrHasLegendArmsTrait))
                     {
                         int maxCount = Math.Min(1,

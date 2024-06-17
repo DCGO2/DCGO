@@ -152,19 +152,16 @@ namespace DCGO.CardEffects.EX6
             
             bool CanUseImmunitySharedCondition(Hashtable hashtableI)
             {
-                return CardEffectCommons.IsExistOnBattleArea(card);
+                return CardEffectCommons.IsPermanentExistsOnBattleArea(card.PermanentOfThisCard());
             }
             
             bool CardImmunitySharedCondition(CardSource cardSource)
             {
-                if (cardSource == card)
+                if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (cardSource == card.PermanentOfThisCard().TopCard)
                     {
-                        if (cardSource == card.PermanentOfThisCard().TopCard)
-                        {
-                            return true;
-                        }
+                        return true;
                     }
                 }
                 
@@ -173,16 +170,27 @@ namespace DCGO.CardEffects.EX6
             
             bool SkillImmunitySharedCondition(ICardEffect cardEffect)
             {
-                if (CardEffectCommons.IsOpponentEffect(cardEffect, card))
+                if (cardEffect != null)
                 {
-                    if (cardEffect.IsDigimonEffect)
+                    if (cardEffect.EffectSourceCard)
                     {
-                        return true;
-                    }
-                    
-                    if (cardEffect.IsDigimonEffect && cardEffect.IsSecurityEffect)
-                    {
-                        return true;
+                        if (CardEffectCommons.IsOpponentEffect(cardEffect, card))
+                        {
+                            if (cardEffect.IsDigimonEffect)
+                            {
+                                return true;
+                            }
+                            
+                            if (cardEffect.EffectSourceCard.IsOption)
+                            {
+                                return true;
+                            }
+                            
+                            if (cardEffect.IsTamerEffect)
+                            {
+                                return true;
+                            }
+                        }
                     }
                 }
                 
@@ -206,7 +214,7 @@ namespace DCGO.CardEffects.EX6
             
             #region On Play
             
-            if (timing == EffectTiming.OnAllyAttack)
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(
@@ -236,7 +244,7 @@ namespace DCGO.CardEffects.EX6
                         CanUseImmunitySharedCondition, card);
                     canNotAffectedClass.SetUpCanNotAffectedClass(CardCondition: CardImmunitySharedCondition,
                         SkillCondition: SkillImmunitySharedCondition);
-                    cardEffects.Add(canNotAffectedClass);
+                    card.PermanentOfThisCard().UntilOpponentTurnEndEffects.Add(_ => canNotAffectedClass);
                     
                     
                     // if DNA Digivolving
@@ -281,7 +289,7 @@ namespace DCGO.CardEffects.EX6
             
             #region When Digivolving
             
-            if (timing == EffectTiming.OnAllyAttack)
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(

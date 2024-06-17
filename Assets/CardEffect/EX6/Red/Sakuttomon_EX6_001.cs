@@ -17,6 +17,7 @@ namespace DCGO.CardEffects.EX6
                 activateClass.SetUpICardEffect("Gain 1 Memory", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false,
                     EffectDescription());
+                activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("Gain1Memory_EX6_001");
                 cardEffects.Add(activateClass);
                 
