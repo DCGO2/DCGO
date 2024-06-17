@@ -270,6 +270,7 @@ namespace DCGO.CardEffects.EX6
                 activateClass.SetUpICardEffect("Play 1 digivolution card", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true,
                     EffectDescription());
+                activateClass.SetHashString("Play1DigivolutionCard_EX6_015");
                 cardEffects.Add(activateClass);
                 
                 string EffectDescription()
@@ -307,8 +308,7 @@ namespace DCGO.CardEffects.EX6
                             if (CardEffectCommons.CanTriggerOnAddDigivolutionCard(
                                     hashtable: hashtable,
                                     permanentCondition: permanent => permanent == card.PermanentOfThisCard(),
-                                    cardEffectCondition: cardEffect =>
-                                        cardEffect != null,
+                                    cardEffectCondition: cardEffect => cardEffect != null,
                                     cardCondition: null))
                             {
                                 return true;
@@ -331,7 +331,7 @@ namespace DCGO.CardEffects.EX6
                 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (card.PermanentOfThisCard().DigivolutionCards.Count(CanSelectCardCondition) >= 1)
                     {
                         int maxCount = Math.Min(1,
                             card.PermanentOfThisCard().DigivolutionCards.Count(CanSelectCardCondition));
