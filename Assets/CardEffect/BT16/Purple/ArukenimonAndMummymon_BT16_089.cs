@@ -49,13 +49,17 @@ namespace DCGO.CardEffects.BT16
 
                 bool CardCondition(CardSource cardSource)
                 {
-                    if (cardSource.CardNames.Contains("Mummymon") || cardSource.CardNames.Contains("Arukenimon"))
+                    if(cardSource.Owner == card.Owner)
                     {
-                        if(CardEffectCommons.IsExistOnHand(cardSource))
+                        if (cardSource.CardNames.Contains("Mummymon") || cardSource.CardNames.Contains("Arukenimon"))
                         {
-                            return true;
+                            if (CardEffectCommons.IsExistOnHand(cardSource))
+                            {
+                                return true;
+                            }
                         }
                     }
+                    
                     return false;
                 }
 

@@ -197,7 +197,18 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                    {
+                        if (!permanent.TopCard.CanNotBeAffected(activateClass))
+                        {
+                            if (!permanent.IsSuspended && permanent.CanSuspend)
+                            {
+                                return true;
+                            }
+                        }
+                    }
+
+                    return false;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -213,47 +224,36 @@ namespace DCGO.CardEffects.BT16
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     Permanent selectedPermanent = null;
+                    bool suspendedPermanent = false;
 
-                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                    if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermanentCondition))
+                    {
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                    selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canTargetCondition: CanSelectPermanentCondition,
-                        canEndSelectCondition: null,
-                        maxCount: 1,
-                        canNoSelect: false,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: SelectPermanentCoroutine,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Tap,
-                        cardEffect: activateClass);
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canTargetCondition: CanSelectPermanentCondition,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Tap,
+                            cardEffect: activateClass);
 
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to suspend.", "The opponent is selecting 1 Digimon to suspend.");
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to suspend.", "The opponent is selecting 1 Digimon to suspend.");
 
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                    }                    
 
                     IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
                         selectedPermanent = permanent;
+                        suspendedPermanent = true;
 
                         yield return null;
-                    }
-
-                    bool suspendedPermanent = true;
-
-                    if (selectedPermanent != null)
-                    {
-                        if (selectedPermanent.TopCard != null)
-                        {
-                            if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
-                            {
-                                if (!selectedPermanent.IsSuspended && selectedPermanent.CanSuspend)
-                                {
-                                    suspendedPermanent = false;
-                                }
-                            }
-                        }
                     }
 
                     if (!suspendedPermanent)
