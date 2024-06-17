@@ -144,7 +144,7 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (cardSource.HasPlayCost && cardSource.GetCostItself <= 5)
                     {
-                        if (cardSource.CardTraits.Contains("X Antibody") || cardSource.CardTraits.Contains("XAntibody"))
+                        if (cardSource.ContainsTraits("X Antibody") || cardSource.CardTraits.Contains("X-Antibody"))
                         {
                             return true;
                         }
@@ -162,8 +162,15 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        bool WinnerCondition(Permanent permanent) => permanent.cardSources.Contains(card);
-                        bool LoserCondition(Permanent permanent) => CardEffectCommons.IsOpponentPermanent(permanent, card);
+                        
+                        bool WinnerCondition(Permanent permanent)
+                        {
+                            if (permanent == null)
+                                permanent = card.PermanentOfThisCard();
+
+                            return permanent.cardSources.Contains(card);
+                        }
+                        bool LoserCondition(Permanent permanent) => permanent.IsDigimon && CardEffectCommons.IsOpponentPermanent(permanent, card);
 
                         if (CardEffectCommons.CanTriggerWhenDeleteOpponentDigimon(hashtable, WinnerCondition, LoserCondition))
                         {

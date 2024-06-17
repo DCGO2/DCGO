@@ -157,7 +157,7 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.CardNames.Contains("Loogamon") || cardSource.CardNames.Contains("Eiji Nagasumi"))
+                    if (cardSource.CardNames.Contains("Loogamon") || cardSource.CardNames.Contains("Eiji Nagasumi") || cardSource.CardNames.Contains("EijiNagasumi"))
                     {
                         return true;
                     }

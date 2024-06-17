@@ -54,7 +54,6 @@ namespace DCGO.CardEffects.BT16
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete Unsuspended Digimon or Tamer", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
-                activateClass.SetEffectSourcePermanent(card.PermanentOfThisCard());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -87,7 +86,6 @@ namespace DCGO.CardEffects.BT16
                 {
                     if(CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card))
                     {
-                        return true;
                         if (card.PermanentOfThisCard().DigivolutionCards.Count(HasTamerWithTrait) >= 1)
                         {
                             return true;
@@ -184,7 +182,7 @@ namespace DCGO.CardEffects.BT16
                             {
                                 if (hashtables.Count >= 1)
                                 {
-                                    return false;
+                                    return true;
                                 }
                             }
                         }
@@ -195,7 +193,6 @@ namespace DCGO.CardEffects.BT16
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-
                     yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() }, activateClass).Unsuspend());
                 }
             }
