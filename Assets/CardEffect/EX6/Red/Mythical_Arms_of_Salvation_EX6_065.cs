@@ -218,7 +218,7 @@ namespace DCGO.CardEffects.EX6
                         }
                     }
                     
-                    return true;
+                    return false;
                 }
                 
                 bool CanSelectLegendArmsSourceCardCondition(CardSource cardSource)
