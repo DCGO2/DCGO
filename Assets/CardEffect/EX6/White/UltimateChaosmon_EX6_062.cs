@@ -335,6 +335,28 @@ namespace DCGO.CardEffects.EX6
                 }
 
                 cardEffects.Add(CardEffectFactory.ChangeSelfSAttackStaticEffect(changeValue: 3, isInheritedEffect: false, card: card, condition: Condition));
+            }
+
+            if (timing == EffectTiming.OnDetermineDoSecurityCheck)
+            {
+                bool Condition()
+                {
+                    int count = card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.HasLevel && cardSource.Level == 6);
+
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (CardEffectCommons.IsOwnerTurn(card))
+                        {
+                            if (count >= 4)
+                            {
+                                return true;
+                            }
+                        }
+                    }
+
+                    return false;
+                }
+
                 cardEffects.Add(CardEffectFactory.PierceSelfEffect(isInheritedEffect: false, card: card, condition: Condition));
             }
             #endregion
