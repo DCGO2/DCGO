@@ -126,11 +126,13 @@ namespace DCGO.CardEffects.BT16
             #endregion
 
             #region All Turns - ESS
-            if (timing == EffectTiming.OnDestroyedAnyone)
+            if (timing == EffectTiming.OnDestroyedAnyone || timing == EffectTiming.OnEndBattle)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 digimon 5 cost or less", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetIsInheritedEffect(true);
+                activateClass.SetHashString("PlayDigimon_BT16_061");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -156,25 +158,6 @@ namespace DCGO.CardEffects.BT16
                     return false;
                 }
 
-                bool CanSelectPermanentCondition(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
-                    {
-                        foreach (CardSource cardSource in card.Owner.TrashCards)
-                        {
-                            if (SelectCardCondition(cardSource))
-                            {
-                                if (cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass))
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-
-                    return false;
-                }
-
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
@@ -182,7 +165,7 @@ namespace DCGO.CardEffects.BT16
                         bool WinnerCondition(Permanent permanent) => permanent.cardSources.Contains(card);
                         bool LoserCondition(Permanent permanent) => CardEffectCommons.IsOpponentPermanent(permanent, card);
 
-                        if (CardEffectCommons.CanTriggerWhenDeleteOpponentDigimon(hashtable: hashtable, winnerCondition: WinnerCondition, loserCondition: LoserCondition))
+                        if (CardEffectCommons.CanTriggerWhenDeleteOpponentDigimon(hashtable, WinnerCondition, LoserCondition))
                         {
                             return true;
                         }
