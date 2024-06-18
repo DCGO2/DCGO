@@ -657,7 +657,7 @@ namespace DCGO.CardEffects.EX6
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectOgudomonInTrash))
+                    if (count()>=7)
                     {
                         if (CardEffectCommons.IsExistOnBreedingAreaDigimon(card))
                         {
