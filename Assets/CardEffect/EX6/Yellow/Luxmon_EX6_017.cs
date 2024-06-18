@@ -26,12 +26,7 @@ namespace DCGO.CardEffects.EX6
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.ContainsTraits("Angel"))
-                        {
-                            return true;
-                        }
-
-                        if (cardSource.ContainsTraits("Archangel"))
+                        if (cardSource.ContainsTraits("Angel") || cardSource.ContainsTraits("Archangel"))
                         {
                             return true;
                         }
