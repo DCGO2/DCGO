@@ -4,7 +4,7 @@ using System;
 
 namespace DCGO.CardEffects.EX6
 {
-    public class Ludomon_EX6_038 : CEntity_Effect
+    public class ZubaEagermon_EX6_008 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
@@ -15,12 +15,17 @@ namespace DCGO.CardEffects.EX6
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.CardNames.Contains("Kakkinmon") && targetPermanent.TopCard.CardNames.Contains("Sakuttomon");
+                    if (targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 3)
+                    {
+                        return targetPermanent.TopCard.ContainsTraits("Legend-Arms");
+                    }
+
+                    return false;
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
                     permanentCondition: PermanentCondition,
-                    digivolutionCost: 0,
+                    digivolutionCost: 2,
                     ignoreDigivolutionRequirement: false,
                     card: card,
                     condition: null));
@@ -31,20 +36,20 @@ namespace DCGO.CardEffects.EX6
             if (timing == EffectTiming.OnDeclaration)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("+2000 DP", CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpICardEffect("+4000 DP", CanUseCondition, card);
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
-                    return "[Hand] [Main] By paying 1 cost and placing this card as the bottom digivolution card of 1 of your Digimon that's level 3 or has the [Legend-Arms] trait, that Digimon gets +2000 DP until the end of your opponent's turn.";
+                    return "[Hand] [Main] By paying 1 cost and placing this card as the bottom digivolution card of 1 of your Digimon that's level 4 or has the [Legend-Arms] trait, that Digimon gets +4000 DP for the turn.";
                 }
 
-                bool IsLevel3OrHasLegendArmsTrait(Permanent targetPermanent)
+                bool IsLevel4OrHasLegendArmsTrait(Permanent targetPermanent)
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(targetPermanent, card))
                     {
-                        if (targetPermanent.TopCard.HasLevel && targetPermanent.Level == 3)
+                        if (targetPermanent.TopCard.HasLevel && targetPermanent.Level == 4)
                             return true;
 
                         if (targetPermanent.TopCard.ContainsTraits("Legend-Arms"))
@@ -58,7 +63,7 @@ namespace DCGO.CardEffects.EX6
                 {
                     if (CardEffectCommons.IsExistOnHand(card))
                     {
-                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsLevel3OrHasLegendArmsTrait))
+                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsLevel4OrHasLegendArmsTrait))
                         {
                             return true;
                         }
@@ -69,17 +74,17 @@ namespace DCGO.CardEffects.EX6
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionPermanent(IsLevel3OrHasLegendArmsTrait))
+                    if (CardEffectCommons.HasMatchConditionPermanent(IsLevel4OrHasLegendArmsTrait))
                     {
                         Permanent selectedPermanent = null;
 
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(IsLevel3OrHasLegendArmsTrait));
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(IsLevel4OrHasLegendArmsTrait));
 
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: IsLevel3OrHasLegendArmsTrait,
+                            canTargetCondition: IsLevel4OrHasLegendArmsTrait,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,
@@ -109,9 +114,9 @@ namespace DCGO.CardEffects.EX6
                                 activateClass));
 
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
-                                targetPermanent: selectedPermanent, 
-                                changeValue: 2000, 
-                                effectDuration: EffectDuration.UntilOpponentTurnEnd, 
+                                targetPermanent: selectedPermanent,
+                                changeValue: 4000,
+                                effectDuration: EffectDuration.UntilEachTurnEnd,
                                 activateClass: activateClass));
                         }
                     }
@@ -123,14 +128,14 @@ namespace DCGO.CardEffects.EX6
             if (timing == EffectTiming.OnAddDigivolutionCards)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Draw 1", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Gain <Raid> and <Piercing>", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
-                activateClass.SetHashString("Draw1_EX6_038");
+                activateClass.SetHashString("GainEffects_EX6_008");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[Your Turn] [Once Per Turn] When an effect places a digivolution card under this Digimon, <Draw 1>.";
+                    return "[Your Turn] [Once Per Turn] When an effect places a digivolution card under this Digimon, it gains <Raid> and <Piercing> for the turn.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -158,21 +163,29 @@ namespace DCGO.CardEffects.EX6
                     return CardEffectCommons.IsExistOnBattleArea(card);
                 }
 
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainRaid(
+                                targetPermanent: card.PermanentOfThisCard(),
+                                effectDuration: EffectDuration.UntilEachTurnEnd,
+                                activateClass: activateClass));
+
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainPierce(
+                                targetPermanent: card.PermanentOfThisCard(),
+                                effectDuration: EffectDuration.UntilEachTurnEnd,
+                                activateClass: activateClass));
                 }
             }
             #endregion
 
-            #region Opponents Turn - ESS
+            #region Your Turn - ESS
             if (timing == EffectTiming.None)
             {
                 bool Condition()
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (CardEffectCommons.IsOpponentTurn(card))
+                        if (CardEffectCommons.IsOwnerTurn(card))
                         {
                             return true;
                         }

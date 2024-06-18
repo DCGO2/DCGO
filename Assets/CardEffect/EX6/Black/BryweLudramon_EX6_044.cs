@@ -199,7 +199,7 @@ namespace DCGO.CardEffects.EX6
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to add bottom digivolution source.", "The opponent is selecting 1 Digimon to add bottom digivolution source.");
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will not be affected by the effect's of your opponent's Digimon.", "The opponent is selecting 1 Digimon that will not be affected by the effect's of your Digimon.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
@@ -213,11 +213,11 @@ namespace DCGO.CardEffects.EX6
                     if(selectedPermanent != null)
                     {
                         CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
-                        canNotAffectedClass.SetUpICardEffect("Isn't affected by opponent's Digimon's effects", CanUseCondition, card);
+                        canNotAffectedClass.SetUpICardEffect("Isn't affected by opponent's Digimon's effects", CanUseConditionImmunity, card);
                         canNotAffectedClass.SetUpCanNotAffectedClass(CardCondition: CardCondition, SkillCondition: SkillCondition);
                         cardEffects.Add(canNotAffectedClass);
 
-                        bool CanUseCondition(Hashtable hashtable)
+                        bool CanUseConditionImmunity(Hashtable hashtable)
                         {
                             return CardEffectCommons.IsExistOnBattleArea(card);
                         }
