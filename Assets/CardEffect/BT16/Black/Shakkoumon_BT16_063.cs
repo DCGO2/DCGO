@@ -10,6 +10,10 @@ namespace DCGO.CardEffects.BT16
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            List<PartitionCondition> partitionConditions = new List<PartitionCondition>();
+            partitionConditions.Add(new PartitionCondition(4, CardColor.Black));
+            partitionConditions.Add(new PartitionCondition(4, CardColor.Yellow));
+
             #region Rule - Trait: Also has [Angel]
             if (timing == EffectTiming.None)
             {
@@ -105,6 +109,8 @@ namespace DCGO.CardEffects.BT16
             #region When Digivolved
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
+                int SelectedCardCount = card.Owner.Enemy.SecurityCards.Count;
+
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Unaffected by effects of your opponent's Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
@@ -156,7 +162,7 @@ namespace DCGO.CardEffects.BT16
                     {
                         if (permanent.TopCard.HasLevel)
                         {
-                            if(permanent.Level <= card.Owner.Enemy.SecurityCards.Count)
+                            if(permanent.Level <= SelectedCardCount)
                             {
                                 return true;
                             }
@@ -199,6 +205,22 @@ namespace DCGO.CardEffects.BT16
                     {
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
+                        List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
+                        {
+                            new SelectionElement<bool>(message: $"Your Security", value : true, spriteIndex: 0),
+                            new SelectionElement<bool>(message: $"Opponent's Security", value : false, spriteIndex: 1),
+                        };
+
+                        string selectPlayerMessage = "Choose which security you will use?";
+                        string notSelectPlayerMessage = "The opponent is choosing which security to use.";
+
+                        GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+                        
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                        if(GManager.instance.userSelectionManager.SelectedBoolValue)
+                            SelectedCardCount = card.Owner.SecurityCards.Count;
+
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
                             canTargetCondition: CanSelectPermanentCondition,
@@ -227,7 +249,7 @@ namespace DCGO.CardEffects.BT16
                                 yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(
                                     permanent,
                                     CardEffectCommons.CardEffectHashtable(activateClass),
-                                    true).PutSecurity());
+                                    false).PutSecurity());
                             }
                         }
                     }
@@ -238,38 +260,11 @@ namespace DCGO.CardEffects.BT16
             #region Partition
             if (timing == EffectTiming.WhenRemoveField)
             {
-                bool CanSelectFirstSourceCondition(CardSource cardSource)
-                {
-                    if (cardSource.CardColors.Contains(CardColor.Black))
-                    {
-                        if (cardSource.HasLevel && cardSource.Level == 4)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
-                bool CanSelectSecondSourceCondition(CardSource cardSource)
-                {
-                    if (cardSource.CardColors.Contains(CardColor.Yellow))
-                    {
-                        if (cardSource.HasLevel && cardSource.Level == 4)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
                 cardEffects.Add(CardEffectFactory.PartitionSelfEffect(
                     isInheritedEffect: false,
                     card: card,
                     condition: null,
-                    canSelectFirstSourceCondition: CanSelectFirstSourceCondition,
-                    canSelectSecondSourceCondition: CanSelectSecondSourceCondition)
+                    cardSourceConditions: partitionConditions)
                 );
             }
             #endregion
@@ -277,38 +272,11 @@ namespace DCGO.CardEffects.BT16
             #region Partition - Inherited
             if (timing == EffectTiming.WhenRemoveField)
             {
-                bool CanSelectFirstSourceCondition(CardSource cardSource)
-                {
-                    if (cardSource.CardColors.Contains(CardColor.Black))
-                    {
-                        if (cardSource.HasLevel && cardSource.Level == 4)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return true;
-                }
-
-                bool CanSelectSecondSourceCondition(CardSource cardSource)
-                {
-                    if (cardSource.CardColors.Contains(CardColor.Yellow))
-                    {
-                        if (cardSource.HasLevel && cardSource.Level == 4)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return true;
-                }
-
                 cardEffects.Add(CardEffectFactory.PartitionSelfEffect(
                     isInheritedEffect: true,
                     card: card,
                     condition: null,
-                    canSelectFirstSourceCondition: CanSelectFirstSourceCondition,
-                    canSelectSecondSourceCondition: CanSelectSecondSourceCondition)
+                    cardSourceConditions: partitionConditions)
                 );
             }
             #endregion

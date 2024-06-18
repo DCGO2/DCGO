@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 using System.Linq;
 
 namespace DCGO.CardEffects.BT16
@@ -15,7 +16,7 @@ namespace DCGO.CardEffects.BT16
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    if (targetPermanent.TopCard.CardNames.Contains("Dorugamon"))
+                    if (targetPermanent.TopCard.ContainsCardName("Dorugamon"))
                     {
                         return true;
                     }
@@ -38,8 +39,8 @@ namespace DCGO.CardEffects.BT16
             #endregion
 
             #region Collision
-            if(timing == EffectTiming.OnAllyAttack)
-            {
+            if(timing == EffectTiming.OnCounterTiming)
+            {                
                 cardEffects.Add(CardEffectFactory.CollisionSelfStaticEffect(false,card, null));
             }
             #endregion
@@ -125,11 +126,13 @@ namespace DCGO.CardEffects.BT16
             #endregion
 
             #region All Turns - ESS
-            if (timing == EffectTiming.OnDestroyedAnyone)
+            if (timing == EffectTiming.OnDestroyedAnyone || timing == EffectTiming.OnEndBattle)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 digimon 5 cost or less", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetIsInheritedEffect(true);
+                activateClass.SetHashString("PlayDigimon_BT16_061");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -139,9 +142,9 @@ namespace DCGO.CardEffects.BT16
 
                 bool SelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.HasPlayCost && cardSource.BasePlayCostFromEntity <= 5)
+                    if (cardSource.HasPlayCost && cardSource.GetCostItself <= 5)
                     {
-                        if (cardSource.CardTraits.Contains("X Antibody") || cardSource.CardTraits.Contains("XAntibody"))
+                        if (cardSource.ContainsTraits("X Antibody") || cardSource.CardTraits.Contains("X-Antibody"))
                         {
                             return true;
                         }
@@ -159,10 +162,17 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        bool WinnerCondition(Permanent permanent) => permanent.cardSources.Contains(card);
-                        bool LoserCondition(Permanent permanent) => CardEffectCommons.IsOpponentPermanent(permanent, card);
+                        
+                        bool WinnerCondition(Permanent permanent)
+                        {
+                            if (permanent == null)
+                                permanent = card.PermanentOfThisCard();
 
-                        if (CardEffectCommons.CanTriggerWhenDeleteOpponentDigimon(hashtable: hashtable, winnerCondition: WinnerCondition, loserCondition: LoserCondition))
+                            return permanent.cardSources.Contains(card);
+                        }
+                        bool LoserCondition(Permanent permanent) => permanent.IsDigimon && CardEffectCommons.IsOpponentPermanent(permanent, card);
+
+                        if (CardEffectCommons.CanTriggerWhenDeleteOpponentDigimon(hashtable, WinnerCondition, LoserCondition))
                         {
                             return true;
                         }
@@ -178,7 +188,7 @@ namespace DCGO.CardEffects.BT16
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (card.Owner.HandCards.Exists(SelectCardCondition))
+                    if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, SelectCardCondition))
                     {
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 

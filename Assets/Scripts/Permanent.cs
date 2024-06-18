@@ -730,7 +730,7 @@ public class Permanent
                 yield return ContinuousController.instance.StartCoroutine(ShowingPermanentCard.ShowAddDigivolutionCardEffect());
             }
 
-            #region "進化元が増えた時"の効果
+            #region Effect of "when the number of evolution sources increases"
 
             #region Hashtable Setting
             Hashtable hashtable = new Hashtable()
@@ -2197,7 +2197,7 @@ public class Permanent
     public IBattle battle { get; set; } = null;
     #endregion
 
-    #region このデジモンが消滅するか
+    #region Can Be Destroyed
     public bool CanBeDestroyed()
     {
         #region 消滅しない効果
@@ -2251,6 +2251,9 @@ public class Permanent
         {
             return false;
         }
+
+        if (!CanBeRemoved())
+            return false;
 
         #region 戦闘で消滅しない効果
         foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
@@ -2311,6 +2314,9 @@ public class Permanent
                 return false;
             }
 
+            if (!CanBeRemoved())
+                return false;
+
             #region 効果で消滅しない効果
             foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
             {
@@ -2351,6 +2357,53 @@ public class Permanent
             }
             #endregion
         }
+
+        return true;
+    }
+    #endregion
+
+    #region Can Leave Field
+    public bool CanBeRemoved()
+    {
+        #region Effect that never disappears
+        foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
+        {
+            foreach (Permanent permanent in player.GetFieldPermanents())
+            {
+                #region Effects of permanents in play
+                foreach (ICardEffect cardEffect in permanent.EffectList(EffectTiming.None))
+                {
+                    if (cardEffect is ICanNotBeRemovedEffect)
+                    {
+                        if (cardEffect.CanUse(null))
+                        {
+                            if (((ICanNotBeRemovedEffect)cardEffect).CanNotBeRemoved(this))
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                }
+                #endregion
+            }
+
+            #region player effect
+            foreach (ICardEffect cardEffect in player.EffectList(EffectTiming.None))
+            {
+                if (cardEffect is ICanNotBeRemovedEffect)
+                {
+                    if (cardEffect.CanUse(null))
+                    {
+                        if (((ICanNotBeRemovedEffect)cardEffect).CanNotBeRemoved(this))
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+            #endregion
+        }
+        #endregion
 
         return true;
     }
