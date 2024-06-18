@@ -8,7 +8,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 public partial class CardEffectFactory
 {
     #region Trigger effect of [Scapegoat] on oneself
-    public static ActivateClass ScapegoatSelfEffect(bool isInheritedEffect, CardSource card, Func<bool> condition, Func<Permanent, bool> permanentCondition, string effectName, string effectDiscription, ICardEffect rootCardEffect = null)
+    public static ActivateClass ScapegoatSelfEffect(bool isInheritedEffect, CardSource card, Func<bool> condition, string effectName, string effectDiscription, ICardEffect rootCardEffect = null)
     {
         Permanent targetPermanent = card.PermanentOfThisCard();
 
@@ -25,12 +25,12 @@ public partial class CardEffectFactory
             return false;
         }
 
-        return ScapegoatEffect(targetPermanent: targetPermanent, isInheritedEffect: isInheritedEffect, condition: CanUseCondition, rootCardEffect: rootCardEffect, permanentCondition: permanentCondition, effectName: effectName, effectDiscription: effectDiscription, card);
+        return ScapegoatEffect(targetPermanent: targetPermanent, isInheritedEffect: isInheritedEffect, condition: CanUseCondition, rootCardEffect: rootCardEffect, effectName: effectName, effectDiscription: effectDiscription, card);
     }
     #endregion
 
     #region Trigger effect of [Scapegoat]
-    public static ActivateClass ScapegoatEffect(Permanent targetPermanent, bool isInheritedEffect, Func<bool> condition, ICardEffect rootCardEffect, Func<Permanent, bool> permanentCondition, string effectName, string effectDiscription, CardSource card)
+    public static ActivateClass ScapegoatEffect(Permanent targetPermanent, bool isInheritedEffect, Func<bool> condition, ICardEffect rootCardEffect, string effectName, string effectDiscription, CardSource card)
     {
         if (targetPermanent == null) return null;
         if (targetPermanent.TopCard == null) return null;
