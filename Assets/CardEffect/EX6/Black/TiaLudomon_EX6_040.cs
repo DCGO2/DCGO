@@ -45,7 +45,7 @@ namespace DCGO.CardEffects.EX6
                     return "[Hand] [Main] By paying 1 cost and placing this card as the bottom digivolution card of 1 of your Digimon that's level 4 or has the [Legend-Arms] trait, that Digimon gets +2000 DP until the end of your opponent's turn.";
                 }
 
-                bool IsLevel3OrHasLegendArmsTrait(Permanent targetPermanent)
+                bool IsLevel4OrHasLegendArmsTrait(Permanent targetPermanent)
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(targetPermanent, card))
                     {
@@ -63,7 +63,7 @@ namespace DCGO.CardEffects.EX6
                 {
                     if (CardEffectCommons.IsExistOnHand(card))
                     {
-                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsLevel3OrHasLegendArmsTrait))
+                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsLevel4OrHasLegendArmsTrait))
                         {
                             return true;
                         }
@@ -74,17 +74,17 @@ namespace DCGO.CardEffects.EX6
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionPermanent(IsLevel3OrHasLegendArmsTrait))
+                    if (CardEffectCommons.HasMatchConditionPermanent(IsLevel4OrHasLegendArmsTrait))
                     {
                         Permanent selectedPermanent = null;
 
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(IsLevel3OrHasLegendArmsTrait));
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(IsLevel4OrHasLegendArmsTrait));
 
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: IsLevel3OrHasLegendArmsTrait,
+                            canTargetCondition: IsLevel4OrHasLegendArmsTrait,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,
@@ -185,7 +185,7 @@ namespace DCGO.CardEffects.EX6
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (!CardEffectCommons.IsOwnerTurn(card))
+                        if (CardEffectCommons.IsOpponentTurn(card))
                         {
                             return true;
                         }
