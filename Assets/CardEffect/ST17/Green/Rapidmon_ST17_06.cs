@@ -82,8 +82,8 @@ namespace DCGO.CardEffects.ST17
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenSelfPermanentSuspends(hashtable, card);
-                }
+                    return CardEffectCommons.CanTriggerWhenPermanentSuspends(hashtable, (permanent) => permanent == card.PermanentOfThisCard());
+            }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {

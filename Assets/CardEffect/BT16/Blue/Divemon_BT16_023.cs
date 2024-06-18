@@ -30,7 +30,7 @@ namespace DCGO.CardEffects.BT16
             }
             #endregion
 
-            #region On Play/When Digivolving
+            #region On Play
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -40,7 +40,7 @@ namespace DCGO.CardEffects.BT16
 
                 string EffectDiscription()
                 {
-                    return "[On Play] [When Digivolving] If you have 3 or more security cards, unsuspend 1 of your Digimon. If " +
+                    return "[On Play] If you have 3 or more security cards, unsuspend 1 of your Digimon. If " +
                            "you have 3 or fewer, return 1 of your opponent's level 4 or lower Digimon to the bottom of the deck.";
                 }
 
@@ -72,7 +72,7 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card) || CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -127,6 +127,111 @@ namespace DCGO.CardEffects.BT16
                                     mode: SelectPermanentEffect.Mode.PutLibraryBottom,
                                     cardEffect: activateClass);
                                 
+                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                            }
+                        }
+                    }
+                }
+            }
+            #endregion
+
+            #region When Digivolving
+            if (timing == EffectTiming.OnEnterFieldAnyone)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Unsuspend 1 Digimon and/or bottom deck an opponent's Level 4 or lower Digimon", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[When Digivolving] If you have 3 or more security cards, unsuspend 1 of your Digimon. If " +
+                           "you have 3 or fewer, return 1 of your opponent's level 4 or lower Digimon to the bottom of the deck.";
+                }
+
+                bool CanSelectPermanentUnsuspendCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                    {
+                        if (permanent.TopCard.HasLevel)
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                bool CanSelectPermanentBounceCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                    {
+                        if (permanent.Level <= 4)
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        return true;
+                    }
+
+                    return false;
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                {
+                    if (isExistOnField(card))
+                    {
+                        if (card.Owner.GetBattleAreaDigimons().Contains(card.PermanentOfThisCard()))
+                        {
+                            if (card.Owner.SecurityCards.Count >= 3)
+                            {
+                                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                                selectPermanentEffect.SetUp(
+                                    selectPlayer: card.Owner,
+                                    canTargetCondition: CanSelectPermanentUnsuspendCondition,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    maxCount: 1,
+                                    canNoSelect: false,
+                                    canEndNotMax: false,
+                                    selectPermanentCoroutine: null,
+                                    afterSelectPermanentCoroutine: null,
+                                    mode: SelectPermanentEffect.Mode.UnTap,
+                                    cardEffect: activateClass);
+                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                            }
+
+                            if (card.Owner.SecurityCards.Count <= 3)
+                            {
+                                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                                selectPermanentEffect.SetUp(
+                                    selectPlayer: card.Owner,
+                                    canTargetCondition: CanSelectPermanentBounceCondition,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    maxCount: 1,
+                                    canNoSelect: false,
+                                    canEndNotMax: false,
+                                    selectPermanentCoroutine: null,
+                                    afterSelectPermanentCoroutine: null,
+                                    mode: SelectPermanentEffect.Mode.PutLibraryBottom,
+                                    cardEffect: activateClass);
+
                                 yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                             }
                         }

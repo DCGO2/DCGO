@@ -118,38 +118,15 @@ namespace DCGO.CardEffects.BT16
 
             if(timing == EffectTiming.WhenRemoveField)
             {
-                bool CanSelectFirstSourceCondition(CardSource cardSource)
-                {
-                    if (cardSource.CardColors.Contains(CardColor.Black))
-                    {
-                        if (cardSource.HasLevel && cardSource.Level == 6)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return true;
-                }
-
-                bool CanSelectSecondSourceCondition(CardSource cardSource)
-                {
-                    if (cardSource.CardColors.Contains(CardColor.Yellow))
-                    {
-                        if (cardSource.HasLevel && cardSource.Level == 6)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return true;
-                }
+                List<PartitionCondition> partitionConditions = new List<PartitionCondition>();
+                partitionConditions.Add(new PartitionCondition(6, CardColor.Black));
+                partitionConditions.Add(new PartitionCondition(6, CardColor.Yellow));
 
                 cardEffects.Add(CardEffectFactory.PartitionSelfEffect
                     (isInheritedEffect: false, 
                     card: card, 
                     condition: null, 
-                    canSelectFirstSourceCondition: CanSelectFirstSourceCondition, 
-                    canSelectSecondSourceCondition: CanSelectSecondSourceCondition));
+                    cardSourceConditions: partitionConditions));
             }
             #endregion
 

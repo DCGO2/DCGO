@@ -10,48 +10,24 @@ namespace DCGO.CardEffects.BT16
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            List<PartitionCondition> partitionConditions = new List<PartitionCondition>();
+            partitionConditions.Add(new PartitionCondition(4, CardColor.Blue));
+            partitionConditions.Add(new PartitionCondition(4, CardColor.Green));
+
             #region Partition - Inherited
-            if(timing == EffectTiming.WhenRemoveField)
+            if (timing == EffectTiming.WhenRemoveField)
             {
-                bool CanSelectFirstSourceCondition(CardSource cardSource)
-                {
-                    if(cardSource.HasLevel && cardSource.Level == 4)
-                    {
-                        if(cardSource.CardColors.Contains(CardColor.Blue))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
-                bool CanSelectSecondSourceCondition(CardSource cardSource)
-                {
-                    if (cardSource.HasLevel && cardSource.Level == 4)
-                    {
-                        if (cardSource.CardColors.Contains(CardColor.Green))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
-                cardEffects.Add(CardEffectFactory.PartitionSelfEffect(
-                    isInheritedEffect: false,
-                    card:card,
-                    condition:null,
-                    canSelectFirstSourceCondition: CanSelectFirstSourceCondition,
-                    canSelectSecondSourceCondition: CanSelectSecondSourceCondition));
-
-                cardEffects.Add(CardEffectFactory.PartitionSelfEffect(
-                    isInheritedEffect: true,
+                cardEffects.Add(CardEffectFactory.PartitionSelfEffect
+                    (isInheritedEffect: false,
                     card: card,
                     condition: null,
-                    canSelectFirstSourceCondition: CanSelectFirstSourceCondition,
-                    canSelectSecondSourceCondition: CanSelectSecondSourceCondition));
+                    cardSourceConditions: partitionConditions));
+
+                cardEffects.Add(CardEffectFactory.PartitionSelfEffect
+                    (isInheritedEffect: true,
+                    card: card,
+                    condition: null,
+                    cardSourceConditions: partitionConditions));
             }
             #endregion
 
@@ -149,7 +125,7 @@ namespace DCGO.CardEffects.BT16
             #endregion
 
             #region When Digivolving
-            if (timing == EffectTiming.OnAllyAttack)
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Suspend all your opponent's digimon", CanUseCondition, card);
@@ -221,7 +197,18 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                    {
+                        if (!permanent.TopCard.CanNotBeAffected(activateClass))
+                        {
+                            if (!permanent.IsSuspended && permanent.CanSuspend)
+                            {
+                                return true;
+                            }
+                        }
+                    }
+
+                    return false;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -237,47 +224,36 @@ namespace DCGO.CardEffects.BT16
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     Permanent selectedPermanent = null;
+                    bool suspendedPermanent = false;
 
-                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                    if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermanentCondition))
+                    {
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                    selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canTargetCondition: CanSelectPermanentCondition,
-                        canEndSelectCondition: null,
-                        maxCount: 1,
-                        canNoSelect: false,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: SelectPermanentCoroutine,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Tap,
-                        cardEffect: activateClass);
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canTargetCondition: CanSelectPermanentCondition,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Tap,
+                            cardEffect: activateClass);
 
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to suspend.", "The opponent is selecting 1 Digimon to suspend.");
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to suspend.", "The opponent is selecting 1 Digimon to suspend.");
 
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                    }                    
 
                     IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
                         selectedPermanent = permanent;
+                        suspendedPermanent = true;
 
                         yield return null;
-                    }
-
-                    bool suspendedPermanent = false;
-
-                    if (selectedPermanent != null)
-                    {
-                        if (selectedPermanent.TopCard != null)
-                        {
-                            if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
-                            {
-                                if (!selectedPermanent.IsSuspended && selectedPermanent.CanSuspend)
-                                {
-                                    suspendedPermanent = true;
-                                }
-                            }
-                        }
                     }
 
                     if (!suspendedPermanent)

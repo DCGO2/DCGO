@@ -12,6 +12,10 @@ namespace DCGO.CardEffects.BT16
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            List<PartitionCondition> partitionConditions = new List<PartitionCondition>();
+            partitionConditions.Add(new PartitionCondition(4, CardColor.Purple));
+            partitionConditions.Add(new PartitionCondition(4, CardColor.Red));
+
             #region DNA Digivolution
             if (timing == EffectTiming.None)
             {
@@ -114,54 +118,24 @@ namespace DCGO.CardEffects.BT16
 
             #region Partition & Partition Inherit
 
-            if(timing == EffectTiming.WhenRemoveField)
+            if (timing == EffectTiming.WhenRemoveField)
             {
-
-                bool CanSelectFirstSource(CardSource cardSource)
-                {
-                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardColors.Contains(CardColor.Purple)  && cardSource.HasLevel && cardSource.Level == 4) >= 1)
-                    {
-                        return true;
-                    }
-                    return false;
-                }
-
-                bool CanSelectSecondSource(CardSource cardSource)
-                {
-                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardColors.Contains(CardColor.Red) && cardSource.HasLevel && cardSource.Level == 4) >= 1)
-                    {
-                        return true;
-                    }
-                    return false;
-                }
-
-                cardEffects.Add(CardEffectFactory.PartitionSelfEffect(false, card, null, CanSelectFirstSource, CanSelectSecondSource));
-            
+                cardEffects.Add(CardEffectFactory.PartitionSelfEffect(
+                    isInheritedEffect: false,
+                    card: card,
+                    condition: null,
+                    cardSourceConditions: partitionConditions)
+                );
             }
 
             if (timing == EffectTiming.WhenRemoveField)
             {
-
-                bool CanSelectFirstSource(CardSource cardSource)
-                {
-                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardColors.Contains(CardColor.Purple) && cardSource.HasLevel && cardSource.Level == 4) >= 1)
-                    {
-                        return true;
-                    }
-                    return false;
-                }
-
-                bool CanSelectSecondSource(CardSource cardSource)
-                {
-                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardColors.Contains(CardColor.Red) && cardSource.HasLevel && cardSource.Level == 4) >= 1)
-                    {
-                        return true;
-                    }
-                    return false;
-                }
-
-                cardEffects.Add(CardEffectFactory.PartitionSelfEffect(true, card, null, CanSelectFirstSource, CanSelectSecondSource));
-
+                cardEffects.Add(CardEffectFactory.PartitionSelfEffect(
+                    isInheritedEffect: true,
+                    card: card,
+                    condition: null,
+                    cardSourceConditions: partitionConditions)
+                );
             }
             #endregion
 
@@ -199,7 +173,7 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent,card))
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
                         if (permanent.IsDigimon)
                         {
@@ -272,59 +246,78 @@ namespace DCGO.CardEffects.BT16
                         }
                     }
 
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                    {
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectPermanentCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: false,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: SelectPermanentCoroutine,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will get Rush.", "The opponent is selecting 1 Digimon that will get Rush.");
-
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                    List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
                         {
-                            Permanent selectedPermanent = permanent;
+                            new SelectionElement<bool>(message: $"Yes", value : true, spriteIndex: 0),
+                            new SelectionElement<bool>(message: $"No", value : false, spriteIndex: 1),
+                        };
 
-                            if(selectedPermanent != null)
+                    string selectPlayerMessage = "Will you select a Digimon to gain Rush and must attack?";
+                    string notSelectPlayerMessage = "The opponent is choosing effects.";
+
+                    GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+                
+
+                yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                bool gainRush = GManager.instance.userSelectionManager.SelectedBoolValue;
+
+                if (gainRush)
+                {
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                        {
+                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+
+                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                            selectPermanentEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: CanSelectPermanentCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: maxCount,
+                                canNoSelect: false,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: SelectPermanentCoroutine,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Custom,
+                                cardEffect: activateClass);
+
+                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will get Rush.", "The opponent is selecting 1 Digimon that will get Rush.");
+
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                            IEnumerator SelectPermanentCoroutine(Permanent permanent)
                             {
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainRush(
-                                    targetPermanent: selectedPermanent,
-                                    effectDuration: EffectDuration.UntilEachTurnEnd,
-                                    activateClass: activateClass));
+                                Permanent selectedPermanent = permanent;
 
-                                if (selectedPermanent.CanAttack(activateClass))
+                                if (selectedPermanent != null)
                                 {
-                                    SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
+                                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainRush(
+                                        targetPermanent: selectedPermanent,
+                                        effectDuration: EffectDuration.UntilEachTurnEnd,
+                                        activateClass: activateClass));
 
-                                    selectAttackEffect.SetUp(
-                                        attacker: selectedPermanent,
-                                        canAttackPlayerCondition: () => true,
-                                        defenderCondition: (permanent) => false,
-                                        cardEffect: activateClass);
+                                    if (selectedPermanent.CanAttack(activateClass))
+                                    {
+                                        SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
 
-                                    yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
+                                        selectAttackEffect.SetUp(
+                                            attacker: selectedPermanent,
+                                            canAttackPlayerCondition: () => true,
+                                            defenderCondition: (permanent) => false,
+                                            cardEffect: activateClass);
+
+                                        yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
+                                    }
                                 }
-                            }
 
-                            
+
+                            }
                         }
-                    }
                 }
             }
+        }
             #endregion
 
             return cardEffects;
