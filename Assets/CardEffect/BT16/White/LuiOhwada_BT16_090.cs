@@ -206,20 +206,8 @@ namespace DCGO.CardEffects.BT16
                                         yield return null;
                                     }
 
-
-                                    PlayCardClass playCard = new PlayCardClass(
-                                                        cardSources: new List<CardSource>() { selectedCards[0] },
-                                                        hashtable: CardEffectCommons.CardEffectHashtable(activateClass),
-                                                        payCost: true,
-                                                        targetPermanent: null,
-                                                        isTapped: false,
-                                                        root: SelectCardEffect.Root.Hand,
-                                                        activateETB: true
-                                                        );
-
-
                                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                                        cardSources: playCard.CardSources,
+                                        cardSources: selectedCards,
                                         activateClass: activateClass,
                                         payCost: true,
                                         isTapped: false,

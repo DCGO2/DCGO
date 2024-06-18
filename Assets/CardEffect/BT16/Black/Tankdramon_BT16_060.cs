@@ -70,7 +70,7 @@ namespace DCGO.CardEffects.BT16
                             mode: SelectCardEffect.Mode.Custom,
                             maxCount: -1,
                             selectCardCoroutine: null),
-                        remainingCardsPlace: RemainingCardsPlace.DeckTopOrBottom,
+                        remainingCardsPlace: RemainingCardsPlace.DeckTop,
                         activateClass: activateClass,
                         revealedCardsCoroutine: RevealedCardsCoroutine
                     ));
@@ -181,7 +181,7 @@ namespace DCGO.CardEffects.BT16
                             mode: SelectCardEffect.Mode.Custom,
                             maxCount: -1,
                             selectCardCoroutine: null),
-                        remainingCardsPlace: RemainingCardsPlace.DeckTopOrBottom,
+                        remainingCardsPlace: RemainingCardsPlace.DeckTop,
                         activateClass: activateClass,
                         revealedCardsCoroutine: RevealedCardsCoroutine
                     ));
