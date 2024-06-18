@@ -54,7 +54,10 @@ namespace DCGO.CardEffects.BT16
                     {
                         if (cardSource.ContainsCardName("Leomon"))
                         {
-                            return true;
+                            if (cardSource.CanPlayCardTargetFrame(card.PermanentOfThisCard().PermanentFrame, true, activateClass))
+                            {
+                                return true;
+                            }
                         }
                     }
                     return false;
@@ -71,10 +74,7 @@ namespace DCGO.CardEffects.BT16
                     {
                         if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
                         {
-                            if (card.Owner.TrashCards.Count >= 1)
-                            {
-                                return true;
-                            }
+                            return true;
                         }
 
                         if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
