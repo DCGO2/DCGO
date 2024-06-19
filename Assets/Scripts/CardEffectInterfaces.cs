@@ -404,6 +404,13 @@ public interface IAddJogressLevelsEffect
 }
 #endregion
 
+#region "Add names for DNA digivolution" effect
+public interface IAddDNANamesEffect
+{
+    List<string> GetDNANames(CardSource cardSource, Permanent permanent);
+}
+#endregion
+
 #region "Change the min memory to end turn" effect
 public interface IChangeEndTurnMinMemoryEffect
 {

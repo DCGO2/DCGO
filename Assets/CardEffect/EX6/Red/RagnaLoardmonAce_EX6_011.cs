@@ -11,11 +11,15 @@ namespace DCGO.CardEffects.EX6
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
             
-            #region Blast Digivolve
+            #region Blast DNA Digivolve
             
             if (timing == EffectTiming.OnCounterTiming)
             {
-                cardEffects.Add(CardEffectFactory.BlastDigivolveEffect(card: card, condition: null));
+                List<BlastDNACondition> blastDNAConditions = new List<BlastDNACondition>();
+                blastDNAConditions.Add(new BlastDNACondition("Durandamon"));
+                blastDNAConditions.Add(new BlastDNACondition("Bryweludramon"));
+
+                cardEffects.Add(CardEffectFactory.BlastDNADigivolveEffect(card: card, blastDNAConditions: blastDNAConditions, condition: null));
             }
             
             #endregion
