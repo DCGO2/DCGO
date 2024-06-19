@@ -358,6 +358,16 @@ public partial class CardEffectCommons
     }
     #endregion
 
+    #region Whether there is at least 1 card in the owner's hand that satisfies the condition
+    public static bool HasMatchConditionOwnersHand(CardSource card, Func<CardSource, bool> CanSelectCardCondition)
+    {
+        return GManager.instance.turnStateMachine.gameContext.Players
+        .Map(player => player.HandCards)
+        .Flat()
+        .Some(source => CanSelectCardCondition(source) && IsExistOnHand(card));
+    }
+    #endregion
+
     #region Whether there is at least 1 permanent in the owner's Battle Area that satisfies the condition
     public static bool HasMatchConditionOwnersPermanent(CardSource card, Func<Permanent, bool> CanSelectPermanentCondition)
     {
