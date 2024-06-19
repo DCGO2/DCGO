@@ -510,7 +510,9 @@ public class ContinuousController : MonoBehaviour
     }
     public void LoadShowCutInAnimation()
     {
-        showCutInAnimation = PlayerPrefsUtil.GetBool(_showCutInAnimationKey, true);
+        //TODO: Setting default to false, to fix animation syncing bug, MB
+        showCutInAnimation = false;
+        //showCutInAnimation = PlayerPrefsUtil.GetBool(_showCutInAnimationKey, true);
     }
     #endregion
 
