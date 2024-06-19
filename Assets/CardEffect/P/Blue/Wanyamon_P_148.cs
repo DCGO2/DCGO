@@ -9,33 +9,44 @@ namespace DCGO.CardEffects.P
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            if (timing == EffectTiming.None)
+            #region When Attacking - ESS
+            if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpICardEffect("Draw 1", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "";
+                    return "[When Attacking] [Once Per Turn] If this Digimon has the [NSp] trait, <Draw 1>.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return true;
+                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return true;
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    {
+                        if (card.PermanentOfThisCard().TopCard.ContainsTraits("NSp"))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return null;
+                    yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
                 }
             }
+            #endregion
 
             return cardEffects;
         }

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace DCGO.CardEffects.P
 {
@@ -9,16 +10,131 @@ namespace DCGO.CardEffects.P
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region When Digivolving
             if (timing == EffectTiming.None)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("", CanUseCondition, card);
+                activateClass.SetUpICardEffect("1 Opponent's Digimon can't attack Digimon, and gain <Security A. -1>", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "";
+                    return "[When Digivolving] Until the end of your opponent's turn, 1 of their Digimon can't attack Digimon and gain <Security A. -1>.";
+                }
+
+                bool SelectDigimon(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleArea(card);
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    Permanent selectedPermanent = null;
+
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                    selectPermanentEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: SelectDigimon,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: true,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: SelectedPermanent,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                    IEnumerator SelectedPermanent(Permanent permanent)
+                    {
+                        if (permanent == null)
+                            selectedPermanent = permanent;
+
+                        yield return null;
+                    }
+
+                    if (selectedPermanent != null)
+                    {
+                        bool DefenderCondition(Permanent defender)
+                        {
+                            return defender != null;
+                        }
+
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotAttack(
+                            targetPermanent: card.PermanentOfThisCard(),
+                            defenderCondition: DefenderCondition,
+                            effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                            activateClass: activateClass,
+                            effectName: "Can't Attack Digimon"));
+
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonSAttack(
+                            targetPermanent: selectedPermanent,
+                            changeValue: -1, 
+                            effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                            activateClass: activateClass));
+                    }
+                }
+            }
+            #endregion
+
+            #region Your Turn - Jamming
+            if (timing == EffectTiming.None)
+            {
+                bool HasArisaKinosaki(Permanent permanent)
+                {
+                    return permanent.TopCard.CardNames.Contains("Arisa Kinosaki");
+                }
+
+                bool JammingCondition()
+                {
+                    if (CardEffectCommons.IsOwnerTurn(card))
+                    {
+                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, HasArisaKinosaki))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                cardEffects.Add(CardEffectFactory.JammingSelfStaticEffect(
+                    isInheritedEffect: false,
+                    card: card,
+                    condition: JammingCondition));
+            }
+            #endregion
+
+            #region When Attacking - ESS
+            if (timing == EffectTiming.OnAllyAttack)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Opponent's Digimon gets -2000 DP for the turn", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[When Attacking] [Once Per Turn] 1 of your opponent's Digimon gets -2000 DP for the turn.";
+                }
+
+                bool SelectOpponentsDigimon(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -28,14 +144,46 @@ namespace DCGO.CardEffects.P
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return true;
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    {
+                        if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, SelectOpponentsDigimon))
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return null;
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                    selectPermanentEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: SelectOpponentsDigimon,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: false,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: SelectPermanentCoroutine,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
+                            targetPermanent: permanent,
+                            changeValue: -2000,
+                            effectDuration: EffectDuration.UntilEachTurnEnd,
+                            activateClass: activateClass));
+                    }
                 }
             }
+            #endregion
 
             return cardEffects;
         }
