@@ -172,6 +172,8 @@ public class BaalmonXAntibody_BT12_082 : CEntity_Effect
 
             IEnumerator ActivateCoroutine(Hashtable _hashtable)
             {
+                if (card.Owner.LibraryCards.Count >= 1)
+                    yield return ContinuousController.instance.StartCoroutine(new IAddTrashCardsFromLibraryTop(3, card.Owner, activateClass).AddTrashCardsFromLibraryTop());
 
                 if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardNames.Contains("Baalmon") || cardSource.CardNames.Contains("X Antibody") || cardSource.CardNames.Contains("XAntibody")) >= 1)
                 {
@@ -196,14 +198,7 @@ public class BaalmonXAntibody_BT12_082 : CEntity_Effect
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
-                }
-
-                else
-                {
-                    yield return ContinuousController.instance.StartCoroutine(new IAddTrashCardsFromLibraryTop(3, card.Owner, activateClass).AddTrashCardsFromLibraryTop());
-                }
-                    
-                
+                }                
             }
         }
 

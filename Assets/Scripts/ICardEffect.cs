@@ -980,7 +980,7 @@ public static class ActivateICardEffectExtensionClass
 
             Debug.Log($"{((ICardEffect)activateICardEffect).EffectName} was used");
 
-            #region ログ追加
+            #region Add log
             CardSource card = ((ICardEffect)activateICardEffect).EffectSourceCard;
 
             if (card != null)

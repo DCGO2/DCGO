@@ -16,7 +16,7 @@ public class Wendigomon_ST17_04 : CEntity_Effect
         {
             bool PermanentCondition(Permanent targetPermanent)
             {
-                if((targetPermanent.TopCard.CardNames.Contains("Terriermon") && targetPermanent.Level == 3) || (targetPermanent.TopCard.CardNames.Contains("Lopmon") && targetPermanent.Level == 3))
+                if((targetPermanent.TopCard.ContainsCardName("Terriermon") && targetPermanent.Level == 3) || (targetPermanent.TopCard.ContainsCardName("Lopmon") && targetPermanent.Level == 3))
                 {
                     return true;
                 }
@@ -81,7 +81,7 @@ public class Wendigomon_ST17_04 : CEntity_Effect
                     {
                         if (cardSource.Owner == card.Owner)
                         {
-                            if (cardSource.CardNames.Contains("Terriermon") || cardSource.CardNames.Contains("Lopmon"))
+                            if (cardSource.ContainsCardName("Terriermon") || cardSource.ContainsCardName("Lopmon"))
                             {
                                 return true;
                             }
@@ -109,18 +109,10 @@ public class Wendigomon_ST17_04 : CEntity_Effect
 
             IEnumerator ActivateCoroutine(Hashtable _hashtable)
             {
-                Permanent selectedPermanent;
-
                 if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                 {
                     int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
                     
-                    bool deletedOwn = false;
-                    
-                    Permanent deletedCard = null;
-
-                    int deleteCount = 1;
-
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
@@ -242,7 +234,7 @@ public class Wendigomon_ST17_04 : CEntity_Effect
                     {
                         if (cardSource.Owner == card.Owner)
                         {
-                            if (cardSource.CardNames.Contains("Terriermon") || cardSource.CardNames.Contains("Lopmon"))
+                            if (cardSource.ContainsCardName("Terriermon") || cardSource.ContainsCardName("Lopmon"))
                             {
                                 return true;
                             }

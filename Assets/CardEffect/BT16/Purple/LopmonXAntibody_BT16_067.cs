@@ -26,7 +26,7 @@ namespace DCGO.CardEffects.BT16
             }
             #endregion
 
-            #region On Play/When Digivolving
+            #region On Play
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -36,12 +36,131 @@ namespace DCGO.CardEffects.BT16
 
                 string EffectDiscription()
                 {
-                    return "[On Play] [When Digivolving] By trashing 1 card in your hand, 1 of your Digimon gets +3000 DP for the turn.";
+                    return "[On Play] By trashing 1 card in your hand, 1 of your Digimon gets +3000 DP for the turn.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card) || CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                }
+
+                bool PermanentCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (card.Owner.HandCards.Count >= 1)
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    if (card.Owner.HandCards.Count >= 1)
+                    {
+                        bool discarded = false;
+
+                        int discardCount = 1;
+
+                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                        selectHandEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: (cardSource) => true,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: discardCount,
+                            canNoSelect: true,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            selectCardCoroutine: null,
+                            afterSelectCardCoroutine: AfterSelectCardCoroutine,
+                            mode: SelectHandEffect.Mode.Discard,
+                            cardEffect: activateClass);
+
+                        yield return StartCoroutine(selectHandEffect.Activate());
+
+                        IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
+                        {
+                            if (cardSources.Count >= 1)
+                            {
+                                discarded = true;
+
+                                yield return null;
+                            }
+                        }
+
+                        if (discarded)
+                        {
+                            if (CardEffectCommons.HasMatchConditionPermanent(PermanentCondition))
+                            {
+                                int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(PermanentCondition));
+
+                                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                                selectPermanentEffect.SetUp(
+                                    selectPlayer: card.Owner,
+                                    canTargetCondition: PermanentCondition,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    maxCount: maxCount,
+                                    canNoSelect: false,
+                                    canEndNotMax: false,
+                                    selectPermanentCoroutine: SelectPermanentCoroutine,
+                                    afterSelectPermanentCoroutine: null,
+                                    mode: SelectPermanentEffect.Mode.Custom,
+                                    cardEffect: activateClass);
+
+                                selectPermanentEffect.SetUpCustomMessage(
+                                    "Select 1 Digimon that will get DP +3000.",
+                                    "The opponent is selecting 1 Digimon that will get DP +3000.");
+
+                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                                IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                                {
+                                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
+                                        targetPermanent: permanent,
+                                        changeValue: 3000,
+                                        effectDuration: EffectDuration.UntilEachTurnEnd,
+                                        activateClass: activateClass));
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+            #endregion
+
+            #region When Digivolving
+            if (timing == EffectTiming.OnEnterFieldAnyone)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Trash a card to give +3000 DP.", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[When Digivolving] By trashing 1 card in your hand, 1 of your Digimon gets +3000 DP for the turn.";
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
 
                 bool PermanentCondition(Permanent permanent)

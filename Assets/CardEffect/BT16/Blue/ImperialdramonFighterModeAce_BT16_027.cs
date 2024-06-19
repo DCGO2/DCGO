@@ -15,7 +15,7 @@ namespace DCGO.CardEffects.BT16
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.CardNames.Contains("Imperialdramon: Dragon Mode");
+                    return targetPermanent.TopCard.CardNames.Contains("Imperialdramon: Dragon Mode") || targetPermanent.TopCard.CardNames.Contains("Imperialdramon:DragonMode") || targetPermanent.TopCard.CardNames.Contains("ImperialdramonDragonMode");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
@@ -161,7 +161,7 @@ namespace DCGO.CardEffects.BT16
             if (timing == EffectTiming.OnEndAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Unsuspend this Digimon/Return a suspended Digimon to the bottom of the deck.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetHashString("EndofAttack_BT16_027");
                 cardEffects.Add(activateClass);
@@ -173,7 +173,7 @@ namespace DCGO.CardEffects.BT16
 
                 bool HasSourceCondition(CardSource cardSource)
                 {
-                    return cardSource.CardNames.Contains("Imperialdramon: Dragon Mode");
+                    return cardSource.CardNames.Contains("Imperialdramon: Dragon Mode") || cardSource.CardNames.Contains("ImperialdramonDragon Mode") || cardSource.CardNames.Contains("Imperialdramon:DragonMode");
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)

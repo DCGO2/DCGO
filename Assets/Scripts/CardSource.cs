@@ -48,6 +48,8 @@ public class CardSource : MonoBehaviour
     public void SetFace()
     {
         IsFlipped = false;
+
+        GManager.OnCardFlippedChanged?.Invoke();
     }
     #endregion
 
@@ -55,6 +57,8 @@ public class CardSource : MonoBehaviour
     public void SetReverse()
     {
         IsFlipped = true;
+
+        GManager.OnCardFlippedChanged?.Invoke();
     }
     #endregion
 

@@ -479,7 +479,13 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                 #endregion
 
                 #region 手札のカードを山札の下に加える
-                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(player.HandCards.Clone()));
+                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(player.HandCards.Clone(),true));
+
+                #region Log
+                if (_isRedraw)
+                    GManager.instance.playLog.AddLogString($"\nMulligan Hand\n{player.PlayerName}\n");
+                #endregion
+
                 #endregion
 
                 #region シャッフル

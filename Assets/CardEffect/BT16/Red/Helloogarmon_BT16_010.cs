@@ -22,7 +22,8 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (targetPermanent.TopCard.ContainsTraits("SoC"))
                     {
-                        return true;
+                        if(targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 4)
+                            return true;
                     }
 
                     return false;
@@ -156,7 +157,7 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.CardNames.Contains("Loogamon") || cardSource.CardNames.Contains("Eiji Nagasumi"))
+                    if (cardSource.CardNames.Contains("Loogamon") || cardSource.CardNames.Contains("Eiji Nagasumi") || cardSource.CardNames.Contains("EijiNagasumi"))
                     {
                         return true;
                     }
@@ -171,7 +172,7 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card);
+                    return CardEffectCommons.CanActivateOnDeletion(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
