@@ -46,10 +46,8 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    Debug.Log($"CanUseCondition: {CardEffectCommons.IsExistOnBattleArea(card)}");
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        Debug.Log($"CanUseCondition: {CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition)}");
                         if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition))
                         {
                             return true;
@@ -61,18 +59,14 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    Debug.Log($"CanActivateCondition: {CardEffectCommons.IsExistOnBattleArea(card)}");
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        Debug.Log($"CanActivateCondition: {card.Owner.CanAddMemory(activateClass)}");
                         if (card.Owner.CanAddMemory(activateClass))
                         {
-                            Debug.Log($"CanActivateCondition");
                             List<Hashtable> hashtables = CardEffectCommons.GetHashtablesFromHashtable(hashtable);
 
                             if (hashtables != null)
                             {
-                                Debug.Log($"CanActivateCondition: {hashtables.Count}");
                                 if (hashtables.Count >= 1)
                                 {
                                     return true;

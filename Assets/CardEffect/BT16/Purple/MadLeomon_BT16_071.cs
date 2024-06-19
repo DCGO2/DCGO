@@ -48,13 +48,16 @@ namespace DCGO.CardEffects.BT16
                     return "[When Attacking] This Digimon may digivolve into a Digimon card with [Leomon] in it's name from your hand or trash.";
                 }
 
-                bool CanSelectCardCondition(CardSource card)
+                bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (card.IsDigimon)
+                    if (cardSource.IsDigimon)
                     {
-                        if (card.ContainsCardName("Leomon"))
+                        if (cardSource.ContainsCardName("Leomon"))
                         {
-                            return true;
+                            if (cardSource.CanPlayCardTargetFrame(card.PermanentOfThisCard().PermanentFrame, true, activateClass))
+                            {
+                                return true;
+                            }
                         }
                     }
                     return false;
@@ -71,10 +74,7 @@ namespace DCGO.CardEffects.BT16
                     {
                         if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
                         {
-                            if (card.Owner.TrashCards.Count >= 1)
-                            {
-                                return true;
-                            }
+                            return true;
                         }
 
                         if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)

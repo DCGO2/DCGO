@@ -7,6 +7,7 @@ using System.Linq;
 using Photon;
 using Photon.Pun;
 using System.IO;
+using System;
 
 public class GManager : MonoBehaviour
 {
@@ -212,6 +213,12 @@ public class GManager : MonoBehaviour
     public bool IsAI { get; private set; } = false;
 
     public int CardIndex { get; set; } = 0;
+
+    #region Events
+    public static Action OnReverseOpponentsCardsChanged;
+    public static Action OnCardFlippedChanged;
+    public static Action<bool> OnCardSuspendedChanged;
+    #endregion
 
     private async void Awake()
     {

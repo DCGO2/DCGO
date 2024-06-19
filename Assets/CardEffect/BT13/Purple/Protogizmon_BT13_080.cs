@@ -15,7 +15,7 @@ public class Protogizmon_BT13_080 : CEntity_Effect
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Delete your 1 Digimon in breeding area to get Play Cost -2", CanUseCondition, card);
-            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
             activateClass.SetHashString("PlayCost-2_BT13_080");
             cardEffects.Add(activateClass);
 

@@ -526,7 +526,7 @@ public class WaruMonzaemon_BT15_065 : CEntity_Effect
                 {
                     if (CardEffectCommons.IsOwnerTurn(card))
                     {
-                        if (card.PermanentOfThisCard().TopCard.ContainsCardName("Monzaemon") || card.PermanentOfThisCard().TopCard.ContainsCardName("Numemomn"))
+                        if (card.PermanentOfThisCard().TopCard.ContainsCardName("Monzaemon") || card.PermanentOfThisCard().TopCard.ContainsCardName("Numemon"))
                         {
                             return true;
                         }

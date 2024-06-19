@@ -19,28 +19,15 @@ namespace DCGO.CardEffects.ST17
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    if ((targetPermanent.TopCard.CardNames.Contains("Rapidmon") && targetPermanent.Level == 4))
-                    {
-                        return true;
-                    }
-                    return false;
+                    return targetPermanent.TopCard.ContainsCardName("Rapidmon");
                 }
 
-                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 5, ignoreDigivolutionRequirement: true, card: card, condition: null));
-            }
-
-            if (timing == EffectTiming.None)
-            {
-                bool PermanentCondition(Permanent targetPermanent)
-                {
-                    if ((targetPermanent.TopCard.CardNames.Contains("Rapidmon") && targetPermanent.Level == 5))
-                    {
-                        return true;
-                    }
-                    return false;
-                }
-
-                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 4, ignoreDigivolutionRequirement: false, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
+                    permanentCondition: PermanentCondition, 
+                    digivolutionCost: 5, 
+                    ignoreDigivolutionRequirement: true, 
+                    card: card, 
+                    condition: null));
             }
             #endregion
 

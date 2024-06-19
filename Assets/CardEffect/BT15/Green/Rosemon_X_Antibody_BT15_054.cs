@@ -70,7 +70,10 @@ public class Rosemon_X_Antibody_BT15_054 : CEntity_Effect
                 {
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanent))
                     {
-                        return true;
+                        if (CardEffectCommons.IsExistOnBattleArea(card))
+                        {
+                            return true;
+                        }
                     }
                 }
 

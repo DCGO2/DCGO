@@ -124,7 +124,7 @@ namespace DCGO.CardEffects.BT16
                                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
                                   targetPermanent: permanent,
                                   changeValue: -7000,
-                                  effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                                  effectDuration: EffectDuration.UntilEachTurnEnd,
                                   activateClass: activateClass));
                             }
                         }
