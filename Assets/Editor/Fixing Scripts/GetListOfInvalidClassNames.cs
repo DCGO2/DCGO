@@ -22,7 +22,12 @@ namespace DCGO.Tools.Repair
                 if (CanAttachEffectComponent(card.SetID, card.CardEffectClassName))
                     continue;
 
-                if(card.EffectDiscription_ENG.Equals("-") 
+                if (card.EffectDiscription_ENG.Equals("")
+                    && card.InheritedEffectDiscription_ENG.Equals("")
+                    && card.SecurityEffectDiscription_ENG.Equals(""))
+                    continue;
+
+                if (card.EffectDiscription_ENG.Equals("-") 
                     && card.InheritedEffectDiscription_ENG.Equals("-")
                     && card.SecurityEffectDiscription_ENG.Equals("-"))
                     continue;
