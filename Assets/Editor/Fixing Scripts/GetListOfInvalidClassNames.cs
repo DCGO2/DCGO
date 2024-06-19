@@ -31,7 +31,7 @@ namespace DCGO.Tools.Repair
                     continue;
 
                 InvalidClassNames.Add(card.CardEffectClassName);
-                Debug.LogError($"Invalid Class Name: {card.CardEffectClassName}");
+                Debug.LogError($"Invalid Class Name: {card.name} - {card.CardEffectClassName}");
             }
 
             Debug.Log($"Total Invalid Class Names: {InvalidClassNames.Count}");
