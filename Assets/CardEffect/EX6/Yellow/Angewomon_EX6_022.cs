@@ -22,7 +22,7 @@ namespace DCGO.CardEffects.EX6
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Give a Digimon Security Attack -2 or play [Kiriha Aonuma] from hand", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Give a Digimon Security Attack -2 or play [Mirei Mikagura] from hand", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -33,7 +33,7 @@ namespace DCGO.CardEffects.EX6
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.CardNames.Contains("Mirei Mikagura"))
+                    if (cardSource.CardNames.Contains("Mirei Mikagura") || cardSource.CardNames.Contains("MireiMikagura"))
                     {
                         if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                         {
@@ -58,7 +58,7 @@ namespace DCGO.CardEffects.EX6
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (card.Owner.GetBattleAreaPermanents().Count((permanent) => permanent.TopCard.CardNames.Contains("Mirei Mikagura")) == 0)
+                        if (card.Owner.GetBattleAreaPermanents().Count((permanent) => permanent.TopCard.CardNames.Contains("Mirei Mikagura") || permanent.TopCard.CardNames.Contains("MireiMikagura")) == 0)
                         {
                             if (card.Owner.HandCards.Count >= 1)
                             {
@@ -80,7 +80,7 @@ namespace DCGO.CardEffects.EX6
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    if (card.Owner.GetBattleAreaPermanents().Count((permanent) => permanent.TopCard.CardNames.Contains("Mirei Mikagura")) == 0)
+                    if (card.Owner.GetBattleAreaPermanents().Count((permanent) => permanent.TopCard.CardNames.Contains("Mirei Mikagura") || permanent.TopCard.CardNames.Contains("MireiMikagura")) == 0)
                     {
                         if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
                         {
@@ -167,7 +167,7 @@ namespace DCGO.CardEffects.EX6
                             return true;
                         }
 
-                        if (card.PermanentOfThisCard().TopCard.CardTraits.Contains("Three Great Angels"))
+                        if (card.PermanentOfThisCard().TopCard.CardTraits.Contains("Three Great Angels") || card.PermanentOfThisCard().TopCard.CardTraits.Contains("ThreeGreatAngels"))
                         {
                             return true;
                         }

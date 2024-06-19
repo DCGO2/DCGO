@@ -63,7 +63,7 @@ namespace DCGO.CardEffects.EX6
                         {
                         new SimplifiedSelectCardConditionClass(
                             canTargetCondition:CanSelectCardCondition,
-                            message: "Select 1 Digimon card with the [Angel]/[Archangel] trait.",
+                            message: "Select 1 Digimon card with the [Beast]/[Beastkin]/[Holy Beast]/[Cherub] trait.",
                             mode: SelectCardEffect.Mode.AddHand,
                             maxCount: 1,
                             selectCardCoroutine: null),
