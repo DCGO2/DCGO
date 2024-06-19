@@ -18,7 +18,8 @@ public partial class CardEffectCommons
             cardSource: cardSource,
             payCost: payCost,
             cardEffect: activateClass,
-            isBreedingArea: isBreedingArea));
+            isBreedingArea: isBreedingArea,
+            fixedCost: fixedCost));
 
         if (cardSources.Count == 0) yield break;
 
@@ -32,12 +33,10 @@ public partial class CardEffectCommons
                 activateETB: activateETB);
 
         if (isBreedingArea)
-        {
             playCardClass.SetIsBreedingArea();
-        }
 
         playCardClass.SetFixedCost(fixedCost);
-
+        
         yield return ContinuousController.instance.StartCoroutine(playCardClass.PlayCard());
     }
 
@@ -301,6 +300,7 @@ public partial class CardEffectCommons
         if (targetPermanent == null) yield break;
         if (targetPermanent.TopCard == null) yield break;
         if (targetPermanent.DigivolutionCards.Count((cardSource) => !cardSource.CanNotTrashFromDigivolutionCards(activateClass)) == 0) yield break;
+        Debug.Log($"Trashing Digivolution Cards From Top/Bottom: Target Can Not Be Affected - {targetPermanent.TopCard.CanNotBeAffected(activateClass)}");
         if (targetPermanent.TopCard.CanNotBeAffected(activateClass)) yield break;
         if (trashCount <= 0) yield break;
 

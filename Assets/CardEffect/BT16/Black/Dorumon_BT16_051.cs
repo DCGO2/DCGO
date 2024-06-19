@@ -60,7 +60,7 @@ namespace DCGO.CardEffects.BT16
                             return true;
                         }
                     }
-
+                    
                     return false;
                 }
 
@@ -133,10 +133,10 @@ namespace DCGO.CardEffects.BT16
 
                         if (selectedPermanent != null)
                         {
-                            CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
-                            canNotAffectedClass.SetUpICardEffect("Can't leave battle area except by battle effect", CanUseProtectionCondition, card);
-                            canNotAffectedClass.SetUpCanNotAffectedClass(CardCondition: CardCondition, SkillCondition: SkillCondition);
-                            selectedPermanent.UntilOpponentTurnEndEffects.Add((_timing) => canNotAffectedClass);
+                            CanNotBeRemovedClass canNotBeRemovedClass = new CanNotBeRemovedClass();
+                            canNotBeRemovedClass.SetUpICardEffect("Can't leave battle area except by deletion effect", CanUseProtectionCondition, card);
+                            canNotBeRemovedClass.SetUpCanNotBeRemovedClass(permanentCondition: PermanentCondition);
+                            selectedPermanent.UntilOpponentTurnEndEffects.Add((_timing) => canNotBeRemovedClass);
 
                             yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateBuffEffect(selectedPermanent));
 
@@ -145,22 +145,17 @@ namespace DCGO.CardEffects.BT16
                                 return CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent);
                             }
 
-                            bool CardCondition(CardSource cardSource)
+                            bool PermanentCondition(Permanent permanent)
                             {
                                 if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
                                 {
-                                    if (cardSource == selectedPermanent.TopCard)
+                                    if (permanent == selectedPermanent)
                                     {
                                         return true;
                                     }
                                 }
 
                                 return false;
-                            }
-
-                            bool SkillCondition(ICardEffect cardEffect)
-                            {
-                                return true;
                             }
                         }
 

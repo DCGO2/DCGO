@@ -95,9 +95,11 @@ public class StreamingAssetsUtility
     {
         if (File.Exists(path))
         {
+            Debug.Log($"File Exists Locally: {path}");
             byte[] imageBuff = await ReadFile(path);
+            Debug.Log($"Grabbing image bytes: {imageBuff}");
             Texture2D texture = Texture2DExt.CreateTexture2DFromWebP(imageBuff, lMipmaps: true, lLinear: false, lError: out WebP.Error lError);
-
+            Debug.Log($"Converting WebP to Texture2D: {texture}");
             if (lError == WebP.Error.Success)
             {
                 Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
@@ -132,6 +134,7 @@ public class StreamingAssetsUtility
             return null;
         else
         {
+            Debug.Log($"WebRequest Successful: Checking local file - {File.Exists(filePath)}");
             if(!File.Exists(filePath))
                 File.WriteAllBytes(filePath, webReq_CardImage.downloadHandler.data);
 
@@ -142,6 +145,10 @@ public class StreamingAssetsUtility
                 Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
 
                 return sprite;
+            }
+            else
+            {
+                Debug.Log($"Failed to convert: {lError.ToString()}");
             }
 
             return null;

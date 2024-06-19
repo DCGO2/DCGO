@@ -26,7 +26,7 @@ namespace DCGO.CardEffects.BT16
             }
             #endregion
 
-            #region On Play/When Digivolving
+            #region When Digivolving
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -193,15 +193,21 @@ namespace DCGO.CardEffects.BT16
                                         if (selectedPermanent != null)
                                         {
                                             ActivateClass activateClass1 = new ActivateClass();
-                                            activateClass1.SetUpICardEffect("Delete the Digimon", CanUseCondition1, card);
+                                            activateClass1.SetUpICardEffect("Delete this Digimon", CanUseCondition1, selectedCard);
                                             activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, "");
+                                            activateClass1.SetEffectSourcePermanent(selectedPermanent);
                                             card.Owner.UntilOpponentTurnEndEffects.Add(GetCardEffect);
 
-                                            bool CanUseCondition1(Hashtable hashtable)
+                                            if (!selectedCard.CanNotBeAffected(activateClass))
+                                            {
+                                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(selectedPermanent));
+                                            }
+
+                                            bool CanUseCondition1(Hashtable hashtable1)
                                             {
                                                 if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
                                                 {
-                                                    if (CardEffectCommons.IsOpponentTurn(card))
+                                                    if (GManager.instance.turnStateMachine.gameContext.TurnPlayer != selectedPermanent.TopCard.Owner)
                                                     {
                                                         return true;
                                                     }

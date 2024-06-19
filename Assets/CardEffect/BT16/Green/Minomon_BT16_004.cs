@@ -38,7 +38,7 @@ namespace DCGO.CardEffects.BT16
                         {
                             if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition))
                             {
-                                bool WinnerCondition(Permanent permanent) => CardEffectCommons.IsOwnerPermanent(permanent, card);
+                                bool WinnerCondition(Permanent permanent) => permanent.cardSources.Contains(card);
                                 bool LoserCondition(Permanent permanent) => CardEffectCommons.IsOpponentPermanent(permanent, card);
 
                                 if (CardEffectCommons.CanTriggerWhenDeleteOpponentDigimonByBattle(hashtable: hashtable, winnerCondition: WinnerCondition, loserCondition: LoserCondition, isOnlyWinnerSurvive: true))
