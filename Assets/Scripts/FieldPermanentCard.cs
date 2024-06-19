@@ -7,6 +7,7 @@ using DG.Tweening;
 using UnityEngine.EventSystems;
 using TMPro;
 using System;
+using System.Diagnostics;
 
 public class FieldPermanentCard : MonoBehaviour
 {
@@ -160,6 +161,11 @@ public class FieldPermanentCard : MonoBehaviour
         }
 
         OffPermanentIndexText();
+        
+        //Events
+        GManager.OnReverseOpponentsCardsChanged += SetTransformRotation;
+        GManager.OnCardFlippedChanged += SetCardIsFlipped;
+        //GManager.OnCardSuspendedChanged += SetCardSuspended;
     }
 
     public IEnumerator ShowAddDigivolutionCardEffect()
@@ -243,7 +249,7 @@ public class FieldPermanentCard : MonoBehaviour
 
     #region Processing on click
 
-    #region クリックされた時の処理
+    #region Processing when clicked
     public void OnClick()
     {
         if (ThisPermanent != null)
@@ -272,14 +278,14 @@ public class FieldPermanentCard : MonoBehaviour
     }
     #endregion
 
-    #region クリックされた時の処理を追加
+    #region Added processing when clicked
     public void AddClickTarget(UnityAction<FieldPermanentCard> _OnClickAction)
     {
         OnClickAction = _OnClickAction;
     }
     #endregion
 
-    #region クリックされた時の処理を削除
+    #region Delete the process when clicked
     public void RemoveClickTarget()
     {
         OnClickAction = null;
@@ -292,13 +298,131 @@ public class FieldPermanentCard : MonoBehaviour
     {
         ThisPermanent = permanent;
 
+        SetTransformRotation();
+        SetCardIsFlipped();
         ShowPermanentData(updateIsTapped);
     }
     #endregion
 
     #region Reflect permanent data on UI
     bool _oldTurnSuspendedCards = false;
-    public async void ShowPermanentData(bool updateIsTapped)
+
+    void SetTransformRotation()
+    {
+        if (ThisPermanent == null)
+            return;
+
+        if (ThisPermanent.TopCard == null)
+            return;
+
+        if (ThisPermanent.TopCard.Owner.isYou)
+            return;
+
+        if (ContinuousController.instance == null)
+            return;
+
+
+        if (ContinuousController.instance.reverseOpponentsCards)
+            Parent.transform.localRotation = Quaternion.Euler(new Vector3(0, 0, 180));
+        else
+            Parent.transform.localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
+    }
+
+    async void SetCardIsFlipped()
+    {
+        if (ThisPermanent == null)
+            return;
+
+        if (ThisPermanent.TopCard == null)
+            return;
+
+        if (ContinuousController.instance == null)
+            return;
+
+        // card image
+        if (ThisPermanent.TopCard.IsFlipped)
+        {
+            if (CardImage.sprite != ContinuousController.instance.ReverseCard)
+                CardImage.sprite = ContinuousController.instance.ReverseCard;
+        }
+
+        else
+        {
+            CardImage.sprite = await ThisPermanent.TopCard.GetCardSprite();
+        }
+
+        if(CardImage != null)
+            CardImage.gameObject.SetActive(true);
+    }
+
+    void SetCardSuspended(bool updateIsTapped)
+    {
+        if (ThisPermanent == null)
+            return;
+
+        if (ThisPermanent.TopCard == null)
+            return;
+
+        if (ContinuousController.instance == null)
+            return;
+
+        if (ThisPermanent.IsSuspended)
+        {
+            if (TapObject != null)
+                TapObject.SetActive(true);
+
+            if (updateIsTapped)
+            {
+                bool turnSuspendedCards = ContinuousController.instance != null && ContinuousController.instance.turnSuspendedCards;
+
+                if (anim != null)
+                {
+                    if (ThisPermanent.OldIsSuspended != ThisPermanent.IsSuspended || _oldTurnSuspendedCards != turnSuspendedCards)
+                    {
+                        ThisPermanent.OldIsSuspended = ThisPermanent.IsSuspended;
+                        _oldTurnSuspendedCards = turnSuspendedCards;
+
+                        if (turnSuspendedCards)
+                        {
+                            if (anim.GetInteger("Tap") != 1)
+                                anim.SetInteger("Tap", 1);
+                        }
+
+                        else
+                        {
+                            if (anim.GetInteger("Tap") != -1)
+                                anim.SetInteger("Tap", -1);
+                        }
+                    }
+                }
+            }
+        }
+
+        else
+        {
+            if (TapObject != null)
+                TapObject.SetActive(false);
+
+            if (ContinuousController.instance != null)
+            {
+                if (ContinuousController.instance.turnSuspendedCards)
+                {
+                    if (ThisPermanent.OldIsSuspended != ThisPermanent.IsSuspended)
+                    {
+                        ThisPermanent.OldIsSuspended = ThisPermanent.IsSuspended;
+
+                        if (anim != null)
+                        {
+                            if (anim.GetInteger("Tap") != -1)
+                                anim.SetInteger("Tap", -1);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void ShowPermanentData(bool updateIsTapped)
     {
         if (ThisPermanent == null)
         {
@@ -307,98 +431,15 @@ public class FieldPermanentCard : MonoBehaviour
 
         if (ThisPermanent.TopCard != null)
         {
-            // reverse opponent's card
-            if (!ThisPermanent.TopCard.Owner.isYou)
-            {
-                if (ContinuousController.instance != null)
-                {
-                    if (ContinuousController.instance.reverseOpponentsCards)
-                    {
-                        Parent.transform.localRotation = Quaternion.Euler(new Vector3(0, 0, 180));
-                    }
-
-                    else
-                    {
-                        Parent.transform.localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
-                    }
-                }
-            }
-
-            // card image
-            if (ThisPermanent.TopCard.IsFlipped)
-            {
-                CardImage.sprite = ContinuousController.instance.ReverseCard;
-            }
-
-            else
-            {
-                CardImage.sprite = await ThisPermanent.TopCard.GetCardSprite();
-            }
-
-            CardImage.gameObject.SetActive(true);
-
-            //タップ
-            if (ThisPermanent.IsSuspended)
-            {
-                if (TapObject != null)
-                {
-                    TapObject.SetActive(true);
-                }
-
-                if (updateIsTapped)
-                {
-                    bool turnSuspendedCards = ContinuousController.instance != null && ContinuousController.instance.turnSuspendedCards;
-
-                    if (anim != null)
-                    {
-                        if (ThisPermanent.OldIsSuspended != ThisPermanent.IsSuspended || _oldTurnSuspendedCards != turnSuspendedCards)
-                        {
-                            ThisPermanent.OldIsSuspended = ThisPermanent.IsSuspended;
-                            _oldTurnSuspendedCards = turnSuspendedCards;
-
-                            if (turnSuspendedCards)
-                            {
-                                anim.SetInteger("Tap", 1);
-                            }
-
-                            else
-                            {
-                                anim.SetInteger("Tap", -1);
-                            }
-                        }
-                    }
-                }
-            }
-
-            else
-            {
-                if (TapObject != null)
-                {
-                    TapObject.SetActive(false);
-                }
-
-                if (ContinuousController.instance != null)
-                {
-                    if (ContinuousController.instance.turnSuspendedCards)
-                    {
-                        if (ThisPermanent.OldIsSuspended != ThisPermanent.IsSuspended)
-                        {
-                            ThisPermanent.OldIsSuspended = ThisPermanent.IsSuspended;
-
-                            if (anim != null)
-                            {
-                                anim.SetInteger("Tap", -1);
-                            }
-                        }
-                    }
-                }
-            }
+            SetCardSuspended(updateIsTapped);
 
             //DP
             if (ThisPermanent.IsDigimon && ThisPermanent.DP >= 0)
             {
                 DPText.transform.parent.gameObject.SetActive(true);
-                DPText.text = ThisPermanent.DP.ToString();
+
+                if(DPText.text != ThisPermanent.DP.ToString())
+                    DPText.text = ThisPermanent.DP.ToString();
 
                 for (int i = 0; i < DPBackground_color.Count; i++)
                 {
@@ -414,7 +455,8 @@ public class FieldPermanentCard : MonoBehaviour
                         cardColor = ThisPermanent.TopCard.CardColors[0];
                     }
 
-                    DPBackground_color[i].color = DataBase.CardColor_ColorLightDictionary[cardColor];
+                    if (DPBackground_color[i].color != DataBase.CardColor_ColorLightDictionary[cardColor])
+                        DPBackground_color[i].color = DataBase.CardColor_ColorLightDictionary[cardColor];
                 }
             }
 
@@ -427,7 +469,9 @@ public class FieldPermanentCard : MonoBehaviour
             if (ThisPermanent.IsDigimon && ThisPermanent.TopCard.HasLevel)
             {
                 LevelText.transform.parent.gameObject.SetActive(true);
-                LevelText.text = ThisPermanent.Level.ToString();
+
+                if(LevelText.text != ThisPermanent.Level.ToString())
+                    LevelText.text = ThisPermanent.Level.ToString();
 
                 foreach (TextCardColorMaterial textCardColorMaterial in textCardColorMaterials)
                 {
@@ -449,8 +493,12 @@ public class FieldPermanentCard : MonoBehaviour
                 if (ThisPermanent.DigivolutionCards.Count >= 1)
                 {
                     EvoRootCountText.transform.parent.gameObject.SetActive(true);
-                    EvoRootCountText.text = $"×{ThisPermanent.DigivolutionCards.Count}";
-                    EvoRootCountBackground.color = DataBase.CardColor_ColorLightDictionary[ThisPermanent.TopCard.CardColors[0]];
+
+                    if(EvoRootCountText.text != $"×{ThisPermanent.DigivolutionCards.Count}")
+                        EvoRootCountText.text = $"×{ThisPermanent.DigivolutionCards.Count}";
+
+                    if(EvoRootCountBackground.color != DataBase.CardColor_ColorLightDictionary[ThisPermanent.TopCard.CardColors[0]])
+                        EvoRootCountBackground.color = DataBase.CardColor_ColorLightDictionary[ThisPermanent.TopCard.CardColors[0]];
                 }
 
                 else

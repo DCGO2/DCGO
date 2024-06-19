@@ -383,6 +383,13 @@ public interface ICanNotBeDestroyedBySkillEffect
 }
 #endregion
 
+#region "Target permanent cannot be removed" effect"
+public interface ICanNotBeRemovedEffect
+{
+    bool CanNotBeRemoved(Permanent permanent);
+}
+#endregion
+
 #region "Target permanent gains Blocker" effect
 public interface IBlockerEffect
 {
@@ -394,6 +401,13 @@ public interface IBlockerEffect
 public interface IAddJogressLevelsEffect
 {
     List<int> GetJogressLevels(CardSource cardSource, Permanent permanent);
+}
+#endregion
+
+#region "Add names for DNA digivolution" effect
+public interface IAddDNANamesEffect
+{
+    List<string> GetDNANames(CardSource cardSource, Permanent permanent);
 }
 #endregion
 
