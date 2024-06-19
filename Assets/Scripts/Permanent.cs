@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Linq;
+using static Cinemachine.DocumentationSortingAttribute;
+
 public class Permanent
 {
     public Permanent(List<CardSource> cardSources)
@@ -2507,7 +2509,7 @@ public class Permanent
     }
     #endregion
 
-    #region ジョグレスで扱うレベル
+    #region Levels handled by Jogress
     public List<int> Levels_ForJogress(CardSource cardSource)
     {
         List<int> levels = new List<int>();
@@ -2519,12 +2521,12 @@ public class Permanent
                 levels.Add(this.Level);
             }
 
-            #region "ジョグレス進化で扱うレベルを追加する"効果
+            #region Effect of "adding levels handled by jogless evolution"
             foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
             {
                 foreach (Permanent permanent in player.GetFieldPermanents())
                 {
-                    #region 場のパーマネントの効果
+                    #region Effects of permanents in play
                     foreach (ICardEffect cardEffect in permanent.EffectList(EffectTiming.None))
                     {
                         if (cardEffect is IAddJogressLevelsEffect)
@@ -2541,7 +2543,7 @@ public class Permanent
                     #endregion
                 }
 
-                #region プレイヤーの効果
+                #region player effect
                 foreach (ICardEffect cardEffect in player.EffectList(EffectTiming.None))
                 {
                     if (cardEffect is IAddJogressLevelsEffect)
@@ -2561,6 +2563,61 @@ public class Permanent
         }
 
         return levels;
+    }
+    #endregion
+
+    #region Names handled by Jogress
+    public List<string> Names_ForDNA(CardSource cardSource)
+    {
+        List<string> names = new List<string>();
+
+        if (cardSource != null)
+        {
+            foreach(string name in cardSource.CardNames)
+                names.Add(name);
+
+            #region Effect of "adding names handled by DNA evolution"
+            foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
+            {
+                foreach (Permanent permanent in player.GetFieldPermanents())
+                {
+                    #region Effects of permanents in play
+                    foreach (ICardEffect cardEffect in permanent.EffectList(EffectTiming.None))
+                    {
+                        if (cardEffect is IAddDNANamesEffect)
+                        {
+                            if (cardEffect.CanUse(null))
+                            {
+                                foreach (string name in ((IAddDNANamesEffect)cardEffect).GetDNANames(cardSource, this))
+                                {
+                                    names.Add(name);
+                                }
+                            }
+                        }
+                    }
+                    #endregion
+                }
+
+                #region player effect
+                foreach (ICardEffect cardEffect in player.EffectList(EffectTiming.None))
+                {
+                    if (cardEffect is IAddDNANamesEffect)
+                    {
+                        if (cardEffect.CanUse(null))
+                        {
+                            foreach (string name in ((IAddDNANamesEffect)cardEffect).GetDNANames(cardSource, this))
+                            {
+                                names.Add(name);
+                            }
+                        }
+                    }
+                }
+                #endregion
+            }
+            #endregion
+        }
+
+        return names;
     }
     #endregion
 
