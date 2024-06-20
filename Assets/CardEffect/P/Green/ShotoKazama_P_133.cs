@@ -25,7 +25,19 @@ namespace DCGO.CardEffects.P
 
                 bool SelectPteromon(CardSource cardSource)
                 {
-                    return cardSource.CardNames.Contains("Pteromon");
+                    if (cardSource.CardNames.Contains("Pteromon"))
+                    {
+                        if (CardEffectCommons.CanPlayAsNewPermanent(
+                                cardSource: cardSource,
+                                payCost: false,
+                                cardEffect: activateClass,
+                                isBreedingArea: false))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -87,7 +99,8 @@ namespace DCGO.CardEffects.P
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Memory +1", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetHashString("Digivolve_P_133");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -142,7 +155,6 @@ namespace DCGO.CardEffects.P
             }
             #endregion
             
-
             return cardEffects;
         }
     }

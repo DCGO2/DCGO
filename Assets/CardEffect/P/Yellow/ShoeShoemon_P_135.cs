@@ -124,7 +124,9 @@ namespace DCGO.CardEffects.P
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Opponent's Digimon gets -2000 DP for the turn", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetIsInheritedEffect(true);
+                activateClass.SetHashString("ChangeDP_P_135");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
