@@ -98,7 +98,7 @@ namespace DCGO.CardEffects.EX6
                 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (card.Owner.SecurityCards.Count >= 1)
+                    if (card.Owner.SecurityCards.Count(CanSelectCardCondition) >= 1)
                     {
                         int maxCount = Math.Min(1, card.Owner.SecurityCards.Count(CanSelectCardCondition));
                         
