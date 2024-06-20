@@ -16,6 +16,7 @@ namespace DCGO.CardEffects.P
                 activateClass.SetUpICardEffect("By trashing 1 card in hand, Delete opponents level 3 Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
+                activateClass.SetHashString("WhenAttacking_P_149");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

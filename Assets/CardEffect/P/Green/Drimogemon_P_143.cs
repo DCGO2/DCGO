@@ -9,33 +9,66 @@ namespace DCGO.CardEffects.P
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            if (timing == EffectTiming.None)
+            #region End of Your Turn
+            if (timing == EffectTiming.OnEndTurn)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpICardEffect("Move this Digimon to empty space in breeding area", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetHashString("EndTurn_P_143");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "";
+                    return "[End of Your Turn] [Once Per Turn] You may move this to the empty space in your breeding area.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return true;
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (CardEffectCommons.IsOwnerTurn(card))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return true;
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (card.Owner.GetBreedingAreaPermanents().Count == 0)
+                        {
+                            return true;
+                        }
+                    }
+                        return false;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return null;
+                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.MovePermanent(card.PermanentOfThisCard().PermanentFrame));
                 }
             }
+            #endregion
+
+            #region Piercing - ESS
+            if (timing == EffectTiming.None)
+            {
+                bool PiercingCondition()
+                {
+                    return true;
+                }
+
+                cardEffects.Add(CardEffectFactory.PierceSelfEffect(
+                    isInheritedEffect: true,
+                    card: card,
+                    condition: PiercingCondition));
+            }
+            #endregion
 
             return cardEffects;
         }
