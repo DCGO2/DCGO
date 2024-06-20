@@ -50,7 +50,8 @@ namespace DCGO.CardEffects.EX6
                         {
                             if (card.PermanentOfThisCard().TopCard.ContainsTraits("Angel") ||
                                 card.PermanentOfThisCard().TopCard.ContainsTraits("Archangel") ||
-                                card.PermanentOfThisCard().TopCard.ContainsTraits("Three Great Angels"))
+                                card.PermanentOfThisCard().TopCard.ContainsTraits("Three Great Angels") ||
+                                card.PermanentOfThisCard().TopCard.ContainsTraits("ThreeGreatAngels"))
                             {
                                 return true;
                             }
