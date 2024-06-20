@@ -341,18 +341,15 @@ namespace DCGO.CardEffects.EX6
                             
                             IEnumerator SelectPermanentCoroutine(Permanent permanent)
                             {
-                                if (permanent != null)
+                                if (permanent.TopCard != null)
                                 {
-                                    if (permanent.TopCard != null)
+                                    if (!permanent.TopCard.CanNotBeAffected(activateClass))
                                     {
-                                        if (!permanent.TopCard.CanNotBeAffected(activateClass))
-                                        {
-                                            yield return ContinuousController.instance.StartCoroutine(
-                                                new IPutSecurityPermanent(
-                                                    permanent,
-                                                    CardEffectCommons.CardEffectHashtable(activateClass),
-                                                    toTop: false).PutSecurity());
-                                        }
+                                        yield return ContinuousController.instance.StartCoroutine(
+                                            new IPutSecurityPermanent(
+                                                permanent,
+                                                CardEffectCommons.CardEffectHashtable(activateClass),
+                                                toTop: false).PutSecurity());
                                     }
                                 }
                             }

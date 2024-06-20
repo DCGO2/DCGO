@@ -468,7 +468,106 @@ namespace DCGO.CardEffects.EX6
             
             #region End of Opponent's Turn
             
-            //TODO Implement
+            if (timing == EffectTiming.OnEndTurn)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect(
+                    "Place 1 Digimon with [Security Attack] on top of its owner's security stack",
+                    CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetHashString("EOT_EX6-031");
+                cardEffects.Add(activateClass);
+                
+                string EffectDescription()
+                {
+                    return
+                        "[End of Your Turn] [Once Per Turn] You may place 1 Digimon with [Security Attack] on top of its owner's security stack.";
+                }
+                
+                bool IsPermanentWithSecurityAttackCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
+                    {
+                        if (permanent.HasSecurityAttackChanges)
+                        {
+                            return true;
+                        }
+                    }
+                    
+                    return false;
+                }
+                
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (CardEffectCommons.IsOpponentTurn(card))
+                        {
+                            return true;
+                        }
+                    }
+                    
+                    return false;
+                }
+                
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (CardEffectCommons.HasMatchConditionPermanent(IsPermanentWithSecurityAttackCondition))
+                        {
+                            return true;
+                        }
+                    }
+                    
+                    return false;
+                }
+                
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.HasMatchConditionPermanent(IsPermanentWithSecurityAttackCondition))
+                    {
+                        int maxCount = Math.Min(1,
+                            CardEffectCommons.MatchConditionPermanentCount(IsPermanentWithSecurityAttackCondition));
+                        
+                        SelectPermanentEffect selectPermanentEffect =
+                            GManager.instance.GetComponent<SelectPermanentEffect>();
+                        
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: IsPermanentWithSecurityAttackCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: maxCount,
+                            canNoSelect: true,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
+                        
+                        selectPermanentEffect.SetUpCustomMessage(
+                            "Select 1 Digimon to place on top of your security stack.",
+                            "The opponent is selecting 1 Digimon to place on top of their security stack.");
+                        
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                        
+                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                        {
+                            if (permanent.TopCard != null)
+                            {
+                                if (!permanent.TopCard.CanNotBeAffected(activateClass))
+                                {
+                                    yield return ContinuousController.instance.StartCoroutine(
+                                        new IPutSecurityPermanent(permanent,
+                                            CardEffectCommons.CardEffectHashtable(activateClass),
+                                            toTop: true).PutSecurity());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             
             #endregion
             
