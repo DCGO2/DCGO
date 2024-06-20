@@ -121,12 +121,12 @@ namespace DCGO.CardEffects.EX6
             
             bool CanSelectCardSharedCondition(CardSource cardSource)
             {
-                if (card.PermanentOfThisCard().TopCard.ContainsTraits("Angel") ||
-                    card.PermanentOfThisCard().TopCard.ContainsTraits("Archangel") ||
-                    card.PermanentOfThisCard().TopCard.ContainsTraits("Three Great Angels") ||
-                    card.PermanentOfThisCard().TopCard.ContainsTraits("ThreeGreatAngels") ||
-                    card.PermanentOfThisCard().TopCard.ContainsTraits("Seven Great Demon Lords") ||
-                    card.PermanentOfThisCard().TopCard.ContainsTraits("SevenGreatDemonLords"))
+                if (cardSource.ContainsTraits("Angel") ||
+                    cardSource.ContainsTraits("Archangel") ||
+                    cardSource.ContainsTraits("Three Great Angels") ||
+                    cardSource.ContainsTraits("ThreeGreatAngels") ||
+                    cardSource.ContainsTraits("Seven Great Demon Lords") ||
+                    cardSource.ContainsTraits("SevenGreatDemonLords"))
                 {
                     return true;
                 }

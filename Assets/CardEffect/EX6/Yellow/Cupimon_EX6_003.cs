@@ -31,10 +31,10 @@ namespace DCGO.CardEffects.EX6
                 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (card.PermanentOfThisCard().TopCard.ContainsTraits("Angel") ||
-                        card.PermanentOfThisCard().TopCard.ContainsTraits("Archangel") ||
-                        card.PermanentOfThisCard().TopCard.ContainsTraits("Three Great Angels") ||
-                        card.PermanentOfThisCard().TopCard.ContainsTraits("ThreeGreatAngels"))
+                    if (cardSource.ContainsTraits("Angel") ||
+                        cardSource.ContainsTraits("Archangel") ||
+                        cardSource.ContainsTraits("Three Great Angels") ||
+                        cardSource.ContainsTraits("ThreeGreatAngels"))
                     {
                         return true;
                     }
