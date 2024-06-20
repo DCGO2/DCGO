@@ -243,14 +243,14 @@ namespace DCGO.CardEffects.EX6
                 activateClass.SetUpICardEffect(
                     "Place one of your level 6 Digimon on top of your security stack to digivolve into [Lucemon: Chaos Mode] in the trash without paying the cost.",
                     CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
                 activateClass.SetHashString("EOT_EX6-018");
                 cardEffects.Add(activateClass);
                 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return
-                        "[End of Your Turn] [Once Per Turn] By placing one of your level 6 Digimon on top of your security stack, this Digimon may digivolve into [Lucemon: Chaos Mode] in the trash without paying the cost..";
+                        "[End of Your Turn] [Once Per Turn] By placing one of your level 6 Digimon on top of your security stack, this Digimon may digivolve into [Lucemon: Chaos Mode] in the trash without paying the cost.";
                 }
                 
                 bool IsPermanentLevel6Condition(Permanent permanent)
@@ -308,7 +308,7 @@ namespace DCGO.CardEffects.EX6
                     return false;
                 }
                 
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     if (CardEffectCommons.HasMatchConditionPermanent(IsPermanentLevel6Condition))
                     {
@@ -334,8 +334,8 @@ namespace DCGO.CardEffects.EX6
                             cardEffect: activateClass);
                         
                         selectPermanentEffect.SetUpCustomMessage(
-                            "Select 1 Digimon to place on top your security stack.",
-                            "The opponent is selecting 1 Digimon to place on top their security stack.");
+                            "Select 1 Digimon to place on top of your security stack.",
+                            "The opponent is selecting 1 Digimon to place on top of their security stack.");
                         
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                         
