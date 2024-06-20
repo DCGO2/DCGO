@@ -1082,6 +1082,8 @@ namespace ProfanityFilter
              "neonazi",
              "nig nog",
              "nigaboo",
+             "nigg",
+             "n1gg",
              "nigg3r",
              "nigg4h",
              "nigga",
