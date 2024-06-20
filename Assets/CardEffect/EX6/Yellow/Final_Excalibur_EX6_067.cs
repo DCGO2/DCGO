@@ -43,6 +43,8 @@ namespace DCGO.CardEffects.EX6
                             return true;
                         }
                     }
+                    
+                    return false;
                 }
                 
                 bool CanSelectPermanentCondition(Permanent permanent)
