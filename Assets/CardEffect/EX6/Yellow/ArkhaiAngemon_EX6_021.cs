@@ -53,12 +53,15 @@ namespace DCGO.CardEffects.EX6
             
             bool CanSelectCardSharedCondition(CardSource cardSource)
             {
-                if (cardSource.ContainsTraits("Angel") ||
-                    cardSource.ContainsTraits("Archangel") ||
-                    cardSource.ContainsTraits("Three Great Angels") ||
-                    cardSource.ContainsTraits("ThreeGreatAngels"))
+                if (cardSource.IsDigimon)
                 {
-                    return true;
+                    if (cardSource.ContainsTraits("Angel") ||
+                        cardSource.ContainsTraits("Archangel") ||
+                        cardSource.ContainsTraits("Three Great Angels") ||
+                        cardSource.ContainsTraits("ThreeGreatAngels"))
+                    {
+                        return true;
+                    }
                 }
                 
                 return false;
