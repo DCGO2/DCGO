@@ -15,9 +15,18 @@ public class Blackrapidmon_EX4_036 : CEntity_Effect
         {
             bool PermanentCondition(Permanent targetPermanent)
             {
-                return targetPermanent.TopCard.ContainsCardName("Gargomon") || (targetPermanent.TopCard.CardColors.Contains(CardColor.Green) && targetPermanent.TopCard.CardColors.Count == 2 && targetPermanent.TopCard.HasLevel && targetPermanent.Level == 4);
-            }
+                if(targetPermanent.TopCard.HasLevel && targetPermanent.Level == 4)
+                {
+                    if (targetPermanent.TopCard.ContainsCardName("Gargomon"))
+                        return true;
 
+                    if (targetPermanent.TopCard.CardColors.Contains(CardColor.Green) && targetPermanent.TopCard.CardColors.Count == 2)
+                        return true;
+                }
+
+                return false;
+            }
+            
             cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
         }
 
