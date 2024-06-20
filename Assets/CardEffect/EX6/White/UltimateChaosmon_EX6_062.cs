@@ -14,45 +14,17 @@ namespace DCGO.CardEffects.EX6
             #region Partition
             if (timing == EffectTiming.WhenRemoveField)
             {
-                bool CanSelectFirstSourceCondition(CardSource cardSource)
+                List<PartitionCondition> partitionConditions = new List<PartitionCondition>
                 {
-                    if (cardSource.HasLevel && cardSource.Level == 6)
-                    {
-                        if (cardSource.CardColors.Contains(CardColor.Yellow) && cardSource.CardColors.Contains(CardColor.Black))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
-                bool CanSelectSecondSourceCondition(CardSource cardSource)
-                {
-                    if (cardSource.HasLevel && cardSource.Level == 6)
-                    {
-                        if (cardSource.CardColors.Contains(CardColor.Green) && cardSource.CardColors.Contains(CardColor.Purple))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
+                    new PartitionCondition(6, new List<CardColor> { CardColor.Yellow, CardColor.Black }),
+                    new PartitionCondition(6, new List<CardColor> { CardColor.Green, CardColor.Purple })
+                };
 
                 cardEffects.Add(CardEffectFactory.PartitionSelfEffect(
                     isInheritedEffect: false,
                     card: card,
                     condition: null,
-                    canSelectFirstSourceCondition: CanSelectFirstSourceCondition,
-                    canSelectSecondSourceCondition: CanSelectSecondSourceCondition));
-
-                cardEffects.Add(CardEffectFactory.PartitionSelfEffect(
-                    isInheritedEffect: true,
-                    card: card,
-                    condition: null,
-                    canSelectFirstSourceCondition: CanSelectFirstSourceCondition,
-                    canSelectSecondSourceCondition: CanSelectSecondSourceCondition));
+                    cardSourceConditions: partitionConditions));
             }
             #endregion
 
