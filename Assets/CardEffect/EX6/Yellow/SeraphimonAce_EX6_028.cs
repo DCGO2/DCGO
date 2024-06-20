@@ -10,6 +10,26 @@ namespace DCGO.CardEffects.EX6
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
             
+            #region Alternate Digivolution
+            
+            if (timing == EffectTiming.None)
+            {
+                bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.ContainsCardName("MagnaAngemon");
+                }
+                
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
+                    permanentCondition: PermanentCondition,
+                    digivolutionCost: 3,
+                    ignoreDigivolutionRequirement: false,
+                    card: card,
+                    condition: null)
+                );
+            }
+            
+            #endregion
+            
             #region Ace - Blast Digivolve
             
             if (timing == EffectTiming.OnCounterTiming)
@@ -46,7 +66,7 @@ namespace DCGO.CardEffects.EX6
                 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (card.Owner.LibraryCards.Count >= 1)
                         {
@@ -115,13 +135,15 @@ namespace DCGO.CardEffects.EX6
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Draw 1", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false,
+                    EffectDescription());
                 activateClass.SetHashString("ReturnToHand_EX6_028");
                 cardEffects.Add(activateClass);
                 
                 string EffectDescription()
                 {
-                    return "[Your Turn][Once Per Turn] When a card is added to your security stack, return 1 of your opponent's Digimon with a level as high or lower than the number of cards in your security stack to the hand.";
+                    return
+                        "[Your Turn][Once Per Turn] When a card is added to your security stack, return 1 of your opponent's Digimon with a level as high or lower than the number of cards in your security stack to the hand.";
                 }
                 
                 bool CanSelectOpponentPermanentCondition(Permanent permanent)
@@ -170,9 +192,11 @@ namespace DCGO.CardEffects.EX6
                 {
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentPermanentCondition))
                     {
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectOpponentPermanentCondition));
+                        int maxCount = Math.Min(1,
+                            CardEffectCommons.MatchConditionPermanentCount(CanSelectOpponentPermanentCondition));
                         
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                        SelectPermanentEffect selectPermanentEffect =
+                            GManager.instance.GetComponent<SelectPermanentEffect>();
                         
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,

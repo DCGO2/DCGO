@@ -24,7 +24,8 @@ namespace DCGO.CardEffects.EX6
                 {
                     if (cardSource.ContainsTraits("Angel") ||
                         cardSource.ContainsTraits("Archangel") ||
-                        cardSource.ContainsTraits("Fallen Angel"))
+                        cardSource.ContainsTraits("Fallen Angel") ||
+                        cardSource.ContainsTraits("FallenAngel"))
                     {
                         return true;
                     }
@@ -37,7 +38,8 @@ namespace DCGO.CardEffects.EX6
             {
                 if (cardSource.IsTamer)
                 {
-                    if (cardSource.ContainsCardName("Mirei Mikagura"))
+                    if (cardSource.ContainsCardName("Mirei Mikagura") ||
+                        cardSource.ContainsCardName("MireiMikagura"))
                     {
                         return true;
                     }
