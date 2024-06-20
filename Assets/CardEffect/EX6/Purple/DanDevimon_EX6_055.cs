@@ -34,9 +34,12 @@ namespace DCGO.CardEffects.EX6
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    if(permanent.IsDigimon && permanent.Level <= 5)
+                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                     {
-                        return true;
+                        if (permanent.IsDigimon && permanent.Level <= 5)
+                        {
+                            return true;
+                        }
                     }
                     return false;
                 }
@@ -161,9 +164,12 @@ namespace DCGO.CardEffects.EX6
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    if (permanent.IsDigimon && permanent.Level <= 5)
+                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                     {
-                        return true;
+                        if (permanent.IsDigimon && permanent.Level <= 5)
+                        {
+                            return true;
+                        }
                     }
                     return false;
                 }
