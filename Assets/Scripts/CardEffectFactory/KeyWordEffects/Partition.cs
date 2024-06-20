@@ -7,14 +7,26 @@ using UnityEngine;
 public class PartitionCondition
 {
     public int Level;
-    public CardColor Color;
+    public List<CardColor> Color;
 
-    public PartitionCondition(int level, CardColor color)
+    public PartitionCondition(int level, List<CardColor> color)
     {
         Level = level;
         Color = color;
     }
+
+    public bool ContainsAll(List<CardColor> sourceColors)
+    {
+        foreach(CardColor cardColor in Color)
+        {
+            if(!sourceColors.Contains(cardColor))
+                return false;
+        }
+
+        return false;
+    }
 }
+
 public partial class CardEffectFactory
 {
     #region Trigger effect of [Partition] on oneself
@@ -46,13 +58,13 @@ public partial class CardEffectFactory
         List<CardSource> sourceOneCard = targetPermanent.cardSources
             .Clone()
             .Filter(source =>
-                source.CardColors.Contains(partitionConditions[0].Color)
+                partitionConditions[0].ContainsAll(source.CardColors)
                 && (source.HasLevel && source.Level == partitionConditions[0].Level));
 
         List<CardSource> sourceTwoCard = targetPermanent.cardSources
             .Clone()
             .Filter(source =>
-                source.CardColors.Contains(partitionConditions[1].Color)
+                partitionConditions[1].ContainsAll(source.CardColors)
                 && (source.HasLevel && source.Level == partitionConditions[1].Level));
 
         ActivateClass activateClass = new ActivateClass();
