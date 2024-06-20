@@ -37,7 +37,7 @@ namespace DCGO.CardEffects.EX6
 
                 bool CanSelectCardCondition1(CardSource cardSource)
                 {
-                    if (cardSource.ContainsTraits("Three Great Angels"))
+                    if (cardSource.ContainsTraits("Three Great Angels") || cardSource.ContainsTraits("ThreeGreatAngels"))
                     {
                         return true;
                     }
@@ -114,7 +114,7 @@ namespace DCGO.CardEffects.EX6
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (card.PermanentOfThisCard().TopCard.CardTraits.Contains("Angel") || card.PermanentOfThisCard().TopCard.CardTraits.Contains("Archangel") || card.PermanentOfThisCard().TopCard.CardTraits.Contains("Three Great Angels"))
+                        if (card.PermanentOfThisCard().TopCard.CardTraits.Contains("Angel") || card.PermanentOfThisCard().TopCard.CardTraits.Contains("Archangel") || card.PermanentOfThisCard().TopCard.CardTraits.Contains("Three Great Angels") || card.PermanentOfThisCard().TopCard.CardTraits.Contains("ThreeGreatAngels"))
                         {
                             return true;
                         }
