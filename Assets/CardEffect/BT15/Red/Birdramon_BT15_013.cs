@@ -96,7 +96,7 @@ public class Birdramon_BT15_013 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Your Turn][Once Per Turn] When a card is removed from your opponent's security stack, <Draw 1>.";
+                return "[Your Turn] [Once Per Turn] When a card is removed from your opponent's security stack, gain 1 memory.";
             }
 
             bool CanUseCondition(Hashtable hashtable)

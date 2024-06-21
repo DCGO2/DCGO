@@ -22,7 +22,7 @@ namespace DCGO.CardEffects.BT16
 
                 string EffectDiscription()
                 {
-                    return "[All Turns][Once Per Turn] When an opponent's Digimon is deleted in battle, if this Digimon has 2 or more colors, gain 1 memory.";
+                    return "[All Turns] [Once Per Turn] When this Digimon deletes an opponent's Digimon in battle, if this Digimon has 2 or more colors, gain 1 memory.";
                 }
 
                 bool PermanentCondition(Permanent permanent)
