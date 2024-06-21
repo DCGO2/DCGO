@@ -93,8 +93,7 @@ namespace DCGO.CardEffects.EX6
                             
                             IEnumerator SelectPermanentCoroutine(Permanent permanent)
                             {
-                                // TODO Give Barrier
-                                yield return null;
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBarrier(targetPermanent: permanent, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
                             }
                         }
                     }
@@ -161,8 +160,7 @@ namespace DCGO.CardEffects.EX6
                             
                             IEnumerator SelectPermanentCoroutine(Permanent permanent)
                             {
-                                // TODO Give Barrier
-                                yield return null;
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBarrier(targetPermanent: permanent, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
                             }
                         }
                     }
