@@ -7,7 +7,7 @@ using UnityEngine;
 public partial class CardEffectFactory
 {
     #region Trigger effect of [Barrier] on oneself
-    public static ActivateClass BarrierSelfEffect(bool isInheritedEffect, CardSource card, Func<bool> condition)
+    public static ICardEffect BarrierSelfEffect(bool isInheritedEffect, CardSource card, Func<bool> condition)
     {
         Permanent targetPermanent = card.PermanentOfThisCard();
 
