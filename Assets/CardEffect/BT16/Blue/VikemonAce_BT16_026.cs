@@ -92,13 +92,6 @@ namespace DCGO.CardEffects.BT16
                         selectPermanentEffect.SetUpCustomMessage("Select Digimons to De-Digivolve.", "The opponent is selecting Digimons to De-Digivolve.");
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotUnsuspendPlayerEffect(
-                            permanentCondition: CantSuspendCondition,
-                            effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                            activateClass: activateClass,
-                            isOnlyActivePhase: false,
-                            effectName: "Your Digimon can't unsuspend"));
-
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
                             if (permanent != null)
@@ -106,9 +99,15 @@ namespace DCGO.CardEffects.BT16
 
                             yield return null;
                         }
+
                     }
 
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotSuspendPlayerEffect(CantSuspendCondition, EffectDuration.UntilOpponentTurnEnd, activateClass, isOnlyActivePhase: false, "Can't Suspend"));
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotSuspendPlayerEffect(
+                        permanentCondition: CantSuspendCondition,
+                        effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                        activateClass: activateClass,
+                        isOnlyActivePhase: false,
+                        effectName: "Can't Suspend"));
                 }
             }
             #endregion
@@ -173,13 +172,6 @@ namespace DCGO.CardEffects.BT16
                         selectPermanentEffect.SetUpCustomMessage("Select Digimons to De-Digivolve.", "The opponent is selecting Digimons to De-Digivolve.");
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotUnsuspendPlayerEffect(
-                            permanentCondition: CantSuspendCondition,
-                            effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                            activateClass: activateClass,
-                            isOnlyActivePhase: false,
-                            effectName: "Your Digimon can't unsuspend"));
-
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
                             if (permanent != null)
@@ -187,9 +179,15 @@ namespace DCGO.CardEffects.BT16
 
                             yield return null;
                         }
+
                     }
 
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotSuspendPlayerEffect(CantSuspendCondition, EffectDuration.UntilOpponentTurnEnd, activateClass, isOnlyActivePhase: false, "Can't Suspend"));
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotSuspendPlayerEffect(
+                        permanentCondition: CantSuspendCondition,
+                        effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                        activateClass: activateClass,
+                        isOnlyActivePhase: false,
+                        effectName: "Can't Suspend"));
                 }
             }
             #endregion
@@ -210,7 +208,7 @@ namespace DCGO.CardEffects.BT16
                 bool CanSelectPermanentCondition(Permanent targetPermanent)
                 {
                     if(CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(targetPermanent, card))
-                        return targetPermanent.DigivolutionCards.Count <= 1;
+                        return (targetPermanent.DigivolutionCards.Count <= 1);
 
                     return false;
                 }
@@ -222,30 +220,33 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    {
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                            return true;
+                    }
+
+                    return false;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if(CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermanentCondition))
-                    {
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectPermanentCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: 1,
-                            canNoSelect: false,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: null,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Destroy,
-                            cardEffect: activateClass);
+                    selectPermanentEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanSelectPermanentCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: false,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: null,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Destroy,
+                        cardEffect: activateClass);
 
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                    }
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                 }
             }
             #endregion

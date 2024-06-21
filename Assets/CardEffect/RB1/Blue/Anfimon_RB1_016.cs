@@ -12,7 +12,8 @@ public class Anfimon_RB1_016 : CEntity_Effect
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-        if (timing == EffectTiming.OnEnterFieldAnyone || timing == EffectTiming.OnAllyAttack)
+        #region When Digivolving
+        if (timing == EffectTiming.OnAllyAttack)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Trash cards from hand to trash digivolution cards, and return  1 Digimon to deck bottom", CanUseCondition, card);
@@ -21,15 +22,7 @@ public class Anfimon_RB1_016 : CEntity_Effect
 
             string EffectDiscription()
             {
-                if (timing == EffectTiming.OnEnterFieldAnyone)
-                {
-                    return "[When Digivolving] You may trash up to 2 blue cards in your hand. For each one, trash any 1 card under your opponentfs Digimon or Tamers. Then, you may return 1 of your opponentfDigimon with no digivolution cards to the bottom of the deck.";
-                }
-
-                else
-                {
-                    return "[When Attacking] You may trash up to 2 blue cards in your hand. For each one, trash any 1 card under your opponentfs Digimon or Tamers. Then, you may return 1 of your opponentfDigimon with no digivolution cards to the bottom of the deck.";
-                }
+                return "[When Attacking] You may trash up to 2 blue cards in your hand. For each one, trash any 1 card under your opponentfs Digimon or Tamers. Then, you may return 1 of your opponentfDigimon with no digivolution cards to the bottom of the deck.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)
@@ -73,15 +66,7 @@ public class Anfimon_RB1_016 : CEntity_Effect
 
             bool CanUseCondition(Hashtable hashtable)
             {
-                if (timing == EffectTiming.OnEnterFieldAnyone)
-                {
-                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
-                }
-
-                else
-                {
-                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
-                }
+                return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
             }
 
             bool CanActivateCondition(Hashtable hashtable)
@@ -172,6 +157,155 @@ public class Anfimon_RB1_016 : CEntity_Effect
                 }
             }
         }
+        #endregion
+
+        #region When Digivolving
+        if (timing == EffectTiming.OnEnterFieldAnyone)
+        {
+            ActivateClass activateClass = new ActivateClass();
+            activateClass.SetUpICardEffect("Trash cards from hand to trash digivolution cards, and return  1 Digimon to deck bottom", CanUseCondition, card);
+            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+            cardEffects.Add(activateClass);
+
+            string EffectDiscription()
+            {
+                return "[When Digivolving] You may trash up to 2 blue cards in your hand. For each one, trash any 1 card under your opponentfs Digimon or Tamers. Then, you may return 1 of your opponentfDigimon with no digivolution cards to the bottom of the deck.";
+            }
+
+            bool CanSelectCardCondition(CardSource cardSource)
+            {
+                return cardSource.CardColors.Contains(CardColor.Blue);
+            }
+
+            bool CanSelectPermanentCondition(Permanent permanent)
+            {
+                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card))
+                {
+                    if (permanent.IsDigimon || permanent.IsTamer)
+                    {
+                        if (permanent.DigivolutionCards.Count(CanSelectCardCondition1) >= 1)
+                        {
+                            return true;
+                        }
+                    }
+                }
+
+                return false;
+            }
+
+            bool CanSelectCardCondition1(CardSource cardSource)
+            {
+                return !cardSource.CanNotTrashFromDigivolutionCards(activateClass);
+            }
+
+            bool CanSelectPermanentCondition1(Permanent permanent)
+            {
+                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                {
+                    if (permanent.HasNoDigivolutionCards)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            bool CanUseCondition(Hashtable hashtable)
+            {
+                return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+            }
+
+            bool CanActivateCondition(Hashtable hashtable)
+            {
+                if (CardEffectCommons.IsExistOnBattleArea(card))
+                {
+                    if (card.Owner.HandCards.Count >= 1)
+                    {
+                        return true;
+                    }
+
+                    if (card.Owner.Enemy.GetBattleAreaPermanents().Count(CanSelectPermanentCondition1) >= 1)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            IEnumerator ActivateCoroutine(Hashtable _hashtable)
+            {
+                if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
+                {
+                    List<CardSource> discardCards = new List<CardSource>();
+
+                    int maxCount = Math.Min(2, card.Owner.HandCards.Count(CanSelectCardCondition));
+
+                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                    selectHandEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanSelectCardCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: maxCount,
+                        canNoSelect: true,
+                        canEndNotMax: true,
+                        isShowOpponent: true,
+                        selectCardCoroutine: null,
+                        afterSelectCardCoroutine: AfterSelectCardCoroutine,
+                        mode: SelectHandEffect.Mode.Discard,
+                        cardEffect: activateClass);
+
+                    yield return StartCoroutine(selectHandEffect.Activate());
+
+                    IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
+                    {
+                        if (cardSources.Count >= 1)
+                        {
+                            discardCards = cardSources.Clone();
+
+                            yield return null;
+                        }
+                    }
+
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SelectTrashDigivolutionCards(
+                        permanentCondition: CanSelectPermanentCondition,
+                        cardCondition: CanSelectCardCondition1,
+                        maxCount: discardCards.Count,
+                        canNoTrash: false,
+                        isFromOnly1Permanent: false,
+                        activateClass: activateClass,
+                        selectString: "Digimon or Tamer"
+                    ));
+                }
+
+                if (card.Owner.Enemy.GetBattleAreaPermanents().Count(CanSelectPermanentCondition1) >= 1)
+                {
+                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition1));
+
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                    selectPermanentEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanSelectPermanentCondition1,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: maxCount,
+                        canNoSelect: true,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: null,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.PutLibraryBottom,
+                        cardEffect: activateClass);
+
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                }
+            }
+        }
+        #endregion
+
 
         if (timing == EffectTiming.WhenPermanentWouldBeDeleted)
         {
