@@ -1066,7 +1066,61 @@ public class Permanent
     }
     #endregion
 
-    #region セキュリティチェックを行う枚数
+    #region Number of sheets to undergo security check
+    public int InvertSecutiryValue
+    {
+        get
+        {
+            int Invert = 0;
+
+            List<ICardEffect> cardEffects_InvertStrike = new List<ICardEffect>();
+
+            foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
+            {
+                foreach (Permanent permanent in player.GetFieldPermanents())
+                {
+                    #region Effects of permanents in play
+                    foreach (ICardEffect cardEffect in permanent.EffectList(EffectTiming.None))
+                    {
+                        if (cardEffect is IInvertSAttackEffect)
+                        {
+                            if (cardEffect.CanUse(null))
+                            {
+                                if (!TopCard.CanNotBeAffected(cardEffect))
+                                {
+                                    cardEffects_InvertStrike.Add(cardEffect);
+                                }
+                            }
+                        }
+                    }
+                    #endregion
+                }
+
+                #region player effect
+                foreach (ICardEffect cardEffect in player.EffectList(EffectTiming.None))
+                {
+                    if (cardEffect is IInvertSAttackEffect)
+                    {
+                        if (cardEffect.CanUse(null))
+                        {
+                            if (!TopCard.CanNotBeAffected(cardEffect))
+                            {
+                                cardEffects_InvertStrike.Add(cardEffect);
+                            }
+                        }
+                    }
+                }
+                #endregion
+            }
+
+            foreach (ICardEffect cardEffect in cardEffects_InvertStrike)
+            {
+                Invert = ((IInvertSAttackEffect)cardEffect).InversionValue(this, Invert);
+            }
+
+            return Mathf.Clamp(Invert,-1,1);
+        }
+    }
     public List<int> SecurityAttackChanges
     {
         get
@@ -1127,7 +1181,7 @@ public class Permanent
                 {
                     if (cardEffect.CanUse(null))
                     {
-                        int Strike1 = ((IChangeSAttackEffect)cardEffect).GetSAttack(Strike, this);
+                        int Strike1 = ((IChangeSAttackEffect)cardEffect).GetSAttack(Strike, this, InvertSecutiryValue);
 
                         if (Strike1 != Strike)
                         {
@@ -1160,7 +1214,7 @@ public class Permanent
         {
             int Strike = 1;
 
-            #region セキュリティチェックを行う枚数を変更する効果
+            #region Effect of changing the number of sheets to undergo security check
 
             List<ICardEffect> cardEffects_ChangeDirectStrike = new List<ICardEffect>();
 
@@ -1168,7 +1222,7 @@ public class Permanent
             {
                 foreach (Permanent permanent in player.GetFieldPermanents())
                 {
-                    #region 場のパーマネントの効果
+                    #region Effects of permanents in play
                     foreach (ICardEffect cardEffect in permanent.EffectList(EffectTiming.None))
                     {
                         if (cardEffect is IChangeSAttackEffect)
@@ -1188,7 +1242,7 @@ public class Permanent
                     #endregion
                 }
 
-                #region プレイヤーの効果
+                #region player effect
                 foreach (ICardEffect cardEffect in player.EffectList(EffectTiming.None))
                 {
                     if (cardEffect is IChangeSAttackEffect)
@@ -1242,7 +1296,7 @@ public class Permanent
                 {
                     if (cardEffect.CanUse(null))
                     {
-                        Strike = ((IChangeSAttackEffect)cardEffect).GetSAttack(Strike, this);
+                        Strike = ((IChangeSAttackEffect)cardEffect).GetSAttack(Strike, this, InvertSecutiryValue);
                     }
                 }
             }
@@ -1253,7 +1307,7 @@ public class Permanent
                 {
                     if (cardEffect.CanUse(null))
                     {
-                        Strike = ((IChangeSAttackEffect)cardEffect).GetSAttack(Strike, this);
+                        Strike = ((IChangeSAttackEffect)cardEffect).GetSAttack(Strike, this, InvertSecutiryValue);
                     }
                 }
             }
@@ -1264,7 +1318,7 @@ public class Permanent
                 {
                     if (cardEffect.CanUse(null))
                     {
-                        Strike = ((IChangeSAttackEffect)cardEffect).GetSAttack(Strike, this);
+                        Strike = ((IChangeSAttackEffect)cardEffect).GetSAttack(Strike, this, InvertSecutiryValue);
                     }
                 }
             }

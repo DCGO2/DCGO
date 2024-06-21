@@ -157,12 +157,6 @@ namespace DCGO.CardEffects.EX6
             
             #region On Play/ When Digivolving Shared
             
-            string EffectSharedDescription()
-            {
-                return
-                    "[When Digivolving] All Digimon gain <Security Attack -1> until the end of your opponent's turn.";
-            }
-            
             bool CanActivateSharedCondition(Hashtable hashtable)
             {
                 return CardEffectCommons.IsExistOnBattleArea(card);
@@ -177,9 +171,14 @@ namespace DCGO.CardEffects.EX6
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Security Attack -1", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, false,
-                    EffectSharedDescription());
+                    EffectDescription());
                 cardEffects.Add(activateClass);
-                
+
+                string EffectDescription()
+                {
+                    return "[On Play] All Digimon gain <Security Attack -1> until the end of your opponent's turn.";
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
@@ -218,9 +217,14 @@ namespace DCGO.CardEffects.EX6
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Security Attack -1", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, false,
-                    EffectSharedDescription());
+                    EffectDescription());
                 cardEffects.Add(activateClass);
-                
+
+                string EffectDescription()
+                {
+                    return "[When Digivolving] All Digimon gain <Security Attack -1> until the end of your opponent's turn.";
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
@@ -457,17 +461,53 @@ namespace DCGO.CardEffects.EX6
                     }
                 }
             }
-            
+
             #endregion
-            
+
             #region Your Turn
-            
-            //TODO Implement
-            
+
+            if (timing == EffectTiming.None)
+            {
+                bool Condition()
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (CardEffectCommons.IsOwnerTurn(card))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                bool PermanentCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                    {
+                        if (permanent.HasSecurityAttackChanges)
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+
+
+                cardEffects.Add(CardEffectFactory.InvertSAttackStaticEffect(
+                    permanentCondition: PermanentCondition,
+                    changeValue: -1,
+                    isInheritedEffect: false,
+                    card: card,
+                    condition: Condition));
+            }
+
             #endregion
-            
+
             #region End of Opponent's Turn
-            
+
             if (timing == EffectTiming.OnEndTurn)
             {
                 ActivateClass activateClass = new ActivateClass();
