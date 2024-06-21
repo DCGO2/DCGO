@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Unity.Mathematics;
 
 public class ChangeSAttackClass : ICardEffect, IChangeSAttackEffect
 {
@@ -16,14 +17,28 @@ public class ChangeSAttackClass : ICardEffect, IChangeSAttackEffect
     Func<Permanent, bool> _permanentCondition = null;
     Func<CalculateOrder> _isUpDown = null;
 
-    public int GetSAttack(int SAttack, Permanent permanent)
+    public int GetSAttack(int SAttack, Permanent permanent, int invertValue)
     {
+        int changedSAttack = SAttack;
+
         if (PermanentCondition(permanent))
         {
-            SAttack = _changeSAttackFunc(permanent, SAttack);
+            changedSAttack = _changeSAttackFunc(permanent, SAttack);
+
+            switch (invertValue)
+            {
+                case -1:
+                    if(changedSAttack < SAttack)
+                        changedSAttack = SAttack + Mathf.Abs(changedSAttack - SAttack);
+                    break;
+                case 1:
+                    if (changedSAttack > SAttack)
+                        changedSAttack = SAttack - (changedSAttack - SAttack);
+                    break;
+            }
         }
 
-        return SAttack;
+        return changedSAttack;
     }
 
     public CalculateOrder isUpDown()

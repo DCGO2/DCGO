@@ -89,8 +89,16 @@ public interface ICanNotTrashFromDigivolutionCardsEffect
 #region "Change target permanent's Security Attack" effect
 public interface IChangeSAttackEffect
 {
-    int GetSAttack(int SAttack, Permanent permanent);
+    int GetSAttack(int SAttack, Permanent permanent, int invertValue);
     CalculateOrder isUpDown();
+    bool PermanentCondition(Permanent permanent);
+}
+#endregion
+
+#region "Invert target permanent's Security Attack" effect
+public interface IInvertSAttackEffect
+{
+    int InversionValue(Permanent permanent, int invertValue);
     bool PermanentCondition(Permanent permanent);
 }
 #endregion
