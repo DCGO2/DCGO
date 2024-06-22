@@ -74,7 +74,7 @@ namespace DCGO.CardEffects.EX6
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(
-                    " By trashing the top or bottom card of your security stack, 1 of your opponent's Digimon gets -8000 DP until the end of your opponents turn.",
+                    "By trashing the top or bottom card of your security stack, 1 of your opponent's Digimon gets -8000 DP until the end of your opponents turn.",
                     CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, true,
                     EffectSharedDescription());
