@@ -103,7 +103,7 @@ public class DeckBuildingRule : MonoBehaviour
             return deckCards;
         }
 
-        DeckData deckData1 = new DeckData(DeckData.GetDeckCode(deckData.DeckName, modifiedDeckCards, modifiedDigitamaDeckCards, deckData.KeyCard));
+        DeckData deckData1 = new DeckData(DeckData.GetDeckCode(deckData.DeckName, modifiedDeckCards, modifiedDigitamaDeckCards, deckData.KeyCard), deckData.DeckID);
 
         if (!deckData1.AllDeckCards().Contains(deckData1.KeyCard))
         {
