@@ -103,7 +103,7 @@ namespace DCGO.CardEffects.EX6
                 activateClass.SetUpICardEffect(
                     "Play 1 card with the [Three Great Angels] trait from your security stack without paying the cost",
                     CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, EffectDescription());
                 activateClass.SetHashString("PlaySecurityCard_EX6_068");
                 cardEffects.Add(activateClass);
                 

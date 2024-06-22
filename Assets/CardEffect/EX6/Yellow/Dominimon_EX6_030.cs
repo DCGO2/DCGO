@@ -10,36 +10,36 @@ namespace DCGO.CardEffects.EX6
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
-            
+
             #region Rule Text
-            
+
             if (timing == EffectTiming.None)
             {
                 ChangeTraitsClass changeTraitsClass = new ChangeTraitsClass();
                 changeTraitsClass.SetUpICardEffect("Trait: Has [Angel] Type", CanUseCondition, card);
                 changeTraitsClass.SetUpChangeTraitsClass(changeeTraits: ChangeTraits);
                 cardEffects.Add(changeTraitsClass);
-                
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return true;
                 }
-                
+
                 List<string> ChangeTraits(CardSource cardSource, List<string> cardTraits)
                 {
                     if (cardSource == card)
                     {
                         cardTraits.Add("Angel");
                     }
-                    
+
                     return cardTraits;
                 }
             }
-            
+
             #endregion
-            
+
             #region When Digivolving
-            
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -49,13 +49,13 @@ namespace DCGO.CardEffects.EX6
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false,
                     EffectDescription());
                 cardEffects.Add(activateClass);
-                
+
                 string EffectDescription()
                 {
                     return
                         "[When Digivolving] Search your security stack. You may play 1 level 5 or lower Digimon card with the [Angel]/[Archangel] trait among them without paying the cost. Then, shuffle your security stack, and 1 of your opponent's Digimon gets -7000 DP until the end of the turn.";
                 }
-                
+
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
                     if (cardSource.IsDigimon)
@@ -72,40 +72,40 @@ namespace DCGO.CardEffects.EX6
                             }
                         }
                     }
-                    
+
                     return false;
                 }
-                
+
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
                 }
-                
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
-                
+
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
                         return true;
                     }
-                    
+
                     return false;
                 }
-                
+
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (card.Owner.SecurityCards.Count(CanSelectCardCondition) >= 1)
+                    if (card.Owner.SecurityCards.Count >= 1)
                     {
                         int maxCount = Math.Min(1, card.Owner.SecurityCards.Count(CanSelectCardCondition));
-                        
+
                         List<CardSource> selectedCards = new List<CardSource>();
-                        
+
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-                        
+
                         selectCardEffect.SetUp(
                             canTargetCondition: CanSelectCardCondition,
                             canTargetCondition_ByPreSelecetedList: null,
@@ -123,16 +123,16 @@ namespace DCGO.CardEffects.EX6
                             canLookReverseCard: true,
                             selectPlayer: card.Owner,
                             cardEffect: activateClass);
-                        
+
                         yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-                        
+
                         IEnumerator SelectCardCoroutine(CardSource cardSource)
                         {
                             selectedCards.Add(cardSource);
-                            
+
                             yield return null;
                         }
-                        
+
                         IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
                         {
                             if (cardSources.Count >= 1)
@@ -141,31 +141,31 @@ namespace DCGO.CardEffects.EX6
                                     player: card.Owner,
                                     refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
                             }
-                            
+
                             yield return null;
                         }
-                        
+
                         yield return ContinuousController.instance.StartCoroutine(
                             CardEffectCommons.PlayPermanentCards(cardSources: selectedCards,
                                 activateClass: activateClass, payCost: false, isTapped: false,
                                 root: SelectCardEffect.Root.Security, activateETB: true));
                     }
-                    
+
                     if (card.Owner.SecurityCards.Count >= 1)
                     {
                         ContinuousController.instance.PlaySE(GManager.instance.ShuffleSE);
-                        
+
                         card.Owner.SecurityCards = RandomUtility.ShuffledDeckCards(card.Owner.SecurityCards);
                     }
-                    
+
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
                         int maxCount = Math.Min(1,
                             CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-                        
+
                         SelectPermanentEffect selectPermanentEffect =
                             GManager.instance.GetComponent<SelectPermanentEffect>();
-                        
+
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
                             canTargetCondition: CanSelectPermanentCondition,
@@ -178,13 +178,13 @@ namespace DCGO.CardEffects.EX6
                             afterSelectPermanentCoroutine: null,
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
-                        
+
                         selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will get DP -7000.",
                             "The opponent is selecting 1 Digimon that will get DP -7000.");
-                        
+
                         yield return ContinuousController.instance.StartCoroutine(
                             selectPermanentEffect.Activate());
-                        
+
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
                             yield return ContinuousController.instance.StartCoroutine(
@@ -195,11 +195,11 @@ namespace DCGO.CardEffects.EX6
                     }
                 }
             }
-            
+
             #endregion
-            
+
             #region All Turns
-            
+
             if (timing == EffectTiming.WhenRemoveField)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -210,13 +210,13 @@ namespace DCGO.CardEffects.EX6
                     EffectDescription());
                 activateClass.SetHashString("TrashSecurityToPreventLeaving_EX6_030");
                 cardEffects.Add(activateClass);
-                
+
                 string EffectDescription()
                 {
                     return
                         "[All Turns] When one of your Digimon with the[Angel]/[Archangel]/[Three Great Angels] trait would leave the battle area other than in battle, by trashing the top card of your security stack, prevent it from leaving.";
                 }
-                
+
                 bool PermanentCondition(Permanent permanent)
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
@@ -229,26 +229,28 @@ namespace DCGO.CardEffects.EX6
                             return true;
                         }
                     }
-                    
+
                     return false;
                 }
-                
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, PermanentCondition))
                         {
-                            if (!CardEffectCommons.IsByBattle(hashtable))
+                            if (!CardEffectCommons.IsByBattle(hashtable) &&
+                                !CardEffectCommons.IsByEffect(hashtable,
+                                    cardEffect => CardEffectCommons.IsOwnerEffect(cardEffect, card)))
                             {
                                 return true;
                             }
                         }
                     }
-                    
+
                     return false;
                 }
-                
+
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
@@ -258,11 +260,11 @@ namespace DCGO.CardEffects.EX6
                             return true;
                         }
                     }
-                    
+
                     return false;
                 }
-                
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
@@ -270,10 +272,10 @@ namespace DCGO.CardEffects.EX6
                         {
                             int maxCount = Math.Min(1,
                                 CardEffectCommons.MatchConditionPermanentCount(PermanentCondition));
-                            
+
                             SelectPermanentEffect selectPermanentEffect =
                                 GManager.instance.GetComponent<SelectPermanentEffect>();
-                            
+
                             selectPermanentEffect.SetUp(
                                 selectPlayer: card.Owner,
                                 canTargetCondition: PermanentCondition,
@@ -286,12 +288,12 @@ namespace DCGO.CardEffects.EX6
                                 afterSelectPermanentCoroutine: null,
                                 mode: SelectPermanentEffect.Mode.Custom,
                                 cardEffect: activateClass);
-                            
+
                             selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to save.",
                                 "The opponent is selecting 1 Digimon to save.");
-                            
+
                             yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                            
+
                             IEnumerator SelectPermanentCoroutine(Permanent permanent)
                             {
                                 yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
@@ -299,7 +301,7 @@ namespace DCGO.CardEffects.EX6
                                     destroySecurityCount: 1,
                                     cardEffect: activateClass,
                                     fromTop: true).DestroySecurity());
-                                
+
                                 permanent.willBeRemoveField = false;
                                 permanent.HideDeleteEffect();
                                 permanent.HideHandBounceEffect();
@@ -310,9 +312,9 @@ namespace DCGO.CardEffects.EX6
                     }
                 }
             }
-            
+
             #endregion
-            
+
             return cardEffects;
         }
     }
