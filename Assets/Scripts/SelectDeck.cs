@@ -252,6 +252,7 @@ public class SelectDeck : OffAnimation
             foreach (DeckData deckdata in gotDeckDatas)
             {
                 ContinuousController.instance.DeckDatas.Insert(0, deckdata);
+                ContinuousController.instance.SaveDeckData(deckdata);
             }
 
             List<UnityAction> Commands = new List<UnityAction>()
@@ -307,6 +308,7 @@ public class SelectDeck : OffAnimation
                 ContinuousController.instance.StartCoroutine(SetDeckList(false));
                 ResetDeckInfoPanel();
                 ContinuousController.instance.SaveDeckDatas();
+                ContinuousController.instance.DeleteAllDecks();
             }
                     ,null
                 };

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using UnityEngine;
 
 [System.Serializable]
@@ -14,7 +15,7 @@ public class DeckData
     public static int CardKindCellLength = (int)Math.Ceiling(Mathf.Log(maxCardKind, m));
 
     #region  constructor
-    public DeckData(string DeckCode)
+    public DeckData(string DeckCode, string ID = "")
     {
         List<int> _DeckCardIDs = new List<int>();
         List<int> _DigitamaDeckCardIDs = new List<int>();
@@ -26,6 +27,8 @@ public class DeckData
 
         List<int> DistinctDigitamaDeckCardIDs = new List<int>();
         List<int> DistinctDigitamaDeckCardCounts = new List<int>();
+
+        DeckID = ID;
 
         for (int i = 0; i < parseByComma.Length; i++)
         {
@@ -137,6 +140,53 @@ public class DeckData
 
         DeckCardIDs = _DeckCardIDs;
         DigitamaDeckCardIDs = _DigitamaDeckCardIDs;
+    }
+    #endregion
+
+    #region sort value
+    int _sortValue = 0;
+    public int SortValue
+    {
+        get
+        {
+            return _sortValue;
+        }
+
+        set
+        {
+            _sortValue = value;
+        }
+    }
+    #endregion
+
+    #region deck id
+    string _deckID = "";
+    public string DeckID
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(_deckID))
+            {
+                StringBuilder builder = new StringBuilder();
+                Enumerable
+                   .Range(65, 26)
+                    .Select(e => ((char)e).ToString())
+                    .Concat(Enumerable.Range(97, 26).Select(e => ((char)e).ToString()))
+                    .Concat(Enumerable.Range(0, 10).Select(e => e.ToString()))
+                    .OrderBy(e => Guid.NewGuid())
+                    .Take(11)
+                    .ToList().ForEach(e => builder.Append(e));
+
+                return builder.ToString();
+            }
+
+            return _deckID;
+        }
+
+        set
+        {
+            _deckID = value;
+        }
     }
     #endregion
 
@@ -728,7 +778,7 @@ public class DeckData
             return deckCards;
         }
 
-        DeckData deckData = new DeckData(GetDeckCode(ValidateDeckName(this._deckName), modifiedDeckCards, modifiedDigitamaDeckCards, KeyCard));
+        DeckData deckData = new DeckData(GetDeckCode(ValidateDeckName(this._deckName), modifiedDeckCards, modifiedDigitamaDeckCards, KeyCard), DeckID);
 
         if (!deckData.AllDeckCards().Contains(deckData.KeyCard))
         {

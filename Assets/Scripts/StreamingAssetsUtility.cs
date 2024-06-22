@@ -35,11 +35,11 @@ public class StreamingAssetsUtility
         {
             if (fileName.Contains("-token"))
             {
-                return await GetTokenImageData(Path.Combine(GetStreamingAssetPath(isLauncher), $"Card/{fileName}.png").Replace("\\", "/"));
+                return await GetTokenImageData(Path.Combine(GetStreamingAssetPath("Textures", isLauncher), $"Card/{fileName}.png").Replace("\\", "/"));
             }
             else
             {
-                path = Path.Combine(GetStreamingAssetPath(isLauncher), $"Card/{fileName}.webp").Replace("\\", "/");
+                path = Path.Combine(GetStreamingAssetPath("Textures", isLauncher), $"Card/{fileName}.webp").Replace("\\", "/");
 
                 if (!File.Exists(path))
                 {
@@ -59,10 +59,10 @@ public class StreamingAssetsUtility
 
     public static async Task<Sprite> GetSpriteImage(string fileName, bool isLauncher = false)
     {
-        string path = Path.Combine(GetStreamingAssetPath(isLauncher), $"{fileName}.jpg").Replace("\\", "/");
+        string path = Path.Combine(GetStreamingAssetPath("Textures", isLauncher), $"{fileName}.jpg").Replace("\\", "/");
 
         if(!File.Exists(path))
-            path = Path.Combine(GetStreamingAssetPath(isLauncher), $"{fileName}.png").Replace("\\", "/");
+            path = Path.Combine(GetStreamingAssetPath("Textures", isLauncher), $"{fileName}.png").Replace("\\", "/");
 
         if (File.Exists(path))
         {
@@ -159,10 +159,10 @@ public class StreamingAssetsUtility
 
     public static bool IsCardExists(CEntity_Base cEntity_Base)
     {
-        string path = Path.Combine(GetStreamingAssetPath(false), $"Card/{cEntity_Base.CardSpriteName}.webp").Replace("\\", "/");
+        string path = Path.Combine(GetStreamingAssetPath("Textures", false), $"Card/{cEntity_Base.CardSpriteName}.webp").Replace("\\", "/");
 
         if (cEntity_Base.CardSpriteName.Contains("token"))
-            path = Path.Combine(GetStreamingAssetPath(false), $"Card/{cEntity_Base.CardSpriteName}.png").Replace("\\", "/");
+            path = Path.Combine(GetStreamingAssetPath("Textures", false), $"Card/{cEntity_Base.CardSpriteName}.png").Replace("\\", "/");
 
         return File.Exists(path);
     }
@@ -170,7 +170,7 @@ public class StreamingAssetsUtility
     #region テキストファイルの取得
     public static string GetText(string fileName)
     {
-        string path = Path.Combine(GetStreamingAssetPath(false), $"{fileName}.txt").Replace("\\", "/");
+        string path = Path.Combine(GetStreamingAssetPath("", false), $"{fileName}.txt").Replace("\\", "/");
 
         if (File.Exists(path))
         {
@@ -181,7 +181,7 @@ public class StreamingAssetsUtility
     }
     #endregion
 
-    static string GetStreamingAssetPath(bool isLauncher)
+    public static string GetStreamingAssetPath(string subPath, bool isLauncher)
     {
         if (isLauncher)
         {
@@ -189,7 +189,7 @@ public class StreamingAssetsUtility
 
             path = GetOneUpperDirectoryPath(path);
 
-            path = Path.Combine(path, $"Textures").Replace("\\", "/");
+            path = Path.Combine(path, $"Assets/{subPath}").Replace("\\", "/");
 
             return path;
         }
@@ -202,7 +202,7 @@ public class StreamingAssetsUtility
 
             path = GetOneUpperDirectoryPath(path);
 
-            path = Path.Combine(path, $"Textures").Replace("\\", "/");
+            path = Path.Combine(path, $"Assets/{subPath}").Replace("\\", "/");
 
             return path;
         }
