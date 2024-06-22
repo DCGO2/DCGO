@@ -7,6 +7,20 @@ using System.Text.RegularExpressions;
 
 public class DeckCodeUtility
 {
+    public static string GetDeckBuilderFile(DeckData data)
+    {
+        string DeckBuilderFile = "";
+
+        DeckBuilderFile += $"Name: {data.DeckName}\n";
+        DeckBuilderFile += $"Key Card: {data.KeyCardId}\n";
+        DeckBuilderFile += $"Sort Index: {data.SortValue}\n\n";
+
+        DeckBuilderFile += GetDeckBuilderDeckCode(data.AllDeckCards());
+
+        return DeckBuilderFile;
+    }
+
+    [Obsolete]
     public static string GetTTSDeckCode(List<CEntity_Base> AllDeckCards)
     {
         string TTSDeckCode = "";
