@@ -75,84 +75,11 @@ namespace DCGO.CardEffects.EX6
                     "[On Play] [When Attacking] [Once Per Turn] 1 Digimon may gain [Security Attack -1] until the end of your opponent's turn. Then, if DigiXrosing, reveal the top 4 cards of your deck. Add 1 of each [Gokuumon], [Sagomon], [Cho-Hakkaimon] and [Shakamon] among them to the hand. Return the rest to the bottom of the deck.";
             }
             
-            bool CanActivateSharedCondition(Hashtable hashtable)
-            {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
-                {
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectSecMinusPermanentSharedCondition))
-                    {
-                        return true;
-                    }
-                    
-                    if (CardEffectCommons.IsDijiXros(hashtable, count => count >= 1))
-                    {
-                        if (card.Owner.LibraryCards.Count >= 1)
-                        {
-                            return true;
-                        }
-                    }
-                }
-                
-                return false;
-            }
-            
             bool CanSelectSecMinusPermanentSharedCondition(Permanent permanent)
             {
                 if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
                 {
                     if (permanent.IsDigimon)
-                    {
-                        return true;
-                    }
-                }
-                
-                return false;
-            }
-            
-            bool CanSelectDigimonGokuumonCardSharedCondition(CardSource cardSource)
-            {
-                if (cardSource.IsDigimon)
-                {
-                    if (cardSource.ContainsCardName("Gokuumon"))
-                    {
-                        return true;
-                    }
-                }
-                
-                return false;
-            }
-            
-            bool CanSelectDigimonSagomonCardSharedCondition(CardSource cardSource)
-            {
-                if (cardSource.IsDigimon)
-                {
-                    if (cardSource.ContainsCardName("Sagomon"))
-                    {
-                        return true;
-                    }
-                }
-                
-                return false;
-            }
-            
-            bool CanSelectDigimonChoHakkaimonCardSharedCondition(CardSource cardSource)
-            {
-                if (cardSource.IsDigimon)
-                {
-                    if (cardSource.ContainsCardName("Cho-Hakkaimon"))
-                    {
-                        return true;
-                    }
-                }
-                
-                return false;
-            }
-            
-            bool CanSelectDigimonShakamonCardSharedCondition(CardSource cardSource)
-            {
-                if (cardSource.IsDigimon)
-                {
-                    if (cardSource.ContainsCardName("Shakamon"))
                     {
                         return true;
                     }
@@ -171,7 +98,7 @@ namespace DCGO.CardEffects.EX6
                 activateClass.SetUpICardEffect(
                     "1 Digimon may gain [Security Attack -1] until the end of your opponent's turn. Then, if DigiXrosing, reveal the top 4 cards of your deck. Add 1 of each [Gokuumon], [Sagomon], [Cho-Hakkaimon] and [Shakamon] among them to the hand. Return the rest to the bottom of the deck.",
                     CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, 1, false,
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false,
                     EffectSharedDescription());
                 activateClass.SetHashString("SecurityAttack-1Search_EX6-025");
                 cardEffects.Add(activateClass);
@@ -179,6 +106,27 @@ namespace DCGO.CardEffects.EX6
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                }
+                
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectSecMinusPermanentSharedCondition))
+                        {
+                            return true;
+                        }
+                        
+                        if (CardEffectCommons.IsDijiXros(hashtable, count => count >= 1))
+                        {
+                            if (card.Owner.LibraryCards.Count >= 1)
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                    
+                    return false;
                 }
                 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -226,25 +174,25 @@ namespace DCGO.CardEffects.EX6
                                 new[]
                                 {
                                     new SimplifiedSelectCardConditionClass(
-                                        canTargetCondition: CanSelectDigimonGokuumonCardSharedCondition,
+                                        canTargetCondition: cardSource => cardSource.ContainsCardName("Gokuumon"),
                                         message: "Select 1 Gokuumon card.",
                                         mode: SelectCardEffect.Mode.AddHand,
                                         maxCount: 1,
                                         selectCardCoroutine: null),
                                     new SimplifiedSelectCardConditionClass(
-                                        canTargetCondition: CanSelectDigimonSagomonCardSharedCondition,
+                                        canTargetCondition: cardSource => cardSource.ContainsCardName("Sagomon"),
                                         message: "Select 1 Sagomon card.",
                                         mode: SelectCardEffect.Mode.AddHand,
                                         maxCount: 1,
                                         selectCardCoroutine: null),
                                     new SimplifiedSelectCardConditionClass(
-                                        canTargetCondition: CanSelectDigimonChoHakkaimonCardSharedCondition,
+                                        canTargetCondition: cardSource => cardSource.ContainsCardName("Cho-Hakkaimon"),
                                         message: "Select 1 Cho-Hakkaimon card.",
                                         mode: SelectCardEffect.Mode.AddHand,
                                         maxCount: 1,
                                         selectCardCoroutine: null),
                                     new SimplifiedSelectCardConditionClass(
-                                        canTargetCondition: CanSelectDigimonShakamonCardSharedCondition,
+                                        canTargetCondition: cardSource => cardSource.ContainsCardName("Shakamon"),
                                         message: "Select 1 Shakamon card.",
                                         mode: SelectCardEffect.Mode.AddHand,
                                         maxCount: 1,
@@ -265,16 +213,29 @@ namespace DCGO.CardEffects.EX6
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(
-                    "1 Digimon may gain [Security Attack -1] until the end of your opponent's turn. Then, if DigiXrosing, reveal the top 4 cards of your deck. Add 1 of each [Gokuumon], [Sagomon], [Cho-Hakkaimon] and [Shakamon] among them to the hand. Return the rest to the bottom of the deck.",
+                    "1 Digimon may gain [Security Attack -1] until the end of your opponent's turn",
                     CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, 1, false,
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false,
                     EffectSharedDescription());
-                activateClass.SetHashString("SecurityAttack-1Search_EX6-025");
+                activateClass.SetHashString("SecurityAttack-1_EX6-025");
                 cardEffects.Add(activateClass);
                 
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
+                }
+                
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectSecMinusPermanentSharedCondition))
+                        {
+                            return true;
+                        }
+                    }
+                    
+                    return false;
                 }
                 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -311,44 +272,6 @@ namespace DCGO.CardEffects.EX6
                                 CardEffectCommons.ChangeDigimonSAttack(targetPermanent: permanent, changeValue: -1,
                                     effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
                         }
-                    }
-                    
-                    if (CardEffectCommons.IsDijiXros(hashtable, count => count >= 1))
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(
-                            CardEffectCommons.SimplifiedRevealDeckTopCardsAndSelect(
-                                revealCount: 4,
-                                simplifiedSelectCardConditions:
-                                new[]
-                                {
-                                    new SimplifiedSelectCardConditionClass(
-                                        canTargetCondition: CanSelectDigimonGokuumonCardSharedCondition,
-                                        message: "Select 1 Gokuumon card.",
-                                        mode: SelectCardEffect.Mode.AddHand,
-                                        maxCount: 1,
-                                        selectCardCoroutine: null),
-                                    new SimplifiedSelectCardConditionClass(
-                                        canTargetCondition: CanSelectDigimonSagomonCardSharedCondition,
-                                        message: "Select 1 Sagomon card.",
-                                        mode: SelectCardEffect.Mode.AddHand,
-                                        maxCount: 1,
-                                        selectCardCoroutine: null),
-                                    new SimplifiedSelectCardConditionClass(
-                                        canTargetCondition: CanSelectDigimonChoHakkaimonCardSharedCondition,
-                                        message: "Select 1 Cho-Hakkaimon card.",
-                                        mode: SelectCardEffect.Mode.AddHand,
-                                        maxCount: 1,
-                                        selectCardCoroutine: null),
-                                    new SimplifiedSelectCardConditionClass(
-                                        canTargetCondition: CanSelectDigimonShakamonCardSharedCondition,
-                                        message: "Select 1 Shakamon card.",
-                                        mode: SelectCardEffect.Mode.AddHand,
-                                        maxCount: 1,
-                                        selectCardCoroutine: null),
-                                },
-                                remainingCardsPlace: RemainingCardsPlace.DeckBottom,
-                                activateClass: activateClass
-                            ));
                     }
                 }
             }
@@ -457,7 +380,7 @@ namespace DCGO.CardEffects.EX6
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Security Attack -1", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true,
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false,
                     EffectDescription());
                 activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("SecurityAttack-1_EX6-025");
