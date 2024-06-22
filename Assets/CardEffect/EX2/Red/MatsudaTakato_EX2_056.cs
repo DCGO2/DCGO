@@ -161,48 +161,48 @@ public class MatsudaTakato_EX2_056 : CEntity_Effect
                                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateBuffEffect(permanent));
 
                                 yield return new WaitForSeconds(0.2f);
-                            }
-                        }
 
-                        AddSkillClass addSkillClass = new AddSkillClass();
-                        addSkillClass.SetUpICardEffect("Gain Blitz", CanUseCondition1, card);
-                        addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
-                        CardEffectCommons.AddEffectToPlayer(effectDuration: EffectDuration.UntilEachTurnEnd, card: card, cardEffect: addSkillClass, timing: EffectTiming.None);
+                                AddSkillClass addSkillClass = new AddSkillClass();
+                                addSkillClass.SetUpICardEffect("Gain Blitz", CanUseCondition1, card);
+                                addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
+                                CardEffectCommons.AddEffectToPermanent(targetPermanent: permanent, effectDuration: EffectDuration.UntilEachTurnEnd, card: card, cardEffect: addSkillClass, timing: EffectTiming.None);
 
-                        bool CanUseCondition1(Hashtable hashtable)
-                        {
-                            return true;
-                        }
-
-                        bool CardSourceCondition(CardSource cardSource)
-                        {
-                            if (PermanentCondition(cardSource.PermanentOfThisCard()))
-                            {
-                                if (cardSource == cardSource.PermanentOfThisCard().TopCard)
+                                bool CanUseCondition1(Hashtable hashtable)
                                 {
                                     return true;
                                 }
-                            }
 
-                            return false;
-                        }
-
-                        List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming _timing)
-                        {
-                            if (_timing == EffectTiming.OnEnterFieldAnyone)
-                            {
-                                bool Condition()
+                                bool CardSourceCondition(CardSource cardSource)
                                 {
-                                    return CardSourceCondition(cardSource);
+                                    if (PermanentCondition(cardSource.PermanentOfThisCard()))
+                                    {
+                                        if (cardSource == cardSource.PermanentOfThisCard().TopCard)
+                                        {
+                                            return true;
+                                        }
+                                    }
+
+                                    return false;
                                 }
 
-                                cardEffects.Add(CardEffectFactory.BlitzSelfEffect(isInheritedEffect: false,
-                                    card: cardSource,
-                                    condition: Condition,
-                                    isWhenDigivolving: true));
-                            }
+                                List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming _timing)
+                                {
+                                    if (_timing == EffectTiming.OnEnterFieldAnyone)
+                                    {
+                                        bool Condition()
+                                        {
+                                            return CardSourceCondition(cardSource);
+                                        }
 
-                            return cardEffects;
+                                        cardEffects.Add(CardEffectFactory.BlitzSelfEffect(isInheritedEffect: false,
+                                            card: cardSource,
+                                            condition: Condition,
+                                            isWhenDigivolving: true));
+                                    }
+
+                                    return cardEffects;
+                                }
+                            }
                         }
                     }
                 }
