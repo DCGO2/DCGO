@@ -215,11 +215,11 @@ namespace DCGO.CardEffects.EX6
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(
-                    "1 Digimon may gain [Security Attack -1] until the end of your opponent's turn. Then, if DigiXrosing, delete 1 of your opponent's Digimon with 6000 DP or less.",
+                    "1 Digimon may gain [Security Attack -1] until the end of your opponent's turn",
                     CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false,
                     EffectSharedDescription());
-                activateClass.SetHashString("SecurityAttack-1Delete_EX6-023");
+                activateClass.SetHashString("SecurityAttack-1_EX6-023");
                 cardEffects.Add(activateClass);
                 
                 bool CanUseCondition(Hashtable hashtable)
@@ -247,14 +247,6 @@ namespace DCGO.CardEffects.EX6
                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectSecMinusPermanentSharedCondition))
                         {
                             return true;
-                        }
-                        
-                        if (CardEffectCommons.IsDijiXros(hashtable, count => count >= 1))
-                        {
-                            if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentPermanentCondition))
-                            {
-                                return true;
-                            }
                         }
                     }
                     
@@ -294,33 +286,6 @@ namespace DCGO.CardEffects.EX6
                             yield return ContinuousController.instance.StartCoroutine(
                                 CardEffectCommons.ChangeDigimonSAttack(targetPermanent: permanent, changeValue: -1,
                                     effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
-                        }
-                    }
-                    
-                    if (CardEffectCommons.IsDijiXros(hashtable, count => count >= 1))
-                    {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentPermanentCondition))
-                        {
-                            int maxCount = Math.Min(1,
-                                CardEffectCommons.MatchConditionPermanentCount(CanSelectOpponentPermanentCondition));
-                            
-                            SelectPermanentEffect selectPermanentEffect =
-                                GManager.instance.GetComponent<SelectPermanentEffect>();
-                            
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: CanSelectOpponentPermanentCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: maxCount,
-                                canNoSelect: false,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: null,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Destroy,
-                                cardEffect: activateClass);
-                            
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                         }
                     }
                 }
@@ -430,7 +395,7 @@ namespace DCGO.CardEffects.EX6
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Security Attack -1", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true,
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false,
                     EffectDescription());
                 activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("SecurityAttack-1_EX6-023");

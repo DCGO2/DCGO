@@ -256,11 +256,11 @@ namespace DCGO.CardEffects.EX6
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(
-                    "1 Digimon may gain [Security Attack -1] until the end of your opponent's turn. Then, if DigiXrosing, 1 of your opponent's Digimon or Tamers can't suspend until the end of their turn.",
+                    "1 Digimon may gain [Security Attack -1] until the end of your opponent's turn",
                     CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false,
                     EffectSharedDescription());
-                activateClass.SetHashString("SecurityAttack-1CantSuspend_EX6-024");
+                activateClass.SetHashString("SecurityAttack-1_EX6-024");
                 cardEffects.Add(activateClass);
                 
                 bool CanUseCondition(Hashtable hashtable)
@@ -285,14 +285,6 @@ namespace DCGO.CardEffects.EX6
                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectSecMinusPermanentSharedCondition))
                         {
                             return true;
-                        }
-                        
-                        if (CardEffectCommons.IsDijiXros(hashtable, count => count >= 1))
-                        {
-                            if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentPermanentCondition))
-                            {
-                                return true;
-                            }
                         }
                     }
                     
@@ -332,77 +324,6 @@ namespace DCGO.CardEffects.EX6
                             yield return ContinuousController.instance.StartCoroutine(
                                 CardEffectCommons.ChangeDigimonSAttack(targetPermanent: permanent, changeValue: -1,
                                     effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
-                        }
-                    }
-                    
-                    if (CardEffectCommons.IsDijiXros(hashtable, count => count >= 1))
-                    {
-                        if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectOpponentPermanentCondition))
-                        {
-                            int maxCount = Math.Min(1,
-                                CardEffectCommons.MatchConditionPermanentCount(CanSelectSecMinusPermanentSharedCondition));
-                            
-                            SelectPermanentEffect selectPermanentEffect =
-                                GManager.instance.GetComponent<SelectPermanentEffect>();
-                            
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canTargetCondition: CanSelectOpponentPermanentCondition,
-                                canEndSelectCondition: null,
-                                maxCount: maxCount,
-                                canNoSelect: false,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: SelectPermanentCoroutine,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Custom,
-                                cardEffect: activateClass);
-                            
-                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon/Tamer that will be unable to suspend.",
-                                "The opponent is selecting 1 Digimon/Tamer that will be unable to suspend.");
-                            
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                            
-                            IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                            {
-                                Permanent selectedPermanent = permanent;
-                                
-                                if (selectedPermanent != null)
-                                {
-                                    CanNotSuspendClass canNotSuspendClass = new CanNotSuspendClass();
-                                    canNotSuspendClass.SetUpICardEffect("Can't Suspend", CanUseCanNotSuspendCondition, card);
-                                    canNotSuspendClass.SetUpCanNotSuspendClass(PermanentCondition: PermanentCanNotSuspendCondition);
-                                    selectedPermanent.UntilOwnerTurnEndEffects.Add(_ => canNotSuspendClass);
-                                    
-                                    if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
-                                    {
-                                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(selectedPermanent));
-                                    }
-                                    
-                                    bool CanUseCanNotSuspendCondition(Hashtable hashtableCanNotSuspend)
-                                    {
-                                        if (selectedPermanent.TopCard != null)
-                                        {
-                                            if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
-                                            {
-                                                return true;
-                                            }
-                                        }
-                                        
-                                        return false;
-                                    }
-                                    
-                                    bool PermanentCanNotSuspendCondition(Permanent permanentCanNotSuspend)
-                                    {
-                                        if (permanentCanNotSuspend == selectedPermanent)
-                                        {
-                                            return true;
-                                        }
-                                        
-                                        return false;
-                                    }
-                                }
-                            }
                         }
                     }
                 }
@@ -512,7 +433,7 @@ namespace DCGO.CardEffects.EX6
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Security Attack -1", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true,
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false,
                     EffectDescription());
                 activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("SecurityAttack-1_EX6-024");

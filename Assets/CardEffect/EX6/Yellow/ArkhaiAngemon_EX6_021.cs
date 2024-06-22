@@ -398,7 +398,7 @@ namespace DCGO.CardEffects.EX6
                 
                 cardEffects.Add(CardEffectFactory.BlockerStaticEffect(
                     permanentCondition: PermanentCondition,
-                    isInheritedEffect: false,
+                    isInheritedEffect: true,
                     card: card,
                     condition: CanUseCondition));
             }
