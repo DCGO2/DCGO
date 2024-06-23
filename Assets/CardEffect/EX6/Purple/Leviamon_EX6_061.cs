@@ -1,50 +1,56 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 
 namespace DCGO.CardEffects.EX6
 {
-    public class Belphemon_Rage_Mode_EX6_060 : CEntity_Effect
+    public class Leviamon_EX6_061 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Alternate Digivolution
-            if (timing == EffectTiming.None)
-            {
-                static bool PermanentCondition(Permanent targetPermanent)
-                {
-                    return targetPermanent.TopCard.ContainsCardName("Belphemon: Sleep Mode");
-                }
-
-                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
-                    permanentCondition: PermanentCondition, 
-                    digivolutionCost: 1, 
-                    ignoreDigivolutionRequirement: false,
-                    card: card, 
-                    condition: null));
-            }
-            #endregion
-
-            #region On Play
+            #region All Turns - When Played - Once per turn
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Trash up to 3 cards, suspend 1 opponent's digimon. Then delete all opponents suspended digimon with lowest play cost.", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpICardEffect("By trashing 1 card in hand, return sources, then delete 1 digimon", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetHashString("AllTurns_EX6_061");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[On Play] You may trash up to 3 cards in your hand. For each card trashed by this effect, suspend 1 of your opponent's level 5 or lower Digimon. Then, delete all of your opponent's suspended Digimon with the lowest play cost.";
+                    return "[All Turns] [Once Per Turn] When an opponent's Digimon or one of your Digimon with the [Seven Great Demon Lords] trait is played, by trashing 1 card in your hand, return the bottom 3 digivolution cards of 1 of your opponent's Digimon to the bottom of the deck. Then, if your opponent has as many or less total Digimon and Tamers as you, delete 1 of your opponent's Digimon with no digivolution cards.";
                 }
 
-                bool OpponentsSuspendableTargets(Permanent permanent)
+                bool PlayedDigimonConditions(Permanent permanent)
                 {
-                    if (permanent.TopCard.CanNotBeAffected(activateClass))
+                    if (permanent.IsDigimon)
                     {
-                        if(permanent.TopCard.HasLevel && permanent.Level <= 5)
+                        if (CardEffectCommons.IsOwnerPermanent(permanent, card))
+                        {
+                            if (permanent.TopCard.ContainsTraits("Seven Great Demon Lords"))
+                                return true;
+                        }
+                        else
+                            return true;
+                    }
+
+                    return false;
+                }
+
+                bool SelectOpponentsDigimonCondition(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+                }
+
+                bool SelectOpponentsDigimonWithoutSourcesCondition(Permanent permanent)
+                {
+                    if(CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                    {
+                        if(permanent.cardSources.Count == 0)
                         {
                             return true;
                         }
@@ -53,187 +59,114 @@ namespace DCGO.CardEffects.EX6
                     return false;
                 }
 
-                bool LowestPlayCostCondition(Permanent permanent)
+                bool PermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                    {
-                        if (permanent.IsSuspended)
-                        {
-                            if (CardEffectCommons.IsMinCost(permanent, card.Owner.Enemy, true))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return false;
+                    return (permanent.IsDigimon || permanent.IsTamer);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                    if (CardEffectCommons.CanTriggerOnPlay(hashtable, card))
+                        return true;
+
+                    if(CardEffectCommons.CanTriggerOnPermanentPlay(hashtable,PlayedDigimonConditions))
+                        return true;
+
+                    return false;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBreedingAreaDigimon(card);
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    List<CardSource> discarded = new List<CardSource>();
-
-                    if(card.Owner.HandCards.Count > 0)
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        int discardCount = Math.Min(3, card.Owner.HandCards.Count);
-
-                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                        selectHandEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: (cardSource) => true,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: discardCount,
-                            canNoSelect: false,
-                            canEndNotMax: true,
-                            isShowOpponent: true,
-                            selectCardCoroutine: null,
-                            afterSelectCardCoroutine: AfterSelectionCoroutine,
-                            mode: SelectHandEffect.Mode.Discard,
-                            cardEffect: activateClass);
-
-                        yield return StartCoroutine(selectHandEffect.Activate());
-                    }
-
-                    IEnumerator AfterSelectionCoroutine(List<CardSource> cardSources)
-                    {
-                        discarded = cardSources.Clone();
-                        yield return null;
-                    }
-
-                    if(discarded.Count > 0)
-                    {
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                        int suspendCount = Math.Min(3, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, OpponentsSuspendableTargets));
-
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: OpponentsSuspendableTargets,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: suspendCount,
-                            canNoSelect: false,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: null,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Tap,
-                            cardEffect: activateClass);
-
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                    }
-
-                    List<Permanent> destroyTargetPermanents = card.Owner.Enemy.GetBattleAreaDigimons().Filter(LowestPlayCostCondition);
-                    yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(destroyTargetPermanents, CardEffectCommons.CardEffectHashtable(activateClass)).Destroy());
-                }
-            }
-            #endregion
-
-            #region When Digivolving
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Trash up to 3 cards, suspend 1 opponent's digimon. Then delete all opponents suspended digimon with lowest play cost.", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
-                cardEffects.Add(activateClass);
-
-                string EffectDiscription()
-                {
-                    return "[When Digivolving] You may trash up to 3 cards in your hand. For each card trashed by this effect, suspend 1 of your opponent's level 5 or lower Digimon. Then, delete all of your opponent's suspended Digimon with the lowest play cost.";
-                }
-
-                bool OpponentsSuspendableTargets(Permanent permanent)
-                {
-                    if (permanent.TopCard.CanNotBeAffected(activateClass))
-                    {
-                        if (permanent.TopCard.HasLevel && permanent.Level <= 5)
-                        {
+                        if(card.Owner.HandCards.Count > 0)
                             return true;
-                        }
                     }
 
                     return false;
-                }
-
-                bool LowestPlayCostCondition(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                    {
-                        if (permanent.IsSuspended)
-                        {
-                            if (CardEffectCommons.IsMinCost(permanent, card.Owner.Enemy, true))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return false;
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBreedingAreaDigimon(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    List<CardSource> discarded = new List<CardSource>();
+                    bool isDiscarded = false;
 
-                    if (card.Owner.HandCards.Count > 0)
+                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                    selectHandEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: (cardSource) => true,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: false,
+                        canEndNotMax: false,
+                        isShowOpponent: true,
+                        selectCardCoroutine: SelectSelectionCoroutine,
+                        afterSelectCardCoroutine: null,
+                        mode: SelectHandEffect.Mode.Discard,
+                        cardEffect: activateClass);
+
+                    yield return StartCoroutine(selectHandEffect.Activate());
+
+                    IEnumerator SelectSelectionCoroutine(CardSource cardSource)
                     {
-                        int discardCount = Math.Min(3, card.Owner.HandCards.Count);
+                        if (cardSource != null)
+                            isDiscarded = true;
 
-                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                        selectHandEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: (cardSource) => true,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: discardCount,
-                            canNoSelect: false,
-                            canEndNotMax: true,
-                            isShowOpponent: true,
-                            selectCardCoroutine: null,
-                            afterSelectCardCoroutine: AfterSelectionCoroutine,
-                            mode: SelectHandEffect.Mode.Discard,
-                            cardEffect: activateClass);
-
-                        yield return StartCoroutine(selectHandEffect.Activate());
-                    }
-
-                    IEnumerator AfterSelectionCoroutine(List<CardSource> cardSources)
-                    {
-                        discarded = cardSources.Clone();
                         yield return null;
                     }
 
-                    if (discarded.Count > 0)
+                    if (isDiscarded)
                     {
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                        int suspendCount = Math.Min(3, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, OpponentsSuspendableTargets));
+                        int suspendCount = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, SelectOpponentsDigimonCondition));
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: OpponentsSuspendableTargets,
+                            canTargetCondition: SelectOpponentsDigimonCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: suspendCount,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                    }
+
+                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                    {
+                        List<CardSource> targetCards = new List<CardSource>();
+
+                        for (int i = 0; i < 3; i++)
+                        {
+                            if (permanent.DigivolutionCards.Count >= i + 1)
+                            {
+                                int index = false ? i : permanent.DigivolutionCards.Count - 1 - i;
+                                CardSource trashTargetCard = permanent.DigivolutionCards[index];
+
+                                targetCards.Add(trashTargetCard);
+                            }
+                        }
+
+                        yield return ContinuousController.instance.StartCoroutine(new ReturnToLibraryBottomDigivolutionCardsClass(
+                                card.PermanentOfThisCard(),
+                                targetCards, CardEffectCommons.CardEffectHashtable(activateClass)).ReturnToLibraryBottomDigivolutionCards());
+                    }
+
+                    if (card.Owner.GetBattleAreaPermanents().Count(PermanentCondition) <= card.Owner.Enemy.GetBattleAreaPermanents().Count(PermanentCondition))
+                    {
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        int suspendCount = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, SelectOpponentsDigimonCondition));
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: SelectOpponentsDigimonWithoutSourcesCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: suspendCount,
@@ -241,14 +174,11 @@ namespace DCGO.CardEffects.EX6
                             canEndNotMax: false,
                             selectPermanentCoroutine: null,
                             afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Tap,
+                            mode: SelectPermanentEffect.Mode.Destroy,
                             cardEffect: activateClass);
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
-
-                    List<Permanent> destroyTargetPermanents = card.Owner.Enemy.GetBattleAreaDigimons().Filter(LowestPlayCostCondition);
-                    yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(destroyTargetPermanents, CardEffectCommons.CardEffectHashtable(activateClass)).Destroy());
                 }
             }
             #endregion
