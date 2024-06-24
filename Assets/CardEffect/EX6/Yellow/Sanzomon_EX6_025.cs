@@ -91,6 +91,11 @@ namespace DCGO.CardEffects.EX6
             #endregion
 
             #region On Play
+            
+            bool canSelectGokuumon = true;
+            bool canSelectSagomon = true;
+            bool canSelectChoHakkaimon = true;
+            bool canSelectShakamon = true;
 
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
@@ -106,6 +111,31 @@ namespace DCGO.CardEffects.EX6
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                }
+
+                bool CanSelectJourneyCardCondition(CardSource cardSource)
+                {
+                    if (canSelectGokuumon && cardSource.ContainsCardName("Gokuumon"))
+                    {
+                        return true;
+                    }
+                    
+                    if (canSelectSagomon && cardSource.ContainsCardName("Sagomon"))
+                    {
+                        return true;
+                    }
+                    
+                    if (canSelectChoHakkaimon && cardSource.ContainsCardName("Cho-Hakkaimon"))
+                    {
+                        return true;
+                    }
+                    
+                    if (canSelectShakamon && cardSource.ContainsCardName("Shakamon"))
+                    {
+                        return true;
+                    }
+
+                    return false;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -167,40 +197,43 @@ namespace DCGO.CardEffects.EX6
 
                     if (CardEffectCommons.IsDijiXros(hashtable, count => count >= 1))
                     {
-                        yield return ContinuousController.instance.StartCoroutine(
-                            CardEffectCommons.SimplifiedRevealDeckTopCardsAndSelect(
-                                revealCount: 4,
-                                simplifiedSelectCardConditions:
-                                new SimplifiedSelectCardConditionClass[]
-                                {
-                                    new SimplifiedSelectCardConditionClass(
-                                        canTargetCondition: cardSource => cardSource.ContainsCardName("Gokuumon"),
-                                        message: "Select 1 Gokuumon card.",
-                                        mode: SelectCardEffect.Mode.AddHand,
-                                        maxCount: 1,
-                                        selectCardCoroutine: null),
-                                    new SimplifiedSelectCardConditionClass(
-                                        canTargetCondition: cardSource => cardSource.ContainsCardName("Sagomon"),
-                                        message: "Select 1 Sagomon card.",
-                                        mode: SelectCardEffect.Mode.AddHand,
-                                        maxCount: 1,
-                                        selectCardCoroutine: null),
-                                    new SimplifiedSelectCardConditionClass(
-                                        canTargetCondition: cardSource => cardSource.ContainsCardName("Cho-Hakkaimon"),
-                                        message: "Select 1 Cho-Hakkaimon card.",
-                                        mode: SelectCardEffect.Mode.AddHand,
-                                        maxCount: 1,
-                                        selectCardCoroutine: null),
-                                    new SimplifiedSelectCardConditionClass(
-                                        canTargetCondition: cardSource => cardSource.ContainsCardName("Shakamon"),
-                                        message: "Select 1 Shakamon card.",
-                                        mode: SelectCardEffect.Mode.AddHand,
-                                        maxCount: 1,
-                                        selectCardCoroutine: null),
-                                },
-                                remainingCardsPlace: RemainingCardsPlace.DeckBottom,
-                                activateClass: activateClass
-                            ));
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.RevealDeckTopCardsAndProcessForAll(
+                            revealCount: 4,
+                            simplifiedSelectCardCondition:
+                            new SimplifiedSelectCardConditionClass(
+                                canTargetCondition: CanSelectJourneyCardCondition,
+                                message: "",
+                                mode: SelectCardEffect.Mode.AddHand,
+                                maxCount: -1,
+                                selectCardCoroutine: SelectCardCoroutine),
+                            remainingCardsPlace: RemainingCardsPlace.DeckBottom,
+                            activateClass: activateClass
+                        ));
+                        
+                        IEnumerator SelectCardCoroutine(CardSource cardSource)
+                        {
+                            if (cardSource.ContainsCardName("Gokuumon"))
+                            {
+                                canSelectGokuumon = false;
+                            }
+                    
+                            if (cardSource.ContainsCardName("Sagomon"))
+                            {
+                                canSelectSagomon = false;
+                            }
+                    
+                            if (cardSource.ContainsCardName("Cho-Hakkaimon"))
+                            {
+                                canSelectChoHakkaimon = false;
+                            }
+                    
+                            if (cardSource.ContainsCardName("Shakamon"))
+                            {
+                                canSelectShakamon = false;
+                            }
+                            
+                            yield return null;
+                        }
                     }
                 }
             }
