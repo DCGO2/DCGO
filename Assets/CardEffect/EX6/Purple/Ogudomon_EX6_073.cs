@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.EX6
 {
     public class Ogudomon_EX6_073 : CEntity_Effect
     {
@@ -263,7 +263,7 @@ namespace DCGO.CardEffects
                         bool noSelect = CanNoSelect(CardEffectCommons.GetCardFromHashtable(hashtable));
                         List<CardSource> selectedCards = new List<CardSource>();
 
-                        int maxCount = Math.Min(7, card.Owner.TrashCards.Count((cardSource) => CanSelectTrashCardCondition(cardSource)));
+                        int maxCount = 7;
 
                         if (maxCount >= 1)
                         {
@@ -277,7 +277,7 @@ namespace DCGO.CardEffects
                                 selectCardCoroutine: SelectCardCoroutine,
                                 afterSelectCardCoroutine: null,
                                 message: "Select cards to place in Digivolution cards.",
-                                maxCount: maxCount,
+                                maxCount: 7,
                                 canEndNotMax: true,
                                 isShowOpponent: true,
                                 mode: SelectCardEffect.Mode.Custom,
