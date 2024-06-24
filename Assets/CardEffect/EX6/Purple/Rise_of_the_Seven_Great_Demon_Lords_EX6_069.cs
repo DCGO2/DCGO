@@ -95,7 +95,7 @@ namespace DCGO.CardEffects.EX6
                             }
 
                             
-                            if (useTrash)
+                            if (!useTrash)
                             {
                                 SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
