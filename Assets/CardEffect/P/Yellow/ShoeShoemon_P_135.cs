@@ -11,7 +11,7 @@ namespace DCGO.CardEffects.P
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region When Digivolving
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("1 Opponent's Digimon can't attack Digimon, and gain <Security A. -1>", CanUseCondition, card);
