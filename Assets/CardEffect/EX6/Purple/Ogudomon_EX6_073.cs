@@ -263,7 +263,7 @@ namespace DCGO.CardEffects.EX6
                         bool noSelect = CanNoSelect(CardEffectCommons.GetCardFromHashtable(hashtable));
                         List<CardSource> selectedCards = new List<CardSource>();
 
-                        int maxCount = 7;
+                        int maxCount = Math.Min(7, card.Owner.TrashCards.Count((cardSource) => CanSelectTrashCardCondition(cardSource)));
 
                         if (maxCount >= 1)
                         {
