@@ -10,7 +10,7 @@ namespace DCGO.CardEffects.P
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region On Play
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("<Security A. -1> until the end of opponents turn", CanUseCondition, card);
