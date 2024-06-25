@@ -117,13 +117,13 @@ namespace DCGO.CardEffects.BT16
                         new SimplifiedSelectCardConditionClass[]
                         {
                         new SimplifiedSelectCardConditionClass(
-                            canTargetCondition:CanSelectCardCondition,
+                            canTargetCondition:CanSelectCardCondition1,
                             message: "Select 1 card with the [Light Fang] trait.",
                             mode: SelectCardEffect.Mode.AddHand,
                             maxCount: 1,
                             selectCardCoroutine: null),
                         new SimplifiedSelectCardConditionClass(
-                            canTargetCondition:CanSelectCardCondition1,
+                            canTargetCondition:CanSelectCardCondition,
                             message: "Select 1 card with the [Night Claw] trait or 2 colors.",
                             mode: SelectCardEffect.Mode.AddHand,
                             maxCount: 1,

@@ -996,10 +996,18 @@ public class CardObjectController : MonoBehaviour
 
             if (movingPermanent != null)
             {
-                bool oldIsFrontLine = movingPermanentFrame.IsBattleAreaFrame();
-
+                bool prevIsFrontLine = movingPermanentFrame.IsBattleAreaFrame();
                 FieldCardFrame moveTargetFrame = movingPermanent.TopCard.PreferredFrame();
 
+                if (prevIsFrontLine)
+                {
+                    moveTargetFrame = player.fieldCardFrames.Filter(frame => frame.isBreedingAreaFrame()).ToList()[0];
+                }
+                else
+                {
+                    moveTargetFrame = movingPermanent.TopCard.PreferredFrame();
+                }
+   
                 if (moveTargetFrame != null && moveTargetFrame != null)
                 {
                     if (moveTargetFrame.GetFramePermanent() == null)
@@ -1037,7 +1045,7 @@ public class CardObjectController : MonoBehaviour
                         end = false;
                         #endregion
 
-                        if (!oldIsFrontLine)
+                        if (!prevIsFrontLine)
                         {
                             #region Effect of "when moving from the training area"
 

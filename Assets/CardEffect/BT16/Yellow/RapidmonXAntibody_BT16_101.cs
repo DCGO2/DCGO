@@ -137,7 +137,7 @@ namespace DCGO.CardEffects.BT16
                     {
                         if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition))
                         {
-                            if (CardEffectCommons.IsDPZeroDelete(hashtable))
+                            if (!CardEffectCommons.IsByEffect(hashtable,null))
                             {
                                 return true;
                             }
@@ -177,11 +177,16 @@ namespace DCGO.CardEffects.BT16
                     return "[All Turns][Once Per Turn] When an opponent's Digimon is deleted in battle or by dropping to 0 DP, gain 2 memory.";
                 }
 
+                bool PermanentCondition(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (CardEffectCommons.IsOwnerTurn(card))
+                        if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition))
                         {
                             bool WinnerCondition(Permanent permanent) => CardEffectCommons.IsOwnerPermanent(permanent, card);
                             bool LoserCondition(Permanent permanent) => CardEffectCommons.IsOpponentPermanent(permanent, card);

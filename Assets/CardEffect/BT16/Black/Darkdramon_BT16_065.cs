@@ -81,19 +81,19 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanTriggerWhenPermanentWouldPlay(hashtable, CardCondition))
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return CardEffectCommons.CanTriggerWhenPermanentWouldPlay(hashtable, CardCondition);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnHand(card))
                     {
-                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectDBrigadeCondition))
+                        if (CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, CanSelectDBrigadeCondition) >= 6)
+                        {
+                            return true;
+                        }
+
+                        if (CardEffectCommons.HasMatchConditionPermanent(HasBossTraitInPlay))
                         {
                             return true;
                         }
@@ -104,138 +104,121 @@ namespace DCGO.CardEffects.BT16
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    bool CanSelectTrashCardCondition(CardSource cardSource)
+                    List<CardSource> selectedCards = new List<CardSource>();
+
+                    if (CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, CanSelectDBrigadeCondition) >= 6)
                     {
-                        if (CanSelectDBrigadeCondition(cardSource))
+                        bool noSelect = CanNoSelect(CardEffectCommons.GetCardFromHashtable(_hashtable));
+
+                        int maxCount = 6;
+
+                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                        selectCardEffect.SetUp(
+                            canTargetCondition: CanSelectDBrigadeCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            canNoSelect: () => noSelect,
+                            selectCardCoroutine: SelectCardCoroutine,
+                            afterSelectCardCoroutine: null,
+                            message: "Select cards to place on top of deck.",
+                            maxCount: maxCount,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            mode: SelectCardEffect.Mode.Custom,
+                            root: SelectCardEffect.Root.Trash,
+                            customRootCardList: null,
+                            canLookReverseCard: true,
+                            selectPlayer: card.Owner,
+                            cardEffect: activateClass);
+
+                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+
+                        IEnumerator SelectCardCoroutine(CardSource cardSource)
+                        {
+                            selectedCards.Add(cardSource);
+                            yield return null;
+                        }
+
+                        if (selectedCards.Count == 6)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(selectedCards));
+                        }
+                    }
+
+                    if (card.Owner.CanReduceCost(null, card))
+                    {
+                        ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().BuffSE);
+                    }
+
+                    ChangeCostClass changeCostClass = new ChangeCostClass();
+                    changeCostClass.SetUpICardEffect("Play Cost -1", CanUseCondition1, card);
+                    changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
+                    card.Owner.UntilCalculateFixedCostEffect.Add((_timing) => changeCostClass);
+
+                    bool CanUseCondition1(Hashtable hashtable)
+                    {
+                        return true;
+                    }
+
+                    int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
+                    {
+                        if (CardSourceCondition(cardSource))
+                        {
+                            if (RootCondition(root))
+                            {
+                                if (PermanentsCondition(targetPermanents))
+                                {
+                                    int targetCost = 0;
+
+                                    if (CardEffectCommons.HasMatchConditionPermanent(HasBossTraitInPlay))
+                                        targetCost += 6;
+
+                                    if (selectedCards.Count >= 6)
+                                        targetCost += 6;
+
+                                    Cost -= targetCost;
+                                }
+                            }
+                        }
+
+                        return Cost;
+                    }
+
+                    bool PermanentsCondition(List<Permanent> targetPermanents)
+                    {
+                        if (targetPermanents == null)
                         {
                             return true;
+                        }
+
+                        else
+                        {
+                            if (targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0)
+                            {
+                                return true;
+                            }
                         }
 
                         return false;
                     }
 
-                    if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, (cardSource) => CanSelectTrashCardCondition(cardSource)))
+                    bool CardSourceCondition(CardSource cardSource)
                     {
-                        bool noSelect = CanNoSelect(CardEffectCommons.GetCardFromHashtable(_hashtable));
-                        List<CardSource> selectedCards = new List<CardSource>();
-
-                        int maxCount = 6;
-
-                        if (maxCount >= 1)
-                        {
-                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                            selectCardEffect.SetUp(
-                                canTargetCondition: CanSelectTrashCardCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                canNoSelect: () => noSelect,
-                                selectCardCoroutine: SelectCardCoroutine,
-                                afterSelectCardCoroutine: null,
-                                message: "Select cards to place in Digivolution cards.",
-                                maxCount: maxCount,
-                                canEndNotMax: true,
-                                isShowOpponent: true,
-                                mode: SelectCardEffect.Mode.Custom,
-                                root: SelectCardEffect.Root.Trash,
-                                customRootCardList: null,
-                                canLookReverseCard: true,
-                                selectPlayer: card.Owner,
-                                cardEffect: activateClass);
-
-                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-
-                            IEnumerator SelectCardCoroutine(CardSource cardSource)
-                            {
-                                selectedCards.Add(cardSource);
-                                yield return null;
-                            }
-
-                            if (selectedCards.Count >= 1)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(selectedCards));
-                                yield return StartCoroutine(AfterSelectCardCoroutine(selectedCards));
-                            }
-                        }
+                        return cardSource == card;
                     }
 
-                    IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
+                    bool RootCondition(SelectCardEffect.Root root)
                     {
-                        if (card.Owner.CanReduceCost(null, card))
-                        {
-                            ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().BuffSE);
-                        }
-
-                        ChangeCostClass changeCostClass = new ChangeCostClass();
-                        changeCostClass.SetUpICardEffect("Play Cost -1", CanUseCondition1, card);
-                        changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
-                        card.Owner.UntilCalculateFixedCostEffect.Add((_timing) => changeCostClass);
-
-                        bool CanUseCondition1(Hashtable hashtable)
-                        {
-                            return true;
-                        }
-
-                        int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
-                        {
-                            if (CardSourceCondition(cardSource))
-                            {
-                                if (RootCondition(root))
-                                {
-                                    if (PermanentsCondition(targetPermanents))
-                                    {
-                                        int targetCost = 0;
-
-                                        if(CardEffectCommons.HasMatchConditionOwnersPermanent(card, HasBossTraitInPlay))
-                                            targetCost += 6;
-
-                                        targetCost += cardSources.Count * 1;
-
-                                        Cost -= targetCost;
-                                    }
-                                }
-                            }
-
-                            return Cost;
-                        }
-
-                        bool PermanentsCondition(List<Permanent> targetPermanents)
-                        {
-                            if (targetPermanents == null)
-                            {
-                                return true;
-                            }
-
-                            else
-                            {
-                                if (targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0)
-                                {
-                                    return true;
-                                }
-                            }
-
-                            return false;
-                        }
-
-                        bool CardSourceCondition(CardSource cardSource)
-                        {
-                            return cardSource == card;
-                        }
-
-                        bool RootCondition(SelectCardEffect.Root root)
-                        {
-                            return true;
-                        }
-
-                        bool isUpDown()
-                        {
-                            return true;
-                        }
-
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ShowReducedCost(_hashtable));
-
-                        yield return null;
+                        return true;
                     }
+
+                    bool isUpDown()
+                    {
+                        return true;
+                    }
+
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ShowReducedCost(_hashtable));
                 }
             }
             #endregion
@@ -258,7 +241,12 @@ namespace DCGO.CardEffects.BT16
 
                         if (activateClass != null)
                         {
-                            if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectDBrigadeCondition))
+                            if (CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, CanSelectDBrigadeCondition) >= 6)
+                            {
+                                return true;
+                            }
+
+                            if (CardEffectCommons.HasMatchConditionPermanent(HasBossTraitInPlay))
                             {
                                 return true;
                             }
@@ -276,10 +264,13 @@ namespace DCGO.CardEffects.BT16
                         {
                             if (PermanentsCondition(targetPermanents))
                             {
-                                List<CardSource> trashSources = card.Owner.TrashCards.Filter(CanSelectDBrigadeCondition);
-                                int targetCount = (from trashCard in trashSources select trashCard.CardID).Count();
+                                int trashCount = CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, CanSelectDBrigadeCondition);
+                                int targetCount = 0;
 
-                                if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, HasBossTraitInPlay))
+                                if (trashCount >= 6)
+                                    targetCount += 6;
+
+                                if (CardEffectCommons.HasMatchConditionPermanent(HasBossTraitInPlay))
                                     targetCount += 6;
 
                                 Cost -= targetCount;
@@ -381,24 +372,26 @@ namespace DCGO.CardEffects.BT16
                 {
                     int costDeletion = 0;
 
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.RevealDeckTopCardsAndProcessForAll(
-                            revealCount: 3,
-                            simplifiedSelectCardCondition:
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SimplifiedRevealDeckTopCardsAndSelect(
+                        revealCount: 3,
+                        simplifiedSelectCardConditions:
+                        new SimplifiedSelectCardConditionClass[]
+                        {
                             new SimplifiedSelectCardConditionClass(
-                                canTargetCondition: RevealSelectCardCondition,
-                                message: "Select play cost to use",
-                                mode: SelectCardEffect.Mode.Discard,
-                                maxCount: -1,
-                                selectCardCoroutine: SelectCardCoroutine),
-                            remainingCardsPlace: RemainingCardsPlace.Trash,
-                            activateClass: activateClass,
-                            revealedCardsCoroutine: null
-                        ));
+                                canTargetCondition:RevealSelectCardCondition,
+                                message: "Select Play cost to use",
+                                mode: SelectCardEffect.Mode.Custom,
+                                maxCount: 1,
+                                selectCardCoroutine: SelectCardCoroutine)
+                        },
+                        remainingCardsPlace: RemainingCardsPlace.Trash,
+                        activateClass: activateClass,
+                        isSendAllCardsToSamePlace: true
+                    ));
 
                     IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
                         costDeletion = cardSource.GetCostItself;
-
                         yield return null;
                     }
 
@@ -491,24 +484,26 @@ namespace DCGO.CardEffects.BT16
                 {
                     int costDeletion = 0;
 
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.RevealDeckTopCardsAndProcessForAll(
-                            revealCount: 3,
-                            simplifiedSelectCardCondition:
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SimplifiedRevealDeckTopCardsAndSelect(
+                        revealCount: 3,
+                        simplifiedSelectCardConditions:
+                        new SimplifiedSelectCardConditionClass[]
+                        {
                             new SimplifiedSelectCardConditionClass(
-                                canTargetCondition: RevealSelectCardCondition,
-                                message: "Select play cost to use",
-                                mode: SelectCardEffect.Mode.Discard,
-                                maxCount: -1,
-                                selectCardCoroutine: SelectCardCoroutine),
-                            remainingCardsPlace: RemainingCardsPlace.Trash,
-                            activateClass: activateClass,
-                            revealedCardsCoroutine: null
-                        ));
+                                canTargetCondition:RevealSelectCardCondition,
+                                message: "Select Play cost to use",
+                                mode: SelectCardEffect.Mode.Custom,
+                                maxCount: 1,
+                                selectCardCoroutine: SelectCardCoroutine)
+                        },
+                        remainingCardsPlace: RemainingCardsPlace.Trash,
+                        activateClass: activateClass,
+                        isSendAllCardsToSamePlace: true
+                    ));
 
                     IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
                         costDeletion = cardSource.GetCostItself;
-
                         yield return null;
                     }
 
@@ -589,112 +584,115 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsOwnerTurn(card);
+                    if (!CardEffectCommons.IsOwnerTurn(card))
+                        return false;
+
+                    if (card.Owner.GetBattleAreaDigimons().Count < 2)
+                        return false;
+
+                    if (card.Owner.HandCards.Count(CanSelectDNACardCondition) < 1)
+                        return false;
+
+                    return true;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     // DNA digivolve
-                    if (card.Owner.GetBattleAreaDigimons().Count >= 2)
+                    List<CardSource> selectedCards = new List<CardSource>();
+
+                    int maxCount = 1;
+
+                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                    selectHandEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanSelectDNACardCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: maxCount,
+                        canNoSelect: true,
+                        canEndNotMax: false,
+                        isShowOpponent: true,
+                        selectCardCoroutine: SelectCardCoroutine,
+                        afterSelectCardCoroutine: null,
+                        mode: SelectHandEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    selectHandEffect.SetUpCustomMessage("Select 1 card to DNA digivolve.", "The opponent is selecting 1 card to DNA digivolve.");
+                    selectHandEffect.SetNotShowCard();
+
+                    yield return StartCoroutine(selectHandEffect.Activate());
+
+                    IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
-                        if (card.Owner.HandCards.Count(CanSelectDNACardCondition) >= 1)
+                        selectedCards.Add(cardSource);
+
+                        yield return null;
+                    }
+
+                    if (selectedCards.Count >= 1)
+                    {
+                        foreach (CardSource selectedCard in selectedCards)
                         {
-                            List<CardSource> selectedCards = new List<CardSource>();
-
-                            int maxCount = 1;
-
-                            SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                            selectHandEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: CanSelectDNACardCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: maxCount,
-                                canNoSelect: true,
-                                canEndNotMax: false,
-                                isShowOpponent: true,
-                                selectCardCoroutine: SelectCardCoroutine,
-                                afterSelectCardCoroutine: null,
-                                mode: SelectHandEffect.Mode.Custom,
-                                cardEffect: activateClass);
-
-                            selectHandEffect.SetUpCustomMessage("Select 1 card to DNA digivolve.", "The opponent is selecting 1 card to DNA digivolve.");
-                            selectHandEffect.SetNotShowCard();
-
-                            yield return StartCoroutine(selectHandEffect.Activate());
-
-                            IEnumerator SelectCardCoroutine(CardSource cardSource)
+                            if (selectedCard.CanPlayJogress(true))
                             {
-                                selectedCards.Add(cardSource);
+                                _jogressEvoRootsFrameIDs = new int[0];
 
-                                yield return null;
-                            }
+                                yield return GManager.instance.photonWaitController.StartWait("Darkdramon_BT16_065");
 
-                            if (selectedCards.Count >= 1)
-                            {
-                                foreach (CardSource selectedCard in selectedCards)
+                                if (card.Owner.isYou || GManager.instance.IsAI)
                                 {
-                                    if (selectedCard.CanPlayJogress(true))
+                                    GManager.instance.selectJogressEffect.SetUp_SelectDigivolutionRoots
+                                                                (card: selectedCard,
+                                                                isLocal: true,
+                                                                isPayCost: true,
+                                                                canNoSelect: true,
+                                                                endSelectCoroutine_SelectDigivolutionRoots: EndSelectCoroutine_SelectDigivolutionRoots,
+                                                                noSelectCoroutine: null);
+
+                                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.selectJogressEffect.SelectDigivolutionRoots());
+
+                                    IEnumerator EndSelectCoroutine_SelectDigivolutionRoots(List<Permanent> permanents)
                                     {
-                                        _jogressEvoRootsFrameIDs = new int[0];
-
-                                        yield return GManager.instance.photonWaitController.StartWait("Darkdramon_BT16_065");
-
-                                        if (card.Owner.isYou || GManager.instance.IsAI)
+                                        if (permanents.Count == 2)
                                         {
-                                            GManager.instance.selectJogressEffect.SetUp_SelectDigivolutionRoots
-                                                                        (card: selectedCard,
-                                                                        isLocal: true,
-                                                                        isPayCost: true,
-                                                                        canNoSelect: true,
-                                                                        endSelectCoroutine_SelectDigivolutionRoots: EndSelectCoroutine_SelectDigivolutionRoots,
-                                                                        noSelectCoroutine: null);
-
-                                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.selectJogressEffect.SelectDigivolutionRoots());
-
-                                            IEnumerator EndSelectCoroutine_SelectDigivolutionRoots(List<Permanent> permanents)
-                                            {
-                                                if (permanents.Count == 2)
-                                                {
-                                                    _jogressEvoRootsFrameIDs = permanents.Distinct().ToArray().Map(permanent => permanent.PermanentFrame.FrameID);
-                                                }
-
-                                                yield return null;
-                                            }
-
-                                            photonView.RPC("SetJogressEvoRootsFrameIDs", RpcTarget.All, _jogressEvoRootsFrameIDs);
+                                            _jogressEvoRootsFrameIDs = permanents.Distinct().ToArray().Map(permanent => permanent.PermanentFrame.FrameID);
                                         }
 
-                                        else
-                                        {
-                                            GManager.instance.commandText.OpenCommandText("The opponent is choosing a card to DNA digivolve.");
-                                        }
-
-                                        yield return new WaitWhile(() => !_endSelect);
-                                        _endSelect = false;
-
-                                        GManager.instance.commandText.CloseCommandText();
-                                        yield return new WaitWhile(() => GManager.instance.commandText.gameObject.activeSelf);
-
-                                        if (_jogressEvoRootsFrameIDs.Length == 2)
-                                        {
-                                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(new List<CardSource>() { selectedCard }, "Played Card", true, true));
-
-                                            PlayCardClass playCard = new PlayCardClass(
-                                                cardSources: new List<CardSource>() { selectedCard },
-                                                hashtable: CardEffectCommons.CardEffectHashtable(activateClass),
-                                                payCost: true,
-                                                targetPermanent: null,
-                                                isTapped: false,
-                                                root: SelectCardEffect.Root.Hand,
-                                                activateETB: true);
-
-                                            playCard.SetJogress(_jogressEvoRootsFrameIDs);
-
-                                            yield return ContinuousController.instance.StartCoroutine(playCard.PlayCard());
-                                        }
+                                        yield return null;
                                     }
+
+                                    photonView.RPC("SetJogressEvoRootsFrameIDs", RpcTarget.All, _jogressEvoRootsFrameIDs);
+                                }
+
+                                else
+                                {
+                                    GManager.instance.commandText.OpenCommandText("The opponent is choosing a card to DNA digivolve.");
+                                }
+
+                                yield return new WaitWhile(() => !_endSelect);
+                                _endSelect = false;
+
+                                GManager.instance.commandText.CloseCommandText();
+                                yield return new WaitWhile(() => GManager.instance.commandText.gameObject.activeSelf);
+
+                                if (_jogressEvoRootsFrameIDs.Length == 2)
+                                {
+                                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(new List<CardSource>() { selectedCard }, "Played Card", true, true));
+
+                                    PlayCardClass playCard = new PlayCardClass(
+                                        cardSources: new List<CardSource>() { selectedCard },
+                                        hashtable: CardEffectCommons.CardEffectHashtable(activateClass),
+                                        payCost: true,
+                                        targetPermanent: null,
+                                        isTapped: false,
+                                        root: SelectCardEffect.Root.Hand,
+                                        activateETB: true);
+
+                                    playCard.SetJogress(_jogressEvoRootsFrameIDs);
+
+                                    yield return ContinuousController.instance.StartCoroutine(playCard.PlayCard());
                                 }
                             }
                         }

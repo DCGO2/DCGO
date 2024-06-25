@@ -17,10 +17,16 @@ public partial class CardEffectFactory
             {
                 if (card.Owner.Enemy.GetBattleAreaDigimons().Count() > 0)
                 {
-                    if (condition == null || condition())
+                    if (GManager.instance.attackProcess.IsAttacking)
                     {
-                        return true;
-                    }
+                        if (GManager.instance.attackProcess.AttackingPermanent == card.PermanentOfThisCard())
+                        {
+                            if (condition == null || condition())
+                            {
+                                return true;
+                            }
+                        }
+                    }     
                 }
             }
 
@@ -49,14 +55,11 @@ public partial class CardEffectFactory
 
         bool CanUseCondition(Hashtable hashtable)
         {
-            if(CardEffectCommons.CanTriggerOnAttack(hashtable, card))
+            if (condition == null || condition())
             {
-                if (condition == null || condition())
-                {
-                    return true;
-                }
+                return true;
             }
-            
+
             return false;
         }
 
