@@ -42,13 +42,12 @@ namespace DCGO.CardEffects.EX6
 
                 bool OpponentsSuspendableTargets(Permanent permanent)
                 {
-                    if (permanent.TopCard.CanNotBeAffected(activateClass))
+
+                    if (permanent.TopCard.HasLevel && permanent.Level <= 5)
                     {
-                        if(permanent.TopCard.HasLevel && permanent.Level <= 5)
-                        {
-                            return true;
-                        }
+                        return true;
                     }
+                   
 
                     return false;
                 }
@@ -76,7 +75,7 @@ namespace DCGO.CardEffects.EX6
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBreedingAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleArea(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -155,13 +154,12 @@ namespace DCGO.CardEffects.EX6
 
                 bool OpponentsSuspendableTargets(Permanent permanent)
                 {
-                    if (permanent.TopCard.CanNotBeAffected(activateClass))
+
+                    if (permanent.TopCard.HasLevel && permanent.Level <= 5)
                     {
-                        if (permanent.TopCard.HasLevel && permanent.Level <= 5)
-                        {
-                            return true;
-                        }
+                        return true;
                     }
+
 
                     return false;
                 }
@@ -189,7 +187,7 @@ namespace DCGO.CardEffects.EX6
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBreedingAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleArea(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -252,7 +250,6 @@ namespace DCGO.CardEffects.EX6
                 }
             }
             #endregion
-
             #region All Turns
             if (timing == EffectTiming.WhenRemoveField)
             {

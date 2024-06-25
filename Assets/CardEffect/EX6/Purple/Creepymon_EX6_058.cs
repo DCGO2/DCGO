@@ -61,6 +61,8 @@ namespace DCGO.CardEffects.EX6
                 {
                     List<Permanent> deleteTargetPermanents = new List<Permanent>();
 
+                    List<Permanent> deleteTargetPermanentsClone = new List<Permanent>();
+
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
@@ -75,8 +77,8 @@ namespace DCGO.CardEffects.EX6
                             maxCount: maxCount,
                             canNoSelect: false,
                             canEndNotMax: false,
-                            selectPermanentCoroutine: null,
-                            afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            afterSelectPermanentCoroutine: null,
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
@@ -84,22 +86,22 @@ namespace DCGO.CardEffects.EX6
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                        IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
+                        IEnumerator SelectPermanentCoroutine(Permanent _permanent)
                         {
-                            deleteTargetPermanents = permanents.Clone();
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: new List<Permanent>() { _permanent }, activateClass: activateClass, successProcess: permanents => SuccessProcess(), failureProcess: null));
 
-                            yield return null;
-                        }
 
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: deleteTargetPermanents, activateClass: activateClass, successProcess: permanents => SuccessProcess(), failureProcess: null));
-
-                        IEnumerator SuccessProcess()
-                        {
-                            if (card.Owner.LibraryCards.Count >= 1)
+                            IEnumerator SuccessProcess()
                             {
-                                yield return ContinuousController.instance.StartCoroutine(new IAddTrashCardsFromLibraryTop(deleteTargetPermanents[0].Level, card.Owner, activateClass).AddTrashCardsFromLibraryTop());
+                                if (card.Owner.LibraryCards.Count >= 1)
+                                {
+                                    yield return ContinuousController.instance.StartCoroutine(new IAddTrashCardsFromLibraryTop(_permanent.LevelJustBeforeRemoveField, card.Owner, activateClass).AddTrashCardsFromLibraryTop());
+                                }
                             }
                         }
+
+                        
+
                     }
                 }
             }
@@ -145,6 +147,8 @@ namespace DCGO.CardEffects.EX6
                 {
                     List<Permanent> deleteTargetPermanents = new List<Permanent>();
 
+                    List<Permanent> deleteTargetPermanentsClone = new List<Permanent>();
+
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
@@ -159,8 +163,8 @@ namespace DCGO.CardEffects.EX6
                             maxCount: maxCount,
                             canNoSelect: false,
                             canEndNotMax: false,
-                            selectPermanentCoroutine: null,
-                            afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            afterSelectPermanentCoroutine: null,
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
@@ -168,22 +172,22 @@ namespace DCGO.CardEffects.EX6
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                        IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
+                        IEnumerator SelectPermanentCoroutine(Permanent _permanent)
                         {
-                            deleteTargetPermanents = permanents.Clone();
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: new List<Permanent>() { _permanent }, activateClass: activateClass, successProcess: permanents => SuccessProcess(), failureProcess: null));
 
-                            yield return null;
-                        }
 
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: deleteTargetPermanents, activateClass: activateClass, successProcess: permanents => SuccessProcess(), failureProcess: null));
-
-                        IEnumerator SuccessProcess()
-                        {
-                            if (card.Owner.LibraryCards.Count >= 1)
+                            IEnumerator SuccessProcess()
                             {
-                                yield return ContinuousController.instance.StartCoroutine(new IAddTrashCardsFromLibraryTop(deleteTargetPermanents[0].Level, card.Owner, activateClass).AddTrashCardsFromLibraryTop());
+                                if (card.Owner.LibraryCards.Count >= 1)
+                                {
+                                    yield return ContinuousController.instance.StartCoroutine(new IAddTrashCardsFromLibraryTop(_permanent.LevelJustBeforeRemoveField, card.Owner, activateClass).AddTrashCardsFromLibraryTop());
+                                }
                             }
                         }
+
+
+
                     }
                 }
             }
