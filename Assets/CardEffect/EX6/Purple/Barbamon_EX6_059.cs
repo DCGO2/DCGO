@@ -208,7 +208,7 @@ namespace DCGO.CardEffects.EX6
                 {
                     int maxCost = 10 - card.Owner.Enemy.HandCards.Count();
 
-                    if (cardSource.GetCostItself <= maxCost)
+                    if (cardSource.GetCostItself <= maxCost || cardSource.BasePlayCostFromEntity <= maxCost)
                     {
                         return true;
                     }
@@ -265,13 +265,25 @@ namespace DCGO.CardEffects.EX6
                             yield return null;
                         }
 
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
+                        if (selectedCards[0].IsOption)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(
+                            CardEffectCommons.PlayOptionCards(
                             cardSources: selectedCards,
                             activateClass: activateClass,
                             payCost: false,
-                            isTapped: false,
-                            root: SelectCardEffect.Root.Trash,
-                            activateETB: true));
+                            root: SelectCardEffect.Root.Trash));
+                        }
+                        else
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
+                                cardSources: selectedCards,
+                                activateClass: activateClass,
+                                payCost: false,
+                                isTapped: false,
+                                root: SelectCardEffect.Root.Trash,
+                                activateETB: true));
+                        }
                     }
                 }
             }
