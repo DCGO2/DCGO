@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using UnityEngine;
 
 namespace DCGO.CardEffects.EX6
 {
@@ -194,7 +195,9 @@ namespace DCGO.CardEffects.EX6
 
                     IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
                     {
-                        if(cardSources.Count >= 4)
+                        yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(cardSources, activateClass));
+
+                        if (cardSources.Count >= 4)
                         {
                             SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
@@ -292,6 +295,8 @@ namespace DCGO.CardEffects.EX6
 
                     IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
                     {
+                        yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(cardSources, activateClass));
+
                         if (cardSources.Count >= 4)
                         {
                             SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
@@ -339,6 +344,7 @@ namespace DCGO.CardEffects.EX6
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         //TODO: Most likely the culprit
+                        Debug.Log($"CAN ACTIVATE: {card.PermanentOfThisCard().cardSources.Count(HasSevelGreatDemonLordsTrait)}");
                         if(card.PermanentOfThisCard().cardSources.Count(HasSevelGreatDemonLordsTrait) >= 7)
                         {
                             return true;

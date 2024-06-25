@@ -657,13 +657,13 @@ namespace DCGO.CardEffects.EX6
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (count()>=7)
+                    if (CardEffectCommons.IsExistOnBreedingAreaDigimon(card))  
                     {
-                        if (CardEffectCommons.IsExistOnBreedingAreaDigimon(card))
+                        if (CardEffectCommons.IsOpponentTurn(card))
                         {
-                            if (CardEffectCommons.IsOpponentTurn(card))
+                            if (count() >= 7)
                             {
-                                return true;
+                                    return true;
                             }
                         }
                     }
