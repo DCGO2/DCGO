@@ -84,7 +84,7 @@ namespace DCGO.CardEffects.EX6
 
                 foreach (string name in cardNames)
                 {
-                    if (cardNames.Contains(name))
+                    if (cardSource.CardNames.Contains(name))
                         return false;
                 }
 
@@ -93,9 +93,7 @@ namespace DCGO.CardEffects.EX6
 
             bool CanEndSelectCondition(List<CardSource> cardSources)
             {
-                List<string> cardNames = GetNamesList(cardSources);
-
-                if (cardNames.Count != cardSources.Count + digivolutionCards.Count)
+                if (CardEffectCommons.HasNoElement(cardSources))
                 {
                     return false;
                 }
@@ -110,17 +108,6 @@ namespace DCGO.CardEffects.EX6
                 foreach (CardSource cardName in cardSources)
                 {
                     foreach (string name in cardName.CardNames)
-                    {
-                        if (!cardNames.Contains(name))
-                        {
-                            cardNames.Add(name);
-                        }
-                    }
-                }
-
-                foreach (CardSource digivolutionCard in digivolutionCards)
-                {
-                    foreach (string name in digivolutionCard.CardNames)
                     {
                         if (!cardNames.Contains(name))
                         {
@@ -351,6 +338,7 @@ namespace DCGO.CardEffects.EX6
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
+                        //TODO: Most likely the culprit
                         if(card.PermanentOfThisCard().cardSources.Count(HasSevelGreatDemonLordsTrait) >= 7)
                         {
                             return true;
