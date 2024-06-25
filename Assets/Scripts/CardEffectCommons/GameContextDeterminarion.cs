@@ -127,12 +127,13 @@ public partial class CardEffectCommons
         ICardEffect cardEffect,
         SelectCardEffect.Root root = SelectCardEffect.Root.Hand,
         bool isBreedingArea = false,
-        bool isPlayOption = false) =>
+        bool isPlayOption = false,
+        int fixedCost = -1) =>
     cardSource != null &&
     (isPlayOption || !cardSource.IsOption)
     && cardSource.Owner.fieldCardFrames.Some((frame) =>
     frame.IsEmptyFrame()
-    && cardSource.CanPlayCardTargetFrame(frame, payCost, cardEffect, root, isBreedingArea: isBreedingArea));
+    && cardSource.CanPlayCardTargetFrame(frame, payCost, cardEffect, root, isBreedingArea: isBreedingArea, fixedCost:fixedCost));
 
     #endregion
 
@@ -354,6 +355,16 @@ public partial class CardEffectCommons
                     .Flat()
                     .Some(CanSelectPermanentCondition);
         }
+    }
+    #endregion
+
+    #region Whether there is at least 1 card in the owner's hand that satisfies the condition
+    public static bool HasMatchConditionOwnersHand(CardSource card, Func<CardSource, bool> CanSelectCardCondition)
+    {
+        return GManager.instance.turnStateMachine.gameContext.Players
+        .Map(player => player.HandCards)
+        .Flat()
+        .Some(source => CanSelectCardCondition(source) && IsExistOnHand(card));
     }
     #endregion
 

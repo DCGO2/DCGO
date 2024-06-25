@@ -352,7 +352,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -19.27002, y: 2660.53}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &6458252330880661991
 MonoBehaviour:
@@ -722,14 +722,30 @@ MonoBehaviour:
   _anim: {fileID: 6458252331221896218}
   _verText: {fileID: 6458252331833269909}
   _localizeTMPro: {fileID: 6458252332150589230}
-  _text_ENG: "Known Issues:\r\n\t- Mummymon(BT16) Retaliation does not work\r\n\t-
-    Publimon (BT16) When Digivolving effect triggered in raising\r\n\t- See other
-    issues in bug tracking document\r\n\r\nUpdates:\r\n\t- All BT16 cards added\r\n\t-
-    Bug fixes to all BT16 cards\r\n\t- Ability to back out of matchmaking\r\n\t-
-    Fixed issue with On Deletion Inheritables\r\n\t- Fixed issue with When Removed
-    from battle area protection not triggering for being\r\n\t  put in security\r\n\t-
-    New image loading system\r\n\t\t- Uses webp files\r\n\t\t- Loads all card images
-    as they are needed\r\n\t\t- No need to worry about card images to run"
+  _text_ENG: "Known Issues:\r\n\t- Veemon (P-1117) Cost reduction will visually show
+    the reduction, even though you will\r\n\t  end up paying full cost (after it's
+    once per turn use)\r\n\t- See other issues in bug tracking document\r\n\t- Your
+    deck lists with BT16 cards will be incorrect, cards will NOT match anymore.\r\n\t 
+    Only for 1.1.4\r\n\r\nUpdates:\r\n\t- Several Bug fixes (see below)\r\n\t- Removed
+    cards being listed in log when doing a mulligan\r\n\t- Fixed issue with leaving
+    field protection not activating for being placed in security\r\n\t- Fixed deck
+    builder errors showing the incorrect cards\r\n\t- Fixed issues with partition
+    allowing you to select illegal targets\r\n\t- Fixed issue where collision only
+    triggered at when attacking timing\r\n\r\nCard Updates:\r\n\t- Hellogarmon (BT16)\r\n\t-
+    Dorugreymon (BT16)\r\n\t- Venusmon (BT10)\r\n\t- MaloMyotismon (BT16)\r\n\t-
+    Tankdramon (BT16)\r\n\t- Patamon (BT16)\r\n\t- Imperialdramon: Fighter Mode (BT16)\r\n\t-
+    Magnamon X (BT16)\r\n\t- Dorugoramon (BT16)\r\n\t- Dragonbreath (BT16)\r\n\t-
+    Soloogamon (BT16)\r\n\t- Dorumon (BT16)\r\n\t- Ai & Mako (EX2)\r\n\t- Agumon
+    (BT16)\r\n\t- Jesmon GX (BT10)\r\n\t- Dorugamon (BT16)\r\n\t- Warumonzaemon (BT15)\r\n\t-
+    Garduamon (X Antibody) (BT16)\r\n\t- Cherubimon (ST17)\r\n\t- Wendigomon (ST17)\r\n\t-
+    Shakkoumon (BT16)\r\n\t- Darkdramon (BT16)\r\n\t- Lui (BT16)\r\n\t- Gesomon (X
+    Antibody) (BT16)\r\n\t- Climbmon (BT16)\r\n\t- Rapidmon (X Antibody) (BT16)\r\n\t-
+    Davis and Ken (BT12)\r\n\t- Magnaangemon(BT16)\r\n\t- Armadillomon (BT8)\r\n\t-
+    Wormon (BT16)\r\n\t- Arukenimon & Mummymon (BT16)\r\n\t- Armodillomon (BT16)\r\n\t-
+    Grankuwagamon (BT16)\r\n\t- Targetmon (EX5)\r\n\t- Megagargomon (ST17)\r\n\t-
+    Madleomon (BT16)\r\n\t- TyrantKabuterimon (BT16)\r\n\t- Moonmon (EX5)\r\n\t-
+    Pheonixmon (X Antibody) (BT16)\r\n\t- Paildramon (BT16)\r\n\t- Rapidmon (ST17-06)\r\n\t-
+    Imperialdramon: Dragon Mode (BT16)"
   _text_JPN: 
   _scroll: {fileID: 6458252331812644436}
 --- !u!1 &6458252331574147166
@@ -1700,8 +1716,8 @@ RectTransform:
   m_Father: {fileID: 6458252331771364177}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.7149966}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: -0.1449585}
   m_SizeDelta: {x: 40, y: 45.38994}
   m_Pivot: {x: 0.5, y: 0.5}

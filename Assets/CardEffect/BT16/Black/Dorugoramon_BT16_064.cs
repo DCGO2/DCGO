@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 using System.Linq;
 
 namespace DCGO.CardEffects.BT16
@@ -15,7 +16,7 @@ namespace DCGO.CardEffects.BT16
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    if (targetPermanent.TopCard.CardNames.Contains("DoruGreymon"))
+                    if (targetPermanent.TopCard.ContainsCardName("DoruGreymon"))
                     {
                         return true;
                     }
@@ -40,8 +41,8 @@ namespace DCGO.CardEffects.BT16
             }
             #endregion
 
-            #region Collision - Blocker
-            if(timing == EffectTiming.OnAllyAttack)
+            #region Collision
+            if (timing == EffectTiming.OnCounterTiming)
             {
                 cardEffects.Add(CardEffectFactory.CollisionSelfStaticEffect(false, card, null));
             }
@@ -62,7 +63,7 @@ namespace DCGO.CardEffects.BT16
 
                 bool HasTamerWithTrait(CardSource cardSource)
                 {
-                    return cardSource.HasSocTraits;
+                    return cardSource.HasSocTraits && cardSource.IsTamer;
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -83,7 +84,15 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                    if(CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card))
+                    {
+                        if (card.PermanentOfThisCard().DigivolutionCards.Count(HasTamerWithTrait) >= 1)
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -93,28 +102,24 @@ namespace DCGO.CardEffects.BT16
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if(card.PermanentOfThisCard().DigivolutionCards.Count(HasTamerWithTrait) > 0)
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                        {
-                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: CanSelectPermanentCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: 1,
-                                canNoSelect: false,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: null,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Destroy,
-                                cardEffect: activateClass);
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectPermanentCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: null,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Destroy,
+                            cardEffect: activateClass);
 
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                        }
-
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
 
                     yield return null;
@@ -188,7 +193,6 @@ namespace DCGO.CardEffects.BT16
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-
                     yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() }, activateClass).Unsuspend());
                 }
             }

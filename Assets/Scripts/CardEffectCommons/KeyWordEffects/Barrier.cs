@@ -24,58 +24,83 @@ public partial class CardEffectCommons
     #region Effect process of [Barrier]
     public static IEnumerator BarrierProcess(Permanent permanent, ICardEffect activateClass)
     {
-        yield return ContinuousController.instance.StartCoroutine(new BarrierClass(permanent, activateClass).Barrier());
+        if (permanent != null)
+        {
+            if (permanent.TopCard != null)
+            {
+                CardSource topCard = permanent.TopCard;
+
+                if (topCard.Owner.SecurityCards.Count >= 1)
+                {
+                    permanent.ShowDeleteEffect();
+
+                    yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
+                                            player: topCard.Owner,
+                                            destroySecurityCount: 1,
+                                            cardEffect: activateClass,
+                                            fromTop: true).DestroySecurity());
+
+                    permanent.willBeRemoveField = false;
+
+                    permanent.HideDeleteEffect();
+
+                    #region log
+                    string log = "";
+
+                    log += $"\nBarrier :";
+
+                    log += $"\n{topCard.BaseENGCardNameFromEntity}({topCard.CardID})";
+
+                    log += "\n";
+
+                    GManager.instance.playLog.AddLogString(log);
+                    #endregion
+                }
+            }
+        }
     }
     #endregion
 
-    #region Barrier class
-    public class BarrierClass
+    #region Target 1 Digimon gains [Barrier]
+    public static IEnumerator GainBarrier(Permanent targetPermanent, EffectDuration effectDuration, ICardEffect activateClass)
     {
-        public BarrierClass(Permanent permanent, ICardEffect cardEffect)
-        {
-            _permanent = permanent;
-            _cardEffect = cardEffect;
-        }
+        if (targetPermanent == null) yield break;
+        if (!IsPermanentExistsOnBattleArea(targetPermanent)) yield break;
+        if (activateClass == null) yield break;
+        if (activateClass.EffectSourceCard == null) yield break;
 
-        Permanent _permanent = null;
-        ICardEffect _cardEffect = null;
+        CardSource card = activateClass.EffectSourceCard;
 
-        public IEnumerator Barrier()
+        bool CanUseCondition()
         {
-            if (_permanent != null)
+            if (IsPermanentExistsOnBattleArea(targetPermanent))
             {
-                if (_permanent.TopCard != null)
+                if (!targetPermanent.TopCard.CanNotBeAffected(activateClass))
                 {
-                    CardSource topCard = _permanent.TopCard;
-
-                    if (topCard.Owner.SecurityCards.Count >= 1)
-                    {
-                        _permanent.ShowDeleteEffect();
-
-                        yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
-                                                player: topCard.Owner,
-                                                destroySecurityCount: 1,
-                                                cardEffect: _cardEffect,
-                                                fromTop: true).DestroySecurity());
-
-                        _permanent.willBeRemoveField = false;
-
-                        _permanent.HideDeleteEffect();
-
-                        #region log
-                        string log = "";
-
-                        log += $"\nBarrier :";
-
-                        log += $"\n{topCard.BaseENGCardNameFromEntity}({topCard.CardID})";
-
-                        log += "\n";
-
-                        GManager.instance.playLog.AddLogString(log);
-                        #endregion
-                    }
+                    return true;
                 }
             }
+
+            return false;
+        }
+
+        ActivateClass retaliation = CardEffectFactory.BarrierEffect(
+            targetPermanent: targetPermanent,
+            isInheritedEffect: false,
+            condition: CanUseCondition,
+            rootCardEffect: activateClass,
+            card: targetPermanent.TopCard);
+
+        AddEffectToPermanent(
+            targetPermanent: targetPermanent,
+            effectDuration: effectDuration,
+            card: card,
+            cardEffect: retaliation,
+            timing: EffectTiming.WhenPermanentWouldBeDeleted);
+
+        if (!targetPermanent.TopCard.CanNotBeAffected(activateClass))
+        {
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateBuffEffect(targetPermanent));
         }
     }
     #endregion
