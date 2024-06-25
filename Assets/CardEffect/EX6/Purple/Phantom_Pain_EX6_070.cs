@@ -103,7 +103,7 @@ namespace DCGO.CardEffects.EX6
                         {
                             if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
                             {
-                                if (!permanent.TopCard.CanNotBeAffected(activateClass))
+                                if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
                                 {
                                     return true;
                                 }
