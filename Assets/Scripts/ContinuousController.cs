@@ -356,25 +356,6 @@ public class ContinuousController : MonoBehaviour
         string savePath = StreamingAssetsUtility.GetStreamingAssetPath("Decks", false);
 
         File.WriteAllText($"{savePath}/{data.DeckName}_{data.DeckID}.txt", DeckCodeUtility.GetDeckBuilderFile(data));
-
-        List<UnityAction> Commands = new List<UnityAction>()
-                {
-                    null
-                };
-
-        List<string> CommandTexts = new List<string>()
-                {
-                    "OK"
-                };
-
-        Opening.instance.SetUpActiveYesNoObject(
-            Commands,
-            CommandTexts,
-            LocalizeUtility.GetLocalizedString(
-            EngMessage: "Deck Saved to Assets/Decks!\n(Also, you can use it for Digimon Card dev.)",
-            JpnMessage: "デッキがアセット/デッキに保存されました!\n(Digimon Card dev.でも使えます)"
-        ),
-            true);
     }
 
     public void DeleteDeck(DeckData data)
