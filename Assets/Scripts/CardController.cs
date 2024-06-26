@@ -3984,6 +3984,8 @@ public class SuspendPermanentsClass
         {
             permanent.IsSuspended = true;
 
+            GManager.OnCardSuspendedChanged?.Invoke(true);
+
             permanent.DPWhenSuspended = permanent.DP;
 
             if (permanent.ShowingPermanentCard != null)

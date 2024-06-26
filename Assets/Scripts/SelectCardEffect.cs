@@ -673,7 +673,13 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
                 case Mode.Discard:
                     foreach (CardSource cardSource in _targetCards)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddTrashCard(cardSource));
+                        if (CardEffectCommons.IsExistOnHand(cardSource))
+                        {
+                            List<IDiscardHand> discardHands = _targetCards.Map(cardSource => new IDiscardHand(cardSource, hashtable));
+                            yield return ContinuousController.instance.StartCoroutine(new IDiscardHands(discardHands, _cardEffect).DiscardHands());
+                        }
+                        else                        
+                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddTrashCard(cardSource));
                     }
                     break;
 

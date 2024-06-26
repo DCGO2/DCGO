@@ -89,8 +89,16 @@ public interface ICanNotTrashFromDigivolutionCardsEffect
 #region "Change target permanent's Security Attack" effect
 public interface IChangeSAttackEffect
 {
-    int GetSAttack(int SAttack, Permanent permanent);
+    int GetSAttack(int SAttack, Permanent permanent, int invertValue);
     CalculateOrder isUpDown();
+    bool PermanentCondition(Permanent permanent);
+}
+#endregion
+
+#region "Invert target permanent's Security Attack" effect
+public interface IInvertSAttackEffect
+{
+    int InversionValue(Permanent permanent, int invertValue);
     bool PermanentCondition(Permanent permanent);
 }
 #endregion
@@ -401,6 +409,13 @@ public interface IBlockerEffect
 public interface IAddJogressLevelsEffect
 {
     List<int> GetJogressLevels(CardSource cardSource, Permanent permanent);
+}
+#endregion
+
+#region "Add names for DNA digivolution" effect
+public interface IAddDNANamesEffect
+{
+    List<string> GetDNANames(CardSource cardSource, Permanent permanent);
 }
 #endregion
 
