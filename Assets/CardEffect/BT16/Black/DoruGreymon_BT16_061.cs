@@ -224,7 +224,7 @@ namespace DCGO.CardEffects.BT16
                                 payCost: false,
                                 isTapped: false,
                                 root: SelectCardEffect.Root.Trash,
-                                activateETB:false));
+                                activateETB:true));
                         }
                     }
                 }
