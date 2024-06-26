@@ -61,31 +61,25 @@ namespace DCGO.CardEffects.P
 
                     IEnumerator SelectedPermanent(Permanent permanent)
                     {
-                        if (permanent == null)
-                            selectedPermanent = permanent;
-
-                        yield return null;
-                    }
-
-                    if (selectedPermanent != null)
-                    {
                         bool DefenderCondition(Permanent defender)
                         {
                             return defender != null;
                         }
 
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotAttack(
-                            targetPermanent: card.PermanentOfThisCard(),
+                            targetPermanent: permanent,
                             defenderCondition: DefenderCondition,
                             effectDuration: EffectDuration.UntilOpponentTurnEnd,
                             activateClass: activateClass,
                             effectName: "Can't Attack Digimon"));
 
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonSAttack(
-                            targetPermanent: selectedPermanent,
-                            changeValue: -1, 
+                            targetPermanent: permanent,
+                            changeValue: -1,
                             effectDuration: EffectDuration.UntilOpponentTurnEnd,
                             activateClass: activateClass));
+
+                        yield return null;
                     }
                 }
             }
@@ -141,7 +135,7 @@ namespace DCGO.CardEffects.P
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return true;
+                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
