@@ -468,10 +468,9 @@ namespace DCGO.CardEffects.EX6
             #endregion
 
             #region Your Turn
-
-            if (timing == EffectTiming.AfterEffectsActivate || timing == EffectTiming.OnStartTurn || timing == EffectTiming.OnEnterFieldAnyone || timing == EffectTiming.OnUseOption || timing == EffectTiming.OptionSkill || timing == EffectTiming.SecuritySkill)
+            if (timing == EffectTiming.None)
             {
-                /*
+
                 bool Condition()
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
@@ -498,86 +497,13 @@ namespace DCGO.CardEffects.EX6
                     return false;
                 }
 
-
-                
-
                 cardEffects.Add(CardEffectFactory.InvertSAttackStaticEffect(
                     permanentCondition: PermanentCondition,
                     changeValue: -1,
                     isInheritedEffect: false,
                     card: card,
                     condition: Condition));
-                */
-
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Invert Security Attack", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-                activateClass.SetIsBackgroundProcess(true);
-                cardEffects.Add(activateClass);
-
-                string EffectDiscription()
-                {
-                    return "[Your Turn] This Digimon gains [Security A+1] for each of your opponent's Digimon with [Security Attack].";
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return true;
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.IsOwnerTurn(card))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
-                bool PermanentCondition(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
-                    {
-                        if (permanent.HasSecurityAttackChanges)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    List<Permanent> DigimonToInvertSec = card.Owner.GetBattleAreaDigimons().ToList();
-                    
-
-                    if (DigimonToInvertSec.Count() >= 1)
-                    {
-                        foreach(Permanent permanent1 in DigimonToInvertSec)
-                        {
-                            if(permanent1.HasSecurityAttackChanges && permanent1.EffectList(EffectTiming.None).Where(x => x.HashString == "SecAttackFromLampEffect").ToList().Count() <= 0)
-                            {
-                                //int invert = permanent1.InvertSecutiryValue * -permanent1.Strike;
-                                Debug.Log("Is this working");
-
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonSAttack(
-                                targetPermanent: permanent1,
-                                changeValue: permanent1.InvertSecutiryValue,
-                                effectDuration: EffectDuration.UntilEachTurnEnd,
-                                activateClass: activateClass,
-                                activateAnimation: false,
-                                hashstring: "SecAttackFromLampEffect"));
-                            }
-                        }
-                    }
-                }
             }
-
             #endregion
 
             #region End of Opponent's Turn

@@ -1181,7 +1181,7 @@ public class Permanent
                 {
                     if (cardEffect.CanUse(null))
                     {
-                        int Strike1 = ((IChangeSAttackEffect)cardEffect).GetSAttack(Strike, this, InvertSecutiryValue);
+                        int Strike1 = ((IChangeSAttackEffect)cardEffect).GetSAttack(Strike, this, 0);
 
                         if (Strike1 != Strike)
                         {
