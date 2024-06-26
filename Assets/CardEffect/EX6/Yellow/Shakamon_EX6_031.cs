@@ -466,7 +466,7 @@ namespace DCGO.CardEffects.EX6
 
             #region Your Turn
 
-            if (timing == EffectTiming.None)
+            /*if (timing == EffectTiming.None)
             {
                 bool Condition()
                 {
@@ -502,7 +502,7 @@ namespace DCGO.CardEffects.EX6
                     isInheritedEffect: false,
                     card: card,
                     condition: Condition));
-            }
+            }*/
 
             #endregion
 
