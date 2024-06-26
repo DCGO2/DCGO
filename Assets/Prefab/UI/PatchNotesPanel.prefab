@@ -725,26 +725,24 @@ MonoBehaviour:
   _text_ENG: "Known Issues:\r\n\t- Veemon (P-1117) Cost reduction will visually show
     the reduction, even though you will\r\n\t  end up paying full cost (after it's
     once per turn use)\r\n\t- Effects given to another card do not always show up
-    on card details\r\n\t- Shakamon (EX6-031) - Your turn effect currently disabled
-    while we work out\r\n\t  performance issues.\r\n\t- See other issues in bug tracking
-    document\r\n\t- All deck lists will be cleared due to new local directory for
-    decklists\r\n\r\nUpdates:\r\n\t- Several Bug fixes (see below)\r\n\t- EX6 set
-    added\r\n\t- Promos 131-138 & 143-151 added \r\n\t- Updated profanity filter
-    list\r\n\t- Added Feature that decklists save locally in directory (Assets/Decklists)\r\n\t-
-    Minor performance enhancement to multiple digimon on board\r\n\t- Capped framerate
-    at 60\r\n\r\nCard Updates:\r\n\t- Lampmon (BT12-044): added to game\r\n\t- BlackRapidmon
-    (EX4-036): Fixed issue where it could digivolve over\r\n\t  MegaGargomon Ace
-    (ST17)\r\n\t- Zanmetsumon (BT16-062): Fixed issue where deletion effect would
-    not happen with \r\n\t  On Play effect\r\n\t- Birdramon (BT15-013): Fixed inherited
-    effect text\r\n\t- Minomon (BT16-004): Fixed issue where multiple stacks could
-    trigger the memory gain\r\n\t- Dorugreymon (BT16-061): Fixed issue where On Play
-    effects from ESS did not activate\r\n\t- Amphimon (LM-005): Fixed issue of targeting
-    option cards as valid targets\r\n\t- Vikemon (BT16-026): Fixed On Play and When
-    Attacking effects\r\n\t- Amphimon (RB1-016): Fixed issue with deletion by security
-    battle and effect targeting\r\n\t- Immortal Ruler (BT10-104): Fixed issue where
-    card was treated as only black color\r\n\t- Paildramon (BT16-025): Fixed issue
-    where suspend effect would work against immune\r\n\t  cards\r\n\t- Ancient Angel
-    of Steel (BT16-097): Fixed security effect"
+    on card details\r\n\t- See other issues in bug tracking document\r\n\t- All deck
+    lists will be cleared due to new local directory for decklists\r\n\r\nUpdates:\r\n\t-
+    Several Bug fixes (see below)\r\n\t- EX6 set added\r\n\t- Promos 131-138 & 143-151
+    added \r\n\t- Updated profanity filter list\r\n\t- Added Feature that decklists
+    save locally in directory (Assets/Decklists)\r\n\t- Minor performance enhancement
+    to multiple digimon on board\r\n\t- Capped framerate at 60\r\n\r\nCard Updates:\r\n\t-
+    Lampmon (BT12-044): added to game\r\n\t- BlackRapidmon (EX4-036): Fixed issue
+    where it could digivolve over\r\n\t  MegaGargomon Ace (ST17)\r\n\t- Zanmetsumon
+    (BT16-062): Fixed issue where deletion effect would not happen with \r\n\t  On
+    Play effect\r\n\t- Birdramon (BT15-013): Fixed inherited effect text\r\n\t- Minomon
+    (BT16-004): Fixed issue where multiple stacks could trigger the memory gain\r\n\t-
+    Dorugreymon (BT16-061): Fixed issue where On Play effects from ESS did not activate\r\n\t-
+    Amphimon (LM-005): Fixed issue of targeting option cards as valid targets\r\n\t-
+    Vikemon (BT16-026): Fixed On Play and When Attacking effects\r\n\t- Amphimon
+    (RB1-016): Fixed issue with deletion by security battle and effect targeting\r\n\t-
+    Immortal Ruler (BT10-104): Fixed issue where card was treated as only black color\r\n\t-
+    Paildramon (BT16-025): Fixed issue where suspend effect would work against immune\r\n\t 
+    cards\r\n\t- Ancient Angel of Steel (BT16-097): Fixed security effect"
   _text_JPN: 
   _scroll: {fileID: 6458252331812644436}
 --- !u!1 &6458252331574147166
