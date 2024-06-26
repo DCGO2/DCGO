@@ -22,7 +22,7 @@ namespace DCGO.CardEffects.BT16
 
                 string EffectDiscription()
                 {
-                    return "[All Turns][Once Per Turn] When an opponent's Digimon is deleted in battle, if this Digimon has 2 or more colors, gain 1 memory.";
+                    return "[All Turns] [Once Per Turn] When this Digimon deletes an opponent's Digimon in battle, if this Digimon has 2 or more colors, gain 1 memory.";
                 }
 
                 bool PermanentCondition(Permanent permanent)
@@ -38,7 +38,7 @@ namespace DCGO.CardEffects.BT16
                         {
                             if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition))
                             {
-                                bool WinnerCondition(Permanent permanent) => permanent.cardSources.Contains(card);
+                                bool WinnerCondition(Permanent permanent) => card.PermanentOfThisCard() == permanent;
                                 bool LoserCondition(Permanent permanent) => CardEffectCommons.IsOpponentPermanent(permanent, card);
 
                                 if (CardEffectCommons.CanTriggerWhenDeleteOpponentDigimonByBattle(hashtable: hashtable, winnerCondition: WinnerCondition, loserCondition: LoserCondition, isOnlyWinnerSurvive: true))
