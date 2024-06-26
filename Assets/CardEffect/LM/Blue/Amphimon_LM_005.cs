@@ -18,11 +18,6 @@ namespace DCGO.CardEffects.LM
             }
 
             #region On Play/When Digivolving Shared
-            string EffectDiscription()
-            {
-                return "[On Play] [When Digivolving] You may trash up to 4 blue cards in your hand. For each one, trash any 1 card under your opponent's Digimon or Tamers. Then, return 1 of their Digimon or Tamers without cards under it to the hand.";
-            }
-
             bool CanSelectCardTrashingCondition(CardSource cardSource)
             {
                 if (cardSource.CardColors.Contains(CardColor.Blue))
@@ -68,6 +63,11 @@ namespace DCGO.CardEffects.LM
                 activateClass.SetUpICardEffect("Trash sources, return 1 Digimon/Tamer to hand", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[On Play] You may trash up to 4 blue cards in your hand. For each one, trash any 1 card under your opponent's Digimon or Tamers. Then, return 1 of their Digimon or Tamers without cards under it to the hand.";
+                }
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
@@ -170,6 +170,11 @@ namespace DCGO.CardEffects.LM
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
+                string EffectDiscription()
+                {
+                    return "[When Digivolving] You may trash up to 4 blue cards in your hand. For each one, trash any 1 card under your opponent's Digimon or Tamers. Then, return 1 of their Digimon or Tamers without cards under it to the hand.";
+                }
+
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
                     return !cardSource.CanNotTrashFromDigivolutionCards(activateClass);
@@ -179,7 +184,7 @@ namespace DCGO.CardEffects.LM
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card))
                     {
-                        if (!permanent.TopCard.IsDigiEgg || !permanent.TopCard.IsOption)
+                        if (permanent.IsDigimon || permanent.IsTamer)
                         {
                             if (permanent.DigivolutionCards.Count(CanSelectCardCondition) >= 1)
                             {

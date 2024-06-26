@@ -223,7 +223,7 @@ namespace DCGO.CardEffects.BT16
 
                 string EffectDiscription()
                 {
-                    return "[Main] You may play 1 [Armadillomon] or [Patamon] from your hand without paying the cost. Then, 2 of your Digimon may DNA digivolve into a Digimon card in your hand. If DNA digivolved by this effect, <Recovery +1(Deck)>";
+                    return "[Security] You may play 1 [Armadillomon] or [Patamon] from your hand or trash without paying the cost. Then, add this card to the hand.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)

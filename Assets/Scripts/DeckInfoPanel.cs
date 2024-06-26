@@ -168,6 +168,7 @@ public class DeckInfoPanel : MonoBehaviour
                             ContinuousController.instance.StartCoroutine(Opening.instance.deck.selectDeck.SetDeckList(false));
                             Opening.instance.deck.selectDeck.ResetDeckInfoPanel();
                             ContinuousController.instance.SaveDeckDatas();
+                            ContinuousController.instance.DeleteDeck(deckData);
                         }
                     },
 
@@ -242,7 +243,7 @@ public class DeckInfoPanel : MonoBehaviour
 
         text = DeckData.ValidateDeckName(text);
 
-        while (text.Length > 15)
+        while (text.Length > DeckName.characterLimit)
         {
             text = text.Substring(0, text.Length - 1);
         }
@@ -250,6 +251,7 @@ public class DeckInfoPanel : MonoBehaviour
         ShowingDeckData.DeckName = text;
 
         ContinuousController.instance.SaveDeckDatas();
+        ContinuousController.instance.SaveDeckData(ShowingDeckData);
 
         if (isFromSelectDeck)
         {

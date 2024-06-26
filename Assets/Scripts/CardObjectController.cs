@@ -36,14 +36,14 @@ public class CardObjectController : MonoBehaviour
 
                 DeckData randomDeck = deckDatas[UnityEngine.Random.Range(0, deckDatas.Count)];
 
-                RandomDeck = new DeckData(randomDeck.GetThisDeckCode());
+                RandomDeck = new DeckData(randomDeck.GetThisDeckCode(), randomDeck.DeckID);
 
 #if UNITY_EDITOR && !UNITY_WINDOWS
                 foreach (DeckData deckData in ContinuousController.instance.DeckDatas)
                 {
                     if (deckData.IsValidDeckData())
                     {
-                        RandomDeck = new DeckData(deckData.GetThisDeckCode());
+                        RandomDeck = new DeckData(deckData.GetThisDeckCode(), deckData.DeckID);
                         break;
                     }
                 }

@@ -165,7 +165,9 @@ namespace DCGO.CardEffects.BT16
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     List<Permanent> oppenentDigimon = card.Owner.Enemy.GetBattleAreaDigimons();
-                    List<Permanent> opponentSuspendable = oppenentDigimon.Where(permanent => permanent.DigivolutionCards.Count <= card.PermanentOfThisCard().DigivolutionCards.Count).ToList();
+                    List<Permanent> opponentSuspendable = oppenentDigimon.Where(permanent => 
+                        permanent.DigivolutionCards.Count <= card.PermanentOfThisCard().DigivolutionCards.Count &&
+                        PermanentCondition(permanent)).ToList();
 
                     yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(opponentSuspendable, hashtable).Tap());
 
