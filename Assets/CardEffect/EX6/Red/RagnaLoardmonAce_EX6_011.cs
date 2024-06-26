@@ -11,15 +11,17 @@ namespace DCGO.CardEffects.EX6
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
             
-            #region Blast DNA Digivolve
+            #region Ace - Blast DNA Digivolve
             
             if (timing == EffectTiming.OnCounterTiming)
             {
-                List<BlastDNACondition> blastDNAConditions = new List<BlastDNACondition>();
-                blastDNAConditions.Add(new BlastDNACondition("Durandamon"));
-                blastDNAConditions.Add(new BlastDNACondition("Bryweludramon"));
-
-                cardEffects.Add(CardEffectFactory.BlastDNADigivolveEffect(card: card, blastDNAConditions: blastDNAConditions, condition: null));
+                List<BlastDNACondition> blastDNAConditions = new List<BlastDNACondition>
+                {
+                    new("Durandamon"),
+                    new("BryweLudramon")
+                };
+                cardEffects.Add(CardEffectFactory.BlastDNADigivolveEffect(card: card,
+                    blastDNAConditions: blastDNAConditions, condition: null));
             }
             
             #endregion
@@ -101,11 +103,10 @@ namespace DCGO.CardEffects.EX6
                             return false;
                         }
                         
-                        JogressConditionElement[] elements = new JogressConditionElement[]
+                        JogressConditionElement[] elements =
                         {
-                            new JogressConditionElement(PermanentCondition1, "a level 6 Red Digimon"),
-                            
-                            new JogressConditionElement(PermanentCondition2, "a level 6 Black Digimon"),
+                            new(PermanentCondition1, "a level 6 Red Digimon"),
+                            new(PermanentCondition2, "a level 6 Black Digimon")
                         };
                         
                         JogressCondition jogressCondition = new JogressCondition(elements, 0);
