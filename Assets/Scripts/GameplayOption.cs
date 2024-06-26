@@ -156,6 +156,8 @@ public class GameplayOption : OffAnimation
             settingRef: ref ContinuousController.instance.reverseOpponentsCards,
             saveAction: ContinuousController.instance.SaveReverseOpponentsCards
         );
+
+        GManager.OnReverseOpponentsCardsChanged?.Invoke();
     }
 
     public void HandleReverseOpponentsCardsToggle()

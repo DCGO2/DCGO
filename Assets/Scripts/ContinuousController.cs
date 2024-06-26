@@ -251,6 +251,7 @@ public class ContinuousController : MonoBehaviour
 
     public async void Init()
     {
+        Application.targetFrameRate = 60;
         int random = RandomUtility.getRamdom();
         UnityEngine.Random.InitState(random);
         Debug.Log($"Game Initialize - random number sequence initialization,InitState:{random}");
