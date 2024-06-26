@@ -314,6 +314,7 @@ public class EditDeck : MonoBehaviour
         #endregion
 
         ContinuousController.instance.SaveDeckDatas();
+        ContinuousController.instance.SaveDeckData(EdittingDeckData);
 
         for (int i = 0; i < DeckScroll.content.childCount; i++)
         {
@@ -467,6 +468,7 @@ public class EditDeck : MonoBehaviour
         EdittingDeckData = deckData;
 
         ContinuousController.instance.SaveDeckDatas();
+        //ContinuousController.instance.SaveDeckData(EdittingDeckData);
 
         OffDetailCard();
 

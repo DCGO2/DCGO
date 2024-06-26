@@ -59,7 +59,7 @@ public partial class CardEffectCommons
         }
     }
 
-    public static IEnumerator ChangeDigimonSAttack(Permanent targetPermanent, int changeValue, EffectDuration effectDuration, ICardEffect activateClass, bool activateAnimation)
+    public static IEnumerator ChangeDigimonSAttack(Permanent targetPermanent, int changeValue, EffectDuration effectDuration, ICardEffect activateClass, bool activateAnimation, string hashstring = null)
     {
         if (targetPermanent == null) yield break;
         if (!IsPermanentExistsOnBattleArea(targetPermanent)) yield break;
@@ -88,7 +88,8 @@ public partial class CardEffectCommons
                     changeValue: changeValue,
                     isInheritedEffect: false,
                     card: card,
-                    condition: CanUseCondition);
+                    condition: CanUseCondition,
+                    hashstring: hashstring);
 
         AddEffectToPermanent(
             targetPermanent: targetPermanent,

@@ -1,14 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.SceneManagement;
-using Photon.Pun;
+﻿using Photon.Pun;
 using System;
-using Hashtable = ExitGames.Client.Photon.Hashtable;
-using UnityEngine.EventSystems;
-using System.Linq;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
-using System.Globalization;
+using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class ContinuousController : MonoBehaviour
 {
@@ -271,7 +271,8 @@ public class ContinuousController : MonoBehaviour
         }
 
         // deck data
-        DeckDatas = PlayerPrefsUtil.LoadList<DeckData>(DeckDatasPlayerPrefsKey);
+        //DeckDatas = PlayerPrefsUtil.LoadList<DeckData>(DeckDatasPlayerPrefsKey);
+        LoadDeckLists();
         ModifyAllDeckDatas();
         GetComponent<StarterDeck>().SetStarterDecks();
         SaveDeckDatas();
@@ -312,6 +313,7 @@ public class ContinuousController : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    [Obsolete("This is obsolete, switching to save files")]
     public void ModifyAllDeckDatas()
     {
         List<DeckData> tempDeckDatas = new List<DeckData>();
@@ -341,11 +343,124 @@ public class ContinuousController : MonoBehaviour
         SaveDeckDatas();
     }
 
+    [Obsolete("This is obsolete, switching to save files")]
     public void SaveDeckDatas()
     {
         PlayerPrefsUtil.SaveList(DeckDatasPlayerPrefsKey, DeckDatas);
 
         PlayerPrefs.Save();
+    }
+
+    public void SaveDeckData(DeckData data)
+    {
+        string savePath = StreamingAssetsUtility.GetStreamingAssetPath("Decks", false);
+
+        File.WriteAllText($"{savePath}/{data.DeckName}_{data.DeckID}.txt", DeckCodeUtility.GetDeckBuilderFile(data));
+
+        List<UnityAction> Commands = new List<UnityAction>()
+                {
+                    null
+                };
+
+        List<string> CommandTexts = new List<string>()
+                {
+                    "OK"
+                };
+
+        Opening.instance.SetUpActiveYesNoObject(
+            Commands,
+            CommandTexts,
+            LocalizeUtility.GetLocalizedString(
+            EngMessage: "Deck Saved to Assets/Decks!\n(Also, you can use it for Digimon Card dev.)",
+            JpnMessage: "デッキがアセット/デッキに保存されました!\n(Digimon Card dev.でも使えます)"
+        ),
+            true);
+    }
+
+    public void DeleteDeck(DeckData data)
+    {
+        string filePath = StreamingAssetsUtility.GetStreamingAssetPath("Decks", false);
+
+        if (!Directory.Exists(filePath))
+            return;
+
+        if(File.Exists($"{filePath}/{data.DeckName}_{data.DeckID}.txt"))
+            File.Delete($"{filePath}/{data.DeckName}_{data.DeckID}.txt");
+    }
+
+    public void DeleteAllDecks()
+    {
+        foreach(DeckData data in DeckDatas)
+        {
+            DeleteDeck(data);
+        }
+    }
+
+    public void LoadDeckLists()
+    {
+        string loadPath = StreamingAssetsUtility.GetStreamingAssetPath("Decks", false);
+
+        if (!Directory.Exists(loadPath))
+            return;
+
+        string[] deckLists = Directory.GetFiles(loadPath);
+
+        foreach(string deckPath in deckLists)
+        {
+            string fileName = Path.GetFileNameWithoutExtension(deckPath);
+
+            if (!fileName.Contains("_"))
+                continue;
+
+            string deckList = File.ReadAllText(deckPath);
+
+            StreamReader sr = new StreamReader(deckPath);
+
+            string deckName = sr.ReadLine().Replace("Name: ", "");
+            int KeyCard = int.Parse(sr.ReadLine().Replace("Key Card: ", ""));
+            int SortValue = int.Parse(sr.ReadLine().Replace("Sort Index: ", ""));
+
+            string deck = deckList.Substring(deckList.IndexOf("//"));
+            //Debug.Log(deckName);
+
+            if(SortValue < 0)
+                SortValue = 0;
+
+            CreateDeckFromFile(fileName.Split("_")[1], deckName, KeyCard, deck, SortValue);
+        }
+    }
+
+    private void CreateDeckFromFile(string id, string name, int keyID, string deckCode, int index = 0)
+    {
+        List<CEntity_Base> AllDeckCards = DeckCodeUtility.GetAllDeckCardsFromDeckBuilderDeckCode(deckCode);
+
+        if (AllDeckCards.Count == 0)
+        {
+            AllDeckCards = DeckCodeUtility.GetAllDeckCardsFromTTSDeckCode(deckCode);
+        }
+
+        List<CEntity_Base> deckCards = new List<CEntity_Base>();
+        List<CEntity_Base> digitamaDeckCards = new List<CEntity_Base>();
+
+        foreach (CEntity_Base cEntity_Base in AllDeckCards)
+        {
+            if (cEntity_Base.cardKind == CardKind.DigiEgg)
+            {
+                digitamaDeckCards.Add(cEntity_Base);
+            }
+
+            else
+            {
+                deckCards.Add(cEntity_Base);
+            }
+        }
+
+        DeckData deckData = (new DeckData(DeckData.GetDeckCode(name, deckCards, digitamaDeckCards, null),id)).ModifiedDeckData();
+
+        deckData.KeyCardId = keyID;
+        deckData.DeckName = name;
+
+        DeckDatas.Insert(index, deckData);
     }
 
     #region Player Name
@@ -511,7 +626,9 @@ public class ContinuousController : MonoBehaviour
     }
     public void LoadShowCutInAnimation()
     {
-        showCutInAnimation = PlayerPrefsUtil.GetBool(_showCutInAnimationKey, true);
+        //TODO: Setting default to false, to fix animation syncing bug, MB
+        showCutInAnimation = false;
+        //showCutInAnimation = PlayerPrefsUtil.GetBool(_showCutInAnimationKey, true);
     }
     #endregion
 
