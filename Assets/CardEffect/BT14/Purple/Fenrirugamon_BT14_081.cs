@@ -29,7 +29,7 @@ public class Fenrirugamon_BT14_081 : CEntity_Effect
                 {
                     if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                     {
-                        if (cardSource.HasLevel)
+                        if (cardSource.HasLevel && cardSource.HasPlayCost)
                         {
                             if (cardSource.CardTraits.Contains("Dark Animal"))
                             {
