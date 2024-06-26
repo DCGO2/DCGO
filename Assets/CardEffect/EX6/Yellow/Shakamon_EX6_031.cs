@@ -1,7 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 using System.Linq;
+using Photon;
 using System;
+using Photon.Pun;
 
 namespace DCGO.CardEffects.EX6
 {
@@ -466,8 +469,9 @@ namespace DCGO.CardEffects.EX6
 
             #region Your Turn
 
-            /*if (timing == EffectTiming.None)
+            if (timing == EffectTiming.AfterEffectsActivate || timing == EffectTiming.OnStartTurn || timing == EffectTiming.OnEnterFieldAnyone || timing == EffectTiming.OnUseOption || timing == EffectTiming.OptionSkill || timing == EffectTiming.SecuritySkill)
             {
+                /*
                 bool Condition()
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
@@ -495,6 +499,7 @@ namespace DCGO.CardEffects.EX6
                 }
 
 
+                
 
                 cardEffects.Add(CardEffectFactory.InvertSAttackStaticEffect(
                     permanentCondition: PermanentCondition,
@@ -502,7 +507,76 @@ namespace DCGO.CardEffects.EX6
                     isInheritedEffect: false,
                     card: card,
                     condition: Condition));
-            }*/
+                */
+
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Invert Security Attack", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetIsBackgroundProcess(true);
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[Your Turn] This Digimon gains [Security A+1] for each of your opponent's Digimon with [Security Attack].";
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return true;
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (CardEffectCommons.IsOwnerTurn(card))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                bool PermanentCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                    {
+                        if (permanent.HasSecurityAttackChanges)
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    List<Permanent> DigimonToInvertSec = card.Owner.GetBattleAreaDigimons().ToList();
+                    
+
+                    if (DigimonToInvertSec.Count() >= 1)
+                    {
+                        foreach(Permanent permanent1 in DigimonToInvertSec)
+                        {
+                            if(permanent1.HasSecurityAttackChanges && permanent1.EffectList(EffectTiming.None).Where(x => x.HashString == "SecAttackFromLampEffect").ToList().Count() <= 0)
+                            {
+                                //int invert = permanent1.InvertSecutiryValue * -permanent1.Strike;
+                                Debug.Log("Is this working");
+
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonSAttack(
+                                targetPermanent: permanent1,
+                                changeValue: permanent1.InvertSecutiryValue,
+                                effectDuration: EffectDuration.UntilEachTurnEnd,
+                                activateClass: activateClass,
+                                activateAnimation: false,
+                                hashstring: "SecAttackFromLampEffect"));
+                            }
+                        }
+                    }
+                }
+            }
 
             #endregion
 
