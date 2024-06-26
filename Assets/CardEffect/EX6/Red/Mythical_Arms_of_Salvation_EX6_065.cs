@@ -185,7 +185,7 @@ namespace DCGO.CardEffects.EX6
                 activateClass.SetUpICardEffect(
                     "Play 1 card with the [Legend-Arms] trait from the removed Digimon's digivolution cards without paying the cost",
                     CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, EffectDescription());
                 activateClass.SetHashString("PlayDigivolutionCard_EX6_065");
                 cardEffects.Add(activateClass);
                 
