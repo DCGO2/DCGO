@@ -38,6 +38,7 @@ namespace DCGO.CardEntities
                 {
                     if (GUILayout.Button("Create Scriptable Object"))
                     {
+                        _loadJSON.prevCardIndex = _loadJSON.setCardIndex;
                         List<CardData> card = _cardData.Where(x => x.cardNumber.Contains(cardIDString)).ToList();
                         SetDataToScriptableObject(card);
                     }
