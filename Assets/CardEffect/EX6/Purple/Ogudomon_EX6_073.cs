@@ -343,8 +343,6 @@ namespace DCGO.CardEffects.EX6
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        //TODO: Most likely the culprit
-                        Debug.Log($"CAN ACTIVATE: {card.PermanentOfThisCard().cardSources.Count(HasSevelGreatDemonLordsTrait)}");
                         if(card.PermanentOfThisCard().cardSources.Count(HasSevelGreatDemonLordsTrait) >= 7)
                         {
                             return true;
@@ -419,7 +417,7 @@ namespace DCGO.CardEffects.EX6
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine,
                             afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
+                            mode: SelectPermanentEffect.Mode.Destroy,
                             cardEffect: activateClass);
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());

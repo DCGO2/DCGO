@@ -311,7 +311,7 @@ namespace DCGO.CardEffects.EX6
 
                         selectCardEffect.SetUpCustomMessage("Select 1 card to place at the bottom of digivolution cards.", "The opponent is selecting 1 card to place at the bottom of digivolution cards.");
 
-                        yield return StartCoroutine(selectCardEffect.Activate());
+                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 
                         IEnumerator SelectCardCoroutine(CardSource cardSource)
                         {
@@ -322,7 +322,7 @@ namespace DCGO.CardEffects.EX6
 
                         if (selectedCards.Count >= 1)
                         {
-                            if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                            if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition, true))
                             {
                                 Permanent selectedPermanent = card.Owner.GetBreedingAreaPermanents()[0];
 
@@ -334,7 +334,6 @@ namespace DCGO.CardEffects.EX6
                         }
                     }
                 }
-                
             }
             #endregion
 
