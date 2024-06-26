@@ -365,8 +365,10 @@ public class ContinuousController : MonoBehaviour
         if (!Directory.Exists(filePath))
             return;
 
-        if(File.Exists($"{filePath}/{data.DeckName}_{data.DeckID}.txt"))
-            File.Delete($"{filePath}/{data.DeckName}_{data.DeckID}.txt");
+        if (!File.Exists($"{filePath}/{data.DeckName}_{data.DeckID}.txt"))
+            return;
+
+        File.Delete($"{filePath}/{data.DeckName}_{data.DeckID}.txt");
     }
 
     public void DeleteAllDecks()
@@ -400,6 +402,8 @@ public class ContinuousController : MonoBehaviour
             string deckName = sr.ReadLine().Replace("Name: ", "");
             int KeyCard = int.Parse(sr.ReadLine().Replace("Key Card: ", ""));
             int SortValue = int.Parse(sr.ReadLine().Replace("Sort Index: ", ""));
+
+            sr.Close();
 
             string deck = deckList.Substring(deckList.IndexOf("//"));
             //Debug.Log(deckName);
