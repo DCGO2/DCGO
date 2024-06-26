@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 
 namespace DCGO.CardEffects.EX6
 {
