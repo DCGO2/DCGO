@@ -49,9 +49,9 @@ namespace DCGO.CardEffects.EX6
 
                 bool SelectOpponentsDigimonWithoutSourcesCondition(Permanent permanent)
                 {
-                    if(CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                    if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, (permanent) => permanent.IsDigimon && permanent.HasNoDigivolutionCards))
                     {
-                        if(permanent.cardSources.Count == 0)
+                        if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                         {
                             return true;
                         }
@@ -89,7 +89,7 @@ namespace DCGO.CardEffects.EX6
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    bool isDiscarded = false;
+                    List<CardSource> discarded = new List<CardSource>();
 
                     SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
@@ -102,26 +102,25 @@ namespace DCGO.CardEffects.EX6
                         canNoSelect: false,
                         canEndNotMax: false,
                         isShowOpponent: true,
-                        selectCardCoroutine: SelectSelectionCoroutine,
-                        afterSelectCardCoroutine: null,
+                        selectCardCoroutine: null,
+                        afterSelectCardCoroutine: AfterSelectionCoroutine,
                         mode: SelectHandEffect.Mode.Discard,
                         cardEffect: activateClass);
 
                     yield return StartCoroutine(selectHandEffect.Activate());
 
-                    IEnumerator SelectSelectionCoroutine(CardSource cardSource)
+                    IEnumerator AfterSelectionCoroutine(List<CardSource> cardSources)
                     {
-                        if (cardSource != null)
-                            isDiscarded = true;
-
+                        discarded = cardSources.Clone();
                         yield return null;
                     }
 
-                    if (isDiscarded)
+                    if (discarded.Count >=1)
                     {
+
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                        int suspendCount = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, SelectOpponentsDigimonCondition));
+                        int suspendCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(SelectOpponentsDigimonCondition));
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
@@ -155,15 +154,15 @@ namespace DCGO.CardEffects.EX6
                         }
 
                         yield return ContinuousController.instance.StartCoroutine(new ReturnToLibraryBottomDigivolutionCardsClass(
-                                card.PermanentOfThisCard(),
+                                permanent,
                                 targetCards, CardEffectCommons.CardEffectHashtable(activateClass)).ReturnToLibraryBottomDigivolutionCards());
                     }
 
-                    if (card.Owner.GetBattleAreaPermanents().Count(PermanentCondition) <= card.Owner.Enemy.GetBattleAreaPermanents().Count(PermanentCondition))
+                    if (card.Owner.GetBattleAreaPermanents().Count(PermanentCondition) >= card.Owner.Enemy.GetBattleAreaPermanents().Count(PermanentCondition))
                     {
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                        int suspendCount = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, SelectOpponentsDigimonCondition));
+                        int suspendCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(SelectOpponentsDigimonWithoutSourcesCondition));
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
