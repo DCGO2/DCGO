@@ -28,7 +28,7 @@ namespace DCGO.CardEffects.EX6
 
                 bool PlayedPermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsOwnerPermanent(permanent, card))
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
                         if (permanent.IsDigimon)
                         {
@@ -62,13 +62,15 @@ namespace DCGO.CardEffects.EX6
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (!cardSource.IsDigimon)
-                        return false;
-
-                    if (!cardSource.CardNames.Contains("Angewomon") || !cardSource.CardNames.Contains("LadyDevimon"))
-                        return false;
-
-                    return true;
+                    if (cardSource.IsDigimon)
+                    {
+                        if (cardSource.CardNames.Contains("Angewomon") || !cardSource.CardNames.Contains("LadyDevimon"))
+                        {
+                            return true;
+                        }
+                    }
+               
+                    return false;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
