@@ -1736,9 +1736,16 @@ public class CardSource : MonoBehaviour
     public void SetIsToken(bool isToken) => IsToken = isToken;
     #endregion
 
+    #region Will this card be trashed from sources
+    public bool willBeRemoveSources { get; set; } = false;
+    #endregion
+
     #region whether this card can not be trashed from digivolution cards
     public bool CanNotTrashFromDigivolutionCards(ICardEffect _cardEffect)
     {
+        if (willBeRemoveSources)
+            return true;
+
         #region the effects of permanents
         if (GManager.instance.turnStateMachine.gameContext.Players
             .Map(player => player.GetFieldPermanents())
