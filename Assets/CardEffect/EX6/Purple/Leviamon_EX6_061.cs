@@ -140,8 +140,6 @@ namespace DCGO.CardEffects.EX6
 
                     IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
-
-                        Debug.Log("Is THIS getting called");
                         List<CardSource> targetCards = new List<CardSource>();
 
                         for (int i = 0; i < 3; i++)
@@ -162,8 +160,6 @@ namespace DCGO.CardEffects.EX6
 
                     if (card.Owner.GetBattleAreaPermanents().Count(PermanentCondition) >= card.Owner.Enemy.GetBattleAreaPermanents().Count(PermanentCondition))
                     {
-
-                        Debug.Log("Is this getting called");
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         int suspendCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(SelectOpponentsDigimonWithoutSourcesCondition));
