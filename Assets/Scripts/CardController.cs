@@ -3767,13 +3767,47 @@ public class ITrashDigivolutionCards
         if (_permanent.TopCard == null) yield break;
         if (_permanent.HasNoDigivolutionCards) yield break;
         if (_permanent.TopCard.CanNotBeAffected(_cardEffect)) yield break;
-        _trashTargetCards = _trashTargetCards.Filter((cardSource) => _permanent.DigivolutionCards.Contains(cardSource) && !cardSource.CanNotTrashFromDigivolutionCards(_cardEffect));
+        _trashTargetCards = _trashTargetCards.Filter((cardSource) => 
+            _permanent.DigivolutionCards.Contains(cardSource) && 
+            !cardSource.CanNotTrashFromDigivolutionCards(_cardEffect));
         if (_trashTargetCards.Count == 0) yield break;
+
+        _trashTargetCards.ForEach(source => source.willBeRemoveSources = true);
 
         string message = "Discarded card" + Utils.PluralFormSuffix(_trashTargetCards.Count);
         yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(_trashTargetCards, message, true, true));
 
         yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(_permanent));
+
+        #region cut in effect
+
+        // "When digivolution cards would be trashed" effect
+
+        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.StackSkillInfos(
+            CardEffectCommons.WhenDigivolutionCardWouldDiscardedCheckHashtable(
+                _permanent,
+                _trashTargetCards,
+                _cardEffect
+            ),
+            EffectTiming.WhenWouldDigivolutionCardDiscarded));
+
+        if (GManager.instance.autoProcessing_CutIn.HasAwaitingActivateEffects())
+        {
+            // effect
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.ShrinkSecurityDigimonDisplay());
+
+            // cut in effect process
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.TriggeredSkillProcess(false, AutoProcessing.HasExecutedSameEffect));
+        }
+        #endregion
+
+        //fix trash target permanent
+        Permanent permanentTarget_Fixed = _permanent;
+
+        // fix delete target sources
+        List<CardSource> trashDigivolutionCards_Fixed = _trashTargetCards.Filter(cardsource =>
+            cardsource != null
+            && cardsource.willBeRemoveSources);
 
         #region "When digivolution cards are trashed" effect
 
@@ -3781,8 +3815,8 @@ public class ITrashDigivolutionCards
         Hashtable hashtable = new Hashtable()
             {
                 {"CardEffect", _cardEffect},
-                {"Permanent", _permanent},
-                {"DiscardedCards", _trashTargetCards},
+                {"Permanent", permanentTarget_Fixed},
+                {"DiscardedCards", trashDigivolutionCards_Fixed},
             };
         #endregion
 
@@ -3791,9 +3825,9 @@ public class ITrashDigivolutionCards
 
         yield return ContinuousController.instance.StartCoroutine(new AceOverflowClass(_trashTargetCards).Overflow());
 
-        foreach (CardSource cardSource in _trashTargetCards)
+        foreach (CardSource cardSource in trashDigivolutionCards_Fixed)
         {
-            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().RemoveDigivolveRootEffect(cardSource, _permanent));
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().RemoveDigivolveRootEffect(cardSource, permanentTarget_Fixed));
 
             yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveFromAllArea(cardSource));
 
