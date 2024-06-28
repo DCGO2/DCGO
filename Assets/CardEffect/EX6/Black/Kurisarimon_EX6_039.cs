@@ -254,9 +254,12 @@ namespace DCGO.CardEffects.EX6
 
                 bool IsThreeCostOrLessDigimon(Permanent permanent)
                 {
-                    if (permanent.TopCard.HasPlayCost && permanent.TopCard.GetCostItself <= 3)
+                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card))
                     {
-                        return true;
+                        if (permanent.TopCard.HasPlayCost && permanent.TopCard.GetCostItself <= 3)
+                        {
+                            return true;
+                        }
                     }
 
                     return false;
