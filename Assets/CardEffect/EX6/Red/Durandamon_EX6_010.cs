@@ -185,6 +185,8 @@ namespace DCGO.CardEffects.EX6
                                 afterSelectPermanentCoroutine: null,
                                 mode: SelectPermanentEffect.Mode.Destroy,
                                 cardEffect: activateClass);
+
+                            yield return ContinuousController.instance.StartCoroutine(selectEnemyEffect.Activate());
                         }
                     }
                 }

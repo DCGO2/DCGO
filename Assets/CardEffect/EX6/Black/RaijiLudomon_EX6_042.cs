@@ -149,10 +149,6 @@ namespace DCGO.CardEffects.EX6
 
                         if (selectedEnemy != null)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(
-                                new List<CardSource>() { card },
-                                activateClass));
-
                             ActivateClass activateClass1 = new ActivateClass();
                             activateClass1.SetUpICardEffect("Attack with this Digimon", CanUseCondition1, selectedEnemy.TopCard);
                             activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDiscription1());
@@ -232,6 +228,10 @@ namespace DCGO.CardEffects.EX6
                                 return null;
                             }
                         }
+
+                        yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(
+                                new List<CardSource>() { card },
+                                activateClass));
                     }
                 }
             }

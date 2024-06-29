@@ -201,7 +201,7 @@ namespace DCGO.CardEffects.BT10
                                 isShowOpponent: true,
                                 mode: SelectCardEffect.Mode.Discard,
                                 root: SelectCardEffect.Root.Custom,
-                                customRootCardList: card.PermanentOfThisCard().cardSources,
+                                customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
                                 canLookReverseCard: true,
                                 selectPlayer: card.Owner,
                                 cardEffect: activateClass);
