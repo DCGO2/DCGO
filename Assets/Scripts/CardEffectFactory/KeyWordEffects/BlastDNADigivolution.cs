@@ -56,15 +56,12 @@ public partial class CardEffectFactory
 
         bool CanUseCondition(Hashtable hashtable)
         {
-            Debug.Log($"CAN USE: {CardEffectCommons.CanTriggerOnPermanentAttack(hashtable, permanent => CardEffectCommons.IsOpponentPermanent(permanent, card))}");
             if (CardEffectCommons.CanTriggerOnPermanentAttack(hashtable, permanent => CardEffectCommons.IsOpponentPermanent(permanent, card)))
             {
-                Debug.Log($"CAN USE: {card.Owner.HandCards.Contains(card)}");
                 if (card.Owner.HandCards.Contains(card))
                 {
                     if (condition == null || condition())
                     {
-                        Debug.Log($"CAN USE: TRUE");
                         return true;
                     }
                 }
@@ -75,15 +72,12 @@ public partial class CardEffectFactory
 
         bool CanActivateCondition(Hashtable hashtable)
         {
-            Debug.Log($"CAN ACTIVATE: {card.Owner.HandCards.Contains(card)}");
             if (card.Owner.HandCards.Contains(card))
             {
-                Debug.Log($"CAN ACTIVATE: {CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanent)}");
                 if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanent))
                 {
                     if (condition == null || condition())
                     {
-                        Debug.Log($"CAN ACTIVATE: TRUE");
                         return true;
                     }
                 }
@@ -114,7 +108,6 @@ public partial class CardEffectFactory
                 if (cardSource.ContainsCardName(blastDNAConditions[1].Name))
                     blastDNAConditions[1].CardSources.Add(cardSource);
             });*/
-            Debug.Log("ACTIVATE COROUTINE");
 
             yield return null;
             int maxCount = Math.Min(1, permanentSources.Count);
@@ -142,7 +135,8 @@ public partial class CardEffectFactory
             {
                 selectedPermanent = permanent;
 
-                Debug.Log($"BLAST DNA: Selected Permanent: {selectedPermanent}");
+                foreach(string name in selectedPermanent.TopCard.CardNames)
+                    handSources = handSources.Filter(source => source.ContainsCardName(name));
 
                 SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
@@ -163,15 +157,11 @@ public partial class CardEffectFactory
                 selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to DNA digivolve.", "The opponent is selecting 1 Digimon to DNA digivolve.");
 
                 yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
-
-                yield return null;
             }
 
             IEnumerator SelectCardCoroutine(CardSource cardSource)
             {
                 selectedCardSource = cardSource;
-
-                Debug.Log($"BLAST DNA: Selected Cardsource: {selectedCardSource}");
 
                 PlayCardClass playCardClass = new PlayCardClass(
                         cardSources: new List<CardSource>() { selectedCardSource },

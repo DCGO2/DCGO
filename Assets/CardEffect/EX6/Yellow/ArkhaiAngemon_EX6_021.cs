@@ -95,7 +95,7 @@ namespace DCGO.CardEffects.EX6
                 activateClass.SetUpICardEffect(
                     "Add 1 card from top or bottom security to hand to -4000 DP an opponent's Digimon, then place 1 card from hand at the bottom of security",
                     CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, true,
+                activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, false,
                     EffectSharedDescription());
                 cardEffects.Add(activateClass);
                 
@@ -233,7 +233,7 @@ namespace DCGO.CardEffects.EX6
                 activateClass.SetUpICardEffect(
                     "Add 1 card from top or bottom security to hand to -4000 DP an opponent's Digimon, then place 1 card from hand at the bottom of security",
                     CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, true,
+                activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, false,
                     EffectSharedDescription());
                 cardEffects.Add(activateClass);
                 
