@@ -108,6 +108,84 @@ namespace DCGO.CardEffects.P
             }
             #endregion
 
+            #region Main
+            if (timing == EffectTiming.OnUseOption)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Place as bottom Digivolution source", CanUseCondition, card);
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[Main] Place this card as 1 of your non-white Digimon's bottom digivolution card.";
+                }
+
+                bool IsNonWhiteDigimon(Permanent targetPermanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(targetPermanent, card))
+                    {
+                        if (!targetPermanent.TopCard.CardColors.Contains(CardColor.White))
+                            return true;
+                    }
+
+                    return false;
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card))
+                    {
+                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsNonWhiteDigimon))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    Permanent selectedPermanent = null;
+
+                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(IsNonWhiteDigimon));
+
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                    selectPermanentEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: IsNonWhiteDigimon,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: maxCount,
+                        canNoSelect: true,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: SelectPermanentCoroutine,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to add bottom digivolution source.", "The opponent is selecting 1 Digimon to add bottom digivolution source.");
+
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                    {
+                        selectedPermanent = permanent;
+                        yield return null;
+                    }
+
+                    if (selectedPermanent != null)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(
+                            new List<CardSource>() { card },
+                            activateClass));
+                    }
+                }
+            }
+            #endregion
+
             #region All Turns- When would be destoryed - ESS
             if (timing == EffectTiming.OnDestroyedAnyone)
             {

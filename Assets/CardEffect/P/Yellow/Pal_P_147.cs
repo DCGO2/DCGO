@@ -18,7 +18,7 @@ namespace DCGO.CardEffects.P
             if (timing == EffectTiming.None)
             {
                 ChangeCardNamesClass changeCardNamesClass = new ChangeCardNamesClass();
-                changeCardNamesClass.SetUpICardEffect("Also treated as [Pulsmon]", CanUseCondition, card);
+                changeCardNamesClass.SetUpICardEffect("Also treated as [Pulsemon]", CanUseCondition, card);
                 changeCardNamesClass.SetUpChangeCardNamesClass(changeCardNames: changeCardNames);
                 cardEffects.Add(changeCardNamesClass);
 
