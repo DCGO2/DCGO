@@ -336,7 +336,7 @@ namespace DCGO.CardEffects.EX6
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (card.PermanentOfThisCard().cardSources.Count(HasLegendArmsTrait) >= 1)
+                        if (card.PermanentOfThisCard().DigivolutionCards.Count(HasLegendArmsTrait) >= 1)
                         {
                             return true;
                         }
@@ -349,7 +349,7 @@ namespace DCGO.CardEffects.EX6
                 {
                     Permanent selectedPermanent = card.PermanentOfThisCard();
 
-                    if (selectedPermanent.DigivolutionCards.Count(HasLegendArmsTrait) >= 2)
+                    if (selectedPermanent.DigivolutionCards.Count(HasLegendArmsTrait) >= 1)
                     {
                         List<CardSource> selectedCards = new List<CardSource>();
 

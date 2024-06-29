@@ -17,7 +17,7 @@ namespace DCGO.CardEffects.EX6
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsCardName("Shakuttomon") || targetPermanent.TopCard.ContainsCardName("Kakkinmon");
+                    return targetPermanent.TopCard.ContainsCardName("Sakuttomon") || targetPermanent.TopCard.ContainsCardName("Kakkinmon");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(

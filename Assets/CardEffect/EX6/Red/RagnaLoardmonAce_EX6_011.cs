@@ -203,16 +203,8 @@ namespace DCGO.CardEffects.EX6
             }
             
             bool IsEnemyPermanentShared(Permanent permanent)
-            {
-                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        return true;
-                    }
-                }
-                
-                return false;
+            {           
+                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
             }
             
             #endregion
@@ -340,20 +332,16 @@ namespace DCGO.CardEffects.EX6
                         }
                         
                         // Delete 1 Opponent's Digimon
-                        if (CardEffectCommons.HasMatchConditionPermanent(IsEnemyPermanentShared))
-                        {
-                            int enemyCount = Math.Min(1,
-                                CardEffectCommons.MatchConditionPermanentCount(IsEnemyPermanentShared));
-                            
-                            SelectPermanentEffect selectEnemyEffect =
-                                GManager.instance.GetComponent<SelectPermanentEffect>();
+                        if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, IsEnemyPermanentShared))
+                        {                            
+                            SelectPermanentEffect selectEnemyEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
                             
                             selectEnemyEffect.SetUp(
                                 selectPlayer: card.Owner,
                                 canTargetCondition: IsEnemyPermanentShared,
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
-                                maxCount: enemyCount,
+                                maxCount: 1,
                                 canNoSelect: false,
                                 canEndNotMax: false,
                                 selectPermanentCoroutine: null,

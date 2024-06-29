@@ -37,7 +37,7 @@ namespace DCGO.CardEffects.P
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete 1 Opponent's level 4 or lower Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -47,7 +47,12 @@ namespace DCGO.CardEffects.P
 
                 bool SelectDeletionTarget(Permanent permanent)
                 {
-                    return permanent.TopCard.HasLevel && permanent.Level <= 4;
+                    if(CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                    {
+                        return permanent.TopCard.HasLevel && permanent.Level <= 4;
+                    }
+
+                    return false;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -95,7 +100,7 @@ namespace DCGO.CardEffects.P
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete 1 Opponent's level 4 or lower Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -105,7 +110,12 @@ namespace DCGO.CardEffects.P
 
                 bool SelectDeletionTarget(Permanent permanent)
                 {
-                    return permanent.TopCard.HasLevel && permanent.Level <= 4;
+                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                    {
+                        return permanent.TopCard.HasLevel && permanent.Level <= 4;
+                    }
+
+                    return false;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

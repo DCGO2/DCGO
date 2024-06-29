@@ -100,7 +100,7 @@ namespace DCGO.CardEffects.P
                 }
 
                 cardEffects.Add(CardEffectFactory.PierceSelfEffect(
-                    isInheritedEffect: true,
+                    isInheritedEffect: false,
                     card: card,
                     condition: Condition));
             }
