@@ -14,11 +14,9 @@ namespace DCGO.CardEffects.EX6
             #region Partition
             if (timing == EffectTiming.WhenRemoveField)
             {
-                List<PartitionCondition> partitionConditions = new List<PartitionCondition>
-                {
-                    new PartitionCondition(6, new List<CardColor> { CardColor.Yellow, CardColor.Black }),
-                    new PartitionCondition(6, new List<CardColor> { CardColor.Green, CardColor.Purple })
-                };
+                List<PartitionCondition> partitionConditions = new List<PartitionCondition>();
+                partitionConditions.Add(new PartitionCondition(6, CardColor.Black, CardColor.Yellow));
+                partitionConditions.Add(new PartitionCondition(6, CardColor.Yellow, CardColor.Purple));
 
                 cardEffects.Add(CardEffectFactory.PartitionSelfEffect(
                     isInheritedEffect: false,
@@ -58,7 +56,7 @@ namespace DCGO.CardEffects.EX6
                                         {
                                             if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                                             {
-                                                if (permanent.TopCard.CardColors.Contains(CardColor.Yellow) && permanent.TopCard.CardColors.Contains(CardColor.Black))
+                                                if (permanent.TopCard.CardColors.Contains(CardColor.Yellow) || permanent.TopCard.CardColors.Contains(CardColor.Black))
                                                 {
                                                     if (permanent.Levels_ForJogress(card).Contains(6))
                                                     {
@@ -86,7 +84,7 @@ namespace DCGO.CardEffects.EX6
                                         {
                                             if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                                             {
-                                                if (permanent.TopCard.CardColors.Contains(CardColor.Green) && permanent.TopCard.CardColors.Contains(CardColor.Purple))
+                                                if (permanent.TopCard.CardColors.Contains(CardColor.Green) || permanent.TopCard.CardColors.Contains(CardColor.Purple))
                                                 {
                                                     if (permanent.Levels_ForJogress(card).Contains(6))
                                                     {

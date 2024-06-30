@@ -10,11 +10,9 @@ namespace DCGO.CardEffects.BT16
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            List<PartitionCondition> partitionConditions = new List<PartitionCondition>
-            {
-                new PartitionCondition(4, new List<CardColor> { CardColor.Blue }),
-                new PartitionCondition(4, new List<CardColor> { CardColor.Green })
-            };
+            List<PartitionCondition> partitionConditions = new List<PartitionCondition>();
+            partitionConditions.Add(new PartitionCondition(4, CardColor.Blue));
+            partitionConditions.Add(new PartitionCondition(4, CardColor.Green));
 
             #region Partition - Inherited
             if (timing == EffectTiming.WhenRemoveField)
