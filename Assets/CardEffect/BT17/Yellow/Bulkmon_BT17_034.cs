@@ -133,7 +133,54 @@ namespace DCGO.CardEffects.BT17
             #endregion
 
             #region All Turns
+            if (timing == EffectTiming.OnLoseSecurity)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("If a card is trashed from security and there's a Tamer in the digivolution cards, Recovery +1.", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                cardEffects.Add(activateClass);
 
+                string EffectDiscription()
+                {
+                    return "[All Turns][Once per turn] When a card is trashed from your security stack, if [Leon Alexander] is in this Digimon's digivolution cards, Recovery +1.";
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (CardEffectCommons.CanTriggerWhenLoseSecurity(hashtable, player => player == card.Owner))
+                        {
+                            if(CardEffectCommons.IsByEffect(hashtable, null))
+                            {
+                                return true; 
+                            }
+                        }
+                    }
+
+                    return false;
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (card.PermanentOfThisCard().DigivolutionCards.Some(cardSource => cardSource.CardNames.Contains("Leon Alexander")) || card.PermanentOfThisCard().DigivolutionCards.Some(cardSource => cardSource.CardNames.Contains("LeonAlexander")))
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(new IRecovery(card.Owner, 1, activateClass).Recovery());
+                        }
+                    }
+                }
+            }
             #endregion
 
             #region Inherit
