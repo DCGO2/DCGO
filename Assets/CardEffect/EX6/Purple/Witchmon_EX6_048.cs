@@ -47,10 +47,7 @@ namespace DCGO.CardEffects.EX6
                     {
                         if (card.Owner.HandCards.Count >= 1)
                         {
-                            if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
                     return false;
@@ -240,10 +237,7 @@ namespace DCGO.CardEffects.EX6
                     {
                         if (card.Owner.HandCards.Count >= 1)
                         {
-                            if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
                     return false;
