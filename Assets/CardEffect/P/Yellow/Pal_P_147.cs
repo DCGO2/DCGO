@@ -96,7 +96,7 @@ namespace DCGO.CardEffects.P
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
+                        if(card.Owner.HandCards.Count >= 1)
                         {
                             return true;
                         }
