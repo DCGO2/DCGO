@@ -134,7 +134,7 @@ namespace DCGO.CardEffects.EX6
             if (timing == EffectTiming.OnAddSecurity)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Draw 1", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Return 1 of your opponent's Digimon to the hand", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false,
                     EffectDescription());
                 activateClass.SetHashString("ReturnToHand_EX6_028");
