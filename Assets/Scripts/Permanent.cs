@@ -2888,6 +2888,10 @@ public class Permanent
     public List<string> CardNamesJustBeforeRemoveField { get; set; } = new List<string>();
     #endregion
 
+    #region Card Traits Just Before Removed Field
+    public List<string> CardTraitsJustBeforeRemoveField { get; set; } = new List<string>();
+    #endregion
+
     #region バースト進化で手札に戻ったか
     public bool IsReturnedToHandByBurstDigivolution { get; set; } = false;
     #endregion

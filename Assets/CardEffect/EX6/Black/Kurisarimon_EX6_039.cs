@@ -191,11 +191,13 @@ namespace DCGO.CardEffects.EX6
 
                 bool IsThreeCostOrLessDigimon(Permanent permanent)
                 {
-                    if(permanent.TopCard.HasPlayCost && permanent.TopCard.GetCostItself <= 3)
+                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                     {
-                        return true;
+                        if (permanent.TopCard.HasPlayCost && permanent.TopCard.GetCostItself <= 3)
+                        {
+                            return true;
+                        }
                     }
-
                     return false;
                 }
 
@@ -254,14 +256,13 @@ namespace DCGO.CardEffects.EX6
 
                 bool IsThreeCostOrLessDigimon(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card))
+                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                     {
                         if (permanent.TopCard.HasPlayCost && permanent.TopCard.GetCostItself <= 3)
                         {
                             return true;
                         }
                     }
-
                     return false;
                 }
 
@@ -311,6 +312,7 @@ namespace DCGO.CardEffects.EX6
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 Diaboromon Token", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -325,32 +327,19 @@ namespace DCGO.CardEffects.EX6
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card))
+                    if (CardEffectCommons.CanActivateOnDeletion(card))
                     {
-                        if (card.Owner.fieldCardFrames.Count((frame) => frame.IsEmptyFrame()) >= 1)
+                        if (card.PermanentJustBeforeRemoveField.CardTraitsJustBeforeRemoveField.Contains("Unidentified"))
                         {
                             return true;
                         }
                     }
-
                     return false;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    List<Hashtable> deletionHashtables = CardEffectCommons.GetHashtablesFromHashtable(_hashtable);
-
-                    if (deletionHashtables.Count > 0)
-                    {
-                        Hashtable hash = deletionHashtables[0];
-                        if (hash.ContainsKey("TopCard") && hash["TopCard"] is CardSource)
-                        {
-                            CardSource source = (CardSource)hash["TopCard"];
-
-                            if (card.ContainsTraits("Unidentified"))
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayDiaboromonToken(activateClass));
-                        }
-                    }
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayDiaboromonToken(activateClass));
                 }
             }
             #endregion

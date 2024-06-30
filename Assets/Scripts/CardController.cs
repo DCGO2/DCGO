@@ -2129,6 +2129,7 @@ public class HandBounceClaass
             }
 
             permanent.CardNamesJustBeforeRemoveField = new List<string>(permanent.TopCard.CardNames);
+            permanent.CardTraitsJustBeforeRemoveField = new List<string>(permanent.TopCard.CardTraits);
 
             foreach (CardSource cardSource in permanent.cardSources)
             {
@@ -2727,6 +2728,7 @@ public class DestroyPermanentsClass
             }
 
             permanent.CardNamesJustBeforeRemoveField = new List<string>(permanent.TopCard.CardNames);
+            permanent.CardTraitsJustBeforeRemoveField = new List<string>(permanent.TopCard.CardTraits);
 
             foreach (CardSource cardSource in permanent.cardSources)
             {
