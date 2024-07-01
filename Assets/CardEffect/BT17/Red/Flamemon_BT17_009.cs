@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DCGO.CardEffects.BT17
 {
@@ -113,7 +114,7 @@ namespace DCGO.CardEffects.BT17
                 string EffectDescription()
                 {
                     return
-                        "[On Play] You may play 1 Tamer card with inherited effects from your hand without paying the cost.";
+                        "[On Deletion] You may play 1 Tamer card with inherited effects from your hand without paying the cost.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
@@ -142,7 +143,7 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card))
                     {
-                        if (card.Owner.HandCards.Count >= 1)
+                        if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
                         {
                             return true;
                         }
@@ -153,39 +154,42 @@ namespace DCGO.CardEffects.BT17
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    List<CardSource> selectedCards = new List<CardSource>();
-
-                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                    selectHandEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectCardCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: 1,
-                        canNoSelect: true,
-                        canEndNotMax: false,
-                        isShowOpponent: true,
-                        selectCardCoroutine: SelectCardCoroutine,
-                        afterSelectCardCoroutine: null,
-                        mode: SelectHandEffect.Mode.Custom,
-                        cardEffect: activateClass);
-
-                    selectHandEffect.SetUpCustomMessage("Select 1 Tamer card to play.",
-                        "The opponent is selecting 1 Tamer card to play.");
-                    selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
-
-                    yield return StartCoroutine(selectHandEffect.Activate());
-
-                    IEnumerator SelectCardCoroutine(CardSource cardSource)
+                    if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
                     {
-                        selectedCards.Add(cardSource);
-                        yield return null;
-                    }
+                        List<CardSource> selectedCards = new List<CardSource>();
 
-                    yield return ContinuousController.instance.StartCoroutine(
-                        CardEffectCommons.PlayPermanentCards(cardSources: selectedCards, activateClass: activateClass,
-                            payCost: false, isTapped: false, root: SelectCardEffect.Root.Hand, activateETB: true));
+                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                        selectHandEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectCardCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: true,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            selectCardCoroutine: SelectCardCoroutine,
+                            afterSelectCardCoroutine: null,
+                            mode: SelectHandEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        selectHandEffect.SetUpCustomMessage("Select 1 Tamer card to play.",
+                            "The opponent is selecting 1 Tamer card to play.");
+                        selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
+
+                        yield return StartCoroutine(selectHandEffect.Activate());
+
+                        IEnumerator SelectCardCoroutine(CardSource cardSource)
+                        {
+                            selectedCards.Add(cardSource);
+                            yield return null;
+                        }
+
+                        yield return ContinuousController.instance.StartCoroutine(
+                            CardEffectCommons.PlayPermanentCards(cardSources: selectedCards, activateClass: activateClass,
+                                payCost: false, isTapped: false, root: SelectCardEffect.Root.Hand, activateETB: true));
+                    }
                 }
             }
 
