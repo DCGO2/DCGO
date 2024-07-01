@@ -28,7 +28,7 @@ namespace DCGO.CardEffects.EX6
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
                     {
-                        if (permanent.TopCard.ContainsTraits("Unidentified"))
+                        if (permanent.TopCard.ContainsTraits("Unidentified") && permanent.IsDigimon)
                         {
                             if (!permanent.TopCard.CanNotBeAffected(activateClass))
                             {
@@ -193,7 +193,7 @@ namespace DCGO.CardEffects.EX6
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent.TopCard.HasPlayCost && permanent.TopCard.GetCostItself <= 3)
+                        if (permanent.TopCard.HasPlayCost && permanent.TopCard.GetCostItself <= 3 && permanent.IsDigimon)
                         {
                             return true;
                         }
