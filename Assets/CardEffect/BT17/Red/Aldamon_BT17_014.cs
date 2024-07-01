@@ -481,7 +481,7 @@ namespace DCGO.CardEffects.BT17
 
             #endregion
 
-            #region Your Turn
+            #region Your Turn - ESS
 
             if (timing == EffectTiming.None)
             {
