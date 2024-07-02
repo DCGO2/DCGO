@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace DCGO.CardEffects.BT17
 {
-    public class Aldamon_BT17_014 : CEntity_Effect
+    public class Beowolfmon_BT17_026 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.BT17
             if (timing == EffectTiming.OnDeclaration)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Your [Takuya Kanbara] digivolves into this card", CanUseCondition,
+                activateClass.SetUpICardEffect("Your [Koji Minamoto] digivolves into this card", CanUseCondition,
                     card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
@@ -24,16 +24,16 @@ namespace DCGO.CardEffects.BT17
                 string EffectDescription()
                 {
                     return
-                        "[Hand] [Main] By placing 1 [Agunimon] and [BurningGreymon] from your trash under 1 of your [Takuya Kanbara]s, digivolve it into this card as if that card is a level 4 red Digimon for a digivolution cost of 3.";
+                        "[Hand] [Main] By placing 1 [Lobomon] and [KendoGarurumon] from your trash under 1 of your [Koji Minamoto]s, digivolve it into this card as if that card is a level 4 blue Digimon for a digivolution cost of 3.";
                 }
 
-                bool CanSelectAgunimonCardCondition(CardSource cardSource)
+                bool CanSelectLobomonCardCondition(CardSource cardSource)
                 {
                     if (cardSource != null)
                     {
                         if (cardSource.Owner == card.Owner)
                         {
-                            if (cardSource.CardNames.Contains("Agunimon"))
+                            if (cardSource.CardNames.Contains("Lobomon"))
                             {
                                 return true;
                             }
@@ -43,13 +43,13 @@ namespace DCGO.CardEffects.BT17
                     return false;
                 }
 
-                bool CanSelectBurningGreymonCardCondition(CardSource cardSource)
+                bool CanSelectKendoGarurumonCardCondition(CardSource cardSource)
                 {
                     if (cardSource != null)
                     {
                         if (cardSource.Owner == card.Owner)
                         {
-                            if (cardSource.CardNames.Contains("BurningGreymon"))
+                            if (cardSource.CardNames.Contains("KendoGarurumon"))
                             {
                                 return true;
                             }
@@ -71,8 +71,8 @@ namespace DCGO.CardEffects.BT17
                                 {
                                     if (!permanent.IsToken)
                                     {
-                                        if (permanent.TopCard.CardNames.Contains("Takuya Kanbara") || 
-                                            permanent.TopCard.CardNames.Contains("TakuyaKanbara"))
+                                        if (permanent.TopCard.CardNames.Contains("Koji Minamoto") ||
+                                            permanent.TopCard.CardNames.Contains("KojiMinamoto"))
                                         {
                                             return true;
                                         }
@@ -92,10 +92,10 @@ namespace DCGO.CardEffects.BT17
                         if (card.Owner.GetBattleAreaPermanents().Count(CanSelectPermanentCondition) >= 1)
                         {
                             if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card,
-                                    CanSelectAgunimonCardCondition))
+                                    CanSelectLobomonCardCondition))
                             {
                                 if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card,
-                                        CanSelectBurningGreymonCardCondition))
+                                        CanSelectKendoGarurumonCardCondition))
                                 {
                                     return true;
                                 }
@@ -148,21 +148,21 @@ namespace DCGO.CardEffects.BT17
                             {
                                 if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card,
                                         (cardSource) =>
-                                            CanSelectAgunimonCardCondition(cardSource) ||
-                                            CanSelectBurningGreymonCardCondition(cardSource)))
+                                            CanSelectLobomonCardCondition(cardSource) ||
+                                            CanSelectKendoGarurumonCardCondition(cardSource)))
                                 {
                                     bool digivolve = false;
 
                                     maxCount = 2;
 
                                     if (card.Owner.TrashCards.Count((cardSource) =>
-                                            CanSelectAgunimonCardCondition(cardSource) ||
-                                            CanSelectBurningGreymonCardCondition(cardSource)) <
+                                            CanSelectLobomonCardCondition(cardSource) ||
+                                            CanSelectKendoGarurumonCardCondition(cardSource)) <
                                         maxCount)
                                     {
                                         maxCount = card.Owner.TrashCards.Count((cardSource) =>
-                                            CanSelectAgunimonCardCondition(cardSource) ||
-                                            CanSelectBurningGreymonCardCondition(cardSource));
+                                            CanSelectLobomonCardCondition(cardSource) ||
+                                            CanSelectKendoGarurumonCardCondition(cardSource));
                                     }
 
                                     List<CardSource> selectedCards = new List<CardSource>();
@@ -172,8 +172,8 @@ namespace DCGO.CardEffects.BT17
 
                                     selectCardEffect.SetUp(
                                         canTargetCondition: (cardSource) =>
-                                            CanSelectAgunimonCardCondition(cardSource) ||
-                                            CanSelectBurningGreymonCardCondition(cardSource),
+                                            CanSelectLobomonCardCondition(cardSource) ||
+                                            CanSelectKendoGarurumonCardCondition(cardSource),
                                         canTargetCondition_ByPreSelecetedList: CanTargetConditionByPreSelectedList,
                                         canEndSelectCondition: CanEndSelectCondition,
                                         canNoSelect: () => false,
@@ -197,17 +197,17 @@ namespace DCGO.CardEffects.BT17
                                     bool CanTargetConditionByPreSelectedList(List<CardSource> cardSources,
                                         CardSource cardSource)
                                     {
-                                        if (cardSources.Count(CanSelectAgunimonCardCondition) >= 1)
+                                        if (cardSources.Count(CanSelectLobomonCardCondition) >= 1)
                                         {
-                                            if (CanSelectAgunimonCardCondition(cardSource))
+                                            if (CanSelectLobomonCardCondition(cardSource))
                                             {
                                                 return false;
                                             }
                                         }
 
-                                        if (cardSources.Count(CanSelectBurningGreymonCardCondition) >= 1)
+                                        if (cardSources.Count(CanSelectKendoGarurumonCardCondition) >= 1)
                                         {
-                                            if (CanSelectBurningGreymonCardCondition(cardSource))
+                                            if (CanSelectKendoGarurumonCardCondition(cardSource))
                                             {
                                                 return false;
                                             }
@@ -219,29 +219,29 @@ namespace DCGO.CardEffects.BT17
                                     bool CanEndSelectCondition(List<CardSource> cardSources)
                                     {
                                         if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card,
-                                                CanSelectAgunimonCardCondition))
+                                                CanSelectLobomonCardCondition))
                                         {
-                                            if (cardSources.Count(CanSelectAgunimonCardCondition) == 0)
+                                            if (cardSources.Count(CanSelectLobomonCardCondition) == 0)
                                             {
                                                 return false;
                                             }
                                         }
 
                                         if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card,
-                                                CanSelectBurningGreymonCardCondition))
+                                                CanSelectKendoGarurumonCardCondition))
                                         {
-                                            if (cardSources.Count(CanSelectBurningGreymonCardCondition) == 0)
+                                            if (cardSources.Count(CanSelectKendoGarurumonCardCondition) == 0)
                                             {
                                                 return false;
                                             }
                                         }
 
-                                        if (cardSources.Count(CanSelectAgunimonCardCondition) >= 2)
+                                        if (cardSources.Count(CanSelectLobomonCardCondition) >= 2)
                                         {
                                             return false;
                                         }
 
-                                        if (cardSources.Count(CanSelectBurningGreymonCardCondition) >= 2)
+                                        if (cardSources.Count(CanSelectKendoGarurumonCardCondition) >= 2)
                                         {
                                             return false;
                                         }
@@ -271,7 +271,7 @@ namespace DCGO.CardEffects.BT17
                                         CardSource topCard = selectedPermanent.TopCard;
 
                                         ChangeCardColorClass changeCardColorClass = new ChangeCardColorClass();
-                                        changeCardColorClass.SetUpICardEffect($"Treated as red",
+                                        changeCardColorClass.SetUpICardEffect($"Treated as blue",
                                             CanUseChangeColorCondition,
                                             card);
                                         changeCardColorClass.SetUpChangeCardColorClass(
@@ -403,30 +403,15 @@ namespace DCGO.CardEffects.BT17
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(
-                    "Delete 1 Digimon with 6000 DP or less",
-                    CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false,
-                    EffectDescription());
+                activateClass.SetUpICardEffect("Return 1 digivolution card and 1 of your opponent's Digimon can't suspend", CanUseCondition,
+                    card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
                 {
                     return
-                        "[When Digivolving] Delete 1 of your opponent's Digimon with 6000 DP or less.";
-                }
-
-                bool CanSelectOpponentPermanentCondition(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                    {
-                        if (permanent.DP <= card.Owner.MaxDP_DeleteEffect(6000, activateClass))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                        "[When Digivolving] By returning 1 card with the [Hybrid] trait from this Digimon's digivolution cards to the hand, 1 of your opponent's Digimon or Tamers can't suspend until the end of their turn.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -434,11 +419,26 @@ namespace DCGO.CardEffects.BT17
                     return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
 
+                bool CanSelectSourceCardCondition(CardSource cardSource)
+                {
+                    return cardSource.CardTraits.Contains("Hybrid");
+                }
+
+                bool CanSelectOpponentPermanentCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card))
+                    {
+                        return permanent.IsDigimon || permanent.IsTamer;
+                    }
+
+                    return false;
+                }
+
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentPermanentCondition))
+                        if (card.PermanentOfThisCard().DigivolutionCards.Count(CanSelectSourceCardCondition) >= 1)
                         {
                             return true;
                         }
@@ -449,81 +449,179 @@ namespace DCGO.CardEffects.BT17
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentPermanentCondition))
+                    Permanent selectedPermanent = card.PermanentOfThisCard();
+
+                    if (selectedPermanent.DigivolutionCards.Count(CanSelectSourceCardCondition) >= 1)
                     {
-                        int enemyCount = Math.Min(1,
-                            CardEffectCommons.MatchConditionPermanentCount(CanSelectOpponentPermanentCondition));
+                        int maxCount = Math.Min(1, selectedPermanent.DigivolutionCards.Count(CanSelectSourceCardCondition));
 
-                        SelectPermanentEffect selectEnemyEffect =
-                            GManager.instance.GetComponent<SelectPermanentEffect>();
+                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
-                        selectEnemyEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectOpponentPermanentCondition,
+                        selectCardEffect.SetUp(
+                            canTargetCondition: CanSelectSourceCardCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: enemyCount,
-                            canNoSelect: false,
+                            canNoSelect: () => false,
+                            selectCardCoroutine: null,
+                            afterSelectCardCoroutine: null,
+                            message: "Select 1 card to add to your hand.",
+                            maxCount: maxCount,
                             canEndNotMax: false,
-                            selectPermanentCoroutine: null,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Destroy,
+                            isShowOpponent: true,
+                            mode: SelectCardEffect.Mode.AddHand,
+                            root: SelectCardEffect.Root.Custom,
+                            customRootCardList: selectedPermanent.DigivolutionCards,
+                            canLookReverseCard: true,
+                            selectPlayer: card.Owner,
                             cardEffect: activateClass);
 
-                        yield return ContinuousController.instance.StartCoroutine(selectEnemyEffect.Activate());
+                        yield return StartCoroutine(selectCardEffect.Activate());
+                        
+                        if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectOpponentPermanentCondition))
+                        {
+                            maxCount = Math.Min(1,
+                                CardEffectCommons.MatchConditionPermanentCount(CanSelectOpponentPermanentCondition));
+
+                            SelectPermanentEffect selectPermanentEffect =
+                                GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                            selectPermanentEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canTargetCondition: CanSelectOpponentPermanentCondition,
+                                canEndSelectCondition: null,
+                                maxCount: maxCount,
+                                canNoSelect: false,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: SelectPermanentCoroutine,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Custom,
+                                cardEffect: activateClass);
+
+                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon/Tamer that will be unable to suspend.",
+                                "The opponent is selecting 1 Digimon/Tamer that will be unable to suspend.");
+
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                            IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                            {
+                                selectedPermanent = permanent;
+                                CanNotSuspendClass canNotSuspendClass = new CanNotSuspendClass();
+                                canNotSuspendClass.SetUpICardEffect("Can't Suspend", CanUseCanNotSuspendCondition, card);
+                                canNotSuspendClass.SetUpCanNotSuspendClass(PermanentCondition: PermanentCanNotSuspendCondition);
+                                selectedPermanent.UntilOwnerTurnEndEffects.Add(_ => canNotSuspendClass);
+
+                                if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
+                                {
+                                    yield return ContinuousController.instance.StartCoroutine(GManager.instance
+                                        .GetComponent<Effects>().CreateDebuffEffect(selectedPermanent));
+                                }
+
+                                bool CanUseCanNotSuspendCondition(Hashtable hashtableCanNotSuspend)
+                                {
+                                    if (selectedPermanent.TopCard != null)
+                                    {
+                                        if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
+                                        {
+                                            return true;
+                                        }
+                                    }
+
+                                    return false;
+                                }
+
+                                bool PermanentCanNotSuspendCondition(Permanent permanentCanNotSuspend)
+                                {
+                                    if (permanentCanNotSuspend == selectedPermanent)
+                                    {
+                                        return true;
+                                    }
+
+                                    return false;
+                                }
+                            }
+                        }
                     }
                 }
             }
 
             #endregion
 
-            #region Your Turn - ESS
+            #region When Attacking - ESS
 
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnAllyAttack)
             {
-                DisableEffectClass invalidationClass = new DisableEffectClass();
-                invalidationClass.SetUpICardEffect("Ignore Security effects on Option cards", CanUseCondition, card);
-                invalidationClass.SetUpDisableEffectClass(DisableCondition: InvalidateCondition);
-                invalidationClass.SetIsInheritedEffect(true);
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Return 1 of your opponent's Digimon to hand", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetIsInheritedEffect(true);
+                cardEffects.Add(activateClass);
 
-                cardEffects.Add(invalidationClass);
+                string EffectDescription()
+                {
+                    return
+                        "[When Attacking] [Once Per Turn] If this Digimon has the [Hybrid]/[Ten Warriors] trait, return 1 of your opponent's level 4 or lower Digimon to the hand.";
+                }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return true;
+                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
                 }
 
-                bool InvalidateCondition(ICardEffect cardEffect)
+                bool CanSelectPermanentCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                    {
+                        if (permanent.Level <= 4)
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (CardEffectCommons.IsOwnerTurn(card))
+                        if (card.PermanentOfThisCard().TopCard.ContainsTraits("Hybrid") ||
+                            card.PermanentOfThisCard().TopCard.ContainsTraits("Ten Warriors") ||
+                            card.PermanentOfThisCard().TopCard.ContainsTraits("TenWarriors"))
                         {
-                            if (card.PermanentOfThisCard().TopCard.ContainsTraits("Hybrid") ||
-                                card.PermanentOfThisCard().TopCard.ContainsTraits("TenWarriors") ||
-                                card.PermanentOfThisCard().TopCard.ContainsTraits("Ten Warriors"))
+                            if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                             {
-                                if (cardEffect != null)
-                                {
-                                    if (cardEffect.EffectSourceCard != null)
-                                    {
-                                        if (cardEffect.EffectSourceCard.IsOption)
-                                        {
-                                            if (cardEffect.IsSecurityEffect)
-                                            {
-                                                if (GManager.instance.attackProcess.AttackingPermanent == card.PermanentOfThisCard())
-                                                {
-                                                    return true;
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
+                                return true;
                             }
                         }
                     }
 
                     return false;
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                    {
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectPermanentCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: maxCount,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: null,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Bounce,
+                            cardEffect: activateClass);
+
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                    }
                 }
             }
 
