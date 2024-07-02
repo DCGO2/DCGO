@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace DCGO.CardEffects.BT17
 {
-    public class Agunimon_BT17_011 : CEntity_Effect
+    public class Lobomon_BT17_022 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
@@ -12,7 +12,7 @@ namespace DCGO.CardEffects.BT17
 
             #region Alternate Digivolution
 
-            // Takuya Kanbara
+            // Koji Minamoto
             if (timing == EffectTiming.None)
             {
                 bool Condition()
@@ -22,8 +22,8 @@ namespace DCGO.CardEffects.BT17
 
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsCardName("Takuya Kanbara") ||
-                           targetPermanent.TopCard.ContainsCardName("TakuyaKanbara");
+                    return targetPermanent.TopCard.ContainsCardName("Koji  Minamoto") ||
+                           targetPermanent.TopCard.ContainsCardName("KojiMinamoto");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
@@ -31,12 +31,12 @@ namespace DCGO.CardEffects.BT17
                     card: card, condition: Condition));
             }
 
-            // BurningGreymon
+            // KendoGarurumon
             if (timing == EffectTiming.None)
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsCardName("BurningGreymon");
+                    return targetPermanent.TopCard.ContainsCardName("KendoGarurumon");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
@@ -44,7 +44,7 @@ namespace DCGO.CardEffects.BT17
                     card: card, condition: null));
             }
 
-            // Any red tamer
+            // Any yellow tamer
             if (timing == EffectTiming.None)
             {
                 bool Condition()
@@ -54,7 +54,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.IsTamer && targetPermanent.TopCard.CardColors.Contains(CardColor.Red);
+                    return targetPermanent.IsTamer && targetPermanent.TopCard.CardColors.Contains(CardColor.Yellow);
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
@@ -69,7 +69,7 @@ namespace DCGO.CardEffects.BT17
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("This Digimon digivolves into [AncientGreymon]", CanUseCondition, card);
+                activateClass.SetUpICardEffect("This Digimon digivolves into [AncientGarurumon]", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true,
                     EffectDescription());
                 cardEffects.Add(activateClass);
@@ -77,7 +77,7 @@ namespace DCGO.CardEffects.BT17
                 string EffectDescription()
                 {
                     return
-                        "[When Digivolving] If [BurningGreymon] is in this Digimon's digivolution cards or you have a blue or green Digimon or Tamer, this Digimon may digivolve into [AncientGreymon] in the hand for a digivolution cost of 3, ignoring its digivolution requirements. If digivolved by this effect, delete this Digimon at the end of the turn.";
+                        "[When Digivolving] If [KendoGarurumon] is in this Digimon's digivolution cards or you have a black or purple Digimon or Tamer, this Digimon may digivolve into [KendoGarurumon] in the hand for a digivolution cost of 3, ignoring its digivolution requirements. If digivolved by this effect, delete this Digimon at the end of the turn.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -90,7 +90,7 @@ namespace DCGO.CardEffects.BT17
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
                         if (card.PermanentOfThisCard().DigivolutionCards.Count(cardSource =>
-                                cardSource.CardNames.Contains("BurningGreymon")) >= 1)
+                                cardSource.CardNames.Contains("KendoGarurumon")) >= 1)
                         {
                             return true;
                         }
@@ -99,8 +99,8 @@ namespace DCGO.CardEffects.BT17
                         {
                             if (CardEffectCommons.HasMatchConditionOwnersPermanent(card,
                                     permanent =>
-                                        permanent.TopCard.CardColors.Contains(CardColor.Blue) ||
-                                        permanent.TopCard.CardColors.Contains(CardColor.Green)))
+                                        permanent.TopCard.CardColors.Contains(CardColor.Black) ||
+                                        permanent.TopCard.CardColors.Contains(CardColor.Purple)))
                             {
                                 return true;
                             }
@@ -120,7 +120,7 @@ namespace DCGO.CardEffects.BT17
                             CardEffectCommons.DigivolveIntoHandOrTrashCard(
                                 targetPermanent: thisPermanent,
                                 cardCondition: cardSource =>
-                                    cardSource.IsDigimon && cardSource.ContainsCardName("AncientGreymon"),
+                                    cardSource.IsDigimon && cardSource.ContainsCardName("AncientGarurumon"),
                                 payCost: true,
                                 reduceCostTuple: null,
                                 fixedCostTuple: null,
@@ -175,25 +175,49 @@ namespace DCGO.CardEffects.BT17
 
             #endregion
 
-            #region Your Turn - ESS
+            #region When Attacking - ESS
 
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnAllyAttack)
             {
-                bool Condition()
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Draw 1", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false,
+                    EffectDescription());
+                activateClass.SetIsInheritedEffect(true);
+                cardEffects.Add(activateClass);
+
+                string EffectDescription()
+                {
+                    return
+                        "[When Attacking] If you have 7 or fewer cards in your hand, [Draw 1].";
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (CardEffectCommons.IsOwnerTurn(card))
+                        if (card.Owner.HandCards.Count <= 7)
                         {
-                            return true;
+                            if (card.Owner.LibraryCards.Count >= 1)
+                            {
+                                return true;
+                            }
                         }
                     }
 
                     return false;
                 }
 
-                cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect(changeValue: 2000, isInheritedEffect: true,
-                    card: card, condition: Condition));
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(
+                        new DrawClass(card.Owner, 1, activateClass).Draw());
+                }
             }
 
             #endregion

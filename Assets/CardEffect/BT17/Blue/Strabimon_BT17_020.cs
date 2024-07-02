@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using System.Linq;
 
 namespace DCGO.CardEffects.BT17
 {
-    public class Flamemon_BT17_009 : CEntity_Effect
+    public class Strabimon_BT17_020 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
@@ -101,13 +102,13 @@ namespace DCGO.CardEffects.BT17
 
             #endregion
 
-            #region On Deletion - ESS
+            #region When Attacking - ESS
 
-            if (timing == EffectTiming.OnDestroyedAnyone)
+            if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play 1 Tamer card from hand", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true,
+                activateClass.SetUpICardEffect("Play Tamer card from hand", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true,
                     EffectDescription());
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
@@ -115,21 +116,21 @@ namespace DCGO.CardEffects.BT17
                 string EffectDescription()
                 {
                     return
-                        "[On Deletion] You may play 1 Tamer card with inherited effects from your hand without paying the cost.";
+                        "[When Attacking] [Once Per Turn] You may play 1 Tamer card with an inherited effect from your hand with the play cost reduced by 2.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
                 }
 
-                bool CanSelectCardCondition(CardSource cardSource)
+                bool CanSelectHandCardCondition(CardSource cardSource)
                 {
                     if (cardSource.IsTamer)
                     {
                         if (cardSource.HasInheritedEffect)
                         {
-                            if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false,
+                            if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: true,
                                     cardEffect: activateClass))
                             {
                                 return true;
@@ -142,9 +143,9 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card))
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
+                        if (card.Owner.HandCards.Count(CanSelectHandCardCondition) >= 1)
                         {
                             return true;
                         }
@@ -155,7 +156,70 @@ namespace DCGO.CardEffects.BT17
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
+                    #region Reduce Play Cost
+
+                    ChangeCostClass changeCostClass = new ChangeCostClass();
+                    changeCostClass.SetUpICardEffect($"Play Cost -2", _ => true, card);
+                    changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition,
+                        rootCondition: RootCondition, isUpDown: () => true, isCheckAvailability: () => false,
+                        isChangePayingCost: () => true);
+                    Func<EffectTiming, ICardEffect> getCardEffect = GetCardEffect;
+                    card.Owner.UntilCalculateFixedCostEffect.Add(getCardEffect);
+
+                    ICardEffect GetCardEffect(EffectTiming rcTiming)
+                    {
+                        if (rcTiming == EffectTiming.None)
+                        {
+                            return changeCostClass;
+                        }
+
+                        return null;
+                    }
+
+                    int ChangeCost(CardSource cardSource, int cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
+                    {
+                        if (CardSourceCondition(cardSource))
+                        {
+                            if (RootCondition(root))
+                            {
+                                if (PermanentsCondition(targetPermanents))
+                                {
+                                    cost -= 2;
+                                }
+                            }
+                        }
+
+                        return cost;
+                    }
+
+                    bool PermanentsCondition(List<Permanent> targetPermanents)
+                    {
+                        if (targetPermanents == null)
+                        {
+                            return true;
+                        }
+
+                        return targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0;
+                    }
+
+                    bool CardSourceCondition(CardSource cardSource)
+                    {
+                        if (cardSource.HasPlayCost)
+                        {
+                            return CanSelectHandCardCondition(cardSource);
+                        }
+
+                        return false;
+                    }
+
+                    bool RootCondition(SelectCardEffect.Root root)
+                    {
+                        return true;
+                    }
+
+                    #endregion
+
+                    if (card.Owner.HandCards.Count(CanSelectHandCardCondition) >= 1)
                     {
                         List<CardSource> selectedCards = new List<CardSource>();
 
@@ -163,7 +227,7 @@ namespace DCGO.CardEffects.BT17
 
                         selectHandEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectCardCondition,
+                            canTargetCondition: CanSelectHandCardCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: 1,
@@ -189,8 +253,14 @@ namespace DCGO.CardEffects.BT17
 
                         yield return ContinuousController.instance.StartCoroutine(
                             CardEffectCommons.PlayPermanentCards(cardSources: selectedCards, activateClass: activateClass,
-                                payCost: false, isTapped: false, root: SelectCardEffect.Root.Hand, activateETB: true));
+                                payCost: true, isTapped: false, root: SelectCardEffect.Root.Hand, activateETB: true));
                     }
+
+                    #region Remove Reduce Cost effect
+
+                    card.Owner.UntilCalculateFixedCostEffect.Remove(getCardEffect);
+
+                    #endregion
                 }
             }
 

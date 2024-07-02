@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace DCGO.CardEffects.BT17
 {
-    public class BurningGreymon_BT17_012 : CEntity_Effect
+    public class KendoGarurumon_BT17_023 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
@@ -12,7 +12,7 @@ namespace DCGO.CardEffects.BT17
 
             #region Alternate Digivolution
 
-            // Takuya Kanbara
+            // Koji Minamoto
             if (timing == EffectTiming.None)
             {
                 bool Condition()
@@ -22,8 +22,8 @@ namespace DCGO.CardEffects.BT17
 
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsCardName("Takuya Kanbara") ||
-                           targetPermanent.TopCard.ContainsCardName("TakuyaKanbara");
+                    return targetPermanent.TopCard.ContainsCardName("Koji  Minamoto") ||
+                           targetPermanent.TopCard.ContainsCardName("KojiMinamoto");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
@@ -31,12 +31,12 @@ namespace DCGO.CardEffects.BT17
                     card: card, condition: Condition));
             }
 
-            // Agunimon
+            // Lobomon
             if (timing == EffectTiming.None)
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsCardName("Agunimon");
+                    return targetPermanent.TopCard.ContainsCardName("Lobomon");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
@@ -44,7 +44,7 @@ namespace DCGO.CardEffects.BT17
                     card: card, condition: null));
             }
 
-            // Any red tamer
+            // Any yellow tamer
             if (timing == EffectTiming.None)
             {
                 bool Condition()
@@ -54,7 +54,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.IsTamer && targetPermanent.TopCard.CardColors.Contains(CardColor.Red);
+                    return targetPermanent.IsTamer && targetPermanent.TopCard.CardColors.Contains(CardColor.Yellow);
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
@@ -64,12 +64,45 @@ namespace DCGO.CardEffects.BT17
 
             #endregion
 
-            #region Raid
+            #region When Attacking Draw 1
 
             if (timing == EffectTiming.OnAllyAttack)
             {
-                cardEffects.Add(CardEffectFactory.RaidSelfEffect(isInheritedEffect: false, card: card,
-                    condition: null));
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Draw 1", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false,
+                    EffectDescription());
+                cardEffects.Add(activateClass);
+
+                string EffectDescription()
+                {
+                    return
+                        "[When Attacking] [Draw 1].";
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (card.Owner.LibraryCards.Count >= 1)
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(
+                        new DrawClass(card.Owner, 1, activateClass).Draw());
+                }
             }
 
             #endregion
@@ -129,31 +162,54 @@ namespace DCGO.CardEffects.BT17
                                 activateClass: activateClass,
                                 successProcess: null));
                     }
-                    
                 }
             }
 
             #endregion
 
-            #region Your Turn - ESS
+            #region When Attacking - ESS
 
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnAllyAttack)
             {
-                bool Condition()
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Draw 1", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false,
+                    EffectDescription());
+                activateClass.SetIsInheritedEffect(true);
+                cardEffects.Add(activateClass);
+
+                string EffectDescription()
+                {
+                    return
+                        "[When Attacking] If you have 7 or fewer cards in your hand, [Draw 1].";
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (CardEffectCommons.IsOwnerTurn(card))
+                        if (card.Owner.HandCards.Count <= 7)
                         {
-                            return true;
+                            if (card.Owner.LibraryCards.Count >= 1)
+                            {
+                                return true;
+                            }
                         }
                     }
 
                     return false;
                 }
 
-                cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect(changeValue: 2000, isInheritedEffect: true,
-                    card: card, condition: Condition));
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(
+                        new DrawClass(card.Owner, 1, activateClass).Draw());
+                }
             }
 
             #endregion
