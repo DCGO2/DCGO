@@ -7,7 +7,7 @@ using Photon.Pun;
 
 namespace DCGO.CardEffects.BT17
 {
-    public class Agumon_BT17_007 : CEntity_Effect
+    public class Gabumon_BT17_019 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
@@ -19,7 +19,7 @@ namespace DCGO.CardEffects.BT17
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.CardNames.Contains("Koromon");
+                    return targetPermanent.TopCard.CardNames.Contains("Tsunomon");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
@@ -34,9 +34,7 @@ namespace DCGO.CardEffects.BT17
             if (timing == EffectTiming.OnStartMainPhase)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(
-                    "Return 1 card with [Garurumon]/[Greymon]/[Omnimon] in its name from your trash to the hand",
-                    CanUseCondition, card);
+                activateClass.SetUpICardEffect("Draw 1", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false,
                     EffectDescription());
                 cardEffects.Add(activateClass);
@@ -44,22 +42,7 @@ namespace DCGO.CardEffects.BT17
                 string EffectDescription()
                 {
                     return
-                        "[Start of Your Main Phase] If you have a Tamer with [Tai Kamiya] in its name, return 1 card with [Garurumon]/[Greymon]/[Omnimon] in its name from your trash to the hand.";
-                }
-
-                bool CanSelectCardCondition(CardSource cardSource)
-                {
-                    if (cardSource.IsDigimon)
-                    {
-                        if (cardSource.ContainsCardName("Garurumon") ||
-                            cardSource.ContainsCardName("Greymon") ||
-                            cardSource.ContainsCardName("Omnimon"))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                        "[Start of Your Main Phase] If you have a Tamer with [Matt Ishida] in its name, [Draw 1].";
                 }
 
                 bool OwnTamerPermanentCondition(Permanent permanent)
@@ -68,7 +51,8 @@ namespace DCGO.CardEffects.BT17
                     {
                         if (permanent.IsTamer)
                         {
-                            if (permanent.TopCard.ContainsCardName("Tai Kamiya") || permanent.TopCard.ContainsCardName("TaiKamiya"))
+                            if (permanent.TopCard.ContainsCardName("Matt Ishida") || permanent.TopCard.ContainsCardName("MattIshida"))
+
                             {
                                 return true;
                             }
@@ -97,7 +81,7 @@ namespace DCGO.CardEffects.BT17
                     {
                         if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, OwnTamerPermanentCondition))
                         {
-                            if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
+                            if (card.Owner.LibraryCards.Count >= 1)
                             {
                                 return true;
                             }
@@ -109,35 +93,8 @@ namespace DCGO.CardEffects.BT17
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, OwnTamerPermanentCondition))
-                    {
-                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
-                        {
-                            int maxCount = Math.Min(1, card.Owner.TrashCards.Count(CanSelectCardCondition));
-
-                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                            selectCardEffect.SetUp(
-                                canTargetCondition: CanSelectCardCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                canNoSelect: () => false,
-                                selectCardCoroutine: null,
-                                afterSelectCardCoroutine: null,
-                                message: "Select 1 card to add to your hand.",
-                                maxCount: maxCount,
-                                canEndNotMax: false,
-                                isShowOpponent: true,
-                                mode: SelectCardEffect.Mode.AddHand,
-                                root: SelectCardEffect.Root.Trash,
-                                customRootCardList: null,
-                                canLookReverseCard: true,
-                                selectPlayer: card.Owner,
-                                cardEffect: activateClass);
-
-                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-                        }
-                    }
+                    yield return ContinuousController.instance.StartCoroutine(
+                        new DrawClass(card.Owner, 1, activateClass).Draw());
                 }
             }
 
