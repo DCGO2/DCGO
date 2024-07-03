@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.BT17
 {
     public class MetalGarurumon_BT17_027 : CEntity_Effect
     {
