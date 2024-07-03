@@ -161,7 +161,7 @@ namespace DCGO.CardEffects.BT17
             }
 
             #endregion
-            
+
             #region When Digivolving
 
             if (timing == EffectTiming.OnEnterFieldAnyone)
@@ -257,9 +257,12 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        return CardEffectCommons.CanTriggerWhenAddHand(hashtable,
-                            player => player == card.Owner || player == card.Owner.Enemy,
-                            cardEffect => cardEffect != null);
+                        if (CardEffectCommons.IsOwnerTurn(card))
+                        {
+                            return CardEffectCommons.CanTriggerWhenAddHand(hashtable,
+                                player => player == card.Owner || player == card.Owner.Enemy,
+                                cardEffect => cardEffect != null);
+                        }
                     }
 
                     return false;
