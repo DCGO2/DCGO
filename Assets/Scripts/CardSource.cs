@@ -1474,6 +1474,11 @@ public class CardSource : MonoBehaviour
                 return true;
             }
 
+            if(ContainsTraits("Beast Dragon"))
+            {
+                return true;
+            }
+
             return false;
         }
     }
