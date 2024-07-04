@@ -1306,6 +1306,11 @@ public class CardSource : MonoBehaviour
                 return true;
             }
 
+            if(ContainsTraits("SeaAnimal"))
+            {
+                return true;
+            }
+
             return false;
         }
     }
