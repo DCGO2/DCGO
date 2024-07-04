@@ -89,6 +89,8 @@ namespace DCGO.CardEffects.BT17
 
                         if (fromHand)
                         {
+                            int maxCount = card.Owner.HandCards.Count(CanSelectCardCondition);
+                            
                             SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
                             selectHandEffect.SetUp(
@@ -96,7 +98,7 @@ namespace DCGO.CardEffects.BT17
                                 canTargetCondition: CanSelectCardCondition,
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
-                                maxCount: 1,
+                                maxCount: maxCount,
                                 canNoSelect: true,
                                 canEndNotMax: false,
                                 isShowOpponent: true,
