@@ -505,7 +505,7 @@ public class Astamon_BT12_081 : CEntity_Effect
                                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
                                             cardSources: selectedCards,
                                             activateClass: activateClass,
-                                            payCost: true,
+                                            payCost: false,
                                             isTapped: false,
                                             root: SelectCardEffect.Root.DigivolutionCards,
                                             activateETB: true));
