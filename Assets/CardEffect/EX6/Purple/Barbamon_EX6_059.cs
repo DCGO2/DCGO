@@ -208,7 +208,7 @@ namespace DCGO.CardEffects.EX6
                 {
                     int maxCost = 10 - card.Owner.Enemy.HandCards.Count();
 
-                    if (cardSource.GetCostItself <= maxCost || cardSource.BasePlayCostFromEntity <= maxCost)
+                    if (cardSource.GetCostItself <= maxCost)
                     {
                         return true;
                     }

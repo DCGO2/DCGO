@@ -62,9 +62,9 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanSelectDeletePermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                    if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
                     {
-                        if(permanent.TopCard.HasPlayCost && permanent.TopCard.GetCostItself <= 3)
+                        if(permanent.TopCard.HasPlayCost && permanent.TopCard.GetCostItself <= 3 && permanent.IsDigimon)
                         {
                             return true;
                         }
