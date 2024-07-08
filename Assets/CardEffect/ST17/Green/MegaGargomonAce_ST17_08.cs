@@ -131,7 +131,7 @@ namespace DCGO.CardEffects.ST17
                             canEndSelectCondition: CanEndSelectCondition,
                             maxCount: maxCount,
                             canNoSelect: false,
-                            canEndNotMax: true,
+                            canEndNotMax: false,
                             selectPermanentCoroutine: null,
                             afterSelectPermanentCoroutine: null,
                             mode: SelectPermanentEffect.Mode.Tap,

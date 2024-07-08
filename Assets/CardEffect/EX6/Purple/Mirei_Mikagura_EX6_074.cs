@@ -87,7 +87,15 @@ namespace DCGO.CardEffects.EX6
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card);
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (CardEffectCommons.CanActivateSuspendCostEffect(card))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
