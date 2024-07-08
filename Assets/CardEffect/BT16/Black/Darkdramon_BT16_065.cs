@@ -31,12 +31,7 @@ namespace DCGO.CardEffects.BT16
 
             bool CanSelectDBrigadeCondition(CardSource cardSource)
             {
-                if (cardSource.IsDigimon)
-                {
-                    return cardSource.CardTraits.Contains("D-Brigade");
-                }
-
-                return false;
+                return cardSource.CardTraits.Contains("D-Brigade");
             }
 
             #region Before Pay Cost - Condition Effect

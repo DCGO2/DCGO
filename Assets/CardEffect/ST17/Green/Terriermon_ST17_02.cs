@@ -46,7 +46,7 @@ namespace DCGO.CardEffects.ST17
                     {
                         if (cardSource.Level == 3)
                         {
-                            if (cardSource.CardNames.Contains("Lopmon"))
+                            if (cardSource.ContainsCardName("Lopmon"))
                             {
                                 return true;
                             }

@@ -80,16 +80,19 @@ namespace DCGO.CardEffects.BT16
 
                         foreach (Permanent permanent in card.Owner.Enemy.GetBattleAreaDigimons())
                         {
-                            if (CanSelectPermanentsToBotDeck(permanent))
-                            {
-                                if (!permanent.TopCard.CanNotBeAffected(activateClass))
-                                {
-                                    if (!permanent.CannotReturnToLibrary(activateClass))
-                                    {
-                                        selectedPermanents.Add(permanent);
-                                    }
-                                }
-                            }
+                            if (!permanent.IsSuspended)
+                                continue;
+                            
+                            if (!CanSelectPermanentsToBotDeck(permanent))
+                                continue;
+                            
+                            if (permanent.TopCard.CanNotBeAffected(activateClass))
+                                continue;
+
+                            if (permanent.CannotReturnToLibrary(activateClass))
+                                continue;
+
+                            selectedPermanents.Add(permanent);
                         }
 
                         if (selectedPermanents.Count >= 1)
