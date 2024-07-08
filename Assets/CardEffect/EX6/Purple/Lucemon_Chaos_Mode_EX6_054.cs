@@ -272,7 +272,7 @@ namespace DCGO.CardEffects.EX6
 
                 bool CanSelectLucemon(CardSource cardSource)
                 {
-                    if(cardSource.CardNames.Contains("Lucemon"))
+                    if(cardSource.CardNames.Contains("Lucemon: Satan Mode"))
                     {
                         return true;
                     }

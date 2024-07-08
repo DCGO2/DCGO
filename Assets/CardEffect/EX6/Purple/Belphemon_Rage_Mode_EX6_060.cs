@@ -43,11 +43,14 @@ namespace DCGO.CardEffects.EX6
                 bool OpponentsSuspendableTargets(Permanent permanent)
                 {
 
-                    if (permanent.TopCard.HasLevel && permanent.Level <= 5)
+                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card))
                     {
-                        return true;
+                        if (permanent.TopCard.HasLevel && permanent.Level <= 5)
+                        {
+                            return true;
+                        }
                     }
-                   
+
 
                     return false;
                 }
