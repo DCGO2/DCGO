@@ -6,8 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="1f770e58-b781-4cb0-ad93-4c50994f611d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.DCGO/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.DCGO/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/EX6/Black/Infermon_EX6_041.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/EX6/Black/Infermon_EX6_041.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/EX6/Black/Kurisarimon_EX6_039.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/EX6/Black/Kurisarimon_EX6_039.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/EX6/Green/Antylamon_EX6_034.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/EX6/Green/Antylamon_EX6_034.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/EX6/Purple/Belphemon_Rage_Mode_EX6_060.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/EX6/Purple/Belphemon_Rage_Mode_EX6_060.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/EX6/Purple/Gate_of_Deadly_Sins_EX6_006.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/EX6/Purple/Gate_of_Deadly_Sins_EX6_006.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/EX6/Purple/Lucemon_Chaos_Mode_EX6_054.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/EX6/Purple/Lucemon_Chaos_Mode_EX6_054.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/EX6/Purple/Ogudomon_EX6_073.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/EX6/Purple/Ogudomon_EX6_073.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -105,6 +108,7 @@
       <workItem from="1707092728240" duration="644000" />
       <workItem from="1715820047500" duration="30965000" />
       <workItem from="1719540359999" duration="395000" />
+      <workItem from="1720456596917" duration="698000" />
     </task>
     <servers />
   </component>

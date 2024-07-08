@@ -549,12 +549,11 @@ namespace DCGO.CardEffects.EX6
                             int maxCount = 1;
 
                             SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
                             selectCardEffect.SetUp(
                                 canTargetCondition: CanSelectCardCondition,
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
-                                canNoSelect: () => true,
+                                canNoSelect: () => false,
                                 selectCardCoroutine: SelectCardCoroutine,
                                 afterSelectCardCoroutine: null,
                                 message: "Select 1 card to place on bottom of digivolution cards.",

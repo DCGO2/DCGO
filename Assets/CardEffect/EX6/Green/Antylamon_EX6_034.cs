@@ -143,7 +143,7 @@ namespace DCGO.CardEffects.EX6
                 {                  
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
                     {
-                        if (permanent.IsSuspended)
+                        if (permanent.IsDigimon && permanent.IsSuspended)
                         {
                             return true;
                         }
