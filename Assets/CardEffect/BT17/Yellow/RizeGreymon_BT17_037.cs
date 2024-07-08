@@ -50,9 +50,14 @@ namespace DCGO.CardEffects.BT17
             #endregion
 
             #region When Digivolving/When Attacking Shared
-            string EffectSharedDiscription()
+            string EffectSharedDiscription1()
             {
-                return "[When Digivolving][When Attacking] By suspending 1 of your yellow Tamers, 1 of your opponent's Digimon gets -3000 DP for the turn.";
+                return "[When Digivolving] By suspending 1 of your yellow Tamers, 1 of your opponent's Digimon gets -3000 DP for the turn.";
+            }
+
+            string EffectSharedDiscription2()
+            {
+                return "[When Attacking] By suspending 1 of your yellow Tamers, 1 of your opponent's Digimon gets -3000 DP for the turn.";
             }
 
             bool CanSelectPermanentConditionShared1(Permanent permanent)
@@ -93,7 +98,7 @@ namespace DCGO.CardEffects.BT17
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("DP +2000 and Draw 1", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, true, EffectSharedDiscription());
+                activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, true, EffectSharedDiscription1());
                 cardEffects.Add(activateClass);
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -199,7 +204,7 @@ namespace DCGO.CardEffects.BT17
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("DP +2000 and Draw 1", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, true, EffectSharedDiscription());
+                activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, true, EffectSharedDiscription2());
                 cardEffects.Add(activateClass);
 
                 bool CanUseCondition(Hashtable hashtable)
