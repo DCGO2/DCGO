@@ -3261,7 +3261,9 @@ public class IDestroySecurity
             {
                 string log = "";
 
-                log += $"\nDiscarded Security Cards:";
+                string fromString = _fromTop ? "Top" : "Bottom";
+
+                log += $"\nDiscarded From {fromString} Security Cards:";
 
                 foreach (CardSource cardSource in discardedCards)
                 {

@@ -116,7 +116,7 @@ namespace DCGO.CardEffects.BT16
                             canNoSelect: () => noSelect,
                             selectCardCoroutine: SelectCardCoroutine,
                             afterSelectCardCoroutine: null,
-                            message: "Select cards to place on top of deck.",
+                            message: "Select cards to add to the top your deck\n(cards will be placed back to the top of the deck so that cards with lower numbers are on top).",
                             maxCount: maxCount,
                             canEndNotMax: false,
                             isShowOpponent: true,
@@ -137,6 +137,7 @@ namespace DCGO.CardEffects.BT16
 
                         if (selectedCards.Count == 6)
                         {
+                            selectedCards.Reverse();
                             yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(selectedCards));
                         }
                     }

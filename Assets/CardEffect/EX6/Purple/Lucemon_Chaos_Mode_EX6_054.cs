@@ -26,7 +26,7 @@ namespace DCGO.CardEffects.EX6
                     return false;
                 }
 
-                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 5, ignoreDigivolutionRequirement: false, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 6, ignoreDigivolutionRequirement: true, card: card, condition: null));
             }
             #endregion
 
