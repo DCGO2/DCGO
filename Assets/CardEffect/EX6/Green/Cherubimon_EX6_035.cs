@@ -59,7 +59,7 @@ namespace DCGO.CardEffects.EX6
                 {
                     int minusDP = 0;
 
-                    minusDP += 4000 * card.Owner.GetBattleAreaDigimons().Count((permanent) => permanent.IsDigimon);
+                    minusDP += 4000 * card.Owner.GetBattleAreaDigimons().Count((permanent) => permanent.IsDigimon && permanent != card.PermanentOfThisCard());
 
                     return minusDP;
                 }
