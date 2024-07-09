@@ -15,28 +15,30 @@ namespace DCGO.CardEffects.BT16
             partitionConditions.Add(new PartitionCondition(4, CardColor.Yellow));
 
             #region Rule - Trait: Also has [Angel]
+
             if (timing == EffectTiming.None)
             {
-                ChangeCardNamesClass changeCardNamesClass = new ChangeCardNamesClass();
-                changeCardNamesClass.SetUpICardEffect("Trait: Also has [Angel]", CanUseCondition, card);
-                changeCardNamesClass.SetUpChangeCardNamesClass(changeCardNames: changeCardNames);
-                cardEffects.Add(changeCardNamesClass);
+                ChangeTraitsClass changeTraitsClass = new ChangeTraitsClass();
+                changeTraitsClass.SetUpICardEffect("Trait: Also has [Angel]", CanUseCondition, card);
+                changeTraitsClass.SetUpChangeTraitsClass(changeeTraits: ChangeTraits);
+                cardEffects.Add(changeTraitsClass);
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return true;
                 }
 
-                List<string> changeCardNames(CardSource cardSource, List<string> CardNames)
+                List<string> ChangeTraits(CardSource cardSource, List<string> cardTraits)
                 {
                     if (cardSource == card)
                     {
-                        cardSource.CardTraits.Add("Angel");
+                        cardTraits.Add("Angel");
                     }
 
-                    return CardNames;
+                    return cardTraits;
                 }
             }
+
             #endregion
 
             #region DNA Digivolution - Black Lv.4 + Yellow Lv.4: Cost 0

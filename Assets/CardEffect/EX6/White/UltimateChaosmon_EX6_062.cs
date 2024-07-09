@@ -127,17 +127,17 @@ namespace DCGO.CardEffects.EX6
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] If DNA digivolving, you may place up to 2 level 6 cards from your trash as this Digimon's bottom digivolution cards.";
+                    return "[When Digivolving] If DNA digivolving, you may place up to 2 level 6 cards from your trash as this Digimon's bottom digivolution cards. Then, for each of this Digimon's level 6 digivolution cards, return 1 of your opponent's Digimon to the bottom of the deck.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if(cardSource.HasLevel && cardSource.Level == 6)
-                    {
-                        return true;
-                    }
+                    return (cardSource.HasLevel && cardSource.Level == 6);
+                }
 
-                    return false;
+                bool CanSelectPermanentCondition(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -203,47 +203,8 @@ namespace DCGO.CardEffects.EX6
                             }
                         }
                     }
-                }
-            }
 
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Return 1 Digimon to the bottom of deck", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-                cardEffects.Add(activateClass);
-
-                string EffectDiscription()
-                {
-                    return "[When Digivolving] Then, for each level 6 card in this Digimon's digivolution cards, return 1 of your opponent's Digimon to the bottom of the deck.";
-                }
-
-                bool CanSelectPermanentCondition(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
-                {
-                    int count = card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) =>  cardSource.HasLevel && cardSource.Level == 6);
+                    int count = card.PermanentOfThisCard().DigivolutionCards.Count(CanSelectCardCondition);
 
                     if (count >= 1)
                     {
@@ -270,12 +231,7 @@ namespace DCGO.CardEffects.EX6
 
                             bool CanEndSelectCondition(List<Permanent> permanents)
                             {
-                                if (permanents.Count <= 0)
-                                {
-                                    return false;
-                                }
-
-                                return true;
+                                return (permanents.Count > 0);
                             }
                         }
                     }
