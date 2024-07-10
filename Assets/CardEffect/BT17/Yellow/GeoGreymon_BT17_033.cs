@@ -14,7 +14,7 @@ namespace DCGO.CardEffects.BT17
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Suspend one tamer to gain DP", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Suspend one tamer to gain +3000 DP", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -25,9 +25,9 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
                     {
-                        if (CardEffectCommons.CanActivateSuspendCostEffect(permanent.TopCard) && permanent.IsTamer && permanent.TopCard.CardColors.Contains(CardColor.Yellow))
+                        if (permanent.IsTamer && permanent.TopCard.CardColors.Contains(CardColor.Yellow))
                         {
                             return true;
                         }
@@ -77,7 +77,7 @@ namespace DCGO.CardEffects.BT17
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 your Yellow Tamers to suspend.", "The opponent is selecting 1 Tamer to suspend.");
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 your Yellow Tamers to suspend.", "The opponent is selecting 1 Yellow Tamer to suspend.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 

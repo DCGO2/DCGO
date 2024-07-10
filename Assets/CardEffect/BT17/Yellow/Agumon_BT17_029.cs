@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DCGO.CardEffects.BT17
 {
@@ -20,14 +21,14 @@ namespace DCGO.CardEffects.BT17
 
                 string EffectDiscription()
                 {
-                    return "[When Attacking] By suspending 1 of your yellow Tamers, Draw 1.";
+                    return "[When Attacking] By suspending 1 of your yellow Tamers, <Draw 1>.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
                     {
-                        if (CardEffectCommons.CanActivateSuspendCostEffect(permanent.TopCard) && permanent.IsTamer && permanent.TopCard.CardColors.Contains(CardColor.Yellow))
+                        if (permanent.IsTamer && permanent.TopCard.CardColors.Contains(CardColor.Yellow))
                         {
                             return true;
                         }
@@ -77,7 +78,7 @@ namespace DCGO.CardEffects.BT17
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 your Yellow Tamers to suspend.", "The opponent is selecting 1 Tamer to suspend.");
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Yellow Tamer to suspend.", "The opponent is selecting 1 to suspend.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
@@ -145,7 +146,7 @@ namespace DCGO.CardEffects.BT17
                     effectName: "Opponent's Security Digimon gains DP -3000"));
             }
             #endregion
-
+   
             return cardEffects;
         }
     }
