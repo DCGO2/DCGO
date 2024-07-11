@@ -371,7 +371,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
                     {
                         if (permanent.IsTamer && permanent.TopCard.CardColors.Contains(CardColor.Yellow))
                         {
@@ -404,59 +404,77 @@ namespace DCGO.CardEffects.BT17
                 {
                     List<Permanent> selectedPermanents =  new List<Permanent>();
 
-                    if (card.Owner.GetBattleAreaPermanents().Count(CanSelectPermanentCondition) >= 1)
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
                         int maxCount = Math.Min(2, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
 
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectPermanentCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: true,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: SelectPermanentCoroutine,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
-                            cardEffect: activateClass);
+                             selectPlayer: card.Owner,
+                             canTargetCondition: CanSelectPermanentCondition,
+                             canTargetCondition_ByPreSelecetedList: null,
+                             canEndSelectCondition: CanEndSelectCondition,
+                             maxCount: maxCount,
+                             canNoSelect: true,
+                             canEndNotMax: false,
+                             selectPermanentCoroutine: null,
+                             afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
+                             mode: SelectPermanentEffect.Mode.Custom,
+                             cardEffect: activateClass);
 
                         selectPermanentEffect.SetUpCustomMessage("Select up to 2 of your Yellow Tamers to suspend.", "The opponent is selecting up to 2 Tamers to suspend.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                        bool CanEndSelectCondition(List<Permanent> permanents)
                         {
-                            selectedPermanents.Add(permanent);
-
-                            yield return null;
-                        }
-                    }
-
-                    bool Condition()
-                    {
-                        if (CardEffectCommons.IsExistOnBattleArea(card))
-                        {
-                            if (CardEffectCommons.IsOwnerTurn(card))
+                            if (permanents.Count <= 0)
                             {
-                                if (selectedPermanents.Count() >= 1)
+                                return false;
+                            }
+
+                            return true;
+                        }
+
+                        IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
+                        {
+                            if (permanents.Count >= 1)
+                            {
+                                foreach (Permanent permanent in permanents)
                                 {
-                                    return true;
+                                    selectedPermanents.Add(permanent);
+                                }
+
+                                yield return null;
+                            }
+                        }
+
+                        foreach (Permanent selectedPermanent in selectedPermanents)
+                        {
+                            if (selectedPermanent != null)
+                            {
+                                if (selectedPermanent.TopCard != null)
+                                {
+                                    if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
+                                    {
+                                        if (!selectedPermanent.IsSuspended && selectedPermanent.CanSuspend)
+                                        {
+                                            Permanent suspendTargetPermanent = selectedPermanent;
+
+                                            yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(new List<Permanent>() { suspendTargetPermanent }, CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
+                                        }
+                                    }
                                 }
                             }
                         }
 
-                        return false;
-                    }
-
-                    cardEffects.Add(CardEffectFactory.ChangeSelfSAttackStaticEffect<Func<int>>(
-                        changeValue: () => selectedPermanents.Count(),
-                        isInheritedEffect: false,
-                        card: card,
-                        condition: Condition));
-                                      
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonSAttack(
+                            targetPermanent: card.PermanentOfThisCard(),
+                            changeValue: selectedPermanents.Count(),
+                            effectDuration: EffectDuration.UntilEachTurnEnd,
+                            activateClass: activateClass));
+                    }                    
                 }
             }
             #endregion
