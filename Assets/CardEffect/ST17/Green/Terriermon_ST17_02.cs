@@ -82,7 +82,7 @@ namespace DCGO.CardEffects.ST17
                     #region reduce play cost
                     ChangeCostClass changeCostClass = new ChangeCostClass();
                     changeCostClass.SetUpICardEffect($"Play Cost -2", CanUseCondition1, card);
-                    changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
+                    changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CanSelectCardCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
                     Func<EffectTiming, ICardEffect> getCardEffect = GetCardEffect;
                     card.Owner.UntilCalculateFixedCostEffect.Add(getCardEffect);
 
@@ -103,7 +103,7 @@ namespace DCGO.CardEffects.ST17
 
                     int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
                     {
-                        if (CardSourceCondition(cardSource))
+                        if (CanSelectCardCondition(cardSource))
                         {
                             if (RootCondition(root))
                             {
@@ -129,30 +129,6 @@ namespace DCGO.CardEffects.ST17
                             if (targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0)
                             {
                                 return true;
-                            }
-                        }
-
-                        return false;
-                    }
-
-                    bool CardSourceCondition(CardSource cardSource)
-                    {
-                        if (cardSource.IsTamer)
-                        {
-                            if (cardSource.CardColors.Contains(CardColor.Green))
-                            {
-                                return true;
-                            }
-                        }
-
-                        if (cardSource.IsDigimon)
-                        {
-                            if (cardSource.Level == 3)
-                            {
-                                if (cardSource.CardNames.Contains("Lopmon"))
-                                {
-                                    return true;
-                                }
                             }
                         }
 

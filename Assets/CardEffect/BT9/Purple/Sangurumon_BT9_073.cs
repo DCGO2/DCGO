@@ -1,10 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using System.Linq;
-using Photon;
-using System;
-using Photon.Pun;
+
 public class Sangurumon_BT9_073 : CEntity_Effect
 {
     public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
@@ -26,7 +22,18 @@ public class Sangurumon_BT9_073 : CEntity_Effect
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                return cardSource.IsDigimon && (cardSource.CardTraits.Contains("Undead") || cardSource.CardTraits.Contains("DarkAnimal") || cardSource.CardTraits.Contains("Dark Animal"));
+                if (cardSource.IsDigimon)
+                {
+                    if (cardSource.CardTraits.Contains("Undead") || cardSource.CardTraits.Contains("DarkAnimal") || cardSource.CardTraits.Contains("Dark Animal"))
+                    {
+                        if (cardSource.CanPlayCardTargetFrame(card.PermanentOfThisCard().PermanentFrame, false, activateClass))
+                        {
+                            return true;
+                        }
+                    }
+                }
+
+                return false;
             }
 
             bool CanUseCondition(Hashtable hashtable)
@@ -50,15 +57,15 @@ public class Sangurumon_BT9_073 : CEntity_Effect
             IEnumerator ActivateCoroutine(Hashtable _hashtable)
             {
                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                    targetPermanent: card.PermanentOfThisCard(),
-                    cardCondition: CanSelectCardCondition,
-                    payCost: true,
-                    reduceCostTuple: null,
-                    fixedCostTuple: null,
-                    ignoreDigivolutionRequirementFixedCost: -1,
-                    isHand: false,
-                    activateClass: activateClass,
-                    successProcess: null));
+                        targetPermanent: card.PermanentOfThisCard(),
+                        cardCondition: CanSelectCardCondition,
+                        payCost: true,
+                        reduceCostTuple: null,
+                        fixedCostTuple: null,
+                        ignoreDigivolutionRequirementFixedCost: -1,
+                        isHand: false,
+                        activateClass: activateClass,
+                        successProcess: null));
             }
         }
 

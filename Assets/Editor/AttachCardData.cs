@@ -12,7 +12,7 @@ public class AttachCardData : MonoBehaviour
     {
         List<CEntity_Base> List = GetAsset.LoadAll<CEntity_Base>("Assets/CardBaseEntity/");
 
-        List<string> UnimplementedCardIDs = new List<string>() { "P-137", "P-138", "P-139", "P-140", "P-141", "P-142" };
+        List<string> UnimplementedCardSpriteNames = new List<string>() { "P-147", "P-137", "P-138", "P-139", "P-140", "P-141", "P-142" };
 
         foreach (GameObject obj in Selection.gameObjects)
         {
@@ -27,8 +27,9 @@ public class AttachCardData : MonoBehaviour
 
                 foreach (CEntity_Base cEntity_Base in List)
                 {
-                    if (UnimplementedCardIDs.Contains(cEntity_Base.CardID))
+                    if (UnimplementedCardSpriteNames.Contains(cEntity_Base.CardSpriteName))
                     {
+                        Debug.Log(cEntity_Base.CardID);
                         continue;
                     }
 
