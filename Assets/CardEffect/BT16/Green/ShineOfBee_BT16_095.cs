@@ -38,6 +38,9 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanSelectPermanentsToBotDeck(Permanent permanent)
                 {
+                    if (!permanent.IsSuspended)
+                        return false;
+                    
                     return CardEffectCommons.IsMinDP(permanent, card.Owner.Enemy);
                 }
 
@@ -79,10 +82,7 @@ namespace DCGO.CardEffects.BT16
                         List<Permanent> selectedPermanents = new List<Permanent>();
 
                         foreach (Permanent permanent in card.Owner.Enemy.GetBattleAreaDigimons())
-                        {
-                            if (!permanent.IsSuspended)
-                                continue;
-                            
+                        {                            
                             if (!CanSelectPermanentsToBotDeck(permanent))
                                 continue;
                             
