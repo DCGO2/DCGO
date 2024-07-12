@@ -27,7 +27,7 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.name.Contains("Kyubimon") || cardSource.name.Contains("Kyubimon") || cardSource.name.Contains("Sakuyamon"))
+                        if (cardSource.name.Contains("Kyubimon") || cardSource.name.Contains("Taomon") || cardSource.name.Contains("Sakuyamon"))
                         {
                             return true;
                         }

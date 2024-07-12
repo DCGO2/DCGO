@@ -319,7 +319,7 @@ namespace DCGO.CardEffects.BT17
                             {
                                 if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition3))
                                 {
-                                    int maxCount = Math.Min(1, card.Owner.TrashCards.Count(CanSelectCardCondition));
+                                    int maxCount = Math.Min(1, card.Owner.TrashCards.Count(CanSelectCardCondition3));
 
                                     SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
