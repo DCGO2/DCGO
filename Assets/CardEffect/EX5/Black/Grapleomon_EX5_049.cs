@@ -36,7 +36,7 @@ public class Grapleomon_EX5_049 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Digivolving] Return 1 of your opponent's Digimon with 4000 DP or less to the bottom of the deck.";
+                return "[On Play] Return 1 of your opponent's Digimon with 4000 DP or less to the bottom of the deck.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
