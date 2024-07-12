@@ -45,14 +45,7 @@ public class Hoohmon_BT11_016 : CEntity_Effect
             {
                 if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
-                    List<ICardEffect> candidateEffects = card.PermanentOfThisCard().EffectList(EffectTiming.OnDestroyedAnyone)
-                        .Clone()
-                        .Filter(cardEffect => cardEffect != null && cardEffect is ActivateICardEffect && !cardEffect.IsSecurityEffect && cardEffect.IsOnDeletion);
-
-                    if (candidateEffects.Count >= 1)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
 
                 return false;
@@ -129,6 +122,19 @@ public class Hoohmon_BT11_016 : CEntity_Effect
                                     null,
                                     false);
 
+                                
+                                bool NewCanUseCondition(Hashtable hashtable)
+                                {
+                                    return true;
+                                }
+
+                                Func<Hashtable, bool> OldCanUseCondition;
+
+                                OldCanUseCondition = selectedEffect.CanUseCondition;
+
+                                selectedEffect.SetCanUseCondition(NewCanUseCondition);
+
+                                /*
                                 card.Owner.TrashCards.Add(card);
                                 card.Owner.TrashCards.Add(selectedEffect.EffectSourceCard);
                                 selectedEffect.EffectSourceCard.PermanentJustBeforeRemoveField = card.PermanentOfThisCard();
@@ -138,14 +144,12 @@ public class Hoohmon_BT11_016 : CEntity_Effect
                                 card.Owner.TrashCards.Remove(selectedEffect.EffectSourceCard);
                                 selectedEffect.EffectSourceCard.PermanentJustBeforeRemoveField = null;
                                 card.PermanentJustBeforeRemoveField = null;
+                                */
 
-                                if (canUse)
-                                {
-                                    Debug.Log("XX");
+                                yield return ContinuousController.instance.StartCoroutine(
+                                    ((ActivateICardEffect)selectedEffect).Activate_Optional_Effect_Execute(effectHashtable));
 
-                                    yield return ContinuousController.instance.StartCoroutine(
-                                        ((ActivateICardEffect)selectedEffect).Activate_Optional_Effect_Execute(effectHashtable));
-                                }
+                                selectedEffect.SetCanUseCondition(OldCanUseCondition);
                             }
                         }
                     }
