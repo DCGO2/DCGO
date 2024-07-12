@@ -217,31 +217,35 @@ namespace DCGO.CardEffects.P
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
-                    selectHandEffect.SetUp(
-                        selectPlayer: card.Owner,
+                    selectCardEffect.SetUp(
                         canTargetCondition: SelectMyotismonToPlay,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
+                        canNoSelect: () => true,
+                        selectCardCoroutine: PlaySelectedCard,
+                        afterSelectCardCoroutine: null,
+                        message: "Select 1 card to play",
                         maxCount: 1,
-                        canNoSelect: true,
                         canEndNotMax: false,
                         isShowOpponent: true,
-                        selectCardCoroutine: null,
-                        afterSelectCardCoroutine: PlaySelectedCard,
-                        mode: SelectHandEffect.Mode.Custom,
+                        mode: SelectCardEffect.Mode.Custom,
+                        root: SelectCardEffect.Root.Trash,
+                        customRootCardList: null,
+                        canLookReverseCard: true,
+                        selectPlayer: card.Owner,
                         cardEffect: activateClass);
 
-                    selectHandEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
-                    selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
+                    selectCardEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
+                    selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
 
-                    yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 
-                    IEnumerator PlaySelectedCard(List<CardSource> selectedCards)
+                    IEnumerator PlaySelectedCard(CardSource selectedCards)
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                            cardSources: selectedCards,
+                            cardSources: new List<CardSource>() { selectedCards },
                             activateClass: activateClass,
                             payCost: false,
                             isTapped: false,
