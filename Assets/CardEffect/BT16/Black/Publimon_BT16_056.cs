@@ -120,10 +120,40 @@ namespace DCGO.CardEffects.BT16
                                     Permanent securityPermanent = selectedPermanent;
                                     CardSource securityCard = securityPermanent.TopCard;
 
-                                    yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(
-                                        securityPermanent,
-                                        CardEffectCommons.CardEffectHashtable(activateClass),
-                                        toTop).PutSecurity());
+                                    if(securityPermanent.DigivolutionCards.Count < 0)
+                                    {
+                                        yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(
+                                            securityPermanent,
+                                            CardEffectCommons.CardEffectHashtable(activateClass),
+                                            toTop).PutSecurity());
+                                    }
+                                    else
+                                    {
+                                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveFromAllArea(permanent.TopCard));
+
+                                        permanent.ShowingPermanentCard.ShowPermanentData(true);
+
+                                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().RemoveDigivolveRootEffect(permanent.TopCard, permanent));
+
+                                        if (!permanent.TopCard.IsToken)
+                                        {
+                                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(permanent.TopCard, toTop));
+
+                                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(permanent.TopCard.Owner));
+
+                                            yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(permanent.TopCard.Owner).AddSecurity());
+
+                                            permanent.willBeRemoveField = false;
+
+                                            if (permanent.ShowingPermanentCard != null)
+                                            {
+                                                if (permanent.ShowingPermanentCard.WillBeDeletedObject != null)
+                                                {
+                                                    permanent.ShowingPermanentCard.WillBeDeletedObject.SetActive(false);
+                                                }
+                                            }
+                                        }
+                                    }                                    
                                 }
                             }
                         }
@@ -136,13 +166,13 @@ namespace DCGO.CardEffects.BT16
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Trash top or bottom of opponents security", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Place top card of one of your opponent's Digimon to the top/bottom of their security stack.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[On Play] [When Digivolving] You may place the top card of 1 of your opponent's Digimon with the [Vaccine] trait at the top of your opponent's security stack.";
+                    return "[When Digivolving] You may place the top card of 1 of your opponent's Digimon with the [Vaccine] trait at the top of your opponent's security stack.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -166,7 +196,7 @@ namespace DCGO.CardEffects.BT16
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
                         if (CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition) >= 1)
-                        return true;
+                            return true;
                     }
 
                     return true;
@@ -199,29 +229,80 @@ namespace DCGO.CardEffects.BT16
 
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
-                            if (permanent != null)
+                            Permanent selectedPermanent = permanent;
+
+                            if (selectedPermanent != null)
                             {
-                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveFromAllArea(permanent.TopCard));
-
-                                permanent.ShowingPermanentCard.ShowPermanentData(true);
-
-                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().RemoveDigivolveRootEffect(permanent.TopCard, permanent));
-
-                                if (!permanent.TopCard.IsToken)
+                                if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
                                 {
-                                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(permanent.TopCard));
+                                    List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
+                                {
+                                    new SelectionElement<bool>(message: $"Security Top", value : true, spriteIndex: 0),
+                                    new SelectionElement<bool>(message: $"Security Bottom", value : false, spriteIndex: 1),
+                                };
 
-                                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(permanent.TopCard.Owner));
+                                    string selectPlayerMessage = "Will you place the card on the top or bottom of the security?";
+                                    string notSelectPlayerMessage = "The opponent is selecting whether to place the card on the top or bottom of security.";
 
-                                    yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(permanent.TopCard.Owner).AddSecurity());
+                                    GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
 
-                                    permanent.willBeRemoveField = false;
+                                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                                    if (permanent.ShowingPermanentCard != null)
+                                    bool toTop = GManager.instance.userSelectionManager.SelectedBoolValue;
+
+                                    if (toTop)
                                     {
-                                        if (permanent.ShowingPermanentCard.WillBeDeletedObject != null)
+                                        GManager.instance.commandText.OpenCommandText("\"Place to the top of security\" was selected.");
+
+                                        GManager.instance.playLog.AddLogString($"\n{card.BaseENGCardNameFromEntity}({card.CardID}):Place the Digimon to the top of security\n");
+                                    }
+
+                                    else
+                                    {
+                                        GManager.instance.commandText.OpenCommandText("\"Place to the bottom of security\" was selected.");
+
+                                        GManager.instance.playLog.AddLogString($"\n{card.BaseENGCardNameFromEntity}({card.CardID}):Place the Digimon to the bottom of security\n");
+                                    }
+
+                                    yield return new WaitForSeconds(0.4f);
+                                    GManager.instance.commandText.CloseCommandText();
+                                    yield return new WaitWhile(() => GManager.instance.commandText.gameObject.activeSelf);
+
+                                    Permanent securityPermanent = selectedPermanent;
+                                    CardSource securityCard = securityPermanent.TopCard;
+
+                                    if (securityPermanent.DigivolutionCards.Count < 0)
+                                    {
+                                        yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(
+                                            securityPermanent,
+                                            CardEffectCommons.CardEffectHashtable(activateClass),
+                                            toTop).PutSecurity());
+                                    }
+                                    else
+                                    {
+                                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveFromAllArea(permanent.TopCard));
+
+                                        permanent.ShowingPermanentCard.ShowPermanentData(true);
+
+                                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().RemoveDigivolveRootEffect(permanent.TopCard, permanent));
+
+                                        if (!permanent.TopCard.IsToken)
                                         {
-                                            permanent.ShowingPermanentCard.WillBeDeletedObject.SetActive(false);
+                                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(permanent.TopCard, toTop));
+
+                                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(permanent.TopCard.Owner));
+
+                                            yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(permanent.TopCard.Owner).AddSecurity());
+
+                                            permanent.willBeRemoveField = false;
+
+                                            if (permanent.ShowingPermanentCard != null)
+                                            {
+                                                if (permanent.ShowingPermanentCard.WillBeDeletedObject != null)
+                                                {
+                                                    permanent.ShowingPermanentCard.WillBeDeletedObject.SetActive(false);
+                                                }
+                                            }
                                         }
                                     }
                                 }

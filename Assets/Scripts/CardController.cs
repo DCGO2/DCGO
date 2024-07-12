@@ -2561,8 +2561,9 @@ public class IPutSecurityPermanent
 
         #region add log
         string log = "";
+        string fromString = _toTop ? "top" : "bottom";
 
-        log += $"\nPut cards on top of security:";
+        log += $"\nPut cards on {fromString} of security:";
 
         log += $"\n{_permanent.TopCard.BaseENGCardNameFromEntity}({_permanent.TopCard.CardID})";
 

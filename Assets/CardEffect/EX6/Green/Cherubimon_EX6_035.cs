@@ -100,8 +100,6 @@ namespace DCGO.CardEffects.EX6
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    
-
                     if (CardEffectCommons.IsExistOnHand(cardSource))
                     {
                         if (cardSource.IsDigimon && cardSource.Level <= 4 && cardSource.CardColors.Contains(CardColor.Green))
@@ -113,15 +111,6 @@ namespace DCGO.CardEffects.EX6
                         {
                             return true;
                         }
-                    }
-
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                        {
-                            return true;
-                        }
-
                     }
 
                     return false;
@@ -289,15 +278,6 @@ namespace DCGO.CardEffects.EX6
                         {
                             return true;
                         }
-                    }
-
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                        {
-                            return true;
-                        }
-
                     }
 
                     return false;

@@ -197,13 +197,13 @@ public class MiragegaogamonBurstMode_BT13_033 : CEntity_Effect
                     {
                         if (card.Owner.isYou)
                         {
-                            card.Owner.Enemy.HandCards = RandomUtility.ShuffledDeckCards(card.Owner.Enemy.HandCards);
-
                             foreach (CardSource cardSource in card.Owner.Enemy.HandCards)
                             {
                                 cardSource.SetReverse();
                             }
                         }
+
+                        card.Owner.Enemy.HandCards = RandomUtility.ShuffledDeckCards(card.Owner.Enemy.HandCards);
 
                         List<CardSource> selectedCards = new List<CardSource>();
 
