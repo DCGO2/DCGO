@@ -49,18 +49,15 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnTrash(card))
-                    {
-                        if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
-                        {
-                            return true;
-                        }
+                     if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
+                     {
+                         return true;
+                     }
 
-                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
-                        {
-                            return true;
-                        }
-                    }
+                     if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
+                     {
+                         return true;
+                     }
 
                     return false;
                 }
@@ -185,18 +182,43 @@ namespace DCGO.CardEffects.BT17
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("1 of your Digimon digivolves for free", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Digivolve for free", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[All Turns] When one of your Tamers is deleted or returned to the hand, \r\n?1 of your Digimon may digivolve into a Digimon card with [ShineGreymon] in its name in the hand without paying the cost.";
+                    return "[All Turns] When one of your Tamers is deleted or returned to the hand, <Delay>.\r\n• 1 of your Digimon may digivolve into a Digimon card with [ShineGreymon] in its name in the hand without paying the cost.";
+                }
+
+                bool PermanentCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
+                    {
+                        if (permanent.IsTamer)
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.CanDeclareOptionDelayEffect(card))
+                    {
+                        if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
                     {
                         foreach (CardSource cardSource in card.Owner.HandCards)
                         {
@@ -213,50 +235,23 @@ namespace DCGO.CardEffects.BT17
                     return false;
                 }
 
-                bool PermanentCondition(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsOwnerPermanent(permanent, card))
-                    {
-                        if(permanent.IsTamer)
-                        {
-                            return true;
-                        }             
-                    }
-
-                    return false;
-                }
-
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.ContainsCardName("ShineGreymon");
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition) || CardEffectCommons.CanTriggerWhenAddHand(hashtable, player => player == card.Owner, cardEffect => cardEffect != null))
-                        {
-                            if (CardEffectCommons.CanDeclareOptionDelayEffect(card))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return false;
+                    return cardSource.CardNames.Contains("ShineGreymon");
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (card.PermanentOfThisCard().CanBeDestroyedBySkill(activateClass) || card.PermanentOfThisCard().CannotReturnToHand(activateClass))
+                        if (card.Owner.HandCards.Count >= 1)
                         {
-                            if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                            {
-                                return true;
-                            }
+                            return true;
+                        }
+
+                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermanentCondition))
+                        {
+                            return true;
                         }
                     }
 
@@ -264,78 +259,51 @@ namespace DCGO.CardEffects.BT17
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
-                {
-                    bool deleted = false;
-                    bool returnedToHand = false;
+                {         
+                    Permanent selectedPermanent = null;
 
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
-                        targetPermanents: new List<Permanent>() { card.PermanentOfThisCard() },
-                        activateClass: activateClass,
-                        successProcess: permanents => SuccessProcess(),
-                        failureProcess: null));
+                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
 
-                    IEnumerator SuccessProcess()
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                    selectPermanentEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanSelectPermanentCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: maxCount,
+                        canNoSelect: true,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: SelectPermanentCoroutine,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to digivolve into [ShineGreymon].", "The opponent is selecting 1 Digimon to digivolve into [ShineGreymon].");
+
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
-                        deleted = true;
+                        selectedPermanent = permanent;
 
                         yield return null;
                     }
 
-                    if(CardEffectCommons.CanTriggerWhenRemoveField(_hashtable, card))
+                    if (selectedPermanent != null)
                     {
-                        returnedToHand = true;
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                            targetPermanent: selectedPermanent,
+                            cardCondition: CanSelectCardCondition,
+                            payCost: false,
+                            reduceCostTuple: null,
+                            fixedCostTuple: null,
+                            ignoreDigivolutionRequirementFixedCost: -1,
+                            isHand: true,
+                            activateClass: activateClass,
+                            successProcess: null));
                     }
-
-                    if (deleted || returnedToHand)
-                    {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                        {
-                            Permanent selectedPermanent = null;
-
-                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-
-                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: CanSelectPermanentCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: maxCount,
-                                canNoSelect: true,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: SelectPermanentCoroutine,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Custom,
-                                cardEffect: activateClass);
-
-                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will digivolve.", "The opponent is selecting 1 Digimon that will digivolve.");
-
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                            IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                            {
-                                selectedPermanent = permanent;
-
-                                yield return null;
-                            }
-
-                            if (selectedPermanent != null)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                                    targetPermanent: selectedPermanent,
-                                    cardCondition: CanSelectCardCondition,
-                                    payCost: false,
-                                    reduceCostTuple: null,
-                                    fixedCostTuple: null,
-                                    ignoreDigivolutionRequirementFixedCost: -1,
-                                    isHand: true,
-                                    activateClass: activateClass,
-                                    successProcess: null));
-                            }
-                        }
-                    }
-                }
+                }                
             }
             #endregion
 
@@ -378,19 +346,17 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnTrash(card))
+
+                    if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
                     {
-                        if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
-                        {
-                            return true;
-                        }
-
-                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
-                        {
-                            return true;
-                        }
+                        return true;
                     }
-
+                  
+                    if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
+                    {
+                        return true;
+                    }
+                  
                     return false;
                 }
 
