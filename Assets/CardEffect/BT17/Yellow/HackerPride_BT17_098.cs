@@ -26,7 +26,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.ContainsCardName("Pulsemon"))
+                    if (cardSource.HasPulsemonText)
                     {
                         return true;
                     }

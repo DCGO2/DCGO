@@ -18,7 +18,6 @@ namespace DCGO.CardEffects.BT17
             #endregion
 
             #region Start of Your Main Phase
-
             if (timing == EffectTiming.OnStartMainPhase)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -50,7 +49,7 @@ namespace DCGO.CardEffects.BT17
                     {
                         if (card.Owner.GetBattleAreaPermanents().Contains(card.PermanentOfThisCard()))
                         {
-                            if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.IsDigimon && permanent.TopCard.ContainsCardName("Pulsemon")))
+                            if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.IsDigimon && permanent.TopCard.HasPulsemonText))
                             {
                                 if (card.Owner.CanAddMemory(activateClass))
                                 {

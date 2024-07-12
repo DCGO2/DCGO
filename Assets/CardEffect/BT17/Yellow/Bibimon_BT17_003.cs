@@ -31,9 +31,9 @@ namespace DCGO.CardEffects.BT17
                         {
                             if (CardEffectCommons.CanTriggerOnAddDigivolutionCard(
                                 hashtable: hashtable,
-                                permanentCondition: permanent => card.PermanentOfThisCard().IsTamer,
-                                cardEffectCondition: cardEffect => cardEffect != null,
-                                cardCondition: null))
+                                permanentCondition: permanent => permanent == card.PermanentOfThisCard(),
+                                cardEffectCondition: null,
+                                cardCondition: cardSource => cardSource.IsTamer))
                             {
                                 return true;
                             }
@@ -47,7 +47,7 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (card.Owner.CanAddMemory(activateClass))
                     {
-                        return CardEffectCommons.IsExistOnBattleArea(card);
+                        return true; 
                     }
 
                     return false;

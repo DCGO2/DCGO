@@ -66,7 +66,6 @@ namespace DCGO.CardEffects.BT17
                         {
                             return true;
                         }
-
                     }
 
                     return false;
@@ -131,6 +130,8 @@ namespace DCGO.CardEffects.BT17
                         {
                             yield return ContinuousController.instance.StartCoroutine(new IRecovery(card.Owner, 1, activateClass).Recovery());
                         }
+
+                        yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(selectedCards, activateClass));
                     }
                 }
             }
