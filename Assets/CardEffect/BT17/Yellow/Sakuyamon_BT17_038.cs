@@ -103,7 +103,7 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (cardSource.IsOption)
                     {
-                        if (cardSource.ContainsCardName("Plug-In") || cardSource.IsOption && cardSource.CardColors.Contains(CardColor.Yellow))
+                        if (cardSource.ContainsCardName("Plug-In") || cardSource.CardColors.Contains(CardColor.Yellow))
                         {
                             if(cardSource.GetCostItself <= 5)
                             {
@@ -197,7 +197,7 @@ namespace DCGO.CardEffects.BT17
             }
             #endregion
 
-            #region Inherit
+            #region Your Turn
             if (timing == EffectTiming.OnUseOption)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -265,76 +265,7 @@ namespace DCGO.CardEffects.BT17
                     condition: CanUseCondition2,
                     effectName: effectName
                 ));
-            }
-
-            if (timing == EffectTiming.OnUseOption)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("When you use an option, this Digimon can't be returned to hand or deck by effect.", CanUseCondition1, card);
-                cardEffects.Add(activateClass);
-
-                string EffectDiscription()
-                {
-                    return "[Your Turn][Once Per Turn] When you use an Option card with a cost of 2 or more, this Digimon can't be returned to hand or deck by your opponent's effects until the end of their turn.";
-                }
-
-                bool CanUseCondition1(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.IsOwnerTurn(card))
-                        {
-                            if (CardEffectCommons.CanTriggerWhenOwnerUseOption(hashtable, null, (cost) => cost >= 2, card))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return false;
-                }
-
-                bool CanUseCondition2()
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        return true;
-                    }
-
-                    return false;
-                }
-
-                bool PermanentCondition(Permanent permanent)
-                {
-                    return permanent == card.PermanentOfThisCard();
-                }
-
-                bool CardEffectCondition(ICardEffect cardEffect)
-                {
-                    return CardEffectCommons.IsOpponentEffect(cardEffect, card);
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        return true;
-                    }
-
-                    return false;
-                }
-
-                string effectName = "Can't return to deck by opponent's effects";
-
-                cardEffects.Add(CardEffectFactory.CannotReturnToDeckStaticEffect(
-                    permanentCondition: PermanentCondition,
-                    cardEffectCondition: CardEffectCondition,
-                    isInheritedEffect: false,
-                    card: card,
-                    condition: CanUseCondition2,
-                    effectName: effectName
-                ));
-            }
+            }          
             #endregion
 
             return cardEffects;
