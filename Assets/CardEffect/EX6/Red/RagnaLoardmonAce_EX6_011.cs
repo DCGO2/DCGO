@@ -143,13 +143,7 @@ namespace DCGO.CardEffects.EX6
             #endregion
             
             #region Shared On Play / When Digivolving
-            
-            string EffectSharedDescription()
-            {
-                return
-                    "[On Play] [When Digivolving] Trash the top card of your opponent's security stack and this Digimon isn't affected by your opponent's effects until the end of their turn. Then, if DNA digivolving,  all of your opponent's Digimon (Trash the top card. You can't trash past level 3 cards) and delete 1 of their Digimon.";
-            }
-            
+                        
             bool CanActivateSharedCondition(Hashtable hashtable)
             {
                 return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
@@ -218,9 +212,15 @@ namespace DCGO.CardEffects.EX6
                     "Trash the top card of your opponent's security stack and this Digimon isn't affected by your opponent's effects until the end of their turn.",
                     CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, false,
-                    EffectSharedDescription());
+                    EffectDescription());
                 cardEffects.Add(activateClass);
-                
+
+                string EffectDescription()
+                {
+                    return
+                        "[On Play] Trash the top card of your opponent's security stack and this Digimon isn't affected by your opponent's effects until the end of their turn. Then, if DNA digivolving,  all of your opponent's Digimon (Trash the top card. You can't trash past level 3 cards) and delete 1 of their Digimon.";
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
@@ -248,7 +248,7 @@ namespace DCGO.CardEffects.EX6
                     if (CardEffectCommons.IsJogress(hashtable))
                     {
                         // De-Digivolve all Opponent's Digimon
-                        List<Permanent> enemyPermanents = card.Owner.Enemy.GetBattleAreaDigimons().ToList();
+                        List<Permanent> enemyPermanents = card.Owner.Enemy.GetBattleAreaDigimons();
                         
                         foreach (Permanent permanent in enemyPermanents)
                         {
@@ -277,6 +277,8 @@ namespace DCGO.CardEffects.EX6
                                 afterSelectPermanentCoroutine: null,
                                 mode: SelectPermanentEffect.Mode.Destroy,
                                 cardEffect: activateClass);
+
+                            yield return ContinuousController.instance.StartCoroutine(selectEnemyEffect.Activate());
                         }
                     }
                 }
@@ -293,9 +295,15 @@ namespace DCGO.CardEffects.EX6
                     "Trash the top card of your opponent's security stack and this Digimon isn't affected by your opponent's effects until the end of their turn.",
                     CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, false,
-                    EffectSharedDescription());
+                    EffectDescription());
                 cardEffects.Add(activateClass);
-                
+
+                string EffectDescription()
+                {
+                    return
+                        "[When Digivolving] Trash the top card of your opponent's security stack and this Digimon isn't affected by your opponent's effects until the end of their turn. Then, if DNA digivolving,  all of your opponent's Digimon (Trash the top card. You can't trash past level 3 cards) and delete 1 of their Digimon.";
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
@@ -348,6 +356,8 @@ namespace DCGO.CardEffects.EX6
                                 afterSelectPermanentCoroutine: null,
                                 mode: SelectPermanentEffect.Mode.Destroy,
                                 cardEffect: activateClass);
+
+                            yield return ContinuousController.instance.StartCoroutine(selectEnemyEffect.Activate());
                         }
                     }
                 }
