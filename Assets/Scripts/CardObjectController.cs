@@ -601,7 +601,7 @@ public class CardObjectController : MonoBehaviour
         }
     }
 
-    static IEnumerator AddHandCard(CardSource cardSource, bool isDraw)
+    public static IEnumerator AddHandCard(CardSource cardSource, bool isDraw)
     {
         cardSource.Init();
         cardSource.SetFace();
