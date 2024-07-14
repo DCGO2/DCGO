@@ -121,7 +121,7 @@ namespace DCGO.CardEffects.BT16
                 {
                     if(card.Owner.HandCards.Count >=1)
                     {
-                        if(card.CardTraits.Contains("FourGreatDragons"))
+                        if(card.CardTraits.Contains("FourGreatDragons") || card.CardTraits.Contains("Four Great Dragons"))
                         {
                             return true;
                         }
