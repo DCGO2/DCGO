@@ -273,13 +273,15 @@ namespace DCGO.CardEffects.EX6
                         canNotBeRemovedClass.SetUpICardEffect("Can't leave battle area except by deletion effect", CanUseProtectionCondition, card);
                         canNotBeRemovedClass.SetUpCanNotBeRemovedClass(permanentCondition: PermanentCondition);
                         canNotBeRemovedClass.SetIsInheritedEffect(true);
-                        selectedPermanent.UntilOpponentTurnEndEffects.Add((_timing) => canNotBeRemovedClass);
+
+                        if(!cardEffects.Contains(canNotBeRemovedClass))
+                            cardEffects.Add(canNotBeRemovedClass);
 
                         bool CanUseProtectionCondition(Hashtable hashtable)
                         {
-                            if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
+                            if (CardEffectCommons.IsOpponentTurn(card))
                             {
-                                if (selectedPermanent.TopCard.CardNames.Contains("Ragnalordmon"))
+                                if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
                                 {
                                     if (!CardEffectCommons.IsByEffect(hashtable, cardEffect => CardEffectCommons.IsOwnerEffect(cardEffect, card)))
                                     {
@@ -293,11 +295,18 @@ namespace DCGO.CardEffects.EX6
 
                         bool PermanentCondition(Permanent permanent)
                         {
+
                             if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
                             {
-                                if (permanent == selectedPermanent)
+                                if (permanent == selectedPermanent) 
                                 {
-                                    return true;
+                                    if (selectedPermanent.TopCard != card)
+                                    {
+                                        if (selectedPermanent.TopCard.CardNames.Contains("RagnaLoardmon"))
+                                        {
+                                            return true;
+                                        }
+                                    }
                                 }
                             }
 

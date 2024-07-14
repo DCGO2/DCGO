@@ -177,7 +177,7 @@ public partial class CardEffectFactory
                     mode: SelectHandEffect.Mode.Custom,
                     cardEffect: activateClass);
 
-                selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to DNA digivolve.", "The opponent is selecting 1 Digimon to DNA digivolve.");
+                selectHandEffect.SetUpCustomMessage("Select 1 Digimon to DNA digivolve.", "The opponent is selecting 1 Digimon to DNA digivolve.");
 
                 yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
             }
@@ -210,18 +210,26 @@ public partial class CardEffectFactory
                 
                 int[] JogressEvoRootsFrameIDs = { selectedPermanent.PermanentFrame.FrameID, selectedCardSource.PermanentOfThisCard().PermanentFrame.FrameID };
 
-                PlayCardClass playCard = new PlayCardClass(
-                    cardSources: new List<CardSource>() { card },
-                    hashtable: CardEffectCommons.CardEffectHashtable(activateClass),
-                    payCost: true,
-                    targetPermanent: null,
-                    isTapped: false,
-                    root: SelectCardEffect.Root.Hand,
-                    activateETB: true);
+                if (card.CanPlayJogress(true))
+                {
+                    PlayCardClass playCard = new PlayCardClass(
+                        cardSources: new List<CardSource>() { card },
+                        hashtable: CardEffectCommons.CardEffectHashtable(activateClass),
+                        payCost: true,
+                        targetPermanent: null,
+                        isTapped: false,
+                        root: SelectCardEffect.Root.Hand,
+                        activateETB: true);
 
-                playCard.SetJogress(JogressEvoRootsFrameIDs);
+                    playCard.SetJogress(JogressEvoRootsFrameIDs);
 
-                yield return ContinuousController.instance.StartCoroutine(playCard.PlayCard());
+                    yield return ContinuousController.instance.StartCoroutine(playCard.PlayCard());
+                }
+                else
+                {
+                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddHandCard(selectedCardSource, false));
+                }
+                
             }
         }
 
