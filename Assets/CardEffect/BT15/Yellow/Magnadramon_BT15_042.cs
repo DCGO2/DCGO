@@ -42,8 +42,6 @@ public class Magnadramon_BT15_042 : CEntity_Effect
                 {
                     if (CardEffectCommons.CanTriggerWhenLoseSecurity(hashtable, player => player == card.Owner))
                     {
-                        return true;
-
                         if (card.Owner.SecurityCards.Count() <= 3)
                         {
                             return true;
