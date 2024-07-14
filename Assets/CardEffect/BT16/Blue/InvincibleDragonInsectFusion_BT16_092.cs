@@ -289,7 +289,7 @@ namespace DCGO.CardEffects.BT16
                                 string selectPlayerMessage1 = "From which area do you play a card?";
                                 string notSelectPlayerMessage1 = "The opponent is choosing from which area to play a card.";
 
-                                GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+                                GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage1, notSelectPlayerMessage: notSelectPlayerMessage1);
                             }
 
                             else
