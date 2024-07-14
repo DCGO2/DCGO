@@ -41,7 +41,7 @@ namespace DCGO.CardEffects.P
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("", CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -81,7 +81,7 @@ namespace DCGO.CardEffects.P
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,
-                            canNoSelect: false,
+                            canNoSelect: true,
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine,
                             afterSelectPermanentCoroutine: null,
