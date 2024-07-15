@@ -986,7 +986,7 @@ public class CardObjectController : MonoBehaviour
     #endregion
 
     #region move permanent
-    public static IEnumerator MovePermanent(FieldCardFrame movingPermanentFrame)
+    public static IEnumerator MovePermanent(FieldCardFrame movingPermanentFrame, bool toBreeding = false)
     {
         if (movingPermanentFrame != null)
         {
@@ -999,14 +999,9 @@ public class CardObjectController : MonoBehaviour
                 bool prevIsFrontLine = movingPermanentFrame.IsBattleAreaFrame();
                 FieldCardFrame moveTargetFrame = movingPermanent.TopCard.PreferredFrame();
 
-                if (prevIsFrontLine)
-                {
+                if (toBreeding)
                     moveTargetFrame = player.fieldCardFrames.Filter(frame => frame.isBreedingAreaFrame()).ToList()[0];
-                }
-                else
-                {
-                    moveTargetFrame = movingPermanent.TopCard.PreferredFrame();
-                }
+
    
                 if (moveTargetFrame != null && moveTargetFrame != null)
                 {
