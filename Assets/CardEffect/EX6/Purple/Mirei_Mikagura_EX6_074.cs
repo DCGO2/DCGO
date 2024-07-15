@@ -75,13 +75,17 @@ namespace DCGO.CardEffects.EX6
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PlayedPermanentCondition))
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if(CardEffectCommons.IsOwnerTurn(card))
+                        if (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PlayedPermanentCondition))
                         {
-                            return true;
+                            if (CardEffectCommons.IsOwnerTurn(card))
+                            {
+                                return true;
+                            }
                         }
                     }
+                        
                     return false;
                 }
 

@@ -208,10 +208,16 @@ namespace DCGO.CardEffects.EX6
                 {
                     int maxCost = 10 - card.Owner.Enemy.HandCards.Count();
 
-                    if (cardSource.GetCostItself <= maxCost)
+                    if(cardSource.IsDigimon || cardSource.IsTamer)
                     {
-                        return true;
-                    }
+                        if (cardSource.CardColors.Contains(CardColor.Purple))
+                        {
+                            if (cardSource.GetCostItself <= maxCost)
+                            {
+                                return true;
+                            }
+                        }
+                    }                    
            
                     return false;
                 }
@@ -265,25 +271,13 @@ namespace DCGO.CardEffects.EX6
                             yield return null;
                         }
 
-                        if (selectedCards[0].IsOption)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(
-                            CardEffectCommons.PlayOptionCards(
-                            cardSources: selectedCards,
-                            activateClass: activateClass,
-                            payCost: false,
-                            root: SelectCardEffect.Root.Trash));
-                        }
-                        else
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
                                 cardSources: selectedCards,
                                 activateClass: activateClass,
                                 payCost: false,
                                 isTapped: false,
                                 root: SelectCardEffect.Root.Trash,
                                 activateETB: true));
-                        }
                     }
                 }
             }

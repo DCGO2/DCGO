@@ -90,7 +90,7 @@ namespace DCGO.CardEffects.EX6
 
                             yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                            useTrash = (GManager.instance.userSelectionManager.SelectedIntValue == 1);
+                            useTrash = (GManager.instance.userSelectionManager.SelectedIntValue == 0);
                             #endregion
 
                             if(GManager.instance.userSelectionManager.SelectedIntValue != 2)
