@@ -27,19 +27,15 @@ namespace DCGO.CardEffects.EX6
                     return "[On Play] By trashing 1 card in your hand, until the end of your opponent's turn, 1 of your opponent's Digimon gains [End of Attack] Delete this Digimon.";
                 }
 
+                bool CanSelectPermanentCondition(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-                }
-
-                bool CanSelectPermanentCondition(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                    {
-                        return true;
-                    }
-                    return false;
-                }
+                }                
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
@@ -217,18 +213,14 @@ namespace DCGO.CardEffects.EX6
                     return "[When Digivolving] By trashing 1 card in your hand, until the end of your opponent's turn, 1 of your opponent's Digimon gains [End of Attack] Delete this Digimon.";
                 }
 
+                bool CanSelectPermanentCondition(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
-                }
-
-                bool CanSelectPermanentCondition(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                    {
-                        return true;
-                    }
-                    return false;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
