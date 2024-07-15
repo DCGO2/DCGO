@@ -280,7 +280,7 @@ namespace DCGO.CardEffects.BT16
                         {
                             if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                             {
-                                if(permanent.TopCard.HasDP && permanent.TopCard.CardDP <= cardToPlay.CardDP)
+                                if(permanent.TopCard.HasDP && permanent.DP <= cardToPlay.PermanentOfThisCard().DP)
                                 {
                                     return true;
                                 }
