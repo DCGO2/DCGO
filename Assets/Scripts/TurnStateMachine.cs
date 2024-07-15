@@ -585,11 +585,24 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
         List<Permanent> unsuspendPermanents = new List<Permanent>();
 
+        //Add field Permanents to unsuspend list
         foreach (Permanent permanent in gameContext.PermanentsForTurnPlayer)
         {
             if (permanent.IsSuspended && permanent.CanUnsuspend)
             {
                 if (permanent.TopCard.Owner == gameContext.TurnPlayer || permanent.HasReboot)
+                {
+                    unsuspendPermanents.Add(permanent);
+                }
+            }
+        }
+
+        //Add raising area Permanents to unsuspend list
+        foreach (Permanent permanent in gameContext.You.GetBreedingAreaPermanents())
+        {
+            if (permanent.IsSuspended && permanent.CanUnsuspend)
+            {
+                if (permanent.TopCard.Owner == gameContext.TurnPlayer)
                 {
                     unsuspendPermanents.Add(permanent);
                 }
