@@ -123,7 +123,14 @@ namespace DCGO.CardEffects.EX6
 
                 bool HasDiaboromonInNameField(Permanent permanent)
                 {
-                    return permanent.TopCard.ContainsCardName("Diaboromon");
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
+                    {
+                        if (permanent.TopCard.ContainsCardName("Diaboromon"))
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
                 }
 
                 bool HasDiaboromonInNameHand(CardSource cardSource)
