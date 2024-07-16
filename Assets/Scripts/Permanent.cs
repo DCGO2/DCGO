@@ -2308,9 +2308,6 @@ public class Permanent
             return false;
         }
 
-        if (!CanBeRemoved())
-            return false;
-
         #region 戦闘で消滅しない効果
         foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
         {
@@ -2369,9 +2366,6 @@ public class Permanent
             {
                 return false;
             }
-
-            if (!CanBeRemoved())
-                return false;
 
             #region 効果で消滅しない効果
             foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
