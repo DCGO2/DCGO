@@ -40,31 +40,24 @@ namespace DCGO.CardEffects.P
             if (timing == EffectTiming.SecuritySkill)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("", CanUseCondition, card);
+                activateClass.SetUpICardEffect("1 opponent's digimon gains <Security A. -1> for the turn", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetIsSecurityEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[Main] Place this card as 1 of your non - white Digimon's bottom digivolution card.";
+                    return "[Security] 1 of your opponent's Digimon gains <Security A. -1> for the turn.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
-                    {
-                        if (!permanent.TopCard.CardColors.Contains(CardColor.White))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card);
+                    return CardEffectCommons.CanTriggerSecurityEffect(hashtable, card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -88,7 +81,7 @@ namespace DCGO.CardEffects.P
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will get a digivolution card.", "The opponent is selecting 1 Digimon that will get a digivolution card.");
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will get <Secirity A. -1>.", "The opponent is selecting 1 Digimon that will get <Secirity A. -1>.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
@@ -98,9 +91,11 @@ namespace DCGO.CardEffects.P
 
                             if (selectedPermanent != null)
                             {
-                                yield return ContinuousController.instance.StartCoroutine(card.Owner.brainStormObject.CloseBrainstrorm(card));
-
-                                yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(new List<CardSource>() { card }, activateClass));
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonSAttack(
+                                    targetPermanent: permanent,
+                                    changeValue: -1,
+                                    effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                                    activateClass: activateClass));
                             }
                         }
                     }
@@ -109,7 +104,7 @@ namespace DCGO.CardEffects.P
             #endregion
 
             #region Main
-            if (timing == EffectTiming.OnUseOption)
+            if (timing == EffectTiming.OptionSkill)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Place as bottom Digivolution source", CanUseCondition, card);
