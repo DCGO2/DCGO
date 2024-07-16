@@ -3771,6 +3771,20 @@ public class ITrashDigivolutionCards
         if (_permanent == null) yield break;
         if (_permanent.TopCard == null) yield break;
         if (_permanent.TopCard.CanNotBeAffected(_cardEffect)) yield break;
+        if (_permanent.HasNoDigivolutionCards) yield break;
+
+        _trashTargetCards = _trashTargetCards.Filter((cardSource) => 
+            _permanent.DigivolutionCards.Contains(cardSource) && 
+            !cardSource.CanNotTrashFromDigivolutionCards(_cardEffect));
+
+        if (_trashTargetCards.Count == 0) yield break;
+
+        _trashTargetCards.ForEach(source => source.willBeRemoveSources = true);
+
+        string message = "Discarded card" + Utils.PluralFormSuffix(_trashTargetCards.Count);
+        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(_trashTargetCards, message, true, true));
+
+        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(_permanent));
 
         #region cut in effect - Would discard
 
@@ -3793,21 +3807,6 @@ public class ITrashDigivolutionCards
             yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.TriggeredSkillProcess(false, AutoProcessing.HasExecutedSameEffect));
         }
         #endregion
-
-        if (_permanent.HasNoDigivolutionCards) yield break;
-
-        _trashTargetCards = _trashTargetCards.Filter((cardSource) => 
-            _permanent.DigivolutionCards.Contains(cardSource) && 
-            !cardSource.CanNotTrashFromDigivolutionCards(_cardEffect));
-
-        if (_trashTargetCards.Count == 0) yield break;
-
-        _trashTargetCards.ForEach(source => source.willBeRemoveSources = true);
-
-        string message = "Discarded card" + Utils.PluralFormSuffix(_trashTargetCards.Count);
-        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(_trashTargetCards, message, true, true));
-
-        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(_permanent));
 
         //fix trash target permanent
         Permanent permanentTarget_Fixed = _permanent;

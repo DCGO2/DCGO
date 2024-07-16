@@ -39,8 +39,6 @@ namespace DCGO.CardEffects.P
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    Permanent selectedPermanent = null;
-
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
@@ -60,26 +58,30 @@ namespace DCGO.CardEffects.P
 
                     IEnumerator SelectedPermanent(Permanent permanent)
                     {
-                        if (permanent == null)
-                            selectedPermanent = permanent;
-
-                        yield return null;
-                    }
-
-                    if(selectedPermanent != null)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
-                            targetPermanent: card.PermanentOfThisCard(), 
-                            changeValue: 2000, 
-                            effectDuration: EffectDuration.UntilOpponentTurnEnd, 
-                            activateClass: activateClass));
+                        if (permanent != null)
+                        {
+                            if (permanent.TopCard != null)
+                            {
+                                if (!permanent.TopCard.CanNotBeAffected(activateClass))
+                                {
+                                    if (!permanent.IsSuspended && permanent.CanSuspend)
+                                    {
+                                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
+                                            targetPermanent: card.PermanentOfThisCard(),
+                                            changeValue: 2000,
+                                            effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                                            activateClass: activateClass));
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
             #endregion
 
             #region Your Turn
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnDetermineDoSecurityCheck)
             {
                 bool HasShotoKazama(Permanent permanent)
                 {
@@ -90,7 +92,7 @@ namespace DCGO.CardEffects.P
                 {
                     if (CardEffectCommons.IsOwnerTurn(card))
                     {
-                        if(CardEffectCommons.HasMatchConditionOwnersPermanent(card, HasShotoKazama))
+                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, HasShotoKazama))
                         {
                             return true;
                         }

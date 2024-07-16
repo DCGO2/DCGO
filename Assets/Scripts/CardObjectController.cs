@@ -570,7 +570,11 @@ public class CardObjectController : MonoBehaviour
             }
         }
 
+        List<CardSource> eggCards = cardSources.Filter(cardSource => cardSource.IsDigiEgg);
         List<CardSource> addedCards = cardSources.Filter(cardSource => !cardSource.IsToken);
+
+        if (eggCards.Count <= 0)
+            yield return ContinuousController.instance.StartCoroutine(AddLibraryBottomCards(eggCards));
 
         if (addedCards.Count <= 0) yield break;
 
