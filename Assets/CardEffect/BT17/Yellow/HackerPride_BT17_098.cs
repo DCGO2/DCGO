@@ -79,7 +79,7 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent.IsDigimon && /*permanent.TopCard.HasPulsemonText &&*/ permanent.TopCard.Level >= 4)
+                        if (permanent.IsDigimon && permanent.TopCard.HasPulsemonText && permanent.TopCard.Level >= 4)
                         {
                             return true;
                         }                          
