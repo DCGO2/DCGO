@@ -66,16 +66,14 @@ namespace DCGO.CardEffects.EX6
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(
-                    "Place digvolution cards and activate effects",
-                    CanUseCondition, card);
+                    "Place digvolution cards and activate effects", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false,
                     EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
                 {
-                    return
-                        "[On Play] You may place up to 3 of your other blue Digimon as this Digimon's bottom digivolution cards. Then, return all other level 4 or lower Digimon to the hand. For each card placed in this Digimon's digivolution cards, add 1 to the level this effect may return.";
+                    return "[On Play] You may place up to 3 of your other blue Digimon as this Digimon's bottom digivolution cards. Then, return all other level 4 or lower Digimon to the hand. For each card placed in this Digimon's digivolution cards, add 1 to the level this effect may return.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -181,14 +179,24 @@ namespace DCGO.CardEffects.EX6
                             }
                         }
                     }
-                    bool PermanentConditionEnemy(Permanent enemyPermanent)
+                    bool BouncePermanentCondition(Permanent permanent)
                     {
-                        return enemyPermanent.Level <= 4 + cardsAdded;
+                        if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
+                        {
+                            if (permanent.TopCard.CanNotBeAffected(activateClass))
+                            {
+                                return permanent.TopCard.HasLevel && permanent.Level <= 4 + cardsAdded;
+                            }
+                        }
+
+                        return false;
                     }
 
+                    // Return all Digimon with a level lower or equal to 4 plus the number of chosen Digimon
+                    List<Permanent> bounceTargetPermanents = new List<Permanent>();
 
-                    // Return all opponent's Digimon with a level lower or equal to 4 plus the number of chosen Digimon
-                    List<Permanent> bounceTargetPermanents = card.Owner.Enemy.GetBattleAreaDigimons().Filter(PermanentConditionEnemy);
+                    bounceTargetPermanents.AddRange(card.Owner.Enemy.GetBattleAreaDigimons().Filter(BouncePermanentCondition));
+                    bounceTargetPermanents.AddRange(card.Owner.GetBattleAreaDigimons().Filter(BouncePermanentCondition));
 
                     yield return ContinuousController.instance.StartCoroutine(
                         new HandBounceClaass(bounceTargetPermanents,
@@ -342,15 +350,13 @@ namespace DCGO.CardEffects.EX6
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 digivolution card", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true,
-                    EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
                 activateClass.SetHashString("Play1DigivolutionCard_EX6_015");
                 cardEffects.Add(activateClass);
                 
                 string EffectDescription()
                 {
-                    return
-                        "[Your Turn] [Once Per Turn] When an effect places a digivolution card under this Digimon, you may play 1 level 5 or lower Digimon card with [Aqua]/[Sea Animal] in one of its traits from this Digimon's digivolution cards without paying the cost.";
+                    return "[Your Turn] [Once Per Turn] When an effect places a digivolution card under this Digimon, you may play 1 level 5 or lower Digimon card with [Aqua]/[Sea Animal] in one of its traits from this Digimon's digivolution cards without paying the cost.";
                 }
                 
                 bool CanSelectCardCondition(CardSource cardSource)
@@ -394,21 +400,15 @@ namespace DCGO.CardEffects.EX6
                 }
                 
                 bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        return true;
-                    }
-                    
-                    return false;
+                {                   
+                    return CardEffectCommons.IsExistOnBattleArea(card);
                 }
                 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     if (card.PermanentOfThisCard().DigivolutionCards.Count(CanSelectCardCondition) >= 1)
                     {
-                        int maxCount = Math.Min(1,
-                            card.PermanentOfThisCard().DigivolutionCards.Count(CanSelectCardCondition));
+                        int maxCount = Math.Min(1,card.PermanentOfThisCard().DigivolutionCards.Count(CanSelectCardCondition));
                         
                         List<CardSource> selectedCards = new List<CardSource>();
                         
