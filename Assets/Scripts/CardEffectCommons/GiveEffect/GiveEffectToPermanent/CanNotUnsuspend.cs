@@ -33,7 +33,7 @@ public partial class CardEffectCommons
 
         yield return ContinuousController.instance.StartCoroutine(GainCanNotUnsuspend(
             targetPermanent: targetPermanent,
-            effectDuration: EffectDuration.UntilOpponentTurnEnd,
+            effectDuration: EffectDuration.UntilNextUntap,
             activateClass: activateClass,
             condition: CanUseCondition,
             effectName: effectName

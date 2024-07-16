@@ -1,4 +1,4 @@
-using Photon.Pun.Demo.Procedural;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,7 +45,7 @@ namespace DCGO.CardEffects.P
                 {
                     if (CardEffectCommons.IsOwnerTurn(card))
                     {
-                        return card.PermanentOfThisCard().cardSources.Count(HasGotsumonOrXAntibody) > 0;
+                        return card.PermanentOfThisCard().cardSources.Count(HasGotsumonOrXAntibody) == 0;
                     }
 
                     return false;
@@ -79,6 +79,14 @@ namespace DCGO.CardEffects.P
                     return "[Opponent's Turn] (Once Per Turn) When an attack target is switched, you may unsuspend 1 of your Digimon with <Blocker>.";
                 }
 
+                bool PermanentHasBlocker(Permanent permanent)
+                {
+                    if(CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                        return permanent.HasBlocker;
+
+                    return false;
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return !CardEffectCommons.IsOwnerTurn(card);
@@ -91,7 +99,26 @@ namespace DCGO.CardEffects.P
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() }, activateClass).Unsuspend());
+                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                    selectPermanentEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: PermanentHasBlocker,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: maxCount,
+                        canNoSelect: false,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: null,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.UnTap,
+                        cardEffect: activateClass);
+
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will unsuspend.", "The opponent is selecting 1 Digimon that will unsuspend.");
+
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                 }
             }
             #endregion

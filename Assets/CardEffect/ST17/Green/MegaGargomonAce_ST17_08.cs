@@ -214,7 +214,9 @@ namespace DCGO.CardEffects.ST17
                                 {
                                     if (cardSource.IsDigimon || cardSource.IsTamer)
                                     {
-                                        return true;
+                                        if (!cardSource.CanNotBeAffected(canNotPutFieldClass)){
+                                            return true;
+                                        }
                                     }
                                 }
 
