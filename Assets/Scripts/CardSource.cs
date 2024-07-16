@@ -6,6 +6,7 @@ using Photon.Pun;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using DCGO.CardEntities;
 
 public class CardSource : MonoBehaviour
 {
@@ -1082,7 +1083,26 @@ public class CardSource : MonoBehaviour
     #endregion
 
     #region Whether target other card's name has same name as this
-    public bool HasSameCardName(CardSource cardSource) => cardSource.CardNames.Count((cardName) => CardNames.Contains(cardName)) >= 1;
+    public bool HasSameCardName(CardSource cardSource) => cardSource.CardNames.Count((cardName) => cardSource.EqualsCardName(cardName)) >= 1;
+    #endregion
+
+    #region whether this card has at least 1 card name that equals the string
+    public bool EqualsCardName(string name)
+    {
+        if (string.IsNullOrEmpty(name))
+        {
+            return false;
+        }
+
+        string replaced = name.Replace(" ", "");
+        string lower = name.ToLower();
+
+        return CardNames.Some((cardName) =>
+        cardName.Equals(name)
+        || cardName.Equals(replaced)
+        || cardName.Equals(lower)
+        || cardName.ToLower().Equals(lower));
+    }
     #endregion
 
     #region whether this card has at least 1 card name that contains the string
