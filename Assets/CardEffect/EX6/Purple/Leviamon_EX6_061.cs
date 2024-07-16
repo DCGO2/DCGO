@@ -36,7 +36,9 @@ namespace DCGO.CardEffects.EX6
                                 return true;
                         }
                         else
-                            return true;
+                        {
+                            return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+                        }
                     }
 
                     return false;
