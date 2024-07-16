@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.BT17
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(card.BaseENGCardNameFromEntity, CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -39,19 +39,6 @@ namespace DCGO.CardEffects.BT17
                     return CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card);
                 }
 
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (card.Owner.LibraryCards.Count >= 1)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SimplifiedRevealDeckTopCardsAndSelect(
@@ -61,7 +48,7 @@ namespace DCGO.CardEffects.BT17
                     {
                         new SimplifiedSelectCardConditionClass(
                             canTargetCondition:CanSelectCardCondition,
-                            message: "1 card with [Pulsemon] in its name.",
+                            message: "1 card with [Pulsemon] in its text.",
                             mode: SelectCardEffect.Mode.AddHand,
                             maxCount: 1,
                             selectCardCoroutine: null),
@@ -70,9 +57,7 @@ namespace DCGO.CardEffects.BT17
                     activateClass: activateClass
                 ));
 
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlaceDelayOptionCards(
-                        card: card,
-                        cardEffect: activateClass));
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlaceDelayOptionCards(card: card, cardEffect: activateClass));
                 }
             }
             #endregion
@@ -82,7 +67,7 @@ namespace DCGO.CardEffects.BT17
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Place 1 Digimon on top of Security to get 2 memory.", CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -94,8 +79,10 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent.TopCard.ContainsCardName("Pulsemon") && permanent.TopCard.Level >= 4)
+                        if (permanent.IsDigimon && /*permanent.TopCard.HasPulsemonText &&*/ permanent.TopCard.Level >= 4)
+                        {
                             return true;
+                        }                          
                     }
 
                     return false;
@@ -103,7 +90,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                    return CardEffectCommons.CanDeclareOptionDelayEffect(card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -119,62 +106,65 @@ namespace DCGO.CardEffects.BT17
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: new List<Permanent>() { card.PermanentOfThisCard() }, activateClass: activateClass, successProcess: permanents => SuccessProcess(), failureProcess: null));
+
+                    IEnumerator SuccessProcess()
                     {
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectPermanentCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: true,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: SelectPermanentCoroutine,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to place to security.", "The opponent is selecting 1 Digimon to place to security.");
-
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                         {
-                            if (permanent != null)
+                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+
+                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                            selectPermanentEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: CanSelectPermanentCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: maxCount,
+                                canNoSelect: true,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: SelectPermanentCoroutine,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Custom,
+                                cardEffect: activateClass);
+
+                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to place to security.", "The opponent is selecting 1 Digimon to place to security.");
+
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                            IEnumerator SelectPermanentCoroutine(Permanent permanent)
                             {
-                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveFromAllArea(permanent.TopCard));
-
-                                permanent.ShowingPermanentCard.ShowPermanentData(true);
-
-                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().RemoveDigivolveRootEffect(permanent.TopCard, permanent));
-
-                                if (!permanent.TopCard.IsToken)
+                                if (permanent != null)
                                 {
-                                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(permanent.TopCard));
+                                    permanent.ShowingPermanentCard.ShowPermanentData(true);
 
-                                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(permanent.TopCard.Owner));
+                                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().RemoveDigivolveRootEffect(permanent.TopCard, permanent));
 
-                                    yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(permanent.TopCard.Owner).AddSecurity());
-
-                                    permanent.willBeRemoveField = false;
-
-                                    if (permanent.ShowingPermanentCard != null)
+                                    if (!permanent.TopCard.IsToken)
                                     {
-                                        if (permanent.ShowingPermanentCard.WillBeDeletedObject != null)
+                                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(permanent.TopCard));
+
+                                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(permanent.TopCard.Owner));
+
+                                        yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(permanent.TopCard.Owner).AddSecurity());
+
+                                        permanent.willBeRemoveField = false;
+
+                                        if (permanent.ShowingPermanentCard != null)
                                         {
-                                            permanent.ShowingPermanentCard.WillBeDeletedObject.SetActive(false);
+                                            if (permanent.ShowingPermanentCard.WillBeDeletedObject != null)
+                                            {
+                                                permanent.ShowingPermanentCard.WillBeDeletedObject.SetActive(false);
+                                            }
                                         }
                                     }
-                                }
 
-                                yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(2, activateClass));
+                                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(2, activateClass));
+                                }
                             }
                         }
-                    }
+                    }                   
                 }
             }
             #endregion
@@ -184,7 +174,7 @@ namespace DCGO.CardEffects.BT17
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect($"Reveal the top 3 cards of deck and place this card on battle area", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
                 activateClass.SetIsSecurityEffect(true);
                 cardEffects.Add(activateClass);
 
@@ -195,7 +185,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.ContainsCardName("Pulsemon"))
+                    if (cardSource.HasPulsemonText)
                     {
                         return true;
                     }
@@ -208,19 +198,6 @@ namespace DCGO.CardEffects.BT17
                     return CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card);
                 }
 
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (card.Owner.LibraryCards.Count >= 1)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SimplifiedRevealDeckTopCardsAndSelect(
@@ -230,7 +207,7 @@ namespace DCGO.CardEffects.BT17
                     {
                         new SimplifiedSelectCardConditionClass(
                             canTargetCondition:CanSelectCardCondition,
-                            message: "1 card with [Pulsemon] in its name.",
+                            message: "1 card with [Pulsemon] in its text.",
                             mode: SelectCardEffect.Mode.AddHand,
                             maxCount: 1,
                             selectCardCoroutine: null),
