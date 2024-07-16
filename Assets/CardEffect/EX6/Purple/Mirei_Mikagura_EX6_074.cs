@@ -64,7 +64,7 @@ namespace DCGO.CardEffects.EX6
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.CardNames.Contains("Angewomon") || !cardSource.CardNames.Contains("LadyDevimon"))
+                        if (cardSource.CardNames.Contains("Angewomon") || cardSource.CardNames.Contains("LadyDevimon"))
                         {
                             return true;
                         }
