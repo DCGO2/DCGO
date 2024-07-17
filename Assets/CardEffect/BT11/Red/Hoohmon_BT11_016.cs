@@ -55,102 +55,98 @@ public class Hoohmon_BT11_016 : CEntity_Effect
             {
                 if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
-                    if (card.Owner.GetBattleAreaDigimons().Contains(card.PermanentOfThisCard()))
-                    {
-                        List<ICardEffect> candidateEffects = card.PermanentOfThisCard().EffectList(EffectTiming.OnDestroyedAnyone)
+                    List<ICardEffect> candidateEffects = card.PermanentOfThisCard().EffectList(EffectTiming.OnDestroyedAnyone)
                             .Clone()
                             .Filter(cardEffect => cardEffect != null && cardEffect is ActivateICardEffect && !cardEffect.IsSecurityEffect && cardEffect.IsOnDeletion);
 
-                        if (candidateEffects.Count >= 1)
+                    if (candidateEffects.Count >= 1)
+                    {
+                        ICardEffect selectedEffect = null;
+
+                        if (candidateEffects.Count == 1)
                         {
-                            ICardEffect selectedEffect = null;
+                            selectedEffect = candidateEffects[0];
+                        }
 
-                            if (candidateEffects.Count == 1)
+                        else
+                        {
+                            List<SkillInfo> skillInfos = candidateEffects
+                                .Map(cardEffect => new SkillInfo(cardEffect, null, EffectTiming.None));
+
+                            List<CardSource> cardSources = candidateEffects
+                                .Map(cardEffect => cardEffect.EffectSourceCard);
+
+                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                            selectCardEffect.SetUp(
+                                canTargetCondition: (cardSource) => true,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                canNoSelect: () => false,
+                                selectCardCoroutine: null,
+                                afterSelectCardCoroutine: AfterSelectCoroutine,
+                                message: "Select 1 effect to activate.",
+                                maxCount: 1,
+                                canEndNotMax: false,
+                                isShowOpponent: false,
+                                mode: SelectCardEffect.Mode.Custom,
+                                root: SelectCardEffect.Root.Custom,
+                                customRootCardList: cardSources,
+                                canLookReverseCard: true,
+                                selectPlayer: card.Owner,
+                                cardEffect: activateClass);
+
+                            selectCardEffect.SetNotShowCard();
+                            selectCardEffect.SetUpSkillInfos(skillInfos);
+
+                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+
+                            IEnumerator AfterSelectCoroutine(List<CardSource> selectedCards)
                             {
-                                selectedEffect = candidateEffects[0];
-                            }
-
-                            else
-                            {
-                                List<SkillInfo> skillInfos = candidateEffects
-                                    .Map(cardEffect => new SkillInfo(cardEffect, null, EffectTiming.None));
-
-                                List<CardSource> cardSources = candidateEffects
-                                    .Map(cardEffect => cardEffect.EffectSourceCard);
-
-                                SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                                selectCardEffect.SetUp(
-                                    canTargetCondition: (cardSource) => true,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    canNoSelect: () => false,
-                                    selectCardCoroutine: null,
-                                    afterSelectCardCoroutine: null,
-                                    message: "Select 1 effect to activate.",
-                                    maxCount: 1,
-                                    canEndNotMax: false,
-                                    isShowOpponent: false,
-                                    mode: SelectCardEffect.Mode.Custom,
-                                    root: SelectCardEffect.Root.Custom,
-                                    customRootCardList: cardSources,
-                                    canLookReverseCard: true,
-                                    selectPlayer: card.Owner,
-                                    cardEffect: activateClass);
-
-                                selectCardEffect.SetNotShowCard();
-                                selectCardEffect.SetUpSkillInfos(skillInfos);
-                                selectCardEffect.SetUpAfterSelectIndexCoroutine(AfterSelectIndexCoroutine);
-
-                                yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-
-                                IEnumerator AfterSelectIndexCoroutine(List<int> selectedIndexes)
+                                if (selectedCards.Count > 0)
                                 {
-                                    if (selectedIndexes.Count == 1)
-                                    {
-                                        selectedEffect = candidateEffects[selectedIndexes[0]];
-                                        yield return null;
-                                    }
+                                    selectedEffect = candidateEffects.Where(cardEffect => cardEffect.EffectSourceCard == selectedCards[0]).ToList()[0];
+                                    yield return null;
                                 }
                             }
+                        }
 
-                            if (selectedEffect != null)
+                        if (selectedEffect != null)
+                        {
+                            Hashtable effectHashtable = CardEffectCommons.OnDeletionHashtable(
+                                new List<Permanent>() { card.PermanentOfThisCard() },
+                                selectedEffect,
+                                null,
+                                false);
+
+
+                            bool NewCanUseCondition(Hashtable hashtable)
                             {
-                                Hashtable effectHashtable = CardEffectCommons.OnDeletionHashtable(
-                                    new List<Permanent>() { card.PermanentOfThisCard() },
-                                    selectedEffect,
-                                    null,
-                                    false);
-
-                                
-                                bool NewCanUseCondition(Hashtable hashtable)
-                                {
-                                    return true;
-                                }
-
-                                Func<Hashtable, bool> OldCanUseCondition;
-
-                                OldCanUseCondition = selectedEffect.CanUseCondition;
-
-                                selectedEffect.SetCanUseCondition(NewCanUseCondition);
-
-                                /*
-                                card.Owner.TrashCards.Add(card);
-                                card.Owner.TrashCards.Add(selectedEffect.EffectSourceCard);
-                                selectedEffect.EffectSourceCard.PermanentJustBeforeRemoveField = card.PermanentOfThisCard();
-                                card.PermanentJustBeforeRemoveField = card.PermanentOfThisCard();
-                                bool canUse = selectedEffect.CanUse(effectHashtable);
-                                card.Owner.TrashCards.Remove(card);
-                                card.Owner.TrashCards.Remove(selectedEffect.EffectSourceCard);
-                                selectedEffect.EffectSourceCard.PermanentJustBeforeRemoveField = null;
-                                card.PermanentJustBeforeRemoveField = null;
-                                */
-
-                                yield return ContinuousController.instance.StartCoroutine(
-                                    ((ActivateICardEffect)selectedEffect).Activate_Optional_Effect_Execute(effectHashtable));
-
-                                selectedEffect.SetCanUseCondition(OldCanUseCondition);
+                                return true;
                             }
+
+                            Func<Hashtable, bool> OldCanUseCondition;
+
+                            OldCanUseCondition = selectedEffect.CanUseCondition;
+
+                            selectedEffect.SetCanUseCondition(NewCanUseCondition);
+
+                            /*
+                            card.Owner.TrashCards.Add(card);
+                            card.Owner.TrashCards.Add(selectedEffect.EffectSourceCard);
+                            selectedEffect.EffectSourceCard.PermanentJustBeforeRemoveField = card.PermanentOfThisCard();
+                            card.PermanentJustBeforeRemoveField = card.PermanentOfThisCard();
+                            bool canUse = selectedEffect.CanUse(effectHashtable);
+                            card.Owner.TrashCards.Remove(card);
+                            card.Owner.TrashCards.Remove(selectedEffect.EffectSourceCard);
+                            selectedEffect.EffectSourceCard.PermanentJustBeforeRemoveField = null;
+                            card.PermanentJustBeforeRemoveField = null;
+                            */
+
+                            yield return ContinuousController.instance.StartCoroutine(
+                                ((ActivateICardEffect)selectedEffect).Activate_Optional_Effect_Execute(effectHashtable));
+
+                            selectedEffect.SetCanUseCondition(OldCanUseCondition);
                         }
                     }
                 }

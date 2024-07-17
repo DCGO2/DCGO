@@ -114,8 +114,6 @@ namespace DCGO.CardEffects.BT16
 
                         if(CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentPermanentCondition))
                         {
-                            Permanent permanentToDelete = null;
-
                             int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectOpponentPermanentCondition));
 
                             SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
@@ -126,7 +124,7 @@ namespace DCGO.CardEffects.BT16
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
                                 maxCount: maxCount,
-                                canNoSelect: true,
+                                canNoSelect: false,
                                 canEndNotMax: false,
                                 selectPermanentCoroutine: SelectPermanentToDeleteCoroutine,
                                 afterSelectPermanentCoroutine: null,
@@ -139,7 +137,7 @@ namespace DCGO.CardEffects.BT16
 
                             IEnumerator SelectPermanentToDeleteCoroutine(Permanent permanent)
                             {
-                                permanentToDelete = permanent;
+                                destroyTargetPermanents.Add(permanent);
 
                                 yield return null;
                             }
