@@ -149,13 +149,23 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (CardEffectCommons.CanTriggerWhenLoseSecurity(hashtable, player => player == card.Owner))
-                        {
-                            if(CardEffectCommons.IsByEffect(hashtable, null))
-                            {
-                                return true; 
-                            }
-                        }
+                       //bool SkillCondition(ICardEffect cardEffect)
+                       //{
+                       //    if (cardEffect != null)
+                       //    {
+                       //        if (cardEffect.EffectSourceCard != null)
+                       //        {
+                       //            return true;                                  
+                       //        }
+                       //    }
+
+                       //    return false;
+                       //}
+
+                       if (CardEffectCommons.CanTriggerOnTrashSecurity(hashtable,  cardEffect => true, cardSource => cardSource.Owner == card.Owner))
+                       {
+                           return true;
+                       }                       
                     }
 
                     return false;
@@ -190,7 +200,7 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (card.PermanentOfThisCard().TopCard.HasText("Pulsemon"))
+                        if (card.PermanentOfThisCard().TopCard.HasPulsemonText)
                         {
                             return true;
                         }
