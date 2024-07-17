@@ -118,7 +118,7 @@ public class Hoohmon_BT11_016 : CEntity_Effect
                             {
                                 Hashtable effectHashtable = CardEffectCommons.OnDeletionHashtable(
                                     new List<Permanent>() { card.PermanentOfThisCard() },
-                                    null,
+                                    selectedEffect,
                                     null,
                                     false);
 
