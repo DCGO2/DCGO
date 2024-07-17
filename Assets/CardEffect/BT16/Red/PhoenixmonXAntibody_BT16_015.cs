@@ -87,7 +87,7 @@ namespace DCGO.CardEffects.BT16
 
                             }*/
             }
-            if (timing == EffectTiming.AfterEffectsActivate || timing == EffectTiming.OnStartTurn || timing == EffectTiming.OnEnterFieldAnyone)
+            if (timing == EffectTiming.AfterEffectsActivate || timing == EffectTiming.OnStartTurn || timing == EffectTiming.OnEnterFieldAnyone || timing == EffectTiming.OnDigivolutionCardDiscarded)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Add [End of Attack] to all of this Digimon's [On Deletion] effects.", CanUseCondition, card);
@@ -109,7 +109,7 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardNames.Contains("Phoenixmon") || cardSource.CardNames.Contains("X Antibody") || cardSource.CardNames.Contains("XAntibody") || cardSource.CardNames.Contains("X Antibody Proto Form")) >= 1)
+                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardNames.Contains("Phoenixmon") || cardSource.EqualsCardName("X Antibody")) >= 1)
                         {
                             return true;
                         }
@@ -146,6 +146,9 @@ namespace DCGO.CardEffects.BT16
                         bool CanUseEndOfAttackCondition(Hashtable hashtable1)
                         {
                             if (card.PermanentOfThisCard().TopCard != card)
+                                return false;
+
+                            if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardNames.Contains("Phoenixmon") || cardSource.EqualsCardName("X Antibody")) == 0)
                                 return false;
 
                             return CardEffectCommons.CanTriggerOnEndAttack(hashtable1, card);

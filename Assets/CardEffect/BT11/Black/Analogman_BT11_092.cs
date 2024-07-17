@@ -143,7 +143,15 @@ public class Analogman_BT11_092 : CEntity_Effect
 
             bool PermanentCondition(Permanent permanent)
             {
-                return CardEffectCommons.IsOpponentPermanent(permanent, card);
+                if(CardEffectCommons.IsOpponentPermanent(permanent, card))
+                {
+                    if(GManager.instance.attackProcess.AttackingPermanent == permanent)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
             }
 
             bool CanUseCondition(Hashtable hashtable)
@@ -154,8 +162,10 @@ public class Analogman_BT11_092 : CEntity_Effect
                     {
                         if (CardEffectCommons.CanTriggerOnPermanentAttack(hashtable, PermanentCondition))
                         {
-                            return true;
-
+                            if (GManager.instance.attackProcess.DefendingPermanent == null)
+                            {
+                                return true;
+                            }
                         }
                     }
                 }
