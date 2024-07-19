@@ -110,7 +110,21 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanSelectGallantmonCardCondition(CardSource cardSource)
                 {
-                    return cardSource.ContainsCardName("Gallantmon");
+                    if (cardSource.ContainsCardName("Gallantmon"))
+                    {
+                        if (cardSource.Level == 6)
+                        {
+                            if (cardSource.HasLevel)
+                            {
+                                if (cardSource.IsDigimon)
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+
+                    return false;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

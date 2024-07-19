@@ -39,8 +39,12 @@ namespace DCGO.CardEffects.BT17
                     {
                         if (cardSource.IsDigimon)
                         {
-                            return cardSource.ContainsCardName("Guilmon") ||
-                                   cardSource.ContainsCardName("Takato Matsuki") ||
+                            return cardSource.ContainsCardName("Guilmon");
+                        }
+
+                        if (cardSource.IsTamer)
+                        {
+                            return cardSource.ContainsCardName("Takato Matsuki") ||
                                    cardSource.ContainsCardName("TakatoMatsuki");
                         }
                     }
@@ -166,7 +170,7 @@ namespace DCGO.CardEffects.BT17
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(
-                    "DNA digivolve into a Digimon card with [Omnimon] in its name",
+                    "Digivolve into a Digimon card with [Gallantmon] in its name",
                     CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, EffectDescription());
                 activateClass.SetHashString("DigivolveGallantmon_BT17_096");
@@ -216,7 +220,7 @@ namespace DCGO.CardEffects.BT17
                     yield return ContinuousController.instance.StartCoroutine(
                         CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
                             targetPermanents: new List<Permanent>() { card.PermanentOfThisCard() },
-                            activateClass: activateClass, successProcess: permanents => SuccessProcess(),
+                            activateClass: activateClass, successProcess: _ => SuccessProcess(),
                             failureProcess: null));
                 }
 
