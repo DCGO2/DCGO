@@ -81,8 +81,14 @@ public partial class CardEffectFactory
 
         bool CanSelectPermanent(Permanent permanent)
         {
-            foreach (BlastDNACondition DNACondition in blastDNAConditions)
-                return DNACondition.Permanents.Contains(permanent);
+            if(CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+            {
+                foreach (BlastDNACondition DNACondition in blastDNAConditions)
+                {
+                    if (DNACondition.Permanents.Contains(permanent))
+                        return true;
+                }
+            }
 
             return false;
         }
