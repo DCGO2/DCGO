@@ -48,15 +48,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentPermanentCondition))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleArea(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -168,7 +160,10 @@ namespace DCGO.CardEffects.BT17
                     {
                         if (card.PermanentOfThisCard().TopCard.ContainsCardName("Gallantmon"))
                         {
-                            return true;
+                            if (card.PermanentOfThisCard().IsSuspended)
+                            {
+                                return true;
+                            }
                         }
                     }
 

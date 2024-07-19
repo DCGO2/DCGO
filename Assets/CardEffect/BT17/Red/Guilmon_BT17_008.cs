@@ -35,18 +35,13 @@ namespace DCGO.CardEffects.BT17
                     {
                         if (permanent.IsDigimon)
                         {
-                            if (permanent.TopCard.ContainsCardName("Calumon"))
-                            {
-                                return true;
-                            }
+                            return permanent.TopCard.ContainsCardName("Calumon");
                         }
 
                         if (permanent.IsTamer)
                         {
-                            if (permanent.TopCard.ContainsCardName("Takato Matsuki"))
-                            {
-                                return true;
-                            }
+                            return permanent.TopCard.ContainsCardName("Takato Matsuki") ||
+                                   permanent.TopCard.ContainsCardName("TakatoMatsuki");
                         }
                     }
 
@@ -70,9 +65,9 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (CardEffectCommons.IsOwnerTurn(card))
+                        if (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PlayedPermanentCondition))
                         {
-                            if (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PlayedPermanentCondition))
+                            if (CardEffectCommons.IsOwnerTurn(card))
                             {
                                 return true;
                             }
@@ -84,15 +79,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentPermanentCondition))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleArea(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
