@@ -15,7 +15,7 @@ namespace DCGO.CardEffects.BT17
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Gain 1 Memory", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Gain Memory", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true,
                     EffectDescription());
                 cardEffects.Add(activateClass);
@@ -114,7 +114,7 @@ namespace DCGO.CardEffects.BT17
                     {
                         if (permanent.TopCard.ContainsCardName("Omnimon"))
                         {
-                            return true;
+                            return permanent.CanAttack(activateClass);
                         }
                     }
 
@@ -138,7 +138,10 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        return true;
+                        if (CardEffectCommons.HasMatchConditionPermanent(IsOmnimonPermanentCondition))
+                        {
+                            return true;
+                        }
                     }
 
                     return false;

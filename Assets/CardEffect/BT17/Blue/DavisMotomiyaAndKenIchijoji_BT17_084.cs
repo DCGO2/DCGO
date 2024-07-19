@@ -201,7 +201,7 @@ namespace DCGO.CardEffects.BT17
                     {
                         if (permanent.TopCard.ContainsTraits("Free"))
                         {
-                            return true;
+                            return permanent.CanAttack(activateClass);
                         }
                     }
 
@@ -225,7 +225,10 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        return true;
+                        if (CardEffectCommons.HasMatchConditionPermanent(IsFreePermanentCondition))
+                        {
+                            return true;
+                        }
                     }
 
                     return false;
