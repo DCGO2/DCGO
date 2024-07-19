@@ -224,7 +224,7 @@ namespace DCGO.CardEffects.BT17
                                             JogressEvoRootsFrameIDs = Array.Empty<int>();
 
                                             yield return GManager.instance.photonWaitController.StartWait(
-                                                "Agumon_BT17_007");
+                                                "Gabumon_BT17_019");
 
                                             if (card.Owner.isYou || GManager.instance.IsAI)
                                             {

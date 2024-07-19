@@ -47,7 +47,7 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (card.Owner.HandCards.Contains(card))
                     {
-                        if (!CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsCorrectTamer))
+                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsCorrectTamer))
                         {
                             return true;
                         }

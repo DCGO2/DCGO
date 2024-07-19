@@ -32,14 +32,14 @@ namespace DCGO.CardEffects.BT17
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Place 1 card to digivolution cards to Draw 1", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Place 1 card to digivolution cards to give [Jamming]", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
                 {
                     return
-                        "[On Play] By placing 1 [Seasarmon] or 1 level 3 blue Digimon card from your hand as this Digimon's bottom digivolution card, <Draw 1>.";
+                        "[On Play] By placing 1 level 3 blue Digimon card from your hand as this Digimon's bottom digivolution card, 1 of your Digimon gains [Jamming] for the turn.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -147,14 +147,14 @@ namespace DCGO.CardEffects.BT17
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Place 1 card to digivolution cards to Draw 1", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Place 1 card to digivolution cards to give [Jamming]", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
                 {
                     return
-                        "[When Digivolving] By placing 1 [Seasarmon] or 1 level 3 blue Digimon card from your hand as this Digimon's bottom digivolution card, <Draw 1>.";
+                        "[When Digivolving] By placing 1 level 3 blue Digimon card from your hand as this Digimon's bottom digivolution card, 1 of your Digimon gains [Jamming] for the turn.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
