@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using System.Diagnostics;
 
 namespace DCGO.CardEffects.EX6
 {
@@ -185,38 +186,59 @@ namespace DCGO.CardEffects.EX6
 
                     if (CardEffectCommons.IsDijiXros(hashtable, count => count >= 1))
                     {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SimplifiedRevealDeckTopCardsAndSelect(
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.RevealDeckTopCardsAndSelect(
                             revealCount: 4,
-                            simplifiedSelectCardConditions:
-                            new SimplifiedSelectCardConditionClass[]
+                            selectCardConditions:
+                            new SelectCardConditionClass[]
                             {
-                            new SimplifiedSelectCardConditionClass(
-                                canTargetCondition:HasGokuumonInName,
-                                message: "Select 1 Gokuumon.",
-                                mode: SelectCardEffect.Mode.AddHand,
-                                maxCount: 1,
-                                selectCardCoroutine: null),
-                            new SimplifiedSelectCardConditionClass(
-                                canTargetCondition:HasSagomonInName,
-                                message: "Select 1 Sagomon.",
-                                mode: SelectCardEffect.Mode.AddHand,
-                                maxCount: 1,
-                                selectCardCoroutine: null),
-                            new SimplifiedSelectCardConditionClass(
-                                canTargetCondition:HasChoHakkaimonInName,
-                                message: "Select 1 Cho-Hakkaimon.",
-                                mode: SelectCardEffect.Mode.AddHand,
-                                maxCount: 1,
-                                selectCardCoroutine: null),
-                            new SimplifiedSelectCardConditionClass(
-                                canTargetCondition:HasShakamonInName,
-                                message: "Select 1 Shakamon.",
-                                mode: SelectCardEffect.Mode.AddHand,
-                                maxCount: 1,
-                                selectCardCoroutine: null),
+                                new SelectCardConditionClass(
+                                    canTargetCondition:HasGokuumonInName,
+                                    canTargetCondition_ByPreSelecetedList:null,
+                                    canEndSelectCondition:null,
+                                    canNoSelect:false,
+                                    selectCardCoroutine: null,
+                                    message: "Select 1 card with [Gokuumon] in its name.",
+                                    maxCount: 1,
+                                    canEndNotMax:false,
+                                    mode: SelectCardEffect.Mode.AddHand
+                                    ),
+                                new SelectCardConditionClass(
+                                    canTargetCondition:HasSagomonInName,
+                                    canTargetCondition_ByPreSelecetedList:null,
+                                    canEndSelectCondition:null,
+                                    canNoSelect:false,
+                                    selectCardCoroutine: null,
+                                    message: "Select 1 card with [Sagomon] in its name.",
+                                    maxCount: 1,
+                                    canEndNotMax:false,
+                                    mode: SelectCardEffect.Mode.AddHand
+                                    ),
+                                new SelectCardConditionClass(
+                                    canTargetCondition:HasChoHakkaimonInName,
+                                    canTargetCondition_ByPreSelecetedList:null,
+                                    canEndSelectCondition:null,
+                                    canNoSelect:false,
+                                    selectCardCoroutine: null,
+                                    message: "Select 1 card with [Cho-Hakkaimon] in its name.",
+                                    maxCount: 1,
+                                    canEndNotMax:false,
+                                    mode: SelectCardEffect.Mode.AddHand
+                                    ),
+                                new SelectCardConditionClass(
+                                    canTargetCondition:HasShakamonInName,
+                                    canTargetCondition_ByPreSelecetedList:null,
+                                    canEndSelectCondition:null,
+                                    canNoSelect:false,
+                                    selectCardCoroutine: null,
+                                    message: "Select 1 card with [Shakamon] in its name.",
+                                    maxCount: 1,
+                                    canEndNotMax:false,
+                                    mode: SelectCardEffect.Mode.AddHand
+                                    ),
                             },
                             remainingCardsPlace: RemainingCardsPlace.DeckBottom,
-                            activateClass: activateClass
+                            activateClass: activateClass,
+                            canNoAction: false
                         ));
                     }
                 }

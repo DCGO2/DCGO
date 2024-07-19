@@ -19,12 +19,12 @@ namespace DCGO.CardEffects.BT16
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete your Digimon or Tamer to delete an opponent's unsuspended Digimon. Otherwise delete 1 of your opponent's tamers.", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] [When Attacking] By deleting one of your Digimon or Tamers, delete 1 of your opponent's unsuspended Digimon. If no Digimon is deleted by this effect, delete one of your opponent's tamers.";
+                    return "[When Digivolving] By deleting one of your Digimon or Tamers, delete 1 of your opponent's unsuspended Digimon. If no Digimon is deleted by this effect, delete one of your opponent's tamers.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -70,7 +70,7 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                         {
@@ -98,7 +98,7 @@ namespace DCGO.CardEffects.BT16
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,
-                            canNoSelect: false,
+                            canNoSelect: true,
                             canEndNotMax: false,
                             selectPermanentCoroutine: null,
                             afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
@@ -122,7 +122,7 @@ namespace DCGO.CardEffects.BT16
 
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: deleteTargetPermanents, activateClass: activateClass, successProcess: permanents => SuccessProcess(), failureProcess: null));
 
-                    //Was this successful
+                    //Did I delete my Digimon/Tamer successfully
                     IEnumerator SuccessProcess()
                     {
                         List<Permanent> targetPermanents = new List<Permanent>();
@@ -165,7 +165,7 @@ namespace DCGO.CardEffects.BT16
                         }
                         else
                         {
-                            yield return StartCoroutine("FailureProcess");
+                            yield return ContinuousController.instance.StartCoroutine("FailureProcess");
                         }
 
                         IEnumerator FailureProcess()
@@ -209,7 +209,7 @@ namespace DCGO.CardEffects.BT16
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete your Digimon or Tamer to delete an opponent's unsuspended Digimon. Otherwise delete 1 of your opponent's tamers.", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -260,7 +260,7 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                         {
@@ -288,7 +288,7 @@ namespace DCGO.CardEffects.BT16
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,
-                            canNoSelect: false,
+                            canNoSelect: true,
                             canEndNotMax: false,
                             selectPermanentCoroutine: null,
                             afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
@@ -312,7 +312,7 @@ namespace DCGO.CardEffects.BT16
 
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: deleteTargetPermanents, activateClass: activateClass, successProcess: permanents => SuccessProcess(), failureProcess: null));
 
-                    //Was this successful
+                    //Did I delete my Digimon/Tamer successfully
                     IEnumerator SuccessProcess()
                     {
                         List<Permanent> targetPermanents = new List<Permanent>();
@@ -355,7 +355,7 @@ namespace DCGO.CardEffects.BT16
                         }
                         else
                         {
-                            yield return StartCoroutine("FailureProcess");
+                            yield return ContinuousController.instance.StartCoroutine("FailureProcess");
                         }
 
                         IEnumerator FailureProcess()

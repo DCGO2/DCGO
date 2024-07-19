@@ -2908,11 +2908,11 @@ public class ISecurityCheck
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().EnterSecurityCardEffect(brokenSecurityCard));
                         #endregion
 
+                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddExecutingCard(brokenSecurityCard));
+
                         yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
                             player: brokenSecurityCard.Owner,
                             refSkillInfos: ref triggeredSkillInfos).ReduceSecurity());
-
-                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddExecutingCard(brokenSecurityCard));
 
                         #region security effect
                         List<SkillInfo> secuityEffectSkillInfos = new List<SkillInfo>();

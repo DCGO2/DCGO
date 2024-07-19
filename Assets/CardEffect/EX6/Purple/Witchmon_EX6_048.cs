@@ -147,10 +147,7 @@ namespace DCGO.CardEffects.EX6
                                                 {
                                                     if (GManager.instance.turnStateMachine.gameContext.TurnPlayer == selectedPermanent.TopCard.Owner)
                                                     {
-                                                        if (CardEffectCommons.CanTriggerOnEndAttack(hashtable, selectedPermanent.TopCard))
-                                                        {
-                                                            return true;
-                                                        }
+                                                        return true;
                                                     }
                                                 }
                                             }
@@ -333,10 +330,7 @@ namespace DCGO.CardEffects.EX6
                                                 {
                                                     if (GManager.instance.turnStateMachine.gameContext.TurnPlayer == selectedPermanent.TopCard.Owner)
                                                     {
-                                                        if (CardEffectCommons.CanTriggerOnEndAttack(hashtable, selectedPermanent.TopCard))
-                                                        {
-                                                            return true;
-                                                        }
+                                                        return true;
                                                     }
                                                 }
                                             }

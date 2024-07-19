@@ -45,7 +45,7 @@ namespace DCGO.CardEffects.P
                 {
                     if (CardEffectCommons.IsOwnerTurn(card))
                     {
-                        return card.PermanentOfThisCard().cardSources.Count(HasGotsumonOrXAntibody) == 0;
+                        return card.PermanentOfThisCard().DigivolutionCards.Count(HasGotsumonOrXAntibody) == 0;
                     }
 
                     return false;

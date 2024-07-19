@@ -282,6 +282,20 @@ namespace DCGO.CardEffects.EX6
                                 ? "From Top Of Security"
                                 : "From Bottom Of Security";
 
+                            #region Log
+                            if (chosenSecurityCard != null)
+                            {
+                                string log = "";
+
+                                log += $"\nAdded Card {placementValue} to Hand:";
+                                log += $"\n{chosenSecurityCard.BaseENGCardNameFromEntity}({chosenSecurityCard.CardID})";
+
+                                log += "\n";
+
+                                GManager.instance.playLog.AddLogString(log);
+                            }
+                            #endregion
+
                             yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(new List<CardSource>() { chosenSecurityCard }, $"Added Hand Card {placementValue}", true, true));
                             yield return ContinuousController.instance.StartCoroutine(
                                 CardObjectController.AddHandCards(new List<CardSource>() { chosenSecurityCard }, false,

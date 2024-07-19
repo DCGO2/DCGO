@@ -37,11 +37,8 @@ namespace DCGO.CardEffects.BT16
                 }
 
                 bool CanSelectPermanentsToBotDeck(Permanent permanent)
-                {
-                    if (!permanent.IsSuspended)
-                        return false;
-                    
-                    return CardEffectCommons.IsMinDP(permanent, card.Owner.Enemy);
+                {                    
+                    return CardEffectCommons.IsMinDP(permanent, card.Owner.Enemy,(permanent) => permanent.IsSuspended);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
