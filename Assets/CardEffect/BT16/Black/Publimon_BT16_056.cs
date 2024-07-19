@@ -84,48 +84,15 @@ namespace DCGO.CardEffects.BT16
                             {
                                 if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
                                 {
-                                    List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
-                                {
-                                    new SelectionElement<bool>(message: $"Security Top", value : true, spriteIndex: 0),
-                                    new SelectionElement<bool>(message: $"Security Bottom", value : false, spriteIndex: 1),
-                                };
-
-                                    string selectPlayerMessage = "Will you place the card on the top or bottom of the security?";
-                                    string notSelectPlayerMessage = "The opponent is selecting whether to place the card on the top or bottom of security.";
-
-                                    GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
-
-                                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-
-                                    bool toTop = GManager.instance.userSelectionManager.SelectedBoolValue;
-
-                                    if (toTop)
-                                    {
-                                        GManager.instance.commandText.OpenCommandText("\"Place to the top of security\" was selected.");
-
-                                        GManager.instance.playLog.AddLogString($"\n{card.BaseENGCardNameFromEntity}({card.CardID}):Place the Digimon to the top of security\n");
-                                    }
-
-                                    else
-                                    {
-                                        GManager.instance.commandText.OpenCommandText("\"Place to the bottom of security\" was selected.");
-
-                                        GManager.instance.playLog.AddLogString($"\n{card.BaseENGCardNameFromEntity}({card.CardID}):Place the Digimon to the bottom of security\n");
-                                    }
-
-                                    yield return new WaitForSeconds(0.4f);
-                                    GManager.instance.commandText.CloseCommandText();
-                                    yield return new WaitWhile(() => GManager.instance.commandText.gameObject.activeSelf);
-
                                     Permanent securityPermanent = selectedPermanent;
                                     CardSource securityCard = securityPermanent.TopCard;
 
-                                    if(securityPermanent.DigivolutionCards.Count < 0)
+                                    if(securityPermanent.DigivolutionCards.Count < 1)
                                     {
                                         yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(
                                             securityPermanent,
                                             CardEffectCommons.CardEffectHashtable(activateClass),
-                                            toTop).PutSecurity());
+                                            true).PutSecurity());
                                     }
                                     else
                                     {
@@ -137,7 +104,7 @@ namespace DCGO.CardEffects.BT16
 
                                         if (!permanent.TopCard.IsToken)
                                         {
-                                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(permanent.TopCard, toTop));
+                                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(permanent.TopCard, true));
 
                                             yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(permanent.TopCard.Owner));
 
@@ -193,7 +160,7 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition) >= 1)
                             return true;
@@ -235,48 +202,15 @@ namespace DCGO.CardEffects.BT16
                             {
                                 if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
                                 {
-                                    List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
-                                {
-                                    new SelectionElement<bool>(message: $"Security Top", value : true, spriteIndex: 0),
-                                    new SelectionElement<bool>(message: $"Security Bottom", value : false, spriteIndex: 1),
-                                };
-
-                                    string selectPlayerMessage = "Will you place the card on the top or bottom of the security?";
-                                    string notSelectPlayerMessage = "The opponent is selecting whether to place the card on the top or bottom of security.";
-
-                                    GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
-
-                                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-
-                                    bool toTop = GManager.instance.userSelectionManager.SelectedBoolValue;
-
-                                    if (toTop)
-                                    {
-                                        GManager.instance.commandText.OpenCommandText("\"Place to the top of security\" was selected.");
-
-                                        GManager.instance.playLog.AddLogString($"\n{card.BaseENGCardNameFromEntity}({card.CardID}):Place the Digimon to the top of security\n");
-                                    }
-
-                                    else
-                                    {
-                                        GManager.instance.commandText.OpenCommandText("\"Place to the bottom of security\" was selected.");
-
-                                        GManager.instance.playLog.AddLogString($"\n{card.BaseENGCardNameFromEntity}({card.CardID}):Place the Digimon to the bottom of security\n");
-                                    }
-
-                                    yield return new WaitForSeconds(0.4f);
-                                    GManager.instance.commandText.CloseCommandText();
-                                    yield return new WaitWhile(() => GManager.instance.commandText.gameObject.activeSelf);
-
                                     Permanent securityPermanent = selectedPermanent;
                                     CardSource securityCard = securityPermanent.TopCard;
 
-                                    if (securityPermanent.DigivolutionCards.Count < 0)
+                                    if (securityPermanent.DigivolutionCards.Count < 1)
                                     {
                                         yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(
                                             securityPermanent,
                                             CardEffectCommons.CardEffectHashtable(activateClass),
-                                            toTop).PutSecurity());
+                                            true).PutSecurity());
                                     }
                                     else
                                     {
@@ -288,7 +222,7 @@ namespace DCGO.CardEffects.BT16
 
                                         if (!permanent.TopCard.IsToken)
                                         {
-                                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(permanent.TopCard, toTop));
+                                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(permanent.TopCard, true));
 
                                             yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(permanent.TopCard.Owner));
 

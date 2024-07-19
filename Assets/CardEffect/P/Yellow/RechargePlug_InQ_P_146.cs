@@ -74,7 +74,7 @@ namespace DCGO.CardEffects.P
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,
-                            canNoSelect: true,
+                            canNoSelect: false,
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine,
                             afterSelectPermanentCoroutine: null,
@@ -182,7 +182,7 @@ namespace DCGO.CardEffects.P
             #endregion
 
             #region All Turns- When would be destoryed - ESS
-            if (timing == EffectTiming.OnDestroyedAnyone)
+            if (timing == EffectTiming.WhenPermanentWouldBeDeleted)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Place card from digivolution sources to security, to prevent deletion by battle", CanUseCondition, card);
@@ -207,11 +207,12 @@ namespace DCGO.CardEffects.P
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card))
                         {
-                            return true;
+                            if(CardEffectCommons.IsByBattle(hashtable))
+                                return true;
                         }
                     }
 
@@ -220,7 +221,7 @@ namespace DCGO.CardEffects.P
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (card.PermanentOfThisCard().DigivolutionCards.Count(CanSelectCardCondition) >= 1)
                         {

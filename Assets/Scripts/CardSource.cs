@@ -1083,7 +1083,8 @@ public class CardSource : MonoBehaviour
     #endregion
 
     #region Whether target other card's name has same name as this
-    public bool HasSameCardName(CardSource cardSource) => cardSource.CardNames.Count((cardName) => cardSource.EqualsCardName(cardName)) >= 1;
+    public bool HasSameCardName(CardSource cardSource) => cardSource.CardNames.Count((cardName) => EqualsCardName(cardName)) >= 1;
+    //public bool HasSameCardName(CardSource cardSource) => cardSource.CardNames.Count((cardName) => CardNames.Contains(cardName)) >= 1;
     #endregion
 
     #region whether this card has at least 1 card name that equals the string

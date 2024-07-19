@@ -179,11 +179,12 @@ namespace DCGO.CardEffects.EX6
                             }
                         }
                     }
+
                     bool BouncePermanentCondition(Permanent permanent)
                     {
                         if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
                         {
-                            if (permanent.TopCard.CanNotBeAffected(activateClass))
+                            if (!permanent.TopCard.CanNotBeAffected(activateClass))
                             {
                                 return permanent.TopCard.HasLevel && permanent.Level <= 4 + cardsAdded;
                             }
@@ -212,16 +213,14 @@ namespace DCGO.CardEffects.EX6
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(
-                    "Place digvolution cards and activate effects",
-                    CanUseCondition, card);
+                    "Place digvolution cards and activate effects", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false,
                     EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
                 {
-                    return
-                        "[When Digivolving] You may place up to 3 of your other blue Digimon as this Digimon's bottom digivolution cards. Then, return all other level 4 or lower Digimon to the hand. For each card placed in this Digimon's digivolution cards, add 1 to the level this effect may return.";
+                    return "[On Play] You may place up to 3 of your other blue Digimon as this Digimon's bottom digivolution cards. Then, return all other level 4 or lower Digimon to the hand. For each card placed in this Digimon's digivolution cards, add 1 to the level this effect may return.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -244,7 +243,6 @@ namespace DCGO.CardEffects.EX6
 
                     return false;
                 }
-
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
@@ -327,14 +325,25 @@ namespace DCGO.CardEffects.EX6
                             }
                         }
                     }
-                    bool PermanentConditionEnemy(Permanent enemyPermanent)
+
+                    bool BouncePermanentCondition(Permanent permanent)
                     {
-                        return enemyPermanent.Level <= 4 + cardsAdded;
+                        if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
+                        {
+                            if (!permanent.TopCard.CanNotBeAffected(activateClass))
+                            {
+                                return permanent.TopCard.HasLevel && permanent.Level <= 4 + cardsAdded;
+                            }
+                        }
+
+                        return false;
                     }
 
+                    // Return all Digimon with a level lower or equal to 4 plus the number of chosen Digimon
+                    List<Permanent> bounceTargetPermanents = new List<Permanent>();
 
-                    // Return all opponent's Digimon with a level lower or equal to 4 plus the number of chosen Digimon
-                    List<Permanent> bounceTargetPermanents = card.Owner.Enemy.GetBattleAreaDigimons().Filter(PermanentConditionEnemy);
+                    bounceTargetPermanents.AddRange(card.Owner.Enemy.GetBattleAreaDigimons().Filter(BouncePermanentCondition));
+                    bounceTargetPermanents.AddRange(card.Owner.GetBattleAreaDigimons().Filter(BouncePermanentCondition));
 
                     yield return ContinuousController.instance.StartCoroutine(
                         new HandBounceClaass(bounceTargetPermanents,
@@ -401,7 +410,7 @@ namespace DCGO.CardEffects.EX6
                 
                 bool CanActivateCondition(Hashtable hashtable)
                 {                   
-                    return CardEffectCommons.IsExistOnBattleArea(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
                 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

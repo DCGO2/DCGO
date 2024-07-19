@@ -423,12 +423,6 @@ namespace DCGO.CardEffects.EX6
                         {
                             return true;
                         }
-                        
-                        if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card,
-                                CanSelectPermanentSharedCondition))
-                        {
-                            return true;
-                        }
                     }
                     
                     return false;

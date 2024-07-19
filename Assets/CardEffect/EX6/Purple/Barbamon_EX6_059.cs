@@ -41,7 +41,7 @@ namespace DCGO.CardEffects.EX6
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if(CardEffectCommons.IsExistOnBattleArea(card))
+                    if(CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if(card.Owner.Enemy.HandCards.Count >= 1)
                         {
@@ -119,7 +119,7 @@ namespace DCGO.CardEffects.EX6
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (card.Owner.Enemy.HandCards.Count >= 1)
                         {
@@ -193,7 +193,7 @@ namespace DCGO.CardEffects.EX6
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (CardEffectCommons.CanTriggerOnTrashHand(hashtable, cardEffect => true, cardSource => cardSource.Owner == card.Owner.Enemy))
                         {
@@ -224,7 +224,7 @@ namespace DCGO.CardEffects.EX6
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if(CardEffectCommons.IsExistOnBattleArea(card))
+                    if(CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         return true;
                     }

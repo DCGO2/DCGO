@@ -145,24 +145,21 @@ public class BaalmonXAntibody_BT12_082 : CEntity_Effect
 
             bool CanActivateCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
+                if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                 {
-                    if (card.Owner.GetBattleAreaDigimons().Contains(card.PermanentOfThisCard()))
+                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardNames.Contains("Baalmon") || cardSource.CardNames.Contains("X Antibody") || cardSource.CardNames.Contains("XAntibody")) >= 1)
                     {
-                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.ContainsCardName("Baalmon") || cardSource.ContainsCardName("X Antibody") || cardSource.ContainsCardName("XAntibody")) >= 1)
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                         {
-                            if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                            {
-                                return true;
-                            }
+                            return true;
                         }
+                    }
 
-                        else
+                    else
+                    {
+                        if (card.Owner.LibraryCards.Count >= 1)
                         {
-                            if (card.Owner.LibraryCards.Count >= 1)
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
                 }

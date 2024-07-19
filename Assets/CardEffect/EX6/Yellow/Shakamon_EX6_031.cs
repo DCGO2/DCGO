@@ -261,7 +261,7 @@ namespace DCGO.CardEffects.EX6
             
             #region All Turns
             
-            if (timing == EffectTiming.WhenPermanentWouldBeDeleted)
+            if (timing == EffectTiming.WhenPermanentWouldBeDeleted || timing == EffectTiming.WhenReturntoHandAnyone || timing == EffectTiming.WhenReturntoLibraryAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(

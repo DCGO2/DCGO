@@ -48,19 +48,19 @@ public partial class CardEffectFactory
         void FilterDNAPermanents()
         {
             if (blastDNAConditions[0].Permanents.Count == 1)
-                blastDNAConditions[1].Permanents = blastDNAConditions[0].Permanents.Except(blastDNAConditions[1].Permanents).ToList();
+                blastDNAConditions[1].Permanents = blastDNAConditions[1].Permanents.Except(blastDNAConditions[0].Permanents).ToList();
 
             if (blastDNAConditions[1].Permanents.Count == 1)
-                blastDNAConditions[0].Permanents = blastDNAConditions[1].Permanents.Except(blastDNAConditions[0].Permanents).ToList();
+                blastDNAConditions[0].Permanents = blastDNAConditions[0].Permanents.Except(blastDNAConditions[1].Permanents).ToList();
         }
 
         void FilterDNAHandSources()
         {
             if (blastDNAConditions[0].CardSources.Count == 1)
-                blastDNAConditions[1].CardSources = blastDNAConditions[0].CardSources.Except(blastDNAConditions[1].CardSources).ToList();
+                blastDNAConditions[1].CardSources = blastDNAConditions[1].CardSources.Except(blastDNAConditions[0].CardSources).ToList();
 
             if (blastDNAConditions[1].CardSources.Count == 1)
-                blastDNAConditions[0].CardSources = blastDNAConditions[1].CardSources.Except(blastDNAConditions[0].CardSources).ToList();
+                blastDNAConditions[0].CardSources = blastDNAConditions[0].CardSources.Except(blastDNAConditions[1].CardSources).ToList();
         }
 
         bool HasValidDNATargets()
@@ -224,6 +224,12 @@ public partial class CardEffectFactory
                     playCard.SetJogress(JogressEvoRootsFrameIDs);
 
                     yield return ContinuousController.instance.StartCoroutine(playCard.PlayCard());
+
+                    foreach (BlastDNACondition DNACondition in blastDNAConditions)
+                    {
+                        DNACondition.Permanents = new List<Permanent>();
+                        DNACondition.CardSources = new List<CardSource>();
+                    }
                 }
                 else
                 {
