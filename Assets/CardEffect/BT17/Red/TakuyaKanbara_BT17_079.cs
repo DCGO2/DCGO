@@ -90,7 +90,7 @@ namespace DCGO.CardEffects.BT17
                     condition: Condition));
             }
 
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnDetermineDoSecurityCheck)
             {
                 bool Condition()
                 {

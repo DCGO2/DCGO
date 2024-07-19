@@ -25,7 +25,7 @@ namespace DCGO.CardEffects.BT17
                     return CardEffectCommons.HasMatchConditionOwnersPermanent(card,
                         permanent =>
                             permanent.IsTamer ||
-                            (permanent.IsDigimon && permanent.TopCard.ContainsTraits("Hybrid")));
+                            permanent.TopCard.ContainsTraits("Hybrid"));
                 }
 
                 bool CardCondition(CardSource cardSource)
