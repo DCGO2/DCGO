@@ -48,7 +48,7 @@ namespace DCGO.CardEffects.BT16
                             return true;
                     }
 
-                    return true;
+                    return false;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -166,7 +166,7 @@ namespace DCGO.CardEffects.BT16
                             return true;
                     }
 
-                    return true;
+                    return false;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
