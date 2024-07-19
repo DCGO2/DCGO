@@ -389,7 +389,7 @@ namespace DCGO.CardEffects.EX6
                 {
                     return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
-                
+
                 bool IsCardAngelCondition(CardSource cardSource)
                 {
                     if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false,
@@ -397,19 +397,19 @@ namespace DCGO.CardEffects.EX6
                     {
                         if (cardSource.IsDigimon)
                         {
-                            if (cardSource.ContainsTraits("Angel") ||
-                                cardSource.ContainsTraits("Archangel") ||
-                                cardSource.ContainsTraits("Fallen Angel") ||
-                                cardSource.ContainsTraits("FallenAngel"))
+                            if (cardSource.HasLevel && cardSource.Level <= 5)
                             {
-                                return true;
+                                if (cardSource.HasAngelTraits)
+                                {
+                                    return true;
+                                }
                             }
                         }
                     }
-                    
+
                     return false;
                 }
-                
+
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
