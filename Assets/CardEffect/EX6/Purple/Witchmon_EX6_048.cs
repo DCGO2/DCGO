@@ -326,11 +326,14 @@ namespace DCGO.CardEffects.EX6
                                         {
                                             if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
                                             {
-                                                if (selectedPermanent.TopCard.Owner.GetBattleAreaDigimons().Contains(selectedPermanent))
+                                                if (CardEffectCommons.CanTriggerOnAttack(hashtable, selectedPermanent.TopCard))
                                                 {
-                                                    if (GManager.instance.turnStateMachine.gameContext.TurnPlayer == selectedPermanent.TopCard.Owner)
+                                                    if (selectedPermanent.TopCard.Owner.GetBattleAreaDigimons().Contains(selectedPermanent))
                                                     {
-                                                        return true;
+                                                        if (GManager.instance.turnStateMachine.gameContext.TurnPlayer == selectedPermanent.TopCard.Owner)
+                                                        {
+                                                            return true;
+                                                        }
                                                     }
                                                 }
                                             }
