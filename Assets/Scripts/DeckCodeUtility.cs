@@ -61,7 +61,7 @@ public class DeckCodeUtility
 
             if (count >= 1)
             {
-                lineString += $"{count} {cEntity_Base.CardName_ENG}   {cEntity_Base.CardID} \n";
+                lineString += $"{count} {cEntity_Base.CardName_ENG}   {cEntity_Base.CardSpriteName} \n";
             }
 
             DeckBuilderDeckCode += lineString;

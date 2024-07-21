@@ -7,13 +7,14 @@ using System.Security;
 
 public partial class CardEffectCommons
 {
-    public static bool IsMinCost(Permanent permanent, Player owner, bool IsDigimonOnly)
+    public static bool IsMinCost(Permanent permanent, Player owner, bool IsDigimonOnly, Func<Permanent, bool> condition = null)
     {
         if (permanent == null) return false;
         if (permanent.TopCard == null) return false;
         if (permanent.TopCard.Owner != owner) return false;
         if (!IsPermanentExistsOnOwnerBattleArea(permanent, permanent.TopCard)) return false;
         if (!permanent.IsDigimon && !permanent.IsTamer) return false;
+        if (condition != null && !condition(permanent)) return false;
         if (!permanent.TopCard.HasPlayCost) return false;
 
         List<Permanent> permanents = permanent.TopCard.Owner.GetBattleAreaPermanents();

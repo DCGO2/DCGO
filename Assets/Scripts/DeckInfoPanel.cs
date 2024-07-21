@@ -248,10 +248,9 @@ public class DeckInfoPanel : MonoBehaviour
             text = text.Substring(0, text.Length - 1);
         }
 
-        ShowingDeckData.DeckName = text;
+        ContinuousController.instance.RenameDeck(ShowingDeckData, text);
 
-        ContinuousController.instance.SaveDeckDatas();
-        ContinuousController.instance.SaveDeckData(ShowingDeckData);
+        ShowingDeckData.DeckName = text;
 
         if (isFromSelectDeck)
         {
