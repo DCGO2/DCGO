@@ -42,7 +42,10 @@ namespace DCGO.CardEffects.EX6
 
                 bool HasSevenGreatDemonLordTrait(CardSource cardSource)
                 {
-                    return cardSource.ContainsTraits("Seven Great Demon Lords");
+                    if (cardSource.IsDigimon)
+                        return cardSource.ContainsTraits("Seven Great Demon Lords");
+
+                    return false;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

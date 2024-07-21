@@ -346,7 +346,7 @@ public class EditDeck : MonoBehaviour
 
         CreateDeckObject.SetActive(false);
 
-        #region ひとつ前の画面をセットアップ
+        #region Set up previous screen
         if (_isFromSelectDeck)
         {
             Opening.instance.deck.selectDeck.ResetDeckInfoPanel();
@@ -551,6 +551,8 @@ public class EditDeck : MonoBehaviour
         string deckName = text;
 
         deckName = DeckData.ValidateDeckName(deckName);
+
+        ContinuousController.instance.RenameDeck(EdittingDeckData, text);
 
         EdittingDeckData.DeckName = deckName;
 

@@ -172,12 +172,9 @@ namespace DCGO.CardEffects.EX6
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent.IsSuspended)
+                        if (CardEffectCommons.IsMinCost(permanent, card.Owner.Enemy, true, (permanent) => permanent.IsSuspended))
                         {
-                            if (CardEffectCommons.IsMinCost(permanent, card.Owner.Enemy, true))
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
 
@@ -231,7 +228,7 @@ namespace DCGO.CardEffects.EX6
                     {
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                        int suspendCount = Math.Min(3, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, OpponentsSuspendableTargets));
+                        int suspendCount = Math.Min(discarded.Count, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, OpponentsSuspendableTargets));
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,

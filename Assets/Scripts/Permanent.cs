@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Linq;
-using static Cinemachine.DocumentationSortingAttribute;
 
 public class Permanent
 {
@@ -604,7 +603,14 @@ public class Permanent
     }
     #endregion
 
-    #region 進化元の一番上に置く
+    #region Add digivolution cards to top of sources
+    /// <summary>
+    /// IEnumerator to add a list of CardSource to a permanents top sources, CAN NOT be used to put a field permanent under must use IPlacePermanentToDigivolutionCards
+    /// </summary>
+    /// <param name="addedDigivolutionCards"></param>
+    /// <param name="cardEffect"></param>
+    /// <param name="skipEffectAndActivateSkill"></param>
+    /// <returns></returns>
     public IEnumerator AddDigivolutionCardsTop(List<CardSource> addedDigivolutionCards, ICardEffect cardEffect)
     {
         List<CardSource> addedCards = new List<CardSource>();
@@ -663,7 +669,14 @@ public class Permanent
     }
     #endregion
 
-    #region 進化元の一番下に置く
+    #region Add digivolution cards to bottom of sources
+    /// <summary>
+    /// IEnumerator to add a list of CardSource to a permanents bottom sources, CAN NOT be used to put a field permanent under must use IPlacePermanentToDigivolutionCards
+    /// </summary>
+    /// <param name="addedDigivolutionCards"></param>
+    /// <param name="cardEffect"></param>
+    /// <param name="skipEffectAndActivateSkill"></param>
+    /// <returns></returns>
     public IEnumerator AddDigivolutionCardsBottom(List<CardSource> addedDigivolutionCards, ICardEffect cardEffect, bool skipEffectAndActivateSkill = false)
     {
         List<CardSource> addedCards = new List<CardSource>();

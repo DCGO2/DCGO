@@ -358,6 +358,16 @@ public class ContinuousController : MonoBehaviour
         File.WriteAllText($"{savePath}/{data.DeckName}_{data.DeckID}.txt", DeckCodeUtility.GetDeckBuilderFile(data));
     }
 
+    public void RenameDeck(DeckData data, string newName)
+    {
+        string savePath = StreamingAssetsUtility.GetStreamingAssetPath("Decks", false);
+        Debug.Log("RENAME DECK: " + File.Exists($"{savePath}/{data.DeckName}_{data.DeckID}.txt"));
+        if (File.Exists($"{savePath}/{data.DeckName}_{data.DeckID}.txt"))
+        {
+            File.Move($"{savePath}/{data.DeckName}_{data.DeckID}.txt", $"{savePath}/{newName}_{data.DeckID}.txt");
+        }
+    }
+
     public void DeleteDeck(DeckData data)
     {
         string filePath = StreamingAssetsUtility.GetStreamingAssetPath("Decks", false);

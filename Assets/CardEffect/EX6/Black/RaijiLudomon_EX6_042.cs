@@ -131,7 +131,7 @@ namespace DCGO.CardEffects.EX6
                                 maxCount: enemyCount,
                                 canNoSelect: false,
                                 canEndNotMax: false,
-                                selectPermanentCoroutine: SelectEnemyCoroutine,
+                                selectPermanentCoroutine: SelectPermanentCoroutine,
                                 afterSelectPermanentCoroutine: null,
                                 mode: SelectPermanentEffect.Mode.Custom,
                                 cardEffect: activateClass);
@@ -140,14 +140,95 @@ namespace DCGO.CardEffects.EX6
 
                             yield return ContinuousController.instance.StartCoroutine(selectEnemyEffect.Activate());
 
-                            IEnumerator SelectEnemyCoroutine(Permanent permanent)
+                            IEnumerator SelectPermanentCoroutine(Permanent permanent)
                             {
-                                selectedEnemy = permanent;
-                                yield return null;
+                                Permanent selectedPermanent = permanent;
+
+                                if (selectedPermanent != null)
+                                {
+                                    ActivateClass activateClass1 = new ActivateClass();
+                                    activateClass1.SetUpICardEffect("Attack with this Digimon", CanUseCondition1, selectedPermanent.TopCard);
+                                    activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDiscription1());
+                                    activateClass1.SetEffectSourcePermanent(selectedPermanent);
+                                    selectedPermanent.UntilOwnerTurnEndEffects.Add(GetCardEffect);
+
+                                    if (!permanent.TopCard.CanNotBeAffected(activateClass))
+                                    {
+                                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(selectedPermanent));
+                                    }
+
+                                    string EffectDiscription1()
+                                    {
+                                        return "[Start of Your Main Phase] Attack with this Digimon.";
+                                    }
+
+                                    bool CanUseCondition1(Hashtable hashtable1)
+                                    {
+                                        if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
+                                        {
+                                            if (selectedPermanent.TopCard.Owner.GetBattleAreaDigimons().Contains(selectedPermanent))
+                                            {
+                                                if (GManager.instance.turnStateMachine.gameContext.TurnPlayer == selectedPermanent.TopCard.Owner)
+                                                {
+                                                    return true;
+                                                }
+                                            }
+                                        }
+
+                                        return false;
+                                    }
+
+                                    bool CanActivateCondition1(Hashtable hashtable1)
+                                    {
+                                        if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
+                                        {
+                                            if (!permanent.TopCard.CanNotBeAffected(activateClass))
+                                            {
+                                                if (permanent.CanAttack(activateClass1))
+                                                {
+                                                    return true;
+                                                }
+                                            }
+                                        }
+
+                                        return false;
+                                    }
+
+                                    IEnumerator ActivateCoroutine1(Hashtable _hashtable1)
+                                    {
+                                        if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
+                                        {
+                                            if (permanent.CanAttack(activateClass1))
+                                            {
+                                                SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
+
+                                                selectAttackEffect.SetUp(
+                                                    attacker: selectedPermanent,
+                                                    canAttackPlayerCondition: () => true,
+                                                    defenderCondition: (permanent) => true,
+                                                    cardEffect: activateClass1);
+
+                                                selectAttackEffect.SetCanNotSelectNotAttack();
+
+                                                yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
+                                            }
+                                        }
+                                    }
+
+                                    ICardEffect GetCardEffect(EffectTiming _timing)
+                                    {
+                                        if (_timing == EffectTiming.OnStartMainPhase)
+                                        {
+                                            return activateClass1;
+                                        }
+
+                                        return null;
+                                    }
+                                }
                             }
                         }
 
-                        if (selectedEnemy != null)
+                        /*if (selectedEnemy != null)
                         {
                             ActivateClass activateClass1 = new ActivateClass();
                             activateClass1.SetUpICardEffect("Attack with this Digimon", CanUseCondition1, selectedEnemy.TopCard);
@@ -183,7 +264,7 @@ namespace DCGO.CardEffects.EX6
 
                             bool CanActivateCondition1(Hashtable hashtable1)
                             {
-                                if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
+                                if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(selectedPermanent))
                                 {
                                     if (!selectedEnemy.TopCard.CanNotBeAffected(activateClass))
                                     {
@@ -227,7 +308,7 @@ namespace DCGO.CardEffects.EX6
 
                                 return null;
                             }
-                        }
+                        }*/
 
                         yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(
                                 new List<CardSource>() { card },
