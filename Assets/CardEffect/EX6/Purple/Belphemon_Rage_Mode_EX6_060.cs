@@ -118,7 +118,7 @@ namespace DCGO.CardEffects.EX6
                     {
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                        int suspendCount = Math.Min(3, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, OpponentsSuspendableTargets));
+                        int suspendCount = Math.Min(discarded.Count, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, OpponentsSuspendableTargets));
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,

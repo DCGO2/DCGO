@@ -66,7 +66,7 @@ namespace DCGO.CardEffects.EX6
 
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 Digimon from hand", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 activateClass.SetHashString("Play1Digimon_EX6_035");
                 cardEffects.Add(activateClass);
 
@@ -133,7 +133,7 @@ namespace DCGO.CardEffects.EX6
                             mode: SelectHandEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectHandEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
+                        selectHandEffect.SetUpCustomMessage("Play 1 Digimon from hand, Then -6k DP for each digimon", "The opponent is selecting 1 card to play.");
                         selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
 
                         yield return StartCoroutine(selectHandEffect.Activate());
@@ -203,8 +203,8 @@ namespace DCGO.CardEffects.EX6
                 }
 
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play 1 Digimon from hand", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpICardEffect("Play 1 Digimon from hand, Then -6k DP for each digimon", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 activateClass.SetHashString("Play1Digimon_EX6_035");
                 cardEffects.Add(activateClass);
 
