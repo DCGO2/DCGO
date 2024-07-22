@@ -52,7 +52,8 @@ namespace DCGO.CardEffects
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card)){
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    {
                         if(CardEffectCommons.HasMatchConditionOwnersHand(card, HasInfermonInHand))
                         {
                             return true;
