@@ -65,12 +65,12 @@ namespace DCGO.CardEffects.EX6
 
                 return false;
             }
-
+            //if (digivolutionCards.Count((filteredCard) =>  filteredCard.CardNames.Concat(cardSource.CardNames).Distinct().ToList().Count > 0) == 0)
             bool CanSelectTrashCardCondition(CardSource cardSource)
             {
                 if (HasSevenGreatDemonLordsTrait(cardSource))
                 {
-                    if (digivolutionCards.Count((filteredCard) => filteredCard.CardNames.Concat(cardSource.CardNames).Distinct().ToList().Count > 0) == 0)
+                    if(!digivolutionCards.Some(filteredCard => filteredCard != cardSource && cardSource.HasSameCardName(filteredCard)))
                     {
                         return true;
                     }
@@ -326,7 +326,7 @@ namespace DCGO.CardEffects.EX6
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete 7 Digimon/Tamers, Then Trash 7 security. For each card deleted, reduce that number by 1", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -383,6 +383,7 @@ namespace DCGO.CardEffects.EX6
                     selectCardEffect.SetNotShowCard();
 
                     yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+
                     IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
                         selectedCards.Add(cardSource);
@@ -430,7 +431,7 @@ namespace DCGO.CardEffects.EX6
                     }
                     #endregion
 
-                    if (deletedPermanents.Count < 7)
+                    if (returnedToLibrary && deletedPermanents.Count < 7)
                     {
                         yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
                             player: card.Owner.Enemy,

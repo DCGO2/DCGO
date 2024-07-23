@@ -175,20 +175,7 @@ namespace DCGO.CardEffects.EX6
                     {
                         if (CardEffectCommons.IsOpponentEffect(cardEffect, card))
                         {
-                            if (cardEffect.IsDigimonEffect)
-                            {
-                                return true;
-                            }
-                            
-                            if (cardEffect.EffectSourceCard.IsOption)
-                            {
-                                return true;
-                            }
-                            
-                            if (cardEffect.IsTamerEffect)
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
                 }
@@ -237,7 +224,7 @@ namespace DCGO.CardEffects.EX6
                     
                     // This Digimon isn't affected by your opponent's effects until the end of their turn.
                     CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
-                    canNotAffectedClass.SetUpICardEffect("Isn't affected by opponent's Digimon's effects",
+                    canNotAffectedClass.SetUpICardEffect("Isn't affected by opponent's effects",
                         CanUseImmunitySharedCondition, card);
                     canNotAffectedClass.SetUpCanNotAffectedClass(CardCondition: CardImmunitySharedCondition,
                         SkillCondition: SkillImmunitySharedCondition);
@@ -320,13 +307,13 @@ namespace DCGO.CardEffects.EX6
                     
                     // This Digimon isn't affected by your opponent's effects until the end of their turn.
                     CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
-                    canNotAffectedClass.SetUpICardEffect("Isn't affected by opponent's Digimon's effects",
+                    canNotAffectedClass.SetUpICardEffect("Isn't affected by opponent's effects",
                         CanUseImmunitySharedCondition, card);
                     canNotAffectedClass.SetUpCanNotAffectedClass(CardCondition: CardImmunitySharedCondition,
                         SkillCondition: SkillImmunitySharedCondition);
-                    cardEffects.Add(canNotAffectedClass);
-                    
-                    
+                    card.PermanentOfThisCard().UntilOpponentTurnEndEffects.Add(_ => canNotAffectedClass);
+
+
                     // if DNA Digivolving
                     if (CardEffectCommons.IsJogress(hashtable))
                     {
