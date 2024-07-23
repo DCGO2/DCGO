@@ -411,21 +411,8 @@ namespace DCGO.CardEffects.EX6
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (card.Owner.HandCards.Count(IsCardAngelCondition) >= 1)
-                        {
-                            return true;
-                        }
-                        
-                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, IsCardAngelCondition))
-                        {
-                            return true;
-                        }
-                    }
-                    
-                    return false;
+                {                    
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
                 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

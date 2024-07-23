@@ -275,7 +275,10 @@ namespace DCGO.CardEffects.EX6
                             cardSource.ContainsCardName("Lucemon Chaos Mode") ||
                             cardSource.ContainsCardName("LucemonChaosMode"))
                         {
-                            return true;
+                            if (cardSource.CanPlayCardTargetFrame(card.PermanentOfThisCard().PermanentFrame, false, activateClass, SelectCardEffect.Root.Trash))
+                            {
+                                return true;
+                            }
                         }
                     }
                     

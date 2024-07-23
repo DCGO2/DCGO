@@ -64,6 +64,7 @@ namespace DCGO.CardEffects.EX6
             {
                 if (CardEffectCommons.IsExistOnBreedingArea(card))
                 {
+                    /*
                     int count()
                     {
                         List<CardSource> DigivolutionCards = card.PermanentOfThisCard().DigivolutionCards;
@@ -100,14 +101,14 @@ namespace DCGO.CardEffects.EX6
                         }
                         return DigivolutionCards.Count;
                     }
-
+                    */
 
                     int reduceCount = 3;
 
-                    if (count() >= 5)
+                    /*if (count() >= 5)
                     {
                         reduceCount = 4;
-                    }
+                    }*/
 
 
                     if (reduceCount >= 1)
@@ -172,7 +173,24 @@ namespace DCGO.CardEffects.EX6
 
                     if(count() >= 5)
                     {
-                        reduceCount = 4;
+                        List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>
+                        {
+                            new(message: "4", value: true, spriteIndex: 0),
+                            new(message: "3", value: false, spriteIndex: 1),
+                        };
+
+                        string selectPlayerMessage = "Which cost reduction do you want to use?";
+                        string notSelectPlayerMessage = "The opponent is choosing which cost reduction to use.";
+
+                        GManager.instance.userSelectionManager.SetBoolSelection(
+                            selectionElements: selectionElements, selectPlayer: card.Owner,
+                            selectPlayerMessage: selectPlayerMessage,
+                            notSelectPlayerMessage: notSelectPlayerMessage);
+
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                        if (GManager.instance.userSelectionManager.SelectedBoolValue)
+                            reduceCount = 4;
                     }
 
 
