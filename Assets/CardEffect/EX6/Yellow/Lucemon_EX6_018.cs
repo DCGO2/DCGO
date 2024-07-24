@@ -275,7 +275,8 @@ namespace DCGO.CardEffects.EX6
                             cardSource.ContainsCardName("Lucemon Chaos Mode") ||
                             cardSource.ContainsCardName("LucemonChaosMode"))
                         {
-                            if (cardSource.CanPlayCardTargetFrame(card.PermanentOfThisCard().PermanentFrame, false, activateClass, SelectCardEffect.Root.Trash))
+                            
+                            if (cardSource.CanEvolve(card.PermanentOfThisCard(), true))
                             {
                                 return true;
                             }
@@ -365,7 +366,9 @@ namespace DCGO.CardEffects.EX6
                                     {
                                         if (securityCard.Owner.SecurityCards.Contains(securityCard))
                                         {
-                                            yield return ContinuousController.instance.StartCoroutine(
+                                            if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, IsCardLucemonChaosModeCondition))
+                                            {
+                                                yield return ContinuousController.instance.StartCoroutine(
                                                 CardEffectCommons.DigivolveIntoHandOrTrashCard(
                                                     targetPermanent: card.PermanentOfThisCard(),
                                                     cardCondition: IsCardLucemonChaosModeCondition,
@@ -376,6 +379,7 @@ namespace DCGO.CardEffects.EX6
                                                     isHand: false,
                                                     activateClass: activateClass,
                                                     successProcess: null));
+                                            }
                                         }
                                     }
                                 }
