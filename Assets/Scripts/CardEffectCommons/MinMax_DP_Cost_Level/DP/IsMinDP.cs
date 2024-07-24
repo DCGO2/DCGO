@@ -7,7 +7,7 @@ using System.Security;
 
 public partial class CardEffectCommons
 {
-    public static bool IsMinDP(Permanent permanent, Player owner, Func<Permanent,bool> condition = null)
+    public static bool IsMinDP(Permanent permanent, Player owner, Func<Permanent, bool> condition = null)
     {
         if (permanent == null) return false;
         if (permanent.TopCard == null) return false;
@@ -17,7 +17,7 @@ public partial class CardEffectCommons
         if (!permanent.TopCard.HasDP && (permanent.BaseDP <= 0)) return false;
 
         List<int> DPs = permanent.TopCard.Owner.GetBattleAreaDigimons()
-            .Filter(permanent1 => condition != null && condition(permanent1))
+            .Filter(permanent1 => condition == null || (condition != null && condition(permanent1)))
             .Filter(permanent1 => permanent1.TopCard.HasDP || (permanent1.BaseDP > 0))
             .Map(permanent1 => permanent1.DP);
 

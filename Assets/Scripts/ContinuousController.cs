@@ -359,10 +359,10 @@ public class ContinuousController : MonoBehaviour
     public void RenameDeck(DeckData data, string newName)
     {
         string savePath = StreamingAssetsUtility.GetStreamingAssetPath("Decks", false);
-        Debug.Log("RENAME DECK: " + File.Exists($"{savePath}/{data.DeckName}_{data.DeckID}.txt"));
         if (File.Exists($"{savePath}/{data.DeckName}_{data.DeckID}.txt"))
         {
             File.Move($"{savePath}/{data.DeckName}_{data.DeckID}.txt", $"{savePath}/{newName}_{data.DeckID}.txt");
+            data.DeckName = newName;
             SaveDeckData(data);
         }
     }

@@ -554,8 +554,6 @@ public class EditDeck : MonoBehaviour
 
         ContinuousController.instance.RenameDeck(EdittingDeckData, text);
 
-        EdittingDeckData.DeckName = deckName;
-
         DeckNameInputField.onEndEdit.RemoveAllListeners();
         DeckNameInputField.text = deckName;
         DeckNameInputField.onEndEdit.AddListener(OnEndEdit);
