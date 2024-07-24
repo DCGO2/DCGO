@@ -148,14 +148,20 @@ public class Analogman_BT11_092 : CEntity_Effect
 
             bool CanUseCondition(Hashtable hashtable)
             {
+                Debug.Log($"CanUseCondition: {CardEffectCommons.IsExistOnBattleArea(card)}");
                 if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
+                    Debug.Log($"CanUseCondition: {CardEffectCommons.IsOpponentTurn(card)}");
                     if (CardEffectCommons.IsOpponentTurn(card))
                     {
+                        Debug.Log($"CanUseCondition: {CardEffectCommons.CanTriggerOnPermanentAttack(hashtable, PermanentCondition)}");
                         if (CardEffectCommons.CanTriggerOnPermanentAttack(hashtable, PermanentCondition))
                         {
-                            return true;
-
+                            Debug.Log($"CanUseCondition: {GManager.instance.attackProcess.DefendingPermanent}");
+                            if (GManager.instance.attackProcess.DefendingPermanent == null)
+                            {
+                                return true;
+                            }
                         }
                     }
                 }
@@ -165,8 +171,10 @@ public class Analogman_BT11_092 : CEntity_Effect
 
             bool CanActivateCondition(Hashtable hashtable)
             {
+                Debug.Log($"CanActivateCondition: {CardEffectCommons.IsExistOnBattleArea(card)}");
                 if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
+                    Debug.Log($"CanActivateCondition: {CardEffectCommons.CanActivateSuspendCostEffect(card)}");
                     if (CardEffectCommons.CanActivateSuspendCostEffect(card))
                     {
                         return true;

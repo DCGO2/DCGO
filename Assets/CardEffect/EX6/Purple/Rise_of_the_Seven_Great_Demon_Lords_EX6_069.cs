@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.EX6
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Place 1 Digimon with [Seven Great Demon Lords] trait as bottom digivolution source in breeding area.", CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -42,7 +42,10 @@ namespace DCGO.CardEffects.EX6
 
                 bool HasSevenGreatDemonLordTrait(CardSource cardSource)
                 {
-                    return cardSource.ContainsTraits("Seven Great Demon Lords");
+                    if (cardSource.IsDigimon)
+                        return cardSource.ContainsTraits("Seven Great Demon Lords");
+
+                    return false;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -63,114 +66,126 @@ namespace DCGO.CardEffects.EX6
                             #region Selecting Hand or Trash
                             if (validCardInTrash && validCardInHand)
                             {
-                                List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
+                                List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
                                 {
-                                    new SelectionElement<bool>(message: $"Trash", value : true, spriteIndex: 0),
-                                    new SelectionElement<bool>(message: $"Hand", value : false, spriteIndex: 1),
+                                    new SelectionElement<int>(message: $"Trash", value : 0, spriteIndex: 0),
+                                    new SelectionElement<int>(message: $"Hand", value : 1, spriteIndex: 0),
+                                    new SelectionElement<int>(message: $"No Selection", value : 2, spriteIndex: 1),
                                 };
 
                                 string selectPlayerMessage = "Will you use a card from hand or trash?";
                                 string notSelectPlayerMessage = "The opponent is choosing whether use a card from hand or trash.";
 
-                                GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+                                GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+                            }
+                            else if(validCardInTrash && !validCardInHand)
+                            {
+                                GManager.instance.userSelectionManager.SetInt(0);
+                            }
+                            else if (!validCardInTrash && validCardInHand)
+                            {
+                                GManager.instance.userSelectionManager.SetInt(1);
                             }
                             else
                             {
-                                GManager.instance.userSelectionManager.SetBool(validCardInTrash);
+                                GManager.instance.userSelectionManager.SetInt(2);
                             }
 
                             yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                            useTrash = GManager.instance.userSelectionManager.SelectedBoolValue;
+                            useTrash = (GManager.instance.userSelectionManager.SelectedIntValue == 0);
                             #endregion
 
-                            #region Card Selection
-                            CardSource selectedCard = null;
-
-                            IEnumerator SelectCardCoroutine(CardSource cardSource)
+                            if(GManager.instance.userSelectionManager.SelectedIntValue != 2)
                             {
-                                selectedCard = cardSource;
+                                #region Card Selection
+                                CardSource selectedCard = null;
 
-                                yield return null;
-                            }
-
-                            
-                            if (!useTrash)
-                            {
-                                SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                                selectHandEffect.SetUp(
-                                    selectPlayer: card.Owner,
-                                    canTargetCondition: HasSevenGreatDemonLordTrait,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    maxCount: 1,
-                                    canNoSelect: true,
-                                    canEndNotMax: false,
-                                    isShowOpponent: true,
-                                    selectCardCoroutine: SelectCardCoroutine,
-                                    afterSelectCardCoroutine: null,
-                                    mode: SelectHandEffect.Mode.Custom,
-                                    cardEffect: activateClass);
-
-                                selectHandEffect.SetUpCustomMessage(
-                        "Select 1 card to place at the bottom of digivolution cards.",
-                        "The opponent is selecting 1 card to place at the bottom of digivolution cards.");
-                                selectHandEffect.SetUpCustomMessage_ShowCard("Place bottom digivolution card");
-
-                                yield return StartCoroutine(selectHandEffect.Activate());
-                            }
-
-                            else
-                            {
-                                SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                                selectCardEffect.SetUp(
-                                    canTargetCondition: HasSevenGreatDemonLordTrait,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    canNoSelect: () => true,
-                                    selectCardCoroutine: SelectCardCoroutine,
-                                    afterSelectCardCoroutine: null,
-                                    message: "Select 1 card to play.",
-                                    maxCount: 1,
-                                    canEndNotMax: false,
-                                    isShowOpponent: true,
-                                    mode: SelectCardEffect.Mode.Custom,
-                                    root: SelectCardEffect.Root.Trash,
-                                    customRootCardList: null,
-                                    canLookReverseCard: true,
-                                    selectPlayer: card.Owner,
-                                    cardEffect: activateClass);
-
-                                selectCardEffect.SetUpCustomMessage(
-                        "Select 1 card to place at the bottom of digivolution cards.",
-                        "The opponent is selecting 1 card to place at the bottom of digivolution cards.");
-                                selectCardEffect.SetUpCustomMessage_ShowCard("Place bottom digivolution card");
-
-                                yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-                            }
-                            #endregion
-
-                            #region Place As Source
-                            if (selectedCard != null)
-                            {
-                                if (card.Owner.GetBreedingAreaPermanents().Count(CanSelectPermanentCondition) >= 1)
+                                IEnumerator SelectCardCoroutine(CardSource cardSource)
                                 {
-                                    Permanent selectedPermanent = card.Owner.GetBreedingAreaPermanents()[0];
+                                    selectedCard = cardSource;
 
-                                    if (CanSelectPermanentCondition(selectedPermanent))
+                                    yield return null;
+                                }
+
+
+                                if (!useTrash)
+                                {
+                                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                                    selectHandEffect.SetUp(
+                                        selectPlayer: card.Owner,
+                                        canTargetCondition: HasSevenGreatDemonLordTrait,
+                                        canTargetCondition_ByPreSelecetedList: null,
+                                        canEndSelectCondition: null,
+                                        maxCount: 1,
+                                        canNoSelect: true,
+                                        canEndNotMax: false,
+                                        isShowOpponent: true,
+                                        selectCardCoroutine: SelectCardCoroutine,
+                                        afterSelectCardCoroutine: null,
+                                        mode: SelectHandEffect.Mode.Custom,
+                                        cardEffect: activateClass);
+
+                                    selectHandEffect.SetUpCustomMessage(
+                            "Select 1 card to place at the bottom of digivolution cards.",
+                            "The opponent is selecting 1 card to place at the bottom of digivolution cards.");
+                                    selectHandEffect.SetUpCustomMessage_ShowCard("Place bottom digivolution card");
+
+                                    yield return StartCoroutine(selectHandEffect.Activate());
+                                }
+
+                                else
+                                {
+                                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                                    selectCardEffect.SetUp(
+                                        canTargetCondition: HasSevenGreatDemonLordTrait,
+                                        canTargetCondition_ByPreSelecetedList: null,
+                                        canEndSelectCondition: null,
+                                        canNoSelect: () => true,
+                                        selectCardCoroutine: SelectCardCoroutine,
+                                        afterSelectCardCoroutine: null,
+                                        message: "Select 1 card to play.",
+                                        maxCount: 1,
+                                        canEndNotMax: false,
+                                        isShowOpponent: true,
+                                        mode: SelectCardEffect.Mode.Custom,
+                                        root: SelectCardEffect.Root.Trash,
+                                        customRootCardList: null,
+                                        canLookReverseCard: true,
+                                        selectPlayer: card.Owner,
+                                        cardEffect: activateClass);
+
+                                    selectCardEffect.SetUpCustomMessage(
+                            "Select 1 card to place at the bottom of digivolution cards.",
+                            "The opponent is selecting 1 card to place at the bottom of digivolution cards.");
+                                    selectCardEffect.SetUpCustomMessage_ShowCard("Place bottom digivolution card");
+
+                                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                                }
+                                #endregion
+
+                                #region Place As Source
+                                if (selectedCard != null)
+                                {
+                                    if (card.Owner.GetBreedingAreaPermanents().Count(CanSelectPermanentCondition) >= 1)
                                     {
-                                        if (selectedPermanent != null)
+                                        Permanent selectedPermanent = card.Owner.GetBreedingAreaPermanents()[0];
+
+                                        if (CanSelectPermanentCondition(selectedPermanent))
                                         {
-                                            yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(
-                                                new List<CardSource>() { selectedCard },
-                                                activateClass));
+                                            if (selectedPermanent != null)
+                                            {
+                                                yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(
+                                                    new List<CardSource>() { selectedCard },
+                                                    activateClass));
+                                            }
                                         }
                                     }
                                 }
+                                #endregion
                             }
-                            #endregion
                         }
                     }
                         

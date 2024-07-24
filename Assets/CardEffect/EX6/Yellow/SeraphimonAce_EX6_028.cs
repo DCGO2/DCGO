@@ -134,16 +134,15 @@ namespace DCGO.CardEffects.EX6
             if (timing == EffectTiming.OnAddSecurity)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Draw 1", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false,
-                    EffectDescription());
+                activateClass.SetUpICardEffect("Return 1 of your opponent's Digimon to the hand", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetHashString("ReturnToHand_EX6_028");
                 cardEffects.Add(activateClass);
                 
                 string EffectDescription()
                 {
                     return
-                        "[Your Turn][Once Per Turn] When a card is added to your security stack, return 1 of your opponent's Digimon with a level as high or lower than the number of cards in your security stack to the hand.";
+                        "[All Turns] [Once per Turn] When a card is added to your security stack, return 1 of your opponent's Digimon with as high or lower a level as the number of your security cards to the hand.";
                 }
                 
                 bool CanSelectOpponentPermanentCondition(Permanent permanent)
@@ -164,14 +163,11 @@ namespace DCGO.CardEffects.EX6
                 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (CardEffectCommons.IsOwnerTurn(card))
+                        if (CardEffectCommons.CanTriggerWhenAddSecurity(hashtable, player => player == card.Owner))
                         {
-                            if (CardEffectCommons.CanTriggerWhenAddSecurity(hashtable, player => player == card.Owner))
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
                     
@@ -179,13 +175,8 @@ namespace DCGO.CardEffects.EX6
                 }
                 
                 bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        return true;
-                    }
-                    
-                    return false;
+                {                   
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
                 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

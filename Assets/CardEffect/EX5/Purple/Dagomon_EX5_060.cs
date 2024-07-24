@@ -15,7 +15,7 @@ public class Dagomon_EX5_060 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Opponent plays1  Digimon from trash", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Opponent plays 1  Digimon from trash", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 

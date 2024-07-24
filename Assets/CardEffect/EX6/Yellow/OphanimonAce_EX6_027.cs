@@ -309,17 +309,15 @@ namespace DCGO.CardEffects.EX6
                         
                         if (cardPermanent.CanAttack(activateClass))
                         {
-                            SelectAttackEffect selectAttackEffect =
-                                GManager.instance.GetComponent<SelectAttackEffect>();
-                            
+                            SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
+
                             selectAttackEffect.SetUp(
                                 attacker: cardPermanent,
                                 canAttackPlayerCondition: () => true,
-                                defenderCondition: _ => true,
+                                defenderCondition: (permanent) => true,
                                 cardEffect: activateClass);
-                            
-                            yield return
-                                ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
+
+                            yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
                         }
                     }
                 }

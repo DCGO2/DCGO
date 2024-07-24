@@ -79,7 +79,7 @@ public class MatsudaTakato_EX2_056 : CEntity_Effect
                 return "[Your Turn] When one of your Digimon would digivolve into a Digimon with [Gallantmon] or [Growlmon] in its name, that Digimon gains \"[When Digivolving] <Blitz> (This Digimon can attack when your opponent has 1 or more memory.)\" for the turn.";
             }
 
-            bool PermanentCondition(Permanent permanent)
+            bool DigivolvePermanentCondition(Permanent permanent)
             {
                 return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card);
             }
@@ -103,7 +103,7 @@ public class MatsudaTakato_EX2_056 : CEntity_Effect
                 {
                     if (CardEffectCommons.IsOwnerTurn(card))
                     {
-                        if (CardEffectCommons.CanTriggerWhenPermanentWouldDigivolve(hashtable, PermanentCondition, CardCondition))
+                        if (CardEffectCommons.CanTriggerWhenPermanentWouldDigivolve(hashtable, DigivolvePermanentCondition, CardCondition))
                         {
                             return true;
                         }
@@ -137,72 +137,30 @@ public class MatsudaTakato_EX2_056 : CEntity_Effect
 
                 List<Permanent> Permanents = CardEffectCommons.GetPermanentsFromHashtable(_hashtable);
 
+                bool PermanentCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                    {
+                        if (Permanents.Contains(permanent))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
                 if (Permanents != null)
                 {
-                    if (Permanents.Count(CardEffectCommons.IsPermanentExistsOnBattleArea) >= 1)
+                    if (Permanents.Count(PermanentCondition) >= 1)
                     {
-                        bool PermanentCondition(Permanent permanent)
+                        foreach (Permanent permanent in card.Owner.GetBattleAreaPermanents().Filter(PermanentCondition))
                         {
-                            if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
-                            {
-                                if (Permanents.Contains(permanent))
-                                {
-                                    return true;
-                                }
-                            }
-
-                            return false;
-                        }
-
-                        foreach (Permanent permanent in card.Owner.GetBattleAreaPermanents())
-                        {
-                            if (PermanentCondition(permanent))
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateBuffEffect(permanent));
-
-                                yield return new WaitForSeconds(0.2f);
-
-                                AddSkillClass addSkillClass = new AddSkillClass();
-                                addSkillClass.SetUpICardEffect("Gain Blitz", CanUseCondition1, card);
-                                addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
-                                CardEffectCommons.AddEffectToPermanent(targetPermanent: permanent, effectDuration: EffectDuration.UntilEachTurnEnd, card: card, cardEffect: addSkillClass, timing: EffectTiming.None);
-
-                                bool CanUseCondition1(Hashtable hashtable)
-                                {
-                                    return true;
-                                }
-
-                                bool CardSourceCondition(CardSource cardSource)
-                                {
-                                    if (PermanentCondition(cardSource.PermanentOfThisCard()))
-                                    {
-                                        if (cardSource == cardSource.PermanentOfThisCard().TopCard)
-                                        {
-                                            return true;
-                                        }
-                                    }
-
-                                    return false;
-                                }
-
-                                List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming _timing)
-                                {
-                                    if (_timing == EffectTiming.OnEnterFieldAnyone)
-                                    {
-                                        bool Condition()
-                                        {
-                                            return CardSourceCondition(cardSource);
-                                        }
-
-                                        cardEffects.Add(CardEffectFactory.BlitzSelfEffect(isInheritedEffect: false,
-                                            card: cardSource,
-                                            condition: Condition,
-                                            isWhenDigivolving: true));
-                                    }
-
-                                    return cardEffects;
-                                }
-                            }
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBlitz(
+                                targetPermanent: permanent,
+                                effectDuration: EffectDuration.UntilEachTurnEnd,
+                                activateClass: activateClass,
+                                isWhenDigivolving:true));
                         }
                     }
                 }

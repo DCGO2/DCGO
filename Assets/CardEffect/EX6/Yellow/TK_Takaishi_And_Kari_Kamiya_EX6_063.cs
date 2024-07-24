@@ -182,21 +182,14 @@ namespace DCGO.CardEffects.EX6
                 
                 string EffectDescription()
                 {
-                    return
-                        "[Your Turn] When one of your Digimon is played or digivolves, if it has the [Angel]/[Archangel]/[Three Great Angels] trait, by suspending this Tamer, gain 1 memory.";
+                    return "[Your Turn] When one of your Digimon is played or digivolves, if it has the [Angel]/[Archangel]/[Three Great Angels] trait, by suspending this Tamer, gain 1 memory.";
                 }
                 
                 bool PermanentCondition(Permanent permanent)
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent.TopCard.ContainsTraits("Angel") ||
-                            permanent.TopCard.ContainsTraits("Archangel") ||
-                            permanent.TopCard.ContainsTraits("Three Great Angels") ||
-                            permanent.TopCard.ContainsTraits("ThreeGreatAngels"))
-                        {
-                            return true;
-                        }
+                        return permanent.TopCard.HasAngelTraitRestrictive;
                     }
                     
                     return false;

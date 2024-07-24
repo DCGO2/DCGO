@@ -30,10 +30,10 @@ namespace DCGO.CardEffects.EX6
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.ContainsTraits("Angel") ||
-                            cardSource.ContainsTraits("Archangel") ||
-                            cardSource.ContainsTraits("Three Great Angels") ||
-                            cardSource.ContainsTraits("ThreeGreatAngels"))
+                        if (cardSource.CardTraits.Contains("Angel") ||
+                            cardSource.CardTraits.Contains("Archangel") ||
+                            cardSource.CardTraits.Contains("Three Great Angels") ||
+                            cardSource.CardTraits.Contains("ThreeGreatAngels"))
                         {
                             return true;
                         }
@@ -117,10 +117,10 @@ namespace DCGO.CardEffects.EX6
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent.TopCard.ContainsTraits("Angel") ||
-                            permanent.TopCard.ContainsTraits("Archangel") ||
-                            permanent.TopCard.ContainsTraits("Three Great Angels") ||
-                            permanent.TopCard.ContainsTraits("ThreeGreatAngels"))
+                        if (permanent.TopCard.CardTraits.Contains("Angel") ||
+                            permanent.TopCard.CardTraits.Contains("Archangel") ||
+                            permanent.TopCard.CardTraits.Contains("Three Great Angels") ||
+                            permanent.TopCard.CardTraits.Contains("ThreeGreatAngels"))
                         {
                             return true;
                         }

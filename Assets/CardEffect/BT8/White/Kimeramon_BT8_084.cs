@@ -275,7 +275,7 @@ public class Kimeramon_BT8_084 : CEntity_Effect
         if (timing == EffectTiming.None)
         {
             ChangeCardColorClass changeCardColorClass = new ChangeCardColorClass();
-            changeCardColorClass.SetUpICardEffect($"Also treated as Diogivolution cards' colors", CanUseCondition, card);
+            changeCardColorClass.SetUpICardEffect($"Also treated as Digivolution cards' colors", CanUseCondition, card);
             changeCardColorClass.SetUpChangeCardColorClass(ChangeCardColors: ChangeCardColors);
 
             cardEffects.Add(changeCardColorClass);
