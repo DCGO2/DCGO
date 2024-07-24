@@ -155,7 +155,7 @@ namespace DCGO.CardEffects.ST17
 
                 string EffectDiscription()
                 {
-                    return "[On Play] [De-Digivolve] 1 of your opponent's Digimon. Then, if you have a green Tamer, until the end of your opponent's turn, your opponent's effects can't delete this Digimon or return it to the hand or deck.";
+                    return "[When Digivolving] [De-Digivolve] 1 of your opponent's Digimon. Then, if you have a green Tamer, until the end of your opponent's turn, your opponent's effects can't delete this Digimon or return it to the hand or deck.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)

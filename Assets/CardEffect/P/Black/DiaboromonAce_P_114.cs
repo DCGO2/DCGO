@@ -1,10 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
-using Photon;
-using System;
-using Photon.Pun;
 
 public class DiaboromonAce_P_114 : CEntity_Effect
 {
@@ -62,7 +59,7 @@ public class DiaboromonAce_P_114 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Digivolving] You may play 1 [Diaboromon] Token without paying its memory cost (Diaboromon Tokens are level 6 white Digimon with a memory cost of 14, 3000 DP, and are Mega form, Unidentified type, and Unknown attribute).";
+                return "[When Attacking] You may play 1 [Diaboromon] Token without paying its memory cost (Diaboromon Tokens are level 6 white Digimon with a memory cost of 14, 3000 DP, and are Mega form, Unidentified type, and Unknown attribute).";
             }
 
             bool CanUseCondition(Hashtable hashtable)

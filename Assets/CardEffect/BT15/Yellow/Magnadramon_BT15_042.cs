@@ -42,8 +42,6 @@ public class Magnadramon_BT15_042 : CEntity_Effect
                 {
                     if (CardEffectCommons.CanTriggerWhenLoseSecurity(hashtable, player => player == card.Owner))
                     {
-                        return true;
-
                         if (card.Owner.SecurityCards.Count() <= 3)
                         {
                             return true;
@@ -94,7 +92,7 @@ public class Magnadramon_BT15_042 : CEntity_Effect
                             selectHandEffect.SetUpCustomMessage(
                                 "Select 1 card to place at the top or bottom of security.",
                                 "The opponent is selecting 1 card to place at the bottom of security.");
-                            selectHandEffect.SetUpCustomMessage_ShowCard("Security Bottom Card");
+                            
 
                             yield return StartCoroutine(selectHandEffect.Activate());
 
@@ -122,6 +120,8 @@ public class Magnadramon_BT15_042 : CEntity_Effect
                                         GManager.instance.commandText.OpenCommandText("\"Place to the top of security\" was selected.");
 
                                         GManager.instance.playLog.AddLogString($"\n{card.BaseENGCardNameFromEntity}({card.CardID}):Place the Digimon to the top of security\n");
+
+                                        selectHandEffect.SetUpCustomMessage_ShowCard("Security Top Card");
                                     }
 
                                     else
@@ -129,6 +129,8 @@ public class Magnadramon_BT15_042 : CEntity_Effect
                                         GManager.instance.commandText.OpenCommandText("\"Place to the bottom of security\" was selected.");
 
                                         GManager.instance.playLog.AddLogString($"\n{card.BaseENGCardNameFromEntity}({card.CardID}):Place the Digimon to the bottom of security\n");
+
+                                        selectHandEffect.SetUpCustomMessage_ShowCard("Security Bottom Card");
                                     }
 
                                     yield return new WaitForSeconds(0.4f);

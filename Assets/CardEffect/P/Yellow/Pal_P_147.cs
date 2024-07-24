@@ -18,7 +18,7 @@ namespace DCGO.CardEffects.P
             if (timing == EffectTiming.None)
             {
                 ChangeCardNamesClass changeCardNamesClass = new ChangeCardNamesClass();
-                changeCardNamesClass.SetUpICardEffect("Also treated as [Pulsmon]", CanUseCondition, card);
+                changeCardNamesClass.SetUpICardEffect("Also treated as [Pulsemon]", CanUseCondition, card);
                 changeCardNamesClass.SetUpChangeCardNamesClass(changeCardNames: changeCardNames);
                 cardEffects.Add(changeCardNamesClass);
 
@@ -96,7 +96,7 @@ namespace DCGO.CardEffects.P
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
+                        if(card.Owner.HandCards.Count >= 1)
                         {
                             return true;
                         }

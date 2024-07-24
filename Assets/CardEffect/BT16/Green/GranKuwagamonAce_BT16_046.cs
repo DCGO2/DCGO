@@ -78,12 +78,7 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -91,8 +86,6 @@ namespace DCGO.CardEffects.BT16
                     if (CardEffectCommons.HasMatchConditionPermanent(PermanentCondition))
                     {
                         int maxCount = Math.Min(2, CardEffectCommons.MatchConditionPermanentCount(PermanentCondition));
-
-                        Permanent selectedPermanent = null;
 
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
@@ -104,7 +97,7 @@ namespace DCGO.CardEffects.BT16
                             maxCount: maxCount,
                             canNoSelect: false,
                             canEndNotMax: false,
-                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            selectPermanentCoroutine: null,
                             afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
                             mode: SelectPermanentEffect.Mode.Tap,
                             cardEffect: activateClass);
@@ -112,13 +105,6 @@ namespace DCGO.CardEffects.BT16
                         selectPermanentEffect.SetUpCustomMessage("Select 2 Digimon or Tamers to suspend.", "The opponent is selecting 2 Digimon or Tamers to suspend.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                        {
-                            selectedPermanent = permanent;
-
-                            yield return null;
-                        }
 
                         IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
                         {
@@ -139,7 +125,6 @@ namespace DCGO.CardEffects.BT16
                                 }
                             }
                         }
-
                     }
 
                     if(CardEffectCommons.HasMatchConditionPermanent(CanSelectTamerToDelete))
@@ -214,12 +199,7 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -227,8 +207,6 @@ namespace DCGO.CardEffects.BT16
                     if (CardEffectCommons.HasMatchConditionPermanent(PermanentCondition))
                     {
                         int maxCount = Math.Min(2, CardEffectCommons.MatchConditionPermanentCount(PermanentCondition));
-
-                        Permanent selectedPermanent = null;
 
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
@@ -240,7 +218,7 @@ namespace DCGO.CardEffects.BT16
                             maxCount: maxCount,
                             canNoSelect: false,
                             canEndNotMax: false,
-                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            selectPermanentCoroutine: null,
                             afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
                             mode: SelectPermanentEffect.Mode.Tap,
                             cardEffect: activateClass);
@@ -248,13 +226,6 @@ namespace DCGO.CardEffects.BT16
                         selectPermanentEffect.SetUpCustomMessage("Select 2 Digimon or Tamers to suspend.", "The opponent is selecting 2 Digimon or Tamers to suspend.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                        {
-                            selectedPermanent = permanent;
-
-                            yield return null;
-                        }
 
                         IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
                         {

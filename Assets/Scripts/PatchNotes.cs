@@ -17,7 +17,8 @@ public class PatchNotes : OffAnimation
 
     public void OnClickOpenPatchNotesPanelButton()
     {
-        if (_isOpen)
+        Application.OpenURL("http://dcgo.online/");
+        /*if (_isOpen)
         {
             ClosePatchNotesPanel();
         }
@@ -35,7 +36,7 @@ public class PatchNotes : OffAnimation
             }
 
             ContinuousController.instance.StartCoroutine(Open());
-        }
+        }*/
     }
 
     public IEnumerator Open()
