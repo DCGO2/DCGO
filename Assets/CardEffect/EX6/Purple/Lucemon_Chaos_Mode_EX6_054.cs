@@ -26,7 +26,7 @@ namespace DCGO.CardEffects.EX6
                     return false;
                 }
 
-                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 5, ignoreDigivolutionRequirement: false, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 6, ignoreDigivolutionRequirement: true, card: card, condition: null));
             }
             #endregion
 
@@ -257,33 +257,16 @@ namespace DCGO.CardEffects.EX6
                     return "[All Turns] When this Digimon would leave the battle area; by returning 1 [Lucemon] from this Digimon's digivolution cards or from your trash to the bottom of the deck, you may play 1 [Lucemon: Satan Mode] or 1 level 6 Digimon card with the [Seven Great Demon Lords] trait from your trash without paying the cost.";
                 }
 
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
                 bool CanSelectLucemon(CardSource cardSource)
                 {
-                    if(cardSource.CardNames.Contains("Lucemon"))
-                    {
-                        return true;
-                    }
-                    return false;
+                    return cardSource.CardNames.Contains("Lucemon");
                 }
 
                 bool CanSelectCardToPlayFromTrash(CardSource cardSource)
                 {
                     if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                     {
-                        if (cardSource.CardNames.Contains("Lucemon"))
+                        if (cardSource.CardNames.Contains("Lucemon: Satan Mode"))
                         {
                             return true;
                         }
@@ -296,6 +279,19 @@ namespace DCGO.CardEffects.EX6
                             }
                         }
                     }
+                    return false;
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card))
+                        {
+                            return true;
+                        }
+                    }
+
                     return false;
                 }
 

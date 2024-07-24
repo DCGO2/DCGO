@@ -112,15 +112,7 @@ namespace DCGO.CardEffects.ST17
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleArea(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -139,24 +131,14 @@ namespace DCGO.CardEffects.ST17
                             maxCount: maxCount,
                             canNoSelect: true,
                             canEndNotMax: false,
-                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            selectPermanentCoroutine: null,
                             afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
+                            mode: SelectPermanentEffect.Mode.Destroy,
                             cardEffect: activateClass);
 
                         selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to delete.", "The opponent is selecting 1 Digimon to delete.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: new List<Permanent>() { permanent }, activateClass: activateClass, successProcess: permanents => SuccessProcess(), failureProcess: null));
-
-                            IEnumerator SuccessProcess()
-                            {
-                                yield return null;
-                            }
-                        }
                     }
 
 

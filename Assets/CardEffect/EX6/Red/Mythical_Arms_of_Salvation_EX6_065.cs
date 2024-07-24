@@ -165,13 +165,13 @@ namespace DCGO.CardEffects.EX6
                                 {
                                     yield return ContinuousController.instance.StartCoroutine(
                                         permanent.AddDigivolutionCardsBottom(selectedCards, activateClass));
-                                    
-                                    yield return ContinuousController.instance.StartCoroutine(
-                                        CardEffectCommons.PlaceDelayOptionCards(card: card, cardEffect: activateClass));
                                 }
                             }
                         }
                     }
+
+                    yield return ContinuousController.instance.StartCoroutine(
+                                        CardEffectCommons.PlaceDelayOptionCards(card: card, cardEffect: activateClass));
                 }
             }
             

@@ -54,12 +54,12 @@ namespace DCGO.CardEffects.BT16
                 case EffectTiming.OnEnterFieldAnyone:
                     var activatePlayClass = new ActivateClass();
                     activatePlayClass.SetUpICardEffect("Select 1 of your Digimon to gain battle protection", CanUsePlayCondition, card);
-                    activatePlayClass.SetUpActivateClass(CanActivateCondition, ActivatePlayCoroutine, -1, true, EffectDiscription());
+                    activatePlayClass.SetUpActivateClass(CanActivateCondition, ActivatePlayCoroutine, -1, false, EffectDiscription());
                     cardEffects.Add(activatePlayClass);
 
                     var activateDigivolveClass = new ActivateClass();
                     activateDigivolveClass.SetUpICardEffect("Select 1 of your Digimon to gain battle protection", CanUseDigivolveCondition, card);
-                    activateDigivolveClass.SetUpActivateClass(CanActivateCondition, ActivateDigivolveCoroutine, -1, true, EffectDiscription());
+                    activateDigivolveClass.SetUpActivateClass(CanActivateCondition, ActivateDigivolveCoroutine, -1, false, EffectDiscription());
                     cardEffects.Add(activateDigivolveClass);
 
                     string EffectDiscription()

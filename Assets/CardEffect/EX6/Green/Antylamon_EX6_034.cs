@@ -132,6 +132,7 @@ namespace DCGO.CardEffects.EX6
                 activateClass.SetUpICardEffect("Return 1 of your suspend Digimon to play 1 Digimon from hand", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
+                activateClass.SetHashString("EndofAttack_EX6_034");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -143,9 +144,10 @@ namespace DCGO.CardEffects.EX6
                 {                  
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
                     {
-                        if (permanent.IsSuspended)
+                        if (permanent.IsDigimon && permanent.IsSuspended)
                         {
-                            return true;
+                            if(permanent != card.PermanentOfThisCard())
+                                return true;
                         }
                     }
 
@@ -154,7 +156,7 @@ namespace DCGO.CardEffects.EX6
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnEndAttack(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
