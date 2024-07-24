@@ -167,7 +167,6 @@ public class DeckInfoPanel : MonoBehaviour
                             ContinuousController.instance.DeckDatas.Remove(deckData);
                             ContinuousController.instance.StartCoroutine(Opening.instance.deck.selectDeck.SetDeckList(false));
                             Opening.instance.deck.selectDeck.ResetDeckInfoPanel();
-                            ContinuousController.instance.SaveDeckDatas();
                             ContinuousController.instance.DeleteDeck(deckData);
                         }
                     },
@@ -249,8 +248,6 @@ public class DeckInfoPanel : MonoBehaviour
         }
 
         ContinuousController.instance.RenameDeck(ShowingDeckData, text);
-
-        ShowingDeckData.DeckName = text;
 
         if (isFromSelectDeck)
         {
