@@ -180,7 +180,7 @@ namespace DCGO.CardEffects.EX6
                         if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectOpponentPermanentCondition))
                         {
                             int maxCount = Math.Min(1,
-                                CardEffectCommons.MatchConditionPermanentCount(CanSelectSecMinusPermanentSharedCondition));
+                                CardEffectCommons.MatchConditionPermanentCount(CanSelectOpponentPermanentCondition));
                             
                             SelectPermanentEffect selectPermanentEffect =
                                 GManager.instance.GetComponent<SelectPermanentEffect>();

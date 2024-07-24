@@ -235,13 +235,13 @@ namespace DCGO.CardEffects.BT16
 
                 string EffectDiscription()
                 {
-                    return "[On Play] If it's your turn, 1 of your Digimomn may digivolve into a level 4 Digimon card with the [Insectiod] or [Free] trait from your trash with the digivolution cost reduced by 1.";
+                    return "[On Play] If it's your turn, 1 of your Digimon may digivolve into a level 4 Digimon card with the [Insectoid] or [Free] trait from your trash with the digivolution cost reduced by 1.";
                 }
 
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.CardTraits.Contains("Insectiod") || cardSource.CardTraits.Contains("Free"))
+                    if (cardSource.CardTraits.Contains("Insectoid") || cardSource.CardTraits.Contains("Free"))
                     {
                         if (cardSource.HasLevel && cardSource.Level == 4)
                         {

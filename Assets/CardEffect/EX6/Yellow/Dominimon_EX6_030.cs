@@ -214,7 +214,7 @@ namespace DCGO.CardEffects.EX6
                 string EffectDescription()
                 {
                     return
-                        "[All Turns] When one of your Digimon with the[Angel]/[Archangel]/[Three Great Angels] trait would leave the battle area other than in battle, by trashing the top card of your security stack, prevent it from leaving.";
+                        "[All Turns] When one of your Digimon with the [Angel]/[Archangel]/[Three Great Angels] trait would leave the battle area other than in battle, by trashing the top card of your security stack, prevent it from leaving.";
                 }
 
                 bool PermanentCondition(Permanent permanent)
