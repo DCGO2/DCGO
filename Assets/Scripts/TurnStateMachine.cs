@@ -581,10 +581,11 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
         #region Unsuspend
 
-        #region 場のパーマネントのアンタップ
+        #region Untap permanents in play
 
         List<Permanent> unsuspendPermanents = new List<Permanent>();
 
+        //Add field Permanents to unsuspend list
         foreach (Permanent permanent in gameContext.PermanentsForTurnPlayer)
         {
             if (permanent.IsSuspended && permanent.CanUnsuspend)
@@ -592,6 +593,23 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                 if (permanent.TopCard.Owner == gameContext.TurnPlayer || permanent.HasReboot)
                 {
                     unsuspendPermanents.Add(permanent);
+                }
+            }
+        }
+
+        //Unsuspend raising area Permanents
+        foreach (Permanent permanent in gameContext.You.GetBreedingAreaPermanents())
+        {
+            if (permanent.IsSuspended)
+            {
+                if (permanent.TopCard.Owner == gameContext.TurnPlayer)
+                {
+                    permanent.IsSuspended = false;
+
+                    if (permanent.ShowingPermanentCard != null)
+                    {
+                        permanent.ShowingPermanentCard.ShowPermanentData(true);
+                    }
                 }
             }
         }

@@ -235,7 +235,14 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                    if(CardEffectCommons.IsOwnerTurn(card))
+                    {
+                        if(CardEffectCommons.CanTriggerOnPlay(hashtable,card))
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

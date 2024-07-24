@@ -214,17 +214,14 @@ namespace DCGO.CardEffects.EX6
                 string EffectDescription()
                 {
                     return
-                        "[All Turns] When one of your Digimon with the[Angel]/[Archangel]/[Three Great Angels] trait would leave the battle area other than in battle, by trashing the top card of your security stack, prevent it from leaving.";
+                        "[All Turns] When one of your Digimon with the [Angel]/[Archangel]/[Three Great Angels] trait would leave the battle area other than in battle, by trashing the top card of your security stack, prevent it from leaving.";
                 }
 
                 bool PermanentCondition(Permanent permanent)
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent.TopCard.ContainsTraits("Angel") ||
-                            permanent.TopCard.ContainsTraits("Archangel") ||
-                            permanent.TopCard.ContainsTraits("Three Great Angels") ||
-                            permanent.TopCard.ContainsTraits("ThreeGreatAngels"))
+                        if (permanent.TopCard.HasAngelTraitRestrictive)
                         {
                             return true;
                         }
@@ -268,40 +265,19 @@ namespace DCGO.CardEffects.EX6
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
+                        List<Permanent> removedPermanents = CardEffectCommons.GetPermanentsFromHashtable(hashtable);
+
+                        removedPermanents = removedPermanents.Filter(PermanentCondition);
                         if (CardEffectCommons.HasMatchConditionPermanent(PermanentCondition))
                         {
-                            int maxCount = Math.Min(1,
-                                CardEffectCommons.MatchConditionPermanentCount(PermanentCondition));
-
-                            SelectPermanentEffect selectPermanentEffect =
-                                GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: PermanentCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: maxCount,
-                                canNoSelect: true,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: SelectPermanentCoroutine,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Custom,
-                                cardEffect: activateClass);
-
-                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to save.",
-                                "The opponent is selecting 1 Digimon to save.");
-
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                            IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
+                            yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
                                     player: card.Owner,
                                     destroySecurityCount: 1,
                                     cardEffect: activateClass,
                                     fromTop: true).DestroySecurity());
 
+                            foreach(Permanent permanent in removedPermanents)
+                            {
                                 permanent.willBeRemoveField = false;
                                 permanent.HideDeleteEffect();
                                 permanent.HideHandBounceEffect();

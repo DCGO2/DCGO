@@ -121,7 +121,7 @@ namespace DCGO.CardEffects.BT16
                 {
                     if(card.Owner.HandCards.Count >=1)
                     {
-                        if(card.CardTraits.Contains("FourGreatDragons"))
+                        if(card.CardTraits.Contains("FourGreatDragons") || card.CardTraits.Contains("Four Great Dragons"))
                         {
                             return true;
                         }
@@ -278,7 +278,7 @@ namespace DCGO.CardEffects.BT16
                                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
                                             selectedPermanent,
                                             -7000,
-                                            EffectDuration.UntilOpponentTurnEnd,
+                                            EffectDuration.UntilEachTurnEnd,
                                             activateClass)
                                             );
                                     }
@@ -353,7 +353,7 @@ namespace DCGO.CardEffects.BT16
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
                                 selectedPermanent,
                                 -7000,
-                                EffectDuration.UntilOpponentTurnEnd,
+                                EffectDuration.UntilEachTurnEnd,
                                 activateClass)
                                 );
                      

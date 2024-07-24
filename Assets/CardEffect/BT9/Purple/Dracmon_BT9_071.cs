@@ -103,7 +103,18 @@ public class Dracmon_BT9_071 : CEntity_Effect
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                return cardSource.IsDigimon && (cardSource.CardTraits.Contains("Undead") || cardSource.CardTraits.Contains("DarkAnimal") || cardSource.CardTraits.Contains("Dark Animal"));
+                if (cardSource.IsDigimon)
+                {
+                    if(cardSource.CardTraits.Contains("Undead") || cardSource.CardTraits.Contains("DarkAnimal") || cardSource.CardTraits.Contains("Dark Animal"))
+                    {
+                        if (cardSource.CanPlayCardTargetFrame(card.PermanentOfThisCard().PermanentFrame, false, activateClass))
+                        {
+                            return true;
+                        }
+                    }
+                }
+
+                return false;
             }
 
             bool CanUseCondition(Hashtable hashtable)

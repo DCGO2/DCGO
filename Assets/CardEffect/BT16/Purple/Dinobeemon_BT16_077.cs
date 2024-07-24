@@ -12,11 +12,9 @@ namespace DCGO.CardEffects.BT16
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            List<PartitionCondition> partitionConditions = new List<PartitionCondition>
-            {
-                new PartitionCondition(4, new List<CardColor> { CardColor.Purple }),
-                new PartitionCondition(4, new List<CardColor> { CardColor.Red })
-            };
+            List<PartitionCondition> partitionConditions = new List<PartitionCondition>();
+            partitionConditions.Add(new PartitionCondition(4, CardColor.Purple));
+            partitionConditions.Add(new PartitionCondition(4, CardColor.Red));
 
             #region DNA Digivolution
             if (timing == EffectTiming.None)

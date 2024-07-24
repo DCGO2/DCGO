@@ -21,7 +21,7 @@ public class Machinedramon_BT15_066 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Digivolving] Trigger <De-Digivolve 2> on 1 of your opponent's Digimon. (Trash up to 2 card from the top of one of your opponent's Digimon. If it has no digivolution cards, or becomes a level 3 Digimon, you can't trash any more cards.)";
+                return "[On Play] Trigger <De-Digivolve 2> on 1 of your opponent's Digimon. (Trash up to 2 card from the top of one of your opponent's Digimon. If it has no digivolution cards, or becomes a level 3 Digimon, you can't trash any more cards.)";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
@@ -90,7 +90,7 @@ public class Machinedramon_BT15_066 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[When Digivolving] Trigger <De-Digivolve 2> on 1 of your opponent's Digimon. (Trash up to 1 card from the top of one of your opponent's Digimon. If it has no digivolution cards, or becomes a level 3 Digimon, you can't trash any more cards.)";
+                return "[When Attacking] Trigger <De-Digivolve 2> on 1 of your opponent's Digimon. (Trash up to 1 card from the top of one of your opponent's Digimon. If it has no digivolution cards, or becomes a level 3 Digimon, you can't trash any more cards.)";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)

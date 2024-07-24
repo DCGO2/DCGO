@@ -32,7 +32,7 @@ namespace DCGO.CardEffects.EX6
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash up to 3 cards, suspend 1 opponent's digimon. Then delete all opponents suspended digimon with lowest play cost.", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -43,11 +43,14 @@ namespace DCGO.CardEffects.EX6
                 bool OpponentsSuspendableTargets(Permanent permanent)
                 {
 
-                    if (permanent.TopCard.HasLevel && permanent.Level <= 5)
+                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                     {
-                        return true;
+                        if (permanent.TopCard.HasLevel && permanent.Level <= 5)
+                        {
+                            return true;
+                        }
                     }
-                   
+
 
                     return false;
                 }
@@ -56,12 +59,9 @@ namespace DCGO.CardEffects.EX6
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent.IsSuspended)
+                        if (CardEffectCommons.IsMinCost(permanent, card.Owner.Enemy, true, (permanent) => permanent.IsSuspended))
                         {
-                            if (CardEffectCommons.IsMinCost(permanent, card.Owner.Enemy, true))
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
 
@@ -115,7 +115,7 @@ namespace DCGO.CardEffects.EX6
                     {
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                        int suspendCount = Math.Min(3, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, OpponentsSuspendableTargets));
+                        int suspendCount = Math.Min(discarded.Count, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, OpponentsSuspendableTargets));
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
@@ -144,7 +144,7 @@ namespace DCGO.CardEffects.EX6
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash up to 3 cards, suspend 1 opponent's digimon. Then delete all opponents suspended digimon with lowest play cost.", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -154,12 +154,13 @@ namespace DCGO.CardEffects.EX6
 
                 bool OpponentsSuspendableTargets(Permanent permanent)
                 {
-
-                    if (permanent.TopCard.HasLevel && permanent.Level <= 5)
+                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                     {
-                        return true;
+                        if (permanent.TopCard.HasLevel && permanent.Level <= 5)
+                        {
+                            return true;
+                        }
                     }
-
 
                     return false;
                 }
@@ -168,12 +169,9 @@ namespace DCGO.CardEffects.EX6
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent.IsSuspended)
+                        if (CardEffectCommons.IsMinCost(permanent, card.Owner.Enemy, true, (permanent) => permanent.IsSuspended))
                         {
-                            if (CardEffectCommons.IsMinCost(permanent, card.Owner.Enemy, true))
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
 
@@ -227,7 +225,7 @@ namespace DCGO.CardEffects.EX6
                     {
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                        int suspendCount = Math.Min(3, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, OpponentsSuspendableTargets));
+                        int suspendCount = Math.Min(discarded.Count, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, OpponentsSuspendableTargets));
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,

@@ -37,7 +37,7 @@ namespace DCGO.CardEffects.P
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete 1 Opponent's level 4 or lower Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -47,7 +47,12 @@ namespace DCGO.CardEffects.P
 
                 bool SelectDeletionTarget(Permanent permanent)
                 {
-                    return permanent.TopCard.HasLevel && permanent.Level <= 4;
+                    if(CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                    {
+                        return permanent.TopCard.HasLevel && permanent.Level <= 4;
+                    }
+
+                    return false;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -95,7 +100,7 @@ namespace DCGO.CardEffects.P
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete 1 Opponent's level 4 or lower Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -105,7 +110,12 @@ namespace DCGO.CardEffects.P
 
                 bool SelectDeletionTarget(Permanent permanent)
                 {
-                    return permanent.TopCard.HasLevel && permanent.Level <= 4;
+                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                    {
+                        return permanent.TopCard.HasLevel && permanent.Level <= 4;
+                    }
+
+                    return false;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -185,8 +195,8 @@ namespace DCGO.CardEffects.P
                 {
                     if(CardEffectCommons.CanTriggerOnDeletion(hashtable, card))
                     {
-                        if(card.PermanentOfThisCard().cardSources.Count(source => 
-                            source.CardNames.Contains("Myotismon") || source.ContainsCardName("X Antibody")) >= 0)
+                        if(card.PermanentOfThisCard().DigivolutionCards.Count(source => 
+                            source.CardNames.Contains("Myotismon") || source.CardNames.Contains("X Antibody") || source.CardNames.Contains("XAntibody")) >= 0)
                         {
                             return true;
                         }
@@ -207,31 +217,35 @@ namespace DCGO.CardEffects.P
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
-                    selectHandEffect.SetUp(
-                        selectPlayer: card.Owner,
+                    selectCardEffect.SetUp(
                         canTargetCondition: SelectMyotismonToPlay,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
+                        canNoSelect: () => true,
+                        selectCardCoroutine: PlaySelectedCard,
+                        afterSelectCardCoroutine: null,
+                        message: "Select 1 card to play",
                         maxCount: 1,
-                        canNoSelect: true,
                         canEndNotMax: false,
                         isShowOpponent: true,
-                        selectCardCoroutine: null,
-                        afterSelectCardCoroutine: PlaySelectedCard,
-                        mode: SelectHandEffect.Mode.Custom,
+                        mode: SelectCardEffect.Mode.Custom,
+                        root: SelectCardEffect.Root.Trash,
+                        customRootCardList: null,
+                        canLookReverseCard: true,
+                        selectPlayer: card.Owner,
                         cardEffect: activateClass);
 
-                    selectHandEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
-                    selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
+                    selectCardEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
+                    selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
 
-                    yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 
-                    IEnumerator PlaySelectedCard(List<CardSource> selectedCards)
+                    IEnumerator PlaySelectedCard(CardSource selectedCards)
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                            cardSources: selectedCards,
+                            cardSources: new List<CardSource>() { selectedCards },
                             activateClass: activateClass,
                             payCost: false,
                             isTapped: false,

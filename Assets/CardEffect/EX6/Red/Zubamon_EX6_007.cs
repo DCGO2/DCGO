@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.EX6
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.CardNames.Contains("Sakuttomon") &&
+                    return targetPermanent.TopCard.CardNames.Contains("Sakuttomon") ||
                            targetPermanent.TopCard.CardNames.Contains("Kakkinmon");
                 }
                 
@@ -90,7 +90,7 @@ namespace DCGO.CardEffects.EX6
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,
-                            canNoSelect: true,
+                            canNoSelect: false,
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine,
                             afterSelectPermanentCoroutine: null,
