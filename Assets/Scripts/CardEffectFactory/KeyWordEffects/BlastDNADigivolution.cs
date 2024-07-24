@@ -47,20 +47,20 @@ public partial class CardEffectFactory
 
         void FilterDNAPermanents()
         {
-            if (blastDNAConditions[0].Permanents.Count == 1)
-                blastDNAConditions[1].Permanents = blastDNAConditions[1].Permanents.Except(blastDNAConditions[0].Permanents).ToList();
+            if (blastDNAConditions[0].Permanents.Count >= 1 && blastDNAConditions[0].CardSources.Count == 0)
+                blastDNAConditions[1].Permanents.Clear();
 
-            if (blastDNAConditions[1].Permanents.Count == 1)
-                blastDNAConditions[0].Permanents = blastDNAConditions[0].Permanents.Except(blastDNAConditions[1].Permanents).ToList();
+            if (blastDNAConditions[1].Permanents.Count >= 1 && blastDNAConditions[1].CardSources.Count == 0)
+                blastDNAConditions[0].Permanents.Clear();
         }
 
         void FilterDNAHandSources()
         {
-            if (blastDNAConditions[0].CardSources.Count == 1)
-                blastDNAConditions[1].CardSources = blastDNAConditions[1].CardSources.Except(blastDNAConditions[0].CardSources).ToList();
+            if (blastDNAConditions[0].CardSources.Count >= 1 && blastDNAConditions[0].CardSources.Count == 0)
+                blastDNAConditions[1].CardSources.Clear();
 
-            if (blastDNAConditions[1].CardSources.Count == 1)
-                blastDNAConditions[0].CardSources = blastDNAConditions[0].CardSources.Except(blastDNAConditions[1].CardSources).ToList();
+            if (blastDNAConditions[1].CardSources.Count >= 1 && blastDNAConditions[1].CardSources.Count == 0)
+                blastDNAConditions[0].CardSources.Clear();
         }
 
         bool HasValidDNATargets()

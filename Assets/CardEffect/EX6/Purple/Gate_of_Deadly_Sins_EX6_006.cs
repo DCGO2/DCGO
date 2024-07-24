@@ -2,9 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using Photon;
 using System;
-using Photon.Pun;
 
 
 namespace DCGO.CardEffects.EX6
@@ -16,7 +14,6 @@ namespace DCGO.CardEffects.EX6
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Inherit
-
             ActivateClass activateClass2 = new ActivateClass();
             activateClass2.SetUpICardEffect("Reduce play cost by 3, if this Digimon has 5 or more different names in source, reduce by 4 instead.", CanUseCondition2, card);
             activateClass2.SetUpActivateClass(CanActivateCondition2, ActivateCoroutine2, 1, true, EffectDiscription2());
@@ -64,7 +61,6 @@ namespace DCGO.CardEffects.EX6
             {
                 if (CardEffectCommons.IsExistOnBreedingArea(card))
                 {
-                    /*
                     int count()
                     {
                         List<CardSource> DigivolutionCards = card.PermanentOfThisCard().DigivolutionCards;
@@ -101,14 +97,14 @@ namespace DCGO.CardEffects.EX6
                         }
                         return DigivolutionCards.Count;
                     }
-                    */
+
 
                     int reduceCount = 3;
 
-                    /*if (count() >= 5)
+                    if (count() >= 5)
                     {
                         reduceCount = 4;
-                    }*/
+                    }
 
 
                     if (reduceCount >= 1)
@@ -285,6 +281,7 @@ namespace DCGO.CardEffects.EX6
                 changeCostClass.SetUpICardEffect("Play Cost -", CanUseCondition, card);
                 changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => true, isChangePayingCost: () => true);
                 changeCostClass.SetNotShowUI(true);
+                changeCostClass.SetIsInheritedEffect(true);
                 cardEffects.Add(changeCostClass);
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -461,7 +458,7 @@ namespace DCGO.CardEffects.EX6
                     return true;
                 }
             }
-#endregion
+            #endregion
 
             #region Start of Main
             if (timing == EffectTiming.OnStartMainPhase)

@@ -32,12 +32,18 @@ namespace DCGO.CardEffects.EX6
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    Debug.Log($"Kakkinmon_EX6 - CanUseCondtion: {CardEffectCommons.IsOwnerTurn(card)}");
-                    if (CardEffectCommons.IsOwnerTurn(card))
+                    Debug.Log("Kakkinmon_EX6 - CanUseCondtion");
+                    Debug.Log($"Kakkinmon_EX6 - CanUseCondtion: {CardEffectCommons.IsExistOnBattleAreaDigimon(card)}");
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        Debug.Log($"Kakkinmon_EX6 - CanUseCondtion: {card.PermanentOfThisCard().DigivolutionCards.Count(HasLegendArms)}");
-                        return card.PermanentOfThisCard().DigivolutionCards.Count(HasLegendArms) > 0;
+                        Debug.Log($"Kakkinmon_EX6 - CanUseCondtion: {CardEffectCommons.IsOwnerTurn(card)}");
+                        if (CardEffectCommons.IsOwnerTurn(card))
+                        {
+                            Debug.Log($"Kakkinmon_EX6 - CanUseCondtion: {card.PermanentOfThisCard().DigivolutionCards.Count(HasLegendArms)}");
+                            return card.PermanentOfThisCard().DigivolutionCards.Count(HasLegendArms) > 0;
+                        }
                     }
+                    
 
                     return false;
                 }

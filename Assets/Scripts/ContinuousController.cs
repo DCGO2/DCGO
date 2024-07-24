@@ -273,9 +273,7 @@ public class ContinuousController : MonoBehaviour
         // deck data
         //DeckDatas = PlayerPrefsUtil.LoadList<DeckData>(DeckDatasPlayerPrefsKey);
         LoadDeckLists();
-        ModifyAllDeckDatas();
         GetComponent<StarterDeck>().SetStarterDecks();
-        SaveDeckDatas();
 
         // player data
         LoadPlayerName();
@@ -365,6 +363,7 @@ public class ContinuousController : MonoBehaviour
         if (File.Exists($"{savePath}/{data.DeckName}_{data.DeckID}.txt"))
         {
             File.Move($"{savePath}/{data.DeckName}_{data.DeckID}.txt", $"{savePath}/{newName}_{data.DeckID}.txt");
+            SaveDeckData(data);
         }
     }
 
@@ -408,6 +407,7 @@ public class ContinuousController : MonoBehaviour
             string deckList = File.ReadAllText(deckPath);
 
             StreamReader sr = new StreamReader(deckPath);
+
 
             string deckName = sr.ReadLine().Replace("Name: ", "");
             int KeyCard = int.Parse(sr.ReadLine().Replace("Key Card: ", ""));
@@ -454,6 +454,7 @@ public class ContinuousController : MonoBehaviour
 
         deckData.KeyCardId = keyID;
         deckData.DeckName = name;
+        deckData.SortValue = index;
 
         DeckDatas.Insert(index, deckData);
     }
