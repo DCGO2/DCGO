@@ -339,6 +339,9 @@ public class FieldPermanentCard : MonoBehaviour
         if (ContinuousController.instance == null)
             return;
 
+        if (CardImage == null)
+            return;
+
         // card image
         if (ThisPermanent.TopCard.IsFlipped)
         {
@@ -351,8 +354,7 @@ public class FieldPermanentCard : MonoBehaviour
             CardImage.sprite = await ThisPermanent.TopCard.GetCardSprite();
         }
 
-        if(CardImage != null)
-            CardImage.gameObject.SetActive(true);
+        CardImage.gameObject.SetActive(true);
     }
 
     void SetCardSuspended(bool updateIsTapped)

@@ -34,19 +34,24 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (card.PermanentOfThisCard().TopCard.CardColors.Count >= 2)
-                        {
                             if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition))
                             {
-                                bool WinnerCondition(Permanent permanent) => card.PermanentOfThisCard() == permanent;
-                                bool LoserCondition(Permanent permanent) => CardEffectCommons.IsOpponentPermanent(permanent, card);
+                            bool WinnerCondition(Permanent permanent) => permanent.cardSources.Contains(card);
+                            bool WinnerRealCondition(Permanent permanent)
+                            {
+                                if (permanent.TopCard.CardColors.Count >= 2)
+                                {
+                                    return true;
+                                }      
+                                return false;
+                            }
+                            bool LoserCondition(Permanent permanent) => CardEffectCommons.IsOpponentPermanent(permanent, card);
 
-                                if (CardEffectCommons.CanTriggerWhenDeleteOpponentDigimonByBattle(hashtable: hashtable, winnerCondition: WinnerCondition, loserCondition: LoserCondition, isOnlyWinnerSurvive: true))
+                                if (CardEffectCommons.CanTriggerWhenDeleteOpponentDigimonByBattle(hashtable: hashtable, winnerCondition: WinnerCondition, winnerRealCondition: WinnerRealCondition, loserCondition: LoserCondition, isOnlyWinnerSurvive: false))
                                 {
                                     return true;
                                 }
                             }
-                        }
                     }
                     return false;
                 }

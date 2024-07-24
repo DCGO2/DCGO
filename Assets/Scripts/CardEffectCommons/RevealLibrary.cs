@@ -282,10 +282,50 @@ public partial class CardEffectCommons
         {
             SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
-            SelectCardConditionClass selectCardCondition = selectCardConditions[0];
+            foreach(SelectCardConditionClass selectCondition in selectCardConditions)
+            {
+                int maxCount = Math.Min(selectCondition.MaxCount, revealedCards.Count(selectCondition.CanTargetCondition));
+
+                if (maxCount >= 1)
+                {
+                    selectCardEffect.SetUp(
+                        canTargetCondition: selectCondition.CanTargetCondition,
+                        canTargetCondition_ByPreSelecetedList: selectCondition.CanTargetCondition_ByPreSelecetedList,
+                        canEndSelectCondition: selectCondition.CanEndSelectCondition,
+                        canNoSelect: () => selectCondition.CanNoSelect,
+                        selectCardCoroutine: selectCondition.SelectCardCoroutine,
+                        afterSelectCardCoroutine: AfterSelectCardCoroutine,
+                        message: selectCondition.Message,
+                        maxCount: maxCount,
+                        canEndNotMax: selectCondition.CanEndNotMax,
+                        isShowOpponent: true,
+                        mode: selectCondition.Mode,
+                        root: SelectCardEffect.Root.Custom,
+                        customRootCardList: revealedCards,
+                        canLookReverseCard: true,
+                        selectPlayer: selectPlayer,
+                        cardEffect: activateClass);
+
+                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                }
+
+                IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
+                {
+                    foreach (CardSource cardSource in cardSources)
+                    {
+                        revealedCards.Remove(cardSource);
+                    }
+
+                    yield return null;
+                }
+            }
+
+            remainingCards = revealedCards.Clone();
+
+            /*SelectCardConditionClass selectCardCondition = selectCardConditions[0];
 
             int maxCount = Math.Min(selectCardCondition.MaxCount, revealedCards.Count(selectCardCondition.CanTargetCondition));
-
+            //TODO: Clean this up - MBunch
             if (maxCount >= 1)
             {
                 selectCardEffect.SetUp(
@@ -312,7 +352,7 @@ public partial class CardEffectCommons
                 {
                     foreach (CardSource cardSource in cardSources)
                     {
-                        revealedCards.Remove(cardSource);
+                        remainingCards = revealedCards.Filter(cardSource => !cardSources.Contains(cardSource));
                     }
 
                     yield return null;
@@ -321,7 +361,7 @@ public partial class CardEffectCommons
 
             remainingCards = revealedCards.Clone();
 
-            if (selectCardConditions.Length == 2)
+            if (selectCardConditions.Length >= 2)
             {
                 SelectCardConditionClass selectCardCondition1 = selectCardConditions[1];
 
@@ -356,7 +396,7 @@ public partial class CardEffectCommons
                         yield return null;
                     }
                 }
-            }
+            }*/
         }
 
         if (isSendAllCardsToSamePlace)
@@ -427,22 +467,22 @@ public partial class CardEffectCommons
             SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
             selectCardEffect.SetUp(
-        canTargetCondition: (cardSource) => true,
-        canTargetCondition_ByPreSelecetedList: null,
-        canEndSelectCondition: null,
-        canNoSelect: () => false,
-        selectCardCoroutine: null,
-        afterSelectCardCoroutine: AfterSelectCardCoroutine1,
-        message: "Specify the order to place the card at the bottom of the deck\n(cards will be placed back to the bottom of the deck so that cards with lower numbers are on top).",
-        maxCount: remainingCards.Count,
-        canEndNotMax: false,
-        isShowOpponent: false,
-        mode: SelectCardEffect.Mode.Custom,
-        root: SelectCardEffect.Root.Custom,
-        customRootCardList: remainingCards,
-        canLookReverseCard: true,
-        selectPlayer: selectPlayer,
-        cardEffect: activateClass);
+                canTargetCondition: (cardSource) => true,
+                canTargetCondition_ByPreSelecetedList: null,
+                canEndSelectCondition: null,
+                canNoSelect: () => false,
+                selectCardCoroutine: null,
+                afterSelectCardCoroutine: AfterSelectCardCoroutine1,
+                message: "Specify the order to place the card at the bottom of the deck\n(cards will be placed back to the bottom of the deck so that cards with lower numbers are on top).",
+                maxCount: remainingCards.Count,
+                canEndNotMax: false,
+                isShowOpponent: false,
+                mode: SelectCardEffect.Mode.Custom,
+                root: SelectCardEffect.Root.Custom,
+                customRootCardList: remainingCards,
+                canLookReverseCard: true,
+                selectPlayer: selectPlayer,
+                cardEffect: activateClass);
 
             selectCardEffect.SetNotShowCard();
             selectCardEffect.SetNotAddLog();

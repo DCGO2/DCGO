@@ -35,13 +35,7 @@ namespace DCGO.CardEffects.EX6
                 {
                     if (permanent.IsSuspended && permanent.CanUnsuspend)
                     {
-                        if (permanent.TopCard.ContainsTraits("Angel") ||
-                            permanent.TopCard.ContainsTraits("Archangel") ||
-                            permanent.TopCard.ContainsTraits("Three Great Angels") ||
-                            permanent.TopCard.ContainsTraits("ThreeGreatAngels"))
-                        {
-                            return true;
-                        }
+                        return permanent.TopCard.HasAngelTraitRestrictive;
                     }
                     
                     return false;

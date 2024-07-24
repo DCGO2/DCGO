@@ -435,17 +435,15 @@ namespace DCGO.CardEffects.EX6
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
                             selectedCards.Add(permanent.TopCard);
-                            
-                            yield return null;
+
+                            yield return ContinuousController.instance.StartCoroutine(new IPlacePermanentToDigivolutionCards(
+                                new List<Permanent[]>() { new Permanent[] { permanent, card.PermanentOfThisCard() } },
+                                false,
+                                activateClass).PlacePermanentToDigivolutionCards());
                         }
                         
                         if (selectedCards.Count >= 1)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard()
-                                .AddDigivolutionCardsBottom(
-                                    selectedCards,
-                                    activateClass));
-                            
+                        {                            
                             yield return ContinuousController.instance.StartCoroutine(
                                 new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() },
                                     activateClass).Unsuspend());

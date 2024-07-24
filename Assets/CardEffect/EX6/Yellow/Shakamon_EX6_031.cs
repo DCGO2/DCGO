@@ -1,7 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 using System.Linq;
+using Photon;
 using System;
+using Photon.Pun;
 
 namespace DCGO.CardEffects.EX6
 {
@@ -258,7 +261,7 @@ namespace DCGO.CardEffects.EX6
             
             #region All Turns
             
-            if (timing == EffectTiming.WhenPermanentWouldBeDeleted)
+            if (timing == EffectTiming.WhenPermanentWouldBeDeleted || timing == EffectTiming.WhenReturntoHandAnyone || timing == EffectTiming.WhenReturntoLibraryAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(
@@ -465,9 +468,9 @@ namespace DCGO.CardEffects.EX6
             #endregion
 
             #region Your Turn
-
-            /*if (timing == EffectTiming.None)
+            if (timing == EffectTiming.None)
             {
+
                 bool Condition()
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
@@ -494,16 +497,13 @@ namespace DCGO.CardEffects.EX6
                     return false;
                 }
 
-
-
                 cardEffects.Add(CardEffectFactory.InvertSAttackStaticEffect(
                     permanentCondition: PermanentCondition,
                     changeValue: -1,
                     isInheritedEffect: false,
                     card: card,
                     condition: Condition));
-            }*/
-
+            }
             #endregion
 
             #region End of Opponent's Turn

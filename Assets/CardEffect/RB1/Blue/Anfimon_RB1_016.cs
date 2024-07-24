@@ -12,7 +12,7 @@ public class Anfimon_RB1_016 : CEntity_Effect
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-        #region When Digivolving
+        #region When Attcking
         if (timing == EffectTiming.OnAllyAttack)
         {
             ActivateClass activateClass = new ActivateClass();
@@ -200,15 +200,7 @@ public class Anfimon_RB1_016 : CEntity_Effect
 
             bool CanSelectPermanentCondition1(Permanent permanent)
             {
-                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                {
-                    if (permanent.HasNoDigivolutionCards)
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
+                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
             }
 
             bool CanUseCondition(Hashtable hashtable)

@@ -12,20 +12,14 @@ namespace DCGO.CardEffects.EX6
             
             #region On Play/When Digivolving Shared
             
-            string EffectSharedDescription()
-            {
-                return
-                    "[On Play] [When Digivolving] Reveal the top 3 cards of your deck. Add 1 card with the [Angel]/[Archangel]/[Fallen Angel] trait and 1 [Mirei Mikagura] among them to the hand. Return the rest to the bottom of the deck.";
-            }
-            
             bool CanSelectDigimonCardSharedCondition(CardSource cardSource)
             {
                 if (cardSource.IsDigimon)
                 {
-                    if (cardSource.ContainsTraits("Angel") ||
-                        cardSource.ContainsTraits("Archangel") ||
-                        cardSource.ContainsTraits("Fallen Angel") ||
-                        cardSource.ContainsTraits("FallenAngel"))
+                    if (cardSource.CardTraits.Contains("Angel") ||
+                        cardSource.CardTraits.Contains("Archangel") ||
+                        cardSource.CardTraits.Contains("Fallen Angel") ||
+                        cardSource.CardTraits.Contains("FallenAngel"))
                     {
                         return true;
                     }
@@ -38,8 +32,8 @@ namespace DCGO.CardEffects.EX6
             {
                 if (cardSource.IsTamer)
                 {
-                    if (cardSource.ContainsCardName("Mirei Mikagura") ||
-                        cardSource.ContainsCardName("MireiMikagura"))
+                    if (cardSource.CardNames.Contains("Mirei Mikagura") ||
+                        cardSource.CardNames.Contains("MireiMikagura"))
                     {
                         return true;
                     }
@@ -70,14 +64,21 @@ namespace DCGO.CardEffects.EX6
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Reveal the top 3 cards of deck", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, false,
-                    EffectSharedDescription());
+                    EffectDescription());
                 cardEffects.Add(activateClass);
                 
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
-                
+
+                string EffectDescription()
+                {
+                    return
+                        "[On Play] Reveal the top 3 cards of your deck. Add 1 card with the [Angel]/[Archangel]/[Fallen Angel] trait and 1 [Mirei Mikagura] among them to the hand. Return the rest to the bottom of the deck.";
+                }
+
+
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     yield return ContinuousController.instance.StartCoroutine(
@@ -114,14 +115,20 @@ namespace DCGO.CardEffects.EX6
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Reveal the top 3 cards of deck", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, false,
-                    EffectSharedDescription());
+                    EffectDescription());
                 cardEffects.Add(activateClass);
                 
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
-                
+
+                string EffectDescription()
+                {
+                    return
+                        "[When Digivolving] Reveal the top 3 cards of your deck. Add 1 card with the [Angel]/[Archangel]/[Fallen Angel] trait and 1 [Mirei Mikagura] among them to the hand. Return the rest to the bottom of the deck.";
+                }
+
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     yield return ContinuousController.instance.StartCoroutine(

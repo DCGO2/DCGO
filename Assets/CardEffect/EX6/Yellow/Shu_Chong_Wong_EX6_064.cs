@@ -27,7 +27,7 @@ namespace DCGO.CardEffects.EX6
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.ContainsTraits("Beast") || cardSource.ContainsTraits("Beastkin") || cardSource.ContainsTraits("Holy Beast") || cardSource.ContainsTraits("Cherub"))
+                        if (cardSource.CardTraits.Contains("Beast") || cardSource.ContainsTraits("Beastkin") || cardSource.ContainsTraits("Holy Beast") || cardSource.ContainsTraits("Cherub"))
                         {
                             return true;
                         }
@@ -120,7 +120,7 @@ namespace DCGO.CardEffects.EX6
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.IsDigimon && cardSource.HasLevel && cardSource.CardTraits.Contains("Beastkin") || cardSource.CardTraits.Contains("Holy Beast") || cardSource.CardTraits.Contains("Cherub");
+                    return cardSource.IsDigimon && cardSource.HasLevel && cardSource.ContainsTraits("Beastkin") || cardSource.ContainsTraits("Holy Beast") || cardSource.ContainsTraits("Cherub");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

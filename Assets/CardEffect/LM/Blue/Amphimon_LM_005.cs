@@ -33,9 +33,12 @@ namespace DCGO.CardEffects.LM
             {
                 if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card))
                 {
-                    if (permanent.DigivolutionCards.Count() == 0)
+                    if(permanent.IsDigimon || permanent.IsTamer)
                     {
-                        return true;
+                        if (permanent.DigivolutionCards.Count() == 0)
+                        {
+                            return true;
+                        }
                     }
                 }
 
