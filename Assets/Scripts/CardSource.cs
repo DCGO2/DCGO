@@ -6,6 +6,7 @@ using Photon.Pun;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using DCGO.CardEntities;
 
 public class CardSource : MonoBehaviour
 {
@@ -1082,7 +1083,27 @@ public class CardSource : MonoBehaviour
     #endregion
 
     #region Whether target other card's name has same name as this
-    public bool HasSameCardName(CardSource cardSource) => cardSource.CardNames.Count((cardName) => CardNames.Contains(cardName)) >= 1;
+    public bool HasSameCardName(CardSource cardSource) => cardSource.CardNames.Count((cardName) => EqualsCardName(cardName)) >= 1;
+    //public bool HasSameCardName(CardSource cardSource) => cardSource.CardNames.Count((cardName) => CardNames.Contains(cardName)) >= 1;
+    #endregion
+
+    #region whether this card has at least 1 card name that equals the string
+    public bool EqualsCardName(string name)
+    {
+        if (string.IsNullOrEmpty(name))
+        {
+            return false;
+        }
+
+        string replaced = name.Replace(" ", "");
+        string lower = name.ToLower();
+
+        return CardNames.Some((cardName) =>
+        cardName.Equals(name)
+        || cardName.Equals(replaced)
+        || cardName.Equals(lower)
+        || cardName.ToLower().Equals(lower));
+    }
     #endregion
 
     #region whether this card has at least 1 card name that contains the string
@@ -1306,6 +1327,11 @@ public class CardSource : MonoBehaviour
                 return true;
             }
 
+            if(ContainsTraits("SeaAnimal"))
+            {
+                return true;
+            }
+
             return false;
         }
     }
@@ -1465,6 +1491,11 @@ public class CardSource : MonoBehaviour
         get
         {
             if (ContainsTraits("BeastDragon"))
+            {
+                return true;
+            }
+
+            if(ContainsTraits("Beast Dragon"))
             {
                 return true;
             }
@@ -1736,9 +1767,16 @@ public class CardSource : MonoBehaviour
     public void SetIsToken(bool isToken) => IsToken = isToken;
     #endregion
 
+    #region Will this card be trashed from sources
+    public bool willBeRemoveSources { get; set; } = false;
+    #endregion
+
     #region whether this card can not be trashed from digivolution cards
     public bool CanNotTrashFromDigivolutionCards(ICardEffect _cardEffect)
     {
+        if (willBeRemoveSources)
+            return true;
+
         #region the effects of permanents
         if (GManager.instance.turnStateMachine.gameContext.Players
             .Map(player => player.GetFieldPermanents())

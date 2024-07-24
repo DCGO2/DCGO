@@ -121,12 +121,12 @@ namespace DCGO.CardEffects.EX6
             
             bool CanSelectCardSharedCondition(CardSource cardSource)
             {
-                if (cardSource.ContainsTraits("Angel") ||
-                    cardSource.ContainsTraits("Archangel") ||
-                    cardSource.ContainsTraits("Three Great Angels") ||
-                    cardSource.ContainsTraits("ThreeGreatAngels") ||
-                    cardSource.ContainsTraits("Seven Great Demon Lords") ||
-                    cardSource.ContainsTraits("SevenGreatDemonLords"))
+                if (cardSource.CardTraits.Contains("Angel") ||
+                    cardSource.CardTraits.Contains("Archangel") ||
+                    cardSource.CardTraits.Contains("Three Great Angels") ||
+                    cardSource.CardTraits.Contains("ThreeGreatAngels") ||
+                    cardSource.CardTraits.Contains("Seven Great Demon Lords") ||
+                    cardSource.CardTraits.Contains("SevenGreatDemonLords"))
                 {
                     return true;
                 }
@@ -275,7 +275,11 @@ namespace DCGO.CardEffects.EX6
                             cardSource.ContainsCardName("Lucemon Chaos Mode") ||
                             cardSource.ContainsCardName("LucemonChaosMode"))
                         {
-                            return true;
+                            
+                            if (cardSource.CanEvolve(card.PermanentOfThisCard(), true))
+                            {
+                                return true;
+                            }
                         }
                     }
                     
@@ -362,7 +366,9 @@ namespace DCGO.CardEffects.EX6
                                     {
                                         if (securityCard.Owner.SecurityCards.Contains(securityCard))
                                         {
-                                            yield return ContinuousController.instance.StartCoroutine(
+                                            if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, IsCardLucemonChaosModeCondition))
+                                            {
+                                                yield return ContinuousController.instance.StartCoroutine(
                                                 CardEffectCommons.DigivolveIntoHandOrTrashCard(
                                                     targetPermanent: card.PermanentOfThisCard(),
                                                     cardCondition: IsCardLucemonChaosModeCondition,
@@ -373,6 +379,7 @@ namespace DCGO.CardEffects.EX6
                                                     isHand: false,
                                                     activateClass: activateClass,
                                                     successProcess: null));
+                                            }
                                         }
                                     }
                                 }

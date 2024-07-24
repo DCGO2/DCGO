@@ -121,13 +121,7 @@ namespace DCGO.CardEffects.EX6
             #endregion
             
             #region On Play/ When Digivolving Shared
-            
-            string EffectSharedDescription()
-            {
-                return
-                    "[On Play] [When Digivolving] You may play 1 level 5 or lower Digimon card with the [Angel]/[Archangel]/[Fallen Angel] trait from your hand or trash without paying the cost. Then, if DNA digivolving, place 1 other Digimon at the bottom of its owner's security stack, and trash cards from the top of your opponent's security stack until it has 4 left.";
-            }
-            
+
             bool CanSelectPermanentSharedCondition(Permanent permanent)
             {
                 if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
@@ -156,9 +150,15 @@ namespace DCGO.CardEffects.EX6
                     "Play 1 level 5 or lower Digimon card with the [Angel]/[Archangel]/[Fallen Angel] trait from your hand or trash, then, if DNA digivolving, place 1 other Digimon at the bottom of its owner's security stack, and trash cards from the top of your opponent's security stack until it has 4 left.",
                     CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true,
-                    EffectSharedDescription());
+                    EffectDescription());
                 cardEffects.Add(activateClass);
-                
+
+                string EffectDescription()
+                {
+                    return
+                        "[On Play] You may play 1 level 5 or lower Digimon card with the [Angel]/[Archangel]/[Fallen Angel] trait from your hand or trash without paying the cost. Then, if DNA digivolving, place 1 other Digimon at the bottom of its owner's security stack, and trash cards from the top of your opponent's security stack until it has 4 left.";
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
@@ -171,13 +171,13 @@ namespace DCGO.CardEffects.EX6
                     {
                         if (cardSource.IsDigimon)
                         {
-                            if (cardSource.ContainsTraits("Angel") ||
-                                cardSource.ContainsTraits("Archangel") ||
-                                cardSource.ContainsTraits("Fallen Angel") ||
-                                cardSource.ContainsTraits("FallenAngel"))
+                            if(cardSource.HasLevel && cardSource.Level <= 5)
                             {
-                                return true;
-                            }
+                                if (cardSource.HasAngelTraits)
+                                {
+                                    return true;
+                                }
+                            }                            
                         }
                     }
                     
@@ -197,12 +197,6 @@ namespace DCGO.CardEffects.EX6
                         {
                             return true;
                         }
-                        
-                        if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card,
-                                CanSelectPermanentSharedCondition))
-                        {
-                            return true;
-                        }
                     }
                     
                     return false;
@@ -211,8 +205,7 @@ namespace DCGO.CardEffects.EX6
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     bool canSelectHand = card.Owner.HandCards.Count(IsCardAngelCondition) >= 1;
-                    bool canSelectTrash =
-                        CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, IsCardAngelCondition);
+                    bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, IsCardAngelCondition);
                     
                     if (canSelectHand || canSelectTrash)
                     {
@@ -382,15 +375,21 @@ namespace DCGO.CardEffects.EX6
                 activateClass.SetUpICardEffect(
                     "Play 1 level 5 or lower Digimon card with the [Angel]/[Archangel]/[Fallen Angel] trait from your hand or trash, then, if DNA digivolving, place 1 other Digimon at the bottom of its owner's security stack, and trash cards from the top of your opponent's security stack until it has 4 left.",
                     CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true,
-                    EffectSharedDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false,
+                    EffectDescription());
                 cardEffects.Add(activateClass);
-                
+
+                string EffectDescription()
+                {
+                    return
+                        "[When Digivolving] You may play 1 level 5 or lower Digimon card with the [Angel]/[Archangel]/[Fallen Angel] trait from your hand or trash without paying the cost. Then, if DNA digivolving, place 1 other Digimon at the bottom of its owner's security stack, and trash cards from the top of your opponent's security stack until it has 4 left.";
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
-                
+
                 bool IsCardAngelCondition(CardSource cardSource)
                 {
                     if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false,
@@ -398,48 +397,28 @@ namespace DCGO.CardEffects.EX6
                     {
                         if (cardSource.IsDigimon)
                         {
-                            if (cardSource.ContainsTraits("Angel") ||
-                                cardSource.ContainsTraits("Archangel") ||
-                                cardSource.ContainsTraits("Fallen Angel") ||
-                                cardSource.ContainsTraits("FallenAngel"))
+                            if (cardSource.HasLevel && cardSource.Level <= 5)
                             {
-                                return true;
+                                if (cardSource.HasAngelTraits)
+                                {
+                                    return true;
+                                }
                             }
                         }
                     }
-                    
+
                     return false;
                 }
-                
+
                 bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (card.Owner.HandCards.Count(IsCardAngelCondition) >= 1)
-                        {
-                            return true;
-                        }
-                        
-                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, IsCardAngelCondition))
-                        {
-                            return true;
-                        }
-                        
-                        if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card,
-                                CanSelectPermanentSharedCondition))
-                        {
-                            return true;
-                        }
-                    }
-                    
-                    return false;
+                {                    
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
                 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     bool canSelectHand = card.Owner.HandCards.Count(IsCardAngelCondition) >= 1;
-                    bool canSelectTrash =
-                        CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, IsCardAngelCondition);
+                    bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, IsCardAngelCondition);
                     
                     if (canSelectHand || canSelectTrash)
                     {

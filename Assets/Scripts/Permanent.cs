@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Linq;
-using static Cinemachine.DocumentationSortingAttribute;
 
 public class Permanent
 {
@@ -604,7 +603,14 @@ public class Permanent
     }
     #endregion
 
-    #region 進化元の一番上に置く
+    #region Add digivolution cards to top of sources
+    /// <summary>
+    /// IEnumerator to add a list of CardSource to a permanents top sources, CAN NOT be used to put a field permanent under must use IPlacePermanentToDigivolutionCards
+    /// </summary>
+    /// <param name="addedDigivolutionCards"></param>
+    /// <param name="cardEffect"></param>
+    /// <param name="skipEffectAndActivateSkill"></param>
+    /// <returns></returns>
     public IEnumerator AddDigivolutionCardsTop(List<CardSource> addedDigivolutionCards, ICardEffect cardEffect)
     {
         List<CardSource> addedCards = new List<CardSource>();
@@ -663,7 +669,14 @@ public class Permanent
     }
     #endregion
 
-    #region 進化元の一番下に置く
+    #region Add digivolution cards to bottom of sources
+    /// <summary>
+    /// IEnumerator to add a list of CardSource to a permanents bottom sources, CAN NOT be used to put a field permanent under must use IPlacePermanentToDigivolutionCards
+    /// </summary>
+    /// <param name="addedDigivolutionCards"></param>
+    /// <param name="cardEffect"></param>
+    /// <param name="skipEffectAndActivateSkill"></param>
+    /// <returns></returns>
     public IEnumerator AddDigivolutionCardsBottom(List<CardSource> addedDigivolutionCards, ICardEffect cardEffect, bool skipEffectAndActivateSkill = false)
     {
         List<CardSource> addedCards = new List<CardSource>();
@@ -1181,7 +1194,7 @@ public class Permanent
                 {
                     if (cardEffect.CanUse(null))
                     {
-                        int Strike1 = ((IChangeSAttackEffect)cardEffect).GetSAttack(Strike, this, InvertSecutiryValue);
+                        int Strike1 = ((IChangeSAttackEffect)cardEffect).GetSAttack(Strike, this, 0);
 
                         if (Strike1 != Strike)
                         {
@@ -2308,9 +2321,6 @@ public class Permanent
             return false;
         }
 
-        if (!CanBeRemoved())
-            return false;
-
         #region 戦闘で消滅しない効果
         foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
         {
@@ -2369,9 +2379,6 @@ public class Permanent
             {
                 return false;
             }
-
-            if (!CanBeRemoved())
-                return false;
 
             #region 効果で消滅しない効果
             foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
@@ -2886,6 +2893,10 @@ public class Permanent
 
     #region 場を離れる直前のカード名
     public List<string> CardNamesJustBeforeRemoveField { get; set; } = new List<string>();
+    #endregion
+
+    #region Card Traits Just Before Removed Field
+    public List<string> CardTraitsJustBeforeRemoveField { get; set; } = new List<string>();
     #endregion
 
     #region バースト進化で手札に戻ったか

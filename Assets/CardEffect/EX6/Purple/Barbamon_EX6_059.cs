@@ -17,7 +17,7 @@ namespace DCGO.CardEffects.EX6
             #region Scapegoat
             if (timing == EffectTiming.WhenPermanentWouldBeDeleted)
             { 
-                cardEffects.Add(CardEffectFactory.ScapegoatSelfEffect(isInheritedEffect: true, card: card, condition: null, effectName: "<Scapegoat>", effectDiscription: null));
+                cardEffects.Add(CardEffectFactory.ScapegoatSelfEffect(isInheritedEffect: false, card: card, condition: null, effectName: "<Scapegoat>", effectDiscription: null));
             }
             #endregion
 
@@ -41,14 +41,14 @@ namespace DCGO.CardEffects.EX6
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if(CardEffectCommons.IsExistOnBattleArea(card))
+                    if(CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if(card.Owner.Enemy.HandCards.Count >= 1)
                         {
                             return true;
                         }
                     }
-                    return true;
+                    return false;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -119,14 +119,14 @@ namespace DCGO.CardEffects.EX6
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (card.Owner.Enemy.HandCards.Count >= 1)
                         {
                             return true;
                         }
                     }
-                    return true;
+                    return false;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -193,7 +193,7 @@ namespace DCGO.CardEffects.EX6
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (CardEffectCommons.CanTriggerOnTrashHand(hashtable, cardEffect => true, cardSource => cardSource.Owner == card.Owner.Enemy))
                         {
@@ -208,17 +208,23 @@ namespace DCGO.CardEffects.EX6
                 {
                     int maxCost = 10 - card.Owner.Enemy.HandCards.Count();
 
-                    if (cardSource.GetCostItself <= maxCost || cardSource.BasePlayCostFromEntity <= maxCost)
+                    if(cardSource.IsDigimon || cardSource.IsTamer)
                     {
-                        return true;
-                    }
+                        if (cardSource.CardColors.Contains(CardColor.Purple))
+                        {
+                            if (cardSource.GetCostItself <= maxCost)
+                            {
+                                return true;
+                            }
+                        }
+                    }                    
            
                     return false;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if(CardEffectCommons.IsExistOnBattleArea(card))
+                    if(CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         return true;
                     }
@@ -265,25 +271,13 @@ namespace DCGO.CardEffects.EX6
                             yield return null;
                         }
 
-                        if (selectedCards[0].IsOption)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(
-                            CardEffectCommons.PlayOptionCards(
-                            cardSources: selectedCards,
-                            activateClass: activateClass,
-                            payCost: false,
-                            root: SelectCardEffect.Root.Trash));
-                        }
-                        else
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
                                 cardSources: selectedCards,
                                 activateClass: activateClass,
                                 payCost: false,
                                 isTapped: false,
                                 root: SelectCardEffect.Root.Trash,
                                 activateETB: true));
-                        }
                     }
                 }
             }

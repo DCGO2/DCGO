@@ -34,7 +34,7 @@ namespace DCGO.CardEffects.BT16
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving][Once Per Turn] You may play 1 green or [Royal Knight] trait Digimon card from your hand for the cost. When it would be played by this effect, reduce the play cost by 4.";
+                    return "[When Digivolving][Once Per Turn] You may play 1 Digimon card with the [Insectiod] or [Larva] trait from your hand with the play cost reduced by 8.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
@@ -392,7 +392,7 @@ namespace DCGO.CardEffects.BT16
                                                     canTargetCondition_ByPreSelecetedList: null,
                                                     canEndSelectCondition: null,
                                                     maxCount: maxCount,
-                                                    canNoSelect: true,
+                                                    canNoSelect: false,
                                                     canEndNotMax: false,
                                                     selectPermanentCoroutine: null,
                                                     afterSelectPermanentCoroutine: null,

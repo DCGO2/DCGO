@@ -21,7 +21,7 @@ namespace DCGO.CardEffects.BT16
 
                 string EffectDiscription()
                 {
-                    return "[On Play] [When Digivolving] Reveal the top 3 cards of your deck. For each card with the [D-Brigade] or [DigiPolice] trait among them, reduce the play cost of all of your opponent's Digimon by 1 for the turn. Return the revealed cards to the top or bottom of the deck. Then, delete 1 of your opponent's Digimon with a play cost of 4 or less.";
+                    return "[On Play] Reveal the top 3 cards of your deck. For each card with the [D-Brigade] or [DigiPolice] trait among them, reduce the play cost of all of your opponent's Digimon by 1 for the turn. Return the revealed cards to the top or bottom of the deck. Then, delete 1 of your opponent's Digimon with a play cost of 4 or less.";
                 }
 
                 bool PermanentCondition(Permanent permanent)
@@ -70,7 +70,7 @@ namespace DCGO.CardEffects.BT16
                             mode: SelectCardEffect.Mode.Custom,
                             maxCount: -1,
                             selectCardCoroutine: null),
-                        remainingCardsPlace: RemainingCardsPlace.DeckTop,
+                        remainingCardsPlace: RemainingCardsPlace.DeckTopOrBottom,
                         activateClass: activateClass,
                         revealedCardsCoroutine: RevealedCardsCoroutine
                     ));
@@ -132,7 +132,7 @@ namespace DCGO.CardEffects.BT16
 
                 string EffectDiscription()
                 {
-                    return "[On Play] [When Digivolving] Reveal the top 3 cards of your deck. For each card with the [D-Brigade] or [DigiPolice] trait among them, reduce the play cost of all of your opponent's Digimon by 1 for the turn. Return the revealed cards to the top or bottom of the deck. Then, delete 1 of your opponent's Digimon with a play cost of 4 or less.";
+                    return "[When Digivolving] Reveal the top 3 cards of your deck. For each card with the [D-Brigade] or [DigiPolice] trait among them, reduce the play cost of all of your opponent's Digimon by 1 for the turn. Return the revealed cards to the top or bottom of the deck. Then, delete 1 of your opponent's Digimon with a play cost of 4 or less.";
                 }
 
                 bool PermanentCondition(Permanent permanent)
@@ -181,7 +181,7 @@ namespace DCGO.CardEffects.BT16
                             mode: SelectCardEffect.Mode.Custom,
                             maxCount: -1,
                             selectCardCoroutine: null),
-                        remainingCardsPlace: RemainingCardsPlace.DeckTop,
+                        remainingCardsPlace: RemainingCardsPlace.DeckTopOrBottom,
                         activateClass: activateClass,
                         revealedCardsCoroutine: RevealedCardsCoroutine
                     ));

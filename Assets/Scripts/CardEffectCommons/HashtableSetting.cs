@@ -296,4 +296,18 @@ public partial class CardEffectCommons
         };
     }
     #endregion
+
+    #region Hashtable used when check whether the permanent would remove field effect
+    public static Hashtable WhenDigivolutionCardWouldDiscardedCheckHashtable(Permanent targetPermanent, List<CardSource> cardSources, ICardEffect cardEffect)
+    {
+        Hashtable hashtable = new Hashtable()
+        {
+            {"CardEffect", cardEffect},
+            {"Permanent", targetPermanent},
+            {"DiscardedCards", cardSources},
+        };
+
+        return hashtable;
+    }
+    #endregion
 }

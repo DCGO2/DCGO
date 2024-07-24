@@ -111,7 +111,7 @@ namespace DCGO.CardEffects.EX6
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,
-                            canNoSelect: true,
+                            canNoSelect: false,
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine,
                             afterSelectPermanentCoroutine: null,
@@ -215,23 +215,20 @@ namespace DCGO.CardEffects.EX6
                         CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
                         canNotAffectedClass.SetUpICardEffect("Isn't affected by opponent's Digimon's effects", CanUseConditionImmunity, card);
                         canNotAffectedClass.SetUpCanNotAffectedClass(CardCondition: CardCondition, SkillCondition: SkillCondition);
-                        cardEffects.Add(canNotAffectedClass);
+                        selectedPermanent.UntilOpponentTurnEndEffects.Add(GetCardEffect);
 
                         bool CanUseConditionImmunity(Hashtable hashtable)
                         {
-                            return CardEffectCommons.IsExistOnBattleArea(card);
+                            return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(selectedPermanent, card);
                         }
 
                         bool CardCondition(CardSource cardSource)
                         {
-                            if (cardSource == card)
+                            if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
                             {
-                                if (CardEffectCommons.IsExistOnBattleArea(card))
+                                if (cardSource == selectedPermanent.TopCard)
                                 {
-                                    if (cardSource == card.PermanentOfThisCard().TopCard)
-                                    {
-                                        return true;
-                                    }
+                                    return true;
                                 }
                             }
 
@@ -255,6 +252,16 @@ namespace DCGO.CardEffects.EX6
 
                             return false;
                         }
+
+                        ICardEffect GetCardEffect(EffectTiming _timing)
+                        {
+                            if (_timing == EffectTiming.None)
+                            {
+                                return canNotAffectedClass;
+                            }
+
+                            return null;
+                        }
                     }
                 }
             }
@@ -273,13 +280,15 @@ namespace DCGO.CardEffects.EX6
                         canNotBeRemovedClass.SetUpICardEffect("Can't leave battle area except by deletion effect", CanUseProtectionCondition, card);
                         canNotBeRemovedClass.SetUpCanNotBeRemovedClass(permanentCondition: PermanentCondition);
                         canNotBeRemovedClass.SetIsInheritedEffect(true);
-                        selectedPermanent.UntilOpponentTurnEndEffects.Add((_timing) => canNotBeRemovedClass);
+
+                        if(!cardEffects.Contains(canNotBeRemovedClass))
+                            cardEffects.Add(canNotBeRemovedClass);
 
                         bool CanUseProtectionCondition(Hashtable hashtable)
                         {
-                            if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
+                            if (CardEffectCommons.IsOpponentTurn(card))
                             {
-                                if (selectedPermanent.TopCard.CardNames.Contains("Ragnalordmon"))
+                                if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
                                 {
                                     if (!CardEffectCommons.IsByEffect(hashtable, cardEffect => CardEffectCommons.IsOwnerEffect(cardEffect, card)))
                                     {
@@ -293,11 +302,18 @@ namespace DCGO.CardEffects.EX6
 
                         bool PermanentCondition(Permanent permanent)
                         {
+
                             if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
                             {
-                                if (permanent == selectedPermanent)
+                                if (permanent == selectedPermanent) 
                                 {
-                                    return true;
+                                    if (selectedPermanent.TopCard != card)
+                                    {
+                                        if (selectedPermanent.TopCard.CardNames.Contains("RagnaLoardmon"))
+                                        {
+                                            return true;
+                                        }
+                                    }
                                 }
                             }
 
