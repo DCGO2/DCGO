@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.P
 {
     public class Flamedramon_P_137 : CEntity_Effect
     {
