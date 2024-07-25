@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.BT17
 {
     public class Trailmon_BT17_054 : CEntity_Effect
     {
@@ -9,33 +9,61 @@ namespace DCGO.CardEffects
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            if (timing == EffectTiming.None)
+            #region On Play
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpICardEffect("Reveal 3, add 1 Tamer or 1 Digimon with [Machine] in traits", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "";
+                    return "[On Play] Reveal the top 3 cards of your deck. Add 1 Tamer card or 1 Digimon card with the [Machine] trait among them to the hand. Trash the rest.";
+                }
+
+                bool IsTamerorMachine(CardSource cardSource)
+                {
+                    if (cardSource.IsTamer)
+                        return true;
+
+                    if (cardSource.IsDigimon && cardSource.ContainsTraits("Machine"))
+                        return true;
+
+                    return false;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return true;
+                    return CardEffectCommons.CanTriggerOnPlay(hashtable,card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return true;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return null;
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SimplifiedRevealDeckTopCardsAndSelect(
+                        revealCount: 3,
+                        simplifiedSelectCardConditions:
+                        new SimplifiedSelectCardConditionClass[]
+                        {
+                        new SimplifiedSelectCardConditionClass(
+                            canTargetCondition:IsTamerorMachine,
+                            message: "Select 1 Tamer or Digimon with [Machine] in trait.",
+                            mode: SelectCardEffect.Mode.AddHand,
+                            maxCount: 1,
+                            selectCardCoroutine: null),
+                        },
+                        remainingCardsPlace: RemainingCardsPlace.Trash,
+                        activateClass: activateClass,
+                        canNoSelect: false
+                    ));
                 }
             }
+            #endregion
 
             #region All Turns - ESS
             if (timing == EffectTiming.None)

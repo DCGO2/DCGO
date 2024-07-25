@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.BT17
 {
     public class Keramon_BT17_053 : CEntity_Effect
     {

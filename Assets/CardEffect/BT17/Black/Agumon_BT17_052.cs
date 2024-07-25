@@ -64,9 +64,6 @@ namespace DCGO.CardEffects.BT17
             }
             #endregion
 
-
-
-
             return cardEffects;
         }
     }
