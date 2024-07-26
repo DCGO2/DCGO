@@ -368,6 +368,13 @@ public partial class CardEffectCommons
     }
     #endregion
 
+    #region How many cards there are in the owner's hand that satisfy the condition
+    public static int MatchConditionOwnersCardCountInHand(CardSource card, Func<CardSource, bool> CanSelectCardCondition)
+    {
+        return card.Owner.HandCards.Count(CanSelectCardCondition);
+    }
+    #endregion
+
     #region Whether there is at least 1 permanent in the owner's Battle Area that satisfies the condition
     public static bool HasMatchConditionOwnersPermanent(CardSource card, Func<Permanent, bool> CanSelectPermanentCondition)
     {

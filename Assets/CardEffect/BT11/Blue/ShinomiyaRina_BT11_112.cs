@@ -148,7 +148,8 @@ public class ShinomiyaRina_BT11_112 : CEntity_Effect
             {
                 yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(new List<Permanent>() { card.PermanentOfThisCard() }, CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
 
-                List<Permanent> tappedPermanents = CardEffectCommons.GetPermanentsFromHashtable(_hashtable);
+                List<Permanent> tappedPermanents = CardEffectCommons.GetPermanentsFromHashtable(_hashtable)
+                    .Filter(PermanentCondition);
 
                 if (tappedPermanents != null)
                 {

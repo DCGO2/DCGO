@@ -80,12 +80,12 @@ namespace DCGO.CardEffects.BT16
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    Debug.Log($"ActivateCoroutine");
                     List<Hashtable> hashtables = CardEffectCommons.GetHashtablesFromHashtable(hashtable);
 
                     if (hashtables != null)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(hashtables.Count, activateClass));
+                    {   
+                        if(hashtables.Count > 0)
+                            yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
                     }
                 }
             }

@@ -15,7 +15,7 @@ namespace DCGO.CardEffects.P
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("1 Opponent's Digimon can't attack Digimon, and gain <Security A. -1>", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -50,7 +50,7 @@ namespace DCGO.CardEffects.P
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: 1,
-                        canNoSelect: true,
+                        canNoSelect: false,
                         canEndNotMax: false,
                         selectPermanentCoroutine: SelectedPermanent,
                         afterSelectPermanentCoroutine: null,

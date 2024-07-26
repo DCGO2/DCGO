@@ -118,11 +118,9 @@ namespace DCGO.CardEffects.BT16
 
             if(timing == EffectTiming.WhenRemoveField)
             {
-                List<PartitionCondition> partitionConditions = new List<PartitionCondition>
-            {
-                new PartitionCondition(6, new List<CardColor> { CardColor.Black }),
-                new PartitionCondition(6, new List<CardColor> { CardColor.Yellow })
-            };
+                List<PartitionCondition> partitionConditions = new List<PartitionCondition>();
+                partitionConditions.Add(new PartitionCondition(6, CardColor.Black));
+                partitionConditions.Add(new PartitionCondition(6, CardColor.Yellow));
 
                 cardEffects.Add(CardEffectFactory.PartitionSelfEffect
                     (isInheritedEffect: false, 

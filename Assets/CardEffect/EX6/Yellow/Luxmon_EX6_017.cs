@@ -26,7 +26,7 @@ namespace DCGO.CardEffects.EX6
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.ContainsTraits("Angel") || cardSource.ContainsTraits("Archangel"))
+                        if (cardSource.CardTraits.Contains("Angel") || cardSource.CardTraits.Contains("Archangel"))
                         {
                             return true;
                         }
@@ -37,7 +37,7 @@ namespace DCGO.CardEffects.EX6
 
                 bool CanSelectCardCondition1(CardSource cardSource)
                 {
-                    if (cardSource.ContainsTraits("Three Great Angels") || cardSource.ContainsTraits("ThreeGreatAngels"))
+                    if (cardSource.CardTraits.Contains("Three Great Angels") || cardSource.CardTraits.Contains("ThreeGreatAngels"))
                     {
                         return true;
                     }

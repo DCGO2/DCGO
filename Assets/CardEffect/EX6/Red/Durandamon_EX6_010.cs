@@ -136,7 +136,7 @@ namespace DCGO.CardEffects.EX6
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,
-                            canNoSelect: true,
+                            canNoSelect: false,
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine,
                             afterSelectPermanentCoroutine: null,
@@ -185,6 +185,8 @@ namespace DCGO.CardEffects.EX6
                                 afterSelectPermanentCoroutine: null,
                                 mode: SelectPermanentEffect.Mode.Destroy,
                                 cardEffect: activateClass);
+
+                            yield return ContinuousController.instance.StartCoroutine(selectEnemyEffect.Activate());
                         }
                     }
                 }

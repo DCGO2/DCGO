@@ -158,21 +158,33 @@ namespace DCGO.CardEffects.BT16
                     return false;
                 }
 
+                bool DeletionCardEffect(ICardEffect cardEffect)
+                {
+                    return (cardEffect.EffectSourcePermanent == card.PermanentOfThisCard());
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        
-                        bool WinnerCondition(Permanent permanent)
+                        if (CardEffectCommons.IsByBattle(hashtable))
                         {
-                            if (permanent == null)
-                                permanent = card.PermanentOfThisCard();
+                            bool WinnerCondition(Permanent permanent)
+                            {
+                                if (permanent == null)
+                                    permanent = card.PermanentOfThisCard();
 
-                            return permanent.cardSources.Contains(card);
+                                return permanent.cardSources.Contains(card);
+                            }
+                            bool LoserCondition(Permanent permanent) => permanent.IsDigimon && CardEffectCommons.IsOpponentPermanent(permanent, card);
+
+                            if (CardEffectCommons.CanTriggerWhenDeleteOpponentDigimon(hashtable, WinnerCondition, LoserCondition))
+                            {
+                                return true;
+                            }
                         }
-                        bool LoserCondition(Permanent permanent) => permanent.IsDigimon && CardEffectCommons.IsOpponentPermanent(permanent, card);
 
-                        if (CardEffectCommons.CanTriggerWhenDeleteOpponentDigimon(hashtable, WinnerCondition, LoserCondition))
+                        if(CardEffectCommons.IsByEffect(hashtable, DeletionCardEffect))
                         {
                             return true;
                         }

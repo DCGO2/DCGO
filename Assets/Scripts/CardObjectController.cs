@@ -570,7 +570,11 @@ public class CardObjectController : MonoBehaviour
             }
         }
 
-        List<CardSource> addedCards = cardSources.Filter(cardSource => !cardSource.IsToken);
+        List<CardSource> eggCards = cardSources.Filter(cardSource => cardSource.IsDigiEgg);
+        List<CardSource> addedCards = cardSources.Filter(cardSource => !cardSource.IsDigiEgg || !cardSource.IsToken);
+
+        if (eggCards.Count <= 0)
+            yield return ContinuousController.instance.StartCoroutine(AddLibraryBottomCards(eggCards));
 
         if (addedCards.Count <= 0) yield break;
 
@@ -601,7 +605,7 @@ public class CardObjectController : MonoBehaviour
         }
     }
 
-    static IEnumerator AddHandCard(CardSource cardSource, bool isDraw)
+    public static IEnumerator AddHandCard(CardSource cardSource, bool isDraw)
     {
         cardSource.Init();
         cardSource.SetFace();
@@ -986,7 +990,7 @@ public class CardObjectController : MonoBehaviour
     #endregion
 
     #region move permanent
-    public static IEnumerator MovePermanent(FieldCardFrame movingPermanentFrame)
+    public static IEnumerator MovePermanent(FieldCardFrame movingPermanentFrame, bool toBreeding = false)
     {
         if (movingPermanentFrame != null)
         {
@@ -999,14 +1003,9 @@ public class CardObjectController : MonoBehaviour
                 bool prevIsFrontLine = movingPermanentFrame.IsBattleAreaFrame();
                 FieldCardFrame moveTargetFrame = movingPermanent.TopCard.PreferredFrame();
 
-                if (prevIsFrontLine)
-                {
+                if (toBreeding)
                     moveTargetFrame = player.fieldCardFrames.Filter(frame => frame.isBreedingAreaFrame()).ToList()[0];
-                }
-                else
-                {
-                    moveTargetFrame = movingPermanent.TopCard.PreferredFrame();
-                }
+
    
                 if (moveTargetFrame != null && moveTargetFrame != null)
                 {
