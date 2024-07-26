@@ -313,7 +313,7 @@ namespace DCGO.CardEffects.BT16
                     {
                         if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => (cardSource.CardTraits.Contains("SoC") && cardSource.IsTamer)) >= 1)
                         {
-                            return true;
+                            return CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectFenriInTrash);
                         }
                     }
 

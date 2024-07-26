@@ -143,13 +143,7 @@ namespace DCGO.CardEffects.EX6
             #endregion
             
             #region Shared On Play / When Digivolving
-            
-            string EffectSharedDescription()
-            {
-                return
-                    "[On Play] [When Digivolving] Trash the top card of your opponent's security stack and this Digimon isn't affected by your opponent's effects until the end of their turn. Then, if DNA digivolving,  all of your opponent's Digimon (Trash the top card. You can't trash past level 3 cards) and delete 1 of their Digimon.";
-            }
-            
+                        
             bool CanActivateSharedCondition(Hashtable hashtable)
             {
                 return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
@@ -181,20 +175,7 @@ namespace DCGO.CardEffects.EX6
                     {
                         if (CardEffectCommons.IsOpponentEffect(cardEffect, card))
                         {
-                            if (cardEffect.IsDigimonEffect)
-                            {
-                                return true;
-                            }
-                            
-                            if (cardEffect.EffectSourceCard.IsOption)
-                            {
-                                return true;
-                            }
-                            
-                            if (cardEffect.IsTamerEffect)
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
                 }
@@ -203,16 +184,8 @@ namespace DCGO.CardEffects.EX6
             }
             
             bool IsEnemyPermanentShared(Permanent permanent)
-            {
-                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        return true;
-                    }
-                }
-                
-                return false;
+            {           
+                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
             }
             
             #endregion
@@ -226,9 +199,15 @@ namespace DCGO.CardEffects.EX6
                     "Trash the top card of your opponent's security stack and this Digimon isn't affected by your opponent's effects until the end of their turn.",
                     CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, false,
-                    EffectSharedDescription());
+                    EffectDescription());
                 cardEffects.Add(activateClass);
-                
+
+                string EffectDescription()
+                {
+                    return
+                        "[On Play] Trash the top card of your opponent's security stack and this Digimon isn't affected by your opponent's effects until the end of their turn. Then, if DNA digivolving,  all of your opponent's Digimon (Trash the top card. You can't trash past level 3 cards) and delete 1 of their Digimon.";
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
@@ -245,7 +224,7 @@ namespace DCGO.CardEffects.EX6
                     
                     // This Digimon isn't affected by your opponent's effects until the end of their turn.
                     CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
-                    canNotAffectedClass.SetUpICardEffect("Isn't affected by opponent's Digimon's effects",
+                    canNotAffectedClass.SetUpICardEffect("Isn't affected by opponent's effects",
                         CanUseImmunitySharedCondition, card);
                     canNotAffectedClass.SetUpCanNotAffectedClass(CardCondition: CardImmunitySharedCondition,
                         SkillCondition: SkillImmunitySharedCondition);
@@ -256,7 +235,7 @@ namespace DCGO.CardEffects.EX6
                     if (CardEffectCommons.IsJogress(hashtable))
                     {
                         // De-Digivolve all Opponent's Digimon
-                        List<Permanent> enemyPermanents = card.Owner.Enemy.GetBattleAreaDigimons().ToList();
+                        List<Permanent> enemyPermanents = card.Owner.Enemy.GetBattleAreaDigimons();
                         
                         foreach (Permanent permanent in enemyPermanents)
                         {
@@ -285,6 +264,8 @@ namespace DCGO.CardEffects.EX6
                                 afterSelectPermanentCoroutine: null,
                                 mode: SelectPermanentEffect.Mode.Destroy,
                                 cardEffect: activateClass);
+
+                            yield return ContinuousController.instance.StartCoroutine(selectEnemyEffect.Activate());
                         }
                     }
                 }
@@ -301,9 +282,15 @@ namespace DCGO.CardEffects.EX6
                     "Trash the top card of your opponent's security stack and this Digimon isn't affected by your opponent's effects until the end of their turn.",
                     CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, false,
-                    EffectSharedDescription());
+                    EffectDescription());
                 cardEffects.Add(activateClass);
-                
+
+                string EffectDescription()
+                {
+                    return
+                        "[When Digivolving] Trash the top card of your opponent's security stack and this Digimon isn't affected by your opponent's effects until the end of their turn. Then, if DNA digivolving,  all of your opponent's Digimon (Trash the top card. You can't trash past level 3 cards) and delete 1 of their Digimon.";
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
@@ -320,13 +307,13 @@ namespace DCGO.CardEffects.EX6
                     
                     // This Digimon isn't affected by your opponent's effects until the end of their turn.
                     CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
-                    canNotAffectedClass.SetUpICardEffect("Isn't affected by opponent's Digimon's effects",
+                    canNotAffectedClass.SetUpICardEffect("Isn't affected by opponent's effects",
                         CanUseImmunitySharedCondition, card);
                     canNotAffectedClass.SetUpCanNotAffectedClass(CardCondition: CardImmunitySharedCondition,
                         SkillCondition: SkillImmunitySharedCondition);
-                    cardEffects.Add(canNotAffectedClass);
-                    
-                    
+                    card.PermanentOfThisCard().UntilOpponentTurnEndEffects.Add(_ => canNotAffectedClass);
+
+
                     // if DNA Digivolving
                     if (CardEffectCommons.IsJogress(hashtable))
                     {
@@ -340,26 +327,24 @@ namespace DCGO.CardEffects.EX6
                         }
                         
                         // Delete 1 Opponent's Digimon
-                        if (CardEffectCommons.HasMatchConditionPermanent(IsEnemyPermanentShared))
-                        {
-                            int enemyCount = Math.Min(1,
-                                CardEffectCommons.MatchConditionPermanentCount(IsEnemyPermanentShared));
-                            
-                            SelectPermanentEffect selectEnemyEffect =
-                                GManager.instance.GetComponent<SelectPermanentEffect>();
+                        if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, IsEnemyPermanentShared))
+                        {                            
+                            SelectPermanentEffect selectEnemyEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
                             
                             selectEnemyEffect.SetUp(
                                 selectPlayer: card.Owner,
                                 canTargetCondition: IsEnemyPermanentShared,
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
-                                maxCount: enemyCount,
+                                maxCount: 1,
                                 canNoSelect: false,
                                 canEndNotMax: false,
                                 selectPermanentCoroutine: null,
                                 afterSelectPermanentCoroutine: null,
                                 mode: SelectPermanentEffect.Mode.Destroy,
                                 cardEffect: activateClass);
+
+                            yield return ContinuousController.instance.StartCoroutine(selectEnemyEffect.Activate());
                         }
                     }
                 }

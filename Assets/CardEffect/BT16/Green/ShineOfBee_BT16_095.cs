@@ -37,8 +37,8 @@ namespace DCGO.CardEffects.BT16
                 }
 
                 bool CanSelectPermanentsToBotDeck(Permanent permanent)
-                {
-                    return CardEffectCommons.IsMinDP(permanent, card.Owner.Enemy);
+                {                    
+                    return CardEffectCommons.IsMinDP(permanent, card.Owner.Enemy,(permanent) => permanent.IsSuspended);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -79,17 +79,17 @@ namespace DCGO.CardEffects.BT16
                         List<Permanent> selectedPermanents = new List<Permanent>();
 
                         foreach (Permanent permanent in card.Owner.Enemy.GetBattleAreaDigimons())
-                        {
-                            if (CanSelectPermanentsToBotDeck(permanent))
-                            {
-                                if (!permanent.TopCard.CanNotBeAffected(activateClass))
-                                {
-                                    if (!permanent.CannotReturnToLibrary(activateClass))
-                                    {
-                                        selectedPermanents.Add(permanent);
-                                    }
-                                }
-                            }
+                        {                            
+                            if (!CanSelectPermanentsToBotDeck(permanent))
+                                continue;
+                            
+                            if (permanent.TopCard.CanNotBeAffected(activateClass))
+                                continue;
+
+                            if (permanent.CannotReturnToLibrary(activateClass))
+                                continue;
+
+                            selectedPermanents.Add(permanent);
                         }
 
                         if (selectedPermanents.Count >= 1)

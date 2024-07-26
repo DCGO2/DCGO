@@ -2,9 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using Photon;
 using System;
-using Photon.Pun;
 
 
 namespace DCGO.CardEffects.EX6
@@ -16,7 +14,6 @@ namespace DCGO.CardEffects.EX6
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Inherit
-
             ActivateClass activateClass2 = new ActivateClass();
             activateClass2.SetUpICardEffect("Reduce play cost by 3, if this Digimon has 5 or more different names in source, reduce by 4 instead.", CanUseCondition2, card);
             activateClass2.SetUpActivateClass(CanActivateCondition2, ActivateCoroutine2, 1, true, EffectDiscription2());
@@ -172,7 +169,24 @@ namespace DCGO.CardEffects.EX6
 
                     if(count() >= 5)
                     {
-                        reduceCount = 4;
+                        List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>
+                        {
+                            new(message: "4", value: true, spriteIndex: 0),
+                            new(message: "3", value: false, spriteIndex: 1),
+                        };
+
+                        string selectPlayerMessage = "Which cost reduction do you want to use?";
+                        string notSelectPlayerMessage = "The opponent is choosing which cost reduction to use.";
+
+                        GManager.instance.userSelectionManager.SetBoolSelection(
+                            selectionElements: selectionElements, selectPlayer: card.Owner,
+                            selectPlayerMessage: selectPlayerMessage,
+                            notSelectPlayerMessage: notSelectPlayerMessage);
+
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                        if (GManager.instance.userSelectionManager.SelectedBoolValue)
+                            reduceCount = 4;
                     }
 
 
@@ -267,6 +281,7 @@ namespace DCGO.CardEffects.EX6
                 changeCostClass.SetUpICardEffect("Play Cost -", CanUseCondition, card);
                 changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => true, isChangePayingCost: () => true);
                 changeCostClass.SetNotShowUI(true);
+                changeCostClass.SetIsInheritedEffect(true);
                 cardEffects.Add(changeCostClass);
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -443,7 +458,7 @@ namespace DCGO.CardEffects.EX6
                     return true;
                 }
             }
-#endregion
+            #endregion
 
             #region Start of Main
             if (timing == EffectTiming.OnStartMainPhase)
@@ -549,12 +564,11 @@ namespace DCGO.CardEffects.EX6
                             int maxCount = 1;
 
                             SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
                             selectCardEffect.SetUp(
                                 canTargetCondition: CanSelectCardCondition,
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
-                                canNoSelect: () => true,
+                                canNoSelect: () => false,
                                 selectCardCoroutine: SelectCardCoroutine,
                                 afterSelectCardCoroutine: null,
                                 message: "Select 1 card to place on bottom of digivolution cards.",

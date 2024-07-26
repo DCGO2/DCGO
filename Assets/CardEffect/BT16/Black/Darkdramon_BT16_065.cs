@@ -31,12 +31,7 @@ namespace DCGO.CardEffects.BT16
 
             bool CanSelectDBrigadeCondition(CardSource cardSource)
             {
-                if (cardSource.IsDigimon)
-                {
-                    return cardSource.CardTraits.Contains("D-Brigade");
-                }
-
-                return false;
+                return cardSource.CardTraits.Contains("D-Brigade");
             }
 
             #region Before Pay Cost - Condition Effect
@@ -121,7 +116,7 @@ namespace DCGO.CardEffects.BT16
                             canNoSelect: () => noSelect,
                             selectCardCoroutine: SelectCardCoroutine,
                             afterSelectCardCoroutine: null,
-                            message: "Select cards to place on top of deck.",
+                            message: "Select cards to add to the top your deck\n(cards will be placed back to the top of the deck so that cards with lower numbers are on top).",
                             maxCount: maxCount,
                             canEndNotMax: false,
                             isShowOpponent: true,
@@ -142,6 +137,7 @@ namespace DCGO.CardEffects.BT16
 
                         if (selectedCards.Count == 6)
                         {
+                            selectedCards.Reverse();
                             yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(selectedCards));
                         }
                     }

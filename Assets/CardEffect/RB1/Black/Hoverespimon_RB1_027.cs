@@ -209,7 +209,7 @@ public class Hoverespimon_RB1_027 : CEntity_Effect
                 return false;
             }
 
-            string effectName = "This Diogimon can't be deleted by opponent's effects";
+            string effectName = "This Digimon can't be deleted by opponent's effects";
 
             cardEffects.Add(CardEffectFactory.CanNotBeDestroyedBySkillStaticEffect(
                 permanentCondition: PermanentCondition,

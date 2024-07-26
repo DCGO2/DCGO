@@ -18,11 +18,6 @@ public class MegaKabuterimon_ACE_BT15_049 : CEntity_Effect
         }
 
         #region On Play/When Digivolving Shared
-        string EffectDiscription()
-        {
-            return "[On Play] [When Digivolving] 1 of your Digimon gets +3000 DP until the end of your opponent's turn. Then, if one of their Digimon is attacking, you may switch the target of attack to this Digimon.";
-        }
-
         bool CanSelectPermanentCondition(Permanent permanent)
         {
             return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
@@ -60,6 +55,11 @@ public class MegaKabuterimon_ACE_BT15_049 : CEntity_Effect
             activateClass.SetUpICardEffect("Your 1 Digimon gains DP +3000 and switch attack target", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
+
+            string EffectDiscription()
+            {
+                return "[On Play] 1 of your Digimon gets +3000 DP until the end of your opponent's turn. Then, if one of their Digimon is attacking, you may switch the target of attack to this Digimon.";
+            }
 
             bool CanUseCondition(Hashtable hashtable)
             {
@@ -148,6 +148,11 @@ public class MegaKabuterimon_ACE_BT15_049 : CEntity_Effect
             activateClass.SetUpICardEffect("Your 1 Digimon gains DP +3000 and switch attack target", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
+
+            string EffectDiscription()
+            {
+                return "[When Digivolving] 1 of your Digimon gets +3000 DP until the end of your opponent's turn. Then, if one of their Digimon is attacking, you may switch the target of attack to this Digimon.";
+            }
 
             bool CanUseCondition(Hashtable hashtable)
             {

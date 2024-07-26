@@ -83,16 +83,19 @@ public class AiAndMakoto_EX2_065 : CEntity_Effect
                     {
                         if (GManager.instance.attackProcess.AttackingPermanent.TopCard.CardNames.Contains("Beelzemon"))
                         {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                                                targetPermanent: GManager.instance.attackProcess.AttackingPermanent,
-                                                cardCondition: CanSelectCardCondition,
-                                                payCost: true,
-                                                reduceCostTuple: null,
-                                                fixedCostTuple: (fixedCost: 3, fixedCostCardCondition: null),
-                                                ignoreDigivolutionRequirementFixedCost: -1,
-                                                isHand: false,
-                                                activateClass: activateClass,
-                                                successProcess: null));
+                            if(CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                                    targetPermanent: GManager.instance.attackProcess.AttackingPermanent,
+                                    cardCondition: CanSelectCardCondition,
+                                    payCost: true,
+                                    reduceCostTuple: null,
+                                    fixedCostTuple: (fixedCost: 3, fixedCostCardCondition: null),
+                                    ignoreDigivolutionRequirementFixedCost: -1,
+                                    isHand: false,
+                                    activateClass: activateClass,
+                                    successProcess: null));
+                            }
                         }
                     }
                 }

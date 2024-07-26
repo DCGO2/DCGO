@@ -6,7 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="1f770e58-b781-4cb0-ad93-4c50994f611d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.DCGO/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.DCGO/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT11/Black/Analogman_BT11_092.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT11/Black/Analogman_BT11_092.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/EX6/Green/Antylamon_EX6_034.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/EX6/Green/Antylamon_EX6_034.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/EX6/Purple/Belphemon_Rage_Mode_EX6_060.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/EX6/Purple/Belphemon_Rage_Mode_EX6_060.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/EX6/Purple/Gate_of_Deadly_Sins_EX6_006.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/EX6/Purple/Gate_of_Deadly_Sins_EX6_006.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/EX6/Purple/Lucemon_Chaos_Mode_EX6_054.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/EX6/Purple/Lucemon_Chaos_Mode_EX6_054.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/EX6/Purple/Ogudomon_EX6_073.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/EX6/Purple/Ogudomon_EX6_073.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,27 +28,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "Release-Updates",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "settings.editor.selected.configurable": "preferences.fileTypes",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Release-Updates&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.fileTypes&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "rider.external.source.directories": [
-      "C:\\Users\\wwm0n\\AppData\\Roaming\\JetBrains\\Rider2023.1\\resharper-host\\DecompilerCache",
-      "C:\\Users\\wwm0n\\AppData\\Roaming\\JetBrains\\Rider2023.1\\resharper-host\\SourcesCache",
-      "C:\\Users\\wwm0n\\AppData\\Local\\Symbols\\src"
+  &quot;keyToStringList&quot;: {
+    &quot;rider.external.source.directories&quot;: [
+      &quot;C:\\Users\\wwm0n\\AppData\\Roaming\\JetBrains\\Rider2023.1\\resharper-host\\DecompilerCache&quot;,
+      &quot;C:\\Users\\wwm0n\\AppData\\Roaming\\JetBrains\\Rider2023.1\\resharper-host\\SourcesCache&quot;,
+      &quot;C:\\Users\\wwm0n\\AppData\\Local\\Symbols\\src&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="Attach to Unity Editor.Attach to Unity Editor">
     <configuration name="Standalone Player" type="RunUnityExe" factoryName="Unity Executable">
       <option name="EXE_PATH" value="$USER_HOME$/Desktop/DCGO/DCGO_Standalone_Beta/Game\DCGO.exe" />
@@ -103,6 +107,8 @@
       <workItem from="1705445110111" duration="617000" />
       <workItem from="1707092728240" duration="644000" />
       <workItem from="1715820047500" duration="30965000" />
+      <workItem from="1719540359999" duration="395000" />
+      <workItem from="1720456596917" duration="698000" />
     </task>
     <servers />
   </component>
