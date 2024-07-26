@@ -47,10 +47,10 @@ namespace DCGO.CardEffects.BT17
 
             //Incomplete
             #region Your Turn - Once Per Turn - Inherit
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Digivolve for reduced cost", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("DigivolveEosmonBT17_044");
                 cardEffects.Add(activateClass);
@@ -72,11 +72,11 @@ namespace DCGO.CardEffects.BT17
                     return false;
                 }
 
-                bool CanUseCondition(Hashtable hashtable)
+                bool CanSelectEosmonInHand(CardSource cardSource)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (cardSource.EqualsCardName("Eosmon"))
                     {
-                        if (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PermanentCondition))
+                        if (cardSource.CanPlayCardTargetFrame(card.PermanentOfThisCard().PermanentFrame, true, activateClass))
                         {
                             return true;
                         }
@@ -85,26 +85,37 @@ namespace DCGO.CardEffects.BT17
                     return false;
                 }
 
-                bool CanSelectEosmonInHand(CardSource cardSource)
+                bool CanUseCondition(Hashtable hashtable)
                 {
-                    if(cardSource.CardNames.Contains("Eosmon"))
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        return true;
+                        if (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PermanentCondition))
+                        {
+                            if(CardEffectCommons.HasMatchConditionOwnersHand(card,CanSelectEosmonInHand))
+                                return true;
+                        }
                     }
+
                     return false;
-                }
+                }            
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if(CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        
-                    }
+                    return CardEffectCommons.IsExistOnBattleArea(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return null;
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                        targetPermanent: card.PermanentOfThisCard(),
+                        cardCondition: CanSelectEosmonInHand,
+                        payCost: true,
+                        reduceCostTuple: (reduceCost: 3, reduceCostCardCondition: null),
+                        fixedCostTuple: null,
+                        ignoreDigivolutionRequirementFixedCost: -1,
+                        isHand: true,
+                        activateClass: activateClass,
+                        successProcess: null));
                 }
             }
             #endregion
