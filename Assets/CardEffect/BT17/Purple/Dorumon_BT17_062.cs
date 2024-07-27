@@ -70,14 +70,14 @@ namespace DCGO.CardEffects.BT17
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card) &&
-                           card.PermanentOfThisCard().DigivolutionCards.Count(IsKosukeCardCondition) >= 1 &&
+                           card.PermanentOfThisCard().DigivolutionCards.Some(IsKosukeCardCondition) &&
                            CardEffectCommons.HasMatchConditionOpponentsPermanent(card, OpponentPermanentCondition) &&
-                           card.Owner.HandCards.Count(IsDorugoramonCardCondition) >= 1;
+                           CardEffectCommons.HasMatchConditionOwnersHand(card, IsDorugoramonCardCondition);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (card.Owner.HandCards.Count(IsDorugoramonCardCondition) >= 1)
+                    if (CardEffectCommons.HasMatchConditionOwnersHand(card, IsDorugoramonCardCondition))
                     {
                         yield return ContinuousController.instance.StartCoroutine(
                             CardEffectCommons.DigivolveIntoHandOrTrashCard(

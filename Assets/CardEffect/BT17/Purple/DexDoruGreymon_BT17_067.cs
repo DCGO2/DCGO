@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
-using System.Linq;
 
 namespace DCGO.CardEffects.BT17
 {
@@ -206,7 +205,7 @@ namespace DCGO.CardEffects.BT17
                     }
 
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentPermanentCondition) &&
-                        (card.PermanentOfThisCard().DigivolutionCards.Count(IsDoruCardCondition) >= 1 ||
+                        (card.PermanentOfThisCard().DigivolutionCards.Some(IsDoruCardCondition) ||
                          CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card, TrashRootCondition)))
                     {
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectOpponentPermanentCondition));

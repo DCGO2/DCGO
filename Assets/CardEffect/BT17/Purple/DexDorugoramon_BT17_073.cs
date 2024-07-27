@@ -211,7 +211,7 @@ namespace DCGO.CardEffects.BT17
                         }
                     }
 
-                    if (card.PermanentOfThisCard().DigivolutionCards.Count(IsDoruCardCondition) >= 1 ||
+                    if (card.PermanentOfThisCard().DigivolutionCards.Some(IsDoruCardCondition) ||
                         CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card, TrashRootCondition))
                     {
                         List<Permanent> destroyTargetPermanents =

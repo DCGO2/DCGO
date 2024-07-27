@@ -65,7 +65,7 @@ namespace DCGO.CardEffects.BT17
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card) &&
-                           card.PermanentOfThisCard().DigivolutionCards.Count(IsEijiCardCondition) >= 1 &&
+                           card.PermanentOfThisCard().DigivolutionCards.Some(IsEijiCardCondition) &&
                            CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectTrashCardCondition);
                 }
 

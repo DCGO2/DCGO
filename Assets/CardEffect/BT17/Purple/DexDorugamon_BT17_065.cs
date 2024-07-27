@@ -207,7 +207,7 @@ namespace DCGO.CardEffects.BT17
                     }
 
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentPermanentCondition) &&
-                        (card.PermanentOfThisCard().DigivolutionCards.Count(IsDoruCardCondition) >= 1 ||
+                        (card.PermanentOfThisCard().DigivolutionCards.Some(IsDoruCardCondition) ||
                          CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card, TrashRootCondition)))
                     {
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectOpponentPermanentCondition));
