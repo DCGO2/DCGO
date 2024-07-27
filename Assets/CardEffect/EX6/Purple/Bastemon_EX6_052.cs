@@ -157,7 +157,7 @@ namespace DCGO.CardEffects.EX6
                         {
                             if (cardSource.IsDigimon)
                             {
-                                if (cardSource.Level == 4)
+                                if (cardSource.Level <= 4)
                                 {
                                     if (cardSource.HasLevel)
                                     {

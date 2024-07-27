@@ -107,13 +107,13 @@ public class DemonsDisaster_BT5_106 : CEntity_Effect
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect($"Play 1 level 3 Digimon from trash", CanUseCondition, card);
-            activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+            activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, EffectDiscription());
             activateClass.SetIsSecurityEffect(true);
             cardEffects.Add(activateClass);
 
             string EffectDiscription()
             {
-                return "[Security] Play 1 purple level 3 Digimon card from your trash without paying its memory cost. Any [On Play] effects on the Digimon played with this effect don't activate.";
+                return "[Security] You may play 1 level 3 purple Digimon card from your trash without paying its memory cost. Any [On Play] effects on Digimon played with this effect don't activate.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)

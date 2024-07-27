@@ -95,9 +95,11 @@ namespace DCGO.CardEffects.LM
 
                         if (!permanent.IsToken)
                         {
-                            placedToSecurity = true;
-
+                            int beforeEffectSecurityCount = card.Owner.Enemy.SecurityCards.Count;
                             yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(permanent, CardEffectCommons.CardEffectHashtable(activateClass), toTop: true).PutSecurity());
+
+                            if (card.Owner.Enemy.SecurityCards.Count > beforeEffectSecurityCount)
+                                placedToSecurity = true;
                         }
 
                         yield return null;

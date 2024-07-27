@@ -131,7 +131,7 @@ namespace DCGO.CardEffects.ST17
                             canEndSelectCondition: CanEndSelectCondition,
                             maxCount: maxCount,
                             canNoSelect: false,
-                            canEndNotMax: true,
+                            canEndNotMax: false,
                             selectPermanentCoroutine: null,
                             afterSelectPermanentCoroutine: null,
                             mode: SelectPermanentEffect.Mode.Tap,
@@ -214,7 +214,9 @@ namespace DCGO.CardEffects.ST17
                                 {
                                     if (cardSource.IsDigimon || cardSource.IsTamer)
                                     {
-                                        return true;
+                                        if (!cardSource.CanNotBeAffected(canNotPutFieldClass)){
+                                            return true;
+                                        }
                                     }
                                 }
 

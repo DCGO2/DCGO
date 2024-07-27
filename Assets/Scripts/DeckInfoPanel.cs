@@ -167,7 +167,6 @@ public class DeckInfoPanel : MonoBehaviour
                             ContinuousController.instance.DeckDatas.Remove(deckData);
                             ContinuousController.instance.StartCoroutine(Opening.instance.deck.selectDeck.SetDeckList(false));
                             Opening.instance.deck.selectDeck.ResetDeckInfoPanel();
-                            ContinuousController.instance.SaveDeckDatas();
                             ContinuousController.instance.DeleteDeck(deckData);
                         }
                     },
@@ -248,10 +247,7 @@ public class DeckInfoPanel : MonoBehaviour
             text = text.Substring(0, text.Length - 1);
         }
 
-        ShowingDeckData.DeckName = text;
-
-        ContinuousController.instance.SaveDeckDatas();
-        ContinuousController.instance.SaveDeckData(ShowingDeckData);
+        ContinuousController.instance.RenameDeck(ShowingDeckData, text);
 
         if (isFromSelectDeck)
         {
