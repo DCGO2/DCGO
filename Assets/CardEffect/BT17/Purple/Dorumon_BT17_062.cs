@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.BT17
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsCardName("Dorimon");
+                    return targetPermanent.TopCard.EqualsCardName("Dorimon");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
@@ -50,15 +50,14 @@ namespace DCGO.CardEffects.BT17
                 bool IsDorugoramonCardCondition(CardSource cardSource)
                 {
                     return cardSource.IsDigimon &&
-                           cardSource.ContainsCardName("Dorugoramon") &&
-                           !cardSource.ContainsCardName("Dex");
+                           cardSource.EqualsCardName("Dorugoramon");
                 }
 
                 bool IsKosukeCardCondition(CardSource cardSource)
                 {
                     return cardSource.IsTamer &&
-                           (cardSource.ContainsCardName("Kosuke Kisakata") ||
-                            cardSource.ContainsCardName("KosukeKisakata"));
+                           (cardSource.EqualsCardName("Kosuke Kisakata") ||
+                            cardSource.EqualsCardName("KosukeKisakata"));
                 }
 
                 bool OpponentPermanentCondition(Permanent permanent)

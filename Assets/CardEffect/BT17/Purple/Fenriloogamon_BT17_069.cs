@@ -52,15 +52,20 @@ namespace DCGO.CardEffects.BT17
                 {
                     return cardSource.IsDigimon &&
                            CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass) &&
-                           (cardSource.ContainsCardName("Fenriloogamon") || cardSource.ContainsCardName("Kazuchimon"));
+                           (cardSource.EqualsCardName("Fenriloogamon") || cardSource.EqualsCardName("Kazuchimon"));
+                }
+                
+                bool IsEijiCardCondition(CardSource cardSource)
+                {
+                    return cardSource.IsTamer &&
+                           (cardSource.EqualsCardName("Eiji Nagasumi") ||
+                            cardSource.EqualsCardName("EijiNagasumi"));
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card) &&
-                           card.PermanentOfThisCard().DigivolutionCards.Count(cardSource =>
-                               cardSource.CardNames.Contains("Eiji Nagasumi") ||
-                               cardSource.CardNames.Contains("EijiNagasumi")) >= 1 &&
+                           card.PermanentOfThisCard().DigivolutionCards.Count(IsEijiCardCondition) >= 1 &&
                            CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectTrashCardCondition);
                 }
 
