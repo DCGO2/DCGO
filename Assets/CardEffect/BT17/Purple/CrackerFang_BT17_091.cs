@@ -155,7 +155,7 @@ namespace DCGO.CardEffects.BT17
                         "[End of All Turns] You may play 1 [Eiji Nagasumi] from this Digimon's digivolution cards without paying the cost.";
                 }
 
-                bool CanSelectCardCondition(CardSource cardSource)
+                bool IsEijiCardCondition(CardSource cardSource)
                 {
                     return CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass) &&
                            (cardSource.EqualsCardName("Eiji Nagasumi") ||
@@ -170,7 +170,7 @@ namespace DCGO.CardEffects.BT17
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card) &&
-                           card.PermanentOfThisCard().DigivolutionCards.Count(CanSelectCardCondition) >= 1;
+                           card.PermanentOfThisCard().DigivolutionCards.Some(IsEijiCardCondition);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -181,7 +181,7 @@ namespace DCGO.CardEffects.BT17
 
                         if (selectedPermanent != null)
                         {
-                            if (selectedPermanent.DigivolutionCards.Count(CanSelectCardCondition) >= 1)
+                            if (selectedPermanent.DigivolutionCards.Some(IsEijiCardCondition))
                             {
                                 int maxCount = 1;
 
@@ -190,7 +190,7 @@ namespace DCGO.CardEffects.BT17
                                 SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                                 selectCardEffect.SetUp(
-                                    canTargetCondition: CanSelectCardCondition,
+                                    canTargetCondition: IsEijiCardCondition,
                                     canTargetCondition_ByPreSelecetedList: null,
                                     canEndSelectCondition: null,
                                     canNoSelect: () => true,

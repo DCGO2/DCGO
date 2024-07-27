@@ -87,7 +87,7 @@ namespace DCGO.CardEffects.BT17
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
-                           permanent.DigivolutionCards.Count(cardSource => cardSource.IsTamer) >= 1 &&
+                           permanent.DigivolutionCards.Some(cardSource => cardSource.IsTamer) &&
                            card.Owner.TrashCards.Where(DexCardCondition).Any(cardSource =>
                                cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass));
                 }

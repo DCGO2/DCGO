@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 using Photon.Pun;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.BT17
 {
     public class FenriloogamonTakemikazuchi_BT17_101 : CEntity_Effect
     {
@@ -299,7 +299,7 @@ namespace DCGO.CardEffects
                             yield return ContinuousController.instance.StartCoroutine(card.Owner.Enemy.SetFixedMemory(3, activateClass));
                     }
 
-                    if (card.PermanentOfThisCard().DigivolutionCards.Count(cardSource => cardSource.IsTamer) >= 1)
+                    if (card.PermanentOfThisCard().DigivolutionCards.Some(cardSource => cardSource.IsTamer))
                     {
                         yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
                         yield return ContinuousController.instance.StartCoroutine(new IRecovery(card.Owner, 1, activateClass).Recovery());
