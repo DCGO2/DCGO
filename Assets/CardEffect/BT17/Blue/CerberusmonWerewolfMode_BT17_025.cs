@@ -18,7 +18,7 @@ namespace DCGO.CardEffects.BT17
                 // Alternate Digivolution
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.CardNames.Contains("Cerberusmon");
+                    return targetPermanent.TopCard.EqualsCardName("Cerberusmon");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(

@@ -17,8 +17,7 @@ namespace DCGO.CardEffects.BT17
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsCardName("Dorugoramon") &&
-                           !targetPermanent.TopCard.ContainsCardName("Dex");
+                    return targetPermanent.TopCard.EqualsCardName("Dorugoramon");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
@@ -55,7 +54,7 @@ namespace DCGO.CardEffects.BT17
                 bool IsOwnerPermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
-                           permanent.TopCard.ContainsCardName("Dorugoramon") &&
+                           permanent.TopCard.EqualsCardName("Dorugoramon") &&
                            card.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass, root: SelectCardEffect.Root.Trash);
                 }
 
@@ -155,8 +154,7 @@ namespace DCGO.CardEffects.BT17
                 bool IsDoruCardCondition(CardSource cardSource)
                 {
                     return cardSource.IsDigimon &&
-                           cardSource.ContainsCardName("Dorugoramon") &&
-                           !cardSource.ContainsCardName("Dex");
+                           cardSource.EqualsCardName("Dorugoramon");
                 }
 
                 bool TrashRootCondition(SelectCardEffect.Root root)

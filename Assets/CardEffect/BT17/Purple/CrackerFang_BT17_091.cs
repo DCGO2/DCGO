@@ -158,8 +158,8 @@ namespace DCGO.CardEffects.BT17
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
                     return CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass) &&
-                           (cardSource.CardNames.Contains("Eiji Nagasumi") ||
-                            cardSource.CardNames.Contains("EijiNagasumi"));
+                           (cardSource.EqualsCardName("Eiji Nagasumi") ||
+                            cardSource.EqualsCardName("EijiNagasumi"));
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
