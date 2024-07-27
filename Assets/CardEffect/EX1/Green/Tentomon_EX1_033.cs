@@ -53,7 +53,8 @@ public class Tentomon_EX1_033 : CEntity_Effect
                     Func<EffectTiming, ICardEffect> getCardEffect = GetCardEffect;
                     changeCostClass.SetUpICardEffect("Digivolution Cost -1", CanUseCondition1, card);
                     changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
-                    CardEffectCommons.AddEffectToPlayer(effectDuration: EffectDuration.UntilEachTurnEnd, card: card, cardEffect: null, timing: EffectTiming.None, getCardEffect: getCardEffect);
+                    card.Owner.UntilCalculateFixedCostEffect.Add((_timing) => changeCostClass);
+                    //CardEffectCommons.AddEffectToPlayer(effectDuration: EffectDuration.UntilCalculateFixedCost, card: card, cardEffect: null, timing: EffectTiming.None, getCardEffect: getCardEffect);
 
                     ActivateClass activateClass1 = new ActivateClass();
                     Func<EffectTiming, ICardEffect> getCardEffect1 = GetCardEffect1;

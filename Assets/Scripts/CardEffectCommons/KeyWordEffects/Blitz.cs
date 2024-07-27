@@ -46,4 +46,49 @@ public partial class CardEffectCommons
         }
     }
     #endregion
+
+    #region Target 1 Digimon gains [Blitz]
+    public static IEnumerator GainBlitz(Permanent targetPermanent, EffectDuration effectDuration, ICardEffect activateClass, bool isWhenDigivolving)
+    {
+        if (targetPermanent == null) yield break;
+        if (!IsPermanentExistsOnBattleArea(targetPermanent)) yield break;
+        if (activateClass == null) yield break;
+        if (activateClass.EffectSourceCard == null) yield break;
+
+        CardSource card = activateClass.EffectSourceCard;
+
+        bool CanUseCondition()
+        {
+            if (IsPermanentExistsOnBattleArea(targetPermanent))
+            {
+                if (!targetPermanent.TopCard.CanNotBeAffected(activateClass))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        ActivateClass blitz = CardEffectFactory.BlitzEffect(
+            targetPermanent: targetPermanent,
+            isInheritedEffect: false,
+            condition: CanUseCondition,
+            isWhenDigivolving: isWhenDigivolving,
+            rootCardEffect: activateClass,
+            card: targetPermanent.TopCard);
+
+        AddEffectToPermanent(
+            targetPermanent: targetPermanent,
+            effectDuration: effectDuration,
+            card: card,
+            cardEffect: blitz,
+            timing: EffectTiming.OnEnterFieldAnyone);
+
+        if (!targetPermanent.TopCard.CanNotBeAffected(activateClass))
+        {
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateBuffEffect(targetPermanent));
+        }
+    }
+    #endregion
 }

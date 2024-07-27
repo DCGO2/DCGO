@@ -51,6 +51,35 @@ namespace DCGO.CardEffects.BT16
                     return false;
                 }
 
+                bool CanSelectOpponentsDigimonToSuspend(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card))
+                    {
+                        if(permanent.IsDigimon || permanent.IsTamer)
+                        {
+                            if(!permanent.IsSuspended)
+                            {
+                                return true;
+                            }
+                        }
+                    }
+
+                    return false;
+                }
+
+                bool CanSelectYourSuspendedDigimon(Permanent permanent)
+                {
+                    if(CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent,card))
+                    {
+                        if(permanent.IsDigimon && permanent.IsSuspended)
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     if(CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card))
@@ -63,12 +92,12 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleArea(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectOpponentsDigimon))
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentsDigimon))
                     {
                         Permanent selectedPermanent = null;
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
@@ -110,37 +139,55 @@ namespace DCGO.CardEffects.BT16
 
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        Permanent suspendedPermanent = null;
-                        SelectPermanentEffect selectSuspendEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                        selectSuspendEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canTargetCondition: CanSelectOpponentsDigimon,
-                            canEndSelectCondition: null,
-                            maxCount: 1,
-                            canNoSelect: false,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: SelectSuspendCoroutine,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Tap,
-                            cardEffect: activateClass);
-
-                        selectSuspendEffect.SetUpCustomMessage("Select 1 Digimon/Tamer to suspend.", "The opponent is selecting 1 Digimon/Tamer to suspend.");
-
-                        yield return ContinuousController.instance.StartCoroutine(selectSuspendEffect.Activate());
-
-                        IEnumerator SelectSuspendCoroutine(Permanent permanent)
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentsDigimonToSuspend))
                         {
-                            suspendedPermanent = permanent;
-                            yield return null;
-                        }
+                            Permanent suspendedPermanent = null;
+                            SelectPermanentEffect selectSuspendEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                        if (suspendedPermanent != null)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(
-                                new List<Permanent>() { card.PermanentOfThisCard() },
-                                activateClass).Unsuspend());
+                            selectSuspendEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canTargetCondition: CanSelectOpponentsDigimonToSuspend,
+                                canEndSelectCondition: null,
+                                maxCount: 1,
+                                canNoSelect: false,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: SelectSuspendCoroutine,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Tap,
+                                cardEffect: activateClass);
+
+                            selectSuspendEffect.SetUpCustomMessage("Select 1 Digimon/Tamer to suspend.", "The opponent is selecting 1 Digimon/Tamer to suspend.");
+
+                            yield return ContinuousController.instance.StartCoroutine(selectSuspendEffect.Activate());
+
+                            IEnumerator SelectSuspendCoroutine(Permanent permanent)
+                            {
+                                suspendedPermanent = permanent;
+                                yield return null;
+                            }
+
+                            if (suspendedPermanent != null)
+                            {
+                                SelectPermanentEffect selectUnsuspendEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                                selectSuspendEffect.SetUp(
+                                    selectPlayer: card.Owner,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canTargetCondition: CanSelectYourSuspendedDigimon,
+                                    canEndSelectCondition: null,
+                                    maxCount: 1,
+                                    canNoSelect: false,
+                                    canEndNotMax: false,
+                                    selectPermanentCoroutine: SelectSuspendCoroutine,
+                                    afterSelectPermanentCoroutine: null,
+                                    mode: SelectPermanentEffect.Mode.UnTap,
+                                    cardEffect: activateClass);
+
+                                selectSuspendEffect.SetUpCustomMessage("Select 1 Digimon to unsuspend.", "The opponent is selecting 1 Digimon to unsuspend.");
+
+                                yield return ContinuousController.instance.StartCoroutine(selectSuspendEffect.Activate());
+                            }
                         }
                     }
                 }
@@ -176,7 +223,7 @@ namespace DCGO.CardEffects.BT16
 
                 bool HasFighterMode(CardSource cardSource)
                 {
-                    return cardSource.CardNames.Contains("Imperialdramon: Fighter Mode");
+                    return cardSource.CardNames.Contains("Imperialdramon: Fighter Mode") || cardSource.CardNames.Contains("Imperialdramon:FighterMode");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -187,7 +234,10 @@ namespace DCGO.CardEffects.BT16
                         {
                             if(CardEffectCommons.HasMatchConditionOwnersPermanent(card, HasTamer))
                             {
-                                return (card.Owner.HandCards.Count(HasFighterMode) >= 1);
+                                if (card.Owner.HandCards.Count(HasFighterMode) >= 1)
+                                {
+                                    return true;
+                                }
                             }
                         }
                     }
@@ -197,7 +247,7 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleArea(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

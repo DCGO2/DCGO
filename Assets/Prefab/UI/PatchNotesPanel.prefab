@@ -724,27 +724,38 @@ MonoBehaviour:
   _localizeTMPro: {fileID: 6458252332150589230}
   _text_ENG: "Known Issues:\r\n\t- Veemon (P-1117) Cost reduction will visually show
     the reduction, even though you will\r\n\t  end up paying full cost (after it's
-    once per turn use)\r\n\t- Effects given to another card do not always show up
-    on card details\r\n\t- Shakamon (EX6-031) - Your turn effect currently disabled
-    while we work out\r\n\t  performance issues.\r\n\t- See other issues in bug tracking
-    document\r\n\t- All deck lists will be cleared due to new local directory for
-    decklists\r\n\r\nUpdates:\r\n\t- Several Bug fixes (see below)\r\n\t- EX6 set
-    added\r\n\t- Promos 131-138 & 143-151 added \r\n\t- Updated profanity filter
-    list\r\n\t- Added Feature that decklists save locally in directory (Assets/Decklists)\r\n\t-
-    Minor performance enhancement to multiple digimon on board\r\n\t- Capped framerate
-    at 60\r\n\r\nCard Updates:\r\n\t- Lampmon (BT12-044): added to game\r\n\t- BlackRapidmon
-    (EX4-036): Fixed issue where it could digivolve over\r\n\t  MegaGargomon Ace
-    (ST17)\r\n\t- Zanmetsumon (BT16-062): Fixed issue where deletion effect would
-    not happen with \r\n\t  On Play effect\r\n\t- Birdramon (BT15-013): Fixed inherited
-    effect text\r\n\t- Minomon (BT16-004): Fixed issue where multiple stacks could
-    trigger the memory gain\r\n\t- Dorugreymon (BT16-061): Fixed issue where On Play
-    effects from ESS did not activate\r\n\t- Amphimon (LM-005): Fixed issue of targeting
-    option cards as valid targets\r\n\t- Vikemon (BT16-026): Fixed On Play and When
-    Attacking effects\r\n\t- Amphimon (RB1-016): Fixed issue with deletion by security
-    battle and effect targeting\r\n\t- Immortal Ruler (BT10-104): Fixed issue where
-    card was treated as only black color\r\n\t- Paildramon (BT16-025): Fixed issue
-    where suspend effect would work against immune\r\n\t  cards\r\n\t- Ancient Angel
-    of Steel (BT16-097): Fixed security effect"
+    once per turn use)\r\n\t- Mega Digimon Assembly! not functional\r\n\t- Effects
+    given to another card do not always show up on card details\r\n\t- All deck lists
+    will be cleared due to new local directory for decklists\r\n\t- See other issues
+    in bug tracking document\r\n\r\nUpdates:\r\n\t- Several Bug fixes (see below)\r\n\t-
+    EX6 set added\r\n\t- Promos 131-138 & 143-151 added \r\n\t- Updated profanity
+    filter list\r\n\t- Added Feature that decklists save locally in directory (Assets/Decklists)\r\n\t-
+    Decklist name size increased from 15 to 28 characters\r\n\t- Minor performance
+    enhancement to multiple digimon on board\r\n\t- Capped framerate at 60\r\n\t-
+    Auto Updater testing\r\n\r\nCard Updates:\r\n\t- Dragon's Breath\tBT16-094\r\n\t-
+    Tankdramon\tBT16-060\r\n\t- MegaGargomon\tST17-08\r\n\t- Darkdramon\tBT16-065\r\n\t-
+    TyrantKabuterimon\tBT16-048\r\n\t- MailBirdramon\tEX4-018\r\n\t- Shakkoumon\tBT16-063\r\n\t-
+    DoruGreymon\tBT16-061\r\n\t- Garudamon (X Antibody)\tBT16-011\r\n\t- Final Excalibur\tEX6-067\r\n\t-
+    Ophanimon\tEX6-027\r\n\t- Sagomon\tEX6-024\r\n\t- Silphymon\tBT16-012\r\n\t-
+    Amphimon\tLM-005\r\n\t- Spadamon\tEX6-037\r\n\t- Galemon\tP-132\r\n\t- Shoemon\tP-134\r\n\t-
+    Shoeshoemon\tP-135\r\n\t- Drimogemon\tP-143\r\n\t- Myotismon (X Antibody)\tP-145\r\n\t-
+    Reload Plug-In Q\tP-146\r\n\t- Gokuumon\tEX6-023\r\n\t- Terriermon\tST17-02\r\n\t-
+    Sethmon\tBT16-070\r\n\t- Zubamon\tEX6-007\r\n\t- Durandamon\tEX6-010\r\n\t- RagnaLoardmon\tEX6-011\r\n\t-
+    Luxmon\tEX6-017\r\n\t- Seraphimon\tEX6-028\r\n\t- Mastemon\tEX6-029\r\n\t- Ludomon\tEX6-038\r\n\t-
+    RaijiLudomon\tEX6-042\r\n\t- Boogiemon\tEX6-047\r\n\t- Witchmon\tEX6-048\r\n\t-
+    Bastemon\tEX6-052\r\n\t- UltimateChaosmon\tEX6-062\r\n\t- Pandemonium Lost\tEX6-071\r\n\t-
+    Angewomon\tEX6-022\r\n\t- Tactimon\tBT10-084\r\n\t- Zanmetsumon\tBT16-062\r\n\t-
+    Invincible Dragon Insect Combo\tBT16-092\r\n\t- Gatomon\tEX6-020\r\n\t- Kurisarimon\tEX6-039\r\n\t-
+    Descent of the Three Great Angels\tEX6-068\r\n\t- Ogudomon\tEX6-073\r\n\t- Barbamon\tEX6-059\r\n\t-
+    Beast Storm Dance of Love\tBT16-091\r\n\t- Zhuqiaomon\tBT8-019\r\n\t- Dinobeemon\tBT16-077\r\n\t-
+    Astamon\tBT12-081\r\n\t- Magnadramon\tBT15-042\r\n\t- Mythical Arms of Salvation!\tEX6-065\r\n\t-
+    Antylamon\tEX6-034\r\n\t- Lucemon: Chaos Mode\tEX6-054\r\n\t- Belphemon: Rage
+    Mode\tEX6-060\r\n\t- Rise of the Seven Great Demon Lords\tEX6-069\r\n\t- Regulusmon\tLM-017\r\n\t-
+    ExVeemon\tBT16-018\r\n\t- Gate of Deadly Sins\tEX6-006\r\n\t- Amphimon\tRB1-016\r\n\t-
+    Lampmon\tBT12-044\r\n\t- Ancient Angel of Steel\tBT16-097\r\n\t- Mirei Mikagura\tEX6-074\r\n\t-
+    Holy Sunshine\tBT11-101\r\n\t- Demonic Disaster\tBT5-106\r\n\t- Publimon\tBT16-056\r\n\t-
+    Cherubimon\tEX6-035\r\n\t- MirageGaogamon: Burst Mode\tBT13-033\r\n\t- Shine
+    of Bee\tBT16-095\r\n\t- Salamon\tEX6-016\r\n\t- Tsukaimon\tEX6-045\r"
   _text_JPN: 
   _scroll: {fileID: 6458252331812644436}
 --- !u!1 &6458252331574147166

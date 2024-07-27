@@ -19,7 +19,7 @@ namespace DCGO.CardEffects.P
 
                 bool HasLiberatorTrait(Permanent permanent)
                 {
-                    if (permanent.TopCard.ContainsTraits("Liberator"))
+                    if (permanent.TopCard.ContainsTraits("Liberator") || permanent.TopCard.ContainsTraits("LIBERATOR"))
                     {
                         if(permanent.IsDigimon || permanent.IsTamer)
                         {
@@ -47,7 +47,7 @@ namespace DCGO.CardEffects.P
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Reveal top 3, Add 1 with [LIBERATOR] trait. Then Play 1 with [LIBERATOR] trait", CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

@@ -28,30 +28,28 @@ namespace DCGO.CardEffects.LM
                 cardEffects.Add(CardEffectFactory.BlastDigivolveEffect(card: card, condition: null));
             }
 
-            #region On Play/When Digivolving Shared
-            string EffectSharedDiscription()
-            {
-                return "[On Play] [When Digivolving] Trash 1 card in your hand. Then, you may place 1 card with [Gammamon] in its text from your trash as this Digimon's bottom digivolution card.";
-            }
-
-            bool CanSelectSharedCardCondition(CardSource cardSource)
-            {
-                if (CardEffectCommons.IsExistOnTrash(cardSource))
-                {
-                    return cardSource.HasText("Gammamon");
-                }
-                return false;
-            }
-            #endregion
-
             #region On Play
 
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash 1 card from your hand", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectSharedDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
+
+                bool CanSelectSharedCardCondition(CardSource cardSource)
+                {
+                    if (CardEffectCommons.IsExistOnTrash(cardSource))
+                    {
+                        return cardSource.HasText("Gammamon");
+                    }
+                    return false;
+                }
+
+                string EffectDiscription()
+                {
+                    return "[On Play] Trash 1 card in your hand. Then, you may place 1 card with [Gammamon] in its text from your trash as this Digimon's bottom digivolution card.";
+                }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
@@ -99,7 +97,7 @@ namespace DCGO.CardEffects.LM
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: 1,
-                        canNoSelect: true,
+                        canNoSelect: false,
                         canEndNotMax: false,
                         isShowOpponent: true,
                         selectCardCoroutine: null,
@@ -118,7 +116,7 @@ namespace DCGO.CardEffects.LM
                 {
                     ActivateClass activateClass = new ActivateClass();
                     activateClass.SetUpICardEffect("Place a Card from hand to digivolution cards to get effects", CanUseCondition, card);
-                    activateClass.SetUpActivateClass(CanActivateThenCondition, ActivateCoroutine, -1, true, EffectSharedDiscription());
+                    activateClass.SetUpActivateClass(CanActivateThenCondition, ActivateCoroutine, -1, true, EffectDiscription());
                     cardEffects.Add(activateClass);
 
                     SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
@@ -174,12 +172,26 @@ namespace DCGO.CardEffects.LM
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash 1 card from your hand", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectSharedDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
+
+                bool CanSelectSharedCardCondition(CardSource cardSource)
+                {
+                    if (CardEffectCommons.IsExistOnTrash(cardSource))
+                    {
+                        return cardSource.HasText("Gammamon");
+                    }
+                    return false;
+                }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                }
+
+                string EffectDiscription()
+                {
+                    return "[When Digivolving] Trash 1 card in your hand. Then, you may place 1 card with [Gammamon] in its text from your trash as this Digimon's bottom digivolution card.";
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -223,7 +235,7 @@ namespace DCGO.CardEffects.LM
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: 1,
-                        canNoSelect: true,
+                        canNoSelect: false,
                         canEndNotMax: false,
                         isShowOpponent: true,
                         selectCardCoroutine: null,
@@ -242,7 +254,7 @@ namespace DCGO.CardEffects.LM
                 {
                     ActivateClass activateClass = new ActivateClass();
                     activateClass.SetUpICardEffect("Place a Card from hand to digivolution cards to get effects", CanUseCondition, card);
-                    activateClass.SetUpActivateClass(CanActivateThenCondition, ActivateCoroutine, -1, true, EffectSharedDiscription());
+                    activateClass.SetUpActivateClass(CanActivateThenCondition, ActivateCoroutine, -1, true, EffectDiscription());
                     cardEffects.Add(activateClass);
 
                     SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();

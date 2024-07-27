@@ -5,6 +5,7 @@ using System.Linq;
 using Photon;
 using System;
 using Photon.Pun;
+using static UnityEngine.Rendering.DebugUI;
 
 namespace DCGO.CardEffects.EX6
 {
@@ -309,12 +310,25 @@ namespace DCGO.CardEffects.EX6
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete 1 level 5 or lower Digimon to prevent leaving the battle area", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetHashString("Protection_EX6_057");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
                     return "[All Turns] [Once Per Turn] When this Digimon would leave the battle area other than in battle, by deleting 1 level 5 or lower Digimon, prevent it from leaving.";
+                }
+
+                bool CanSelectPermanentCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
+                    {
+                        if (permanent.Level <= 5)
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -333,27 +347,16 @@ namespace DCGO.CardEffects.EX6
                     return false;
                 }
 
-                bool CanSelectPermanentCondition(Permanent permanent)
-                {
-                    if(CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
-                    {
-                        if(permanent.Level <= 5)
-                        {
-                            return true;
-                        }
-                    }    
-                    return false;
-                }
-
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if(CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if(CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                         {
                             return true;
                         }
                     }
+
                     return false;
                 }
 
@@ -370,7 +373,7 @@ namespace DCGO.CardEffects.EX6
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,
-                            canNoSelect: false,
+                            canNoSelect: true,
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine,
                             afterSelectPermanentCoroutine: null,

@@ -63,7 +63,7 @@ namespace DCGO.CardEffects.ST17
                 {
                     if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
                     {
-                        if(!permanent.TopCard.CanNotBeAffected(activateClass))
+                        if (!permanent.TopCard.CanNotBeAffected(activateClass))
                         {
                             if (permanent.IsDigimon)
                                 return true;
@@ -85,7 +85,6 @@ namespace DCGO.CardEffects.ST17
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable1)
                 {
-                    yield return null;
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
@@ -131,11 +130,6 @@ namespace DCGO.CardEffects.ST17
                     return "[Security] At the end of the battle, 1 of your Digimon may digivolve into this card without paying the digivolution cost.";
                 }
 
-                bool CanSelectCardConditionAferBattle(CardSource cardSource)
-                {
-                    return cardSource == card;
-                }
-
                 bool CanSelectPermanentConditionAfterBattle(Permanent permanent)
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
@@ -144,27 +138,18 @@ namespace DCGO.CardEffects.ST17
                         {
                             return true;
                         }
-                        /*if ((permanent.IsDigimon && permanent.Level == 3 && card.CardColors.Contains(CardColor.Blue) || card.CardColors.Contains(CardColor.Black)) || (card.CardNames.Contains("Veemon") && permanent.Level == 3))
-                        {
-                            return true;
-                        }*/
                     }
                     return false;
                 }
 
                 bool CanUseConditionAfterBattle(Hashtable hashtable)
                 {
-                    return true;
+                    return CardEffectCommons.CanTriggerSecurityEffect(hashtable, card);
                 }
 
                 bool CanActivateConditionAfterBattle(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentConditionAfterBattle))
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentConditionAfterBattle);
                 }
 
                 IEnumerator ActivateCoroutineAfterBattle(Hashtable _hashtable)

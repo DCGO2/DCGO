@@ -34,7 +34,7 @@ namespace DCGO.CardEffects.BT16
             }
             #endregion
 
-            #region On Play | When Digivolving
+            #region On Play
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -44,7 +44,7 @@ namespace DCGO.CardEffects.BT16
 
                 string EffectDiscription()
                 {
-                    return "[On Play] [When Digivolving] You may return 1 red Digimon card from your trash to the hand. Then, if [Garudamon] or [X-Antibody] is in this Digimon's digivolution cards, delete 1 of your opponent's Digimon with DP less than or equal to this Digimon's DP.";
+                    return "[On Play] You may return 1 red Digimon card from your trash to the hand. Then, if [Garudamon] or [X-Antibody] is in this Digimon's digivolution cards, delete 1 of your opponent's Digimon with DP less than or equal to this Digimon's DP.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
@@ -53,8 +53,7 @@ namespace DCGO.CardEffects.BT16
                     {
                         if (cardSource.CardColors.Contains(CardColor.Red))
                         {
-                            if (cardSource.HasAvianBeastAnimalTraits)
-                                return true;
+                            return true;
                         }
                     }
 
@@ -63,20 +62,12 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable,card) || CardEffectCommons.CanTriggerOnPlay(hashtable,card);
+                    return CardEffectCommons.CanTriggerOnPlay(hashtable,card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleArea(card);
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -178,6 +169,141 @@ namespace DCGO.CardEffects.BT16
             }
             #endregion
 
+            #region When Digivolving
+            if (timing == EffectTiming.OnEnterFieldAnyone)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Return 1 red Digimon card from the trash to your hand and delete a Digimon.", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[When Digivolving] You may return 1 red Digimon card from your trash to the hand. Then, if [Garudamon] or [X-Antibody] is in this Digimon's digivolution cards, delete 1 of your opponent's Digimon with DP less than or equal to this Digimon's DP.";
+                }
+
+                bool CanSelectCardCondition(CardSource cardSource)
+                {
+                    if (cardSource.IsDigimon)
+                    {
+                        if (cardSource.CardColors.Contains(CardColor.Red))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleArea(card);
+                }
+
+                bool CanSelectPermanentCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                    {
+                        if (CardEffectCommons.IsExistOnBattleArea(card))
+                        {
+                            if (card.PermanentOfThisCard().HasDP)
+                            {
+                                if (permanent.TopCard.HasDP)
+                                {
+                                    if (permanent.DP <= card.PermanentOfThisCard().DP)
+                                    {
+                                        return true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    return false;
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
+                    {
+
+                        List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
+                        {
+                            new SelectionElement<bool>(message: $"Yes", value : true, spriteIndex: 0),
+                            new SelectionElement<bool>(message: $"No", value : false, spriteIndex: 1),
+                        };
+
+                        string selectPlayerMessage = "Will you return a Digimon from your trash to your hand?";
+                        string notSelectPlayerMessage = "The opponent is choosing whether or not to return a card to their hand.";
+
+                        GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                        bool willReturn = GManager.instance.userSelectionManager.SelectedBoolValue;
+
+
+                        if (willReturn)
+                        {
+                            int maxCount = Math.Min(1, card.Owner.TrashCards.Count(CanSelectCardCondition));
+
+                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                            selectCardEffect.SetUp(
+                                canTargetCondition: CanSelectCardCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                canNoSelect: () => false,
+                                selectCardCoroutine: null,
+                                afterSelectCardCoroutine: null,
+                                message: "Select 1 card to add to your hand.",
+                                maxCount: maxCount,
+                                canEndNotMax: false,
+                                isShowOpponent: true,
+                                mode: SelectCardEffect.Mode.AddHand,
+                                root: SelectCardEffect.Root.Trash,
+                                customRootCardList: null,
+                                canLookReverseCard: true,
+                                selectPlayer: card.Owner,
+                                cardEffect: activateClass);
+
+                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                        }
+                    }
+
+                    if (CardEffectCommons.IsExistOnBattleArea(card) && card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardNames.Contains("Garudamon") || cardSource.CardNames.Contains("X Antibody") || cardSource.CardNames.Contains("XAntibody")) >= 1)
+                    {
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                        {
+                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+
+                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                            selectPermanentEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: CanSelectPermanentCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: maxCount,
+                                canNoSelect: false,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: null,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Destroy,
+                                cardEffect: activateClass);
+
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                        }
+                    }
+                }
+            }
+            #endregion
+
             #region Inherit
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
@@ -199,7 +325,7 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card))
                     {
                         if (card.Owner.Enemy.SecurityCards.Count >= 1)
                         {

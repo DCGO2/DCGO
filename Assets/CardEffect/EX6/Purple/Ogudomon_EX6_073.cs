@@ -45,9 +45,9 @@ namespace DCGO.CardEffects.EX6
                 return true;
             }
 
-            bool HasSevelGreatDemonLordsTrait(CardSource cardSource)
+            bool HasSevenGreatDemonLordsTrait(CardSource cardSource)
             {
-                if (cardSource.IsDigimon)
+                if (cardSource.IsDigimon || cardSource.IsOption)
                 {
                     return cardSource.ContainsTraits("Seven Great Demon Lords");
                 }
@@ -65,12 +65,12 @@ namespace DCGO.CardEffects.EX6
 
                 return false;
             }
-
+            //if (digivolutionCards.Count((filteredCard) =>  filteredCard.CardNames.Concat(cardSource.CardNames).Distinct().ToList().Count > 0) == 0)
             bool CanSelectTrashCardCondition(CardSource cardSource)
             {
-                if (HasSevelGreatDemonLordsTrait(cardSource))
+                if (HasSevenGreatDemonLordsTrait(cardSource))
                 {
-                    if (digivolutionCards.Count((filteredCard) => filteredCard.CardNames.Concat(cardSource.CardNames).Distinct().ToList().Count > 0) == 0)
+                    if(!digivolutionCards.Some(filteredCard => filteredCard != cardSource && cardSource.HasSameCardName(filteredCard)))
                     {
                         return true;
                     }
@@ -326,7 +326,7 @@ namespace DCGO.CardEffects.EX6
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete 7 Digimon/Tamers, Then Trash 7 security. For each card deleted, reduce that number by 1", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -343,7 +343,7 @@ namespace DCGO.CardEffects.EX6
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if(card.PermanentOfThisCard().cardSources.Count(HasSevelGreatDemonLordsTrait) >= 7)
+                        if(card.PermanentOfThisCard().cardSources.Count(HasSevenGreatDemonLordsTrait) >= 7)
                         {
                             return true;
                         }
@@ -362,7 +362,7 @@ namespace DCGO.CardEffects.EX6
                     SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                     selectCardEffect.SetUp(
-                                canTargetCondition: HasSevelGreatDemonLordsTrait,
+                                canTargetCondition: HasSevenGreatDemonLordsTrait,
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
                                 canNoSelect: () => true,
@@ -383,6 +383,7 @@ namespace DCGO.CardEffects.EX6
                     selectCardEffect.SetNotShowCard();
 
                     yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+
                     IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
                         selectedCards.Add(cardSource);
@@ -430,7 +431,7 @@ namespace DCGO.CardEffects.EX6
                     }
                     #endregion
 
-                    if (deletedPermanents.Count < 7)
+                    if (returnedToLibrary && deletedPermanents.Count < 7)
                     {
                         yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
                             player: card.Owner.Enemy,

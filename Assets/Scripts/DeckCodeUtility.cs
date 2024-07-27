@@ -47,7 +47,7 @@ public class DeckCodeUtility
 
         foreach (CEntity_Base cEntity_Base in AllDeckCards)
         {
-            if (distinctAllDeckCards.Count((cEntity_Base1) => cEntity_Base.CardID == cEntity_Base1.CardID) == 0)
+            if (distinctAllDeckCards.Count((cEntity_Base1) => cEntity_Base.CardSpriteName == cEntity_Base1.CardSpriteName) == 0)
             {
                 distinctAllDeckCards.Add(cEntity_Base);
             }
@@ -57,11 +57,11 @@ public class DeckCodeUtility
         {
             string lineString = "";
 
-            int count = AllDeckCards.Count((cEntity_Base1) => cEntity_Base.CardID == cEntity_Base1.CardID);
+            int count = AllDeckCards.Count((cEntity_Base1) => cEntity_Base.CardSpriteName == cEntity_Base1.CardSpriteName);
 
             if (count >= 1)
             {
-                lineString += $"{count} {cEntity_Base.CardName_ENG}   {cEntity_Base.CardID} \n";
+                lineString += $"{count} {cEntity_Base.CardName_ENG}   {cEntity_Base.CardSpriteName} \n";
             }
 
             DeckBuilderDeckCode += lineString;
