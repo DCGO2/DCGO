@@ -133,7 +133,7 @@ namespace DCGO.CardEffects.BT17
             #endregion
 
             #region All Turns
-            if (timing == EffectTiming.OnLoseSecurity)
+            if (timing == EffectTiming.OnDiscardSecurity)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("If a card is trashed from security and there's a Tamer in the digivolution cards, Recovery +1.", CanUseCondition, card);
@@ -145,23 +145,15 @@ namespace DCGO.CardEffects.BT17
                     return "[All Turns][Once per turn] When a card is trashed from your security stack, if [Leon Alexander] is in this Digimon's digivolution cards, Recovery +1.";
                 }
 
+                bool HasLeonAlexander(CardSource source)
+                {
+                    return source.EqualsCardName("Leon Alexander");
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                       //bool SkillCondition(ICardEffect cardEffect)
-                       //{
-                       //    if (cardEffect != null)
-                       //    {
-                       //        if (cardEffect.EffectSourceCard != null)
-                       //        {
-                       //            return true;                                  
-                       //        }
-                       //    }
-
-                       //    return false;
-                       //}
-
                        if (CardEffectCommons.CanTriggerOnTrashSecurity(hashtable,  cardEffect => true, cardSource => cardSource.Owner == card.Owner))
                        {
                            return true;
@@ -175,20 +167,15 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        return true;
+                        if (card.PermanentOfThisCard().DigivolutionCards.Some(HasLeonAlexander))
+                            return true;
                     }
                     return false;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (card.PermanentOfThisCard().DigivolutionCards.Some(cardSource => cardSource.CardNames.Contains("Leon Alexander")) || card.PermanentOfThisCard().DigivolutionCards.Some(cardSource => cardSource.CardNames.Contains("LeonAlexander")))
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(new IRecovery(card.Owner, 1, activateClass).Recovery());
-                        }
-                    }
+                    yield return ContinuousController.instance.StartCoroutine(new IRecovery(card.Owner, 1, activateClass).Recovery());
                 }
             }
             #endregion
