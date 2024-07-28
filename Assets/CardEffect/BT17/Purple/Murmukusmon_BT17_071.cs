@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using System;
+using System.Linq;
 
 namespace DCGO.CardEffects.BT17
 {
@@ -201,31 +201,41 @@ namespace DCGO.CardEffects.BT17
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    bool CanSelectOpponentPermanentCondition(Permanent permanent)
-                    {
-                        return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
-                               permanent.TopCard.HasLevel &&
-                               permanent.Level <= 6; // TODO change to deleted Digimon level
-                    }
-                    
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentPermanentCondition))
-                    {
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-                        
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectOpponentPermanentCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: 1,
-                            canNoSelect: false,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: null,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Destroy,
-                            cardEffect: activateClass);
+                    List<Hashtable> hashtables = CardEffectCommons.GetHashtablesFromHashtable(hashtable);
 
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                    if (hashtables != null)
+                    {
+                        List<int> levels = hashtables
+                            .Map(CardEffectCommons.GetPermanentFromHashtable)
+                            .Filter(permanent => permanent is { LevelJustBeforeRemoveField: > 0 })
+                            .Map(permanent => permanent.LevelJustBeforeRemoveField);
+
+                        bool CanSelectOpponentPermanentCondition(Permanent permanent)
+                        {
+                            return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
+                                   permanent.TopCard.HasLevel &&
+                                   permanent.Level <= levels.Max();
+                        }
+
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentPermanentCondition))
+                        {
+                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                            selectPermanentEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: CanSelectOpponentPermanentCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: 1,
+                                canNoSelect: false,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: null,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Destroy,
+                                cardEffect: activateClass);
+
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                        }
                     }
                 }
             }
