@@ -304,8 +304,8 @@ namespace DCGO.CardEffects.BT17
                                 bool CanSelectOpponentPermanentCondition(Permanent permanent)
                                 {
                                     return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
-                                           permanent.TopCard.HasLevel &&
-                                           permanent.Level <= chosenPermanent.Level;
+                                           permanent.LevelJustBeforeRemoveField > 0 &&
+                                           permanent.Level <= chosenPermanent.LevelJustBeforeRemoveField;
                                 }
 
                                 if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentPermanentCondition))
