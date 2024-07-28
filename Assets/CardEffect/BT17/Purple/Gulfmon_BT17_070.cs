@@ -8,6 +8,26 @@ namespace DCGO.CardEffects.BT17
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
+            
+            #region Alternate Digivolution
+
+            if (timing == EffectTiming.None)
+            {
+                bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.IsLevel5 && targetPermanent.TopCard.HasText("Dark Masters");
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
+                    permanentCondition: PermanentCondition,
+                    digivolutionCost: 3,
+                    ignoreDigivolutionRequirement: false,
+                    card: card,
+                    condition: null)
+                );
+            }
+
+            #endregion
 
             #region On Play/ When Digivolving Shared
 
