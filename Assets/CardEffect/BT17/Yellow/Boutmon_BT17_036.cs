@@ -87,11 +87,12 @@ namespace DCGO.CardEffects.BT17
                 }
             }
 
-            if (timing == EffectTiming.OnLoseSecurity)
+            if (timing == EffectTiming.OnDiscardSecurity)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("If a card is trashed from security and there's a Tamer in the digivolution cards, this Digimon digivolves for free.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetHashString("Digivolve_BT17_036");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -113,14 +114,11 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (CardEffectCommons.CanTriggerWhenLoseSecurity(hashtable, player => player == card.Owner))
+                        if (CardEffectCommons.CanTriggerOnTrashSecurity(hashtable, cardEffect => cardEffect != null, cardSource => cardSource.Owner == card.Owner))
                         {
-                            if (CardEffectCommons.IsByEffect(hashtable, null))
+                            if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => (cardSource.EqualsCardName("Leon Alexander") && cardSource.IsTamer)) >= 1)
                             {
-                                if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => (cardSource.CardNames.Contains("Leon Alexander") && cardSource.IsTamer)) >= 1 || card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => (cardSource.CardNames.Contains("LeonAlexander") && cardSource.IsTamer)) >= 1)
-                                {
-                                    return true;
-                                }
+                                return true;
                             }
                         }
                     }
