@@ -10,7 +10,56 @@ namespace DCGO.CardEffects.BT17
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            // TODO When revealed from deck effect
+            #region When Revealed from Deck
+
+            if (timing == EffectTiming.None)
+            {
+                // Could work like this
+                // ChangeCardLevelClass changeCardLevelClass = new ChangeCardLevelClass();
+                // changeCardLevelClass.SetUpICardEffect($"Also treated as level 6 when revealed from the top of the deck.",
+                //     CanUseCondition, card);
+                // changeCardLevelClass.SetUpChangeCardLevelClass(getLevel: GetLevel);
+                // changeCardLevelClass.SetNotShowUI(true);
+                // cardEffects.Add(changeCardLevelClass);
+                //
+                // bool CanUseCondition(Hashtable hashtable)
+                // {
+                //     return card.IsBeingRevealed;
+                // }
+                //
+                // int GetLevel(CardSource cardSource, int level)
+                // {
+                //     if (cardSource == card)
+                //     {
+                //         level = 6;
+                //     }
+                //
+                //     return level;
+                // }
+
+                ChangeCardNamesClass changeCardNamesClass = new ChangeCardNamesClass();
+                changeCardNamesClass.SetUpICardEffect("Also treated as level 6 when revealed from the top of the deck.", CanUseCondition,
+                    card);
+                changeCardNamesClass.SetUpChangeCardNamesClass(changeCardNames: ChangeCardNames);
+                cardEffects.Add(changeCardNamesClass);
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return card.IsBeingRevealed;
+                }
+
+                List<string> ChangeCardNames(CardSource cardSource, List<string> CardNames)
+                {
+                    if (cardSource == card)
+                    {
+                        CardNames.Add("Is Level 6");
+                    }
+
+                    return CardNames;
+                }
+            }
+
+            #endregion
 
             #region When Would be Played
 
@@ -131,11 +180,12 @@ namespace DCGO.CardEffects.BT17
 
                                 return cost;
                             }
+
                             bool CardSourceCondition(CardSource cardSource)
                             {
                                 return cardSource == card;
                             }
-                            
+
                             bool RootCondition(SelectCardEffect.Root root)
                             {
                                 return true;
@@ -146,7 +196,7 @@ namespace DCGO.CardEffects.BT17
                                 return targetPermanents == null ||
                                        targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0;
                             }
-                            
+
                             bool IsUpDown()
                             {
                                 return true;
