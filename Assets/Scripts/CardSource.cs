@@ -667,6 +667,37 @@ public class CardSource : MonoBehaviour
     public int Level => _cEntity_Base.Level;
     #endregion
 
+    #region Level
+    public int TreatedLevel
+    {
+        get
+        {
+            int treatedLevel = 0;
+
+            treatedLevel = Level;
+
+            if (!HasLevel)
+                treatedLevel = 1145140;
+
+            #region Check Card Change Level Effects
+
+            foreach (ICardEffect cardEffect in EffectList(EffectTiming.None))
+            {
+                if (cardEffect is IChangeCardLevelEffect)
+                {
+                    if (cardEffect.CanUse(null))
+                    {
+                        treatedLevel = ((IChangeCardLevelEffect)cardEffect).GetCardLevel(treatedLevel, this);
+                    }
+                }
+            }
+            #endregion
+
+            return treatedLevel;
+        }
+    }
+    #endregion
+
     #region effect list
     public List<ICardEffect> EffectList(EffectTiming timing)
     {
