@@ -22,8 +22,8 @@ namespace DCGO.CardEffects.BT17
 
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsCardName("Koji  Minamoto") ||
-                           targetPermanent.TopCard.ContainsCardName("KojiMinamoto");
+                    return targetPermanent.TopCard.EqualsCardName("Koji  Minamoto") ||
+                           targetPermanent.TopCard.EqualsCardName("KojiMinamoto");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
@@ -36,7 +36,7 @@ namespace DCGO.CardEffects.BT17
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsCardName("KendoGarurumon");
+                    return targetPermanent.TopCard.EqualsCardName("KendoGarurumon");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
@@ -90,7 +90,7 @@ namespace DCGO.CardEffects.BT17
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
                         if (card.PermanentOfThisCard().DigivolutionCards.Count(cardSource =>
-                                cardSource.CardNames.Contains("KendoGarurumon")) >= 1)
+                                cardSource.EqualsCardName("KendoGarurumon")) >= 1)
                         {
                             return true;
                         }
@@ -120,7 +120,7 @@ namespace DCGO.CardEffects.BT17
                             CardEffectCommons.DigivolveIntoHandOrTrashCard(
                                 targetPermanent: thisPermanent,
                                 cardCondition: cardSource =>
-                                    cardSource.IsDigimon && cardSource.ContainsCardName("AncientGarurumon"),
+                                    cardSource.IsDigimon && cardSource.EqualsCardName("AncientGarurumon"),
                                 payCost: true,
                                 reduceCostTuple: null,
                                 fixedCostTuple: null,

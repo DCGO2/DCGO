@@ -118,7 +118,7 @@ namespace DCGO.CardEffects.BT17
             {
                 if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
                 {
-                    if (permanent.TopCard.ContainsCardName("Agumon"))
+                    if (permanent.TopCard.EqualsCardName("Agumon"))
                     {
                         return true;
                     }
@@ -129,7 +129,7 @@ namespace DCGO.CardEffects.BT17
 
             bool CanSelectHandCardSharedCondition(CardSource cardSource)
             {
-                return cardSource.IsDigimon && cardSource.ContainsCardName("WarGreymon");
+                return cardSource.IsDigimon && cardSource.EqualsCardName("WarGreymon");
             }
 
             #endregion

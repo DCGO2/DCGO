@@ -33,7 +33,7 @@ namespace DCGO.CardEffects.BT17
                     {
                         if (cardSource.Owner == card.Owner)
                         {
-                            if (cardSource.CardNames.Contains("Lobomon"))
+                            if (cardSource.EqualsCardName("Lobomon"))
                             {
                                 return true;
                             }
@@ -49,7 +49,7 @@ namespace DCGO.CardEffects.BT17
                     {
                         if (cardSource.Owner == card.Owner)
                         {
-                            if (cardSource.CardNames.Contains("KendoGarurumon"))
+                            if (cardSource.EqualsCardName("KendoGarurumon"))
                             {
                                 return true;
                             }
@@ -71,8 +71,8 @@ namespace DCGO.CardEffects.BT17
                                 {
                                     if (!permanent.IsToken)
                                     {
-                                        if (permanent.TopCard.CardNames.Contains("Koji Minamoto") ||
-                                            permanent.TopCard.CardNames.Contains("KojiMinamoto"))
+                                        if (permanent.TopCard.EqualsCardName("Koji Minamoto") ||
+                                            permanent.TopCard.EqualsCardName("KojiMinamoto"))
                                         {
                                             return true;
                                         }
