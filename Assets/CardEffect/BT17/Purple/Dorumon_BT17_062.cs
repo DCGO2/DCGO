@@ -46,12 +46,6 @@ namespace DCGO.CardEffects.BT17
                     return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
                 }
 
-                bool IsDorugoramonCardCondition(CardSource cardSource)
-                {
-                    return cardSource.IsDigimon &&
-                           cardSource.EqualsCardName("Dorugoramon");
-                }
-
                 bool IsKosukeCardCondition(CardSource cardSource)
                 {
                     return cardSource.IsTamer &&
@@ -61,7 +55,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool OpponentPermanentCondition(Permanent permanent)
                 {
-                    return permanent.IsDigimon &&
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
                            permanent.TopCard.HasLevel &&
                            permanent.Level >= 6;
                 }
@@ -70,26 +64,23 @@ namespace DCGO.CardEffects.BT17
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card) &&
                            card.PermanentOfThisCard().DigivolutionCards.Some(IsKosukeCardCondition) &&
-                           CardEffectCommons.HasMatchConditionOpponentsPermanent(card, OpponentPermanentCondition) &&
-                           CardEffectCommons.HasMatchConditionOwnersHand(card, IsDorugoramonCardCondition);
+                           CardEffectCommons.HasMatchConditionPermanent(OpponentPermanentCondition);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionOwnersHand(card, IsDorugoramonCardCondition))
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(
-                            CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                                targetPermanent: card.PermanentOfThisCard(),
-                                cardCondition: IsDorugoramonCardCondition,
-                                payCost: true,
-                                reduceCostTuple: null,
-                                fixedCostTuple: null,
-                                ignoreDigivolutionRequirementFixedCost: 4,
-                                isHand: true,
-                                activateClass: activateClass,
-                                successProcess: null));
-                    }
+                    yield return ContinuousController.instance.StartCoroutine(
+                        CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                            targetPermanent: card.PermanentOfThisCard(),
+                            cardCondition: cardSource =>
+                                cardSource.IsDigimon && cardSource.EqualsCardName("Dorugoramon"),
+                            payCost: true,
+                            reduceCostTuple: null,
+                            fixedCostTuple: null,
+                            ignoreDigivolutionRequirementFixedCost: 4,
+                            isHand: true,
+                            activateClass: activateClass,
+                            successProcess: null));
                 }
             }
 

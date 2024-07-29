@@ -134,7 +134,8 @@ namespace DCGO.CardEffects.BT17
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Trash 1, Draw 1 and delete opponent's Digimon with play cost of 6 or less", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Trash 1, Draw 1 and delete opponent's Digimon with play cost of 6 or less", CanUseCondition,
+                    card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
@@ -154,7 +155,7 @@ namespace DCGO.CardEffects.BT17
                     return cardSource.IsDigimon &&
                            cardSource.EqualsCardName("DoruGreymon");
                 }
-                
+
                 bool TrashRootCondition(SelectCardEffect.Root root)
                 {
                     return root == SelectCardEffect.Root.Trash;
@@ -209,7 +210,7 @@ namespace DCGO.CardEffects.BT17
                          CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card, TrashRootCondition)))
                     {
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectOpponentPermanentCondition));
-                        
+
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
@@ -270,8 +271,6 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOwnPermanentCondition))
                     {
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectOwnPermanentCondition));
-
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
@@ -279,7 +278,7 @@ namespace DCGO.CardEffects.BT17
                             canTargetCondition: CanSelectOwnPermanentCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: maxCount,
+                            maxCount: 1,
                             canNoSelect: true,
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine,
@@ -294,31 +293,30 @@ namespace DCGO.CardEffects.BT17
 
                         IEnumerator SelectPermanentCoroutine(Permanent chosenPermanent)
                         {
+                            int deletedLevel = chosenPermanent.Level;
+
                             yield return ContinuousController.instance.StartCoroutine(
                                 CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
                                     targetPermanents: new List<Permanent>() { chosenPermanent }, activateClass: activateClass,
                                     successProcess: _ => SuccessProcess(), failureProcess: null));
 
+                            bool CanSelectOpponentPermanentCondition(Permanent permanent)
+                            {
+                                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
+                                       permanent.TopCard.HasLevel &&
+                                       permanent.Level <= deletedLevel;
+                            }
+
                             IEnumerator SuccessProcess()
                             {
-                                bool CanSelectOpponentPermanentCondition(Permanent permanent)
-                                {
-                                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
-                                           permanent.LevelJustBeforeRemoveField > 0 &&
-                                           permanent.Level <= chosenPermanent.LevelJustBeforeRemoveField;
-                                }
-
                                 if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentPermanentCondition))
                                 {
-                                    maxCount = Math.Min(1,
-                                        CardEffectCommons.MatchConditionPermanentCount(CanSelectOpponentPermanentCondition));
-
                                     selectPermanentEffect.SetUp(
                                         selectPlayer: card.Owner,
                                         canTargetCondition: CanSelectOpponentPermanentCondition,
                                         canTargetCondition_ByPreSelecetedList: null,
                                         canEndSelectCondition: null,
-                                        maxCount: maxCount,
+                                        maxCount: 1,
                                         canNoSelect: false,
                                         canEndNotMax: false,
                                         selectPermanentCoroutine: null,

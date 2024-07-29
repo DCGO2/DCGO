@@ -60,7 +60,7 @@ namespace DCGO.CardEffects.BT17
             if (timing == EffectTiming.OnEndTurn)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Digivolve one of your Digimon into [Dex]/[DeathX] Digimon from trash", CanUseCondition,
+                activateClass.SetUpICardEffect("Digivolve one of your Digimon into a [Dex] or [DeathX] Digimon from trash", CanUseCondition,
                     card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
                 cardEffects.Add(activateClass);
@@ -68,7 +68,7 @@ namespace DCGO.CardEffects.BT17
                 string EffectDescription()
                 {
                     return
-                        "[End of Opponent's Turn] (Once per Turn) If this Tamer is suspended, 1 of your Digimon with a Tamer card in its digivolution cards may digivolve into a Digimon card with [Dex]/[DeathX] in its name in the trash without paying the cost.";
+                        "[End of Opponent's Turn] (Once per Turn) If this Tamer is suspended, 1 of your Digimon with a Tamer card in its digivolution cards may digivolve into a Digimon card with [Dex] or [DeathX] in its name in the trash without paying the cost.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -80,8 +80,8 @@ namespace DCGO.CardEffects.BT17
                 bool DexCardCondition(CardSource cardSource)
                 {
                     return cardSource.IsDigimon &&
-                           cardSource.ContainsCardName("Dex") &&
-                           cardSource.ContainsCardName("DeathX");
+                           (cardSource.ContainsCardName("Dex") ||
+                            cardSource.ContainsCardName("DeathX"));
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
