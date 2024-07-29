@@ -235,6 +235,13 @@ public interface IChangePermanentLevelEffect
 }
 #endregion
 
+#region "Change target card's level" effect
+public interface IChangeCardLevelEffect
+{
+    int GetCardLevel(int level, CardSource cardSource);
+}
+#endregion
+
 #region "Target attacking permanent can attack to target defending permanent" effect
 public interface ICanAttackTargetDefendingPermanentEffect
 {
