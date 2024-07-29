@@ -22,8 +22,8 @@ namespace DCGO.CardEffects.BT17
 
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsCardName("Takuya Kanbara") ||
-                           targetPermanent.TopCard.ContainsCardName("TakuyaKanbara");
+                    return targetPermanent.TopCard.EqualsCardName("Takuya Kanbara") ||
+                           targetPermanent.TopCard.EqualsCardName("TakuyaKanbara");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
@@ -36,7 +36,7 @@ namespace DCGO.CardEffects.BT17
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsCardName("Agunimon");
+                    return targetPermanent.TopCard.EqualsCardName("Agunimon");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(

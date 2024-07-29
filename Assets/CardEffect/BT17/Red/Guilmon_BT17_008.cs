@@ -35,7 +35,7 @@ namespace DCGO.CardEffects.BT17
                     {
                         if (permanent.IsDigimon)
                         {
-                            return permanent.TopCard.ContainsCardName("Calumon");
+                            return permanent.TopCard.EqualsCardName("Calumon");
                         }
 
                         if (permanent.IsTamer)

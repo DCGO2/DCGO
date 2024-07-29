@@ -30,7 +30,7 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (cardSource.IsDigimon)
                     {
-                        return cardSource.ContainsCardName("Seasarmon") ||
+                        return cardSource.EqualsCardName("Seasarmon") ||
                                (cardSource.IsLevel3 && cardSource.CardColors.Contains(CardColor.Blue));
                     }
 

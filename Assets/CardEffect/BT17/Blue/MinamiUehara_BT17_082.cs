@@ -32,8 +32,8 @@ namespace DCGO.CardEffects.BT17
                     {
                         if (cardSource.IsDigimon)
                         {
-                            return cardSource.ContainsCardName("Labramon") ||
-                                   cardSource.ContainsCardName("Seasarmon");
+                            return cardSource.EqualsCardName("Labramon") ||
+                                   cardSource.EqualsCardName("Seasarmon");
                         }
                     }
 

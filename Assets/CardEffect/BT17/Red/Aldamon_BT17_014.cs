@@ -33,7 +33,7 @@ namespace DCGO.CardEffects.BT17
                     {
                         if (cardSource.Owner == card.Owner)
                         {
-                            if (cardSource.CardNames.Contains("Agunimon"))
+                            if (cardSource.EqualsCardName("Agunimon"))
                             {
                                 return true;
                             }
@@ -49,7 +49,7 @@ namespace DCGO.CardEffects.BT17
                     {
                         if (cardSource.Owner == card.Owner)
                         {
-                            if (cardSource.CardNames.Contains("BurningGreymon"))
+                            if (cardSource.EqualsCardName("BurningGreymon"))
                             {
                                 return true;
                             }
@@ -71,8 +71,8 @@ namespace DCGO.CardEffects.BT17
                                 {
                                     if (!permanent.IsToken)
                                     {
-                                        if (permanent.TopCard.CardNames.Contains("Takuya Kanbara") || 
-                                            permanent.TopCard.CardNames.Contains("TakuyaKanbara"))
+                                        if (permanent.TopCard.EqualsCardName("Takuya Kanbara") || 
+                                            permanent.TopCard.EqualsCardName("TakuyaKanbara"))
                                         {
                                             return true;
                                         }
