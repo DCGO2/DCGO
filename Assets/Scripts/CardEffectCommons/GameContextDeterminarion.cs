@@ -364,7 +364,7 @@ public partial class CardEffectCommons
         return GManager.instance.turnStateMachine.gameContext.Players
         .Map(player => player.HandCards)
         .Flat()
-        .Some(source => CanSelectCardCondition(source) && IsExistOnHand(card));
+        .Some(source => CanSelectCardCondition(source) && IsExistOnHand(source));
     }
     #endregion
 
