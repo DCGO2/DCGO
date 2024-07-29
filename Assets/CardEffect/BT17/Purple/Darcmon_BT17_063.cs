@@ -73,7 +73,7 @@ namespace DCGO.CardEffects.BT17
                            (card.Owner.LibraryCards.Count >= 1 ||
                             card.Owner.HandCards.Count >= 1 ||
                             (card.PermanentOfThisCard().DigivolutionCards.Some(IsHippoGryphonmonCardCondition) &&
-                             CardEffectCommons.HasMatchConditionOwnersHand(card, IsMurmukusmonCardCondition)));
+                             card.Owner.HandCards.Some(IsMurmukusmonCardCondition)));
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -106,7 +106,7 @@ namespace DCGO.CardEffects.BT17
                     }
 
                     if (card.PermanentOfThisCard().DigivolutionCards.Some(IsHippoGryphonmonCardCondition) &&
-                        CardEffectCommons.HasMatchConditionOwnersHand(card, IsMurmukusmonCardCondition))
+                        card.Owner.HandCards.Some(IsMurmukusmonCardCondition))
                     {
                         yield return ContinuousController.instance.StartCoroutine(
                             CardEffectCommons.DigivolveIntoHandOrTrashCard(

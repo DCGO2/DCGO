@@ -241,14 +241,14 @@ namespace DCGO.CardEffects.BT17
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanActivateOnDeletion(card) &&
-                           (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition) ||
-                            CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition));
+                           (card.Owner.HandCards.Some(CanSelectCardCondition) ||
+                            card.Owner.TrashCards.Some(CanSelectCardCondition));
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);
-                    bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition);
+                    bool canSelectHand = card.Owner.HandCards.Some(CanSelectCardCondition);
+                    bool canSelectTrash = card.Owner.TrashCards.Some(CanSelectCardCondition);
 
                     if (canSelectHand || canSelectTrash)
                     {

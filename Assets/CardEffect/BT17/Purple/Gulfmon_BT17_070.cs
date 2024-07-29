@@ -8,7 +8,7 @@ namespace DCGO.CardEffects.BT17
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
-            
+
             #region Alternate Digivolution
 
             if (timing == EffectTiming.None)
@@ -71,14 +71,14 @@ namespace DCGO.CardEffects.BT17
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card) &&
-                           (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardSharedCondition) ||
-                            CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardSharedCondition));
+                           (card.Owner.HandCards.Some(CanSelectCardSharedCondition) ||
+                            card.Owner.TrashCards.Some(CanSelectCardSharedCondition));
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardSharedCondition);
-                    bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardSharedCondition);
+                    bool canSelectHand = card.Owner.HandCards.Some(CanSelectCardSharedCondition);
+                    bool canSelectTrash = card.Owner.TrashCards.Some(CanSelectCardSharedCondition);
 
                     if (canSelectHand || canSelectTrash)
                     {
@@ -224,14 +224,14 @@ namespace DCGO.CardEffects.BT17
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card) &&
-                           (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardSharedCondition) ||
-                            CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardSharedCondition));
+                           (card.Owner.HandCards.Some(CanSelectCardSharedCondition) ||
+                            card.Owner.TrashCards.Some(CanSelectCardSharedCondition));
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardSharedCondition);
-                    bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardSharedCondition);
+                    bool canSelectHand = card.Owner.HandCards.Some(CanSelectCardSharedCondition);
+                    bool canSelectTrash = card.Owner.TrashCards.Some(CanSelectCardSharedCondition);
 
                     if (canSelectHand || canSelectTrash)
                     {
