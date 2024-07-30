@@ -23,7 +23,7 @@ namespace DCGO.CardEffects
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (card.IsDigiEgg)
+                    if (CardEffectCommons.IsExistOnField(card))
                     {
                         return true;
                     }
@@ -33,9 +33,9 @@ namespace DCGO.CardEffects
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBreedingArea(card))
                     {
-                        if (CardEffectCommons.CanActivateSuspendCostEffect(card))
+                        if (card.IsDigiEgg)
                         {
                             return true;
                         }
