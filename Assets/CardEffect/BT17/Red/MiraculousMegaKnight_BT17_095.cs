@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using UnityEngine;
 
 namespace DCGO.CardEffects.BT17
 {
@@ -90,7 +91,7 @@ namespace DCGO.CardEffects.BT17
                         if (fromHand)
                         {
                             int maxCount = card.Owner.HandCards.Count(CanSelectCardCondition);
-                            
+
                             SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
                             selectHandEffect.SetUp(
@@ -189,6 +190,41 @@ namespace DCGO.CardEffects.BT17
                     return false;
                 }
 
+                bool IsOwnerPermanentToBeDeletedCondition(Permanent permanent)
+                {
+                    return IsOwnerPermanentCondition(permanent) && permanent.willBeRemoveField;
+                }
+
+                bool IsLevel6HandCardCondition(CardSource cardSource)
+                {
+                    if (cardSource.IsDigimon)
+                    {
+                        if (cardSource.HasLevel && cardSource.Level == 6)
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                bool IsOmnimonCardCondition(CardSource cardSource)
+                {
+                    if (cardSource.IsDigimon)
+                    {
+                        if (cardSource.EqualsCardName("Omnimon") &&
+                            cardSource.HasLevel &&
+                            cardSource.Level == 7)
+                        {
+                            if (cardSource.jogressCondition != null)
+                                return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
@@ -210,14 +246,218 @@ namespace DCGO.CardEffects.BT17
                     yield return ContinuousController.instance.StartCoroutine(
                         CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
                             targetPermanents: new List<Permanent>() { card.PermanentOfThisCard() },
-                            activateClass: activateClass, successProcess: permanents => SuccessProcess(),
+                            activateClass: activateClass, successProcess: _ => SuccessProcess(),
                             failureProcess: null));
                 }
 
                 IEnumerator SuccessProcess()
                 {
-                    // TODO DNA
-                    yield return null;
+                    if (CardEffectCommons.HasMatchConditionPermanent(IsOwnerPermanentToBeDeletedCondition))
+                    {
+                        CardSource selectedLevel7 = null;
+                        List<Permanent> allowedPermanents = new List<Permanent>();
+                        List<CardSource> allowedCards = new List<CardSource>();
+                        Permanent selectedPermanent = null;
+                        CardSource selectedCardSource = null;
+
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInHand(card, IsOmnimonCardCondition));
+
+                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                        selectHandEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: IsOmnimonCardCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: maxCount,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            selectCardCoroutine: SelectDNACoroutine,
+                            afterSelectCardCoroutine: null,
+                            mode: SelectHandEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        selectHandEffect.SetUpCustomMessage("Select 1 Digimon to DNA digivolve.",
+                            "The opponent is selecting 1 Digimon to DNA digivolve.");
+
+                        yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+
+                        IEnumerator SelectDNACoroutine(CardSource cardSource)
+                        {
+                            selectedLevel7 = cardSource;
+                            yield return null;
+                        }
+
+                        if (selectedLevel7 != null)
+                        {
+                            JogressConditionElement[] elements = (JogressConditionElement[])selectedLevel7.jogressCondition.elements.Clone();
+
+                            for (int i = 0; i < elements.Length; i++)
+                            {
+                                bool added = false;
+
+                                foreach (Permanent permanent in card.Owner.GetBattleAreaPermanents())
+                                {
+                                    if (elements[i].EvoRootCondition(permanent))
+                                    {
+                                        allowedPermanents.Add(permanent);
+                                        added = true;
+                                    }
+                                }
+
+                                if (added)
+                                {
+                                    int inverse = Mathf.Abs(i - 1);
+
+                                    foreach (CardSource source in card.Owner.HandCards.Filter(IsLevel6HandCardCondition))
+                                    {
+                                        Permanent playedPermanent = new Permanent(new List<CardSource>() { source });
+
+                                        card.Owner.FieldPermanents[0] = playedPermanent;
+
+                                        if (elements[inverse].EvoRootCondition(playedPermanent))
+                                            allowedCards.Add(source);
+
+                                        card.Owner.FieldPermanents[0] = null;
+                                    }
+                                }
+                            }
+
+                            #region Selecting Field Permanent for DNA
+
+                            bool PermanentDNASelection(Permanent permanent)
+                            {
+                                if (IsOwnerPermanentToBeDeletedCondition(permanent))
+                                {
+                                    if (allowedPermanents.Contains(permanent))
+                                        return true;
+                                }
+
+                                return false;
+                            }
+
+                            bool CardDNASelection(CardSource source)
+                            {
+                                if (IsLevel6HandCardCondition(source))
+                                {
+                                    if (allowedCards.Contains(source))
+                                        return true;
+                                }
+
+                                return false;
+                            }
+
+                            Debug.Log($"WORKABLE: {allowedPermanents.Count} : {allowedCards.Count}");
+
+                            maxCount = Math.Min(1, allowedPermanents.Count);
+
+                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                            selectPermanentEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: PermanentDNASelection,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: maxCount,
+                                canNoSelect: false,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: SelectPermanentCoroutine,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Custom,
+                                cardEffect: activateClass);
+
+                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to DNA digivolve.",
+                                "The opponent is selecting 1 Digimon to DNA digivolve.");
+
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                            #endregion
+
+                            IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                            {
+                                selectedPermanent = permanent;
+
+                                yield return null;
+                            }
+
+                            if (selectedPermanent != null)
+                            {
+                                maxCount = Math.Min(1, allowedCards.Count);
+
+                                SelectHandEffect selectHandDNAEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                                selectHandDNAEffect.SetUp(
+                                    selectPlayer: card.Owner,
+                                    canTargetCondition: CardDNASelection,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    maxCount: maxCount,
+                                    canNoSelect: false,
+                                    canEndNotMax: false,
+                                    isShowOpponent: true,
+                                    selectCardCoroutine: SelectCardCoroutine,
+                                    afterSelectCardCoroutine: null,
+                                    mode: SelectHandEffect.Mode.Custom,
+                                    cardEffect: activateClass);
+
+                                selectHandDNAEffect.SetUpCustomMessage("Select 1 Digimon to DNA digivolve.",
+                                    "The opponent is selecting 1 Digimon to DNA digivolve.");
+
+                                yield return ContinuousController.instance.StartCoroutine(selectHandDNAEffect.Activate());
+
+                                IEnumerator SelectCardCoroutine(CardSource cardSource)
+                                {
+                                    selectedCardSource = cardSource;
+
+                                    yield return null;
+                                }
+                            }
+                        }
+
+                        if (selectedLevel7 != null && selectedPermanent != null && selectedCardSource != null)
+                        {
+                            int frameID = -1;
+
+                            foreach (FieldCardFrame fieldCardFrame in selectedCardSource.Owner.fieldCardFrames)
+                            {
+                                if (card.CanPlayCardTargetFrame(fieldCardFrame, false, null))
+                                {
+                                    if (fieldCardFrame.IsEmptyFrame())
+                                    {
+                                        frameID = fieldCardFrame.FrameID;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (0 <= frameID && frameID < card.Owner.fieldCardFrames.Count)
+                            {
+                                var playedPermanent = new Permanent(new List<CardSource>() { selectedCardSource }) { IsSuspended = false };
+
+                                yield return ContinuousController.instance.StartCoroutine(
+                                    CardObjectController.CreateNewPermanent(playedPermanent, frameID));
+                            }
+
+                            int[] jogressEvoRootsFrameIDs =
+                            {
+                                selectedPermanent.PermanentFrame.FrameID, selectedCardSource.PermanentOfThisCard().PermanentFrame.FrameID
+                            };
+
+                            PlayCardClass playCard = new PlayCardClass(
+                                cardSources: new List<CardSource>() { selectedLevel7 },
+                                hashtable: CardEffectCommons.CardEffectHashtable(activateClass),
+                                payCost: true,
+                                targetPermanent: null,
+                                isTapped: false,
+                                root: SelectCardEffect.Root.Hand,
+                                activateETB: true);
+
+                            playCard.SetJogress(jogressEvoRootsFrameIDs);
+
+                            yield return ContinuousController.instance.StartCoroutine(playCard.PlayCard());
+                        }
+                    }
                 }
             }
 
