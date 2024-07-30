@@ -17,7 +17,7 @@ namespace DCGO.CardEffects.BT17
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.CardNames.Contains("Morphomon");
+                    return targetPermanent.TopCard.EqualsCardName("Morphomon");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
@@ -52,7 +52,7 @@ namespace DCGO.CardEffects.BT17
                             if (cardSource.IsTamer && cardSource.CardColors.Contains(CardColor.White) && cardSource.GetCostItself <= 4)
                                 return true;
 
-                            if (cardSource.IsDigimon && cardSource.Level <= 5 && cardSource.CardNames.Contains("Eosmon"))
+                            if (cardSource.IsDigimon && cardSource.Level <= 5 && cardSource.EqualsCardName("Eosmon"))
                                 return true;
                         }
 
@@ -116,7 +116,14 @@ namespace DCGO.CardEffects.BT17
                             yield return null;
                         }
 
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedCards, activateClass: activateClass, payCost: true, isTapped: false, root: SelectCardEffect.Root.Hand, activateETB: true, fixedCost: 2));
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
+                            cardSources: selectedCards, 
+                            activateClass: activateClass, 
+                            payCost: true, 
+                            isTapped: false, 
+                            root: SelectCardEffect.Root.Hand, 
+                            activateETB: true, 
+                            fixedCost: 2));
 
                         if (hasSelectedCard && card.Owner.Enemy.HandCards.Count > 0)
                         {
@@ -149,8 +156,12 @@ namespace DCGO.CardEffects.BT17
                             }
                             
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                                cardSources: selectedCardsOpponent, activateClass: activateClass, payCost: false, isTapped: false, 
-                                root: SelectCardEffect.Root.Hand, activateETB: true));
+                                cardSources: selectedCardsOpponent, 
+                                activateClass: activateClass, 
+                                payCost: false, 
+                                isTapped: false, 
+                                root: SelectCardEffect.Root.Hand, 
+                                activateETB: true));
                         }
                     }
                 }
@@ -160,14 +171,14 @@ namespace DCGO.CardEffects.BT17
             
             #region Inherited Effect - Opponent's Turn
 
-            if (timing == EffectTiming.OnUseAttack)
+            if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Select an Eosmon as decoy", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Switch attack target", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true,
                     EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
-                activateClass.SetHashString("Eosmon_Decoy_BT17_074");
+                activateClass.SetHashString("Eosmon_SwitchTarget_BT17_074");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -176,10 +187,15 @@ namespace DCGO.CardEffects.BT17
                         "[Opponent's Turn] [Once Per Turn] When an opponent's Digimon attacks, you may switch the attack target to 1 of your [Eosmon].");
                 }
 
+                bool IsOpponentAttacking(Permanent permanent)
+                {
+                    return CardEffectCommons.IsOpponentPermanent(permanent, card);
+                }
+
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) && !CardEffectCommons.IsOwnerTurn(card))
-                        if (permanent.CardNamesJustAfterPlayed.Contains("Eosmon"))
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                        if (permanent.TopCard.EqualsCardName("Eosmon"))
                             return true;
 
                     return false;
@@ -187,14 +203,13 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnPermanentAttack(hashtable, IsOpponentAttacking);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
-                        if (card.CardNames.Contains("Eosmon"))
-                            return true;
+                        return CardEffectCommons.IsOpponentTurn(card);
 
                     return false;
                 }
