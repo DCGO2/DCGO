@@ -23,7 +23,7 @@ namespace DCGO.CardEffects
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (card.IsDigiEgg)
                     {
                         return true;
                     }
@@ -50,6 +50,33 @@ namespace DCGO.CardEffects
                 }
             }
 
+            if (timing == EffectTiming.OnEndTurn)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Return To Hand", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[End of Your Turn] By returning this Tamer to the bottom of the deck, <Draw 1>. Then, you may play 1 Tamer card with [Tai Kamiya] or [Kari Kamiya] in its name from your hand without paying the cost.";
+                }
+                
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return false;
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return false;
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    yield return null;
+                }
+            }
             return cardEffects;
         }
     }
