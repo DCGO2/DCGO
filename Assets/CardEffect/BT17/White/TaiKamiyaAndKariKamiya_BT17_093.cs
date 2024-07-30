@@ -25,12 +25,7 @@ namespace DCGO.CardEffects
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (card.Owner.CanHatch && !card.IsFlipped)
-                        {
-                            if (card.Owner.HatchObject) //owner does hatch an egg?
-                                if (card.IsFlipped && card.Owner.CanAddMemory(activateClass))
-                                    return true;
-                        }
+                        return true;
                     }
 
                     return false;
@@ -38,7 +33,15 @@ namespace DCGO.CardEffects
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return true;
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (CardEffectCommons.CanActivateSuspendCostEffect(card))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
