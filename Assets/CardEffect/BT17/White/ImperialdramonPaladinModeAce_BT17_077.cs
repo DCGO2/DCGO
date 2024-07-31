@@ -31,7 +31,23 @@ namespace DCGO.CardEffects
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return true;
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (card.PermanentOfThisCard().DigivolutionCards.Count >= 1)
+                        {
+                            if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                            {
+                                return true;
+                            }
+                        }
+
+                        if (card.Owner.Enemy.TrashCards.Count >= 1)
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
