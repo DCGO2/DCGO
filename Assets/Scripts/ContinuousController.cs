@@ -365,6 +365,8 @@ public class ContinuousController : MonoBehaviour
             data.DeckName = newName;
             SaveDeckData(data);
         }
+        else
+            data.DeckName = newName;
     }
 
     public void DeleteDeck(DeckData data)

@@ -61,6 +61,8 @@ namespace DCGO.CardEffects.EX6
                         }
                     }
 
+                    card.Owner.Enemy.HandCards = RandomUtility.ShuffledDeckCards(card.Owner.Enemy.HandCards);
+
                     List<CardSource> selectedCards = new List<CardSource>();
 
                     SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
@@ -138,6 +140,8 @@ namespace DCGO.CardEffects.EX6
                             cardSource.SetReverse();
                         }
                     }
+
+                    card.Owner.Enemy.HandCards = RandomUtility.ShuffledDeckCards(card.Owner.Enemy.HandCards);
 
                     List<CardSource> selectedCards = new List<CardSource>();
 

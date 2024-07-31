@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
+using System;
+
 public class ResultObject : MonoBehaviour
 {
     [SerializeField] Image WinImage;
@@ -15,7 +17,7 @@ public class ResultObject : MonoBehaviour
         this.gameObject.SetActive(false);
     }
 
-    public void ShowResult(Player Winner, bool Surrendered)
+    public void ShowResult(Player Winner, bool Surrendered, string effectName = "")
     {
         this.gameObject.SetActive(true);
 
@@ -30,6 +32,12 @@ public class ResultObject : MonoBehaviour
 
         ResultText.text = "";
 
+        if (String.IsNullOrEmpty(effectName))
+        {
+            log += $"\nEffect:{effectName}";
+            ResultText.text = effectName;
+        }            
+
         if (Winner == GManager.instance.You)
         {
             ContinuousController.instance.PlaySE(GManager.instance.WinSE);
@@ -43,9 +51,7 @@ public class ResultObject : MonoBehaviour
                 ContinuousController.instance.SaveWinCount();
 
                 if (Surrendered)
-                {
                     ResultText.text = "The opponent has surrendered.";
-                }
             }
         }
 
@@ -59,9 +65,7 @@ public class ResultObject : MonoBehaviour
             if (Winner != null)
             {
                 if (Surrendered)
-                {
                     ResultText.text = "You have surrendered.";
-                }
             }
         }
         else

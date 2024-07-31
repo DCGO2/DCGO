@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.BT17
 {
     public class ClockoftheEnd_BT17_100 : CEntity_Effect
     {
@@ -103,7 +103,7 @@ namespace DCGO.CardEffects
 
                 if (CardEffectCommons.MatchConditionOwnersPermanentCount(card, IsClockofTheEnd) >= 4)
                 {
-                    GManager.instance.turnStateMachine.EndGame(card.Owner, false);
+                    GManager.instance.turnStateMachine.EndGame(card.Owner, false, "Clock of the End");
                 }
             }
             #endregion
@@ -224,9 +224,9 @@ namespace DCGO.CardEffects
             if (timing == EffectTiming.OnEndTurn)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Return 1 digivolution card to play a Digimon from digivolution cards", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Place 1 [Clock of the End] from digivolution cards", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
-                activateClass.SetHashString("PlayDigimon_BT10_066");
+                activateClass.SetHashString("PlayCard_BT10_066");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

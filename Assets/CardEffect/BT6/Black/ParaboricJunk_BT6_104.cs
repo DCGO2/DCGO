@@ -26,7 +26,14 @@ public class ParaboricJunk_BT6_104 : CEntity_Effect
 
             bool CanSelectPermanentCondition(Permanent permanent)
             {
-                return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
+                if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
+                {
+                    if(permanent.IsDigimon || permanent.IsToken)
+                    {
+                        return true;
+                    }
+                }
+                return false;
             }
 
             bool CanUseCondition(Hashtable hashtable)
