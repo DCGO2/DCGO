@@ -25,7 +25,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool HasInfermonInHand (CardSource source)
                 {
-                    return card.CardNames.Contains("Infermon");
+                    return source.EqualsCardName("Infermon");
                 }
 
                 bool OpponentPermanentCondition (Permanent permanent)
