@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DCGO.CardEffects.EX7
 {
-    public class Pteromon_EX7_031 : CEntity_Effect
+    public class Shoemon_EX7_024 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
@@ -27,7 +27,7 @@ namespace DCGO.CardEffects.EX7
                 bool CardSourceCondition(CardSource cardSource)
                 {
                     return cardSource.IsDigimon &&
-                           cardSource.HasBirdTraits;
+                           cardSource.ContainsTraits("Puppet");
                 }
 
                 bool RootCondition(SelectCardEffect.Root root)
@@ -48,41 +48,28 @@ namespace DCGO.CardEffects.EX7
 
             #endregion
 
-            #region All Turns - ESS
+            #region Your Turn - ESS
 
-            if (timing == EffectTiming.OnEndBattle)
+            if (timing == EffectTiming.None)
             {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Memory +1", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
-                activateClass.SetIsInheritedEffect(true);
-                activateClass.SetHashString("Memory+1_EX7_031");
-                cardEffects.Add(activateClass);
-
-                string EffectDescription()
+                bool CardCondition(CardSource cardSource)
                 {
-                    return "[All Turns] [Once Per Turn] When this Digimon deletes an opponent's Digimon in battle, gain 1 memory.";
+                    return cardSource.Owner == card.Owner.Enemy;
                 }
 
-                bool WinnerCondition(Permanent permanent) => permanent.cardSources.Contains(card);
-                bool LoserCondition(Permanent permanent) => CardEffectCommons.IsOpponentPermanent(permanent, card);
-
-                bool CanUseCondition(Hashtable hashtable)
+                bool Condition()
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card) &&
-                           CardEffectCommons.CanTriggerWhenDeleteOpponentDigimonByBattle(hashtable: hashtable,
-                               winnerCondition: WinnerCondition, loserCondition: LoserCondition, isOnlyWinnerSurvive: false);
+                           CardEffectCommons.IsOwnerTurn(card);
                 }
 
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleArea(card);
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
-                }
+                cardEffects.Add(CardEffectFactory.ChangeSecurityDigimonCardDPStaticEffect(
+                    cardCondition: CardCondition,
+                    changeValue: -3000,
+                    isInheritedEffect: true,
+                    card: card,
+                    condition: Condition,
+                    effectName: "Opponent's Security Digimon gains DP -3000"));
             }
 
             #endregion
