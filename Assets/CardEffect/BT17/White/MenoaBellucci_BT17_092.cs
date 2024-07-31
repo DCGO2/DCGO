@@ -143,6 +143,7 @@ namespace DCGO.CardEffects.BT17
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Prevent from leaving battle area, by opponents effect", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetHashString("Prevent_BT17_092");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

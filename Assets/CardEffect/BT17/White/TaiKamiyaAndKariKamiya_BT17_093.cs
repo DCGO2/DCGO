@@ -131,7 +131,7 @@ namespace DCGO.CardEffects.BT17
 
                     if(CardEffectCommons.HasMatchConditionOwnersHand(card, HasProperTamer))
                     {
-                        int maxCount = Math.Min(4, card.Owner.HandCards.Count(HasProperTamer));
+                        int maxCount = Math.Min(1, card.Owner.HandCards.Count(HasProperTamer));
 
                         SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
@@ -149,7 +149,7 @@ namespace DCGO.CardEffects.BT17
                             mode: SelectHandEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectHandEffect.SetUpCustomMessage("Select cards to place to the top of the deck.", "The opponent is selecting cards.");
+                        selectHandEffect.SetUpCustomMessage("Select Tamer to play.", "The opponent is selecting a Tamer to play.");
 
                         yield return StartCoroutine(selectHandEffect.Activate());
 
