@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.BT17
 {
     public class ImperialdramonPaladinMode_BT17_077 : CEntity_Effect
     {

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.BT17
 {
     public class Omnimon_BT17_078 : CEntity_Effect
     {
