@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.BT17
 {
     public class Greymon_BT17_102 : CEntity_Effect
     {
