@@ -23,49 +23,8 @@ namespace DCGO.CardEffects.EX7
 
             if (timing == EffectTiming.OnEndTurn)
             {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Vortex", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
-                cardEffects.Add(activateClass);
-
-                string EffectDescription()
-                {
-                    return
-                        "<Vortex> [End of Your Turn] This Digimon may attack an opponent's Digimon. With this effect, it can attack the turn it was played.";
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleArea(card) &&
-                           CardEffectCommons.IsOwnerTurn(card);
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleArea(card) &&
-                           card.PermanentOfThisCard().CanAttack(activateClass, isVortex: true) &&
-                           CardEffectCommons.HasMatchConditionOpponentsPermanent(card, permanent =>
-                               permanent.IsDigimon &&
-                               card.PermanentOfThisCard().CanAttackTargetDigimon(permanent, activateClass, isVortex: true));
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    Permanent selectedPermanent = card.PermanentOfThisCard();
-
-                    if (selectedPermanent.CanAttack(activateClass, isVortex: true))
-                    {
-                        SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
-
-                        selectAttackEffect.SetUp(
-                            attacker: selectedPermanent,
-                            canAttackPlayerCondition: () => false,
-                            defenderCondition: _ => true,
-                            cardEffect: activateClass);
-
-                        yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
-                    }
-                }
+                cardEffects.Add(CardEffectFactory.VortexSelfEffect(isInheritedEffect: false, card: card,
+                    condition: null));
             }
 
             #endregion
@@ -83,7 +42,7 @@ namespace DCGO.CardEffects.EX7
                 return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
                        permanent.IsSuspended;
             }
-            
+
             bool CanActivateSharedCondition(Hashtable hashtable)
             {
                 return CardEffectCommons.IsExistOnBattleArea(card);
