@@ -56,17 +56,9 @@ namespace DCGO.CardEffects.P
             #endregion
 
             #region Piercing - ESS
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnDetermineDoSecurityCheck)
             {
-                bool PiercingCondition()
-                {
-                    return true;
-                }
-
-                cardEffects.Add(CardEffectFactory.PierceSelfEffect(
-                    isInheritedEffect: true,
-                    card: card,
-                    condition: PiercingCondition));
+                cardEffects.Add(CardEffectFactory.PierceSelfEffect(isInheritedEffect: true, card: card, condition: null));
             }
             #endregion
 

@@ -114,7 +114,7 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.CardTraits.Contains("Insectiod") || cardSource.CardTraits.Contains("Free"))
+                    if (cardSource.CardTraits.Contains("Insectoid") || cardSource.CardTraits.Contains("Free"))
                     {
                         if (cardSource.HasLevel && cardSource.Level == 4)
                         {
