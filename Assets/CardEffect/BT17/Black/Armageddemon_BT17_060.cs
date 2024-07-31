@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using static UnityEditor.PlayerSettings;
 using System.Linq;
 
 namespace DCGO.CardEffects.BT17

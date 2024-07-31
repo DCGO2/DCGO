@@ -1,12 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.Tracing;
 using System.Linq;
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.BT17
 {
     public class Argomon_BT17_051 : CEntity_Effect
     {
