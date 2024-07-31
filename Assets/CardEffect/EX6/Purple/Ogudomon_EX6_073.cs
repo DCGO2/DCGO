@@ -363,7 +363,7 @@ namespace DCGO.CardEffects.EX6
 
                     selectCardEffect.SetUp(
                                 canTargetCondition: HasSevenGreatDemonLordsTrait,
-                                canTargetCondition_ByPreSelecetedList: null,
+                                canTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
                                 canEndSelectCondition: null,
                                 canNoSelect: () => true,
                                 selectCardCoroutine: SelectCardCoroutine,
