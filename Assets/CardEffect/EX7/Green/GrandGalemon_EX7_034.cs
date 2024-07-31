@@ -30,28 +30,20 @@ namespace DCGO.CardEffects.EX7
                            CardEffectCommons.IsOwnerTurn(card);
                 }
 
-                bool CanSelectPermanentCondition(Permanent permanent)
-                {
-                    return permanent.IsDigimon &&
-                           card.PermanentOfThisCard().CanAttackTargetDigimon(permanent, activateClass);
-                }
-
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card);
+                    return CardEffectCommons.IsExistOnBattleArea(card) &&
+                           card.PermanentOfThisCard().CanAttack(activateClass, isVortex: true) &&
+                           CardEffectCommons.HasMatchConditionOpponentsPermanent(card, permanent =>
+                               permanent.IsDigimon &&
+                               card.PermanentOfThisCard().CanAttackTargetDigimon(permanent, activateClass, isVortex: true));
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     Permanent selectedPermanent = card.PermanentOfThisCard();
 
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainRush(
-                        targetPermanent: selectedPermanent,
-                        effectDuration: EffectDuration.UntilEachTurnEnd,
-                        activateClass: activateClass));
-
-                    if (selectedPermanent.CanAttack(activateClass) &&
-                        CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermanentCondition))
+                    if (selectedPermanent.CanAttack(activateClass, isVortex: true))
                     {
                         SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
 
