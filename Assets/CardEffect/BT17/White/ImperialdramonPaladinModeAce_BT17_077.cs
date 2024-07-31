@@ -55,6 +55,52 @@ namespace DCGO.CardEffects
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: selectedPermanent, trashCount: 2, isFromTop: true, activateClass: activateClass));
                         }
                     }
+                     if (card.Owner.Enemy.TrashCards.Count >= 1)
+                    {
+                        if (card.Owner.Enemy.TrashCards.Count == 1)
+                        {
+                            List<CardSource> libraryCards = card.Owner.Enemy.TrashCards.Clone();
+
+                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(libraryCards));
+
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(libraryCards, "Deck Bottom Cards", true, true));
+                        }
+
+                        else
+                        {
+                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                            selectCardEffect.SetUp(
+                            canTargetCondition: (cardSource) => true,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            canNoSelect: () => false,
+                            selectCardCoroutine: null,
+                            afterSelectCardCoroutine: AfterSelectCardCoroutine1,
+                            message: "Select cards to place at the bottom of the deck\n(cards will be placed back to the bottom of the deck so that cards with lower numbers are on top).",
+                            maxCount: -1,
+                            canEndNotMax: false,
+                            isShowOpponent: false,
+                            mode: SelectCardEffect.Mode.Custom,
+                            root: SelectCardEffect.Root.Custom,
+                            customRootCardList: card.Owner.Enemy.TrashCards,
+                            canLookReverseCard: true,
+                            selectPlayer: card.Owner,
+                            cardEffect: activateClass);
+
+                            selectCardEffect.SetNotShowCard();
+                            selectCardEffect.SetNotAddLog();
+
+                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+
+                            IEnumerator AfterSelectCardCoroutine1(List<CardSource> cardSources)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources));
+
+                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(cardSources, "Deck Bottom Cards", true, true));
+                            }
+                        }
+                    }
                     yield return null;
                 }
             }
