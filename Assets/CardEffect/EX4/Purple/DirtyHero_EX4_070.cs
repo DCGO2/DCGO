@@ -49,7 +49,7 @@ public class DirtyHero_EX4_070 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Main] 1 of your Digimon gains <Security Attack +1> for the turn. (This Digimon checks 1 additional security card.) Then, place this card in your battle area.";
+                return "[Main] Delete one of your opponent's level 3 Digimon. Then place this card in your battle area.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)

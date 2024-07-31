@@ -87,7 +87,7 @@ namespace DCGO.CardEffects.EX6
 
                     IEnumerator RevealedCardsCoroutine(List<CardSource> revealedCards)
                     {
-                        added = revealedCards.Count(CanSelectCardCondition) >= 1;
+                        added = revealedCards.Count(CanSelectCardCondition) >= 1 || revealedCards.Count(CanSelectCardCondition1) >= 1;
 
                         yield return null;
                     }
