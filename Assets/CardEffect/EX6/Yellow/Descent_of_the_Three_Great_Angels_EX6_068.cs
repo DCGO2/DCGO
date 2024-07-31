@@ -168,7 +168,7 @@ namespace DCGO.CardEffects.EX6
                 
                 IEnumerator SuccessProcess()
                 {
-                    if (card.Owner.SecurityCards.Count(IsThreeGreatAngelsDigimonCard) >= 1)
+                    if (card.Owner.SecurityCards.Count() >= 1)
                     {
                         int maxCount = Math.Min(1, card.Owner.SecurityCards.Count(IsThreeGreatAngelsDigimonCard));
                         

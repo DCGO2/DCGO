@@ -62,7 +62,7 @@ namespace DCGO.CardEffects.EX6
                     {
                         if (cardSource.Level <= 5)
                         {
-                            if (cardSource.ContainsTraits("Angel") || cardSource.ContainsTraits("Archangel"))
+                            if (cardSource.CardTraits.Contains("Angel") || cardSource.CardTraits.Contains("Archangel"))
                             {
                                 if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false,
                                         cardEffect: activateClass))
