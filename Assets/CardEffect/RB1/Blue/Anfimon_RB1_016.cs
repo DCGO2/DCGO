@@ -200,7 +200,15 @@ public class Anfimon_RB1_016 : CEntity_Effect
 
             bool CanSelectPermanentCondition1(Permanent permanent)
             {
-                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                {
+                    if (permanent.HasNoDigivolutionCards)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
             }
 
             bool CanUseCondition(Hashtable hashtable)

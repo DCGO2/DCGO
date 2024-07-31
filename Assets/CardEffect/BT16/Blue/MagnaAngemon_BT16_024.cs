@@ -69,11 +69,14 @@ namespace DCGO.CardEffects.BT16
                 
                 bool CanSelectCardRecoverCondition(CardSource cardSource)
                 {
-                    if (cardSource.HasAngelTraitRestrictive)
+                    if (cardSource.IsDigimon)
                     {
-                        return true;
+                        if (cardSource.HasAngelTraitRestrictive)
+                        {
+                            return true;
+                        }
                     }
-                    
+
                     return false;
                 }
                 
@@ -262,17 +265,20 @@ namespace DCGO.CardEffects.BT16
                     
                     return false;
                 }
-                
+
                 bool CanSelectCardRecoverCondition(CardSource cardSource)
                 {
-                    if (cardSource.HasAngelTraitRestrictive)
+                    if (cardSource.IsDigimon)
                     {
-                        return true;
+                        if (cardSource.HasAngelTraitRestrictive)
+                        {
+                            return true;
+                        }
                     }
-                    
+
                     return false;
                 }
-                
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsOwnerTurn(card) && CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);

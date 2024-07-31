@@ -3205,7 +3205,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         //EndGame(gameContext.NonTurnPlayer, true);
     }
 
-    public void EndGame(Player Winner, bool Surrendered)
+    public void EndGame(Player Winner, bool Surrendered, string effectName = "")
     {
         foreach (GameObject gb in GManager.instance.CloseWhenEndingGameObjects)
         {
@@ -3248,7 +3248,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
         GManager.instance.LoadingObject.gameObject.SetActive(false);
 
-        GManager.instance.resultObject.ShowResult(Winner, Surrendered);
+        GManager.instance.resultObject.ShowResult(Winner, Surrendered, effectName);
 
         EventSystem.current.SetSelectedGameObject(GManager.instance.resultObject.transform.GetChild(3).gameObject);
 

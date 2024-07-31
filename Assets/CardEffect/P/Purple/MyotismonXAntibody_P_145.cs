@@ -195,8 +195,7 @@ namespace DCGO.CardEffects.P
                 {
                     if(CardEffectCommons.CanTriggerOnDeletion(hashtable, card))
                     {
-                        if(card.PermanentOfThisCard().DigivolutionCards.Count(source => 
-                            source.CardNames.Contains("Myotismon") || source.CardNames.Contains("X Antibody") || source.CardNames.Contains("XAntibody")) >= 0)
+                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardNames.Contains("Myotismon") || cardSource.EqualsCardName("X Antibody")) >= 1)
                         {
                             return true;
                         }
