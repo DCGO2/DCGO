@@ -488,6 +488,11 @@ public class DataBase : MonoBehaviour
     {
         return "<Raid> (When this Digimon attacks, you may switch the target of attack to 1 of your opponent's unsuspended Digimon with the highest DP.)";
     }
+    
+    public static string VortexEffectDiscription()
+    {
+        return "<Vortex> (At the end of your turn, this Digimon may attack an opponent's Digimon. With this effect, it can attack the turn it was played.)";
+    }
 
     public static string BarrierEffectDiscription()
     {
