@@ -21,6 +21,7 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
 
         _canSelectNotAttack = true;
         _withoutTap = false;
+        _isVortex = false;
         _customMessage = null;
         _customMessage_Enemy = null;
         _beforeOnAttackCoroutine = null;
