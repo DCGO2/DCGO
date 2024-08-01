@@ -14,6 +14,8 @@ namespace DCGO.CardEffects.EX7
 
             if (timing == EffectTiming.OnEndTurn)
             {
+                cardEffects.Add(CardEffectFactory.OverclockSelfEffect(trait: "Puppet", isInheritedEffect: false, card: card,
+                    condition: null));
             }
 
             #endregion
