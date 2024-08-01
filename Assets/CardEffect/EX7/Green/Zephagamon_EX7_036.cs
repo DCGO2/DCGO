@@ -45,7 +45,8 @@ namespace DCGO.CardEffects.EX7
 
             bool CanActivateSharedCondition(Hashtable hashtable)
             {
-                return CardEffectCommons.IsExistOnBattleArea(card);
+                return CardEffectCommons.IsExistOnBattleArea(card) &&
+                       CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentSharedCondition);
             }
 
             #endregion
