@@ -461,7 +461,7 @@ public class DataBase : MonoBehaviour
 
     public static string RetaliationEffectDiscription()
     {
-        return "<Retaliation> (When this Digimon is deleted after losing a battle, delete the Digimon it was battling)";
+        return "<Retaliation> (When this Digimon is deleted after losing a battle, delete the Digimon it was battling.)";
     }
 
     public static string BilitzEffectDiscription()
@@ -488,11 +488,6 @@ public class DataBase : MonoBehaviour
     {
         return "<Raid> (When this Digimon attacks, you may switch the target of attack to 1 of your opponent's unsuspended Digimon with the highest DP.)";
     }
-    
-    public static string VortexEffectDiscription()
-    {
-        return "<Vortex> (At the end of your turn, this Digimon may attack an opponent's Digimon. With this effect, it can attack the turn it was played.)";
-    }
 
     public static string BarrierEffectDiscription()
     {
@@ -501,7 +496,7 @@ public class DataBase : MonoBehaviour
 
     public static string BlastDigivolveEffectDiscription()
     {
-        return "[Hand] [Counter] <Blast Digivolve> (Your Digimon may digivolve into this card without paying the cost).";
+        return "[Hand] [Counter] <Blast Digivolve> (Your Digimon may digivolve into this card without paying the cost.)";
     }
 
     public static string BlastDNADigivolveEffectDiscription()
@@ -511,7 +506,7 @@ public class DataBase : MonoBehaviour
 
     public static string FortitudeEffectDiscription()
     {
-        return "<Fortitude> (When this Digimon with digivolution cards is deleted, play this card without paying the cost).";
+        return "<Fortitude> (When this Digimon with digivolution cards is deleted, play this card without paying the cost.)";
     }
 
     public static string AllianceEffectDiscription()
@@ -521,12 +516,22 @@ public class DataBase : MonoBehaviour
 
     public static string PartitionEffectDiscription()
     {
-        return "<Partition> (When this Digimon with 1 of each specified card in its digivolution cards would leave the battle area other than by one of your effects or in battle, you may play 1 of each card without paying their costs)";
+        return "<Partition> (When this Digimon with 1 of each specified card in its digivolution cards would leave the battle area other than by one of your effects or in battle, you may play 1 of each card without paying their costs.)";
     }
 
     public static string CollisionEffectDiscription()
     {
-        return "<Collision> (During this Digimon's attack, all of your opponent's Digimon gain <Blocker>, and your opponent blocks if possible)";
+        return "<Collision> (During this Digimon's attack, all of your opponent's Digimon gain <Blocker>, and your opponent blocks if possible.)";
+    }
+    
+    public static string VortexEffectDiscription()
+    {
+        return "<Vortex> (At the end of your turn, this Digimon may attack an opponent's Digimon. With this effect, it can attack the turn it was played.)";
+    }
+    
+    public static string OverclockEffectDiscription(string trait)
+    {
+        return $"<Overclock [{trait}]> (At the end of your turn, by deleting 1 of your Tokens or other [{trait}] trait Digimon, this Digimon attacks a player without suspending.)";
     }
 
     public static string ReplaceToASCII(string text)
