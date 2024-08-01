@@ -30,7 +30,8 @@ public partial class CardEffectCommons
                 canAttackPlayerCondition: () => false,
                 defenderCondition: _ => true,
                 cardEffect: activateClass);
-
+            
+            selectAttackEffect.SetIsVortex();
             yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
         }
     }
