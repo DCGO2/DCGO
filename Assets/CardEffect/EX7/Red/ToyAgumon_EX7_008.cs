@@ -3,30 +3,45 @@ using System.Collections.Generic;
 
 namespace DCGO.CardEffects.EX7
 {
-    public class Vorvomon_EX7_007 : CEntity_Effect
+    public class ToyAgumon_EX7_008 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region Digivolution Condition
+            if (timing == EffectTiming.None)
+            {
+                bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.HasText("Three Musketeers") && targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 2 || targetPermanent.TopCard.HasText("ThreeMusketeers") && targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 2;
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 0, ignoreDigivolutionRequirement: false, card: card, condition: null));
+            }
+            #endregion
+
             #region On Play
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Reveal the top 3 cards of the deck", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Reveal the top 3 cards of deck", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "Reveal the top 3 cards of your deck. Add 1 card with the [Rock Dragon]/[Earth Dragon]/[Machine Dragon]/[Sky Dragon] trait and 1 [Hina Kurihara] among them to the hand. Return the rest to the bottom of the deck.";
+                    return "[On Play] Reveal the top 3 cards of your deck. Add 1 card with [Three Musketeers] in its text and 1 Option card with a cost of 6 among them to the hand. Return the rest to the bottom of the deck.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.CardTraits.Contains("Rock Dragon") || cardSource.CardTraits.Contains("Earth Dragon") || cardSource.CardTraits.Contains("Machine Dragon") || cardSource.CardTraits.Contains("Sky Dragon"))
+                    if (cardSource.IsDigimon)
                     {
-                        return true;
+                        if (cardSource.CardTraits.Contains("Three Musketeers") || cardSource.CardTraits.Contains("ThreeMusketeers"))
+                        {
+                            return true;
+                        }
                     }
 
                     return false;
@@ -34,9 +49,12 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanSelectCardCondition1(CardSource cardSource)
                 {
-                    if (cardSource.CardNames.Contains("Hina Kurihara") || cardSource.CardNames.Contains("HinaKurihara"))
+                    if (cardSource.IsOption)
                     {
-                        return true;
+                        if (cardSource.GetCostItself == 6)
+                        {
+                            return true;
+                        }
                     }
 
                     return false;
@@ -63,19 +81,19 @@ namespace DCGO.CardEffects.EX7
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SimplifiedRevealDeckTopCardsAndSelect(
-                        revealCount: 3,
+                        revealCount: 4,
                         simplifiedSelectCardConditions:
                         new SimplifiedSelectCardConditionClass[]
                         {
                         new SimplifiedSelectCardConditionClass(
                             canTargetCondition:CanSelectCardCondition,
-                            message: "Select 1 card with the [Rock Dragon]/[Earth Dragon]/[Machine Dragon]/[Sky Dragon] trait.",
+                            message: "Select 1 Digimon card with [Three Musketeers] in its traits.",
                             mode: SelectCardEffect.Mode.AddHand,
                             maxCount: 1,
                             selectCardCoroutine: null),
                         new SimplifiedSelectCardConditionClass(
                             canTargetCondition:CanSelectCardCondition1,
-                            message: "Select 1 [Hina Kurihara].",
+                            message: "Select 1 Option card with a memory cost of 6.",
                             mode: SelectCardEffect.Mode.AddHand,
                             maxCount: 1,
                             selectCardCoroutine: null),
