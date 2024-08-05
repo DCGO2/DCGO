@@ -41,10 +41,13 @@ namespace DCGO.CardEffects
                 {
                     if(!cardSource.CanNotTrashFromDigivolutionCards(activateClass))
                     {
-                       if(cardSource.IsOption)
-                       {
-                           return true;
-                       }                        
+                        foreach (CardSource card in cardSource.PermanentOfThisCard().DigivolutionCards)
+                        {
+                            if (card.IsOption)
+                            {
+                                return true;
+                            }
+                        }                                            
                     }
 
                     return false;
@@ -156,9 +159,12 @@ namespace DCGO.CardEffects
                 {
                     if (!cardSource.CanNotTrashFromDigivolutionCards(activateClass))
                     {
-                        if (cardSource.IsOption)
+                        foreach (CardSource card in cardSource.PermanentOfThisCard().DigivolutionCards)
                         {
-                            return true;
+                            if (card.IsOption)
+                            {
+                                return true;
+                            }
                         }
                     }
 
