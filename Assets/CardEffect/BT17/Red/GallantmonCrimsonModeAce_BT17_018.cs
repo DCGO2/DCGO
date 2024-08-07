@@ -297,6 +297,7 @@ namespace DCGO.CardEffects.BT17
                 activateClass.SetUpICardEffect($"Trash {Count()} cards from the top of your opponent's security stack", CanUseCondition,
                     card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetHashString("WhenAttack_BT17_018");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()

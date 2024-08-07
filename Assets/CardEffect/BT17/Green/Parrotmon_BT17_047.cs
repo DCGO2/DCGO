@@ -13,7 +13,7 @@ namespace DCGO.CardEffects.BT17
             #region On Play/When Digivolving Shared
             bool IsOpponentsDigimon(Permanent permanent)
             {
-                return permanent.IsDigimon;
+                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
             }
             #endregion
 
@@ -175,7 +175,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)

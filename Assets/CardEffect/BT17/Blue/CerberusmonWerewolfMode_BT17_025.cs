@@ -311,7 +311,7 @@ namespace DCGO.CardEffects.BT17
                 string EffectDescription()
                 {
                     return
-                        "[All Turns] When an effect plays or digivolves an opponent's Digimon, if you have a Tamer, this Digimon may digivolve into [Imperialdramon: Fighter Mode] in your hand without paying the cost.";
+                        "[All Turns] [Once Per Turn] When an effect plays one of your Digimon, return 1 of your opponent's level 3 Digimon to the hand.";
                 }
 
                 bool IsOwnDigimon(Permanent permanent)

@@ -15,7 +15,7 @@ namespace DCGO.CardEffects.BT17
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Digivolve into SoC trash card", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false,
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true,
                     EffectDescription());
                 activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("DigivolveTrash_BT17_006");
@@ -35,7 +35,8 @@ namespace DCGO.CardEffects.BT17
                                hashtable: hashtable,
                                permanentCondition: permanent => permanent == card.PermanentOfThisCard(),
                                cardEffectCondition: cardEffect => cardEffect.EffectSourceCard != null,
-                               cardCondition: cardSource => cardSource.IsTamer);
+                               cardCondition: cardSource => cardSource.IsTamer) &&
+                           CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectSoCCardCondition);
                 }
 
                 bool CanSelectSoCCardCondition(CardSource cardSource)
