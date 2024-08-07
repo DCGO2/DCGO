@@ -31,7 +31,7 @@ namespace DCGO.CardEffects.BT17
                 {
                     if(CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card))
                     {
-                        return card.ContainsTraits("Unidentified");
+                        return card.PermanentOfThisCard().TopCard.ContainsTraits("Unidentified");
                     }
 
                     return false;

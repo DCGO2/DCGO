@@ -22,8 +22,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.EqualsCardName("Koji  Minamoto") ||
-                           targetPermanent.TopCard.EqualsCardName("KojiMinamoto");
+                    return targetPermanent.TopCard.EqualsCardName("Koji Minamoto");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
@@ -199,7 +198,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (card.Owner.HandCards.Count <= 7)
                         {

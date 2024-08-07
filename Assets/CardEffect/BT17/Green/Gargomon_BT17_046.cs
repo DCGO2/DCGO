@@ -26,7 +26,7 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (source.EqualsCardName("Terriermon"))
                     {
-                        if (source.CanPlayCardTargetFrame(card.PermanentOfThisCard().PermanentFrame, false, activateClass, SelectCardEffect.Root.Trash))
+                        if (CardEffectCommons.CanPlayAsNewPermanent(source, false, activateClass, SelectCardEffect.Root.Trash))
                         {
                             return true;
                         }
@@ -36,12 +36,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanTriggerOnDeletion(hashtable, card))
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

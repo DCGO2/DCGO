@@ -14,31 +14,19 @@ namespace DCGO.CardEffects.BT17
             {
                 bool CanUseCondition()
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (CardEffectCommons.IsOpponentTurn(card))
                         {
-                            return true;
+                            if (card.PermanentOfThisCard().TopCard.CardNames.Contains("Argomon"))
+                                return true;
                         }
                     }
 
                     return false;
                 }
 
-                bool PermanentCondition(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
-                    {
-                        if (permanent.TopCard.CardNames.Contains("Argomon"))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
-                cardEffects.Add(CardEffectFactory.BlockerStaticEffect(permanentCondition: PermanentCondition, isInheritedEffect: true, card: card, condition: CanUseCondition));
+                cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(isInheritedEffect: true, card: card, condition: CanUseCondition));
             }
             #endregion
 

@@ -126,31 +126,23 @@ namespace DCGO.CardEffects.BT17
             }
             #endregion
 
-            #region End of Attack
-            if (timing == EffectTiming.OnEndAttack)
+            #region End of Your Turn
+            if (timing == EffectTiming.OnEndTurn)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Give -7000 DP and/or delete 1 of your opponent's unsuspended Digimon.", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Give -6000 DP and/or Recovery +1. Then 1 of your Digimon may attack", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetHashString("EndofTurn_BT17_040");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[End of Attack] [Once per turn] If you have 3 or more security cards, 1 of your opponent's Digimon gets -6000 DP for the turn. If you have 3 or fewer security cards, Recovery +1. Then, 1 of your Digimon may attack an opponent's Digimon.";
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerOnEndAttack(hashtable, card);
+                    return "[End of Your Turn] [Once Per Turn] If you have 3 or more security cards, 1 of your opponent's Digimon gets -6000 DP for the turn. If you have 3 or fewer security cards, <Recovery +1 (Deck)>. Then, 1 of your Digimon may attack an opponent's Digimon.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                    {
-                        return true;
-                    }
-                    return false;
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
                 }
 
                 bool CanSelectPermanentCondition1(Permanent permanent)
@@ -169,28 +161,14 @@ namespace DCGO.CardEffects.BT17
                     return false;
                 }
 
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                }
+
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (card.Owner.SecurityCards.Count <= 3)
-                        {
-                            if (card.Owner.CanAddSecurity(activateClass))
-                            {
-                                return true;
-                            }
-                        }
-
-                        if (card.Owner.SecurityCards.Count >= 3)
-                        {
-                            if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
