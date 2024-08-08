@@ -67,9 +67,17 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                     {
-                        return cardSource.IsTamer ||
-                               cardSource.IsDigimon && (cardSource.ContainsTraits("Ten Warriors") ||
-                                                        cardSource.ContainsTraits("TenWarriors"));
+                        if (cardSource.IsDigimon)
+                        {
+                            if(cardSource.ContainsTraits("Ten Warriors"))
+                                return true;
+                        }
+
+                        if (cardSource.IsTamer)
+                        {
+                            if (cardSource.HasInheritedEffect)
+                                return true;
+                        }
                     }
 
                     return false;
@@ -221,7 +229,7 @@ namespace DCGO.CardEffects.BT17
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect($"Play 1 Tamer card with an inherited effect from hand or trash and add this card to hand",
                     CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, EffectDescription());
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsSecurityEffect(true);
                 cardEffects.Add(activateClass);
 

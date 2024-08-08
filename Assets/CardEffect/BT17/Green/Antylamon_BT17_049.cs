@@ -117,7 +117,7 @@ namespace DCGO.CardEffects.BT17
             }
             #endregion
 
-            #region End of Attack
+            #region End of Attack - ESS
             if (timing == EffectTiming.OnEndAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -153,11 +153,11 @@ namespace DCGO.CardEffects.BT17
 
                 bool IsDeletableDigimon(Permanent permanent)
                 {
-                    if(CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                    if(CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
                         if(permanent != card.PermanentOfThisCard())
                         {
-                            return true;
+                            return permanent.IsSuspended;
                         }
                     }
 
@@ -166,7 +166,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return true;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

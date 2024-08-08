@@ -14,14 +14,17 @@ namespace DCGO.CardEffects.BT17
             #region Start Of main Phase/ On Play
             bool CanSelectYourGreenDigimon(Permanent permanent)
             {
-                if (permanent.IsDigimon)
+                if(permanent.TopCard.Owner == card.Owner)
                 {
-                    if (permanent.TopCard.CardColors.Contains(CardColor.Green))
+                    if (permanent.IsDigimon)
                     {
-                        return true;
+                        if (permanent.TopCard.CardColors.Contains(CardColor.Green))
+                        {
+                            return true;
+                        }
                     }
                 }
-
+                
                 return false;
             }
             #endregion
@@ -92,7 +95,7 @@ namespace DCGO.CardEffects.BT17
             #endregion
 
             #region On Play
-            if (timing == EffectTiming.OnStartMainPhase)
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("+2000 DP", CanUseCondition, card);
@@ -174,26 +177,34 @@ namespace DCGO.CardEffects.BT17
 
                 bool PlayedPermanentCondition(Permanent permanent)
                 {
-                    if (permanent.IsDigimon)
+                    if(permanent.TopCard.Owner == card.Owner)
                     {
-                        if(permanent.TopCard.ContainsCardName("Terriermon") || permanent.TopCard.ContainsCardName("Lopmon"))
+                        if (permanent.IsDigimon)
                         {
-                            return true;
+                            if (permanent.TopCard.ContainsCardName("Terriermon") || permanent.TopCard.ContainsCardName("Lopmon"))
+                            {
+                                return true;
+                            }
                         }
                     }
+                    
 
                     return false;
                 }
 
                 bool DigivolvePermanentCondition(CardSource source)
                 {
-                    if (source.IsDigimon)
+                    if (source.Owner == card.Owner)
                     {
-                        if (source.CanPlayCardTargetFrame(selectedPermanent.PermanentFrame, true, activateClass))
+                        if (source.IsDigimon)
                         {
-                            return true;
+                            if (source.CanPlayCardTargetFrame(selectedPermanent.PermanentFrame, true, activateClass))
+                            {
+                                return true;
+                            }
                         }
                     }
+                        
 
                     return false;
                 }

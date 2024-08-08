@@ -82,7 +82,7 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (source.IsTamer)
                     {
-                        if(source.EqualsCardName("Tai Kamiya") || source.EqualsCardName("Kari Kamiya"))
+                        if(source.ContainsCardName("Tai Kamiya") || source.ContainsCardName("Kari Kamiya"))
                         {
                             return CardEffectCommons.CanPlayAsNewPermanent(source, false, activateClass);
                         }

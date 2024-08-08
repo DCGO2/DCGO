@@ -239,7 +239,7 @@ namespace DCGO.CardEffects.BT17
                     IEnumerator SelectPermanentCoroutine(List<Permanent> permanents)
                     {
                         if (permanents != null)
-                            yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(permanents, activateClass).Unsuspend());
+                            yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent> { card.PermanentOfThisCard() }, activateClass).Unsuspend());
                     }
                 }
             }

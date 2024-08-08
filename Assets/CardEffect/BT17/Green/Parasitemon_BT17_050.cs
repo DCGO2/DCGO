@@ -22,7 +22,7 @@ namespace DCGO.CardEffects.BT17
             if (timing == EffectTiming.OnDeclaration)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("One of your opponents Digimon must attack", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Suspend one of your opponents Digimon, Then attack an opponents suspended Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -131,7 +131,7 @@ namespace DCGO.CardEffects.BT17
                                 maxCount: enemyCount,
                                 canNoSelect: false,
                                 canEndNotMax: false,
-                                selectPermanentCoroutine: SelectPermanentCoroutine,
+                                selectPermanentCoroutine: null,
                                 afterSelectPermanentCoroutine: null,
                                 mode: SelectPermanentEffect.Mode.Tap,
                                 cardEffect: activateClass);
@@ -140,20 +140,17 @@ namespace DCGO.CardEffects.BT17
 
                             yield return ContinuousController.instance.StartCoroutine(selectEnemyEffect.Activate());
 
-                            IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                            if (selectedPermanent.CanAttack(activateClass))
                             {
-                                if (selectedPermanent.CanAttack(activateClass))
-                                {
-                                    SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
+                                SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
 
-                                    selectAttackEffect.SetUp(
-                                        attacker: selectedPermanent,
-                                        canAttackPlayerCondition: () => false,
-                                        defenderCondition: (permanent) => true,
-                                        cardEffect: activateClass);
+                                selectAttackEffect.SetUp(
+                                    attacker: selectedPermanent,
+                                    canAttackPlayerCondition: () => false,
+                                    defenderCondition: (permanent) => true,
+                                    cardEffect: activateClass);
 
-                                    yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
-                                }
+                                yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
                             }
                         }
                     }
