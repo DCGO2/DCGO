@@ -199,34 +199,37 @@ namespace DCGO.CardEffects.BT17
                         yield return StartCoroutine(selectHandEffect.Activate());
                     }
 
-                    if (card.Owner.LibraryCards.Count >= 1)
+                    if (card.PermanentOfThisCard().DigivolutionCards.Some(IsDoruCardCondition) || CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card, TrashRootCondition))
                     {
-                        yield return ContinuousController.instance.StartCoroutine(
-                            new DrawClass(card.Owner, 1, activateClass).Draw());
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentPermanentCondition))
+                        {
+                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectOpponentPermanentCondition));
+
+                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                            selectPermanentEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: CanSelectOpponentPermanentCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: maxCount,
+                                canNoSelect: false,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: null,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Destroy,
+                                cardEffect: activateClass);
+
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                        }
                     }
-
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentPermanentCondition) &&
-                        (card.PermanentOfThisCard().DigivolutionCards.Some(IsDoruCardCondition) ||
-                         CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card, TrashRootCondition)))
+                    else
                     {
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectOpponentPermanentCondition));
-
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectOpponentPermanentCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: false,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: null,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Destroy,
-                            cardEffect: activateClass);
-
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                        if (card.Owner.LibraryCards.Count >= 1)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(
+                                new DrawClass(card.Owner, 1, activateClass).Draw());
+                        }
                     }
                 }
             }

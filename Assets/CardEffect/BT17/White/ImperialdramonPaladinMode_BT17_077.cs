@@ -147,7 +147,7 @@ namespace DCGO.CardEffects.BT17
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash digivolution sources, Return all cards in trash, Memory +3", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -191,7 +191,7 @@ namespace DCGO.CardEffects.BT17
 
                     bool willReturnYourTrash = GManager.instance.userSelectionManager.SelectedBoolValue;
 
-                    List<CardSource> returnedSources = willReturnYourTrash ? card.Owner.TrashCards : card.Owner.Enemy.TrashCards;
+                    List<CardSource> returnedSources = willReturnYourTrash ? card.Owner.TrashCards.Clone() : card.Owner.Enemy.TrashCards.Clone();
 
                     yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(returnedSources));
 
@@ -208,7 +208,7 @@ namespace DCGO.CardEffects.BT17
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash digivolution sources, Return all cards in trash, Memory +3", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

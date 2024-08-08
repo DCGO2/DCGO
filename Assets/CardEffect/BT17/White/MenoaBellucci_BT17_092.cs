@@ -153,20 +153,26 @@ namespace DCGO.CardEffects.BT17
 
                 bool isEosmon(Permanent permanent)
                 {
-                    return permanent.TopCard.EqualsCardName("Eosmon");
+                    if (CardEffectCommons.IsOwnerPermanent(permanent, card))
+                        return permanent.TopCard.EqualsCardName("Eosmon");
+
+                    return false;
                 }
 
                 bool HasOtherEosmon(Permanent permanent)
                 {
-                    if (permanent.IsDigimon)
+                    if(CardEffectCommons.IsOwnerPermanent(permanent, card))
                     {
-                        foreach(Permanent removed in removedPermanents)
+                        if (permanent.IsDigimon)
                         {
-                            if (removed != permanent)
-                                return permanent.TopCard.EqualsCardName("Eosmon");
+                            foreach (Permanent removed in removedPermanents)
+                            {
+                                if (removed != permanent)
+                                    return permanent.TopCard.EqualsCardName("Eosmon");
+                            }
                         }
                     }
-
+                    
                     return false;
                 }
 

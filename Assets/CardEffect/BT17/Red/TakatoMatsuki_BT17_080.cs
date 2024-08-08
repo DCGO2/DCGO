@@ -86,7 +86,7 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent.TopCard.ContainsCardName("Guilmon"))
+                        if (permanent.TopCard.EqualsCardName("Guilmon"))
                         {
                             if (!permanent.IsToken)
                             {
@@ -100,17 +100,17 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanSelectGrowlmonCardCondition(CardSource cardSource)
                 {
-                    return cardSource.ContainsCardName("Growlmon");
+                    return cardSource.EqualsCardName("Growlmon");
                 }
 
                 bool CanSelectWarGrowlmonCardCondition(CardSource cardSource)
                 {
-                    return cardSource.ContainsCardName("WarGrowlmon");
+                    return cardSource.EqualsCardName("WarGrowlmon");
                 }
 
                 bool CanSelectGallantmonCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.ContainsCardName("Gallantmon"))
+                    if (cardSource.EqualsCardName("Gallantmon"))
                     {
                         if (cardSource.Level == 6)
                         {
@@ -148,7 +148,8 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        return true;
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                            return true;
                     }
 
                     return false;

@@ -51,13 +51,14 @@ namespace DCGO.CardEffects.BT17
 
                 bool IsOpponentsDigimonSelectable(Permanent permanent)
                 {
-                    if (permanent.IsDigimon)
+                    if(CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                     {
-                        if(permanent.DP <= card.PermanentOfThisCard().DP)
+                        if (permanent.DP <= card.PermanentOfThisCard().DP)
                         {
                             return true;
                         }
                     }
+
                     return false;
                 }
 
@@ -118,7 +119,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return true;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 List<string> changeCardNames(CardSource cardSource, List<string> CardNames)

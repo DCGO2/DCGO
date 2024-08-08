@@ -179,7 +179,7 @@ namespace DCGO.CardEffects.BT17
             #endregion
 
             #region All Turns - Delay
-            if (timing == EffectTiming.OnDestroyedAnyone)
+            if (timing == EffectTiming.OnDestroyedAnyone || timing == EffectTiming.WhenReturntoHandAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Digivolve for free", CanUseCondition, card);
@@ -211,6 +211,11 @@ namespace DCGO.CardEffects.BT17
                         {
                             return true;
                         }
+
+                        if (CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, PermanentCondition))
+                        {
+                            return true;
+                        }
                     }
 
                     return false;
@@ -237,21 +242,19 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.CardNames.Contains("ShineGreymon");
+                    return cardSource.ContainsCardName("ShineGreymon");
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (card.Owner.HandCards.Count >= 1)
-                        {
-                            return true;
-                        }
-
                         if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermanentCondition))
                         {
-                            return true;
+                            if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
+                            {
+                                return true;
+                            }
                         }
                     }
 
@@ -259,7 +262,17 @@ namespace DCGO.CardEffects.BT17
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
-                {         
+                {
+                    yield return ContinuousController.instance.StartCoroutine(
+                        CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
+                            targetPermanents: new List<Permanent>() { card.PermanentOfThisCard() },
+                            activateClass: activateClass, successProcess: permanents => SuccessProcess(),
+                            failureProcess: null));
+                }                
+
+                IEnumerator SuccessProcess()
+                {
+     
                     Permanent selectedPermanent = null;
 
                     int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
@@ -303,7 +316,7 @@ namespace DCGO.CardEffects.BT17
                             activateClass: activateClass,
                             successProcess: null));
                     }
-                }                
+                }
             }
             #endregion
 

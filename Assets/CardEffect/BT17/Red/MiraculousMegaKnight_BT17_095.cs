@@ -19,7 +19,7 @@ namespace DCGO.CardEffects.BT17
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect($"Play 1 [Agumon] or [Gabumon] from your hand or trash",
                     CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, EffectDescription());
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -90,8 +90,6 @@ namespace DCGO.CardEffects.BT17
 
                         if (fromHand)
                         {
-                            int maxCount = card.Owner.HandCards.Count(CanSelectCardCondition);
-
                             SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
                             selectHandEffect.SetUp(
@@ -99,7 +97,7 @@ namespace DCGO.CardEffects.BT17
                                 canTargetCondition: CanSelectCardCondition,
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
-                                maxCount: maxCount,
+                                maxCount: 1,
                                 canNoSelect: true,
                                 canEndNotMax: false,
                                 isShowOpponent: true,
@@ -470,7 +468,7 @@ namespace DCGO.CardEffects.BT17
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect($"Play 1 [Tai Kamiya] or [Matt Ishida] from hand or trash and add this card to hand",
                     CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, EffectDescription());
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsSecurityEffect(true);
                 cardEffects.Add(activateClass);
 
@@ -492,9 +490,7 @@ namespace DCGO.CardEffects.BT17
                         if (cardSource.IsTamer)
                         {
                             return cardSource.ContainsCardName("Tai Kamiya") ||
-                                   cardSource.ContainsCardName("TaiKamiya") ||
-                                   cardSource.ContainsCardName("Matt Ishida") ||
-                                   cardSource.ContainsCardName("MattIshida");
+                                   cardSource.ContainsCardName("Matt Ishida");
                         }
                     }
 

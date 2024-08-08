@@ -70,17 +70,14 @@ namespace DCGO.CardEffects.BT17
             {
                 bool condition()
                 {
-                    if (!CardEffectCommons.IsOwnerTurn(card))
-                        return false;
+                    if (card.PermanentOfThisCard().TopCard != card)
+                        return card.PermanentOfThisCard().TopCard.ContainsTraits("Machine");
 
-                    if (card.PermanentOfThisCard().TopCard.ContainsTraits("Machine"))
-                        return false;
-
-                    return true;
+                    return false;
                 }
 
                 cardEffects.Add(CardEffectFactory.CollisionSelfStaticEffect(
-                    isInheritedEffect: true,
+                    isInheritedEffect: false,
                     card: card,
                     condition: condition));
             }
