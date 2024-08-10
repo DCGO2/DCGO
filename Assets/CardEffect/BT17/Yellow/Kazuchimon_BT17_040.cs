@@ -163,7 +163,10 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    if(CardEffectCommons.IsOwnerTurn(card))
+                        return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+
+                    return false;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

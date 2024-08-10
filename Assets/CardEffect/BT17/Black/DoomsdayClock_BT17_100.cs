@@ -244,10 +244,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
-                        return cardSource.EqualsCardName("Doomsday Clock");
-
-                    return false;
+                    return cardSource.EqualsCardName("Doomsday Clock");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

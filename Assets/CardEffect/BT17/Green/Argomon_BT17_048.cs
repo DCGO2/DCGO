@@ -181,17 +181,20 @@ namespace DCGO.CardEffects.BT17
 
                 bool HasUnsuspendedRhythm(Permanent permanent)
                 {
-                    if (permanent.IsTamer)
+                    if(CardEffectCommons.IsOwnerPermanent(permanent, card))
                     {
-                        if (permanent.TopCard.EqualsCardName("Rhythm"))
+                        if (permanent.IsTamer)
                         {
-                            if (!permanent.IsSuspended)
+                            if (permanent.TopCard.EqualsCardName("Rhythm"))
                             {
-                                return true;
+                                if (!permanent.IsSuspended)
+                                {
+                                    return true;
+                                }
                             }
                         }
                     }
-
+                   
                     return false;
                 }
 
