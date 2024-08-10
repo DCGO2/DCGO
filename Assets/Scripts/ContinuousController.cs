@@ -478,7 +478,7 @@ public class ContinuousController : MonoBehaviour
 
         set
         {
-            _playerName = value;
+            _playerName = DeckData.ValidateDeckName(value);
         }
     }
 

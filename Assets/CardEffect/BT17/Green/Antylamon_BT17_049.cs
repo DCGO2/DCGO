@@ -65,7 +65,7 @@ namespace DCGO.CardEffects.BT17
                 {
                     if(CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card))
                     {
-                        if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanPlayCondition))
+                        if (CardEffectCommons.HasMatchConditionOpponentsCardInTrash(card, CanPlayCondition))
                         {
                             return true;
                         }
@@ -81,26 +81,30 @@ namespace DCGO.CardEffects.BT17
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
-                    selectHandEffect.SetUp(
-                        selectPlayer: card.Owner,
+                    selectCardEffect.SetUp(
                         canTargetCondition: CanPlayCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
-                        maxCount: 1,
-                        canNoSelect: true,
-                        canEndNotMax: false,
-                        isShowOpponent: true,
+                        canNoSelect: () => true,
                         selectCardCoroutine: null,
                         afterSelectCardCoroutine: SelectCardCoroutine,
-                        mode: SelectHandEffect.Mode.Custom,
+                        message: "Select 1 card to play.",
+                        maxCount: 1,
+                        canEndNotMax: false,
+                        isShowOpponent: true,
+                        mode: SelectCardEffect.Mode.Custom,
+                        root: SelectCardEffect.Root.Trash,
+                        customRootCardList: null,
+                        canLookReverseCard: true,
+                        selectPlayer: card.Owner,
                         cardEffect: activateClass);
 
-                    selectHandEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
-                    selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
+                    selectCardEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
+                    selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
 
-                    yield return StartCoroutine(selectHandEffect.Activate());
+                    yield return StartCoroutine(selectCardEffect.Activate());
 
                     IEnumerator SelectCardCoroutine(List<CardSource> cardSources)
                     {
@@ -110,7 +114,7 @@ namespace DCGO.CardEffects.BT17
                                 activateClass: activateClass, 
                                 payCost: false, 
                                 isTapped: false, 
-                                root: SelectCardEffect.Root.Hand, 
+                                root: SelectCardEffect.Root.Trash, 
                                 activateETB: true));
                     }
                 }
@@ -208,26 +212,30 @@ namespace DCGO.CardEffects.BT17
 
                     IEnumerator SuccessProcess()
                     {
-                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
-                        selectHandEffect.SetUp(
-                            selectPlayer: card.Owner,
+                        selectCardEffect.SetUp(
                             canTargetCondition: CanPlayCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: 1,
-                            canNoSelect: true,
-                            canEndNotMax: false,
-                            isShowOpponent: true,
+                            canNoSelect: () => true,
                             selectCardCoroutine: null,
                             afterSelectCardCoroutine: SelectCardCoroutine,
-                            mode: SelectHandEffect.Mode.Custom,
+                            message: "Select 1 card to play.",
+                            maxCount: 1,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            mode: SelectCardEffect.Mode.Custom,
+                            root: SelectCardEffect.Root.Trash,
+                            customRootCardList: null,
+                            canLookReverseCard: true,
+                            selectPlayer: card.Owner,
                             cardEffect: activateClass);
 
-                        selectHandEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
-                        selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
+                        selectCardEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
+                        selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
 
-                        yield return StartCoroutine(selectHandEffect.Activate());
+                        yield return StartCoroutine(selectCardEffect.Activate());
                     }
 
                     IEnumerator SelectCardCoroutine(List<CardSource> cardSources)
@@ -238,7 +246,7 @@ namespace DCGO.CardEffects.BT17
                                 activateClass: activateClass,
                                 payCost: false,
                                 isTapped: false,
-                                root: SelectCardEffect.Root.Hand,
+                                root: SelectCardEffect.Root.Trash,
                                 activateETB: true));
                     }
                 }
