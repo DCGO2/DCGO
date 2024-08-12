@@ -37,7 +37,7 @@ namespace DCGO.CardEffects.BT17
                             {
                                 if (CardEffectCommons.IsByEffect(hashtable, null))
                                 {
-                                    return card.PermanentOfThisCard().CanSuspend;
+                                    return !card.PermanentOfThisCard().IsSuspended;
                                 }
                             }
                         }
