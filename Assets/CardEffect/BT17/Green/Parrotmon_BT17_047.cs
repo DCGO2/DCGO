@@ -144,12 +144,13 @@ namespace DCGO.CardEffects.BT17
             #endregion
 
             #region All Turns - ESS
-            if (timing == EffectTiming.OnEndBattle)
+            if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Unsuspend this Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("Unsuspend_BT17_047");
+                activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -157,19 +158,30 @@ namespace DCGO.CardEffects.BT17
                     return "[All Turns] [Once Per Turn] When this Digimon deletes an opponent's Digimon in battle, you may unsuspend this Digimon.";
                 }
 
+                bool PermanentCondition(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        bool WinnerCondition(Permanent permanent) => permanent.cardSources.Contains(card);
-                        bool LoserCondition(Permanent permanent) => CardEffectCommons.IsOpponentPermanent(permanent, card);
-
-                        if (CardEffectCommons.CanTriggerWhenDeleteOpponentDigimonByBattle(hashtable: hashtable, winnerCondition: WinnerCondition, loserCondition: LoserCondition, isOnlyWinnerSurvive: false))
+                        if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition))
                         {
-                            return true;
+                            bool WinnerCondition(Permanent permanent) => permanent.cardSources.Contains(card);
+                            bool WinnerRealCondition(Permanent permanent)
+                            {
+                                return true;
+                            }
+                            bool LoserCondition(Permanent permanent) => CardEffectCommons.IsOpponentPermanent(permanent, card);
+
+                            if (CardEffectCommons.CanTriggerWhenDeleteOpponentDigimonByBattle(hashtable: hashtable, winnerCondition: WinnerCondition, winnerRealCondition: WinnerRealCondition, loserCondition: LoserCondition, isOnlyWinnerSurvive: false))
+                            {
+                                return true;
+                            }
                         }
                     }
-
                     return false;
                 }
 
