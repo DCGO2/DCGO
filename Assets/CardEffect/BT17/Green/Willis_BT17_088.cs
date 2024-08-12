@@ -14,16 +14,8 @@ namespace DCGO.CardEffects.BT17
             #region Start Of main Phase/ On Play
             bool CanSelectYourGreenDigimon(Permanent permanent)
             {
-                if(permanent.TopCard.Owner == card.Owner)
-                {
-                    if (permanent.IsDigimon)
-                    {
-                        if (permanent.TopCard.CardColors.Contains(CardColor.Green))
-                        {
-                            return true;
-                        }
-                    }
-                }
+                if(CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                    return permanent.TopCard.CardColors.Contains(CardColor.Green);
                 
                 return false;
             }
@@ -177,17 +169,14 @@ namespace DCGO.CardEffects.BT17
 
                 bool PlayedPermanentCondition(Permanent permanent)
                 {
-                    if(permanent.TopCard.Owner == card.Owner)
+
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent.IsDigimon)
+                        if (permanent.TopCard.ContainsCardName("Terriermon") || permanent.TopCard.ContainsCardName("Lopmon"))
                         {
-                            if (permanent.TopCard.ContainsCardName("Terriermon") || permanent.TopCard.ContainsCardName("Lopmon"))
-                            {
                                 return true;
-                            }
                         }
                     }
-                    
 
                     return false;
                 }

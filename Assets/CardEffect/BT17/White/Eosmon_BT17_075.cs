@@ -129,6 +129,8 @@ namespace DCGO.CardEffects.BT17
                             "The opponent is selecting 1 Tamer to play.");
                         selectHandEffectOpponent.SetUpCustomMessage_ShowCard("Played Card");
 
+                        yield return ContinuousController.instance.StartCoroutine(selectHandEffectOpponent.Activate());
+
                         IEnumerator SelectCardCoroutineOpponent(CardSource cardSource)
                         {
                             if(cardSource != null)
@@ -181,6 +183,8 @@ namespace DCGO.CardEffects.BT17
                             selectHandEffect.SetUpCustomMessage("Select 1 card to play.",
                                 "The opponent is selecting 1 card to play.");
                             selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
+
+                            yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
 
                             IEnumerator SelectCardCoroutine(CardSource cardSource)
                             {
@@ -345,6 +349,8 @@ namespace DCGO.CardEffects.BT17
                             "The opponent is selecting 1 Tamer to play.");
                         selectHandEffectOpponent.SetUpCustomMessage_ShowCard("Played Card");
 
+                        yield return ContinuousController.instance.StartCoroutine(selectHandEffectOpponent.Activate());
+
                         IEnumerator SelectCardCoroutineOpponent(CardSource cardSource)
                         {
                             if (cardSource != null)
@@ -396,6 +402,8 @@ namespace DCGO.CardEffects.BT17
                                 selectHandEffect.SetUpCustomMessage("Select 1 card to play.",
                                     "The opponent is selecting 1 card to play.");
                                 selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
+
+                                yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
 
                                 IEnumerator SelectCardCoroutine(CardSource cardSource)
                                 {

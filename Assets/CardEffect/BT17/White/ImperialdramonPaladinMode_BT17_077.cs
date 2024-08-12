@@ -62,7 +62,7 @@ namespace DCGO.CardEffects.BT17
             #endregion
 
             #region When Attacking
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Return 1 to bottom of deck, unsusped this digimon", CanUseCondition, card);

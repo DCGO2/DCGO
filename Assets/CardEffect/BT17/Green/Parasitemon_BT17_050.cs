@@ -186,23 +186,20 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (CardEffectCommons.CanTriggerOnEndAttack(hashtable, card))
-                        {
-                            if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectMyOtherDigimon))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return true;
+                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    {
+                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectMyOtherDigimon))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

@@ -114,9 +114,9 @@ namespace DCGO.CardEffects.BT17
 
                 bool IsMyDigimonEffect(ICardEffect effect)
                 {
-                    if(effect.EffectSourceCard != null)
+                    if (effect.EffectSourceCard != null)
                     {
-                        if(effect.EffectSourceCard.Owner == card.Owner)
+                        if (effect.EffectSourceCard.Owner == card.Owner)
                         {
                             return effect.IsDigimonEffect;
                         }
@@ -129,12 +129,16 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (CardEffectCommons.CanTriggerOnAddDigivolutionCard(hashtable, IsThisDigimon, IsMyDigimonEffect, null))
+                        if (CardEffectCommons.CanTriggerOnAddDigivolutionCard(
+                            hashtable: hashtable,
+                            permanentCondition: IsThisDigimon,
+                            cardEffectCondition: IsMyDigimonEffect,
+                            cardCondition: null))
                         {
                             return CardEffectCommons.HasMatchConditionOwnersHand(card, IsGroundLocomon);
                         }
                     }
-                    return true;
+                    return false;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -159,7 +163,7 @@ namespace DCGO.CardEffects.BT17
             #endregion
 
             #region All Turns - ESS
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnCounterTiming)
             {
                 bool condition()
                 {
@@ -170,7 +174,7 @@ namespace DCGO.CardEffects.BT17
                 }
 
                 cardEffects.Add(CardEffectFactory.CollisionSelfStaticEffect(
-                    isInheritedEffect: false,
+                    isInheritedEffect: true,
                     card: card,
                     condition: condition));
             }
