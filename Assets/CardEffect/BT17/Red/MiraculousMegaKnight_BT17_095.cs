@@ -227,7 +227,7 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, IsOwnerPermanentCondition))
+                        if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, IsOwnerPermanentCondition) || CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, IsOwnerPermanentCondition))
                         {
                             if (!CardEffectCommons.IsByBattle(hashtable))
                             {

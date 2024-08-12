@@ -139,7 +139,7 @@ namespace DCGO.CardEffects.BT17
             #endregion
 
             #region On Deletion
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 Tamer, or Hatch", CanUseCondition, card);
@@ -250,7 +250,7 @@ namespace DCGO.CardEffects.BT17
             #endregion
 
             #region On Deletion - ESS
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 Tamer, or Hatch", CanUseCondition, card);
