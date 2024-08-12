@@ -153,7 +153,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool isEosmon(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsOwnerPermanent(permanent, card))
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                         return permanent.TopCard.EqualsCardName("Eosmon");
 
                     return false;
@@ -161,15 +161,12 @@ namespace DCGO.CardEffects.BT17
 
                 bool HasOtherEosmon(Permanent permanent)
                 {
-                    if(CardEffectCommons.IsOwnerPermanent(permanent, card))
+                    if(CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent.IsDigimon)
+                        foreach (Permanent removed in removedPermanents)
                         {
-                            foreach (Permanent removed in removedPermanents)
-                            {
-                                if (removed != permanent)
-                                    return permanent.TopCard.EqualsCardName("Eosmon");
-                            }
+                            if (removed != permanent)
+                                return permanent.TopCard.EqualsCardName("Eosmon");
                         }
                     }
                     
@@ -178,17 +175,20 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsOpponentTurn(card))
                     {
-                        if (CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, isEosmon))
+                        if (CardEffectCommons.IsExistOnBattleArea(card))
                         {
-                            if (CardEffectCommons.IsByEffect(hashtable, cardEffect => CardEffectCommons.IsOpponentEffect(cardEffect, card)))
+                            if (CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, isEosmon))
                             {
-                                return true;
+                                if (CardEffectCommons.IsByEffect(hashtable, cardEffect => CardEffectCommons.IsOpponentEffect(cardEffect, card)))
+                                {
+                                    return true;
+                                }
                             }
                         }
                     }
-
+                    
                     return false;
                 }
 
