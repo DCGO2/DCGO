@@ -110,7 +110,7 @@ namespace DCGO.CardEffects.EX6
                 string EffectDescription()
                 {
                     return
-                        "[All Turns] When one of your Digimon with the [Angel]/[Archangel]/[Three Great Angels] trait is deleted, [Delay] • Search your security stack. You may play 1 Digimon card with the [Three Great Angels] trait among it without paying the cost. Shuffle your security stack.";
+                        "[All Turns] When one of your Digimon with the [Angel] or [Archangel] trait is deleted, <Delay>.\r\n• Search your security stack. You may play 1 Digimon card with the [Three Great Angels] trait among it without paying the cost. Shuffle your security stack.";
                 }
                 
                 bool DeletedPermanentCondition(Permanent permanent)
@@ -118,9 +118,7 @@ namespace DCGO.CardEffects.EX6
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
                         if (permanent.TopCard.CardTraits.Contains("Angel") ||
-                            permanent.TopCard.CardTraits.Contains("Archangel") ||
-                            permanent.TopCard.CardTraits.Contains("Three Great Angels") ||
-                            permanent.TopCard.CardTraits.Contains("ThreeGreatAngels"))
+                            permanent.TopCard.CardTraits.Contains("Archangel")
                         {
                             return true;
                         }
