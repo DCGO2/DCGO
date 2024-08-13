@@ -118,7 +118,7 @@ namespace DCGO.CardEffects.EX6
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
                         if (permanent.TopCard.CardTraits.Contains("Angel") ||
-                            permanent.TopCard.CardTraits.Contains("Archangel")
+                            permanent.TopCard.CardTraits.Contains("Archangel"))
                         {
                             return true;
                         }
