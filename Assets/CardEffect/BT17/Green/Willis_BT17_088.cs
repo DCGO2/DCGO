@@ -261,7 +261,18 @@ namespace DCGO.CardEffects.BT17
                     {
                         if (CardEffectCommons.HasMatchConditionOwnersHand(card, DigivolvePermanentCondition))
                         {
-                            int maxCount = Math.Min(1, card.Owner.HandCards.Count(DigivolvePermanentCondition));
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                                        targetPermanent: selectedPermanent,
+                                        cardCondition: DigivolvePermanentCondition,
+                                        payCost: true,
+                                        reduceCostTuple: (reduceCost: 2, reduceCostCardCondition: null),
+                                        fixedCostTuple: null,
+                                        ignoreDigivolutionRequirementFixedCost: -1,
+                                        isHand: true,
+                                        activateClass: activateClass,
+                                        successProcess: null));
+
+                            /*int maxCount = Math.Min(1, card.Owner.HandCards.Count(DigivolvePermanentCondition));
 
                             SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
@@ -279,26 +290,17 @@ namespace DCGO.CardEffects.BT17
                                 mode: SelectHandEffect.Mode.Custom,
                                 cardEffect: activateClass);
 
-                            selectHandEffect.SetUpCustomMessage("Select 1 card to place at the bottom of digivolution cards.", "The opponent is selecting 1 card to place at the bottom of digivolution cards.");
+                            selectHandEffect.SetUpCustomMessage("Select 1 card to digivolve into.", "The opponent is selecting 1 card to digivolve into.");
 
-                            yield return StartCoroutine(selectHandEffect.Activate());
+                            yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
 
                             IEnumerator SelectCardCoroutine(CardSource cardSource)
                             {
                                 if(cardSource != null)
                                 {
-                                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                                        targetPermanent: card.PermanentOfThisCard(),
-                                        cardCondition: DigivolvePermanentCondition,
-                                        payCost: true,
-                                        reduceCostTuple: (reduceCost: 2, reduceCostCardCondition: null),
-                                        fixedCostTuple: null,
-                                        ignoreDigivolutionRequirementFixedCost: -1,
-                                        isHand: true,
-                                        activateClass: activateClass,
-                                        successProcess: null));
+                                    
                                 }
-                            }
+                            }*/
                         }
                     }
                 }
