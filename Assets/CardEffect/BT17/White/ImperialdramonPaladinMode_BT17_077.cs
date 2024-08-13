@@ -76,7 +76,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool IsOpponentsDigimon(Permanent permanent)
                 {
-                    if(CardEffectCommons.IsOpponentPermanent(permanent, card))
+                    if(CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                         return permanent.DigivolutionCards.Count == 0;
 
                     return false;
@@ -87,7 +87,7 @@ namespace DCGO.CardEffects.BT17
                     if (CardEffectCommons.CanTriggerOnAttack(hashtable, card))
                         return CardEffectCommons.HasMatchConditionPermanent(IsOpponentsDigimon);
 
-                    return true;
+                    return false;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -120,11 +120,11 @@ namespace DCGO.CardEffects.BT17
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                        IEnumerator SelectedBottomDeck(List<Permanent> untappedPermanents)
+                        IEnumerator SelectedBottomDeck(List<Permanent> bottomDeckedPermanents)
                         {
-                            if(untappedPermanents.Count > 0)
+                            if(bottomDeckedPermanents.Count > 0)
                                 yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(
-                                    untappedPermanents,
+                                    new List<Permanent> { card.PermanentOfThisCard() },
                                     activateClass).Unsuspend());
                         }
                     }

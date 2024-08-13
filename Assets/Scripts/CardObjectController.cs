@@ -878,7 +878,7 @@ public class CardObjectController : MonoBehaviour
             }
         }
 
-        foreach (CardSource cardSource in cardSources)
+        foreach (CardSource cardSource in cardSources.Clone())
         {
             bool isFromHand = CardEffectCommons.IsExistOnHand(cardSource);
 
