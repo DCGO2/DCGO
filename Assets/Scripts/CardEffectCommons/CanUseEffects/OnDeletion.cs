@@ -114,7 +114,7 @@ public partial class CardEffectCommons
 
                 if (TopCard != null)
                 {
-                    if (IsExistOnTrash(TopCard))
+                    if (IsExistOnTrash(TopCard) || TopCard.IsToken)
                     {
                         return true;
                     }

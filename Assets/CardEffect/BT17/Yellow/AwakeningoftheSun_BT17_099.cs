@@ -178,7 +178,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool PermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
+                    if (CardEffectCommons.IsOwnerPermanent(permanent, card))
                     {
                         if (permanent.IsTamer)
                         {
