@@ -272,35 +272,6 @@ namespace DCGO.CardEffects.BT17
                                         activateClass: activateClass,
                                         successProcess: null));
 
-                            /*int maxCount = Math.Min(1, card.Owner.HandCards.Count(DigivolvePermanentCondition));
-
-                            SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                            selectHandEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: DigivolvePermanentCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: maxCount,
-                                canNoSelect: true,
-                                canEndNotMax: false,
-                                isShowOpponent: true,
-                                selectCardCoroutine: SelectCardCoroutine,
-                                afterSelectCardCoroutine: null,
-                                mode: SelectHandEffect.Mode.Custom,
-                                cardEffect: activateClass);
-
-                            selectHandEffect.SetUpCustomMessage("Select 1 card to digivolve into.", "The opponent is selecting 1 card to digivolve into.");
-
-                            yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
-
-                            IEnumerator SelectCardCoroutine(CardSource cardSource)
-                            {
-                                if(cardSource != null)
-                                {
-                                    
-                                }
-                            }*/
                         }
                     }
                 }

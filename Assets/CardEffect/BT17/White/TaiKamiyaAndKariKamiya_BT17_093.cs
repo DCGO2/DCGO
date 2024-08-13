@@ -124,46 +124,46 @@ namespace DCGO.CardEffects.BT17
 
                     if (willReturn)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(new List<CardSource> { card }));
+                        yield return ContinuousController.instance.StartCoroutine(new DeckBottomBounceClass(new List<Permanent> { card.PermanentOfThisCard() }, hashtable).DeckBounce());
 
                         yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
-                    }
 
-                    if(CardEffectCommons.HasMatchConditionOwnersHand(card, HasProperTamer))
-                    {
-                        int maxCount = Math.Min(1, card.Owner.HandCards.Count(HasProperTamer));
-
-                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                        selectHandEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: HasProperTamer,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: true,
-                            canEndNotMax: false,
-                            isShowOpponent: false,
-                            selectCardCoroutine: null,
-                            afterSelectCardCoroutine: SelectCardCoroutine,
-                            mode: SelectHandEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-                        selectHandEffect.SetUpCustomMessage("Select Tamer to play.", "The opponent is selecting a Tamer to play.");
-
-                        yield return StartCoroutine(selectHandEffect.Activate());
-
-                        IEnumerator SelectCardCoroutine(List<CardSource> selectedCards)
+                        if (CardEffectCommons.HasMatchConditionOwnersHand(card, HasProperTamer))
                         {
-                            if(selectedCards.Count > 0)
+                            int maxCount = Math.Min(1, card.Owner.HandCards.Count(HasProperTamer));
+
+                            SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                            selectHandEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: HasProperTamer,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: maxCount,
+                                canNoSelect: true,
+                                canEndNotMax: false,
+                                isShowOpponent: false,
+                                selectCardCoroutine: null,
+                                afterSelectCardCoroutine: SelectCardCoroutine,
+                                mode: SelectHandEffect.Mode.Custom,
+                                cardEffect: activateClass);
+
+                            selectHandEffect.SetUpCustomMessage("Select Tamer to play.", "The opponent is selecting a Tamer to play.");
+
+                            yield return StartCoroutine(selectHandEffect.Activate());
+
+                            IEnumerator SelectCardCoroutine(List<CardSource> selectedCards)
                             {
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                                    cardSources: selectedCards, 
-                                    activateClass: activateClass, 
-                                    payCost: false, 
-                                    isTapped: false, 
-                                    root: SelectCardEffect.Root.Hand, 
-                                    activateETB: true));
+                                if (selectedCards.Count > 0)
+                                {
+                                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
+                                        cardSources: selectedCards,
+                                        activateClass: activateClass,
+                                        payCost: false,
+                                        isTapped: false,
+                                        root: SelectCardEffect.Root.Hand,
+                                        activateETB: true));
+                                }
                             }
                         }
                     }
