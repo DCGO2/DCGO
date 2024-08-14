@@ -65,7 +65,7 @@ namespace DCGO.CardEffects.BT17
                 {
                     if(CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card))
                     {
-                        if (CardEffectCommons.HasMatchConditionOpponentsCardInTrash(card, CanPlayCondition))
+                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanPlayCondition))
                         {
                             return true;
                         }

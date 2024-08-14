@@ -81,7 +81,7 @@ namespace DCGO.CardEffects.P
 
                 string EffectDiscription()
                 {
-                    return "[Your Turn][Once Per Turn] When an opponent's Digimon becomes suspended, you may unsuspended this Digimon.";
+                    return "[All Turns] [Once Per Turn] When an opponent's Digimon becomes suspended, you may unsuspend this Digimon.";
                 }
 
                 bool PermanentCondition(Permanent permanent)
@@ -101,12 +101,9 @@ namespace DCGO.CardEffects.P
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (CardEffectCommons.IsOwnerTurn(card))
+                        if (CardEffectCommons.CanTriggerWhenPermanentSuspends(hashtable, PermanentCondition))
                         {
-                            if (CardEffectCommons.CanTriggerWhenPermanentSuspends(hashtable, PermanentCondition))
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
 
@@ -147,7 +144,7 @@ namespace DCGO.CardEffects.P
 
                 string EffectDiscription()
                 {
-                    return "[Your Turn][Once Per Turn] When an opponent's Digimon becomes suspended, you may unsuspended this Digimon.";
+                    return "[All Turns] [Once Per Turn] When an opponent's Digimon becomes suspended, you may unsuspend this Digimon.";
                 }
 
                 bool PermanentCondition(Permanent permanent)
@@ -167,12 +164,9 @@ namespace DCGO.CardEffects.P
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (CardEffectCommons.IsOwnerTurn(card))
+                        if (CardEffectCommons.CanTriggerWhenPermanentSuspends(hashtable, PermanentCondition))
                         {
-                            if (CardEffectCommons.CanTriggerWhenPermanentSuspends(hashtable, PermanentCondition))
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
 

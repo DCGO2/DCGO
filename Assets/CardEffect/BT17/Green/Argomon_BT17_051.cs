@@ -94,8 +94,6 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, IsLevel5orLowerArgomon))
                     {
-                        int maxCount = Math.Min(4, CardEffectCommons.MatchConditionOpponentsCardCountInTrash(card,IsLevel5orLowerArgomon));
-
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                         selectCardEffect.SetUp(
@@ -106,7 +104,7 @@ namespace DCGO.CardEffects.BT17
                         selectCardCoroutine: null,
                         afterSelectCardCoroutine: AfterSelectCardCoroutine,
                         message: "Select cards to place as the bottom digivolution sources",
-                        maxCount: maxCount,
+                        maxCount: 4,
                         canEndNotMax: true,
                         isShowOpponent: false,
                         mode: SelectCardEffect.Mode.Custom,
@@ -222,8 +220,6 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, IsLevel5orLowerArgomon))
                     {
-                        int maxCount = Math.Min(4, CardEffectCommons.MatchConditionOpponentsCardCountInTrash(card, IsLevel5orLowerArgomon));
-
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                         selectCardEffect.SetUp(
@@ -234,7 +230,7 @@ namespace DCGO.CardEffects.BT17
                         selectCardCoroutine: null,
                         afterSelectCardCoroutine: AfterSelectCardCoroutine,
                         message: "Select cards to place as the bottom digivolution sources",
-                        maxCount: maxCount,
+                        maxCount: 4,
                         canEndNotMax: true,
                         isShowOpponent: false,
                         mode: SelectCardEffect.Mode.Custom,

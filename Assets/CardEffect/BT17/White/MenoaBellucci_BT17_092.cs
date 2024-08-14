@@ -196,7 +196,7 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        removedPermanents = CardEffectCommons.GetPermanentsFromHashtable(hashtable);
+                        removedPermanents = CardEffectCommons.GetPermanentsFromHashtable(hashtable).Filter(isEosmon);
 
                         return CardEffectCommons.HasMatchConditionOwnersPermanent(card, HasOtherEosmon);
                     }

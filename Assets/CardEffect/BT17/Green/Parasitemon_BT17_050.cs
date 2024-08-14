@@ -24,6 +24,7 @@ namespace DCGO.CardEffects.BT17
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Suspend one of your opponents Digimon, Then attack an opponents suspended Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetIsDigimonEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

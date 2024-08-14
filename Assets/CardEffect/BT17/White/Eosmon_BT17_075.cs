@@ -272,7 +272,7 @@ namespace DCGO.CardEffects.BT17
                     if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false,
                             cardEffect: activateClass,
                             root: SelectCardEffect.Root.Hand, isBreedingArea: false, isPlayOption: false))
-                        if (card.IsTamer)
+                        if (cardSource.IsTamer)
                             return true;
 
                     return false;
@@ -284,8 +284,8 @@ namespace DCGO.CardEffects.BT17
                             cardEffect: activateClass,
                             root: SelectCardEffect.Root.Hand, isBreedingArea: false, isPlayOption: false))
                     {
-                        if (card.IsTamer)
-                            if (card.CardColors.Contains(CardColor.White) && card.GetCostItself <= 4)
+                        if (cardSource.IsTamer)
+                            if (cardSource.CardColors.Contains(CardColor.White) && cardSource.GetCostItself <= 4)
                                 return true;
                     }
 
@@ -322,7 +322,9 @@ namespace DCGO.CardEffects.BT17
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (card.Owner.Enemy.HandCards.Count > 0)
+                    #region Opponent has tamer to play
+                    UnityEngine.Debug.Log($"RELAVENT CARDS IN OPP HAND: {card.Owner.Enemy.HandCards.Count(CanSelectTamerOpponentCondition)}");
+                    if (card.Owner.Enemy.HandCards.Count(CanSelectTamerOpponentCondition) > 0)
                     {
                         List<CardSource> selectedCardsOpponent = new List<CardSource>();
 
@@ -337,7 +339,7 @@ namespace DCGO.CardEffects.BT17
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,
-                            canNoSelect: true,
+                            canNoSelect: false,
                             canEndNotMax: false,
                             isShowOpponent: true,
                             selectCardCoroutine: SelectCardCoroutineOpponent,
@@ -426,46 +428,49 @@ namespace DCGO.CardEffects.BT17
                                 }
 
                             }
-
-                            //then De-Digivolve statement
-                            if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentDigimonCondition))
-                            {
-                                int totalTamers = CardEffectCommons.MatchConditionPermanentCount(CheckForTamersOnFieldCondition);
-                                int maxCountDeDigivolve = Math.Max(0, Mathf.FloorToInt(totalTamers / 2));
-
-                                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                                selectPermanentEffect.SetUp(
-                                    selectPlayer: card.Owner.Enemy,
-                                    canTargetCondition: CanSelectPermanentDigimonCondition,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    maxCount: 1,
-                                    canNoSelect: false,
-                                    canEndNotMax: false,
-                                    selectPermanentCoroutine: SelectPermanentCoroutine,
-                                    afterSelectPermanentCoroutine: null,
-                                    mode: SelectPermanentEffect.Mode.Custom,
-                                    cardEffect: activateClass);
-
-                                selectPermanentEffect.SetUpCustomMessage("Select Digimons to De-Digivolve.", "The opponent is selecting Digimons to De-Digivolve.");
-
-                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                                IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                                {
-                                    Permanent selectedPermanent = permanent;
-
-                                    if (selectedPermanent != null)
-                                    {
-                                        yield return ContinuousController.instance.StartCoroutine(new IDegeneration(selectedPermanent, maxCountDeDigivolve, activateClass).Degeneration());
-                                    }
-
-                                    yield return null;
-                                }
-                            }
                         }
                     }
+                    #endregion
+
+                    #region De Digivolve
+                    //then De-Digivolve statement
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentDigimonCondition))
+                    {
+                        int totalTamers = CardEffectCommons.MatchConditionPermanentCount(CheckForTamersOnFieldCondition);
+                        int maxCountDeDigivolve = Math.Max(0, Mathf.FloorToInt(totalTamers / 2));
+
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner.Enemy,
+                            canTargetCondition: CanSelectPermanentDigimonCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        selectPermanentEffect.SetUpCustomMessage("Select Digimons to De-Digivolve.", "The opponent is selecting Digimons to De-Digivolve.");
+
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                        {
+                            Permanent selectedPermanent = permanent;
+
+                            if (selectedPermanent != null)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(new IDegeneration(selectedPermanent, maxCountDeDigivolve, activateClass).Degeneration());
+                            }
+
+                            yield return null;
+                        }
+                    }
+                    #endregion
                 }
             }
 
