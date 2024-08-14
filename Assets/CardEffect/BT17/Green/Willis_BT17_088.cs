@@ -103,11 +103,8 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (isExistOnField(card))
                     {
-                        if (CardEffectCommons.IsOwnerTurn(card))
-                        {
-                            if(CardEffectCommons.CanTriggerOnPlay(hashtable, card))
-                                return true;
-                        }
+                        if (CardEffectCommons.CanTriggerOnPlay(hashtable, card))
+                            return true;
                     }
 
                     return false;
