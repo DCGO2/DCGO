@@ -2152,6 +2152,12 @@ public class CardSource : MonoBehaviour
     public bool HasLevel => _cEntity_Base == null || _cEntity_Base.HasLevel;
     #endregion
     
+    #region whether this card is level 2
+    
+    public bool IsLevel2 => (_cEntity_Base == null || _cEntity_Base.HasLevel) && _cEntity_Base.Level == 2;
+    
+    #endregion
+    
     #region whether this card is level 3
     
     public bool IsLevel3 => (_cEntity_Base == null || _cEntity_Base.HasLevel) && _cEntity_Base.Level == 3;
