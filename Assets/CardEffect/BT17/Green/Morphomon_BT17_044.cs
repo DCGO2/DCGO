@@ -88,7 +88,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PermanentCondition))
                         {
@@ -102,7 +102,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

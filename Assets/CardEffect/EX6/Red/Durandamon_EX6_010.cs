@@ -67,6 +67,7 @@ namespace DCGO.CardEffects.EX6
                     "Delete 1 of your opponent's Digimon with as much or less DP as that Digimon", CanUseCondition,
                     card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, EffectDescription());
+                activateClass.SetIsDigimonEffect(true);
                 cardEffects.Add(activateClass);
                 
                 string EffectDescription()

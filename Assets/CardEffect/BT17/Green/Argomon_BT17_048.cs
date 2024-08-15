@@ -101,7 +101,7 @@ namespace DCGO.CardEffects.BT17
                 {
                     if(CardEffectCommons.CanTriggerOnDeletion(hashtable, card))
                     {
-                        if (CardEffectCommons.MatchConditionOpponentsCardCountInTrash(card, IsArgomon) >= 4)
+                        if (CardEffectCommons.MatchConditionOwnersCardCountInHand(card, IsLevel6Argomon) >= 1)
                         {
                             return true;
                         }
@@ -114,7 +114,7 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.CanActivateOnDeletion(card))
                     {
-                        if(CardEffectCommons.MatchConditionOwnersCardCountInHand(card, IsLevel6Argomon) >= 1)
+                        if (CardEffectCommons.MatchConditionOpponentsCardCountInTrash(card, IsArgomon) >= 4)
                         {
                             return true;
                         }

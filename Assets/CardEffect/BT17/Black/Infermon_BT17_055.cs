@@ -15,7 +15,7 @@ namespace DCGO.CardEffects.BT17
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("<De-Digivolve 1>, 1 of our oppenents 8 cost or less can't attack players", CanUseCondition, card);
+                activateClass.SetUpICardEffect("<De-Digivolve 1>, 1 of our opponents 8 cost or less can't attack players", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -121,8 +121,8 @@ namespace DCGO.CardEffects.BT17
                         }
 
                         if (permanent != null)
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotAttackPlayerEffect(
-                            attackerCondition: IsOpponentsEightCostDigimon,
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotAttack(
+                            targetPermanent: permanent,
                             defenderCondition: DefenderCondition,
                             effectDuration: EffectDuration.UntilOpponentTurnEnd,
                             activateClass: activateClass,

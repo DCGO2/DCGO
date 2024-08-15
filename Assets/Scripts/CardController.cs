@@ -383,15 +383,16 @@ public class PlayCardClass
                                 {
                                     foreach (int cost in card.CostList(targetPermanent, ignoreLevel: _ignoreLevel, checkAvailability: false))
                                     {
-                                        if (cost <= card.Owner.MaxMemoryCost)
-                                        {
+                                        //TODO: Wait for testing confirmation before removing - MB
+                                        //if (cost <= card.Owner.MaxMemoryCost)
+                                        //{
                                             int evoCost = cost;
 
                                             if(_reducedCost > 0)
                                                 evoCost -= _reducedCost;
 
                                             CostList.Add(evoCost);
-                                        }
+                                        //}
                                     } 
                                 }
 
@@ -683,6 +684,7 @@ public class PlayCardClass
 
             if (PayCost)
             {
+                UnityEngine.Debug.Log($"Pay Cost: {Cost}, {card.Owner.MaxMemoryCost}, {baseCost}, {_fixedCost}");
                 if (Cost > card.Owner.MaxMemoryCost)
                 {
                     endPlayCard = true;
