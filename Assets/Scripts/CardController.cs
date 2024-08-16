@@ -684,7 +684,6 @@ public class PlayCardClass
 
             if (PayCost)
             {
-                UnityEngine.Debug.Log($"Pay Cost: {Cost}, {card.Owner.MaxMemoryCost}, {baseCost}, {_fixedCost}");
                 if (Cost > card.Owner.MaxMemoryCost)
                 {
                     endPlayCard = true;

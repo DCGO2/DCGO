@@ -225,9 +225,9 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    if (CardEffectCommons.CanDeclareOptionDelayEffect(card))
                     {
-                        if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, IsOwnerPermanentCondition) || CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, IsOwnerPermanentCondition))
+                        if (CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, IsOwnerPermanentCondition))
                         {
                             if (!CardEffectCommons.IsByBattle(hashtable))
                             {
@@ -345,8 +345,6 @@ namespace DCGO.CardEffects.BT17
 
                                 return false;
                             }
-
-                            Debug.Log($"WORKABLE: {allowedPermanents.Count} : {allowedCards.Count}");
 
                             maxCount = Math.Min(1, allowedPermanents.Count);
 

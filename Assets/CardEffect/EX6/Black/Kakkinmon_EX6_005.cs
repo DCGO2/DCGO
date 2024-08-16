@@ -32,14 +32,10 @@ namespace DCGO.CardEffects.EX6
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    Debug.Log("Kakkinmon_EX6 - CanUseCondtion");
-                    Debug.Log($"Kakkinmon_EX6 - CanUseCondtion: {CardEffectCommons.IsExistOnBattleAreaDigimon(card)}");
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        Debug.Log($"Kakkinmon_EX6 - CanUseCondtion: {CardEffectCommons.IsOwnerTurn(card)}");
                         if (CardEffectCommons.IsOwnerTurn(card))
                         {
-                            Debug.Log($"Kakkinmon_EX6 - CanUseCondtion: {card.PermanentOfThisCard().DigivolutionCards.Count(HasLegendArms)}");
                             return card.PermanentOfThisCard().DigivolutionCards.Count(HasLegendArms) > 0;
                         }
                     }
@@ -50,13 +46,11 @@ namespace DCGO.CardEffects.EX6
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    Debug.Log($"Kakkinmon_EX6 - CanActivateCondition: {CardEffectCommons.IsExistOnBattleAreaDigimon(card)}");
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    Debug.Log($"Kakkinmon_EX6 - ActivateCoroutine");
                     SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                     selectCardEffect.SetUp(
