@@ -3316,6 +3316,20 @@ public class IBattle
         return null;
     }
 
+    public int CompareStats()
+    {
+        int statCheck = 0;
+
+        if(AttackingPermanent.HasIceclad || DefendingPermanent.HasIceclad)
+            statCheck = AttackingPermanent.DigivolutionCards.Count - DefendingPermanent.DigivolutionCards.Count;
+        else
+            statCheck = AttackingPermanent.DP - DefendingPermanent.DP;
+
+        statCheck = Mathf.Clamp(statCheck, -1, 1);
+
+        return statCheck;
+    }
+
     public IEnumerator Battle()
     {
         hashtable = new Hashtable();
@@ -3452,40 +3466,33 @@ public class IBattle
                 #region battle with permanent
                 if (DefendingPermanent != null)
                 {
-                    if (AttackingPermanent.DP > DefendingPermanent.DP)
+                    int battleResults = CompareStats();
+                    if (battleResults == 1)
                     {
                         WinnerPermanents.Add(AttackingPermanent);
 
                         if (DefendingPermanent.CanBeDestroyedByBattle(AttackingPermanent, DefendingPermanent, DefendingCard))
-                        {
                             LoserPermanents.Add(DefendingPermanent);
-                        }
                     }
 
-                    else if (AttackingPermanent.DP == DefendingPermanent.DP)
+                    else if (battleResults == 0)
                     {
                         WinnerPermanents.Add(AttackingPermanent);
                         WinnerPermanents.Add(DefendingPermanent);
 
                         if (AttackingPermanent.CanBeDestroyedByBattle(AttackingPermanent, DefendingPermanent, DefendingCard))
-                        {
                             LoserPermanents.Add(AttackingPermanent);
-                        }
 
                         if (DefendingPermanent.CanBeDestroyedByBattle(AttackingPermanent, DefendingPermanent, DefendingCard))
-                        {
                             LoserPermanents.Add(DefendingPermanent);
-                        }
                     }
 
-                    else if (AttackingPermanent.DP < DefendingPermanent.DP)
+                    else if (battleResults == -1)
                     {
                         WinnerPermanents.Add(DefendingPermanent);
 
                         if (AttackingPermanent.CanBeDestroyedByBattle(AttackingPermanent, DefendingPermanent, DefendingCard))
-                        {
                             LoserPermanents.Add(AttackingPermanent);
-                        }
                     }
                 }
                 #endregion
