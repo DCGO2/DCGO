@@ -33,8 +33,7 @@ namespace DCGO.CardEffects.EX7
 
             bool CanSelectPermanentSharedCondition(Permanent permanent)
             {
-                return CardEffectCommons.IsPermanentExistsOnBattleArea(permanent) &&
-                       permanent.IsDigimon;
+                return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent);
             }
 
             bool CanSelectSuspendedPermanentSharedCondition(Permanent permanent)

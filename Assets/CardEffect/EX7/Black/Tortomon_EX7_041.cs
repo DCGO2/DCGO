@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 
 namespace DCGO.CardEffects.EX7
@@ -57,7 +56,7 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanUseCondition()
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card) &&
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
                            CardEffectCommons.IsOpponentTurn(card);
                 }
 

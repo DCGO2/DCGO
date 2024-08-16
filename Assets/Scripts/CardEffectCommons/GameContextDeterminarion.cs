@@ -271,6 +271,21 @@ public partial class CardEffectCommons
         return false;
     }
     #endregion
+    
+    #region Whether the permanent is Digimon and in the card's owner's Battle Area
+    public static bool IsPermanentExistsOnBattleAreaDigimon(Permanent permanent)
+    {
+        if (IsPermanentExistsOnBattleArea(permanent))
+        {
+            if (permanent.IsDigimon)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    #endregion
 
     #region Whether the permanent is Digimon and in the card's owner's Battle Area
     public static bool IsPermanentExistsOnOwnerBattleAreaDigimon(Permanent permanent, CardSource card)
