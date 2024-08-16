@@ -56,7 +56,7 @@ namespace DCGO.CardEffects.EX7
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           card.Owner.HandCards.Some(HasThreeMusketeersInTrait);
+                           CardEffectCommons.HasMatchConditionOwnersHand(card, HasThreeMusketeersInTrait);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

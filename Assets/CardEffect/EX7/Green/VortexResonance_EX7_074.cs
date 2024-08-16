@@ -167,7 +167,7 @@ namespace DCGO.CardEffects.EX7
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    bool canSelectHand = card.Owner.HandCards.Some(CanSelectCardCondition);
+                    bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);
                     bool canSelectTrash = card.Owner.TrashCards.Some(CanSelectCardCondition);
 
                     if (canSelectHand || canSelectTrash)

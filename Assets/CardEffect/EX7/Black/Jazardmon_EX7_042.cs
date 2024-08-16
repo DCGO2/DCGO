@@ -38,7 +38,7 @@ namespace DCGO.CardEffects.EX7
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           card.Owner.HandCards.Some(HasDragonInTrait);
+                           CardEffectCommons.HasMatchConditionOwnersHand(card, HasDragonInTrait);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -106,14 +106,14 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card) &&
-                           card.Owner.HandCards.Some(IsHinaCardCondition) &&
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.HasMatchConditionOwnersHand(card, IsHinaCardCondition) &&
                            card.Owner.GetBattleAreaPermanents().Count(permanent => permanent.IsTamer) <= 1;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (card.Owner.HandCards.Some(IsHinaCardCondition))
+                    if (CardEffectCommons.HasMatchConditionOwnersHand(card, IsHinaCardCondition))
                     {
                         List<CardSource> selectedCards = new List<CardSource>();
 
@@ -160,7 +160,7 @@ namespace DCGO.CardEffects.EX7
             {
                 bool Condition()
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card) &&
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
                            CardEffectCommons.IsOpponentTurn(card);
                 }
 

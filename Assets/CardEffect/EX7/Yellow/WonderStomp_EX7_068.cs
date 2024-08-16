@@ -15,7 +15,7 @@ namespace DCGO.CardEffects.EX7
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(card.BaseENGCardNameFromEntity, CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, EffectDescription());
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -46,7 +46,7 @@ namespace DCGO.CardEffects.EX7
                             new DrawClass(card.Owner, 1, activateClass).Draw());
                     }
 
-                    if (card.Owner.HandCards.Some(IsLevel3PuppetCardCondition))
+                    if (CardEffectCommons.HasMatchConditionOwnersHand(card, IsLevel3PuppetCardCondition))
                     {
                         List<CardSource> selectedCards = new List<CardSource>();
 

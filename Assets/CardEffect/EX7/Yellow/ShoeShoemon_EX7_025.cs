@@ -39,14 +39,14 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card) &&
-                           card.Owner.HandCards.Some(IsArisaCardCondition) &&
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.HasMatchConditionOwnersHand(card, IsArisaCardCondition) &&
                            card.Owner.GetBattleAreaPermanents().Count(permanent => permanent.IsTamer) <= 1;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (card.Owner.HandCards.Some(IsArisaCardCondition))
+                    if (CardEffectCommons.HasMatchConditionOwnersHand(card, IsArisaCardCondition))
                     {
                         List<CardSource> selectedCards = new List<CardSource>();
 
@@ -98,7 +98,7 @@ namespace DCGO.CardEffects.EX7
 
                 bool Condition()
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card) &&
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
                            CardEffectCommons.IsOwnerTurn(card);
                 }
 

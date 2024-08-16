@@ -47,7 +47,7 @@ namespace DCGO.CardEffects.EX7
 
             bool CanActivateSharedCondition(Hashtable hashtable)
             {
-                return CardEffectCommons.IsExistOnBattleArea(card);
+                return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
             }
 
             #endregion
@@ -94,7 +94,7 @@ namespace DCGO.CardEffects.EX7
 
                     IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
-                        if (CardEffectCommons.IsExistOnBattleArea(card))
+                        if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                         {
                             yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard()
                                 .AddDigivolutionCardsBottom(new List<CardSource>() { cardSource }, activateClass));
@@ -169,7 +169,7 @@ namespace DCGO.CardEffects.EX7
 
                     IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
-                        if (CardEffectCommons.IsExistOnBattleArea(card))
+                        if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                         {
                             yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard()
                                 .AddDigivolutionCardsBottom(new List<CardSource>() { cardSource }, activateClass));
