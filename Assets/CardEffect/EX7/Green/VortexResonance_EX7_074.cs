@@ -38,7 +38,7 @@ namespace DCGO.CardEffects.EX7
 
             #endregion
 
-            #region Option Skill
+            #region Main Effect
 
             if (timing == EffectTiming.OptionSkill)
             {
