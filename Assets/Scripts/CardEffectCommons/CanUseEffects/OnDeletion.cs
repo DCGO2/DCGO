@@ -238,10 +238,6 @@ public partial class CardEffectCommons
                     {
                         if (CardSources.Some(cardSource => cardCondition == null || cardCondition(cardSource)))
                         {
-                            foreach (DictionaryEntry entry in hashtable1)
-                            {
-                                Debug.Log($"{entry.Key}, {entry.Value}");
-                            }
                             if (hashtable1.ContainsKey("TopCard"))
                             {
                                 if (hashtable1["TopCard"] is CardSource)

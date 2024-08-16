@@ -323,7 +323,7 @@ namespace DCGO.CardEffects.BT17
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     #region Opponent has tamer to play
-                    UnityEngine.Debug.Log($"RELAVENT CARDS IN OPP HAND: {card.Owner.Enemy.HandCards.Count(CanSelectTamerOpponentCondition)}");
+
                     if (card.Owner.Enemy.HandCards.Count(CanSelectTamerOpponentCondition) > 0)
                     {
                         List<CardSource> selectedCardsOpponent = new List<CardSource>();
