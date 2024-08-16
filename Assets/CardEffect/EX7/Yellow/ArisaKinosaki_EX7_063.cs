@@ -84,7 +84,7 @@ namespace DCGO.CardEffects.EX7
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card) &&
                            CardEffectCommons.CanActivateSuspendCostEffect(card) &&
-                           card.Owner.HandCards.Some(IsLevel3PuppetCardCondition);
+                           CardEffectCommons.HasMatchConditionOwnersHand(card, IsLevel3PuppetCardCondition);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -92,7 +92,7 @@ namespace DCGO.CardEffects.EX7
                     yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(
                         new List<Permanent>() { card.PermanentOfThisCard() }, CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
 
-                    if (card.Owner.HandCards.Some(IsLevel3PuppetCardCondition))
+                    if (CardEffectCommons.HasMatchConditionOwnersHand(card, IsLevel3PuppetCardCondition))
                     {
                         List<CardSource> selectedCards = new List<CardSource>();
 

@@ -61,12 +61,12 @@ namespace DCGO.CardEffects.EX7
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanActivateOnDeletion(card) &&
-                           card.Owner.HandCards.Some(CanSelectCardCondition);
+                           CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (card.Owner.HandCards.Some(CanSelectCardCondition))
+                    if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
                     {
                         List<CardSource> selectedCards = new List<CardSource>();
 
@@ -136,7 +136,7 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card) &&
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
                            CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
                 }
 

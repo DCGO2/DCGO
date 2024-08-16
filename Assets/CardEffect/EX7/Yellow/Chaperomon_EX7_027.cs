@@ -50,13 +50,13 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card) &&
-                           card.Owner.HandCards.Some(IsLevel3PuppetCardCondition);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.HasMatchConditionOwnersHand(card, IsLevel3PuppetCardCondition);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (card.Owner.HandCards.Some(IsLevel3PuppetCardCondition))
+                    if (CardEffectCommons.HasMatchConditionOwnersHand(card, IsLevel3PuppetCardCondition))
                     {
                         List<CardSource> selectedCards = new List<CardSource>();
 
@@ -125,14 +125,14 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card) &&
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
                            CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card) &&
                            !CardEffectCommons.IsByEffect(hashtable, cardEffect => CardEffectCommons.IsOwnerEffect(cardEffect, card));
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card) &&
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
                            CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
                 }
 

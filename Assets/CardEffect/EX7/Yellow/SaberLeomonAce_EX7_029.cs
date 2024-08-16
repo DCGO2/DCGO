@@ -51,7 +51,7 @@ namespace DCGO.CardEffects.EX7
 
             bool CanActivateSharedCondition1(Hashtable hashtable)
             {
-                return CardEffectCommons.IsExistOnBattleArea(card) &&
+                return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
                        CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentSharedCondition1);
             }
 
@@ -188,7 +188,7 @@ namespace DCGO.CardEffects.EX7
 
             bool CanActivateSharedCondition2(Hashtable hashtable)
             {
-                return CardEffectCommons.IsExistOnBattleArea(card) &&
+                return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
                        (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentSharedCondition2) ||
                         card.Owner.Enemy.GetBattleAreaDigimons().Count(permanent => !permanent.IsSuspended) == 0);
             }

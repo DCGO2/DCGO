@@ -10,7 +10,7 @@ namespace DCGO.CardEffects.EX7
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Vortex
-            
+
             if (timing == EffectTiming.OnEndTurn)
             {
                 cardEffects.Add(CardEffectFactory.VortexSelfEffect(isInheritedEffect: false, card: card,
@@ -47,8 +47,7 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card) &&
-                           CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -76,8 +75,7 @@ namespace DCGO.CardEffects.EX7
 
                         IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
                         {
-                            ownDigimon = permanents.Some(permanent =>
-                                CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card));
+                            ownDigimon = permanents.Some(permanent => CardEffectCommons.IsOwnerPermanent(permanent, card));
 
                             yield return null;
                         }
@@ -129,6 +127,7 @@ namespace DCGO.CardEffects.EX7
                 activateClass.SetUpICardEffect("Unsuspend this Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
                 activateClass.SetIsInheritedEffect(true);
+                activateClass.SetHashString("Unsuspend_EX7_034");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -145,7 +144,7 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

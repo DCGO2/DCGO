@@ -56,7 +56,7 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card) &&
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
                            CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
                 }
 
@@ -98,7 +98,7 @@ namespace DCGO.CardEffects.EX7
             {
                 bool CanUseCondition()
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card) &&
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
                            CardEffectCommons.IsOpponentTurn(card);
                 }
 

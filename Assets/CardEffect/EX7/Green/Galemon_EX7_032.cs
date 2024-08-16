@@ -33,20 +33,20 @@ namespace DCGO.CardEffects.EX7
                 bool IsShotoCardCondition(CardSource cardSource)
                 {
                     return cardSource.IsTamer &&
-                           (cardSource.EqualsCardName("Shoto Kazama") || cardSource.EqualsCardName("ShotoKazama")) &&
+                           cardSource.EqualsCardName("Shoto Kazama") &&
                            CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card) &&
-                           card.Owner.HandCards.Some(IsShotoCardCondition) &&
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.HasMatchConditionOwnersHand(card, IsShotoCardCondition) &&
                            card.Owner.GetBattleAreaPermanents().Count(permanent => permanent.IsTamer) <= 1;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (card.Owner.HandCards.Some(IsShotoCardCondition))
+                    if (CardEffectCommons.HasMatchConditionOwnersHand(card, IsShotoCardCondition))
                     {
                         List<CardSource> selectedCards = new List<CardSource>();
 
@@ -75,12 +75,10 @@ namespace DCGO.CardEffects.EX7
                         {
                             selectedCards.Add(cardSource);
 
-                            yield return null;
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
+                                cardSources: selectedCards, activateClass: activateClass, payCost: false, isTapped: false,
+                                root: SelectCardEffect.Root.Hand, activateETB: true));
                         }
-
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                            cardSources: selectedCards, activateClass: activateClass, payCost: false, isTapped: false,
-                            root: SelectCardEffect.Root.Hand, activateETB: true));
                     }
                 }
             }
@@ -108,14 +106,14 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card) &&
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
                            CardEffectCommons.CanTriggerWhenDeleteOpponentDigimonByBattle(hashtable: hashtable,
                                winnerCondition: WinnerCondition, loserCondition: LoserCondition, isOnlyWinnerSurvive: false);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

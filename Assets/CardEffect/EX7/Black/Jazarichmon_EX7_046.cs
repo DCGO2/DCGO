@@ -37,7 +37,7 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card) &&
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
                            CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
                 }
 
@@ -95,7 +95,7 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card) &&
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
                            card.Owner.CanAddMemory(activateClass) &&
                            card.Owner.Enemy.GetBattleAreaPermanents()
                                .Count(permanent => permanent.TopCard.HasLevel && permanent.Level >= 5) == 0;

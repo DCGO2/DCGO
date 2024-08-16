@@ -15,7 +15,7 @@ namespace DCGO.CardEffects.EX7
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(card.BaseENGCardNameFromEntity, CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, EffectDescription());
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -56,7 +56,7 @@ namespace DCGO.CardEffects.EX7
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: 1,
-                            canNoSelect: false,
+                            canNoSelect: true,
                             canEndNotMax: false,
                             selectPermanentCoroutine: null,
                             afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,

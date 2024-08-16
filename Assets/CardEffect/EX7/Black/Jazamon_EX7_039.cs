@@ -26,7 +26,7 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card) &&
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
                            CardEffectCommons.IsOwnerTurn(card);
                 }
 
@@ -39,7 +39,7 @@ namespace DCGO.CardEffects.EX7
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           card.Owner.HandCards.Some(HasDragonInTrait);
+                           CardEffectCommons.HasMatchConditionOwnersHand(card, HasDragonInTrait);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -114,7 +114,7 @@ namespace DCGO.CardEffects.EX7
             {
                 bool Condition()
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card) &&
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
                            CardEffectCommons.IsOpponentTurn(card);
                 }
 
