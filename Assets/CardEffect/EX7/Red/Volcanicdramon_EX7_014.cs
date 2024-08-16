@@ -136,6 +136,150 @@ namespace DCGO.CardEffects.EX7
             }
             #endregion
 
+            #region When Digivolving
+            if (timing == EffectTiming.OnEnterFieldAnyone)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Opponent can't play or move Digimon with 6000 DP or less", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[When Digivolving] Your opponent can't play or move Digimon with 6000 DP or less until the end of their turn.";
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        return true;
+                    }
+
+                    return false;
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                {
+                     CanNotPutFieldClass canNotPutFieldClass = new CanNotPutFieldClass();
+                     canNotPutFieldClass.SetUpICardEffect("Can't play Digimon with 6000 DP or less", CanUseCondition1, card);
+                     canNotPutFieldClass.SetUpCanNotPutFieldClass(cardCondition: CardCondition, cardEffectCondition: CardEffectCondition);
+                     card.Owner.Enemy.UntilOwnerTurnEndEffects.Add((_timing) => canNotPutFieldClass);
+
+                     ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().DebuffSE);
+
+                     bool CanUseCondition1(Hashtable hashtable)
+                     {
+                         return true;
+                     }
+
+                     bool CardCondition(CardSource cardSource)
+                     {
+                         if (cardSource.Owner == card.Owner.Enemy)
+                         {
+                             if (cardSource.IsDigimon)
+                             {
+                                 if (cardSource.CardDP <= 6000)
+                                 {
+                                     return true;
+                                 }
+                             }
+                         }
+
+                         return false;
+                     }
+
+                     bool CardEffectCondition(ICardEffect cardEffect)
+                     {
+                         return true;
+                     }
+
+                     yield return null;
+                    
+                }
+            }
+            #endregion
+
+            #region All Turns
+            if (timing == EffectTiming.WhenRemoveField)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Play 1 Digimon card with the [Machine Dragon]/[Sky Dragon] trait", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                cardEffects.Add(activateClass);
+
+                string EffectDescription()
+                {
+                    return "[All Turns] [Once Per Turn] When this Digimon would leave battle area other than by one of your effects, you may play 1 Digimon card with the [Machine Dragon]/[Sky Dragon] trait from your hand without paying the cost.";
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card);
+                }
+
+                bool CanSelectCardToPlayFromTrash(CardSource cardSource)
+                {
+                    return CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass) && cardSource.IsDigimon && (cardSource.ContainsTraits("Machine Drago") || cardSource.ContainsTraits("Sky Dragon"));
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleArea(card) && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardToPlayFromTrash);
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    List<CardSource> selectedCards = new List<CardSource>();
+
+                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                    selectCardEffect.SetUp(
+                        canTargetCondition: CanSelectCardToPlayFromTrash,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        canNoSelect: () => true,
+                        selectCardCoroutine: SelectCardCoroutine,
+                        afterSelectCardCoroutine: null,
+                        message: "Select 1 card to play.",
+                        maxCount: 1,
+                        canEndNotMax: false,
+                        isShowOpponent: true,
+                        mode: SelectCardEffect.Mode.Custom,
+                        root: SelectCardEffect.Root.Trash,
+                        customRootCardList: null,
+                        canLookReverseCard: true,
+                        selectPlayer: card.Owner,
+                        cardEffect: activateClass);
+
+                    selectCardEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
+                    selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
+
+                    yield return StartCoroutine(selectCardEffect.Activate());
+
+                    IEnumerator SelectCardCoroutine(CardSource cardSource)
+                    {
+                        selectedCards.Add(cardSource);
+
+                        yield return null;
+                    }
+
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
+                        cardSources: selectedCards,
+                        activateClass: activateClass,
+                        payCost: false,
+                        isTapped: false,
+                        root: SelectCardEffect.Root.Trash,
+                        activateETB: true));
+                }
+            }
+            #endregion
+
             return cardEffects;
         }
     }
