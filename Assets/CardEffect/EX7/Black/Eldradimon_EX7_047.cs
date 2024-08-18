@@ -234,6 +234,7 @@ namespace DCGO.CardEffects.EX7
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("DNA digivolve into a Digimon card with the [NSp] trait", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetHashString("DNA_EX7_047");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
