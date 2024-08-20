@@ -88,7 +88,13 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return true;
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, HasEosmon))
+                            return true;
+                    }
+
+                    return false;
                 }
 
                 bool HasEosmon(Permanent permanent)
@@ -101,27 +107,21 @@ namespace DCGO.CardEffects.BT17
 
                 bool InvalidateCondition(ICardEffect cardEffect)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (cardEffect != null)
                     {
-                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card,HasEosmon))
+                        if (cardEffect is ActivateICardEffect)
                         {
-                            if (cardEffect != null)
+                            if (cardEffect.EffectSourceCard != null)
                             {
-                                if (cardEffect is ActivateICardEffect)
+                                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(cardEffect.EffectSourceCard.PermanentOfThisCard(), card))
                                 {
-                                    if (cardEffect.EffectSourceCard != null)
+                                    if (cardEffect.EffectSourceCard.PermanentOfThisCard().IsTamer)
                                     {
-                                        if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(cardEffect.EffectSourceCard.PermanentOfThisCard(), card))
+                                        if (!cardEffect.EffectSourceCard.PermanentOfThisCard().TopCard.CanNotBeAffected(invalidationClass))
                                         {
-                                            if (cardEffect.EffectSourceCard.PermanentOfThisCard().IsTamer)
+                                            if (cardEffect.IsOnPlay)
                                             {
-                                                if (!cardEffect.EffectSourceCard.PermanentOfThisCard().TopCard.CanNotBeAffected(invalidationClass))
-                                                {
-                                                    if (cardEffect.IsOnPlay)
-                                                    {
-                                                        return true;
-                                                    }
-                                                }
+                                                return true;
                                             }
                                         }
                                     }

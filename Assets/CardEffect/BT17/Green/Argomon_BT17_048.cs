@@ -114,7 +114,7 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.CanActivateOnDeletion(card))
                     {
-                        if (CardEffectCommons.MatchConditionOpponentsCardCountInTrash(card, IsArgomon) >= 4)
+                        if (CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, IsArgomon) >= 4)
                         {
                             return true;
                         }

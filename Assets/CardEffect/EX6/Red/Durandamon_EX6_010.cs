@@ -296,37 +296,37 @@ namespace DCGO.CardEffects.EX6
                 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return true;
-                }
-                
-                bool InvalidateCondition(ICardEffect cardEffect)
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (CardEffectCommons.IsOwnerTurn(card))
                         {
-                            if (card.PermanentOfThisCard().TopCard.CardNames.Contains("RagnaLoardmon") ||
-                                card.PermanentOfThisCard().TopCard.CardNames.Contains("Ragnalordmon") ||
-                                card.PermanentOfThisCard().TopCard.CardNames.Contains("Lagnalordmon"))
+                            if (card.PermanentOfThisCard().TopCard.ContainsCardName("RagnaLoardmon"))
                             {
-                                if (cardEffect != null)
-                                {
-                                    if (cardEffect.EffectSourceCard != null)
-                                    {
-                                        if (cardEffect.IsSecurityEffect)
-                                        {
-                                            if (GManager.instance.attackProcess.AttackingPermanent ==
-                                                card.PermanentOfThisCard())
-                                            {
-                                                return true;
-                                            }
-                                        }
-                                    }
-                                }
+                                return true;
                             }
                         }
                     }
                     
+                    return false;
+                }
+                
+                bool InvalidateCondition(ICardEffect cardEffect)
+                {
+                    if (cardEffect != null)
+                    {
+                        if (cardEffect.EffectSourceCard != null)
+                        {
+                            if (cardEffect.IsSecurityEffect)
+                            {
+                                if (GManager.instance.attackProcess.AttackingPermanent ==
+                                    card.PermanentOfThisCard())
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+
                     return false;
                 }
             }

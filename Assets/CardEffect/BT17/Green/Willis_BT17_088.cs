@@ -199,9 +199,12 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (isExistOnField(card))
                     {
-                        if(CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PlayedPermanentCondition))
+                        if (CardEffectCommons.IsOwnerTurn(card))
                         {
-                            return true;
+                            if (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PlayedPermanentCondition))
+                            {
+                                return true;
+                            }
                         }
                     }
                     return false;
