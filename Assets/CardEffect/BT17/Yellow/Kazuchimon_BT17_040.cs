@@ -33,7 +33,7 @@ namespace DCGO.CardEffects.BT17
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] Suspend 1 of your opponent's Digimon.";
+                    return "[When Digivolving] Suspend 1 of your opponent's Digimon. If [Leon Alexander] is in this Digimon's digivolution cards, all of your opponent's Digimon gain <Security A. -1> until the end of their turn.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -48,12 +48,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -78,52 +73,24 @@ namespace DCGO.CardEffects.BT17
                             cardEffect: activateClass);
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                    }                 
-                }
-            }
+                    }
 
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Security Attack -1", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-                cardEffects.Add(activateClass);
-
-                string EffectDiscription()
-                {
-                    return "[When Digivolving] Then, if [Leon Alexander] is in this Digimon's digivolution cards, all of your opponent's Digimon gain Security Attack -1 until the end of their turn.";
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleArea(card);
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (card.PermanentOfThisCard().DigivolutionCards.Some(cardSource => cardSource.CardNames.Contains("Leon Alexander")) || card.PermanentOfThisCard().DigivolutionCards.Some(cardSource => cardSource.CardNames.Contains("LeonAlexander")))
                     {
-                        if (card.PermanentOfThisCard().DigivolutionCards.Some(cardSource => cardSource.CardNames.Contains("Leon Alexander")) || card.PermanentOfThisCard().DigivolutionCards.Some(cardSource => cardSource.CardNames.Contains("LeonAlexander")))
+                        bool PermanentCondition(Permanent permanent)
                         {
-                            bool PermanentCondition(Permanent permanent)
-                            {
-                                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
-                            }
-
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonSAttackPlayerEffect(
-                                permanentCondition: PermanentCondition,
-                                changeValue: -1,
-                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                                activateClass: activateClass));
+                            return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
                         }
+
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonSAttackPlayerEffect(
+                            permanentCondition: PermanentCondition,
+                            changeValue: -1,
+                            effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                            activateClass: activateClass));
                     }
                 }
             }
+
             #endregion
 
             #region End of Your Turn
