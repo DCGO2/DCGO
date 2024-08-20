@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.EX7
 {
     public class EyesmonScatterMode_EX7_053 : CEntity_Effect
     {
@@ -9,33 +11,123 @@ namespace DCGO.CardEffects
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            if (timing == EffectTiming.None)
+            #region On PLay
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpICardEffect("Trash 1 card from hand and return 1 card from trash to hand", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "";
+                    return "[On Play] Trash 1 card in your hand. Then, you may return 1 Digimon card with the [Evil]/[Dark Dragon]/[Evil Dragon] trait from your trash to the hand.";
+                }
+
+                bool CanSelectCardCondition(CardSource cardSource)
+                {
+                    if (cardSource != null)
+                    {
+                        if (cardSource.IsDigimon)
+                        {
+                            if (cardSource.Owner == card.Owner)
+                            {
+                                if (cardSource.CardTraits.Contains("Evil") || cardSource.CardTraits.Contains("Dark Dragon") || cardSource.CardTraits.Contains("Evil Dragon"))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+
+                    return false;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return true;
+                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return true;
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (card.Owner.HandCards.Count >= 1)
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
                 }
 
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    yield return null;
+                    if (isExistOnField(card))
+                    {
+                        if (card.Owner.GetBattleAreaDigimons().Contains(card.PermanentOfThisCard()))
+                        {
+                            if (card.Owner.HandCards.Count >= 1)
+                            {
+                                int discardCount = 1;
+
+                                SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                                selectHandEffect.SetUp(
+                                    selectPlayer: card.Owner,
+                                    canTargetCondition: (cardSource) => true,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    maxCount: discardCount,
+                                    canNoSelect: true,
+                                    canEndNotMax: false,
+                                    isShowOpponent: true,
+                                    selectCardCoroutine: null,
+                                    afterSelectCardCoroutine: null,
+                                    mode: SelectHandEffect.Mode.Discard,
+                                    cardEffect: activateClass);
+
+                                yield return StartCoroutine(selectHandEffect.Activate());
+
+                                if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
+                                {
+                                    int maxCount = Math.Min(1, card.Owner.TrashCards.Count(CanSelectCardCondition));
+
+                                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                                    selectCardEffect.SetUp(
+                                        canTargetCondition: CanSelectCardCondition,
+                                        canTargetCondition_ByPreSelecetedList: null,
+                                        canEndSelectCondition: null,
+                                        canNoSelect: () => false,
+                                        selectCardCoroutine: null,
+                                        afterSelectCardCoroutine: null,
+                                        message: "Select 1 card to add to your hand.",
+                                        maxCount: maxCount,
+                                        canEndNotMax: false,
+                                        isShowOpponent: true,
+                                        mode: SelectCardEffect.Mode.AddHand,
+                                        root: SelectCardEffect.Root.Trash,
+                                        customRootCardList: null,
+                                        canLookReverseCard: true,
+                                        selectPlayer: card.Owner,
+                                        cardEffect: activateClass);
+
+                                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                                }                               
+                            }
+                        }
+                    }
                 }
             }
+            #endregion
+
+            #region Inherit
+            if (timing == EffectTiming.OnDestroyedAnyone)
+            {
+                cardEffects.Add(CardEffectFactory.RetaliationSelfEffect(isInheritedEffect: true, card: card, condition: null));
+            }
+            #endregion
 
             return cardEffects;
         }
