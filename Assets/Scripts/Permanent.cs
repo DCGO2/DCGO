@@ -1451,7 +1451,7 @@ public class Permanent
     #endregion
 
     #region このパーマネントが攻撃できるかどうか
-    public bool CanAttack(ICardEffect cardEffect, bool withoutTap = false)
+    public bool CanAttack(ICardEffect cardEffect, bool withoutTap = false, bool isVortex = false)
     {
         // can not attack with empty cards
         if (TopCard == null)
@@ -1466,10 +1466,10 @@ public class Permanent
         }
 
         // can not attack to player
-        if (!CanAttackTargetDigimon(null, cardEffect, withoutTap))
+        if (!CanAttackTargetDigimon(null, cardEffect, withoutTap, isVortex))
         {
             // can not attack to opponent's Digimon
-            if (TopCard.Owner.Enemy.GetFieldPermanents().Count((permanent) => CanAttackTargetDigimon(permanent, cardEffect, withoutTap)) == 0)
+            if (TopCard.Owner.Enemy.GetFieldPermanents().Count((permanent) => CanAttackTargetDigimon(permanent, cardEffect, withoutTap, isVortex)) == 0)
             {
                 return false;
             }
@@ -1563,7 +1563,7 @@ public class Permanent
     #endregion
 
     #region 対象のパーマネントを攻撃できるか
-    public bool CanAttackTargetDigimon(Permanent Defender, ICardEffect cardEffect, bool withoutTap = false)
+    public bool CanAttackTargetDigimon(Permanent Defender, ICardEffect cardEffect, bool withoutTap = false, bool isVortex = false)
     {
         if (TopCard != null)
         {
@@ -1595,7 +1595,7 @@ public class Permanent
 
             if (EnterFieldTurnCount == GManager.instance.turnStateMachine.TurnCount)
             {
-                if (!HasRush)
+                if (!HasRush && !isVortex)
                 {
                     return false;
                 }
