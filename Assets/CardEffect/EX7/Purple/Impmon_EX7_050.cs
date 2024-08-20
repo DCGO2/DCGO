@@ -9,7 +9,7 @@ namespace DCGO.CardEffects.EX7
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Digivolution Requirements
+            #region Digivolution Condition
             if (timing == EffectTiming.None)
             {
                 bool PermanentCondition(Permanent targetPermanent)
