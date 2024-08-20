@@ -18,45 +18,46 @@ namespace DCGO.CardEffects.BT16
             #region Digivolve Condition
             if (timing == EffectTiming.None)
             {
-                bool PermanentCondition(Permanent targetPermanent)
+                bool HasPulsmonInText(Permanent targetPermanent)
                 {
                     return targetPermanent.TopCard.HasText("Pulsemon") && targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 4;
                 }
 
-                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: HasPulsmonInText, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
             }
             #endregion
 
-            #region On Play/When Digivolving
+            #region On Play/When Digivolving Shared
+            bool PermanentCondition(Permanent permanent)
+            {
+                if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+
+                return false;
+            }
+            #endregion
+
+            #region On Play
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Suspend and/or gain memory", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[On Play] [When Digivolving] If you have 3 or more security cards, suspend 1 of your opponent's Digimon. If you have 3 or fewer security cards, gain 1 memory.";
+                    return "[On Play] If you have 3 or more security cards, suspend 1 of your opponent's Digimon. If you have 3 or fewer security cards, gain 1 memory.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card) || CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-                }
-
-                bool PermanentCondition(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                    {
-                        return true;
-                    }
-                    return false;
+                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (card.Owner.SecurityCards.Count >= 3)
                         {
@@ -75,6 +76,94 @@ namespace DCGO.CardEffects.BT16
                     return false;
                 }
 
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    if (card.Owner.SecurityCards.Count >= 3)
+                    {
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(PermanentCondition));
+
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: PermanentCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: maxCount,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: null,
+                            afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
+                            mode: SelectPermanentEffect.Mode.Tap,
+                            cardEffect: activateClass);
+
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to suspend and give effects.", "The opponent is selecting 1 Digimon to suspend and give effects.");
+
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                        IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
+                        {
+                            foreach (Permanent selectedPermanent in permanents)
+                            {
+                                if (CardEffectCommons.HasMatchConditionPermanent(PermanentCondition))
+                                {
+                                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCantUnsuspendNextActivePhase(
+                                            targetPermanent: selectedPermanent,
+                                            activateClass: activateClass
+                                        ));
+                                }
+                            }
+                            yield return null;
+                        }
+
+                    }
+                    if (card.Owner.SecurityCards.Count <= 3)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(2, activateClass));
+                    }
+
+                }
+            }
+            #endregion
+
+            #region When Digivolving
+            if (timing == EffectTiming.OnEnterFieldAnyone)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Suspend and/or gain memory", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[When Digivolving] If you have 3 or more security cards, suspend 1 of your opponent's Digimon. If you have 3 or fewer security cards, gain 1 memory.";
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    {
+                        if (card.Owner.SecurityCards.Count >= 3)
+                        {
+                            if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, PermanentCondition))
+                            {
+                                return true;
+                            }
+                        }
+
+                        if (card.Owner.SecurityCards.Count <= 3)
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
@@ -165,7 +254,7 @@ namespace DCGO.CardEffects.BT16
                     return false;
                 }
 
-                bool PermanentCondition(Permanent permanent)
+                bool PermanentHasPulsemonInText(Permanent permanent)
                 {
                     if (permanent == card.PermanentOfThisCard())
                     {
@@ -188,7 +277,7 @@ namespace DCGO.CardEffects.BT16
                     cardEffect: activateClass,
                     fromTop: true).DestroySecurity());
 
-                    if (CardEffectCommons.HasMatchConditionPermanent(PermanentCondition))
+                    if (CardEffectCommons.HasMatchConditionPermanent(PermanentHasPulsemonInText))
                     {
                         Permanent selectedPermanent = card.PermanentOfThisCard();
 

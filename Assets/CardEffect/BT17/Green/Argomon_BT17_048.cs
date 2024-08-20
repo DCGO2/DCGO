@@ -169,7 +169,7 @@ namespace DCGO.CardEffects.BT17
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Unsuspend this Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("Unsuspend_BT17_048");
                 cardEffects.Add(activateClass);
@@ -228,7 +228,7 @@ namespace DCGO.CardEffects.BT17
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: maxCount,
-                        canNoSelect: true,
+                        canNoSelect: false,
                         canEndNotMax: false,
                         selectPermanentCoroutine: null,
                         afterSelectPermanentCoroutine: SelectPermanentCoroutine,
