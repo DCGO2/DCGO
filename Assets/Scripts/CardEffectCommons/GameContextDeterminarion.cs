@@ -376,10 +376,7 @@ public partial class CardEffectCommons
     #region Whether there is at least 1 card in the owner's hand that satisfies the condition
     public static bool HasMatchConditionOwnersHand(CardSource card, Func<CardSource, bool> CanSelectCardCondition)
     {
-        return GManager.instance.turnStateMachine.gameContext.Players
-        .Map(player => player.HandCards)
-        .Flat()
-        .Some(source => CanSelectCardCondition(source) && IsExistOnHand(source));
+        return card.Owner.HandCards.Some(CanSelectCardCondition);
     }
     #endregion
 
