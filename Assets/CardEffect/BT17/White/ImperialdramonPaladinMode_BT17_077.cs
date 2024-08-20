@@ -109,7 +109,7 @@ namespace DCGO.CardEffects.BT17
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,
-                            canNoSelect: false,
+                            canNoSelect: true,
                             canEndNotMax: false,
                             selectPermanentCoroutine: null,
                             afterSelectPermanentCoroutine: SelectedBottomDeck,
@@ -252,7 +252,7 @@ namespace DCGO.CardEffects.BT17
 
                     bool willReturnYourTrash = GManager.instance.userSelectionManager.SelectedBoolValue;
 
-                    List<CardSource> returnedSources = willReturnYourTrash ? card.Owner.TrashCards : card.Owner.Enemy.TrashCards;
+                    List<CardSource> returnedSources = willReturnYourTrash ? card.Owner.TrashCards.Clone() : card.Owner.Enemy.TrashCards.Clone();
 
                     yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(returnedSources));
 

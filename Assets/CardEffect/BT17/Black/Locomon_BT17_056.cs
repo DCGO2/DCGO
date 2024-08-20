@@ -118,7 +118,7 @@ namespace DCGO.CardEffects.BT17
                     {
                         if (effect.EffectSourceCard.Owner == card.Owner)
                         {
-                            return effect.IsDigimonEffect;
+                            return effect.EffectSourceCard.IsDigimon;
                         }
                     }
 

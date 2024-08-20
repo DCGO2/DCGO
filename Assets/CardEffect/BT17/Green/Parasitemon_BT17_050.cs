@@ -348,7 +348,7 @@ namespace DCGO.CardEffects.BT17
                             if(cardSources != null)
                             {
                                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                                    cardSources: selectedCards,
+                                    cardSources: cardSources,
                                     activateClass: activateClass,
                                     payCost: false,
                                     isTapped: false,

@@ -164,7 +164,7 @@ namespace DCGO.CardEffects.BT17
             #endregion
 
             #region All Turns - Delay
-            if (timing == EffectTiming.OnDestroyedAnyone || timing == EffectTiming.WhenRemoveField)
+            if (timing == EffectTiming.OnDestroyedAnyone || timing == EffectTiming.WhenReturntoHandAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Digivolve for free", CanUseCondition, card);
