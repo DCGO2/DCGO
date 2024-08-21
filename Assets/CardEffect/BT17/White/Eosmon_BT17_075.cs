@@ -473,10 +473,9 @@ namespace DCGO.CardEffects.BT17
 
                             if (selectedPermanent != null)
                             {
-                                yield return ContinuousController.instance.StartCoroutine(new IDegeneration(selectedPermanent, maxCountDeDigivolve, activateClass).Degeneration());
+                                for (int i = 0; i < maxCountDeDigivolve; i++)
+                                    yield return ContinuousController.instance.StartCoroutine(new IDegeneration(selectedPermanent, 1, activateClass).Degeneration());
                             }
-
-                            yield return null;
                         }
                     }
                     #endregion

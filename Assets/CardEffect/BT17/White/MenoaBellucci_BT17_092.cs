@@ -121,7 +121,8 @@ namespace DCGO.CardEffects.BT17
                                         {
                                             if (cardEffect.IsOnPlay)
                                             {
-                                                return true;
+                                                if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, HasEosmon))
+                                                    return true;
                                             }
                                         }
                                     }
