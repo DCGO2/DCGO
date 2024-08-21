@@ -95,16 +95,16 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletion(card);
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card))
                     {
-                        if (card.Owner.fieldCardFrames.Count((frame) => frame.IsEmptyFrame()) >= 1)
+                        if (CardEffectCommons.CanActivateSelfOnDeletionWithContainingTrait(hashtable, "Unidentified", card))
                         {
-                            if (CardEffectCommons.CanActivateSelfOnDeletionWithContainingTrait(hashtable, "Unidentified", card))
+                            if (card.Owner.fieldCardFrames.Count((frame) => frame.IsEmptyFrame()) >= 1)
                                 return true;
                         }
                     }
