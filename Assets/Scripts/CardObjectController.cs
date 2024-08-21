@@ -585,7 +585,7 @@ public class CardObjectController : MonoBehaviour
             yield return ContinuousController.instance.StartCoroutine(AddHandCard(cardSource, isDraw));
         }
 
-        if (GManager.instance.turnStateMachine.DoneStartGame)
+        if (GManager.instance.turnStateMachine.DoneStartGame && addedCards.Count > 0)
         {
             List<Player> Players = addedCards.Map(cardSource => cardSource.Owner).Distinct().ToList();
 
