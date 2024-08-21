@@ -41,11 +41,14 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if(CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, OpponentPermanentCondition))
-                        return true;
+                    if (CardEffectCommons.IsOpponentTurn(card))
+                    {
+                        if (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, OpponentPermanentCondition))
+                            return true;
 
-                    if (CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, OpponentPermanentCondition))
-                        return true;
+                        if (CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, OpponentPermanentCondition))
+                            return true;
+                    }                    
 
                     return false;
                 }
