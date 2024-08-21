@@ -29,11 +29,7 @@ public class Palmon_X_Antibody_BT15_045 : CEntity_Effect
         }
 
         #region On Play/When Digivolving Shared
-        string EffectSharedDiscription()
-        {
-            return "[On Play] [When Digivolving] Suspend 1 of your opponent's Digimon.";
-        }
-
+        
         bool CanSelectPermanentCondition(Permanent permanent)
         {
             return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
@@ -60,6 +56,11 @@ public class Palmon_X_Antibody_BT15_045 : CEntity_Effect
             activateClass.SetUpICardEffect("Suspend 1 Digimon", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, false, EffectSharedDiscription());
             cardEffects.Add(activateClass);
+
+            string EffectSharedDiscription()
+            {
+                return "[On Play] Suspend 1 of your opponent's Digimon.";
+            }
 
             bool CanUseCondition(Hashtable hashtable)
             {
@@ -100,6 +101,11 @@ public class Palmon_X_Antibody_BT15_045 : CEntity_Effect
             activateClass.SetUpICardEffect("Suspend 1 Digimon", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, false, EffectSharedDiscription());
             cardEffects.Add(activateClass);
+
+            string EffectSharedDiscription()
+            {
+                return "[When Digivolving] Suspend 1 of your opponent's Digimon.";
+            }
 
             bool CanUseCondition(Hashtable hashtable)
             {

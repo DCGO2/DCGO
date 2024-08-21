@@ -19,11 +19,7 @@ namespace DCGO.CardEffects.LM
             }
 
             #region On Play/When Digivolving Shared
-            string SharedEffectDiscription()
-            {
-                return "[On Play] [When Digivolving] Suspend 1 of your opponent's Digimon. Then, if they have no unsuspended Digimon, gain 2 memory.";
-            }
-
+            
             bool CanSelectSharedPermanentCondition(Permanent permanent)
             {
                 return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
@@ -51,8 +47,13 @@ namespace DCGO.CardEffects.LM
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Gain Memory +2", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, SharedEffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[On Play] Suspend 1 of your opponent's Digimon. Then, if they have no unsuspended Digimon, gain 2 memory.";
+                }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
@@ -106,8 +107,13 @@ namespace DCGO.CardEffects.LM
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Gain Memory +2", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, SharedEffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[When Digivolving] Suspend 1 of your opponent's Digimon. Then, if they have no unsuspended Digimon, gain 2 memory.";
+                }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {

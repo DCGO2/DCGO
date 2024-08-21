@@ -38,17 +38,7 @@ namespace DCGO.CardEffects.EX6
             }
             
             #endregion
-            
-            #region On Play/ When Digivolving Shared
-            
-            string EffectSharedDescription()
-            {
-                return
-                    "[On Play] [When Digivolving] Trigger <Recovery +1 (Deck)>. (Place the top card of your deck on top of your security stack.)";
-            }
-            
-            #endregion
-            
+                       
             #region On Play
             
             if (timing == EffectTiming.OnEnterFieldAnyone)
@@ -56,9 +46,15 @@ namespace DCGO.CardEffects.EX6
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Recovery +1 (Deck)", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false,
-                    EffectSharedDescription());
+                    EffectDescription());
                 cardEffects.Add(activateClass);
-                
+
+                string EffectDescription()
+                {
+                    return
+                        "[On Play] Trigger <Recovery +1 (Deck)>. (Place the top card of your deck on top of your security stack.)";
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
@@ -96,9 +92,15 @@ namespace DCGO.CardEffects.EX6
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Recovery +1 (Deck)", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false,
-                    EffectSharedDescription());
+                    EffectDescription());
                 cardEffects.Add(activateClass);
-                
+
+                string EffectDescription()
+                {
+                    return
+                        "[When Digivolving] Trigger <Recovery +1 (Deck)>. (Place the top card of your deck on top of your security stack.)";
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);

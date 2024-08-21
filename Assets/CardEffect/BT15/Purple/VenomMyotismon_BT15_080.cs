@@ -18,11 +18,7 @@ public class VenomMyotismon_BT15_080 : CEntity_Effect
         }
 
         #region On Play/When Digivolving/On Deletion Shared
-        string EffectDiscription()
-        {
-            return "[On Play] [When Digivolving] [On Deletion] Delete 1 of your opponent's level 5 or lower Digimon.";
-        }
-
+        
         bool CanSelectPermanentCondition(Permanent permanent)
         {
             if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
@@ -46,6 +42,11 @@ public class VenomMyotismon_BT15_080 : CEntity_Effect
             activateClass.SetUpICardEffect("Delete 1 level 5 or lower Digimon", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
+
+            string EffectDiscription()
+            {
+                return "[On Play] Delete 1 of your opponent's level 5 or lower Digimon.";
+            }
 
             bool CanUseCondition(Hashtable hashtable)
             {
@@ -100,6 +101,11 @@ public class VenomMyotismon_BT15_080 : CEntity_Effect
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 
+            string EffectDiscription()
+            {
+                return "[When Digivolving] Delete 1 of your opponent's level 5 or lower Digimon.";
+            }
+
             bool CanUseCondition(Hashtable hashtable)
             {
                 return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
@@ -152,6 +158,11 @@ public class VenomMyotismon_BT15_080 : CEntity_Effect
             activateClass.SetUpICardEffect("Delete 1 level 5 or lower Digimon", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
+
+            string EffectDiscription()
+            {
+                return "[On Deletion] Delete 1 of your opponent's level 5 or lower Digimon.";
+            }
 
             bool CanUseCondition(Hashtable hashtable)
             {
