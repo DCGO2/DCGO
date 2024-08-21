@@ -11,11 +11,7 @@ public class MegaSeadramon_BT15_029 : CEntity_Effect
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
         #region On Play/When Digivolving Shared
-        string EffectSharedDiscription()
-        {
-            return "[On Play] [When Digivolving] By placing 1 of your other blue Digimon as this Digimon's bottom digivolution card, return 1 of your opponent's Digimon whose level is less than or equal to the placed card's level to the bottom of the deck.";
-        }
-
+        
         bool CanSelectSharedOwnPermanentCondition(Permanent permanent)
         {
             if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
@@ -62,6 +58,11 @@ public class MegaSeadramon_BT15_029 : CEntity_Effect
             activateClass.SetUpICardEffect("Place 1 Digimon card to digivolution cards to return 1 of your opponent's Digimon whose level is less than or equal to the placed card's level to the bottom of the deck.", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, true, EffectSharedDiscription());
             cardEffects.Add(activateClass);
+
+            string EffectSharedDiscription()
+            {
+                return "[On Play] By placing 1 of your other blue Digimon as this Digimon's bottom digivolution card, return 1 of your opponent's Digimon whose level is less than or equal to the placed card's level to the bottom of the deck.";
+            }
 
             bool CanUseCondition(Hashtable hashtable)
             {
@@ -150,6 +151,11 @@ public class MegaSeadramon_BT15_029 : CEntity_Effect
             activateClass.SetUpICardEffect("Place 1 Digimon card to digivolution cards to return 1 of your opponent's Digimon whose level is less than or equal to the placed card's level to the bottom of the deck.", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, true, EffectSharedDiscription());
             cardEffects.Add(activateClass);
+
+            string EffectSharedDiscription()
+            {
+                return "[When Digivolving] By placing 1 of your other blue Digimon as this Digimon's bottom digivolution card, return 1 of your opponent's Digimon whose level is less than or equal to the placed card's level to the bottom of the deck.";
+            }
 
             bool CanUseCondition(Hashtable hashtable)
             {

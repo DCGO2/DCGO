@@ -38,11 +38,7 @@ public class WereGarurumon_ACE_BT15_026 : CEntity_Effect
         }
 
         #region On Play/When Digivolving Shared
-        string EffectSharedDiscription()
-        {
-            return "[On Play] [When Digivolving] Trigger <Draw 1>. (Draw 1 card from your deck.)";
-        }
-
+        
         bool CanActivateSharedCondition(Hashtable hashtable)
         {
             if (CardEffectCommons.IsExistOnBattleArea(card))
@@ -69,6 +65,11 @@ public class WereGarurumon_ACE_BT15_026 : CEntity_Effect
             activateClass.SetUpICardEffect("Draw 1 and trash 1 card from hand", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, false, EffectSharedDiscription());
             cardEffects.Add(activateClass);
+
+            string EffectSharedDiscription()
+            {
+                return "[On Play] Trigger <Draw 1>. (Draw 1 card from your deck.)";
+            }
 
             bool CanUseCondition(Hashtable hashtable)
             {
@@ -112,6 +113,11 @@ public class WereGarurumon_ACE_BT15_026 : CEntity_Effect
             activateClass.SetUpICardEffect("Draw 1 and trash 1 card from hand", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, false, EffectSharedDiscription());
             cardEffects.Add(activateClass);
+
+            string EffectSharedDiscription()
+            {
+                return "[When Digivolving] Trigger <Draw 1>. (Draw 1 card from your deck.)";
+            }
 
             bool CanUseCondition(Hashtable hashtable)
             {

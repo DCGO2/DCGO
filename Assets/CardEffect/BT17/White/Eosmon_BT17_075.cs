@@ -120,7 +120,7 @@ namespace DCGO.CardEffects.BT17
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,
-                            canNoSelect: false,
+                            canNoSelect: true,
                             canEndNotMax: false,
                             isShowOpponent: true,
                             selectCardCoroutine: SelectCardCoroutineOpponent,
@@ -246,10 +246,9 @@ namespace DCGO.CardEffects.BT17
 
                             if (selectedPermanent != null)
                             {
-                                yield return ContinuousController.instance.StartCoroutine(new IDegeneration(selectedPermanent, maxCountDeDigivolve, activateClass).Degeneration());
+                                for(int i = 0; i < maxCountDeDigivolve; i++)
+                                    yield return ContinuousController.instance.StartCoroutine(new IDegeneration(selectedPermanent, 1, activateClass).Degeneration());
                             }
-
-                            yield return null;
                         }
                     }
                     #endregion
@@ -348,7 +347,7 @@ namespace DCGO.CardEffects.BT17
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,
-                            canNoSelect: false,
+                            canNoSelect: true,
                             canEndNotMax: false,
                             isShowOpponent: true,
                             selectCardCoroutine: SelectCardCoroutineOpponent,

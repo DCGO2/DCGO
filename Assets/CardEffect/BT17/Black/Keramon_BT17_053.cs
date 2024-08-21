@@ -95,15 +95,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanActivateOnDeletion(card))
-                    {
-                        if (card.PermanentJustBeforeRemoveField.CardTraitsJustBeforeRemoveField.Contains("Unidentified"))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.CanActivateOnDeletion(card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -112,7 +104,8 @@ namespace DCGO.CardEffects.BT17
                     {
                         if (card.Owner.fieldCardFrames.Count((frame) => frame.IsEmptyFrame()) >= 1)
                         {
-                            return true;
+                            if (CardEffectCommons.CanActivateSelfOnDeletionWithContainingTrait(hashtable, "Unidentified", card))
+                                return true;
                         }
                     }
 
@@ -121,19 +114,7 @@ namespace DCGO.CardEffects.BT17
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    List<Hashtable> deletionHashtables = CardEffectCommons.GetHashtablesFromHashtable(hashtable);
-
-                    if (deletionHashtables.Count > 0)
-                    {
-                        Hashtable hash = deletionHashtables[0];
-                        if (hash.ContainsKey("TopCard") && hash["TopCard"] is CardSource)
-                        {
-                            CardSource source = (CardSource)hash["TopCard"];
-
-                            if (card.ContainsTraits("Unidentified"))
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayDiaboromonToken(activateClass));
-                        }
-                    }
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayDiaboromonToken(activateClass));
                 }
             }
             #endregion

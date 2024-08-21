@@ -12,11 +12,7 @@ namespace DCGO.CardEffects.LM
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region On Play/When Digivolving
-            string EffectSharedDiscription()
-            {
-                return "[On Play] [When Digivolving] Suspend 1 of your opponent's Digimon. Then, if they have no unsuspended Digimon, 1 of your Digimon gains <Blocker> until the end of your opponent's turn.";
-            }
-
+            
             bool CanSelectSharedPermanentCondition(Permanent permanent)
             {
                 return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
@@ -54,8 +50,13 @@ namespace DCGO.CardEffects.LM
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Gain <Blocker>", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectSharedDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[On Play] Suspend 1 of your opponent's Digimon. Then, if they have no unsuspended Digimon, 1 of your Digimon gains <Blocker> until the end of your opponent's turn.";
+                }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
@@ -132,8 +133,13 @@ namespace DCGO.CardEffects.LM
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Gain <Blocker>", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectSharedDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[When Digivolving] Suspend 1 of your opponent's Digimon. Then, if they have no unsuspended Digimon, 1 of your Digimon gains <Blocker> until the end of your opponent's turn.";
+                }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
