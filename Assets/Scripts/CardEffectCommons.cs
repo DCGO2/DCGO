@@ -219,6 +219,18 @@ public partial class CardEffectCommons
     }
     #endregion
 
+    #region Play 1 [Volée & Zerdrücken] Token
+    public static IEnumerator PlayVoléeZerdrücken(ICardEffect activateClass)
+    {
+        yield return ContinuousController.instance.StartCoroutine(PlayToken(
+            tokenData: ContinuousController.instance.VoléeZerdrückenToken,
+            activateClass: activateClass,
+            isOwnerPermanent: true,
+            isTapped: false
+        ));
+    }
+    #endregion
+
     #region Security effect of "add this card to hand"
     public static IEnumerator AddThisCardToHand(CardSource card1, ICardEffect activateClass)
     {
