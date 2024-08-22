@@ -11,6 +11,16 @@ namespace DCGO.CardEffects.EX7
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region Blocker
+            if (timing == EffectTiming.None)
+            {
+                cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(
+                    isInheritedEffect: false,
+                    card: card,
+                    condition: null));
+            }
+            #endregion
+
             #region On Deletion
             if (timing == EffectTiming.OnDestroyedAnyone)
             {

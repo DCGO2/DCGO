@@ -185,7 +185,7 @@ namespace DCGO.CardEffects.EX7
 
                     if (CanActivateSecondEffectCondition(hashtable))
                     {
-                        
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayVoléeZerdrücken(activateClass));
                     }
                 }
             }
