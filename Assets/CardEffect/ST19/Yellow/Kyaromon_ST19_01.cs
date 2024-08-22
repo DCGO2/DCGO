@@ -31,7 +31,7 @@ namespace DCGO.CardEffects.ST19
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card) && 
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && 
                            CardEffectCommons.HasMatchConditionOwnersPermanent(card,
                         permanent => permanent.IsDigimon && permanent != card.PermanentOfThisCard());
                 }
