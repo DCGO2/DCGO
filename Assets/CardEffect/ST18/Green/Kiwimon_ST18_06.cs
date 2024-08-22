@@ -80,7 +80,7 @@ namespace DCGO.CardEffects.ST18
                 string EffectDescription()
                 {
                     return
-                        "[On Play] Suspend 1 of your opponent's Digimon.";
+                        "[On Deletion] Suspend 1 of your opponent's Digimon.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
