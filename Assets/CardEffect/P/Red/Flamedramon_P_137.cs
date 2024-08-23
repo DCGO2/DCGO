@@ -46,7 +46,6 @@ namespace DCGO.CardEffects.P
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Your opponent adds the top card of their security stack to the hand", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
-                activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("AddOpponentSecurityToHand_P_0137");
                 cardEffects.Add(activateClass);
 
@@ -57,7 +56,7 @@ namespace DCGO.CardEffects.P
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (CardEffectCommons.CanTriggerOnAttackTargetSwitch(hashtable, card))
                         {
@@ -73,7 +72,7 @@ namespace DCGO.CardEffects.P
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         return true;
                     }

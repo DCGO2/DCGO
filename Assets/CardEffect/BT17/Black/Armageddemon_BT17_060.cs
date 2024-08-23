@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace DCGO.CardEffects.BT17
@@ -233,10 +234,10 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanSelectCardInTrash(CardSource source)
                 {
-                    if (source.EqualsCardName("Diaboromon"))
+                    if (source.HasText("Diaboromon"))
                         return true;
 
-                    if (source.CardTraits.Contains("Unidentified"))
+                    if (source.ContainsTraits("Unidentified"))
                         return true;
 
                     return false;
@@ -255,6 +256,28 @@ namespace DCGO.CardEffects.BT17
                     return false;
                 }
 
+                bool CanEndSelectCostCondition(List<CardSource> cardSources)
+                {
+                    if (card.BasePlayCostFromEntity - cardSources.Count > card.Owner.MaxMemoryCost)
+                        return false;
+
+                    return true;
+                }
+
+                bool CanNoSelect(CardSource cardSource)
+                {
+                    if (cardSource != null)
+                    {
+                        if (cardSource.PayingCost(SelectCardEffect.Root.Hand, null, checkAvailability: false) > cardSource.Owner.MaxMemoryCost)
+                        {
+                            return false;
+                        }
+                    }
+
+                    return true;
+                }
+
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.CanTriggerWhenPermanentWouldPlay(hashtable, CardCondition))
@@ -267,26 +290,16 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.HasMatchConditionOpponentsCardInTrash(card, CanSelectCardInTrash);
+                    return CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardInTrash);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionOpponentsCardInTrash(card, CanSelectCardInTrash))
+                    bool canNoSelect = CanNoSelect(CardEffectCommons.GetCardFromHashtable(_hashtable));
+                    List<CardSource> selectedCards = new List<CardSource>();
+
+                    if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardInTrash))
                     {
-                        bool CanNoSelect = true;
-                        List<CardSource> selectedCards = new List<CardSource>();
-
-                        CardSource Card = CardEffectCommons.GetCardFromHashtable(_hashtable);
-
-                        if (Card != null)
-                        {
-                            if (Card.PayingCost(SelectCardEffect.Root.Hand, null, checkAvailability: false) > Card.Owner.MaxMemoryCost)
-                            {
-                                CanNoSelect = false;
-                            }
-                        }
-
                         int maxCount = 13;
 
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
@@ -294,13 +307,13 @@ namespace DCGO.CardEffects.BT17
                         selectCardEffect.SetUp(
                             canTargetCondition: CanSelectCardInTrash,
                             canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            canNoSelect: () => CanNoSelect,
+                            canEndSelectCondition: CanEndSelectCostCondition,
+                            canNoSelect: () => canNoSelect,
                             selectCardCoroutine: null,
                             afterSelectCardCoroutine: SelectCardCoroutine,
                             message: "Select up to 13 cards to bottom of deck.",
                             maxCount: maxCount,
-                            canEndNotMax: false,
+                            canEndNotMax: true,
                             isShowOpponent: true,
                             mode: SelectCardEffect.Mode.Custom,
                             root: SelectCardEffect.Root.Trash,
@@ -320,7 +333,7 @@ namespace DCGO.CardEffects.BT17
                             {
                                 selectedCards = sources.Clone();
                                 selectedCards.Reverse();
-                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(selectedCards));
+                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(selectedCards));
                             }
                         }
 
@@ -408,10 +421,10 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanSelectCardInTrash(CardSource source)
                 {
-                    if (source.EqualsCardName("Diaboromon"))
+                    if (source.HasText("Diaboromon"))
                         return true;
 
-                    if (source.CardTraits.Contains("Unidentified"))
+                    if (source.ContainsTraits("Unidentified"))
                         return true;
 
                     return false;

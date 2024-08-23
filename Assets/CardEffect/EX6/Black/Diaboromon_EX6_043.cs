@@ -107,7 +107,10 @@ namespace DCGO.CardEffects.EX6
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, IsOpponentDigimon);
+                    if(CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                        return CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, IsOpponentDigimon);
+
+                    return false;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

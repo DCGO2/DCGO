@@ -24,7 +24,7 @@ namespace DCGO.CardEffects.BT17
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
                     permanentCondition: PermanentCondition,
-                    digivolutionCost: 45,
+                    digivolutionCost: 4,
                     ignoreDigivolutionRequirement: false,
                     card: card,
                     condition: null));
@@ -47,7 +47,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool HasProperEosmon(CardSource source)
                 {
-                    if (source.HasLevel && source.Level == 5)
+                    if (source.HasLevel && source.Level <= 5)
                     {
                         if (source.EqualsCardName("Eosmon"))
                         {
@@ -72,7 +72,7 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.HasMatchConditionOwnersHand(card, HasProperEosmon))
                     {
-                        int maxCount = Math.Min(4, card.Owner.HandCards.Count(HasProperEosmon));
+                        int maxCount = Math.Min(1, card.Owner.HandCards.Count(HasProperEosmon));
 
                         SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
@@ -128,7 +128,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool HasProperEosmon(CardSource source)
                 {
-                    if (source.HasLevel && source.Level == 5)
+                    if (source.HasLevel && source.Level <= 5)
                     {
                         if (source.EqualsCardName("Eosmon"))
                         {
@@ -153,7 +153,7 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.HasMatchConditionOwnersHand(card, HasProperEosmon))
                     {
-                        int maxCount = Math.Min(4, card.Owner.HandCards.Count(HasProperEosmon));
+                        int maxCount = Math.Min(1, card.Owner.HandCards.Count(HasProperEosmon));
 
                         SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
@@ -310,7 +310,7 @@ namespace DCGO.CardEffects.BT17
                 cardEffects.Add(CardEffectFactory.ChangeDPStaticEffect(
                     permanentCondition: PermanentCondition,
                     changeValue: DPIncrease(),
-                    isInheritedEffect: true,
+                    isInheritedEffect: false,
                     card: card,
                     condition: Condition,
                     effectName: () => "[Your Turn] For each Tamer, all of your [Eosmon] get +1000 DP."));

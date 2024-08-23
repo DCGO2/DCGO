@@ -21,13 +21,6 @@ public class Myotismon_ACE_BT15_076 : CEntity_Effect
             cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
         }
 
-        #region On Play/When Digivolving Shared
-        string EffectDiscription()
-        {
-            return "[On Play] [When Digivolving] You may play 1 purple level 3 Digimon card or 1 purple Tamer card from your trash without paying the cost.";
-        }
-        #endregion
-
         #region On Play
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
@@ -35,6 +28,11 @@ public class Myotismon_ACE_BT15_076 : CEntity_Effect
             activateClass.SetUpICardEffect("Play 1 Digimon or Tamer from trash", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
             cardEffects.Add(activateClass);
+
+            string EffectDiscription()
+            {
+                return "[On Play] You may play 1 purple level 3 Digimon card or 1 purple Tamer card from your trash without paying the cost.";
+            }
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
@@ -140,6 +138,11 @@ public class Myotismon_ACE_BT15_076 : CEntity_Effect
             activateClass.SetUpICardEffect("Play 1 Digimon or Tamer from trash", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
             cardEffects.Add(activateClass);
+
+            string EffectDiscription()
+            {
+                return "[When Digivolving] You may play 1 purple level 3 Digimon card or 1 purple Tamer card from your trash without paying the cost.";
+            }
 
             bool CanSelectCardCondition(CardSource cardSource)
             {

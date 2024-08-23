@@ -100,7 +100,7 @@ namespace DCGO.CardEffects.BT16
                         {
                             if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                             {
-                                if (permanent.TopCard.HasDP && permanent.TopCard.CardDP <= selectedPermanent.DP)
+                                if (permanent.TopCard.HasDP && permanent.DP <= selectedPermanent.DP)
                                 {
                                     return true;
                                 }
@@ -207,7 +207,7 @@ namespace DCGO.CardEffects.BT16
                         {
                             if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                             {
-                                if (permanent.TopCard.HasDP && permanent.TopCard.CardDP <= selectedPermanent.DP)
+                                if (permanent.TopCard.HasDP && permanent.DP <= selectedPermanent.DP)
                                 {
                                     return true;
                                 }

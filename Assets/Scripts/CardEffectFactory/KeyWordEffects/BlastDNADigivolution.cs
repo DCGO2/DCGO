@@ -35,8 +35,8 @@ public partial class CardEffectFactory
 
         foreach (BlastDNACondition DNACondition in blastDNAConditions)
         {
-            DNACondition.Permanents = fieldPermanents.Filter(permanent => permanent.TopCard.ContainsCardName(DNACondition.Name));
-            DNACondition.CardSources = card.Owner.HandCards.Filter(cardSource => cardSource.ContainsCardName(DNACondition.Name));
+            DNACondition.Permanents = fieldPermanents.Filter(permanent => permanent.TopCard.EqualsCardName(DNACondition.Name));
+            DNACondition.CardSources = card.Owner.HandCards.Filter(cardSource => cardSource.EqualsCardName(DNACondition.Name));
 
             permanentSources.AddRange(DNACondition.Permanents);
             handSources.AddRange(DNACondition.CardSources);

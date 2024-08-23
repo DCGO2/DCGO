@@ -147,7 +147,9 @@ namespace DCGO.CardEffects.BT17
                             
                             selectHandEffectOpponent.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
                             selectHandEffectOpponent.SetUpCustomMessage_ShowCard("Played Card");
-                            
+
+                            yield return StartCoroutine(selectHandEffectOpponent.Activate());
+
                             IEnumerator SelectCardCoroutineOpponent(CardSource cardSource)
                             {
                                 selectedCardsOpponent.Add(cardSource);
@@ -155,13 +157,16 @@ namespace DCGO.CardEffects.BT17
                                 yield return null;
                             }
                             
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                                cardSources: selectedCardsOpponent, 
-                                activateClass: activateClass, 
-                                payCost: false, 
-                                isTapped: false, 
-                                root: SelectCardEffect.Root.Hand, 
-                                activateETB: true));
+                            if(selectedCardsOpponent.Count > 0)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
+                                    cardSources: selectedCardsOpponent,
+                                    activateClass: activateClass,
+                                    payCost: false,
+                                    isTapped: false,
+                                    root: SelectCardEffect.Root.Hand,
+                                    activateETB: true));
+                            }
                         }
                     }
                 }

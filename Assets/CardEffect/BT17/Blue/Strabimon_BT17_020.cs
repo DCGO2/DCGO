@@ -126,18 +126,17 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanSelectHandCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.IsTamer)
+                    if (card.Owner.HandCards.Contains(cardSource))
                     {
-                        if (cardSource.HasInheritedEffect)
+                        if (cardSource.IsTamer)
                         {
-                            if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: true,
-                                    cardEffect: activateClass))
+                            if (cardSource.HasInheritedEffect)
                             {
                                 return true;
                             }
                         }
                     }
-
+                    
                     return false;
                 }
 
@@ -160,7 +159,7 @@ namespace DCGO.CardEffects.BT17
 
                     ChangeCostClass changeCostClass = new ChangeCostClass();
                     changeCostClass.SetUpICardEffect($"Play Cost -2", _ => true, card);
-                    changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition,
+                    changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CanSelectHandCardCondition,
                         rootCondition: RootCondition, isUpDown: () => true, isCheckAvailability: () => false,
                         isChangePayingCost: () => true);
                     Func<EffectTiming, ICardEffect> getCardEffect = GetCardEffect;
@@ -178,7 +177,7 @@ namespace DCGO.CardEffects.BT17
 
                     int ChangeCost(CardSource cardSource, int cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
                     {
-                        if (CardSourceCondition(cardSource))
+                        if (CanSelectHandCardCondition(cardSource))
                         {
                             if (RootCondition(root))
                             {
@@ -200,16 +199,6 @@ namespace DCGO.CardEffects.BT17
                         }
 
                         return targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0;
-                    }
-
-                    bool CardSourceCondition(CardSource cardSource)
-                    {
-                        if (cardSource.HasPlayCost)
-                        {
-                            return CanSelectHandCardCondition(cardSource);
-                        }
-
-                        return false;
                     }
 
                     bool RootCondition(SelectCardEffect.Root root)

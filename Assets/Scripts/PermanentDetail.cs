@@ -215,10 +215,10 @@ public class PermanentDetail : MonoBehaviour
         #endregion
 
         #region Partition
-        /*if (permanent.HasPartition)
+        if (permanent.HasPartition)
         {
             effectString += $"- Partition\n";
-        }*/
+        }
         #endregion
 
         #region Security Attack Changes

@@ -62,7 +62,7 @@ namespace DCGO.CardEffects.BT17
             #endregion
 
             #region When Attacking
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Return 1 to bottom of deck, unsusped this digimon", CanUseCondition, card);
@@ -76,7 +76,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool IsOpponentsDigimon(Permanent permanent)
                 {
-                    if(CardEffectCommons.IsOpponentPermanent(permanent, card))
+                    if(CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                         return permanent.DigivolutionCards.Count == 0;
 
                     return false;
@@ -87,7 +87,7 @@ namespace DCGO.CardEffects.BT17
                     if (CardEffectCommons.CanTriggerOnAttack(hashtable, card))
                         return CardEffectCommons.HasMatchConditionPermanent(IsOpponentsDigimon);
 
-                    return true;
+                    return false;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -109,7 +109,7 @@ namespace DCGO.CardEffects.BT17
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,
-                            canNoSelect: false,
+                            canNoSelect: true,
                             canEndNotMax: false,
                             selectPermanentCoroutine: null,
                             afterSelectPermanentCoroutine: SelectedBottomDeck,
@@ -120,11 +120,11 @@ namespace DCGO.CardEffects.BT17
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                        IEnumerator SelectedBottomDeck(List<Permanent> untappedPermanents)
+                        IEnumerator SelectedBottomDeck(List<Permanent> bottomDeckedPermanents)
                         {
-                            if(untappedPermanents.Count > 0)
+                            if(bottomDeckedPermanents.Count > 0)
                                 yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(
-                                    untappedPermanents,
+                                    new List<Permanent> { card.PermanentOfThisCard() },
                                     activateClass).Unsuspend());
                         }
                     }
@@ -147,7 +147,7 @@ namespace DCGO.CardEffects.BT17
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash digivolution sources, Return all cards in trash, Memory +3", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -191,7 +191,7 @@ namespace DCGO.CardEffects.BT17
 
                     bool willReturnYourTrash = GManager.instance.userSelectionManager.SelectedBoolValue;
 
-                    List<CardSource> returnedSources = willReturnYourTrash ? card.Owner.TrashCards : card.Owner.Enemy.TrashCards;
+                    List<CardSource> returnedSources = willReturnYourTrash ? card.Owner.TrashCards.Clone() : card.Owner.Enemy.TrashCards.Clone();
 
                     yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(returnedSources));
 
@@ -208,7 +208,7 @@ namespace DCGO.CardEffects.BT17
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash digivolution sources, Return all cards in trash, Memory +3", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -252,7 +252,7 @@ namespace DCGO.CardEffects.BT17
 
                     bool willReturnYourTrash = GManager.instance.userSelectionManager.SelectedBoolValue;
 
-                    List<CardSource> returnedSources = willReturnYourTrash ? card.Owner.TrashCards : card.Owner.Enemy.TrashCards;
+                    List<CardSource> returnedSources = willReturnYourTrash ? card.Owner.TrashCards.Clone() : card.Owner.Enemy.TrashCards.Clone();
 
                     yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(returnedSources));
 

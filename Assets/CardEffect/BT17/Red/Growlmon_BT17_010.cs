@@ -139,7 +139,8 @@ namespace DCGO.CardEffects.BT17
                         {
                             if (cardEffect.EffectSourceCard.Owner == card.Owner)
                             {
-                                maxDP += 2000;
+                                if (cardEffect.EffectSourceCard.PermanentOfThisCard() == card.PermanentOfThisCard())
+                                    maxDP += 2000;
                             }
                         }
                     }

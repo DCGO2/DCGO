@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace DCGO.CardEffects.BT17
 {
-    public class ClockoftheEnd_BT17_100 : CEntity_Effect
+    public class DoomsdayClock_BT17_100 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
@@ -21,26 +21,33 @@ namespace DCGO.CardEffects.BT17
 
                 string EffectDiscription()
                 {
-                    return "[Main] Play 1 [Diaboromon] Token without paying the cost. Then, place this card as the bottom digivolution card of 1 of your [Diaboromon] without [Clock of the End] in its digivolution cards.";
+                    return "[Main] Play 1 [Diaboromon] Token without paying the cost. Then, place this card as the bottom digivolution card of 1 of your [Diaboromon] without [Doomsday Clock] in its digivolution cards.";
                 }
 
-                bool IsClockOfTheEnd(CardSource source)
+                bool IsDoomsdayClock(CardSource source)
                 {
-                    return source.EqualsCardName("Clock of the End");
+                    return source.EqualsCardName("Doomsday Clock");
                 }
 
                 bool HasDiaboromonWithoutClock(Permanent permanent)
                 {
-                    if (permanent.IsDigimon)
+                    if(CardEffectCommons.IsOwnerPermanent(permanent, card))
                     {
-                        if (!permanent.IsToken)
+                        if (permanent.IsDigimon)
                         {
-                            if(permanent.DigivolutionCards.Count(IsClockOfTheEnd) == 0)
+                            if (!permanent.IsToken)
                             {
-                                return true;
+                                if (permanent.TopCard.EqualsCardName("Diaboromon"))
+                                {
+                                    if (permanent.DigivolutionCards.Count(IsDoomsdayClock) == 0)
+                                    {
+                                        return true;
+                                    }
+                                }
                             }
                         }
                     }
+                    
                     return false;
                 }
 
@@ -96,14 +103,14 @@ namespace DCGO.CardEffects.BT17
             #region Start of Your Turn
             if(timing == EffectTiming.OnStartTurn)
             {
-                bool IsClockofTheEnd(Permanent permanent)
+                bool IsDoomsdayClock(Permanent permanent)
                 {
-                    return permanent.TopCard.EqualsCardName("Clock of the End");
+                    return permanent.TopCard.EqualsCardName("Doomsday Clock");
                 }
 
-                if (CardEffectCommons.MatchConditionOwnersPermanentCount(card, IsClockofTheEnd) >= 4)
+                if (CardEffectCommons.MatchConditionOwnersPermanentCount(card, IsDoomsdayClock) >= 4)
                 {
-                    GManager.instance.turnStateMachine.EndGame(card.Owner, false, "Clock of the End");
+                    GManager.instance.turnStateMachine.EndGame(card.Owner, false, "Doomsday Clock");
                 }
             }
             #endregion
@@ -224,29 +231,27 @@ namespace DCGO.CardEffects.BT17
             if (timing == EffectTiming.OnEndTurn)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Place 1 [Clock of the End] from digivolution cards", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpICardEffect("Place 1 [Doomsday Clock] from digivolution cards", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("PlayCard_BT10_066");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[End of Opponent's Turn] Place 1 [Clock of the End] from this Digimon's digivolution cards in the battle area.";
+                    return "[End of Opponent's Turn] Place 1 [Doomsday Clock] from this Digimon's digivolution cards in the battle area.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
-                        return cardSource.EqualsCardName("Clock of the End");
-
-                    return false;
+                    return cardSource.EqualsCardName("Doomsday Clock");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card))
+                        if (CardEffectCommons.IsOpponentTurn(card))
                         {
                             return true;
                         }

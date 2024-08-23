@@ -18,7 +18,7 @@ namespace DCGO.CardEffects.BT17
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect($"Play 1 [Guilmon] or [Takato Matsuki] from your hand or trash",
                     CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, EffectDescription());
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsSecurityEffect(true);
                 cardEffects.Add(activateClass);
 
@@ -39,13 +39,12 @@ namespace DCGO.CardEffects.BT17
                     {
                         if (cardSource.IsDigimon)
                         {
-                            return cardSource.ContainsCardName("Guilmon");
+                            return cardSource.EqualsCardName("Guilmon");
                         }
 
                         if (cardSource.IsTamer)
                         {
-                            return cardSource.ContainsCardName("Takato Matsuki") ||
-                                   cardSource.ContainsCardName("TakatoMatsuki");
+                            return cardSource.EqualsCardName("Takato Matsuki");
                         }
                     }
 
@@ -184,11 +183,16 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPermanentPlay(hashtable,
+                    if (CardEffectCommons.CanDeclareOptionDelayEffect(card))
+                    {
+                        return CardEffectCommons.CanTriggerOnPermanentPlay(hashtable,
                         permanent =>
                             CardEffectCommons.IsOpponentPermanent(permanent, card) &&
                             permanent.IsDigimon &&
-                            permanent.Level >= 5);
+                            permanent.TopCard.HasLevel && permanent.Level >= 5);
+                    }
+                      
+                    return false;
                 }
 
                 bool IsGallantmonCardCondition(CardSource cardSource)

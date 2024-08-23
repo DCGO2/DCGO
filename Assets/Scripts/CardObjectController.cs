@@ -571,7 +571,7 @@ public class CardObjectController : MonoBehaviour
         }
 
         List<CardSource> eggCards = cardSources.Filter(cardSource => cardSource.IsDigiEgg);
-        List<CardSource> addedCards = cardSources.Filter(cardSource => !cardSource.IsDigiEgg || !cardSource.IsToken);
+        List<CardSource> addedCards = cardSources.Filter(cardSource => !cardSource.IsDigiEgg && !cardSource.IsToken);
 
         if (eggCards.Count <= 0)
             yield return ContinuousController.instance.StartCoroutine(AddLibraryBottomCards(eggCards));
@@ -585,7 +585,7 @@ public class CardObjectController : MonoBehaviour
             yield return ContinuousController.instance.StartCoroutine(AddHandCard(cardSource, isDraw));
         }
 
-        if (GManager.instance.turnStateMachine.DoneStartGame)
+        if (GManager.instance.turnStateMachine.DoneStartGame && addedCards.Count > 0)
         {
             List<Player> Players = addedCards.Map(cardSource => cardSource.Owner).Distinct().ToList();
 
@@ -878,7 +878,7 @@ public class CardObjectController : MonoBehaviour
             }
         }
 
-        foreach (CardSource cardSource in cardSources)
+        foreach (CardSource cardSource in cardSources.Clone())
         {
             bool isFromHand = CardEffectCommons.IsExistOnHand(cardSource);
 

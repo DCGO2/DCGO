@@ -138,6 +138,7 @@ namespace DCGO.CardEffects.BT17
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("If a card is trashed from security and there's a Tamer in the digivolution cards, Recovery +1.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetHashString("Recovery_BT17_034");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -152,7 +153,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                        if (CardEffectCommons.CanTriggerOnTrashSecurity(hashtable,  cardEffect => true, cardSource => cardSource.Owner == card.Owner))
                        {

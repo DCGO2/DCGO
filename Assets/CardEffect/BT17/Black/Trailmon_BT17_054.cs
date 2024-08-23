@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace DCGO.CardEffects.BT17
 {
@@ -66,17 +67,15 @@ namespace DCGO.CardEffects.BT17
             #endregion
 
             #region All Turns - ESS
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnCounterTiming)
             {
                 bool condition()
                 {
-                    if (!CardEffectCommons.IsOwnerTurn(card))
-                        return false;
+                    UnityEngine.Debug.Log($"ESS: {card.PermanentOfThisCard().TopCard != card}, {card.PermanentOfThisCard().TopCard.ContainsTraits("Machine")}");
+                    if (card.PermanentOfThisCard().TopCard != card)
+                        return card.PermanentOfThisCard().TopCard.ContainsTraits("Machine");
 
-                    if (card.PermanentOfThisCard().TopCard.ContainsTraits("Machine"))
-                        return false;
-
-                    return true;
+                    return false;
                 }
 
                 cardEffects.Add(CardEffectFactory.CollisionSelfStaticEffect(

@@ -12,7 +12,7 @@ public class AttachCardData : MonoBehaviour
     {
         List<CEntity_Base> List = GetAsset.LoadAll<CEntity_Base>("Assets/CardBaseEntity/");
 
-        List<string> UnimplementedCardSpriteNames = new List<string>() { };
+        List<string> UnimplementedCardSpriteNames = new List<string>() { "P-147" };
 
         foreach (GameObject obj in Selection.gameObjects)
         {
