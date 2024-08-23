@@ -126,7 +126,7 @@ namespace DCGO.CardEffects.BT16
             #endregion
 
             #region All Turns - ESS
-            if (timing == EffectTiming.OnDestroyedAnyone)
+            if (timing == EffectTiming.OnDestroyedAnyone || timing == EffectTiming.OnEndBattle)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 digimon 5 cost or less", CanUseCondition, card);

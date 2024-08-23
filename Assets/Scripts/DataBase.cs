@@ -687,7 +687,6 @@ public class DataBase : MonoBehaviour
                     new CardLimitCount("EX1-068", 1),
                     new CardLimitCount("P-008", 1),
                     new CardLimitCount("P-025", 1),
-                    new CardLimitCount("ST6-03", 1),
                     new CardLimitCount("BT2-069", 1),
                     new CardLimitCount("BT13-012", 1),
                     new CardLimitCount("EX4-019", 1),
@@ -697,6 +696,12 @@ public class DataBase : MonoBehaviour
                     new CardLimitCount("EX5-015", 1),
                     new CardLimitCount("EX5-018", 1),
                     new CardLimitCount("EX5-062", 1),
+                    new CardLimitCount("P-123", 1),
+                    new CardLimitCount("P-130", 1),
+                    new CardLimitCount("ST2-13", 1),
+                    new CardLimitCount("BT9-098", 1),
+                    new CardLimitCount("BT15-057", 1),
+                    new CardLimitCount("BT14-084", 1),
                 },
                 new List<BannedPair>()
                 {
@@ -727,7 +732,6 @@ public class DataBase : MonoBehaviour
                     new CardLimitCount("EX1-068", 1),
                     new CardLimitCount("P-008", 1),
                     new CardLimitCount("P-025", 1),
-                    new CardLimitCount("ST6-03", 1),
                     new CardLimitCount("BT2-069", 1),
                     new CardLimitCount("BT13-012", 1),
                     new CardLimitCount("EX4-019", 1),
@@ -737,6 +741,12 @@ public class DataBase : MonoBehaviour
                     new CardLimitCount("EX5-015", 1),
                     new CardLimitCount("EX5-018", 1),
                     new CardLimitCount("EX5-062", 1),
+                    new CardLimitCount("P-123", 1),
+                    new CardLimitCount("P-130", 1),
+                    new CardLimitCount("ST2-13", 1),
+                    new CardLimitCount("BT9-098", 1),
+                    new CardLimitCount("BT15-057", 1),
+                    new CardLimitCount("BT14-084", 1),
                 },
                 new List<BannedPair>()
                 {

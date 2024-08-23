@@ -34,7 +34,7 @@ namespace DCGO.CardEffects.EX6
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.ContainsTraits("Angel") ||
+                        if ((cardSource.ContainsTraits("Angel") && !cardSource.ContainsTraits("Fallen Angel")) ||
                             cardSource.ContainsTraits("Archangel") ||
                             cardSource.ContainsTraits("Three Great Angels") ||
                             cardSource.ContainsTraits("ThreeGreatAngels"))
