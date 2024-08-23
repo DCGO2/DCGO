@@ -177,12 +177,6 @@ namespace DCGO.CardEffects.LM
             #endregion
 
             #region On Play/When Digivolving Shared
-            string EffectDiscription()
-            {
-                return "[On Play] [When Digivolving] Trash the bottom 3 digivolution cards of 1 of your opponent's Digimon. Then, until the end of their turn, none of their Digimon with no digivolution cards can't attack.";
-            }
-
-            
 
             bool CanActivateCondition(Hashtable hashtable)
             {
@@ -201,6 +195,11 @@ namespace DCGO.CardEffects.LM
                 activateClass.SetUpICardEffect(card.BaseENGCardNameFromEntity, CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[On Play] Trash the bottom 3 digivolution cards of 1 of your opponent's Digimon. Then, until the end of their turn, none of their Digimon with no digivolution cards can't attack.";
+                }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
@@ -281,6 +280,11 @@ namespace DCGO.CardEffects.LM
                 activateClass.SetUpICardEffect(card.BaseENGCardNameFromEntity, CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[When Digivolving] Trash the bottom 3 digivolution cards of 1 of your opponent's Digimon. Then, until the end of their turn, none of their Digimon with no digivolution cards can't attack.";
+                }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {

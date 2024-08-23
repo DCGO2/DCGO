@@ -11,6 +11,23 @@ namespace DCGO.CardEffects.BT17
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region Alternate Digivolution
+
+            if (timing == EffectTiming.None)
+            {
+                // Alternate Digivolution
+                bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.EqualsCardName("Sakuyamon: Maid Mode");
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
+                    permanentCondition: PermanentCondition, digivolutionCost: 1, ignoreDigivolutionRequirement: true,
+                    card: card, condition: null));
+            }
+
+            #endregion
+
             #region Barrier
             if (timing == EffectTiming.WhenPermanentWouldBeDeleted)
             {
@@ -22,13 +39,42 @@ namespace DCGO.CardEffects.BT17
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("DP -6000", CanUseCondition, card);
+                activateClass.SetUpICardEffect("DP -6000, then use 1 [Plug - In] Option", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] 1 of your opponent's Digimon gets -6000 DP for the turn.";
+                    return "[When Digivolving] 1 of your opponent's Digimon gets -6000 DP for the turn. Then, you may use 1 Option card with [Plug-In] in its name or 1 yellow Option card with a cost of 5 or less from your hand without paying the cost.";
+                }
+
+                bool OptionCondition(CardSource cardSource)
+                {
+                    if (cardSource.IsOption)
+                    {
+                        if (cardSource.ContainsCardName("Plug-In") || cardSource.CardColors.Contains(CardColor.Yellow))
+                        {
+                            if (cardSource.GetCostItself <= 5)
+                            {
+                                return true;
+                            }
+                        }
+                    }
+
+                    return false;
+                }
+
+                bool CanSelectCardCondition(CardSource cardSource)
+                {
+                    if (OptionCondition(cardSource))
+                    {
+                        if (!cardSource.CanNotPlayThisOption)
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -43,15 +89,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanActivateCondition(Hashtable hashtable)  
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -84,70 +122,7 @@ namespace DCGO.CardEffects.BT17
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: permanent, changeValue: -6000, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
                         }
                     }
-                }
-            }
 
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play 1 [Plug-In] or Yellow Option", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
-                cardEffects.Add(activateClass);
-
-                string EffectDiscription()
-                {
-                    return "[When Digivolving] Then, you may use 1 Option card with [Plug-In] in its name in its name or 1 yellow Option card with a cost of 5 or less from your hand without paying the cost.";
-                }
-
-                bool OptionCondition(CardSource cardSource)
-                {
-                    if (cardSource.IsOption)
-                    {
-                        if (cardSource.ContainsCardName("Plug-In") || cardSource.CardColors.Contains(CardColor.Yellow))
-                        {
-                            if(cardSource.GetCostItself <= 5)
-                            {
-                                return true;
-                            }                         
-                        }
-                    }
-
-                    return false;
-                }
-
-                bool CanSelectCardCondition(CardSource cardSource)
-                {
-                    if (OptionCondition(cardSource))
-                    {
-                        if (!cardSource.CanNotPlayThisOption)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (card.Owner.HandCards.Count >= 1)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
-                {
                     if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
                     {
                         List<CardSource> selectedCards = new List<CardSource>();
@@ -195,6 +170,7 @@ namespace DCGO.CardEffects.BT17
                     }
                 }
             }
+
             #endregion
 
             #region Your Turn
@@ -202,6 +178,8 @@ namespace DCGO.CardEffects.BT17
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("When you use an option, this Digimon can't be returned to hand or deck by effect.", CanUseCondition1, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetHashString("AllTurns_Bt17_038");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -255,16 +233,27 @@ namespace DCGO.CardEffects.BT17
                     return false;
                 }
 
-                string effectName = "Can't return to hand by opponent's effects";
+                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                {
+                    cardEffects.Add(CardEffectFactory.CannotReturnToDeckStaticEffect(
+                        permanentCondition: PermanentCondition,
+                        cardEffectCondition: CardEffectCondition,
+                        isInheritedEffect: false,
+                        card: card,
+                        condition: CanUseCondition2,
+                        effectName: "Can't return to deck by opponent's effects"));
 
-                cardEffects.Add(CardEffectFactory.CannotReturnToHandStaticEffect(
-                    permanentCondition: PermanentCondition,
-                    cardEffectCondition: CardEffectCondition,
-                    isInheritedEffect: false,
-                    card: card,
-                    condition: CanUseCondition2,
-                    effectName: effectName
-                ));
+                    cardEffects.Add(CardEffectFactory.CannotReturnToHandStaticEffect(
+                        permanentCondition: PermanentCondition,
+                        cardEffectCondition: CardEffectCondition,
+                        isInheritedEffect: false,
+                        card: card,
+                        condition: CanUseCondition2,
+                        effectName: "Can't return to hand by opponent's effects"));
+
+                    yield return null;
+                }
+                
             }          
             #endregion
 

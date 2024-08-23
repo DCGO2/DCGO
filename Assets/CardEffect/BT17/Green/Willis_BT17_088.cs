@@ -14,14 +14,9 @@ namespace DCGO.CardEffects.BT17
             #region Start Of main Phase/ On Play
             bool CanSelectYourGreenDigimon(Permanent permanent)
             {
-                if (permanent.IsDigimon)
-                {
-                    if (permanent.TopCard.CardColors.Contains(CardColor.Green))
-                    {
-                        return true;
-                    }
-                }
-
+                if(CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                    return permanent.TopCard.CardColors.Contains(CardColor.Green);
+                
                 return false;
             }
             #endregion
@@ -92,7 +87,7 @@ namespace DCGO.CardEffects.BT17
             #endregion
 
             #region On Play
-            if (timing == EffectTiming.OnStartMainPhase)
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("+2000 DP", CanUseCondition, card);
@@ -108,11 +103,8 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (isExistOnField(card))
                     {
-                        if (CardEffectCommons.IsOwnerTurn(card))
-                        {
-                            if(CardEffectCommons.CanTriggerOnPlay(hashtable, card))
-                                return true;
-                        }
+                        if (CardEffectCommons.CanTriggerOnPlay(hashtable, card))
+                            return true;
                     }
 
                     return false;
@@ -174,11 +166,12 @@ namespace DCGO.CardEffects.BT17
 
                 bool PlayedPermanentCondition(Permanent permanent)
                 {
-                    if (permanent.IsDigimon)
+
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        if(permanent.TopCard.ContainsCardName("Terriermon") || permanent.TopCard.ContainsCardName("Lopmon"))
+                        if (permanent.TopCard.ContainsCardName("Terriermon") || permanent.TopCard.ContainsCardName("Lopmon"))
                         {
-                            return true;
+                                return true;
                         }
                     }
 
@@ -187,13 +180,17 @@ namespace DCGO.CardEffects.BT17
 
                 bool DigivolvePermanentCondition(CardSource source)
                 {
-                    if (source.IsDigimon)
+                    if (source.Owner == card.Owner)
                     {
-                        if (source.CanPlayCardTargetFrame(selectedPermanent.PermanentFrame, true, activateClass))
+                        if (source.IsDigimon)
                         {
-                            return true;
+                            if (source.CanPlayCardTargetFrame(selectedPermanent.PermanentFrame, true, activateClass))
+                            {
+                                return true;
+                            }
                         }
                     }
+                        
 
                     return false;
                 }
@@ -202,9 +199,12 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (isExistOnField(card))
                     {
-                        if(CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PlayedPermanentCondition))
+                        if (CardEffectCommons.IsOwnerTurn(card))
                         {
-                            return true;
+                            if (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PlayedPermanentCondition))
+                            {
+                                return true;
+                            }
                         }
                     }
                     return false;
@@ -261,34 +261,8 @@ namespace DCGO.CardEffects.BT17
                     {
                         if (CardEffectCommons.HasMatchConditionOwnersHand(card, DigivolvePermanentCondition))
                         {
-                            int maxCount = Math.Min(1, card.Owner.HandCards.Count(DigivolvePermanentCondition));
-
-                            SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                            selectHandEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: DigivolvePermanentCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: maxCount,
-                                canNoSelect: true,
-                                canEndNotMax: false,
-                                isShowOpponent: true,
-                                selectCardCoroutine: SelectCardCoroutine,
-                                afterSelectCardCoroutine: null,
-                                mode: SelectHandEffect.Mode.Custom,
-                                cardEffect: activateClass);
-
-                            selectHandEffect.SetUpCustomMessage("Select 1 card to place at the bottom of digivolution cards.", "The opponent is selecting 1 card to place at the bottom of digivolution cards.");
-
-                            yield return StartCoroutine(selectHandEffect.Activate());
-
-                            IEnumerator SelectCardCoroutine(CardSource cardSource)
-                            {
-                                if(cardSource != null)
-                                {
-                                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                                        targetPermanent: card.PermanentOfThisCard(),
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                                        targetPermanent: selectedPermanent,
                                         cardCondition: DigivolvePermanentCondition,
                                         payCost: true,
                                         reduceCostTuple: (reduceCost: 2, reduceCostCardCondition: null),
@@ -297,8 +271,7 @@ namespace DCGO.CardEffects.BT17
                                         isHand: true,
                                         activateClass: activateClass,
                                         successProcess: null));
-                                }
-                            }
+
                         }
                     }
                 }

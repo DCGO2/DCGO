@@ -11,11 +11,7 @@ namespace DCGO.CardEffects.LM
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region On Play/When Digivolving Shared
-            string EffectSharedDiscription()
-            {
-                return "[On Play] [When Digivolving] Suspend 1 of your opponent's Digimon. Then, if they have no unsuspended Digimon, 1 of their Digimon can't unsuspend until the end of their turn.";
-            }
-
+            
             bool CanSelectSharedPermanentCondition(Permanent permanent)
             {
                 return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
@@ -48,8 +44,13 @@ namespace DCGO.CardEffects.LM
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Can't Unsuspend", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectSharedDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[On Play] Suspend 1 of your opponent's Digimon. Then, if they have no unsuspended Digimon, 1 of their Digimon can't unsuspend until the end of their turn.";
+                }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
@@ -127,8 +128,13 @@ namespace DCGO.CardEffects.LM
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Can't Unsuspend", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectSharedDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[When Digivolving] Suspend 1 of your opponent's Digimon. Then, if they have no unsuspended Digimon, 1 of their Digimon can't unsuspend until the end of their turn.";
+                }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {

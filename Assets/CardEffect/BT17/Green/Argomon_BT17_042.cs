@@ -22,7 +22,7 @@ namespace DCGO.CardEffects.BT17
             #endregion
 
             #region On Play
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Reveal 3", CanUseCondition, card);
@@ -119,11 +119,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if(CardEffectCommons.IsExistOnTrash(card))
-                    {
-                        return true;
-                    }
-                    return false;
+                    return CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

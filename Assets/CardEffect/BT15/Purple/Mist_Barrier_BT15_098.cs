@@ -71,71 +71,75 @@ public class Mist_Barrier_BT15_098 : CEntity_Effect
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: maxCount,
-                        canNoSelect: false,
+                        canNoSelect: true,
                         canEndNotMax: false,
                         selectPermanentCoroutine: null,
                         afterSelectPermanentCoroutine: DeleteDigimonCoroutine,
-                        mode: SelectPermanentEffect.Mode.Destroy,
+                        mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
                     IEnumerator DeleteDigimonCoroutine(List<Permanent> list)
                     {
-                        if (list.Count == 1)
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
+                            targetPermanents: list, 
+                            activateClass: activateClass, 
+                            successProcess: permanents => SuccessProcess(),
+                            failureProcess: null));
+                    }
+
+                    IEnumerator SuccessProcess()
+                    {
+                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, (cardSource) => CanSelectMyotismon(cardSource)))
                         {
-                            if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, (cardSource) => CanSelectMyotismon(cardSource)))
+                            int maxCount = Math.Min(1, card.Owner.TrashCards.Count((cardSource) => CanSelectMyotismon(cardSource)));
+
+                            List<CardSource> selectedCards = new List<CardSource>();
+
+                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                            selectCardEffect.SetUp(
+                                canTargetCondition: CanSelectMyotismon,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                canNoSelect: () => false,
+                                selectCardCoroutine: SelectCardCoroutine,
+                                afterSelectCardCoroutine: null,
+                                message: "Select cards to add to your hand.",
+                                maxCount: maxCount,
+                                canEndNotMax: true,
+                                isShowOpponent: true,
+                                mode: SelectCardEffect.Mode.Custom,
+                                root: SelectCardEffect.Root.Trash,
+                                customRootCardList: null,
+                                canLookReverseCard: true,
+                                selectPlayer: card.Owner,
+                                cardEffect: activateClass);
+
+                            selectCardEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
+                            selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
+
+                            yield return StartCoroutine(selectCardEffect.Activate());
+
+                            IEnumerator SelectCardCoroutine(CardSource cardSource)
                             {
-                                int maxCount = Math.Min(1, card.Owner.TrashCards.Count((cardSource) => CanSelectMyotismon(cardSource)));
+                                selectedCards.Add(cardSource);
 
-                                List<CardSource> selectedCards = new List<CardSource>();
-
-                                SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                                selectCardEffect.SetUp(
-                                    canTargetCondition: CanSelectMyotismon,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    canNoSelect: () => false,
-                                    selectCardCoroutine: SelectCardCoroutine,
-                                    afterSelectCardCoroutine: null,
-                                    message: "Select cards to add to your hand.",
-                                    maxCount: maxCount,
-                                    canEndNotMax: true,
-                                    isShowOpponent: true,
-                                    mode: SelectCardEffect.Mode.Custom,
-                                    root: SelectCardEffect.Root.Trash,
-                                    customRootCardList: null,
-                                    canLookReverseCard: true,
-                                    selectPlayer: card.Owner,
-                                    cardEffect: activateClass);
-
-                                selectCardEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
-                                selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
-
-                                yield return StartCoroutine(selectCardEffect.Activate());
-
-                                IEnumerator SelectCardCoroutine(CardSource cardSource)
-                                {
-                                    selectedCards.Add(cardSource);
-
-                                    yield return null;
-                                }
-
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedCards, activateClass: activateClass, payCost: false, isTapped: false, root: SelectCardEffect.Root.Trash, activateETB: true));
-
+                                yield return null;
                             }
+
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedCards, activateClass: activateClass, payCost: false, isTapped: false, root: SelectCardEffect.Root.Trash, activateETB: true));
                         }
+
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlaceDelayOptionCards(card: card, cardEffect: activateClass));
                     }
                 }
-
-                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlaceDelayOptionCards(card: card, cardEffect: activateClass));
-
             }
         }
         #endregion
 
-        
+        #region Delay
         if (timing == EffectTiming.OnDestroyedAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
@@ -151,9 +155,9 @@ public class Mist_Barrier_BT15_098 : CEntity_Effect
 
             bool PermanentCondition(Permanent permanent)
             {
-                if(CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                 {
-                    if(permanent.TopCard.CardNames.Contains("Myotismon"))
+                    if (permanent.TopCard.CardNames.Contains("Myotismon"))
                     {
                         return true;
                     }
@@ -250,13 +254,14 @@ public class Mist_Barrier_BT15_098 : CEntity_Effect
             }
             #endregion
         }
+        #endregion
 
-
-
+        #region Security Effect
         if (timing == EffectTiming.SecuritySkill)
         {
             cardEffects.Add(CardEffectFactory.PlaceSelfDelayOptionSecurityEffect(card));
         }
+        #endregion
 
         return cardEffects;
     }

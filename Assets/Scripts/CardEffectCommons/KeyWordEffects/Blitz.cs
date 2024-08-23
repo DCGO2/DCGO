@@ -17,7 +17,8 @@ public partial class CardEffectCommons
                 {
                     if (!GManager.instance.attackProcess.IsAttacking)
                     {
-                        return true;
+                        if(GManager.instance.attackProcess.AttackingPermanent != cardSource.PermanentOfThisCard())
+                            return true;
                     }
                 }
             }

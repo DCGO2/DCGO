@@ -54,7 +54,7 @@ public class Fairamon_EX5_008 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Play] [When Digivolving] Reveal the top 3 cards of your deck. Add 1 card with the [Light Fang] trait and 1 card with the [Night Claw]/[Galaxy] trait among them to the hand. Return the rest to the bottom of the deck.";
+                return "[On Play] Reveal the top 3 cards of your deck. Add 1 card with the [Light Fang] trait and 1 card with the [Night Claw]/[Galaxy] trait among them to the hand. Return the rest to the bottom of the deck.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)

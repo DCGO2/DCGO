@@ -101,7 +101,7 @@ namespace DCGO.CardEffects.BT17
                 {
                     if(CardEffectCommons.CanTriggerOnDeletion(hashtable, card))
                     {
-                        if (CardEffectCommons.MatchConditionOpponentsCardCountInTrash(card, IsArgomon) >= 4)
+                        if (CardEffectCommons.MatchConditionOwnersCardCountInHand(card, IsLevel6Argomon) >= 1)
                         {
                             return true;
                         }
@@ -114,7 +114,7 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.CanActivateOnDeletion(card))
                     {
-                        if(CardEffectCommons.MatchConditionOwnersCardCountInHand(card, IsLevel6Argomon) >= 1)
+                        if (CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, IsArgomon) >= 4)
                         {
                             return true;
                         }
@@ -169,7 +169,7 @@ namespace DCGO.CardEffects.BT17
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Unsuspend this Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("Unsuspend_BT17_048");
                 cardEffects.Add(activateClass);
@@ -181,17 +181,20 @@ namespace DCGO.CardEffects.BT17
 
                 bool HasUnsuspendedRhythm(Permanent permanent)
                 {
-                    if (permanent.IsTamer)
+                    if(CardEffectCommons.IsOwnerPermanent(permanent, card))
                     {
-                        if (permanent.TopCard.EqualsCardName("Rhythm"))
+                        if (permanent.IsTamer)
                         {
-                            if (!permanent.IsSuspended)
+                            if (permanent.TopCard.EqualsCardName("Rhythm"))
                             {
-                                return true;
+                                if (!permanent.IsSuspended)
+                                {
+                                    return true;
+                                }
                             }
                         }
                     }
-
+                   
                     return false;
                 }
 
@@ -225,7 +228,7 @@ namespace DCGO.CardEffects.BT17
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: maxCount,
-                        canNoSelect: true,
+                        canNoSelect: false,
                         canEndNotMax: false,
                         selectPermanentCoroutine: null,
                         afterSelectPermanentCoroutine: SelectPermanentCoroutine,
@@ -239,7 +242,7 @@ namespace DCGO.CardEffects.BT17
                     IEnumerator SelectPermanentCoroutine(List<Permanent> permanents)
                     {
                         if (permanents != null)
-                            yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(permanents, activateClass).Unsuspend());
+                            yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent> { card.PermanentOfThisCard() }, activateClass).Unsuspend());
                     }
                 }
             }
