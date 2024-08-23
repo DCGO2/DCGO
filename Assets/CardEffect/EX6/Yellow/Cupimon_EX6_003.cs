@@ -21,6 +21,7 @@ namespace DCGO.CardEffects.EX6
                     CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
                 activateClass.SetIsInheritedEffect(true);
+                activateClass.SetHashString("Attacking_EX6_003");
                 cardEffects.Add(activateClass);
                 
                 string EffectDescription()
@@ -31,14 +32,17 @@ namespace DCGO.CardEffects.EX6
                 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.ContainsTraits("Angel") ||
-                        cardSource.ContainsTraits("Archangel") ||
-                        cardSource.ContainsTraits("Three Great Angels") ||
-                        cardSource.ContainsTraits("ThreeGreatAngels"))
+                    if (cardSource.IsDigimon)
                     {
-                        return true;
+                        if (cardSource.ContainsTraits("Angel") ||
+                            cardSource.ContainsTraits("Archangel") ||
+                            cardSource.ContainsTraits("Three Great Angels") ||
+                            cardSource.ContainsTraits("ThreeGreatAngels"))
+                        {
+                            return true;
+                        }
                     }
-                    
+                                        
                     return false;
                 }
                 

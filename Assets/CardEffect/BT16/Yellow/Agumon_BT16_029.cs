@@ -56,7 +56,7 @@ namespace DCGO.CardEffects.BT16
                     return "[On Play] Reveal the top 3 cards of your deck. Add 1 card with the [Light Fang] trait and 1 card with the [Night Claw] trait or 2 colors among them to the hand. Return the rest to the bottom of the deck.";
                 }
 
-                bool CanSelectCardCondition(CardSource cardSource)
+                bool NightClawCondition(CardSource cardSource)
                 {
                     if (cardSource.CardTraits.Contains("Night Claw"))
                     {
@@ -68,10 +68,15 @@ namespace DCGO.CardEffects.BT16
                         return true;
                     }
 
+                    if (cardSource.CardColors.Count == 2)
+                    {
+                        return true;
+                    }
+
                     return false;
                 }
 
-                bool CanSelectCardCondition1(CardSource cardSource)
+                bool LightFangCondition(CardSource cardSource)
                 {
                     if (cardSource.CardTraits.Contains("Light Fang"))
                     {
@@ -79,11 +84,6 @@ namespace DCGO.CardEffects.BT16
                     }
 
                     if (cardSource.CardTraits.Contains("LightFang"))
-                    {
-                        return true;
-                    }
-
-                    if (cardSource.CardColors.Count >= 2)
                     {
                         return true;
                     }
@@ -117,13 +117,13 @@ namespace DCGO.CardEffects.BT16
                         new SimplifiedSelectCardConditionClass[]
                         {
                         new SimplifiedSelectCardConditionClass(
-                            canTargetCondition:CanSelectCardCondition1,
+                            canTargetCondition:LightFangCondition,
                             message: "Select 1 card with the [Light Fang] trait.",
                             mode: SelectCardEffect.Mode.AddHand,
                             maxCount: 1,
                             selectCardCoroutine: null),
                         new SimplifiedSelectCardConditionClass(
-                            canTargetCondition:CanSelectCardCondition,
+                            canTargetCondition:NightClawCondition,
                             message: "Select 1 card with the [Night Claw] trait or 2 colors.",
                             mode: SelectCardEffect.Mode.AddHand,
                             maxCount: 1,
