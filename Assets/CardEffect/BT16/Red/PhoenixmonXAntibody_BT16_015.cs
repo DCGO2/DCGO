@@ -34,59 +34,6 @@ namespace DCGO.CardEffects.BT16
             #endregion
 
             #region Your Turn
-            if(timing == EffectTiming.None)
-            {
-                            //List<ICardEffect> onDeletionEffects = card.PermanentOfThisCard().EffectList(EffectTiming.OnDestroyedAnyone).Where(x => x.IsOnDeletion && !x.IsSecurityEffect).ToList();
-                            //List<Func<EffectTiming, ICardEffect>> onEndAttackEffects = card.PermanentOfThisCard().UntilOwnerTurnEndEffects.Where(x => x(EffectTiming.OnEndAttack).HashString.StartsWith("EndOfAttack")).ToList();
-                            //List<ICardEffect> effectsToAdd = new List<ICardEffect>();
-                            //Debug.Log($"ACTIVATE COROUTINE: {onDeletionEffects.Count}-{onEndAttackEffects.Count}");
-                            /*if (onDeletionEffects.Count > onEndAttackEffects.Count)
-                            {
-                                foreach (ICardEffect deletionEffect in onDeletionEffects)
-                                {
-                                    ICardEffect foundMatchingEffect = onEndAttackEffects.Where(x => x(EffectTiming.OnEndAttack).HashString.EndsWith(deletionEffect.EffectSourceCard.CardID)).First()(EffectTiming.OnEndAttack);
-
-                                    if (foundMatchingEffect == null)
-                                        effectsToAdd.Add(deletionEffect);
-                                }
-                            }
-
-                            foreach (ICardEffect endofAttackEffect in effectsToAdd)
-                            {
-                                ActivateClass activateEndofAttack = new ActivateClass();
-                                activateEndofAttack.SetUpICardEffect(endofAttackEffect.EffectName, CanUseEndOfAttackCondition, card);
-                                activateEndofAttack.SetUpActivateClass(CanActivateEndOfAttackCondition, ActivateEndOfAttackCoroutine, endofAttackEffect.MaxCountPerTurn, endofAttackEffect.IsOptional, endofAttackEffect.EffectDiscription);
-                                activateEndofAttack.SetIsInheritedEffect(endofAttackEffect.IsInheritedEffect);
-                                activateEndofAttack.SetHashString($"EndOfAttack_{endofAttackEffect.EffectSourceCard.CardID}");
-                                activateEndofAttack.SetEffectSourcePermanent(card.PermanentOfThisCard());
-
-                                bool CanUseEndOfAttackCondition(Hashtable hashtable1)
-                                {
-                                    if (card.PermanentOfThisCard().TopCard != card)
-                                        return false;
-
-                                    return CardEffectCommons.CanTriggerOnEndAttack(hashtable1, card);
-                                }
-
-                                bool CanActivateEndOfAttackCondition(Hashtable hashtable1)
-                                {
-                                    return CardEffectCommons.IsExistOnBattleArea(card);
-                                }
-
-                                IEnumerator ActivateEndOfAttackCoroutine(Hashtable hashtable)
-                                {
-                                    yield return ContinuousController.instance.StartCoroutine(((ActivateICardEffect)endofAttackEffect).Activate(hashtable));
-                                }
-
-                                CardEffectCommons.AddEffectToPermanent(
-                                           targetPermanent: card.PermanentOfThisCard(),
-                                           effectDuration: EffectDuration.UntilOwnerTurnEnd,
-                                           card: card,
-                                           cardEffect: activateEndofAttack,
-                                           timing: EffectTiming.OnEndAttack);
-
-                            }*/
-            }
             if (timing == EffectTiming.AfterEffectsActivate || timing == EffectTiming.OnStartTurn || timing == EffectTiming.OnEnterFieldAnyone || timing == EffectTiming.OnDigivolutionCardDiscarded)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -201,7 +148,8 @@ namespace DCGO.CardEffects.BT16
                             {
                                 if (cardSource.HasAvianBeastAnimalTraits)
                                 {
-                                    return true;
+                                    if(CardEffectCommons.CanPlayAsNewPermanent(cardSource,false,activateClass))
+                                        return true;
                                 }
                             }
 

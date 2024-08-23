@@ -126,7 +126,7 @@ namespace DCGO.CardEffects.BT16
             #endregion
 
             #region All Turns - ESS
-            if (timing == EffectTiming.OnDestroyedAnyone || timing == EffectTiming.OnEndBattle)
+            if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 digimon 5 cost or less", CanUseCondition, card);
@@ -160,12 +160,12 @@ namespace DCGO.CardEffects.BT16
 
                 bool DeletionCardEffect(ICardEffect cardEffect)
                 {
-                    return (cardEffect.EffectSourcePermanent == card.PermanentOfThisCard());
+                    return (cardEffect.EffectSourceCard.PermanentOfThisCard() == card.PermanentOfThisCard());
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (CardEffectCommons.IsByBattle(hashtable))
                         {
@@ -195,7 +195,7 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

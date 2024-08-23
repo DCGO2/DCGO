@@ -271,8 +271,7 @@ public class JiesmonGX_BT10_112 : CEntity_Effect
                         }
                     }
 
-                    if (!card.HasBlitz)
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.BlitzProcess(card, activateClass));
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.BlitzProcess(card, activateClass));
                 }
             }
         }
