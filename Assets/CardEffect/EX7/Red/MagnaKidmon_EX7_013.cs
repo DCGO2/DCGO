@@ -248,6 +248,7 @@ namespace DCGO.CardEffects.EX7
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Return 1 digivolution card to place 1 Digimon into the bottom of Security", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetHashString("ReturnOption_EX7-013");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
