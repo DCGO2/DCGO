@@ -308,9 +308,9 @@ namespace DCGO.CardEffects.EX7
             }
             #endregion
 
-            #region End of Your Turn
-            if (timing == EffectTiming.OnEndTurn)
-            {
+            #region When Attacking
+            if (timing == EffectTiming.OnAllyAttack)
+                {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Return 1 digivolution card to play 1 Option", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
@@ -337,15 +337,7 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.IsOwnerTurn(card))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
