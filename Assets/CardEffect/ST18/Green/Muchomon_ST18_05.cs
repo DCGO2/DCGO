@@ -16,6 +16,7 @@ namespace DCGO.CardEffects.ST18
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("1 of your Digimon gains 3000 DP.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetHashString("Buff_ST18_05");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()

@@ -20,12 +20,11 @@ namespace DCGO.CardEffects.ST18
 
             #region Your Turn
 
-            if (timing == EffectTiming.OnCounterTiming)
+            if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Switch attack target of own Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
-                activateClass.SetHashString("AttackSwitch_ST18_14");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()

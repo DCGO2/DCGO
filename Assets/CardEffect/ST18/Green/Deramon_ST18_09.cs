@@ -58,7 +58,7 @@ namespace DCGO.CardEffects.ST18
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                    return CardEffectCommons.CanActivateOnDeletion(card) &&
                            CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);
                 }
 
@@ -99,33 +99,6 @@ namespace DCGO.CardEffects.ST18
                     yield return ContinuousController.instance.StartCoroutine(
                         CardEffectCommons.PlayPermanentCards(cardSources: selectedCards, activateClass: activateClass,
                             payCost: false, isTapped: false, root: SelectCardEffect.Root.Hand, activateETB: true));
-                }
-            }
-
-            #endregion
-
-            #region Rule Text
-
-            if (timing == EffectTiming.None)
-            {
-                ChangeTraitsClass changeTraitsClass = new ChangeTraitsClass();
-                changeTraitsClass.SetUpICardEffect("Trait: Has the [Vegetation] type", CanUseCondition, card);
-                changeTraitsClass.SetUpChangeTraitsClass(changeeTraits: ChangeTraits);
-                cardEffects.Add(changeTraitsClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return true;
-                }
-
-                List<string> ChangeTraits(CardSource cardSource, List<string> cardTraits)
-                {
-                    if (cardSource == card)
-                    {
-                        cardTraits.Add("Vegetation");
-                    }
-
-                    return cardTraits;
                 }
             }
 

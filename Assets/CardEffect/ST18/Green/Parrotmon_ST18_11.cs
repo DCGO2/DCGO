@@ -21,7 +21,7 @@ namespace DCGO.CardEffects.ST18
                 string EffectDescription()
                 {
                     return
-                        "[On Play] Suspend 1 of your opponent's Digimon.";
+                        "[On Play] Suspend 1 of your opponent's Digimon. Then, 1 of your opponent's Digimon can't unsuspend until the end of their turn.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

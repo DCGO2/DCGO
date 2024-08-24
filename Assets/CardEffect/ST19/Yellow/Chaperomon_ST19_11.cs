@@ -28,7 +28,7 @@ namespace DCGO.CardEffects.ST19
 
             bool CanActivateSharedCondition(Hashtable hashtable)
             {
-                return CardEffectCommons.CanActivateOnDeletion(card) &&
+                return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
                        CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentSharedCondition);
             }
 
@@ -45,7 +45,7 @@ namespace DCGO.CardEffects.ST19
 
                 string EffectDescription()
                 {
-                    return "[On Play] 1 of your opponent's Digimon gets -3000 DP for the turn.";
+                    return "[On Play] 1 of your opponent's Digimon gets -3000 DP for the turn. If there are 3 or more Digimon, increase the DP reduction of this effect by -3000.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -96,7 +96,7 @@ namespace DCGO.CardEffects.ST19
 
                 string EffectDescription()
                 {
-                    return "[When Digivolving] 1 of your opponent's Digimon gets -3000 DP for the turn.";
+                    return "[When Digivolving] 1 of your opponent's Digimon gets -3000 DP for the turn. If there are 3 or more Digimon, increase the DP reduction of this effect by -3000.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

@@ -16,12 +16,6 @@ namespace DCGO.CardEffects.ST19
                 return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
             }
 
-            bool CanActivateCondition(Hashtable hashtable)
-            {
-                return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                       CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
-            }
-
             #endregion
 
             #region On Play
@@ -36,12 +30,18 @@ namespace DCGO.CardEffects.ST19
                 string EffectDescription()
                 {
                     return
-                        "[When Digivolving] 1 of your opponent's Digimon gains <Security Attack -1> until the end of their turn.";
+                        "[On Play] 1 of your opponent's Digimon gains <Security Attack -1> until the end of their turn.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -92,12 +92,18 @@ namespace DCGO.CardEffects.ST19
                 string EffectDescription()
                 {
                     return
-                        "[When Digivolving] 1 of your opponent's Digimon gains <Security Attack -1> until the end of their turn.";
+                        "[On Deletion] 1 of your opponent's Digimon gains <Security Attack -1> until the end of their turn.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanActivateOnDeletion(card) &&
+                           CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

@@ -17,6 +17,7 @@ namespace DCGO.CardEffects.ST19
                 activateClass.SetUpICardEffect("Draw 1", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetIsInheritedEffect(true);
+                activateClass.SetHashString("Draw_ST19_01");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()

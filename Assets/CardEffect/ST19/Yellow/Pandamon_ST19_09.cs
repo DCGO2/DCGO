@@ -52,7 +52,7 @@ namespace DCGO.CardEffects.ST19
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                    return CardEffectCommons.CanActivateOnDeletion(card) &&
                            CardEffectCommons.HasMatchConditionOwnersHand(card, IsLevel3PuppetCardCondition);
                 }
 
