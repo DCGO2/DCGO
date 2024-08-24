@@ -38,7 +38,7 @@ namespace DCGO.CardEffects.LM
 
                 string EffectDiscription()
                 {
-                    return "[On Play] [When Digivolving] You may place 1 card with [Gammamon] in its text from your hand as this Digimon's bottom digivolution card. Then, delete 1 of your opponent's Digimon with 8000 DP or less. For each color in this Digimon's digivolution cards, add 1000 to this DP deletion effect's maximum.";
+                    return "[On Play] You may place 1 card with [Gammamon] in its text from your hand as this Digimon's bottom digivolution card. Then, delete 1 of your opponent's Digimon with 8000 DP or less. For each color in this Digimon's digivolution cards, add 1000 to this DP deletion effect's maximum.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
@@ -174,7 +174,7 @@ namespace DCGO.CardEffects.LM
 
                 string EffectDiscription()
                 {
-                    return "[On Play] [When Digivolving] You may place 1 card with [Gammamon] in its text from your hand as this Digimon's bottom digivolution card. Then, delete 1 of your opponent's Digimon with 8000 DP or less. For each color in this Digimon's digivolution cards, add 1000 to this DP deletion effect's maximum.";
+                    return "[When Digivolving] You may place 1 card with [Gammamon] in its text from your hand as this Digimon's bottom digivolution card. Then, delete 1 of your opponent's Digimon with 8000 DP or less. For each color in this Digimon's digivolution cards, add 1000 to this DP deletion effect's maximum.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)

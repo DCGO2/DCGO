@@ -36,7 +36,7 @@ namespace DCGO.CardEffects.BT17
 
             bool IsLevel5orLowerArgomon(CardSource source)
             {
-                if (source.IsDigimon)
+                if (source.IsDigimon || source.IsDigiEgg)
                 {
                     if (source.HasLevel && source.Level <= 5)
                     {
@@ -94,8 +94,6 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, IsLevel5orLowerArgomon))
                     {
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOpponentsCardCountInTrash(card,IsLevel5orLowerArgomon));
-
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                         selectCardEffect.SetUp(
@@ -106,8 +104,8 @@ namespace DCGO.CardEffects.BT17
                         selectCardCoroutine: null,
                         afterSelectCardCoroutine: AfterSelectCardCoroutine,
                         message: "Select cards to place as the bottom digivolution sources",
-                        maxCount: maxCount,
-                        canEndNotMax: false,
+                        maxCount: 4,
+                        canEndNotMax: true,
                         isShowOpponent: false,
                         mode: SelectCardEffect.Mode.Custom,
                         root: SelectCardEffect.Root.Trash,
@@ -222,8 +220,6 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, IsLevel5orLowerArgomon))
                     {
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOpponentsCardCountInTrash(card, IsLevel5orLowerArgomon));
-
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                         selectCardEffect.SetUp(
@@ -234,8 +230,8 @@ namespace DCGO.CardEffects.BT17
                         selectCardCoroutine: null,
                         afterSelectCardCoroutine: AfterSelectCardCoroutine,
                         message: "Select cards to place as the bottom digivolution sources",
-                        maxCount: maxCount,
-                        canEndNotMax: false,
+                        maxCount: 4,
+                        canEndNotMax: true,
                         isShowOpponent: false,
                         mode: SelectCardEffect.Mode.Custom,
                         root: SelectCardEffect.Root.Trash,
@@ -333,13 +329,8 @@ namespace DCGO.CardEffects.BT17
 
                 bool Condition()
                 {
-                    if (CardEffectCommons.IsOwnerTurn(card))
-                    {
-                        if (count() >= 1)
-                        {
-                            return true;
-                        }
-                    }
+                    if (count() >= 1)
+                        return true;
 
                     return false;
                 }

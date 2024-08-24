@@ -38,13 +38,14 @@ public class Megadramon_BT15_064 : CEntity_Effect
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("De-Digivolve 1 on 1 Digimon", CanUseCondition, card);
-            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
             activateClass.SetIsInheritedEffect(true);
+            activateClass.SetHashString("AttackESS_BT15_064");
             cardEffects.Add(activateClass);
 
             string EffectDiscription()
             {
-                return "[When Attacking] [De-Digivolve] 1 of your opponent's Digimon (Trash up to 1 card from the top of one of your opponent's Digimon. If it has no digivolution cards, or becomes a level 3 Digimon, you can't trash any more cards).";
+                return "[When Attacking] [Once Per Turn] <De-Digivolve 1> 1 of your opponent's Digimon.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)

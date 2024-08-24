@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.Diagnostics;
 
 namespace DCGO.CardEffects.BT17
 {
@@ -56,14 +57,12 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
-                           permanent.DigivolutionCards.Some((cardSource) => !cardSource.CanNotTrashFromDigivolutionCards(activateClass));
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card) &&
-                           CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -131,11 +130,11 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card) &&
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
                            CardEffectCommons.IsPermanentExistsOnBattleArea(GManager.instance.attackProcess.DefendingPermanent) &&
                            GManager.instance.attackProcess.DefendingPermanent.HasNoDigivolutionCards &&
                            GManager.instance.attackProcess.DefendingPermanent.CanBeDestroyedBySkill(activateClass) &&
-                           GManager.instance.attackProcess.DefendingPermanent.TopCard.CanNotBeAffected(activateClass);
+                           !GManager.instance.attackProcess.DefendingPermanent.TopCard.CanNotBeAffected(activateClass);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

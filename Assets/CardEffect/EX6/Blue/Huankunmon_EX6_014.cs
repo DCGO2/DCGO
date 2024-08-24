@@ -354,6 +354,7 @@ namespace DCGO.CardEffects.EX6
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true,
                     EffectDescription());
                 activateClass.SetIsInheritedEffect(true);
+                activateClass.SetHashString("Attacking_EX6_014");
                 cardEffects.Add(activateClass);
                 
                 string EffectDescription()

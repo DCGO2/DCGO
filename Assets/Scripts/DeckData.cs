@@ -177,7 +177,7 @@ public class DeckData
                     .Take(11)
                     .ToList().ForEach(e => builder.Append(e));
 
-                return builder.ToString();
+                _deckID = builder.ToString();
             }
 
             return _deckID;

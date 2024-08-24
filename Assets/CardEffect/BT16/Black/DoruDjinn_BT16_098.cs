@@ -26,7 +26,7 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        if(permanent.TopCard.CardNames.Contains("Dorugoramon"))
+                        if(permanent.TopCard.ContainsCardName("Dorugoramon"))
                         {
                             return true;
                         }

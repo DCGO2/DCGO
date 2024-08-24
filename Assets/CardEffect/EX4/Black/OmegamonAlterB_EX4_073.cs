@@ -234,7 +234,7 @@ public class OmegamonAlterB_EX4_073 : CEntity_Effect
 
             bool CanActivateCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
+                if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                 {
                     if (card.PermanentOfThisCard().DigivolutionCards.Count(CanSelectCardCondition) >= 1)
                     {
@@ -247,7 +247,7 @@ public class OmegamonAlterB_EX4_073 : CEntity_Effect
 
             IEnumerator ActivateCoroutine(Hashtable _hashtable)
             {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
+                if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                 {
                     Permanent selectedPermanent = card.PermanentOfThisCard();
 
@@ -314,7 +314,7 @@ public class OmegamonAlterB_EX4_073 : CEntity_Effect
                         {
                             for(int i = 0; i < trashCount; i++)
                             {
-                                int maxCount = Math.Min(trashCount-i, card.Owner.Enemy.GetBattleAreaPermanents().Count(CanSelectPermanentCondition));
+                                int maxCount = Math.Min(1, card.Owner.Enemy.GetBattleAreaPermanents().Count(CanSelectPermanentCondition));
 
                                 SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
@@ -338,10 +338,10 @@ public class OmegamonAlterB_EX4_073 : CEntity_Effect
                         if (trashCount == 3)
                         {
                             yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
-                    player: card.Owner.Enemy,
-                    destroySecurityCount: 2,
-                    cardEffect: activateClass,
-                    fromTop: true).DestroySecurity());
+                                player: card.Owner.Enemy,
+                                destroySecurityCount: 2,
+                                cardEffect: activateClass,
+                                fromTop: true).DestroySecurity());
                         }
                     }
                 }

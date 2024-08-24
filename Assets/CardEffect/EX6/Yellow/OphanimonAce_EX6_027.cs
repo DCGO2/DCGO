@@ -17,7 +17,7 @@ namespace DCGO.CardEffects.EX6
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsCardName("Angewomon");
+                    return targetPermanent.TopCard.EqualsCardName("Angewomon");
                 }
                 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
@@ -42,12 +42,7 @@ namespace DCGO.CardEffects.EX6
             
             #region On Play/ When Digivolving Shared
             
-            string EffectSharedDescription()
-            {
-                return
-                    "[On Play] [When Digivolving] By trashing the top or bottom card of your security stack, 1 of your opponent's Digimon gets -8000 DP until the end of your opponents turn.";
-            }
-            
+                        
             bool CanSelectPermanentSharedCondition(Permanent permanent)
             {
                 return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
@@ -79,7 +74,13 @@ namespace DCGO.CardEffects.EX6
                 activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, true,
                     EffectSharedDescription());
                 cardEffects.Add(activateClass);
-                
+
+                string EffectSharedDescription()
+                {
+                    return
+                        "[On Play] By trashing the top or bottom card of your security stack, 1 of your opponent's Digimon gets -8000 DP until the end of your opponents turn.";
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
@@ -172,7 +173,13 @@ namespace DCGO.CardEffects.EX6
                 activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, true,
                     EffectSharedDescription());
                 cardEffects.Add(activateClass);
-                
+
+                string EffectSharedDescription()
+                {
+                    return
+                        "[When Digivolving] By trashing the top or bottom card of your security stack, 1 of your opponent's Digimon gets -8000 DP until the end of your opponents turn.";
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);

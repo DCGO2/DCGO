@@ -14,48 +14,23 @@ namespace DCGO.CardEffects.BT17
 
             if (timing == EffectTiming.None)
             {
-                // Could work like this
-                // ChangeCardLevelClass changeCardLevelClass = new ChangeCardLevelClass();
-                // changeCardLevelClass.SetUpICardEffect($"Also treated as level 6 when revealed from the top of the deck.",
-                //     CanUseCondition, card);
-                // changeCardLevelClass.SetUpChangeCardLevelClass(getLevel: GetLevel);
-                // changeCardLevelClass.SetNotShowUI(true);
-                // cardEffects.Add(changeCardLevelClass);
-                //
-                // bool CanUseCondition(Hashtable hashtable)
-                // {
-                //     return card.IsBeingRevealed;
-                // }
-                //
-                // int GetLevel(CardSource cardSource, int level)
-                // {
-                //     if (cardSource == card)
-                //     {
-                //         level = 6;
-                //     }
-                //
-                //     return level;
-                // }
-
-                ChangeCardNamesClass changeCardNamesClass = new ChangeCardNamesClass();
-                changeCardNamesClass.SetUpICardEffect("Also treated as level 6 when revealed from the top of the deck.", CanUseCondition,
-                    card);
-                changeCardNamesClass.SetUpChangeCardNamesClass(changeCardNames: ChangeCardNames);
-                cardEffects.Add(changeCardNamesClass);
-
+                ChangeCardLevelClass changeCardLevelClass = new ChangeCardLevelClass();
+                changeCardLevelClass.SetUpICardEffect($"Also treated as level 6 when revealed from the top of the deck.",CanUseCondition, card);
+                changeCardLevelClass.SetUpChangeCardLevelClass(GetLevel: GetLevel);
+                changeCardLevelClass.SetNotShowUI(true);
+                cardEffects.Add(changeCardLevelClass);
+                
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return card.IsBeingRevealed;
                 }
-
-                List<string> ChangeCardNames(CardSource cardSource, List<string> CardNames)
+                
+                int GetLevel(CardSource cardSource, int level)
                 {
                     if (cardSource == card)
-                    {
-                        CardNames.Add("Is Level 6");
-                    }
+                        level = 6;
 
-                    return CardNames;
+                    return level;
                 }
             }
 

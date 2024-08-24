@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using UnityEngine;
 using UnityEditor.Rendering;
+using static UnityEngine.Rendering.DebugUI;
 
 public partial class CardEffectCommons
 {
@@ -113,7 +114,7 @@ public partial class CardEffectCommons
 
                 if (TopCard != null)
                 {
-                    if (IsExistOnTrash(TopCard))
+                    if (IsExistOnTrash(TopCard) || TopCard.IsToken)
                     {
                         return true;
                     }
@@ -206,6 +207,57 @@ public partial class CardEffectCommons
             }
         }
 
+        return false;
+    }
+    #endregion
+
+    #region Can activate [On Deletion] effect that can activate if the permanent conains specific trait
+    public static bool CanActivateSelfOnDeletionWithContainingTrait(Hashtable hashtable, string name, CardSource card)
+    {
+        return CanActivateOnDeletionWithContainingTrait(
+            hashtable: hashtable,
+            name: name,
+            cardCondition: cardSource => cardSource == card
+        );
+    }
+
+    public static bool CanActivateOnDeletionWithContainingTrait(
+        Hashtable hashtable,
+        string name,
+        Func<CardSource, bool> cardCondition)
+    {
+        List<Hashtable> hashtables = GetHashtablesFromHashtable(hashtable);
+        if (hashtables != null)
+        {
+            foreach (Hashtable hashtable1 in hashtables)
+            {
+                if (hashtable1 != null)
+                {
+                    List<CardSource> CardSources = GetCardSourcesFromHashtable(hashtable1);
+                    if (CardSources != null)
+                    {
+                        if (CardSources.Some(cardSource => cardCondition == null || cardCondition(cardSource)))
+                        {
+                            if (hashtable1.ContainsKey("TopCard"))
+                            {
+                                if (hashtable1["TopCard"] is CardSource)
+                                {
+                                    CardSource topCard = (CardSource)hashtable1["TopCard"];
+                                    if (topCard != null)
+                                    {
+                                        if (topCard.ContainsTraits(name))
+                                        {
+                                            return true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        Debug.Log("CAN ACTIVATE: Line 3");
         return false;
     }
     #endregion
