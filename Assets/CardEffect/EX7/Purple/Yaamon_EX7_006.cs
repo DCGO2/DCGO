@@ -37,7 +37,10 @@ namespace DCGO.CardEffects.EX7
                         {
                             if (card.Owner.HandCards.Count <= 4)
                             {
-                                return true;
+                                if (card.Owner.TrashCards.Count >= 1)
+                                {
+                                    return true;
+                                }
                             }
                         }
                     }
