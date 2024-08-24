@@ -10,7 +10,7 @@ namespace DCGO.Tools.Repair
         [MenuItem("Window/DCGO/Repair/Fix Entity Card Index")]
         static void FixEntityCardIndex()
         {
-            int startingIndex = 3300;
+            int startingIndex = 3541;
             string path = "Assets/CardBaseEntity/";
 
             if (Selection.assetGUIDs.Length != 0)

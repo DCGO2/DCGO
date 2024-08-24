@@ -12,11 +12,7 @@ namespace DCGO.CardEffects.LM
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region On Play/When Digivolving
-            string EffectDiscription()
-            {
-                return "[On Play] [When Digivolving] By trashing 2 blue cards in your hand, unsuspend 1 of your Digimon and 1 of your [Kiyoshiro Higashimitarai], and this Digimon gains <Blocker> until the end of your opponent's turn.";
-            }
-
+            
             bool CanSelectCardCondition(CardSource cardSource)
             {
                 if (cardSource.CardColors.Contains(CardColor.Blue))
@@ -65,6 +61,12 @@ namespace DCGO.CardEffects.LM
                 activateClass.SetUpICardEffect("Can't be deleted by battle", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[On Play] By trashing 2 blue cards in your hand, unsuspend 1 of your Digimon and 1 of your [Kiyoshiro Higashimitarai], and this Digimon gains <Blocker> until the end of your opponent's turn.";
+                }
+
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
@@ -145,6 +147,12 @@ namespace DCGO.CardEffects.LM
                 activateClass.SetUpICardEffect("Can't be deleted by battle", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[When Digivolving] By trashing 2 blue cards in your hand, unsuspend 1 of your Digimon and 1 of your [Kiyoshiro Higashimitarai], and this Digimon gains <Blocker> until the end of your opponent's turn.";
+                }
+
 
                 bool CanUseCondition(Hashtable hashtable)
                 {

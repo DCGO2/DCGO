@@ -692,7 +692,7 @@ public class Permanent
                 {
                     if (addedDigivolutionCard.PermanentOfThisCard().TopCard == addedDigivolutionCard)
                     {
-                        IPlacePermanentToDigivolutionCards placePermanent = new IPlacePermanentToDigivolutionCards(new List<Permanent[]>() { new Permanent[] { addedDigivolutionCard.PermanentOfThisCard(), this } }, false, cardEffect, skipEffectAndActivateSkill = true);
+                        IPlacePermanentToDigivolutionCards placePermanent = new IPlacePermanentToDigivolutionCards(new List<Permanent[]>() { new Permanent[] { addedDigivolutionCard.PermanentOfThisCard(), this } }, false, cardEffect, skipEffectAndActivateSkill);
 
                         yield return ContinuousController.instance.StartCoroutine(placePermanent.PlacePermanentToDigivolutionCards());
 

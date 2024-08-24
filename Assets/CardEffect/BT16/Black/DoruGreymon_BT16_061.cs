@@ -160,12 +160,12 @@ namespace DCGO.CardEffects.BT16
 
                 bool DeletionCardEffect(ICardEffect cardEffect)
                 {
-                    return (cardEffect.EffectSourcePermanent == card.PermanentOfThisCard());
+                    return (cardEffect.EffectSourceCard.PermanentOfThisCard() == card.PermanentOfThisCard());
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (CardEffectCommons.IsByBattle(hashtable))
                         {
@@ -195,7 +195,7 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

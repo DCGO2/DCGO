@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace DCGO.CardEffects.BT17
 {
@@ -15,6 +16,7 @@ namespace DCGO.CardEffects.BT17
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Memory +1", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -31,7 +33,8 @@ namespace DCGO.CardEffects.BT17
                 {
                     if(CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card))
                     {
-                        return card.ContainsTraits("Unidentified");
+                        if(CardEffectCommons.CanActivateSelfOnDeletionWithContainingTrait(hashtable, "Unidentified", card))
+                            return true;
                     }
 
                     return false;

@@ -51,13 +51,14 @@ namespace DCGO.CardEffects.BT17
 
                 bool IsOpponentsDigimonSelectable(Permanent permanent)
                 {
-                    if (permanent.IsDigimon)
+                    if(CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                     {
-                        if(permanent.DP <= card.PermanentOfThisCard().DP)
+                        if (permanent.DP <= card.PermanentOfThisCard().DP)
                         {
                             return true;
                         }
                     }
+
                     return false;
                 }
 
@@ -118,7 +119,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return true;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 List<string> changeCardNames(CardSource cardSource, List<string> CardNames)
@@ -138,7 +139,7 @@ namespace DCGO.CardEffects.BT17
             #endregion
 
             #region On Deletion
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 Tamer, or Hatch", CanUseCondition, card);
@@ -249,11 +250,12 @@ namespace DCGO.CardEffects.BT17
             #endregion
 
             #region On Deletion - ESS
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 Tamer, or Hatch", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

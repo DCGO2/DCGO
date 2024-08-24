@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace DCGO.CardEffects.BT17
 {
@@ -109,16 +110,16 @@ namespace DCGO.CardEffects.BT17
 
                 bool IsThisDigimon(Permanent permanent)
                 {
-                    return card.PermanentOfThisCard() == permanent;
+                    return permanent == card.PermanentOfThisCard();
                 }
 
                 bool IsMyDigimonEffect(ICardEffect effect)
                 {
-                    if(effect.EffectSourceCard != null)
+                    if (effect.EffectSourceCard != null)
                     {
-                        if(effect.EffectSourceCard.Owner == card.Owner)
+                        if (effect.EffectSourceCard.Owner == card.Owner)
                         {
-                            return effect.IsDigimonEffect;
+                            return effect.EffectSourceCard.IsDigimon;
                         }
                     }
 
@@ -129,12 +130,16 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (CardEffectCommons.CanTriggerOnAddDigivolutionCard(hashtable, IsThisDigimon, IsMyDigimonEffect, null))
+                        if (CardEffectCommons.CanTriggerOnAddDigivolutionCard(
+                            hashtable: hashtable,
+                            permanentCondition: IsThisDigimon,
+                            cardEffectCondition: IsMyDigimonEffect,
+                            cardCondition: null))
                         {
                             return CardEffectCommons.HasMatchConditionOwnersHand(card, IsGroundLocomon);
                         }
                     }
-                    return true;
+                    return false;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -159,17 +164,14 @@ namespace DCGO.CardEffects.BT17
             #endregion
 
             #region All Turns - ESS
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnCounterTiming)
             {
                 bool condition()
                 {
-                    if (!CardEffectCommons.IsOwnerTurn(card))
-                        return false;
+                    if(card.PermanentOfThisCard().TopCard != card)
+                        return card.PermanentOfThisCard().TopCard.ContainsTraits("Machine");
 
-                    if (card.PermanentOfThisCard().TopCard.ContainsTraits("Machine"))
-                        return false;
-
-                    return true;
+                    return false;
                 }
 
                 cardEffects.Add(CardEffectFactory.CollisionSelfStaticEffect(

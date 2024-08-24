@@ -35,11 +35,6 @@ namespace DCGO.CardEffects.BT16
             #region On Play/When Digivolving Shared
             Permanent selectedPermanent = null;
 
-            string EffectDiscription()
-            {
-                return "[On Play] [When Digivolving] If you have 3 or more security cards, 1 of your Digimon can't have its DP reduced by your opponent's effects, and isn't affected by <De-Digivolve> effects until the end of your opponent's turn. If you have 3 or fewer security cards, 1 of your Digimon gains <Blocker> and <Reboot> until the end of your opponent's turn.";
-            }
-
             bool CanSelectPermanentCondition(Permanent permanent)
             {
                 return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
@@ -104,6 +99,11 @@ namespace DCGO.CardEffects.BT16
                 activateClass.SetUpICardEffect("Digimon can't be DP reduced or De-Digivolved, Digimon gains <Rush> and <Blocker>", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[On Play] If you have 3 or more security cards, 1 of your Digimon can't have its DP reduced by your opponent's effects, and isn't affected by <De-Digivolve> effects until the end of your opponent's turn. If you have 3 or fewer security cards, 1 of your Digimon gains <Blocker> and <Reboot> until the end of your opponent's turn.";
+                }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
@@ -177,6 +177,11 @@ namespace DCGO.CardEffects.BT16
                 activateClass.SetUpICardEffect("Digimon can't be DP reduced or De-Digivolved, Digimon gains <Rush> and <Blocker>", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[When Digivolving] If you have 3 or more security cards, 1 of your Digimon can't have its DP reduced by your opponent's effects, and isn't affected by <De-Digivolve> effects until the end of your opponent's turn. If you have 3 or fewer security cards, 1 of your Digimon gains <Blocker> and <Reboot> until the end of your opponent's turn.";
+                }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {

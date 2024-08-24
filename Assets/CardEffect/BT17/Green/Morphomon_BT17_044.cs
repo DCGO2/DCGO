@@ -45,7 +45,6 @@ namespace DCGO.CardEffects.BT17
             #endregion
 
 
-            //Incomplete
             #region Your Turn - Once Per Turn - Inherit
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
@@ -53,6 +52,7 @@ namespace DCGO.CardEffects.BT17
                 activateClass.SetUpICardEffect("Digivolve for reduced cost", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("DigivolveEosmonBT17_044");
+                activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -66,7 +66,8 @@ namespace DCGO.CardEffects.BT17
                     {
                         if (permanent.TopCard.CardNames.Contains("Eosmon"))
                         {
-                            return true;
+                            if (permanent != card.PermanentOfThisCard())
+                                return true;
                         }
                     }
                     return false;
@@ -87,7 +88,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PermanentCondition))
                         {
@@ -101,7 +102,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

@@ -6,6 +6,42 @@ using UnityEngine;
 
 public partial class CardEffectCommons
 {
+    #region Target 1 Digimon gains [Collision]
+    public static IEnumerator GainCollosion(Permanent targetPermanent, EffectDuration effectDuration, ICardEffect activateClass)
+    {
+        if (targetPermanent == null) yield break;
+        if (!IsPermanentExistsOnBattleArea(targetPermanent)) yield break;
+        if (activateClass == null) yield break;
+        if (activateClass.EffectSourceCard == null) yield break;
+
+        CardSource card = activateClass.EffectSourceCard;
+
+        bool PermanentCondition(Permanent permanent) => permanent == targetPermanent;
+
+        bool CanUseCondition()
+        {
+            if (IsPermanentExistsOnBattleArea(targetPermanent))
+            {
+                if (!targetPermanent.TopCard.CanNotBeAffected(activateClass))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        ActivateClass collision = CardEffectFactory.CollisionStaticEffect(isInheritedEffect: false, card: card, condition: CanUseCondition);
+
+        AddEffectToPermanent(targetPermanent: targetPermanent, effectDuration: effectDuration, card: card, cardEffect: collision, timing: EffectTiming.None);
+
+        if (!targetPermanent.TopCard.CanNotBeAffected(activateClass))
+        {
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateBuffEffect(targetPermanent));
+        }
+    }
+    #endregion
+
     #region Can activate [Collision]
     public static bool CanActivateCollision(CardSource cardSource)
     {

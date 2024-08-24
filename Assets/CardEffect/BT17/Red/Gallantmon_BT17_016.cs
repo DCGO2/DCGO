@@ -48,7 +48,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -126,7 +126,7 @@ namespace DCGO.CardEffects.BT17
                 string EffectDescription()
                 {
                     return
-                        "[When Digivolving] Delete 1 of your opponent's Digimon with 8000 DP or less. If this effect didn't delete, this Digimon gets +3000 DP and gains [Blocker] until the end of your opponent's turn.";
+                        "[When Attacking] Delete 1 of your opponent's Digimon with 8000 DP or less. If this effect didn't delete, this Digimon gets +3000 DP and gains [Blocker] until the end of your opponent's turn.";
                 }
 
                 bool CanSelectOpponentPermanentCondition(Permanent permanent)
@@ -149,15 +149,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentPermanentCondition))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

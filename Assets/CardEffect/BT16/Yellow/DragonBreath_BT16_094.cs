@@ -87,7 +87,7 @@ namespace DCGO.CardEffects.BT16
 
                 string EffectDiscription()
                 {
-                    return "[Main] <Delay> You may place 1 [Trial of the Four Great Dragons] from your hand into your battle area, or trash 1 card with the [Four Great Dragons] trait from your hand. If you did, 1 of your opponent's Digimon gets -7000 DP until the end of thier turn.";
+                    return "[Main] <Delay>\r\n• Place 1 [Trial of the Four Great Dragons] from your hand in the battle area, or you may trash 1 card with the [Four Great Dragons] trait in your hand. If you did either, 1 of your opponent's Digimon gets -7000 DP for the turn.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -301,7 +301,7 @@ namespace DCGO.CardEffects.BT16
 
                 string EffectDiscription()
                 {
-                    return "[Security] 1 of your opponent's Digimon gets -7000 DP until the end their turn. Then, place this card into your battle area.";
+                    return "[Security] 1 of your opponent's Digimon gets -7000 DP for the turn. Then, place this card in the battle area.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
