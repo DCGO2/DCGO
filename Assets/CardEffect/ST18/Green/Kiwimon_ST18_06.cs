@@ -17,12 +17,6 @@ namespace DCGO.CardEffects.ST18
                        permanent.CanSuspend;
             }
 
-            bool CanActivateSharedCondition(Hashtable hashtable)
-            {
-                return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                       CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentSharedCondition);
-            }
-
             #endregion
 
             #region On Play
@@ -31,7 +25,7 @@ namespace DCGO.CardEffects.ST18
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Suspend 1 opponent's Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -45,6 +39,12 @@ namespace DCGO.CardEffects.ST18
                     return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
 
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentSharedCondition);
+                }
+
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
@@ -67,14 +67,14 @@ namespace DCGO.CardEffects.ST18
             }
 
             #endregion
-            
+
             #region On Deletion
 
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Suspend 1 opponent's Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -88,6 +88,12 @@ namespace DCGO.CardEffects.ST18
                     return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
                 }
 
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanActivateOnDeletion(card) &&
+                           CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentSharedCondition);
+                }
+
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
@@ -106,33 +112,6 @@ namespace DCGO.CardEffects.ST18
                         cardEffect: activateClass);
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                }
-            }
-
-            #endregion
-            
-            #region Rule Text
-
-            if (timing == EffectTiming.None)
-            {
-                ChangeTraitsClass changeTraitsClass = new ChangeTraitsClass();
-                changeTraitsClass.SetUpICardEffect("Trait: Has the [Vegetation] type", CanUseCondition, card);
-                changeTraitsClass.SetUpChangeTraitsClass(changeeTraits: ChangeTraits);
-                cardEffects.Add(changeTraitsClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return true;
-                }
-
-                List<string> ChangeTraits(CardSource cardSource, List<string> cardTraits)
-                {
-                    if (cardSource == card)
-                    {
-                        cardTraits.Add("Vegetation");
-                    }
-
-                    return cardTraits;
                 }
             }
 

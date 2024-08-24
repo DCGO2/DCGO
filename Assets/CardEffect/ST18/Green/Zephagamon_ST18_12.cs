@@ -95,6 +95,7 @@ namespace DCGO.CardEffects.ST18
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Become unaffected by Digimon's effects, gain DP.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetHashString("Immunity_ST18_12");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -153,33 +154,6 @@ namespace DCGO.CardEffects.ST18
                         changeValue: 3000,
                         effectDuration: EffectDuration.UntilEachTurnEnd,
                         activateClass: activateClass));
-                }
-            }
-
-            #endregion
-
-            #region Rule Text
-
-            if (timing == EffectTiming.None)
-            {
-                ChangeTraitsClass changeTraitsClass = new ChangeTraitsClass();
-                changeTraitsClass.SetUpICardEffect("Trait: Has the [Bird Dragon] type", CanUseCondition, card);
-                changeTraitsClass.SetUpChangeTraitsClass(changeeTraits: ChangeTraits);
-                cardEffects.Add(changeTraitsClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return true;
-                }
-
-                List<string> ChangeTraits(CardSource cardSource, List<string> cardTraits)
-                {
-                    if (cardSource == card)
-                    {
-                        cardTraits.Add("Bird Dragon");
-                    }
-
-                    return cardTraits;
                 }
             }
 

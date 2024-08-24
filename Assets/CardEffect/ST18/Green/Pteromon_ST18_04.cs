@@ -27,13 +27,14 @@ namespace DCGO.CardEffects.ST18
 
                 bool CanSelectBirdCardCondition(CardSource cardSource)
                 {
-                    return cardSource.HasBirdTraits;
+                    return cardSource.ContainsTraits("Bird") || 
+                           cardSource.ContainsTraits("Avian");
                 }
 
                 bool CanSelectLiberatorCardCondition(CardSource cardSource)
                 {
                     return cardSource.ContainsTraits("Vortex Warriors") ||
-                           cardSource.ContainsTraits("Liberator") || cardSource.ContainsTraits("LIBERATOR");
+                           cardSource.ContainsTraits("LIBERATOR");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

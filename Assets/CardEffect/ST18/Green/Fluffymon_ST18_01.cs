@@ -16,6 +16,8 @@ namespace DCGO.CardEffects.ST18
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Suspend 1 Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetIsInheritedEffect(true);
+                activateClass.SetHashString("Suspend_ST18_01");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
