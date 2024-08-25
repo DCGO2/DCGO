@@ -376,7 +376,7 @@ public partial class CardEffectCommons
     #region Whether there is at least 1 card in the owner's hand that satisfies the condition
     public static bool HasMatchConditionOwnersHand(CardSource card, Func<CardSource, bool> CanSelectCardCondition)
     {
-        return card.Owner.HandCards.Some(source => CanSelectCardCondition(source));
+        return card.Owner.HandCards.Some(CanSelectCardCondition);
     }
     #endregion
 
