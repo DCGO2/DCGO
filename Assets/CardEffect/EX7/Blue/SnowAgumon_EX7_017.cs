@@ -13,6 +13,29 @@ namespace DCGO.CardEffects
 
             if (timing == EffectTiming.None)
             {
+                ChangeTraitsClass changeTraitsClass = new ChangeTraitsClass();
+                changeTraitsClass.SetUpICardEffect("Has the [Ice-Snow] Type", _ => true, card);
+                changeTraitsClass.SetUpChangeTraitsClass(changeeTraits: ChangeCardTraits);
+                cardEffects.Add(changeTraitsClass);
+
+                List<string> ChangeCardTraits(CardSource cardSource, List<string> cardTraits)
+                {
+                    if (cardSource == card)
+                    {
+                        cardTraits.Add("Ice-Snow");
+                    }
+
+                    return cardTraits;
+                }
+            }
+            
+            if (timing == EffectTiming.None)
+            {
+                cardEffects.Add(CardEffectFactory.IcecladSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
+            }
+            
+            if (timing == EffectTiming.None)
+            {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash digivolution cards", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());

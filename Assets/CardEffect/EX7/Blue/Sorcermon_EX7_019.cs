@@ -13,14 +13,36 @@ namespace DCGO.CardEffects
 
             if (timing == EffectTiming.None)
             {
+                ChangeTraitsClass changeTraitsClass = new ChangeTraitsClass();
+                changeTraitsClass.SetUpICardEffect("Has the [Ice-Snow] Type", _ => true, card);
+                changeTraitsClass.SetUpChangeTraitsClass(changeeTraits: ChangeCardTraits);
+                cardEffects.Add(changeTraitsClass);
+
+                List<string> ChangeCardTraits(CardSource cardSource, List<string> cardTraits)
+                {
+                    if (cardSource == card)
+                    {
+                        cardTraits.Add("Ice-Snow");
+                    }
+
+                    return cardTraits;
+                }
+            }
+            if (timing == EffectTiming.None)
+            {
+                cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
+            }
+            
+            if (timing == EffectTiming.None)
+            {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Unsuspend your digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "";
+                    return " If your opponent has no Digimon with digivolution cards, unsuspend 1 of your Digimon.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -28,14 +50,75 @@ namespace DCGO.CardEffects
                     return true;
                 }
 
+                bool CanSelectDigimonCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
+                    {
+                        if (permanent.IsDigimon)
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return true;
+                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card,
+                            ((permanent) => permanent.IsDigimon && permanent.HasNoDigivolutionCards)))
+                    {
+                        return true;
+                    }
+                    return false;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return null;
+                    Permanent selectedPermanent = null;
+                    
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectDigimonCondition))
+                    {
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectDigimonCondition));
+
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectDigimonCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: maxCount,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will unsuspend", "The opponent is selecting 1 Digimon to unsuspend.");
+
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                        {
+                            selectedPermanent = permanent;
+
+                            yield return null;
+                        }
+
+                        if (selectedPermanent != null)
+                        {
+                            if (selectedPermanent.TopCard != null)
+                            {
+                                if (selectedPermanent.TopCard.CanNotBeAffected(activateClass))
+                                {
+                                    Permanent suspendTargetPermanent = selectedPermanent;
+
+                                    yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(new List<Permanent>() { suspendTargetPermanent }, CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
