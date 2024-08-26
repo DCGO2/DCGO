@@ -133,7 +133,7 @@ namespace DCGO.CardEffects
                 }
             }
 
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash digivolution cards", CanUseCondition, card);
@@ -143,7 +143,7 @@ namespace DCGO.CardEffects
 
                 string EffectDiscription()
                 {
-                    return "[When Attacking] Trash 1 digivolution card at the top of 1 of your opponent's Digimon.";
+                    return "[When Digivolving] Trash 2 digivolution cards at the bottom of 1 of your opponent's Digimon.";
                 }
                 
                 bool CanSelectDigimonCondition(Permanent permanent)
@@ -173,7 +173,7 @@ namespace DCGO.CardEffects
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
+                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
