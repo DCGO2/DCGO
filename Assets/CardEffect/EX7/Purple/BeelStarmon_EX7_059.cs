@@ -319,7 +319,7 @@ namespace DCGO.CardEffects.EX7
 
                 string EffectDiscription()
                 {
-                    return "[End of Your Turn] [Once Per Turn] By trashing 1 Option card from this Digimon's digivolution cards, you may use 1 Option card with the [Three Musketeers] trait from your hand without paying the cost.";
+                    return "[When Attacking] [Once Per Turn] By trashing 1 Option card from this Digimon's digivolution cards, you may use 1 Option card with the [Three Musketeers] trait from your hand without paying the cost.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
