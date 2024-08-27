@@ -451,7 +451,7 @@ public class ContinuousController : MonoBehaviour
                 deckCards.Add(cEntity_Base);
             }
         }
-
+        Debug.Log($"Create Deck From File: {name}");
         DeckData deckData = (new DeckData(DeckData.GetDeckCode(name, deckCards, digitamaDeckCards, null),id)).ModifiedDeckData();
 
         deckData.KeyCardId = keyID;
@@ -1332,6 +1332,8 @@ public class PhotonUtility
 
         else
         {
+            Debug.Log($"SIGN UP BATTLE DECK: {ContinuousController.DeckDataPropertyKey}");
+            Debug.Log($"SIGN UP BATTLE DECK: {ContinuousController.instance.BattleDeckData.GetThisDeckCode()}");
             hash.Add(ContinuousController.DeckDataPropertyKey, ContinuousController.instance.BattleDeckData.GetThisDeckCode());
         }
 

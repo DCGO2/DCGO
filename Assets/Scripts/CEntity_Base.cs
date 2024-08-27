@@ -32,8 +32,8 @@ public class CEntity_Base : ScriptableObject
     public int DP = 0;
     public Rarity rarity;
     public int OverflowMemory = 0;
-    public bool HasInhetitedEffect => !string.IsNullOrEmpty(InheritedEffectDiscription_JPN);
-    public bool HasSecutiryEffect => !string.IsNullOrEmpty(SecurityEffectDiscription_JPN);
+    public bool HasInhetitedEffect => !string.IsNullOrEmpty(InheritedEffectDiscription_ENG);
+    public bool HasSecutiryEffect => !string.IsNullOrEmpty(SecurityEffectDiscription_ENG);
     public string CardID = "";
     public int MaxCountInDeck = 4;
     public bool HasLoadStarted { get; set; } = false;

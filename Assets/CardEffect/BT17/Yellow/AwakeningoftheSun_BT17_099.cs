@@ -232,18 +232,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermanentCondition))
-                        {
-                            if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleArea(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -257,50 +246,55 @@ namespace DCGO.CardEffects.BT17
 
                 IEnumerator SuccessProcess()
                 {
-     
-                    Permanent selectedPermanent = null;
-
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-
-                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                    selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectPermanentCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: maxCount,
-                        canNoSelect: true,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: SelectPermanentCoroutine,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Custom,
-                        cardEffect: activateClass);
-
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to digivolve into [ShineGreymon].", "The opponent is selecting 1 Digimon to digivolve into [ShineGreymon].");
-
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermanentCondition))
                     {
-                        selectedPermanent = permanent;
+                        if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
+                        {
+                            Permanent selectedPermanent = null;
 
-                        yield return null;
-                    }
+                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
 
-                    if (selectedPermanent != null)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                            targetPermanent: selectedPermanent,
-                            cardCondition: CanSelectCardCondition,
-                            payCost: false,
-                            reduceCostTuple: null,
-                            fixedCostTuple: null,
-                            ignoreDigivolutionRequirementFixedCost: -1,
-                            isHand: true,
-                            activateClass: activateClass,
-                            successProcess: null));
-                    }
+                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                            selectPermanentEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: CanSelectPermanentCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: maxCount,
+                                canNoSelect: true,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: SelectPermanentCoroutine,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Custom,
+                                cardEffect: activateClass);
+
+                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to digivolve into [ShineGreymon].", "The opponent is selecting 1 Digimon to digivolve into [ShineGreymon].");
+
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                            IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                            {
+                                selectedPermanent = permanent;
+
+                                yield return null;
+                            }
+
+                            if (selectedPermanent != null)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                                    targetPermanent: selectedPermanent,
+                                    cardCondition: CanSelectCardCondition,
+                                    payCost: false,
+                                    reduceCostTuple: null,
+                                    fixedCostTuple: null,
+                                    ignoreDigivolutionRequirementFixedCost: -1,
+                                    isHand: true,
+                                    activateClass: activateClass,
+                                    successProcess: null));
+                            }
+                        }
+                    }                    
                 }
             }
             #endregion

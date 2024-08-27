@@ -17,6 +17,8 @@ public class AttackProcess : MonoBehaviourPunCallbacks
     public bool DoSecurityCheck { get; set; } = false;
     public bool IsEndAttack { get; set; } = false;
 
+    public bool UsedBlitz { get; set; } = false;
+
     void SetAttackerDefender(Permanent attackingPermanent, Permanent defendingPermanent)
     {
         AttackingPermanent = attackingPermanent;

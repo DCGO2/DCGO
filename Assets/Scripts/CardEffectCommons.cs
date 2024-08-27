@@ -103,7 +103,7 @@ public partial class CardEffectCommons
     #endregion
 
     #region Play 1 Token
-    public static IEnumerator PlayToken(CEntity_Base tokenData, ICardEffect activateClass, bool isOwnerPermanent, bool isTapped)
+    public static IEnumerator PlayToken(CEntity_Base tokenData, ICardEffect activateClass, bool isOwnerPermanent, bool isTapped, int quantity = 1)
     {
         if (activateClass == null) yield break;
         if (activateClass.EffectSourceCard == null) yield break;
@@ -115,15 +115,19 @@ public partial class CardEffectCommons
 
         if (card.Owner.fieldCardFrames.Count((frame) => frame.IsEmptyFrame() && frame.IsBattleAreaFrame()) >= 1)
         {
+            List<CardSource> playCards = new List<CardSource>();
             CardSource tokenCard = CardObjectController.CreateCardSource(
                 player.PlayerID,
                 tokenData,
                 true);
 
+            for (int i = 0; i < quantity; i++)
+                playCards.Add(tokenCard);
+
             if (CanPlayAsNewPermanent(cardSource: tokenCard, payCost: false, cardEffect: activateClass))
             {
                 yield return ContinuousController.instance.StartCoroutine(new PlayCardClass(
-                    cardSources: new List<CardSource>() { tokenCard },
+                    cardSources: playCards,
                     hashtable: CardEffectHashtable(activateClass),
                     payCost: false,
                     targetPermanent: null,
@@ -136,13 +140,14 @@ public partial class CardEffectCommons
     #endregion
 
     #region Play 1 [Diaboromon] Token
-    public static IEnumerator PlayDiaboromonToken(ICardEffect activateClass)
+    public static IEnumerator PlayDiaboromonToken(ICardEffect activateClass,int quantity = 1)
     {
         yield return ContinuousController.instance.StartCoroutine(PlayToken(
             tokenData: ContinuousController.instance.DiaboromonToken,
             activateClass: activateClass,
             isOwnerPermanent: true,
-            isTapped: false
+            isTapped: false,
+            quantity: quantity
         ));
     }
     #endregion
@@ -552,28 +557,37 @@ public partial class CardEffectCommons
         {
             if (owner.HandCards.Count(CanSelectCardCondition) >= 1)
             {
-                int maxCount = 1;
 
-                SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                int maxCount = Mathf.Max(1, owner.HandCards.Count(CanSelectCardCondition));
 
-                selectHandEffect.SetUp(
-                    selectPlayer: owner,
-                    canTargetCondition: CanSelectCardCondition,
-                    canTargetCondition_ByPreSelecetedList: null,
-                    canEndSelectCondition: null,
-                    maxCount: maxCount,
-                    canNoSelect: true,
-                    canEndNotMax: false,
-                    isShowOpponent: true,
-                    selectCardCoroutine: SelectCardCoroutine,
-                    afterSelectCardCoroutine: null,
-                    mode: SelectHandEffect.Mode.Custom,
-                    cardEffect: activateClass);
+                if(maxCount > 1)
+                {
+                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
-                selectHandEffect.SetUpCustomMessage("Select 1 card to digivolve.", "The opponent is selecting 1 card to digivolve.");
-                selectHandEffect.SetUpCustomMessage_ShowCard("Selected Card");
+                    selectHandEffect.SetUp(
+                        selectPlayer: owner,
+                        canTargetCondition: CanSelectCardCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: maxCount,
+                        canNoSelect: true,
+                        canEndNotMax: false,
+                        isShowOpponent: true,
+                        selectCardCoroutine: SelectCardCoroutine,
+                        afterSelectCardCoroutine: null,
+                        mode: SelectHandEffect.Mode.Custom,
+                        cardEffect: activateClass);
 
-                yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+                    selectHandEffect.SetUpCustomMessage("Select 1 card to digivolve.", "The opponent is selecting 1 card to digivolve.");
+                    selectHandEffect.SetUpCustomMessage_ShowCard("Selected Card");
+
+                    yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+                }
+                else
+                {
+                    selectedCards.Add(owner.HandCards.Find(CanSelectCardCondition));
+                }
+                
             }
         }
 

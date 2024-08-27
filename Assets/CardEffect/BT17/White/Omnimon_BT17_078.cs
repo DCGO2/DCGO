@@ -309,7 +309,7 @@ namespace DCGO.CardEffects.BT17
                         if (selectedLevel > 0)
                         {
                             yield return ContinuousController.instance.StartCoroutine(new DeckBottomBounceClass(
-                                deckBounceTargetPermanents: card.Owner.Enemy.GetBattleAreaDigimons().Filter(permanent => permanent.Level == selectedLevel),
+                                deckBounceTargetPermanents: card.Owner.Enemy.GetBattleAreaDigimons().Filter(permanent => permanent.Level == selectedLevel && !permanent.TopCard.CanNotBeAffected(activateClass)),
                                 hashtable: hashtable).DeckBounce());
                         }
                     }

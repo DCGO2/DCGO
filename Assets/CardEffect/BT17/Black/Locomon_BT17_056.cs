@@ -43,12 +43,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        return CardEffectCommons.CanTriggerOnAttackTargetSwitch(hashtable, card);
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

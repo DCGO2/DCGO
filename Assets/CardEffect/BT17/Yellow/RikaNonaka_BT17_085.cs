@@ -308,7 +308,7 @@ namespace DCGO.CardEffects.BT17
                                 cardCondition: CanSelectCardCondition2,
                                 payCost: true,
                                 reduceCostTuple: null,
-                                fixedCostTuple: null,
+                                fixedCostTuple: (fixedCost: 4, fixedCostCardCondition: null),
                                 ignoreDigivolutionRequirementFixedCost: 4,
                                 isHand: true,
                                 activateClass: activateClass,
