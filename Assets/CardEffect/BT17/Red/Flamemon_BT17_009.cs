@@ -26,19 +26,9 @@ namespace DCGO.CardEffects.BT17
                         "[On Play] Reveal the top 3 cards of your deck. Add 1 card with the [Hybrid]/[Ten Warriors] trait and 1 Tamer card with an inherited effect among them to the hand. Return the rest to the bottom of the deck.";
                 }
 
-                bool CanSelectDigimonCardCondition(CardSource cardSource)
+                bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.IsDigimon)
-                    {
-                        if (cardSource.ContainsTraits("Hybrid") ||
-                            cardSource.ContainsTraits("Ten Warriors") ||
-                            cardSource.ContainsTraits("TenWarriors"))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return cardSource.HasHybridTenWarriorsTraits;
                 }
 
                 bool CanSelectTamerCardCondition(CardSource cardSource)
@@ -81,7 +71,7 @@ namespace DCGO.CardEffects.BT17
                             new SimplifiedSelectCardConditionClass[]
                             {
                                 new(
-                                    canTargetCondition: CanSelectDigimonCardCondition,
+                                    canTargetCondition: CanSelectCardCondition,
                                     message: "Select 1 Digimon card with the [Hybrid]/[Ten Warriors] trait.",
                                     mode: SelectCardEffect.Mode.AddHand,
                                     maxCount: 1,

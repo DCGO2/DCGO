@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using System.Diagnostics;
 
 namespace DCGO.CardEffects.BT17
 {
@@ -45,7 +46,14 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                    UnityEngine.Debug.Log($"CanUseCondition: {CardEffectCommons.IsExistOnBattleAreaDigimon(card)}");
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    {
+                        UnityEngine.Debug.Log($"CanUseCondition: {CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card)}");
+                        return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                    }
+
+                    return false;
                 }
 
                 bool CanSelectTrashCardCondition(CardSource cardSource)
@@ -64,7 +72,11 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card) &&
+                    UnityEngine.Debug.Log($"CanUseCondition: {CardEffectCommons.IsExistOnBattleAreaDigimon(card)}");
+                    UnityEngine.Debug.Log($"CanUseCondition: {card.PermanentOfThisCard().DigivolutionCards.Some(IsEijiCardCondition)}");
+                    UnityEngine.Debug.Log($"CanUseCondition: {CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectTrashCardCondition)}");
+                    UnityEngine.Debug.Log($"CanUseCondition: {CardEffectCommons.IsExistOnBattleAreaDigimon(card) && card.PermanentOfThisCard().DigivolutionCards.Some(IsEijiCardCondition) && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectTrashCardCondition)}");
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
                            card.PermanentOfThisCard().DigivolutionCards.Some(IsEijiCardCondition) &&
                            CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectTrashCardCondition);
                 }

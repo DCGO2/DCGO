@@ -64,7 +64,7 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent.TopCard.CardNames.Contains("Eosmon"))
+                        if (permanent.TopCard.EqualsCardName("Eosmon"))
                         {
                             if (permanent != card.PermanentOfThisCard())
                                 return true;
@@ -90,10 +90,13 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PermanentCondition))
+                        if (CardEffectCommons.IsOwnerTurn(card))
                         {
-                            if(CardEffectCommons.HasMatchConditionOwnersHand(card,CanSelectEosmonInHand))
+                            if (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PermanentCondition))
+                            {
                                 return true;
+
+                            }
                         }
                     }
 
@@ -102,7 +105,13 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    {
+                        if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectEosmonInHand))
+                            return true;
+                    }
+
+                    return false;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

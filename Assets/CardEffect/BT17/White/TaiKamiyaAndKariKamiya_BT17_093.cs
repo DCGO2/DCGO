@@ -21,7 +21,7 @@ namespace DCGO.CardEffects.BT17
 
                 string EffectDiscription()
                 {
-                    return "[All Turns] When you hatch in the breeding area, by suspending this Tamer, gain 1 memory.";
+                    return "[All Turns] When your breeding area is hatched in, by suspending this Tamer, gain 1 memory.";
                 }
 
                 bool IsDigiEggHatch(Permanent permanent)
@@ -69,7 +69,7 @@ namespace DCGO.CardEffects.BT17
             if (timing == EffectTiming.OnEndTurn)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Return To Hand, then play a Tamer", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Return this card to bottom of deck, draw 1. Then play a Tamer", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 

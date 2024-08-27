@@ -297,7 +297,8 @@ namespace DCGO.CardEffects.BT17
                     {
                         if (permanent.IsTamer && permanent.TopCard.CardColors.Contains(CardColor.Yellow))
                         {
-                            return true;
+                            if(!permanent.IsSuspended && permanent.CanSuspend)
+                                return true;
                         }
                     }
 
@@ -306,7 +307,15 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
+                    if(CardEffectCommons.CanTriggerOnAttack(hashtable, card))
+                    {
+                        if(CardEffectCommons.MatchConditionOpponentsPermanentCount(card, CanSelectPermanentCondition) >= 2)
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

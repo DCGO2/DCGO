@@ -727,6 +727,8 @@ public class DeckData
             }
         }
 
+        Debug.Log($"ModifiedDeckData: {deckCards.Count}");
+
         List<CEntity_Base> modifiedDeckCards = modifiedList(deckCards);
         List<CEntity_Base> modifiedDigitamaDeckCards = modifiedList(digitamaDeckCards);
 
@@ -755,6 +757,7 @@ public class DeckData
             //Remove more than the specified number of cards
             foreach (CEntity_Base cEntity_Base in DistinctDeckCards1)
             {
+                Debug.Log($"Remove more than max count: {cEntity_Base.SameCardIDCount(deckCards)}, {cEntity_Base.MaxCountInDeck}");
                 while (cEntity_Base.SameCardIDCount(deckCards) > cEntity_Base.MaxCountInDeck)
                 {
                     CEntity_Base removeCard = null;
@@ -770,10 +773,13 @@ public class DeckData
 
                     if (removeCard != null)
                     {
+                        Debug.Log($"Remove card: {removeCard.CardID}");
                         deckCards.Remove(removeCard);
                     }
                 }
             }
+
+            Debug.Log($"Modified Deck: {deckCards.Count}");
 
             return deckCards;
         }

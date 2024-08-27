@@ -56,7 +56,7 @@ namespace DCGO.CardEffects.BT17
                 bool IsOwnerPermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
-                           permanent.Level <= 5 &&
+                           permanent.Level >= 5 &&
                            permanent.TopCard.ContainsTraits("Free") &&
                            permanent.DigivolutionCards.Count(CanSelectSourceCardCondition) >= 1;
                 }

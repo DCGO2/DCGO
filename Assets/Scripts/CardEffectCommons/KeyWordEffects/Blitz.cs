@@ -17,8 +17,19 @@ public partial class CardEffectCommons
                 {
                     if (!GManager.instance.attackProcess.IsAttacking)
                     {
-                        if(GManager.instance.attackProcess.AttackingPermanent != cardSource.PermanentOfThisCard())
+                        if (!GManager.instance.attackProcess.UsedBlitz)
+                        {
                             return true;
+                        }
+                        else
+                        {
+                            if (GManager.instance.attackProcess.AttackingPermanent.TopCard != cardSource.PermanentOfThisCard().TopCard)
+                            {
+
+                                return true;
+                            }
+                        }
+                                                
                     }
                 }
             }
@@ -44,6 +55,12 @@ public partial class CardEffectCommons
             selectAttackEffect.SetBeforeOnAttackCoroutine(beforeOnAttackCoroutine);
 
             yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
+
+            GManager.instance.attackProcess.UsedBlitz = true;
+        }
+        else
+        {
+            GManager.instance.attackProcess.UsedBlitz = false;
         }
     }
     #endregion

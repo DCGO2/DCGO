@@ -111,8 +111,8 @@ namespace DCGO.CardEffects.BT17
                             maxCount: maxCount,
                             canNoSelect: true,
                             canEndNotMax: false,
-                            selectPermanentCoroutine: null,
-                            afterSelectPermanentCoroutine: SelectedBottomDeck,
+                            selectPermanentCoroutine: SelectedBottomDeck,
+                            afterSelectPermanentCoroutine: null,
                             mode: SelectPermanentEffect.Mode.PutLibraryBottom,
                             cardEffect: activateClass);
 
@@ -120,9 +120,9 @@ namespace DCGO.CardEffects.BT17
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                        IEnumerator SelectedBottomDeck(List<Permanent> bottomDeckedPermanents)
+                        IEnumerator SelectedBottomDeck(Permanent bottomDeckedPermanent)
                         {
-                            if(bottomDeckedPermanents.Count > 0)
+                            if(bottomDeckedPermanent != null && !bottomDeckedPermanent.TopCard.CanNotBeAffected(activateClass))
                                 yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(
                                     new List<Permanent> { card.PermanentOfThisCard() },
                                     activateClass).Unsuspend());
@@ -193,11 +193,53 @@ namespace DCGO.CardEffects.BT17
 
                     List<CardSource> returnedSources = willReturnYourTrash ? card.Owner.TrashCards.Clone() : card.Owner.Enemy.TrashCards.Clone();
 
-                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(returnedSources));
+                    if (returnedSources.Count >= 1)
+                    {
+                        if (returnedSources.Count == 1)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(returnedSources));
 
-                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(returnedSources, "Deck Bottom Cards", true, true));
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(returnedSources, "Deck Bottom Cards", true, true));
+                        }
+                        else
+                        {
+                            int maxCount = returnedSources.Count;
 
-                    if(returnedSources.Count(HasWhiteLevelSeven) > 0)
+                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                            selectCardEffect.SetUp(
+                            canTargetCondition: (cardSource) => true,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            canNoSelect: () => false,
+                            selectCardCoroutine: null,
+                            afterSelectCardCoroutine: AfterSelectCardCoroutine1,
+                            message: "Select cards to place at the bottom of the deck\n(cards will be placed back to the bottom of the deck so that cards with lower numbers are on top).",
+                            maxCount: maxCount,
+                            canEndNotMax: false,
+                            isShowOpponent: false,
+                            mode: SelectCardEffect.Mode.Custom,
+                            root: SelectCardEffect.Root.Custom,
+                            customRootCardList: returnedSources,
+                            canLookReverseCard: true,
+                            selectPlayer: card.Owner,
+                            cardEffect: activateClass);
+
+                            selectCardEffect.SetNotShowCard();
+                            selectCardEffect.SetNotAddLog();
+
+                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+
+                            IEnumerator AfterSelectCardCoroutine1(List<CardSource> cardSources)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources));
+
+                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(cardSources, "Deck Bottom Cards", true, true));
+                            }
+                        }
+                    }
+
+                    if (returnedSources.Count(HasWhiteLevelSeven) > 0)
                         yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(3, activateClass));
                 }
             }

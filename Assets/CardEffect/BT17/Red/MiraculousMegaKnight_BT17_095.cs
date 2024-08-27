@@ -210,7 +210,7 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.EqualsCardName("Omnimon") &&
+                        if (cardSource.ContainsCardName("Omnimon") &&
                             cardSource.HasLevel &&
                             cardSource.Level == 7)
                         {

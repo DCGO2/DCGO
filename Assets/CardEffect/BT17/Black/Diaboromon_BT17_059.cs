@@ -169,9 +169,7 @@ namespace DCGO.CardEffects.BT17
 
                     if (cardAdded)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayDiaboromonToken(activateClass));
-
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayDiaboromonToken(activateClass));
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayDiaboromonToken(activateClass, 2));
                     }
                 }
             }

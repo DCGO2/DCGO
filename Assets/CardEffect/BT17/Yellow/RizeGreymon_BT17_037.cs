@@ -11,16 +11,19 @@ namespace DCGO.CardEffects.BT17
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region All Turns
+            #region Your Turn
             if (timing == EffectTiming.None)
             {
                 bool Condition()
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.IsSuspended && permanent.IsTamer))
+                        if (CardEffectCommons.IsOwnerTurn(card))
                         {
-                            return true;
+                            if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.IsSuspended && permanent.IsTamer))
+                            {
+                                return true;
+                            }
                         }
                     }
 

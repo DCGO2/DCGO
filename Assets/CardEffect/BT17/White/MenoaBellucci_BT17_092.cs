@@ -143,7 +143,7 @@ namespace DCGO.CardEffects.BT17
 
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Prevent from leaving battle area, by opponents effect", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("Prevent_BT17_092");
                 cardEffects.Add(activateClass);
 
@@ -220,7 +220,7 @@ namespace DCGO.CardEffects.BT17
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,
-                            canNoSelect: true,
+                            canNoSelect: false,
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine,
                             afterSelectPermanentCoroutine: null,
