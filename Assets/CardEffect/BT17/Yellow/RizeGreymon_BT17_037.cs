@@ -100,7 +100,7 @@ namespace DCGO.CardEffects.BT17
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Suspend a Tamer to gain +3000 DP and Piercing", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Suspend a Tamer to give -3000 DP", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, true, EffectSharedDiscription1());
                 cardEffects.Add(activateClass);
 
@@ -206,7 +206,7 @@ namespace DCGO.CardEffects.BT17
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Suspend a Tamer to gain +3000 DP and Piercing", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Suspend a Tamer to give -3000 DP", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, true, EffectSharedDiscription2());
                 cardEffects.Add(activateClass);
 

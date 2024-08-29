@@ -321,19 +321,16 @@ namespace DCGO.CardEffects.BT17
 
                                     if (selectedPermanent != null)
                                     {
-                                        yield return ContinuousController.instance.StartCoroutine(
-                                            CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                                                targetPermanent: selectedPermanent,
-                                                cardCondition: CanSelectHandCardSharedCondition,
-                                                payCost: false,
-                                                reduceCostTuple: null,
-                                                fixedCostTuple: null,
-                                                ignoreDigivolutionRequirementFixedCost: 0,
-                                                isHand: true,
-                                                activateClass: activateClass,
-                                                successProcess: null,
-                                                ignoreLevel: true,
-                                                ignoreSelection: true));
+                                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                                            targetPermanent: selectedPermanent,
+                                            cardCondition: CanSelectHandCardSharedCondition,
+                                            payCost: false,
+                                            reduceCostTuple: null,
+                                            fixedCostTuple: null,
+                                            ignoreDigivolutionRequirementFixedCost: 0,
+                                            isHand: true,
+                                            activateClass: activateClass,
+                                            successProcess: null));
                                     }
                                 }
 
@@ -533,19 +530,16 @@ namespace DCGO.CardEffects.BT17
 
                                     if (selectedPermanent != null)
                                     {
-                                        yield return ContinuousController.instance.StartCoroutine(
-                                            CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                                                targetPermanent: selectedPermanent,
-                                                cardCondition: CanSelectHandCardSharedCondition,
-                                                payCost: false,
-                                                reduceCostTuple: null,
-                                                fixedCostTuple: null,
-                                                ignoreDigivolutionRequirementFixedCost: 0,
-                                                isHand: true,
-                                                activateClass: activateClass,
-                                                successProcess: null,
-                                                ignoreLevel: true,
-                                                ignoreSelection: true));
+                                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                                            targetPermanent: selectedPermanent,
+                                            cardCondition: CanSelectHandCardSharedCondition,
+                                            payCost: false,
+                                            reduceCostTuple: null,
+                                            fixedCostTuple: null,
+                                            ignoreDigivolutionRequirementFixedCost: 0,
+                                            isHand: true,
+                                            activateClass: activateClass,
+                                            successProcess: null));
                                     }
                                 }
 

@@ -280,7 +280,7 @@ namespace DCGO.CardEffects.BT17
                         {
                             if (card.Owner.LibraryCards.Count >= 1)
                             {
-                                if (card.PermanentOfThisCard().TopCard.name.Contains("Fenriloogamon"))
+                                if (card.PermanentOfThisCard().TopCard.ContainsCardName("Fenriloogamon"))
                                 {
                                     return true;
                                 }

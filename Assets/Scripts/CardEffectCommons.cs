@@ -113,18 +113,22 @@ public partial class CardEffectCommons
 
         Player player = isOwnerPermanent ? card.Owner : card.Owner.Enemy;
 
-        if (card.Owner.fieldCardFrames.Count((frame) => frame.IsEmptyFrame() && frame.IsBattleAreaFrame()) >= 1)
+        if (card.Owner.fieldCardFrames.Count((frame) => frame.IsEmptyFrame() && frame.IsBattleAreaFrame()) >= quantity)
         {
             List<CardSource> playCards = new List<CardSource>();
-            CardSource tokenCard = CardObjectController.CreateCardSource(
+            
+            for (int i = 0; i < quantity; i++)
+            {
+                CardSource tokenCard = CardObjectController.CreateCardSource(
                 player.PlayerID,
                 tokenData,
                 true);
 
-            for (int i = 0; i < quantity; i++)
                 playCards.Add(tokenCard);
+            }
+                
 
-            if (CanPlayAsNewPermanent(cardSource: tokenCard, payCost: false, cardEffect: activateClass))
+            if (CanPlayAsNewPermanent(cardSource: playCards[0], payCost: false, cardEffect: activateClass))
             {
                 yield return ContinuousController.instance.StartCoroutine(new PlayCardClass(
                     cardSources: playCards,
@@ -558,36 +562,28 @@ public partial class CardEffectCommons
             if (owner.HandCards.Count(CanSelectCardCondition) >= 1)
             {
 
-                int maxCount = Mathf.Max(1, owner.HandCards.Count(CanSelectCardCondition));
+                int maxCount = Mathf.Min(1, owner.HandCards.Count(CanSelectCardCondition));
 
-                if(maxCount > 1)
-                {
-                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
-                    selectHandEffect.SetUp(
-                        selectPlayer: owner,
-                        canTargetCondition: CanSelectCardCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: maxCount,
-                        canNoSelect: true,
-                        canEndNotMax: false,
-                        isShowOpponent: true,
-                        selectCardCoroutine: SelectCardCoroutine,
-                        afterSelectCardCoroutine: null,
-                        mode: SelectHandEffect.Mode.Custom,
-                        cardEffect: activateClass);
+                selectHandEffect.SetUp(
+                    selectPlayer: owner,
+                    canTargetCondition: CanSelectCardCondition,
+                    canTargetCondition_ByPreSelecetedList: null,
+                    canEndSelectCondition: null,
+                    maxCount: maxCount,
+                    canNoSelect: true,
+                    canEndNotMax: false,
+                    isShowOpponent: true,
+                    selectCardCoroutine: SelectCardCoroutine,
+                    afterSelectCardCoroutine: null,
+                    mode: SelectHandEffect.Mode.Custom,
+                    cardEffect: activateClass);
 
-                    selectHandEffect.SetUpCustomMessage("Select 1 card to digivolve.", "The opponent is selecting 1 card to digivolve.");
-                    selectHandEffect.SetUpCustomMessage_ShowCard("Selected Card");
+                selectHandEffect.SetUpCustomMessage("Select 1 card to digivolve.", "The opponent is selecting 1 card to digivolve.");
+                selectHandEffect.SetUpCustomMessage_ShowCard("Selected Card");
 
-                    yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
-                }
-                else
-                {
-                    selectedCards.Add(owner.HandCards.Find(CanSelectCardCondition));
-                }
-                
+                yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
             }
         }
 

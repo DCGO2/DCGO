@@ -87,14 +87,7 @@ namespace DCGO.CardEffects.BT16
                                     Permanent securityPermanent = selectedPermanent;
                                     CardSource securityCard = securityPermanent.TopCard;
 
-                                    if(securityPermanent.DigivolutionCards.Count < 1)
-                                    {
-                                        yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(
-                                            securityPermanent,
-                                            CardEffectCommons.CardEffectHashtable(activateClass),
-                                            true).PutSecurity());
-                                    }
-                                    else
+                                    if(securityPermanent.DigivolutionCards.Count >= 1)
                                     {
                                         yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveFromAllArea(permanent.TopCard));
 
@@ -205,14 +198,7 @@ namespace DCGO.CardEffects.BT16
                                     Permanent securityPermanent = selectedPermanent;
                                     CardSource securityCard = securityPermanent.TopCard;
 
-                                    if (securityPermanent.DigivolutionCards.Count < 1)
-                                    {
-                                        yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(
-                                            securityPermanent,
-                                            CardEffectCommons.CardEffectHashtable(activateClass),
-                                            true).PutSecurity());
-                                    }
-                                    else
+                                    if (securityPermanent.DigivolutionCards.Count >= 1)
                                     {
                                         yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveFromAllArea(permanent.TopCard));
 

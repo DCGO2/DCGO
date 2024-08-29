@@ -143,14 +143,7 @@ namespace DCGO.CardEffects.BT17
 
                                     if (!permanent.TopCard.IsToken)
                                     {
-                                        if (permanent.DigivolutionCards.Count < 1)
-                                        {
-                                            yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(
-                                                permanent,
-                                                CardEffectCommons.CardEffectHashtable(activateClass),
-                                                true).PutSecurity());
-                                        }
-                                        else
+                                        if (permanent.DigivolutionCards.Count >= 1)
                                         {
                                             yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(permanent.TopCard));
 
@@ -167,10 +160,10 @@ namespace DCGO.CardEffects.BT17
                                                     permanent.ShowingPermanentCard.WillBeDeletedObject.SetActive(false);
                                                 }
                                             }
+
+                                            yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(2, activateClass));
                                         }
                                     }
-
-                                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(2, activateClass));
                                 }
                             }
                         }

@@ -188,7 +188,7 @@ namespace DCGO.CardEffects.BT17
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: 1,
-                            canNoSelect: true,
+                            canNoSelect: false,
                             canEndNotMax: false,
                             isShowOpponent: true,
                             selectCardCoroutine: null,
@@ -333,7 +333,7 @@ namespace DCGO.CardEffects.BT17
                             yield return ContinuousController.instance.StartCoroutine(
                                 CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
                                     targetPermanents: chosenPermanents, activateClass: activateClass,
-                                    successProcess: _ => null, failureProcess: null));
+                                    successProcess: null, failureProcess: null));
                         }
                     }
                 }

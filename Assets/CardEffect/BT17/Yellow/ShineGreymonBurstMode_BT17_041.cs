@@ -307,22 +307,14 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if(CardEffectCommons.CanTriggerOnAttack(hashtable, card))
-                    {
-                        if(CardEffectCommons.MatchConditionOpponentsPermanentCount(card, CanSelectPermanentCondition) >= 2)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                        if (CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition) >= 2)
                         {
                             return true;
                         }
