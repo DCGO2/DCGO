@@ -58,7 +58,6 @@ public class DeckBuildingRule : MonoBehaviour
             }
 
             List<CEntity_Base> deckCards = new List<CEntity_Base>();
-
             foreach (CEntity_Base cEntity_Base in cEntity_Bases)
             {
                 deckCards.Add(cEntity_Base);

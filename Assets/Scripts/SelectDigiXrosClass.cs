@@ -376,7 +376,7 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
                     if (_endSelectDigiXros)
                     {
                         _endSelectDigiXros = false;
-                        break;
+                        //break; TODO: Removed for not triggering digixros in all situations
                     }
 
                     bool canSelectHand = false;

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace DCGO.CardEffects.BT17
@@ -65,13 +66,12 @@ namespace DCGO.CardEffects.BT17
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Digivolve your [Renamon] into [Sakuyamon]", CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, 1, false, EffectDiscription());
-                activateClass.SetHashString("Digivolution_BT17_85");
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[Main][Once Per Turn] , By placing this Tamer and 1 [Kyubimon] and 1 [Taomon] from your trash in any order as the bottom digivolution cards of one of your [Renamon], that Digimon may digivolve into [Sakuyamon] in your hand for a digivolution cost of 4, ignoring its digivolution requirements. If digivolved by this effect, you may return 1 Option card from your trash to the hand.";
+                    return "[Main] By placing this Tamer and 1 [Kyubimon] and 1 [Taomon] from your trash in any order as the bottom digivolution cards of one of your [Renamon], that Digimon may digivolve into [Sakuyamon] in your hand for a digivolution cost of 4, ignoring its digivolution requirements. If digivolved by this effect, you may return 1 Option card from your trash to the hand.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -293,9 +293,8 @@ namespace DCGO.CardEffects.BT17
 
                                     if (selectedPermanent.TopCard != null)
                                     {
-                                        yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(digivolutionCards, activateClass));
-
                                         added = true;
+                                        yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(digivolutionCards, activateClass));
                                     }
                                 }
                             }
@@ -309,11 +308,11 @@ namespace DCGO.CardEffects.BT17
                                 payCost: true,
                                 reduceCostTuple: null,
                                 fixedCostTuple: (fixedCost: 4, fixedCostCardCondition: null),
-                                ignoreDigivolutionRequirementFixedCost: 4,
+                                ignoreDigivolutionRequirementFixedCost: -1,
                                 isHand: true,
                                 activateClass: activateClass,
-                                successProcess: SuccessProcess(),
-                                ignoreLevel: true));
+                                ignoreLevel: true,
+                                successProcess: SuccessProcess()));
 
                             IEnumerator SuccessProcess()
                             {

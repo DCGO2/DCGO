@@ -270,6 +270,8 @@ public class ContinuousController : MonoBehaviour
             ReverseCard_Digitama = reverseDigieggCardSprite;
         }
 
+        LoadBanList();
+
         // deck data
         //DeckDatas = PlayerPrefsUtil.LoadList<DeckData>(DeckDatasPlayerPrefsKey);
         LoadDeckLists();
@@ -305,8 +307,6 @@ public class ContinuousController : MonoBehaviour
         LoadLanguage();
 
         await CreateTokenData();
-
-        LoadBanList();
 
         DontDestroyOnLoad(gameObject);
     }
