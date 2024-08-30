@@ -285,7 +285,6 @@ namespace DCGO.CardEffects.BT17
                                     return true;
                                 }
                             }
-                            return true;
                         }
                     }
 

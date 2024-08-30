@@ -308,7 +308,7 @@ namespace DCGO.CardEffects.BT17
                                 payCost: true,
                                 reduceCostTuple: null,
                                 fixedCostTuple: (fixedCost: 4, fixedCostCardCondition: null),
-                                ignoreDigivolutionRequirementFixedCost: -1,
+                                ignoreDigivolutionRequirementFixedCost: 4,
                                 isHand: true,
                                 activateClass: activateClass,
                                 ignoreLevel: true,

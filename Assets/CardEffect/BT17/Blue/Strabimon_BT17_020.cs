@@ -73,7 +73,7 @@ namespace DCGO.CardEffects.BT17
                             {
                                 new(
                                     canTargetCondition: CanSelectCardCondition,
-                                    message: "Select 1 Digimon card with the [Hybrid]/[Ten Warriors] trait.",
+                                    message: "Select 1 card with the [Hybrid]/[Ten Warriors] trait.",
                                     mode: SelectCardEffect.Mode.AddHand,
                                     maxCount: 1,
                                     selectCardCoroutine: null),
