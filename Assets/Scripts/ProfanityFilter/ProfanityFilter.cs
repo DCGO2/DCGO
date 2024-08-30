@@ -220,10 +220,10 @@ namespace ProfanityFilter
             if (toCheckLowerCase.Contains(profanityLowerCase))
             {
                 var startIndex = toCheckLowerCase.IndexOf(profanityLowerCase, StringComparison.Ordinal);
-                var endIndex = startIndex;
+                var endIndex = startIndex + profanityLowerCase.Length;
 
                 // Work backwards in string to get to the start of the word.
-                while (startIndex > 0)
+                /*while (startIndex > 0)
                 {
                     if (toCheck[startIndex - 1] == ' ' || char.IsPunctuation(toCheck[startIndex - 1]))
                     {
@@ -231,10 +231,10 @@ namespace ProfanityFilter
                     }
 
                     startIndex -= 1;
-                }
+                }*/
 
                 // Work forwards to get to the end of the word.
-                while (endIndex < toCheck.Length)
+                /*while (endIndex < toCheck.Length)
                 {
                     if (toCheck[endIndex] == ' ' || char.IsPunctuation(toCheck[endIndex]))
                     {
@@ -242,7 +242,7 @@ namespace ProfanityFilter
                     }
 
                     endIndex += 1;
-                }
+                }*/
 
                 return (startIndex, endIndex, toCheckLowerCase.Substring(startIndex, endIndex - startIndex).ToLower(CultureInfo.InvariantCulture));
             }
@@ -298,11 +298,11 @@ namespace ProfanityFilter
                     do
                     {
                         result = GetCompleteWord(tracker.ToString(), word);
-
+                        
                         if (result != null)
                         {
                             string filtered = result.Value.Item3;
-
+                            
                             if (ignoreNumeric)
                             {
                                 filtered = Regex.Replace(result.Value.Item3, @"[\d-]", string.Empty);
@@ -329,6 +329,7 @@ namespace ProfanityFilter
                 }
                 else
                 {
+                    
                     censored = censored.Replace(word, CreateCensoredString(word, censorCharacter));
                 }
             }

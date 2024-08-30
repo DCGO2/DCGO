@@ -133,8 +133,8 @@ namespace DCGO.CardEffects.BT17
                                 mode: SelectPermanentEffect.Mode.Custom,
                                 cardEffect: activateClass);
 
-                            selectPermanentEffect.SetUpCustomMessage("Select 1 [Takuya Kanbara].",
-                                "The opponent is selecting 1 [Takuya Kanbara].");
+                            selectPermanentEffect.SetUpCustomMessage("Select 1 [Koji Minamoto].",
+                                "The opponent is selecting 1 [Koji Minamoto].");
 
                             yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
