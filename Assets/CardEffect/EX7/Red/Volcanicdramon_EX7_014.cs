@@ -166,7 +166,12 @@ namespace DCGO.CardEffects.EX7
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                     CanNotPutFieldClass canNotPutFieldClass = new CanNotPutFieldClass();
+                    CanNotMoveClass canNotMoveClass = new CanNotMoveClass();
+                    canNotMoveClass.SetUpICardEffect("Can't move Digimon with 6000 DP or less", CanUseCondition1, card);
+                    canNotMoveClass.SetUpCanNotMoveClass(cardCondition: CardCondition, cardEffectCondition: CardEffectCondition);
+                    card.Owner.Enemy.UntilOwnerTurnEndEffects.Add((_timing) => canNotMoveClass);
+
+                    CanNotPutFieldClass canNotPutFieldClass = new CanNotPutFieldClass();
                      canNotPutFieldClass.SetUpICardEffect("Can't play Digimon with 6000 DP or less", CanUseCondition1, card);
                      canNotPutFieldClass.SetUpCanNotPutFieldClass(cardCondition: CardCondition, cardEffectCondition: CardEffectCondition);
                      card.Owner.Enemy.UntilOwnerTurnEndEffects.Add((_timing) => canNotPutFieldClass);
