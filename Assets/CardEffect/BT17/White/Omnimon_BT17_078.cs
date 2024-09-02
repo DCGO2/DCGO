@@ -300,13 +300,13 @@ namespace DCGO.CardEffects.BT17
 
                         IEnumerator SelectPermanentLevelCoroutine(Permanent permanent)
                         {
-                            if (permanent != null)
+                            if (permanent != null && permanent.TopCard.HasLevel)
                                 selectedLevel = permanent.Level;
 
                             yield return null;
                         }
 
-                        if (selectedLevel > 0)
+                        if (selectedLevel > 2)
                         {
                             yield return ContinuousController.instance.StartCoroutine(new DeckBottomBounceClass(
                                 deckBounceTargetPermanents: card.Owner.Enemy.GetBattleAreaDigimons().Filter(permanent => permanent.Level == selectedLevel && !permanent.TopCard.CanNotBeAffected(activateClass)),
