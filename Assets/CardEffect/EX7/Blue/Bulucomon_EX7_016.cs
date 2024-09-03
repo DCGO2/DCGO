@@ -12,11 +12,11 @@ namespace DCGO.CardEffects
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Reveal the Top 3 cards of the deck", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -38,12 +38,7 @@ namespace DCGO.CardEffects
 
                 bool CanSelectIceSnowCard(CardSource cardSource)
                 {
-                    if (cardSource.CardTraits.Contains("Ice-Snow"))
-                    {
-                        return true;
-                    }
-                    
-                    return false;
+                    return cardSource.ContainsTraits("Ice-Snow");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -53,7 +48,7 @@ namespace DCGO.CardEffects
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (card.Owner.LibraryCards.Count >= 1)
                         {
@@ -90,11 +85,11 @@ namespace DCGO.CardEffects
                 }
             }
 
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash digivolution cards", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
@@ -107,17 +102,14 @@ namespace DCGO.CardEffects
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent.DigivolutionCards.Count((cardSource) => !cardSource.CanNotTrashFromDigivolutionCards(activateClass)) >= 1)
-                        {
-                            return true;
-                        }
+                        return true;
                     }
 
                     return false;
                 }
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (isExistOnField(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectDigimonCondition))
                         {
