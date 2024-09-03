@@ -345,7 +345,7 @@ public class WaruMonzaemon_BT15_065 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Play] [When Digivolving] By trashing 1 card with [Numemon] in it's name in your hand or from the bottom of this Digimon's digivolution cards, [De-Digivolve 1] 1 of your opponent's Digimon.";
+                return "[When Digivolving] By trashing 1 card with [Numemon] in it's name in your hand or from the bottom of this Digimon's digivolution cards, [De-Digivolve 1] 1 of your opponent's Digimon.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)

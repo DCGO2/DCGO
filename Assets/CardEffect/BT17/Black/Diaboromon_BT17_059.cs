@@ -15,18 +15,18 @@ namespace DCGO.CardEffects.BT17
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("By placing [Clock of The End] in sources, Play 2 Diaboromon tokens", CanUseCondition, card);
+                activateClass.SetUpICardEffect("By placing [Doomsday Clock] in sources, Play 2 Diaboromon tokens", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] By placing 1 [Clock of The End] from your hand or trash as this Digimon's bottom digivolution card, you may play 2 [Diaboromon] (Digimon | 14 Cost | Level 6 | White | Mega | Unknown | Unidentified | DP3000) Tokens without paying its cost.";
+                    return "[When Digivolving] By placing 1 [Doomsday Clock] from your hand or trash as this Digimon's bottom digivolution card, you may play 2 [Diaboromon] (Digimon | 14 Cost | Level 6 | White | Mega | Unknown | Unidentified | DP3000) Tokens without paying its cost.";
                 }
 
-                bool HasClockofTheEnd(CardSource source)
+                bool HasDoomsdayClock(CardSource source)
                 {
-                    return source.EqualsCardName("Clock of The End");
+                    return source.EqualsCardName("Doomsday Clock");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -41,12 +41,9 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (CardEffectCommons.HasMatchConditionOwnersHand(card, HasClockofTheEnd) || CardEffectCommons.HasMatchConditionOwnersHand(card, HasClockofTheEnd))
+                        if (CardEffectCommons.HasMatchConditionOwnersHand(card, HasDoomsdayClock) || CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, HasDoomsdayClock))
                         {
-                            if (card.Owner.fieldCardFrames.Count((frame) => frame.IsEmptyFrame() && frame.IsBattleAreaFrame()) >= 1)
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
 
@@ -55,8 +52,8 @@ namespace DCGO.CardEffects.BT17
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    bool validCardInTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, HasClockofTheEnd);
-                    bool validCardInHand = CardEffectCommons.HasMatchConditionOwnersHand(card, HasClockofTheEnd);
+                    bool validCardInTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, HasDoomsdayClock);
+                    bool validCardInHand = CardEffectCommons.HasMatchConditionOwnersHand(card, HasDoomsdayClock);
                     bool useTrash = false;
                     bool cardAdded = false;
 
@@ -117,7 +114,7 @@ namespace DCGO.CardEffects.BT17
 
                                 selectHandEffect.SetUp(
                                     selectPlayer: card.Owner,
-                                    canTargetCondition: HasClockofTheEnd,
+                                    canTargetCondition: HasDoomsdayClock,
                                     canTargetCondition_ByPreSelecetedList: null,
                                     canEndSelectCondition: null,
                                     maxCount: 1,
@@ -142,7 +139,7 @@ namespace DCGO.CardEffects.BT17
                                 SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                                 selectCardEffect.SetUp(
-                                    canTargetCondition: HasClockofTheEnd,
+                                    canTargetCondition: HasDoomsdayClock,
                                     canTargetCondition_ByPreSelecetedList: null,
                                     canEndSelectCondition: null,
                                     canNoSelect: () => true,
@@ -185,7 +182,7 @@ namespace DCGO.CardEffects.BT17
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Switch attack target to a [Diaboromon]", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("AttackSwitch_BT17_059");
                 cardEffects.Add(activateClass);
 
@@ -254,7 +251,7 @@ namespace DCGO.CardEffects.BT17
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,
-                            canNoSelect: true,
+                            canNoSelect: false,
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine,
                             afterSelectPermanentCoroutine: null,

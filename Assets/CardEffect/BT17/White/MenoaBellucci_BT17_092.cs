@@ -88,7 +88,13 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return true;
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, HasEosmon))
+                            return true;
+                    }
+
+                    return false;
                 }
 
                 bool HasEosmon(Permanent permanent)
@@ -101,27 +107,22 @@ namespace DCGO.CardEffects.BT17
 
                 bool InvalidateCondition(ICardEffect cardEffect)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (cardEffect != null)
                     {
-                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card,HasEosmon))
+                        if (cardEffect is ActivateICardEffect)
                         {
-                            if (cardEffect != null)
+                            if (cardEffect.EffectSourceCard != null)
                             {
-                                if (cardEffect is ActivateICardEffect)
+                                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(cardEffect.EffectSourceCard.PermanentOfThisCard(), card))
                                 {
-                                    if (cardEffect.EffectSourceCard != null)
+                                    if (cardEffect.EffectSourceCard.PermanentOfThisCard().IsTamer)
                                     {
-                                        if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(cardEffect.EffectSourceCard.PermanentOfThisCard(), card))
+                                        if (!cardEffect.EffectSourceCard.PermanentOfThisCard().TopCard.CanNotBeAffected(invalidationClass))
                                         {
-                                            if (cardEffect.EffectSourceCard.PermanentOfThisCard().IsTamer)
+                                            if (cardEffect.IsOnPlay)
                                             {
-                                                if (!cardEffect.EffectSourceCard.PermanentOfThisCard().TopCard.CanNotBeAffected(invalidationClass))
-                                                {
-                                                    if (cardEffect.IsOnPlay)
-                                                    {
-                                                        return true;
-                                                    }
-                                                }
+                                                if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, HasEosmon))
+                                                    return true;
                                             }
                                         }
                                     }
@@ -153,36 +154,42 @@ namespace DCGO.CardEffects.BT17
 
                 bool isEosmon(Permanent permanent)
                 {
-                    return permanent.TopCard.EqualsCardName("Eosmon");
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                        return permanent.TopCard.EqualsCardName("Eosmon");
+
+                    return false;
                 }
 
                 bool HasOtherEosmon(Permanent permanent)
                 {
-                    if (permanent.IsDigimon)
+                    if(CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        foreach(Permanent removed in removedPermanents)
+                        foreach (Permanent removed in removedPermanents)
                         {
                             if (removed != permanent)
                                 return permanent.TopCard.EqualsCardName("Eosmon");
                         }
                     }
-
+                    
                     return false;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsOpponentTurn(card))
                     {
-                        if (CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, isEosmon))
+                        if (CardEffectCommons.IsExistOnBattleArea(card))
                         {
-                            if (CardEffectCommons.IsByEffect(hashtable, cardEffect => CardEffectCommons.IsOpponentEffect(cardEffect, card)))
+                            if (CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, isEosmon))
                             {
-                                return true;
+                                if (CardEffectCommons.IsByEffect(hashtable, cardEffect => CardEffectCommons.IsOpponentEffect(cardEffect, card)))
+                                {
+                                    return true;
+                                }
                             }
                         }
                     }
-
+                    
                     return false;
                 }
 
@@ -190,7 +197,7 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        removedPermanents = CardEffectCommons.GetPermanentsFromHashtable(hashtable);
+                        removedPermanents = CardEffectCommons.GetPermanentsFromHashtable(hashtable).Filter(isEosmon);
 
                         return CardEffectCommons.HasMatchConditionOwnersPermanent(card, HasOtherEosmon);
                     }

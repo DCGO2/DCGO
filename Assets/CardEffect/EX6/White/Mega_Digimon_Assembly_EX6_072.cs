@@ -47,6 +47,10 @@ namespace DCGO.CardEffects.EX6
             #region Main
             if (timing == EffectTiming.OptionSkill)
             {
+                CardSource selectedLevel7 = null;
+                List<Permanent> allowedPermanents = new List<Permanent>();
+                List<CardSource> allowedCards = new List<CardSource>();
+
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("DNA Digivolve", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, DataBase.BlastDNADigivolveEffectDiscription());
@@ -89,6 +93,48 @@ namespace DCGO.CardEffects.EX6
                     return false;
                 }
 
+                void FilterAllowableSelections(Permanent selectedPermanent = null) 
+                {
+                    JogressConditionElement[] elements = (JogressConditionElement[])selectedLevel7.jogressCondition.elements.Clone();
+
+                    allowedPermanents = new List<Permanent>();
+                    allowedCards = new List<CardSource>();
+
+                    for (int i = 0; i < elements.Length; i++)
+                    {
+                        bool added = false;
+
+                        foreach (Permanent permanent in card.Owner.GetBattleAreaPermanents())
+                        {
+                            if (selectedPermanent != null && permanent != selectedPermanent)
+                                continue;
+
+                            if (elements[i].EvoRootCondition(permanent))
+                            {
+                                allowedPermanents.Add(permanent);
+                                added = true;
+                            }
+                        }
+
+                        if (added)
+                        {
+                            int inverse = Mathf.Abs(i - 1);
+
+                            foreach (CardSource source in card.Owner.HandCards.Filter(HasLevel6HandSource))
+                            {
+                                Permanent playedPermanent = new Permanent(new List<CardSource>() { source });
+
+                                card.Owner.FieldPermanents[0] = playedPermanent;
+
+                                if (elements[inverse].EvoRootCondition(playedPermanent))
+                                    allowedCards.Add(source);
+
+                                card.Owner.FieldPermanents[0] = null;
+                            }
+                        }
+                    }
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card);
@@ -96,10 +142,6 @@ namespace DCGO.CardEffects.EX6
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    CardSource selectedLevel7 = null;
-                    JogressConditionElement[] elements = null;
-                    List<Permanent> allowedPermanents = new List<Permanent>();
-                    List<CardSource> allowedCards = new List<CardSource>();
                     Permanent selectedPermanent = null;
                     CardSource selectedCardSource = null;
 
@@ -134,38 +176,7 @@ namespace DCGO.CardEffects.EX6
 
                     if(selectedLevel7 != null)
                     {
-                        elements = (JogressConditionElement[])selectedLevel7.jogressCondition.elements.Clone();
-
-                        for(int i = 0; i < elements.Length; i++)
-                        {
-                            bool added = false;
-
-                            foreach (Permanent permanent in card.Owner.GetBattleAreaPermanents())
-                            {
-                                if (elements[i].EvoRootCondition(permanent))
-                                {
-                                    allowedPermanents.Add(permanent);
-                                    added = true;
-                                }                                    
-                            }
-
-                            if (added)
-                            {
-                                int inverse = Mathf.Abs(i - 1);
-
-                                foreach (CardSource source in card.Owner.HandCards.Filter(HasLevel6HandSource))
-                                {
-                                    Permanent playedPermanent = new Permanent(new List<CardSource>() { source });
-
-                                    card.Owner.FieldPermanents[0] = playedPermanent;
-
-                                    if (elements[inverse].EvoRootCondition(playedPermanent))
-                                        allowedCards.Add(source);
-
-                                    card.Owner.FieldPermanents[0] = null;
-                                }
-                            }
-                        }
+                        FilterAllowableSelections();
 
                         #region Selecting Field Permanent for DNA
                         bool PermanentDNASelection(Permanent permanent)
@@ -189,8 +200,6 @@ namespace DCGO.CardEffects.EX6
 
                             return false;
                         }
-
-                        Debug.Log($"WORKABLE: {allowedPermanents.Count} : {allowedCards.Count}");
 
                         maxCount = Math.Min(1, allowedPermanents.Count);
 
@@ -223,6 +232,8 @@ namespace DCGO.CardEffects.EX6
 
                         if(selectedPermanent != null)
                         {
+                            FilterAllowableSelections(selectedPermanent);
+
                             maxCount = Math.Min(1, allowedCards.Count);
 
                             SelectHandEffect selectHandDNAEffect = GManager.instance.GetComponent<SelectHandEffect>();
@@ -302,7 +313,7 @@ namespace DCGO.CardEffects.EX6
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Return 1 Digimon from trash to hand then add this card to hand", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -326,19 +337,6 @@ namespace DCGO.CardEffects.EX6
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerSecurityEffect(hashtable, card);
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (isExistOnField(card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)

@@ -20,8 +20,8 @@ public partial class CardEffectCommons
     {
         List<Permanent> permanents = GetPermanentsFromHashtable(hashtable);
 
-        if (permanentCondition != null)
-        {
+        if (permanents != null && permanentCondition != null)
+        {            
             if (permanents.Count((permanent) => permanent != null && permanent.TopCard != null && permanentCondition(permanent)) >= 1)
             {
                 return true;

@@ -140,6 +140,7 @@ public class AlforsevdramonZero_P_048 : CEntity_Effect
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Memory +1", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+            activateClass.SetHashString("Memory_P_048");
             cardEffects.Add(activateClass);
 
             string EffectDiscription()
@@ -149,7 +150,7 @@ public class AlforsevdramonZero_P_048 : CEntity_Effect
 
             bool CanUseCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
+                if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                 {
                     if (CardEffectCommons.IsOwnerTurn(card))
                     {
@@ -165,7 +166,7 @@ public class AlforsevdramonZero_P_048 : CEntity_Effect
 
             bool CanActivateCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
+                if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                 {
                     return true;
                 }

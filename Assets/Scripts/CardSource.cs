@@ -664,7 +664,7 @@ public class CardSource : MonoBehaviour
     #endregion
 
     #region level
-    public int Level => _cEntity_Base.Level;
+    public int Level => TreatedLevel;
     #endregion
 
     #region Level
@@ -674,7 +674,7 @@ public class CardSource : MonoBehaviour
         {
             int treatedLevel = 0;
 
-            treatedLevel = Level;
+            treatedLevel = _cEntity_Base.Level;
 
             if (!HasLevel)
                 treatedLevel = 1145140;
@@ -2150,6 +2150,12 @@ public class CardSource : MonoBehaviour
 
     #region whether this card has level
     public bool HasLevel => _cEntity_Base == null || _cEntity_Base.HasLevel;
+    #endregion
+    
+    #region whether this card is level 2
+    
+    public bool IsLevel2 => (_cEntity_Base == null || _cEntity_Base.HasLevel) && _cEntity_Base.Level == 2;
+    
     #endregion
     
     #region whether this card is level 3

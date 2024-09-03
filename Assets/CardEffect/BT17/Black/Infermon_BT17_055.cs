@@ -15,7 +15,7 @@ namespace DCGO.CardEffects.BT17
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("<De-Digivolve 1>, 1 of our oppenents 8 cost or less can't attack players", CanUseCondition, card);
+                activateClass.SetUpICardEffect("<De-Digivolve 1>, 1 of our opponents 8 cost or less can't attack players", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -121,8 +121,8 @@ namespace DCGO.CardEffects.BT17
                         }
 
                         if (permanent != null)
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotAttackPlayerEffect(
-                            attackerCondition: IsOpponentsEightCostDigimon,
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotAttack(
+                            targetPermanent: permanent,
                             defenderCondition: DefenderCondition,
                             effectDuration: EffectDuration.UntilOpponentTurnEnd,
                             activateClass: activateClass,
@@ -136,7 +136,7 @@ namespace DCGO.CardEffects.BT17
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("", CanUseCondition, card);
+                activateClass.SetUpICardEffect("<De-Digivolve 1> 1 of your opponent's Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("DeDigivolve_BT17_055");
@@ -154,11 +154,14 @@ namespace DCGO.CardEffects.BT17
 
                 bool IsDiaboromon(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                    if(CardEffectCommons.IsOwnerPermanent(permanent, card))
                     {
-                        return permanent.TopCard.EqualsCardName("Diaboromon");
+                        if (permanent.IsDigimon)
+                        {
+                            return permanent.TopCard.ContainsCardName("Diaboromon");
+                        }
                     }
-
+                    
                     return false;
                 }
 

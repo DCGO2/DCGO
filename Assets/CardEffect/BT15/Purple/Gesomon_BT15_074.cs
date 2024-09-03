@@ -18,11 +18,7 @@ public class Gesomon_BT15_074 : CEntity_Effect
         }
 
         #region On Play/When Digivolving Shared
-        string EffectSharedDiscription()
-        {
-            return "[On Play] [When Digivolving] Your opponent may trash 1 Digimon card in their hand. If they don't, gain 1 memory.";
-        }
-
+        
         bool CanSelectCardCondition(CardSource cardSource)
         {
             if (cardSource.Owner == card.Owner.Enemy)
@@ -44,6 +40,11 @@ public class Gesomon_BT15_074 : CEntity_Effect
             activateClass.SetUpICardEffect("Opponent trashes 1 Digimon card, or you gain Memory +1", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectSharedDiscription());
             cardEffects.Add(activateClass);
+
+            string EffectSharedDiscription()
+            {
+                return "[On Play] Your opponent may trash 1 Digimon card in their hand. If they don't, gain 1 memory.";
+            }
 
             bool CanUseCondition(Hashtable hashtable)
             {
@@ -120,6 +121,11 @@ public class Gesomon_BT15_074 : CEntity_Effect
             activateClass.SetUpICardEffect("Opponent trashes 1 Digimon card, or you gain Memory +1", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectSharedDiscription());
             cardEffects.Add(activateClass);
+
+            string EffectSharedDiscription()
+            {
+                return "[When Digivolving] Your opponent may trash 1 Digimon card in their hand. If they don't, gain 1 memory.";
+            }
 
             bool CanUseCondition(Hashtable hashtable)
             {

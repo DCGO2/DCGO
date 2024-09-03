@@ -184,7 +184,7 @@ namespace DCGO.CardEffects.BT17
                             CardEffectCommons.PlayOptionCards(
                                 cardSources: selectedCards,
                                 activateClass: activateClass,
-                                payCost: false,
+                                payCost: true,
                                 root: SelectCardEffect.Root.Hand
                             )
                         );
@@ -201,8 +201,9 @@ namespace DCGO.CardEffects.BT17
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 [Plug-In] Option", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
+                activateClass.SetHashString("ESS_BT17_035");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -365,11 +366,12 @@ namespace DCGO.CardEffects.BT17
                                 CardEffectCommons.PlayOptionCards(
                                     cardSources: selectedCards,
                                     activateClass: activateClass,
-                                    payCost: false,
+                                    payCost: true,
                                     root: SelectCardEffect.Root.Hand
                                 )
                             );
                         }
+
                         #region release effect
                         card.Owner.UntilCalculateFixedCostEffect.Remove(getCardEffect);
                         #endregion

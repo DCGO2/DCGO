@@ -12,11 +12,7 @@ namespace DCGO.CardEffects.BT16
 
             #region On Play/When Digivolving Shared
 
-            string EffectDiscription()
-            {
-                return "[On Play] [When Digivolving] By returning 3 cards with the [D-Brigade] or [DigiPolice] trait from your trash to the top of the deck, this Digimon gains <Rush>, and can't be blocked for the turn.";
-            }
-
+            
             bool CanSelectCardCondition(CardSource cardSource)
             {
                 if (cardSource.CardTraits.Contains("D-Brigade"))
@@ -55,6 +51,11 @@ namespace DCGO.CardEffects.BT16
                 activateClass.SetUpICardEffect("<Rush>, Can't be Blocked", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[On Play] By returning 3 cards with the [D-Brigade] or [DigiPolice] trait from your trash to the top of the deck, this Digimon gains <Rush>, and can't be blocked for the turn.";
+                }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
@@ -128,6 +129,11 @@ namespace DCGO.CardEffects.BT16
                 activateClass.SetUpICardEffect("<Rush>, Can't be Blocked", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[When Digivolving] By returning 3 cards with the [D-Brigade] or [DigiPolice] trait from your trash to the top of the deck, this Digimon gains <Rush>, and can't be blocked for the turn.";
+                }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
