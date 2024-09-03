@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.EX7
 {
     public class SnowAgumon_EX7_017 : CEntity_Effect
     {

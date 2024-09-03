@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.EX7
 {
     public class Otamamon_EX7_015 : CEntity_Effect
     {

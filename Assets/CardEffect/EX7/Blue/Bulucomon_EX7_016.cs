@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.EX7
 {
     public class Bulucomon_EX7_016 : CEntity_Effect
     {
