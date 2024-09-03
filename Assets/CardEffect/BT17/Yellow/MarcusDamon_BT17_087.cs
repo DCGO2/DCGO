@@ -46,10 +46,7 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (CardEffectCommons.IsOwnerTurn(card))
-                        {
-                            return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-                        }
+                        return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                     }
 
                     return false;

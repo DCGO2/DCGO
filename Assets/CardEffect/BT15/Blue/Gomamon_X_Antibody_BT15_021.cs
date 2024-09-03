@@ -25,11 +25,7 @@ public class Gomamon_X_Antibody_BT15_021 : CEntity_Effect
         #endregion
 
         #region On Play/When Digivolving Shared
-        string EffectSharedDiscription()
-        {
-            return "[On Play] [When Digivolving] Reveal the top 3 cards of your deck. Add 1 card with the [Sea Beast], [Plesiosaur], [Beastkin] or [X Antibody] trait among them to the hand.";
-        }
-
+        
         bool CanSelectCardCondition(CardSource cardSource)
         {
             if (cardSource.ContainsTraits("Sea Beast"))
@@ -77,6 +73,11 @@ public class Gomamon_X_Antibody_BT15_021 : CEntity_Effect
             activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, false, EffectSharedDiscription());
             cardEffects.Add(activateClass);
 
+            string EffectSharedDiscription()
+            {
+                return "[On Play] Reveal the top 3 cards of your deck. Add 1 card with the [Sea Beast], [Plesiosaur], [Beastkin] or [X Antibody] trait among them to the hand.";
+            }
+
             bool CanUseCondition(Hashtable hashtable)
             {
                 return CardEffectCommons.CanTriggerOnPlay(hashtable, card); 
@@ -110,6 +111,11 @@ public class Gomamon_X_Antibody_BT15_021 : CEntity_Effect
             activateClass.SetUpICardEffect("Reveal the top 3 cards of deck", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, false, EffectSharedDiscription());
             cardEffects.Add(activateClass);
+
+            string EffectSharedDiscription()
+            {
+                return "[When Digivolving] Reveal the top 3 cards of your deck. Add 1 card with the [Sea Beast], [Plesiosaur], [Beastkin] or [X Antibody] trait among them to the hand.";
+            }
 
             bool CanUseCondition(Hashtable hashtable)
             {

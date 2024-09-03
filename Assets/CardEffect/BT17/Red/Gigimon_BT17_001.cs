@@ -15,10 +15,8 @@ namespace DCGO.CardEffects.BT17
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Pay 1 to delete opponents' Digimon with 3000 DP or less",
-                    CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true,
-                    EffectDescription());
+                activateClass.SetUpICardEffect("Pay 1 to delete opponents' Digimon with 3000 DP or less", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("Pay1Delete3000DP_BT17_001");
                 cardEffects.Add(activateClass);
@@ -49,16 +47,15 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentPermanentCondition);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(-1, activateClass));
+
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentPermanentCondition))
                     {
-                        yield return ContinuousController.instance.StartCoroutine(
-                            card.Owner.AddMemory(-1, activateClass));
-
                         int maxCount = Math.Min(1,
                             CardEffectCommons.MatchConditionPermanentCount(CanSelectOpponentPermanentCondition));
 

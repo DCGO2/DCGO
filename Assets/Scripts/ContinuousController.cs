@@ -108,6 +108,7 @@ public class ContinuousController : MonoBehaviour
     public CEntity_Base FujitsumonToken { get; private set; }
     public CEntity_Base GyuukimonToken { get; private set; }
     public CEntity_Base KoHagurumonToken { get; private set; }
+    public CEntity_Base FamiliarToken { get; private set; }
     public CardRestriction BanList { get; private set; } = new CardRestriction(new List<CardLimitCount>(), new List<BannedPair>());
 
     void LoadBanList()
@@ -240,6 +241,27 @@ public class ContinuousController : MonoBehaviour
         };
 
         await KoHagurumonToken.GetCardSprite();
+        
+        FamiliarToken = new CEntity_Base()
+        {
+            cardColors = new List<CardColor>() { CardColor.Yellow },
+            PlayCost = -1,
+            Level = 0,
+            CardName_JPN = "",
+            CardName_ENG = "Familiar",
+            Form_JPN = new List<string>(),
+            Form_ENG = new List<string>(),
+            Attribute_JPN = new List<string>(),
+            Attribute_ENG = new List<string>(),
+            Type_JPN = new List<string>(),
+            Type_ENG = new List<string>(),
+            CardSpriteName = "EX7-030-token",
+            cardKind = CardKind.Digimon,
+            DP = 3000,
+            CardEffectClassName = "Familiar_EX7_030_token"
+        };
+
+        await FamiliarToken.GetCardSprite();
     }
 
     public static ContinuousController instance = null;
@@ -478,7 +500,7 @@ public class ContinuousController : MonoBehaviour
 
         set
         {
-            _playerName = value;
+            _playerName = DeckData.ValidateDeckName(value);
         }
     }
 

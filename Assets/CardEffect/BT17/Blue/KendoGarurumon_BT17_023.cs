@@ -22,8 +22,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.EqualsCardName("Koji  Minamoto") ||
-                           targetPermanent.TopCard.EqualsCardName("KojiMinamoto");
+                    return targetPermanent.TopCard.EqualsCardName("Koji Minamoto");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(

@@ -172,22 +172,26 @@ namespace DCGO.CardEffects.P
             #endregion
 
             #region All Turns
+            bool LeomonCondition()
+            {
+                if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.EqualsCardName("Leomon") || cardSource.EqualsCardName("X Antibody")) >= 1)
+                {
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
             if (timing == EffectTiming.None)
             {
-                bool Condition()
-                {
-                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardNames.Contains("Leomon") || cardSource.CardNames.Contains("X Antibody") || cardSource.CardNames.Contains("XAntibody")) >= 1)
-                    {
-                        if (CardEffectCommons.IsExistOnBattleArea(card))
-                        {
-                            return true;
-                        }
-                    }
-                    return false;
-                }
+                cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(isInheritedEffect: false, card: card, condition: LeomonCondition));
+            }
 
-                cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(isInheritedEffect: false, card: card, condition: Condition));
-                cardEffects.Add(CardEffectFactory.FortitudeSelfEffect(isInheritedEffect: false, card: card, condition: Condition));
+            if (timing == EffectTiming.OnDestroyedAnyone)
+            {
+                cardEffects.Add(CardEffectFactory.FortitudeSelfEffect(isInheritedEffect: false, card: card, condition: LeomonCondition));
             }
             #endregion
 

@@ -25,7 +25,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool HasInfermonInHand (CardSource source)
                 {
-                    return card.CardNames.Contains("Infermon");
+                    return source.EqualsCardName("Infermon");
                 }
 
                 bool OpponentPermanentCondition (Permanent permanent)
@@ -41,11 +41,14 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if(CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, OpponentPermanentCondition))
-                        return true;
+                    if (CardEffectCommons.IsOpponentTurn(card))
+                    {
+                        if (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, OpponentPermanentCondition))
+                            return true;
 
-                    if (CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, OpponentPermanentCondition))
-                        return true;
+                        if (CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, OpponentPermanentCondition))
+                            return true;
+                    }                    
 
                     return false;
                 }
@@ -71,7 +74,7 @@ namespace DCGO.CardEffects.BT17
                             payCost: false,
                             reduceCostTuple: null,
                             fixedCostTuple: null,
-                            ignoreDigivolutionRequirementFixedCost: -1,
+                            ignoreDigivolutionRequirementFixedCost: 0,
                             isHand: true,
                             activateClass: activateClass,
                             successProcess: null));
@@ -102,9 +105,10 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card))
                     {
-                        if (card.Owner.fieldCardFrames.Count((frame) => frame.IsEmptyFrame()) >= 1)
+                        if (CardEffectCommons.CanActivateSelfOnDeletionWithContainingTrait(hashtable, "Unidentified", card))
                         {
-                            return true;
+                            if (card.Owner.fieldCardFrames.Count((frame) => frame.IsEmptyFrame()) >= 1)
+                                return true;
                         }
                     }
 
@@ -113,19 +117,7 @@ namespace DCGO.CardEffects.BT17
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    List<Hashtable> deletionHashtables = CardEffectCommons.GetHashtablesFromHashtable(hashtable);
-
-                    if (deletionHashtables.Count > 0)
-                    {
-                        Hashtable hash = deletionHashtables[0];
-                        if (hash.ContainsKey("TopCard") && hash["TopCard"] is CardSource)
-                        {
-                            CardSource source = (CardSource)hash["TopCard"];
-
-                            if (card.ContainsTraits("Unidentified"))
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayDiaboromonToken(activateClass));
-                        }
-                    }
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayDiaboromonToken(activateClass));
                 }
             }
             #endregion

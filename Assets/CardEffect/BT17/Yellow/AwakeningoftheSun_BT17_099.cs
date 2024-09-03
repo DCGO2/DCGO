@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.BT17
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 [Marcus Damon]/[Rhythm] from hand or trash", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -45,21 +45,6 @@ namespace DCGO.CardEffects.BT17
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card);
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                     if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
-                     {
-                         return true;
-                     }
-
-                     if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
-                     {
-                         return true;
-                     }
-
-                    return false;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -179,7 +164,7 @@ namespace DCGO.CardEffects.BT17
             #endregion
 
             #region All Turns - Delay
-            if (timing == EffectTiming.OnDestroyedAnyone)
+            if (timing == EffectTiming.OnDestroyedAnyone || timing == EffectTiming.WhenReturntoHandAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Digivolve for free", CanUseCondition, card);
@@ -193,7 +178,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool PermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
+                    if (CardEffectCommons.IsOwnerPermanent(permanent, card))
                     {
                         if (permanent.IsTamer)
                         {
@@ -208,6 +193,11 @@ namespace DCGO.CardEffects.BT17
                     if (CardEffectCommons.CanDeclareOptionDelayEffect(card))
                     {
                         if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition))
+                        {
+                            return true;
+                        }
+
+                        if (CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, PermanentCondition))
                         {
                             return true;
                         }
@@ -237,21 +227,19 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.CardNames.Contains("ShineGreymon");
+                    return cardSource.ContainsCardName("ShineGreymon");
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (card.Owner.HandCards.Count >= 1)
-                        {
-                            return true;
-                        }
-
                         if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermanentCondition))
                         {
-                            return true;
+                            if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
+                            {
+                                return true;
+                            }
                         }
                     }
 
@@ -259,7 +247,17 @@ namespace DCGO.CardEffects.BT17
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
-                {         
+                {
+                    yield return ContinuousController.instance.StartCoroutine(
+                        CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
+                            targetPermanents: new List<Permanent>() { card.PermanentOfThisCard() },
+                            activateClass: activateClass, successProcess: permanents => SuccessProcess(),
+                            failureProcess: null));
+                }                
+
+                IEnumerator SuccessProcess()
+                {
+     
                     Permanent selectedPermanent = null;
 
                     int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
@@ -303,7 +301,7 @@ namespace DCGO.CardEffects.BT17
                             activateClass: activateClass,
                             successProcess: null));
                     }
-                }                
+                }
             }
             #endregion
 
@@ -312,7 +310,7 @@ namespace DCGO.CardEffects.BT17
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect($"Play 1 [Marcus Damon]/[Rhythm] from hand or trash", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
                 activateClass.SetIsSecurityEffect(true);
                 cardEffects.Add(activateClass);
 
@@ -342,22 +340,6 @@ namespace DCGO.CardEffects.BT17
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card);
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-
-                    if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
-                    {
-                        return true;
-                    }
-                  
-                    if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
-                    {
-                        return true;
-                    }
-                  
-                    return false;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
