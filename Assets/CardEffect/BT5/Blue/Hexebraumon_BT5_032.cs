@@ -128,7 +128,7 @@ public class Hexebraumon_BT5_032 : CEntity_Effect
             {
                 return CardEffectCommons.IsExistOnBattleArea(card);
             }
-
+            
             cardEffects.Add(CardEffectFactory.CanNotAttackStaticEffect(attackerCondition: AttackerCondition, defenderCondition: null, isInheritedEffect: false, card: card, condition: Condition, effectName: "Opponent's Digimon without digivolution cards can't Attack"));
         }
 

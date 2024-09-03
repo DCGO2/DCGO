@@ -1847,6 +1847,51 @@ public class Permanent
     }
     #endregion
 
+    #region Has Ice Clad
+    public bool HasIceclad
+    {
+        get
+        {
+            foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
+            {
+                #region Ice clad permanent effects
+                foreach (ICardEffect cardEffect in EffectList(EffectTiming.None))
+                {
+                    if (cardEffect is IIcecladEffect)
+                    {
+                        if (cardEffect.CanTrigger(null))
+                        {
+                            if (((IIcecladEffect)cardEffect).HasIceclad(this))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+                #endregion
+
+                #region Ice clad Player Effects
+                foreach (ICardEffect cardEffect in player.EffectList(EffectTiming.None))
+                {
+                    if (cardEffect is IIcecladEffect)
+                    {
+                        if (cardEffect.CanTrigger(null))
+                        {
+                            if (((IIcecladEffect)cardEffect).HasIceclad(this))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+                #endregion
+            }
+
+            return false;
+        }
+    }
+    #endregion
+
     #region Whether this permanent has Pierce
     public bool HasPierce
     {
