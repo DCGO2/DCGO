@@ -9,37 +9,11 @@ namespace DCGO.CardEffects
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Change Traits, Iceclad effect
-
             if (timing == EffectTiming.None)
             {
-                ChangeTraitsClass changeTraitsClass = new ChangeTraitsClass();
-                changeTraitsClass.SetUpICardEffect("Trait: Has [Ice-Snow] type", CanUseCondition, card);
-                changeTraitsClass.SetUpChangeTraitsClass(changeeTraits: ChangeTraits);
-                cardEffects.Add(changeTraitsClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return true;
-                }
-
-                List<string> ChangeTraits(CardSource cardSource, List<string> cardTraits)
-                {
-                    if (cardSource == card)
-                    {
-                        cardTraits.Add("Ice-Snow");
-                    }
-
-                    return cardTraits;
-                }
+                cardEffects.Add(CardEffectFactory.IcecladSelfStaticEffect(isInheritedEffect: false, card: card,
+                    condition: null));
             }
-            
-            if (timing == EffectTiming.None)
-            {
-                cardEffects.Add(CardEffectFactory.IcecladSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
-            }
-
-            #endregion
 
             #region When Digivolving
 
@@ -47,7 +21,7 @@ namespace DCGO.CardEffects
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash 2 then unsuspend", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -57,17 +31,26 @@ namespace DCGO.CardEffects
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    {
+                        return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                    }
+
+                    return false;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return true;
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    {
+                        return true;
+                    }
+                    return false;
                 }
 
                 bool CheckOpponentDigivolutionSources()
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         int count = CardEffectCommons.MatchConditionOpponentsPermanentCount(card, (permanent) => permanent.IsDigimon && permanent.HasNoDigivolutionCards);
 
@@ -121,12 +104,12 @@ namespace DCGO.CardEffects
 
             if (timing == EffectTiming.None)
             {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Gain Piercing and SecAtk+1", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-                activateClass.SetIsInheritedEffect(true);
-                activateClass.SetHashString("CrysPaledramon_EX7_021_GainPiercing_SecAtk1");
-                cardEffects.Add(activateClass);
+                AddSkillClass addSkillClass = new AddSkillClass();
+                addSkillClass.SetUpICardEffect("Gain Piercing and Security Atk+1", CanUseCondition, card);
+                addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
+                addSkillClass.SetIsInheritedEffect(true);
+                addSkillClass.SetHashString("CrysPaledramon_EX7_021_GainPiercing_SecAtk1");
+                cardEffects.Add(addSkillClass);
 
                 string EffectDiscription()
                 {
@@ -135,12 +118,20 @@ namespace DCGO.CardEffects
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsOwnerTurn(card);
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card) && CardEffectCommons.IsOwnerTurn(card))
+                    {
+                        if (card.ContainsTraits("Ice-Snow"))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
                 }
 
-                bool CanActivateCondition(Hashtable hashtable)
+                bool CardSourceCondition(CardSource cardSource)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         int count = CardEffectCommons.MatchConditionOpponentsPermanentCount(card, (permanent) => permanent.IsDigimon && permanent.HasNoDigivolutionCards);
 
@@ -150,15 +141,22 @@ namespace DCGO.CardEffects
                     return true;
                 }
 
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming timing)
                 {
-                    if (card.CardTraits.Contains("Ice-Snow"))
+                    if (timing == EffectTiming.OnAllyAttack)
                     {
-                        cardEffects.Add(CardEffectFactory.PierceSelfEffect(isInheritedEffect: true, card: card, condition: null));
-                        cardEffects.Add(CardEffectFactory.ChangeSelfSAttackStaticEffect(changeValue: 1, isInheritedEffect: true, card: card, condition: null));
+                        bool Condition()
+                        {
+                            return CardSourceCondition(cardSource);
+                        }
+
+                        cardEffects.Add(CardEffectFactory.PierceSelfEffect(isInheritedEffect: false, card: card,
+                            condition: Condition));
+                        cardEffects.Add(CardEffectFactory.ChangeSelfSAttackStaticEffect(changeValue: 1,
+                            isInheritedEffect: false, card: card, condition: Condition));
                     }
 
-                    yield return null;
+                    return cardEffects;
                 }
             }
 

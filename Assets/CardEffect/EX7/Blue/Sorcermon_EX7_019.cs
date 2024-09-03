@@ -10,34 +10,17 @@ namespace DCGO.CardEffects
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
-
-            if (timing == EffectTiming.None)
-            {
-                ChangeTraitsClass changeTraitsClass = new ChangeTraitsClass();
-                changeTraitsClass.SetUpICardEffect("Has the [Ice-Snow] Type", _ => true, card);
-                changeTraitsClass.SetUpChangeTraitsClass(changeeTraits: ChangeCardTraits);
-                cardEffects.Add(changeTraitsClass);
-
-                List<string> ChangeCardTraits(CardSource cardSource, List<string> cardTraits)
-                {
-                    if (cardSource == card)
-                    {
-                        cardTraits.Add("Ice-Snow");
-                    }
-
-                    return cardTraits;
-                }
-            }
+            
             if (timing == EffectTiming.None)
             {
                 cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
             }
             
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Unsuspend your digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -122,12 +105,13 @@ namespace DCGO.CardEffects
                 }
             }
 
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash digivolution cards", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
+                activateClass.SetHashString("Unsuspend_EX7_019");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -139,7 +123,7 @@ namespace DCGO.CardEffects
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent.DigivolutionCards.Count((cardSource) => !cardSource.CanNotTrashFromDigivolutionCards(activateClass)) >= 1)
+                        if (permanent.IsDigimon)
                         {
                             return true;
                         }
@@ -149,7 +133,7 @@ namespace DCGO.CardEffects
                 }
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (isExistOnField(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectDigimonCondition))
                         {

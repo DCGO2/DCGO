@@ -11,46 +11,19 @@ namespace DCGO.CardEffects
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
             
-            #region Change Traits, Static Effects
-
-            if (timing == EffectTiming.None)
-            {
-                ChangeTraitsClass changeTraitsClass = new ChangeTraitsClass();
-                changeTraitsClass.SetUpICardEffect("Trait: Has [Ice-Snow] type", CanUseCondition, card);
-                changeTraitsClass.SetUpChangeTraitsClass(changeeTraits: ChangeTraits);
-                cardEffects.Add(changeTraitsClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return true;
-                }
-
-                List<string> ChangeTraits(CardSource cardSource, List<string> cardTraits)
-                {
-                    if (cardSource == card)
-                    {
-                        cardTraits.Add("Ice-Snow");
-                    }
-
-                    return cardTraits;
-                }
-            }
-            
             if (timing == EffectTiming.None)
             {
                 cardEffects.Add(CardEffectFactory.ChangeSelfSAttackStaticEffect(changeValue: 1, isInheritedEffect: false, card: card, condition: null));
                 cardEffects.Add(CardEffectFactory.IcecladSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
             }
-
-            #endregion
-
+            
             #region When Digivolving
             
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash 4 then return Tamer to bottom of deck", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -60,17 +33,28 @@ namespace DCGO.CardEffects
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    {
+                        return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                    }
+
+                    return false;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
                 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+                }
+                
+
+                bool CanSelectCardCondition(CardSource cardSource)
+                {
+                    if (cardSource.Owner.Enemy && cardSource.IsDigimon)
                     {
                         return true;
                     }
@@ -78,27 +62,9 @@ namespace DCGO.CardEffects
                     return false;
                 }
                 
-                bool CanSelectTrashSourceCondition(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                    {
-                        if (permanent.DigivolutionCards.Count(CanSelectCardCondition) >= 1)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
-                bool CanSelectCardCondition(CardSource cardSource)
-                {
-                    return !cardSource.CanNotTrashFromDigivolutionCards(activateClass);
-                }
-                
                 bool CanBounceTamerCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         int count = CardEffectCommons.MatchConditionOpponentsPermanentCount(card, (permanent) => permanent.IsDigimon && permanent.HasNoDigivolutionCards);
 
@@ -118,7 +84,7 @@ namespace DCGO.CardEffects
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SelectTrashDigivolutionCards(
-                            permanentCondition: CanSelectTrashSourceCondition,
+                            permanentCondition: CanSelectPermanentCondition,
                             cardCondition: CanSelectCardCondition,
                             maxCount: 4,
                             canNoTrash: false,
@@ -161,7 +127,7 @@ namespace DCGO.CardEffects
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Opponent's digimon can't suspend", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -171,12 +137,17 @@ namespace DCGO.CardEffects
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsOpponentTurn(card);
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    {
+                        return CardEffectCommons.IsOpponentTurn(card);
+                    }
+
+                    return false;
                 }
                 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                         return true;
 
                     return false;
