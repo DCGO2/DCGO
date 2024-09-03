@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.EX7
 {
     public class Hexeblaumon_EX7_023 : CEntity_Effect
     {

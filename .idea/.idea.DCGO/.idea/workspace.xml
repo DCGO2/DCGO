@@ -4,20 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1f770e58-b781-4cb0-ad93-4c50994f611d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.DCGO/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.DCGO/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT5/Blue/Hexebraumon_BT5_032.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT5/Blue/Hexebraumon_BT5_032.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/EX7/Blue/Bulucomon_EX7_016.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/EX7/Blue/Bulucomon_EX7_016.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/EX7/Blue/CrysPaledramon_EX7_021.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/EX7/Blue/CrysPaledramon_EX7_021.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/EX7/Blue/Gekomon_EX7_018.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/EX7/Blue/Gekomon_EX7_018.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/EX7/Blue/Hexeblaumon_EX7_023.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/EX7/Blue/Hexeblaumon_EX7_023.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/EX7/Blue/Hiyarimon_EX7_002.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/EX7/Blue/Hiyarimon_EX7_002.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/EX7/Blue/Otamamon_EX7_015.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/EX7/Blue/Otamamon_EX7_015.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/EX7/Blue/Paledramon_EX7_020.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/EX7/Blue/Paledramon_EX7_020.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/EX7/Blue/ShogunGekomon_EX7_022.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/EX7/Blue/ShogunGekomon_EX7_022.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/EX7/Blue/Sorcermon_EX7_019.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/EX7/Blue/Sorcermon_EX7_019.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/ProjectSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/ProjectSettings.asset" afterDir="false" />
-    </list>
+    <list default="true" id="1f770e58-b781-4cb0-ad93-4c50994f611d" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -118,7 +105,7 @@
       <workItem from="1715820047500" duration="30965000" />
       <workItem from="1719540359999" duration="395000" />
       <workItem from="1720456596917" duration="698000" />
-      <workItem from="1725387928890" duration="4166000" />
+      <workItem from="1725387928890" duration="5000000" />
     </task>
     <servers />
   </component>
