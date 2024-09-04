@@ -157,7 +157,7 @@ namespace DCGO.CardEffects.EX7
                 {
                     if (CardEffectCommons.IsOwnerTurn(card))
                     {
-                        if (CardEffectCommons.IsExistOnBattleArea(card))
+                        if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                         {
                             if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition))
                             {
@@ -170,7 +170,7 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (card.Owner.TrashCards.Count >= 1)
                         {
@@ -273,7 +273,7 @@ namespace DCGO.CardEffects.EX7
 
                 bool PermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
+                    if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent))
                     {
                         if (permanent.IsDigimon)
                         {
@@ -291,7 +291,7 @@ namespace DCGO.CardEffects.EX7
                 {
                     if (CardEffectCommons.IsOpponentTurn(card))
                     {
-                        if (CardEffectCommons.IsExistOnBattleArea(card))
+                        if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                         {
                             if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition))
                             {
@@ -304,7 +304,7 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         return true;
                     }

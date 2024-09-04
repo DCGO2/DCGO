@@ -41,7 +41,7 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.CanActivateOnDeletion(card))
                     {
                         if (card.Owner.HandCards.Count >= 1)
                         {
