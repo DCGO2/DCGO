@@ -11,16 +11,19 @@ namespace DCGO.CardEffects.BT17
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region All Turns
+            #region Your Turn
             if (timing == EffectTiming.None)
             {
                 bool Condition()
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.IsSuspended && permanent.IsTamer))
+                        if (CardEffectCommons.IsOwnerTurn(card))
                         {
-                            return true;
+                            if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.IsSuspended && permanent.IsTamer))
+                            {
+                                return true;
+                            }
                         }
                     }
 
@@ -97,7 +100,7 @@ namespace DCGO.CardEffects.BT17
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Suspend a Tamer to gain +3000 DP and Piercing", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Suspend a Tamer to give -3000 DP", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, true, EffectSharedDiscription1());
                 cardEffects.Add(activateClass);
 
@@ -203,7 +206,7 @@ namespace DCGO.CardEffects.BT17
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Suspend a Tamer to gain +3000 DP and Piercing", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Suspend a Tamer to give -3000 DP", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, true, EffectSharedDiscription2());
                 cardEffects.Add(activateClass);
 

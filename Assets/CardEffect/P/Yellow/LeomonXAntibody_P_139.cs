@@ -174,9 +174,9 @@ namespace DCGO.CardEffects.P
             #region All Turns
             bool LeomonCondition()
             {
-                if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.EqualsCardName("Leomon") || cardSource.EqualsCardName("X Antibody")) >= 1)
+                if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.EqualsCardName("Leomon") || cardSource.EqualsCardName("X Antibody")) >= 1)
                     {
                         return true;
                     }

@@ -233,12 +233,12 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnEndAttack(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (card.Owner.Enemy.MemoryForPlayer >= 1)
                         {

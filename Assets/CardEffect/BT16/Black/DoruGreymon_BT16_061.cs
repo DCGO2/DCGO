@@ -163,6 +163,11 @@ namespace DCGO.CardEffects.BT16
                     return (cardEffect.EffectSourceCard.PermanentOfThisCard() == card.PermanentOfThisCard());
                 }
 
+                bool OpponentsPermenantCondition(Permanent permanent)
+                {
+                    return permanent.IsDigimon && CardEffectCommons.IsOpponentPermanent(permanent, card);
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
@@ -176,9 +181,8 @@ namespace DCGO.CardEffects.BT16
 
                                 return permanent.cardSources.Contains(card);
                             }
-                            bool LoserCondition(Permanent permanent) => permanent.IsDigimon && CardEffectCommons.IsOpponentPermanent(permanent, card);
 
-                            if (CardEffectCommons.CanTriggerWhenDeleteOpponentDigimon(hashtable, WinnerCondition, LoserCondition))
+                            if (CardEffectCommons.CanTriggerWhenDeleteOpponentDigimon(hashtable, WinnerCondition, OpponentsPermenantCondition))
                             {
                                 return true;
                             }
@@ -186,7 +190,8 @@ namespace DCGO.CardEffects.BT16
 
                         if(CardEffectCommons.IsByEffect(hashtable, DeletionCardEffect))
                         {
-                            return true;
+                            if(CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, OpponentsPermenantCondition))
+                                return true;
                         }
                     }
 

@@ -326,13 +326,15 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
+                    if(CardEffectCommons.CanTriggerOnAttack(hashtable, card))
+                        return card.Owner.SecurityCards.Count >= 1;
+
+                    return false;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card) &&
-                           card.Owner.SecurityCards.Count >= 1;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);                           
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

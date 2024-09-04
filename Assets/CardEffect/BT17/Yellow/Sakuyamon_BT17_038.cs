@@ -203,21 +203,6 @@ namespace DCGO.CardEffects.BT17
                     return false;
                 }
 
-                bool CanUseCondition2()
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        return true;
-                    }
-
-                    return false;
-                }
-
-                bool PermanentCondition(Permanent permanent)
-                {
-                    return permanent == card.PermanentOfThisCard();
-                }
-
                 bool CardEffectCondition(ICardEffect cardEffect)
                 {
                     return CardEffectCommons.IsOpponentEffect(cardEffect, card);
@@ -235,23 +220,19 @@ namespace DCGO.CardEffects.BT17
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    cardEffects.Add(CardEffectFactory.CannotReturnToDeckStaticEffect(
-                        permanentCondition: PermanentCondition,
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotReturnToHand(
+                            targetPermanent: card.PermanentOfThisCard(),
+                            cardEffectCondition: CardEffectCondition,
+                            effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                            activateClass: activateClass,
+                            effectName: "Can't return to hand by opponent's effects"));
+
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotReturnToDeck(
+                        targetPermanent: card.PermanentOfThisCard(),
                         cardEffectCondition: CardEffectCondition,
-                        isInheritedEffect: false,
-                        card: card,
-                        condition: CanUseCondition2,
+                        effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                        activateClass: activateClass,
                         effectName: "Can't return to deck by opponent's effects"));
-
-                    cardEffects.Add(CardEffectFactory.CannotReturnToHandStaticEffect(
-                        permanentCondition: PermanentCondition,
-                        cardEffectCondition: CardEffectCondition,
-                        isInheritedEffect: false,
-                        card: card,
-                        condition: CanUseCondition2,
-                        effectName: "Can't return to hand by opponent's effects"));
-
-                    yield return null;
                 }
                 
             }          

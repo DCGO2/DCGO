@@ -133,8 +133,8 @@ namespace DCGO.CardEffects.BT17
                                 mode: SelectPermanentEffect.Mode.Custom,
                                 cardEffect: activateClass);
 
-                            selectPermanentEffect.SetUpCustomMessage("Select 1 [Takuya Kanbara].",
-                                "The opponent is selecting 1 [Takuya Kanbara].");
+                            selectPermanentEffect.SetUpCustomMessage("Select 1 [Koji Minamoto].",
+                                "The opponent is selecting 1 [Koji Minamoto].");
 
                             yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
@@ -374,14 +374,16 @@ namespace DCGO.CardEffects.BT17
                                         if (card.CanPlayCardTargetFrame(selectedPermanent.PermanentFrame, true,
                                                 activateClass))
                                         {
-                                            yield return ContinuousController.instance.StartCoroutine(new PlayCardClass(
-                                                cardSources: new List<CardSource>() { card },
-                                                hashtable: CardEffectCommons.CardEffectHashtable(activateClass),
-                                                payCost: true,
+                                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
                                                 targetPermanent: selectedPermanent,
-                                                isTapped: false,
-                                                root: SelectCardEffect.Root.Hand,
-                                                activateETB: true).PlayCard());
+                                                cardCondition: source => source == card,
+                                                payCost: true,
+                                                reduceCostTuple: null,
+                                                fixedCostTuple: (fixedCost: 3, fixedCostCardCondition: null),
+                                                ignoreDigivolutionRequirementFixedCost: -1,
+                                                isHand: true,
+                                                activateClass: activateClass,
+                                                successProcess: null));
                                         }
 
                                         foreach (Func<EffectTiming, ICardEffect> getCardEffect in getCardEffects)

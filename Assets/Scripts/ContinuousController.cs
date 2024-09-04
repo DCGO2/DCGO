@@ -314,6 +314,8 @@ public class ContinuousController : MonoBehaviour
             ReverseCard_Digitama = reverseDigieggCardSprite;
         }
 
+        LoadBanList();
+
         // deck data
         //DeckDatas = PlayerPrefsUtil.LoadList<DeckData>(DeckDatasPlayerPrefsKey);
         LoadDeckLists();
@@ -349,8 +351,6 @@ public class ContinuousController : MonoBehaviour
         LoadLanguage();
 
         await CreateTokenData();
-
-        LoadBanList();
 
         DontDestroyOnLoad(gameObject);
     }
@@ -495,7 +495,7 @@ public class ContinuousController : MonoBehaviour
                 deckCards.Add(cEntity_Base);
             }
         }
-
+        Debug.Log($"Create Deck From File: {name}");
         DeckData deckData = (new DeckData(DeckData.GetDeckCode(name, deckCards, digitamaDeckCards, null),id)).ModifiedDeckData();
 
         deckData.KeyCardId = keyID;
@@ -1376,6 +1376,8 @@ public class PhotonUtility
 
         else
         {
+            Debug.Log($"SIGN UP BATTLE DECK: {ContinuousController.DeckDataPropertyKey}");
+            Debug.Log($"SIGN UP BATTLE DECK: {ContinuousController.instance.BattleDeckData.GetThisDeckCode()}");
             hash.Add(ContinuousController.DeckDataPropertyKey, ContinuousController.instance.BattleDeckData.GetThisDeckCode());
         }
 

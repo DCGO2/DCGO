@@ -101,7 +101,7 @@ namespace DCGO.CardEffects.BT17
 
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: permanent, changeValue: -3000, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: permanent, changeValue: -3000, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
                         }
                     }
 

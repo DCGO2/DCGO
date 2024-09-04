@@ -122,6 +122,15 @@ public class MemoryObject : MonoBehaviour
                 yield return new WaitWhile(() => !end);
                 end = false;
                 #endregion
+
+                #region setting used blitz
+                if (GManager.instance.attackProcess.UsedBlitz)
+                {
+                    if (GManager.instance.turnStateMachine.gameContext.Memory <= 0)
+                        GManager.instance.attackProcess.UsedBlitz = false;
+                }
+                    
+                #endregion
             }
         }
 

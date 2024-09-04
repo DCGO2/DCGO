@@ -224,25 +224,27 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card);
-                }
-
-                bool CardCondition(CardSource cardSource)
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (CardEffectCommons.IsOwnerTurn(card))
                         {
                             if (card.Owner.MemoryForPlayer <= 0)
                             {
-                                if (card == card.PermanentOfThisCard().TopCard)
-                                {
-                                    if (cardSource == card.PermanentOfThisCard().TopCard)
-                                    {
-                                        return true;
-                                    }
-                                }
+                                return true;
                             }
+                        }
+                    }
+
+                    return false;
+                }
+
+                bool CardCondition(CardSource cardSource)
+                {
+                    if (card == card.PermanentOfThisCard().TopCard)
+                    {
+                        if (cardSource == card)
+                        {
+                            return true;
                         }
                     }
 

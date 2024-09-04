@@ -45,13 +45,10 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (CardEffectCommons.IsOwnerTurn(card))
-                        {
-                            if (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PermanentCondition) ||
+                        if (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PermanentCondition) ||
                                 CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, PermanentCondition))
-                            {
-                                return true;
-                            }
+                        {
+                            return true;
                         }
                     }
 

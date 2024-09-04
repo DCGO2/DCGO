@@ -35,8 +35,6 @@ public class PlayerInfo : MonoBehaviour
 
         playerName.Trim();
 
-        playerName = DeckData.ValidateDeckName(playerName);
-
         while (playerName.Length > ContinuousController.instance.PlayerNameMaxLength)
         {
             playerName = playerName.Substring(0, playerName.Length - 1);

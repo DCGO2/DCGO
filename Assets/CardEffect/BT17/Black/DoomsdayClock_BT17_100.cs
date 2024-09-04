@@ -110,7 +110,7 @@ namespace DCGO.CardEffects.BT17
 
                 if (CardEffectCommons.MatchConditionOwnersPermanentCount(card, IsDoomsdayClock) >= 4)
                 {
-                    GManager.instance.turnStateMachine.EndGame(card.Owner, false, "Doomsday Clock");
+                    card.Owner.Enemy.SetLose();
                 }
             }
             #endregion
@@ -289,7 +289,7 @@ namespace DCGO.CardEffects.BT17
                                         canTargetCondition: CanSelectCardCondition,
                                         canTargetCondition_ByPreSelecetedList: null,
                                         canEndSelectCondition: null,
-                                        canNoSelect: () => true,
+                                        canNoSelect: () => false,
                                         selectCardCoroutine: SelectCardCoroutine,
                                         afterSelectCardCoroutine: null,
                                         message: "Select 1 card to play.",

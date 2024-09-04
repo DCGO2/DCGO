@@ -71,8 +71,7 @@ namespace DCGO.CardEffects.BT17
                                 {
                                     if (!permanent.IsToken)
                                     {
-                                        if (permanent.TopCard.EqualsCardName("Takuya Kanbara") || 
-                                            permanent.TopCard.EqualsCardName("TakuyaKanbara"))
+                                        if (permanent.TopCard.EqualsCardName("Takuya Kanbara"))
                                         {
                                             return true;
                                         }
@@ -374,14 +373,16 @@ namespace DCGO.CardEffects.BT17
                                         if (card.CanPlayCardTargetFrame(selectedPermanent.PermanentFrame, true,
                                                 activateClass))
                                         {
-                                            yield return ContinuousController.instance.StartCoroutine(new PlayCardClass(
-                                                cardSources: new List<CardSource>() { card },
-                                                hashtable: CardEffectCommons.CardEffectHashtable(activateClass),
-                                                payCost: true,
+                                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
                                                 targetPermanent: selectedPermanent,
-                                                isTapped: false,
-                                                root: SelectCardEffect.Root.Hand,
-                                                activateETB: true).PlayCard());
+                                                cardCondition: source => source == card,
+                                                payCost: true,
+                                                reduceCostTuple: null,
+                                                fixedCostTuple: (fixedCost: 3, fixedCostCardCondition: null),
+                                                ignoreDigivolutionRequirementFixedCost: -1,
+                                                isHand: true,
+                                                activateClass: activateClass,
+                                                successProcess: null));
                                         }
 
                                         foreach (Func<EffectTiming, ICardEffect> getCardEffect in getCardEffects)

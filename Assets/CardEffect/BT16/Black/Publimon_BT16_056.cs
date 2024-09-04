@@ -87,28 +87,23 @@ namespace DCGO.CardEffects.BT16
                                     Permanent securityPermanent = selectedPermanent;
                                     CardSource securityCard = securityPermanent.TopCard;
 
-                                    if(securityPermanent.DigivolutionCards.Count < 1)
+                                    if(securityPermanent.DigivolutionCards.Count >= 1)
                                     {
-                                        yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(
-                                            securityPermanent,
-                                            CardEffectCommons.CardEffectHashtable(activateClass),
-                                            true).PutSecurity());
-                                    }
-                                    else
-                                    {
-                                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveFromAllArea(permanent.TopCard));
+
+                                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveFromAllArea(securityCard));
 
                                         permanent.ShowingPermanentCard.ShowPermanentData(true);
 
-                                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().RemoveDigivolveRootEffect(permanent.TopCard, permanent));
+                                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().RemoveDigivolveRootEffect(securityCard, permanent));
 
-                                        if (!permanent.TopCard.IsToken)
+                                        if (!securityCard.IsToken)
                                         {
-                                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(permanent.TopCard, true));
+                                            Player owner = securityCard.Owner;
+                                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(securityCard, true));
 
-                                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(permanent.TopCard.Owner));
+                                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(owner));
 
-                                            yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(permanent.TopCard.Owner).AddSecurity());
+                                            yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(owner).AddSecurity());
 
                                             permanent.willBeRemoveField = false;
 
@@ -205,28 +200,23 @@ namespace DCGO.CardEffects.BT16
                                     Permanent securityPermanent = selectedPermanent;
                                     CardSource securityCard = securityPermanent.TopCard;
 
-                                    if (securityPermanent.DigivolutionCards.Count < 1)
+                                    if (securityPermanent.DigivolutionCards.Count >= 1)
                                     {
-                                        yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(
-                                            securityPermanent,
-                                            CardEffectCommons.CardEffectHashtable(activateClass),
-                                            true).PutSecurity());
-                                    }
-                                    else
-                                    {
-                                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveFromAllArea(permanent.TopCard));
+
+                                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveFromAllArea(securityCard));
 
                                         permanent.ShowingPermanentCard.ShowPermanentData(true);
 
-                                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().RemoveDigivolveRootEffect(permanent.TopCard, permanent));
+                                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().RemoveDigivolveRootEffect(securityCard, permanent));
 
-                                        if (!permanent.TopCard.IsToken)
+                                        if (!securityCard.IsToken)
                                         {
-                                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(permanent.TopCard, true));
+                                            Player owner = securityCard.Owner;
+                                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(securityCard, true));
 
-                                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(permanent.TopCard.Owner));
+                                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(owner));
 
-                                            yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(permanent.TopCard.Owner).AddSecurity());
+                                            yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(owner).AddSecurity());
 
                                             permanent.willBeRemoveField = false;
 
