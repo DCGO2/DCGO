@@ -14,7 +14,7 @@ namespace DCGO.CardEffects.EX7
             {
                 bool Condition()
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (CardEffectCommons.IsOwnerTurn(card))
                         {
