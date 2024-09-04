@@ -109,6 +109,7 @@ public class ContinuousController : MonoBehaviour
     public CEntity_Base GyuukimonToken { get; private set; }
     public CEntity_Base KoHagurumonToken { get; private set; }
     public CEntity_Base FamiliarToken { get; private set; }
+    public CEntity_Base VoléeZerdrückenToken { get; private set; }
     public CardRestriction BanList { get; private set; } = new CardRestriction(new List<CardLimitCount>(), new List<BannedPair>());
 
     void LoadBanList()
@@ -262,6 +263,27 @@ public class ContinuousController : MonoBehaviour
         };
 
         await FamiliarToken.GetCardSprite();
+
+        VoléeZerdrückenToken = new CEntity_Base()
+        {
+            cardColors = new List<CardColor>() { CardColor.Purple },
+            PlayCost = -1,
+            Level = 4,
+            CardName_JPN = "",
+            CardName_ENG = "Volée & Zerdrücken",
+            Form_JPN = new List<string>(),
+            Form_ENG = new List<string>(),
+            Attribute_JPN = new List<string>(),
+            Attribute_ENG = new List<string>(),
+            Type_JPN = new List<string>(),
+            Type_ENG = new List<string>(),
+            CardSpriteName = "EX7-058-token",
+            cardKind = CardKind.Digimon,
+            DP = 5000,
+            CardEffectClassName = "VoléeZerdrücken_EX7_030_token"
+        };
+
+        await VoléeZerdrückenToken.GetCardSprite();
     }
 
     public static ContinuousController instance = null;
