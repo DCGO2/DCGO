@@ -30,6 +30,7 @@ namespace DCGO.CardEffects.EX7
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash 1 Option from the digivolution cards", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetHashString("TrashOption_EX7_010");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -71,19 +72,9 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (card.Owner.HandCards.Count >= 1)
-                        {
-                            return true;
-                        }
-
-                        if (card.Owner.GetBattleAreaPermanents().Count(CanSelectPermanentCondition) >= 1)
+                        if(CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card))
                         {
                             return true;
                         }
@@ -92,52 +83,27 @@ namespace DCGO.CardEffects.EX7
                     return false;
                 }
 
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
-                    {
-                        List<CardSource> discardCards = new List<CardSource>();
-
-                        int maxCount = Math.Min(1, card.Owner.HandCards.Count(CanSelectCardCondition));
-
-                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                        selectHandEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectCardCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: true,
-                            canEndNotMax: true,
-                            isShowOpponent: true,
-                            selectCardCoroutine: null,
-                            afterSelectCardCoroutine: AfterSelectCardCoroutine,
-                            mode: SelectHandEffect.Mode.Discard,
-                            cardEffect: activateClass);
-
-                        yield return StartCoroutine(selectHandEffect.Activate());
-
-                        IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
-                        {
-                            if (cardSources.Count >= 1)
-                            {
-                                discardCards = cardSources.Clone();
-
-                                yield return null;
-                            }
-                        }
-
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SelectTrashDigivolutionCards(
-                            permanentCondition: CanSelectPermanentCondition,
-                            cardCondition: CanSelectCardCondition,
-                            maxCount: discardCards.Count,
-                            canNoTrash: true,
-                            isFromOnly1Permanent: false,
-                            activateClass: activateClass,
-                            selectString: "Digimon"
-                        ));
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    {                      
+                        return true;                       
                     }
+
+                    return false;
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                {                      
+                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SelectTrashDigivolutionCards(
+                         permanentCondition: CanSelectPermanentCondition,
+                         cardCondition: CanSelectCardCondition,
+                         maxCount: 1,
+                         canNoTrash: true,
+                         isFromOnly1Permanent: false,
+                         activateClass: activateClass,
+                         selectString: "Digimon"
+                     ));                 
                 }
             }
             #endregion
@@ -148,6 +114,7 @@ namespace DCGO.CardEffects.EX7
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash 1 Option from the digivolution cards", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetHashString("TrashOption_EX7_010");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -189,19 +156,9 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (card.Owner.HandCards.Count >= 1)
-                        {
-                            return true;
-                        }
-
-                        if (card.Owner.GetBattleAreaPermanents().Count(CanSelectPermanentCondition) >= 1)
+                        if (CardEffectCommons.CanTriggerOnAttack(hashtable, card))
                         {
                             return true;
                         }
@@ -210,52 +167,27 @@ namespace DCGO.CardEffects.EX7
                     return false;
                 }
 
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    {
+                        return true;
+                    }
+
+                    return false;
+                }
+
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
-                    {
-                        List<CardSource> discardCards = new List<CardSource>();
-
-                        int maxCount = Math.Min(1, card.Owner.HandCards.Count(CanSelectCardCondition));
-
-                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                        selectHandEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectCardCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: true,
-                            canEndNotMax: true,
-                            isShowOpponent: true,
-                            selectCardCoroutine: null,
-                            afterSelectCardCoroutine: AfterSelectCardCoroutine,
-                            mode: SelectHandEffect.Mode.Discard,
-                            cardEffect: activateClass);
-
-                        yield return StartCoroutine(selectHandEffect.Activate());
-
-                        IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
-                        {
-                            if (cardSources.Count >= 1)
-                            {
-                                discardCards = cardSources.Clone();
-
-                                yield return null;
-                            }
-                        }
-
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SelectTrashDigivolutionCards(
-                            permanentCondition: CanSelectPermanentCondition,
-                            cardCondition: CanSelectCardCondition,
-                            maxCount: discardCards.Count,
-                            canNoTrash: true,
-                            isFromOnly1Permanent: false,
-                            activateClass: activateClass,
-                            selectString: "Digimon"
-                        ));
-                    }
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SelectTrashDigivolutionCards(
+                        permanentCondition: CanSelectPermanentCondition,
+                        cardCondition: CanSelectCardCondition,
+                        maxCount: 1,
+                        canNoTrash: true,
+                        isFromOnly1Permanent: false,
+                        activateClass: activateClass,
+                        selectString: "Digimon"
+                    ));
                 }
             }
             #endregion
@@ -270,7 +202,7 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (CardEffectCommons.IsOwnerTurn(card))
                         {
@@ -300,7 +232,10 @@ namespace DCGO.CardEffects.EX7
                 {
                     if (CardEffectCommons.IsOwnerTurn(card))
                     {
-                        return true;
+                        if(CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                        {
+                            return true;
+                        }                      
                     }
 
                     return false;

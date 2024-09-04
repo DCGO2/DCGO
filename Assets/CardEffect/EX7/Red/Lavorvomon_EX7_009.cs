@@ -56,12 +56,20 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                    if(CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    {
+                        if (CardEffectCommons.CanTriggerOnPlay(hashtable, card))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (isExistOnField(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
                         {
@@ -146,7 +154,7 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (card.Owner.HandCards.Count >= 1)
                         {
@@ -204,10 +212,13 @@ namespace DCGO.CardEffects.EX7
             {
                 bool Condition()
                 {
-                    if (CardEffectCommons.IsOwnerTurn(card))
+                    if(CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        return true;
-                    }
+                        if (CardEffectCommons.IsOwnerTurn(card))
+                        {
+                            return true;
+                        }
+                    }                
 
                     return false;
                 }

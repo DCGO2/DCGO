@@ -11,7 +11,7 @@ namespace DCGO.CardEffects.EX7
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region On Play
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(card.BaseENGCardNameFromEntity, CanUseCondition, card);
@@ -30,7 +30,7 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                         {
@@ -93,7 +93,7 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                         {
@@ -151,12 +151,20 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                    if(CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    {
+                        if(CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         return true;
                     }
@@ -216,6 +224,7 @@ namespace DCGO.CardEffects.EX7
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 Digimon card with the [Machine Dragon]/[Sky Dragon] trait", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetHashString("PlayDigimon_EX7_014");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -235,7 +244,7 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card) && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardToPlayFromTrash);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardToPlayFromTrash);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

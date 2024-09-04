@@ -44,7 +44,7 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                         {
@@ -97,12 +97,20 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                    if(CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    {
+                        if(CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card))
+                        {
+                            return true;
+                        }
+                    }
+                    
+                    return false;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (isExistOnField(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (card.Owner.Enemy.GetBattleAreaDigimons().Count((permanent) => permanent.DP <= 6000) == 0)
                         {
@@ -118,7 +126,7 @@ namespace DCGO.CardEffects.EX7
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    if (isExistOnField(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (card.Owner.CanAddMemory(activateClass))
                         {
