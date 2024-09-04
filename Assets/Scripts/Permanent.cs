@@ -1419,6 +1419,45 @@ public class Permanent
         {
             if (TopCard != null)
             {
+                #region the effects of permanents
+                if (GManager.instance.turnStateMachine.gameContext.Players
+                    .Map(player => player.GetFieldPermanents())
+                    .Flat()
+                    .Map(permanent => permanent.EffectList(EffectTiming.None))
+                    .Flat()
+                    .Some(cardEffect => cardEffect is ICanNotPutFieldEffect
+                        && cardEffect.CanUse(null)
+                        && ((ICanNotPutFieldEffect)cardEffect).CanNotPutField(TopCard, null)))
+                {
+                    return false;
+                }
+                #endregion
+
+                #region the effects of players
+                if (GManager.instance.turnStateMachine.gameContext.Players
+                        .Map(player => player.EffectList(EffectTiming.None))
+                        .Flat()
+                        .Some(cardEffect => cardEffect is ICanNotPutFieldEffect
+                            && cardEffect.CanUse(null)
+                            && ((ICanNotPutFieldEffect)cardEffect).CanNotPutField(TopCard, null)))
+                {
+                    return false;
+                }
+                #endregion
+
+                #region the effects of itself
+                if (this == null)
+                {
+                    if (EffectList(EffectTiming.None)
+                            .Some(cardEffect => cardEffect is ICanNotPutFieldEffect
+                                && cardEffect.CanUse(null)
+                                && ((ICanNotPutFieldEffect)cardEffect).CanNotPutField(TopCard, null)))
+                    {
+                        return false;
+                    }
+                }
+                #endregion
+
                 if (!TopCard.Owner.GetBreedingAreaPermanents().Contains(this))
                 {
                     return false;

@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Eosmon-BT17-075
+  m_EditorClassIdentifier: 
+  CardIndex: 3629
+  cardColors: 04000000
+  PlayCost: 6
+  EvoCosts: []
+  Level: 5
+  CardName_JPN: 
+  CardName_ENG: Eosmon
+  Form_JPN: []
+  Form_ENG:
+  - Ultimate
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Unknown
+  Type_JPN: []
+  Type_ENG:
+  - Unknown
+  CardSpriteName: BT17-075
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: "[Digivolve]Lv.4 [Eosmon]: Cost 3 \n\n[On Play] [When Digivolving]
+    Your opponent may play 1 Tamer card from their hand without paying the cost.
+    If they don't, you may play 1 white Tamer card with a play cost of 4 or less
+    from your hand without paying the cost. Then, \uFF1CDe-Digivolve1\uFF1E 1 of
+    your opponent's Digimon for every 2 Tamers."
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: '[Opponent''s Turn] [Once Per Turn] When an opponent''s
+    Digimon attacks, you may switch the attack target to 1 of your [Eosmon].'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: '-'
+  CardEffectClassName: Eosmon_BT17_075
+  DP: 6000
+  rarity: 1
+  OverflowMemory: 0
+  CardID: BT17-075
+  MaxCountInDeck: 4
