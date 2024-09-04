@@ -10,7 +10,8 @@ namespace DCGO.Tools.Repair
         [MenuItem("Window/DCGO/Repair/Fix Entity Card Index")]
         static void FixEntityCardIndex()
         {
-            int startingIndex = 3541;
+            int startingIndex = 3856;
+            int adjustment = 23;
             string path = "Assets/CardBaseEntity/";
 
             if (Selection.assetGUIDs.Length != 0)
@@ -19,13 +20,13 @@ namespace DCGO.Tools.Repair
             Debug.Log($"ASSET PATH: {path}");
 
             List<CEntity_Base> List = GetAsset.LoadAll<CEntity_Base>(path)
-                .OrderBy(x => x.name.Substring(x.name.LastIndexOf("-")+1,3)).ToList();
+                .OrderBy(x => x.name.Substring(x.name.LastIndexOf("-")+1, 2)).ToList();
 
             foreach (CEntity_Base card in List)
             {
                 Debug.Log($"{card.name}: {card.CardIndex} - {startingIndex}");
             
-                card.CardIndex = startingIndex;
+                card.CardIndex = startingIndex - adjustment;
                 EditorUtility.SetDirty(card);
                 startingIndex++;
             }
