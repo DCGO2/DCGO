@@ -334,6 +334,13 @@ public interface ICanNotPutFieldEffect
 }
 #endregion
 
+#region "Target card cannot be moved" effect
+public interface ICanNotMoveEffect
+{
+    bool CanNotMove(CardSource cardSource, ICardEffect cardEffect);
+}
+#endregion
+
 #region "Target card gains DNA digivolution conditions" effect
 public interface IAddJogressConditionEffect
 {
