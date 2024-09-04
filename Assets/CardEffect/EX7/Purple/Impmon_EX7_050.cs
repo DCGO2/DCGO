@@ -71,10 +71,13 @@ namespace DCGO.CardEffects.EX7
             {
                 bool Condition()
                 {
-                    if (CardEffectCommons.IsOwnerTurn(card))
+                    if(CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        return true;
-                    }
+                        if (CardEffectCommons.IsOwnerTurn(card))
+                        {
+                            return true;
+                        }
+                    }                   
 
                     return false;
                 }

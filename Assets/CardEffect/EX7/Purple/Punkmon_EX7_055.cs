@@ -37,7 +37,15 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    {
+                        if(CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
                 }
 
                 bool IsYuukiCardCondition(CardSource cardSource)
@@ -95,11 +103,14 @@ namespace DCGO.CardEffects.EX7
             {
                 bool Condition()
                 {
-                    if (CardEffectCommons.IsOwnerTurn(card))
+                    if(CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        return true;
+                        if (CardEffectCommons.IsOwnerTurn(card))
+                        {
+                            return true;
+                        }
                     }
-
+                   
                     return false;
                 }
 
