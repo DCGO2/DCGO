@@ -38,15 +38,18 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card))
+                        if(card.Owner.SecurityCards.Count > 0)
                         {
-                            if (CardEffectCommons.IsByEffect(hashtable, cardEffect => CardEffectCommons.IsOpponentEffect(cardEffect, card)))
+                            if (CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card))
                             {
-                                return true;
+                                if (CardEffectCommons.IsByEffect(hashtable, cardEffect => CardEffectCommons.IsOpponentEffect(cardEffect, card)))
+                                {
+                                    return true;
+                                }
                             }
-                        }
+                        }                        
                     }
 
                     return false;

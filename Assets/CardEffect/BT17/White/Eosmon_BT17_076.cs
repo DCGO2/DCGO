@@ -296,10 +296,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool IsTamer(Permanent permanent)
                 {
-                    if(CardEffectCommons.IsOwnerPermanent(permanent, card))
-                        return permanent.IsTamer;
-
-                    return false;
+                    return permanent.IsTamer;
                 }
 
                 int DPIncrease()

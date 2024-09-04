@@ -297,7 +297,8 @@ namespace DCGO.CardEffects.BT17
                     {
                         if (permanent.IsTamer && permanent.TopCard.CardColors.Contains(CardColor.Yellow))
                         {
-                            return true;
+                            if(!permanent.IsSuspended && permanent.CanSuspend)
+                                return true;
                         }
                     }
 
@@ -313,7 +314,7 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                        if (CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition) >= 2)
                         {
                             return true;
                         }

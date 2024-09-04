@@ -99,24 +99,19 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if(CardEffectCommons.CanTriggerOnDeletion(hashtable, card))
-                    {
-                        if (CardEffectCommons.MatchConditionOwnersCardCountInHand(card, IsLevel6Argomon) >= 1)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.CanActivateOnDeletion(card))
                     {
-                        if (CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, IsArgomon) >= 4)
+                        if(CardEffectCommons.HasMatchConditionOwnersHand(card, IsLevel6Argomon))
                         {
-                            return true;
+                            if (CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, IsArgomon) >= 4)
+                            {
+                                return true;
+                            }
                         }
                     }
 

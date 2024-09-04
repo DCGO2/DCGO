@@ -52,6 +52,9 @@ public class ResultObject : MonoBehaviour
 
                 if (Surrendered)
                     ResultText.text = "The opponent has surrendered.";
+
+                if (String.IsNullOrEmpty(effectName))
+                    ResultText.text = effectName;
             }
         }
 

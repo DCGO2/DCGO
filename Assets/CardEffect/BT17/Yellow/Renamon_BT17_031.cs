@@ -27,7 +27,7 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.name.Contains("Kyubimon") || cardSource.name.Contains("Taomon") || cardSource.name.Contains("Sakuyamon"))
+                        if (cardSource.EqualsCardName("Kyubimon") || cardSource.EqualsCardName("Taomon") || cardSource.EqualsCardName("Sakuyamon"))
                         {
                             return true;
                         }
@@ -38,12 +38,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanSelectCardCondition1(CardSource cardSource)
                 {
-                    if (cardSource.CardNames.Contains("Rika Nonaka") || cardSource.CardNames.Contains("RikaNonaka"))
-                    {
-                        return true;
-                    }
-
-                    if (cardSource.CardNames.Contains("RikaNonaka"))
+                    if (cardSource.EqualsCardName("Rika Nonaka"))
                     {
                         return true;
                     }

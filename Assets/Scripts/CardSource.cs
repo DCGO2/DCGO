@@ -1462,6 +1462,23 @@ public class CardSource : MonoBehaviour
     }
     #endregion
 
+    #region whether this card has at least 1 trait that contains "Hybrid", "Ten Warriors"
+    public bool HasHybridTenWarriorsTraits
+    {
+        get
+        {
+            if (ContainsTraits("Hybrid"))
+                return true;
+
+            if (ContainsTraits("Ten Warriors"))
+                return true;
+
+            return false;
+        }
+    }
+    #endregion
+
+
     #region whether this card has "XAntibody" trait
     public bool HasXAntibodyTraits => CardTraits.Some(DataBase.IsXAntibodyString);
     #endregion

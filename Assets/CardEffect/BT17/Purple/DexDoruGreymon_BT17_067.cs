@@ -188,7 +188,7 @@ namespace DCGO.CardEffects.BT17
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: 1,
-                            canNoSelect: true,
+                            canNoSelect: false,
                             canEndNotMax: false,
                             isShowOpponent: true,
                             selectCardCoroutine: null,
@@ -272,6 +272,8 @@ namespace DCGO.CardEffects.BT17
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    List<Permanent> chosenPermanents = new List<Permanent>();
+
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOwnPermanentCondition))
                     {
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
@@ -285,7 +287,7 @@ namespace DCGO.CardEffects.BT17
                             canNoSelect: true,
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine,
-                            afterSelectPermanentCoroutine: null,
+                            afterSelectPermanentCoroutine: AfterSelectPermanent,
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
@@ -296,40 +298,42 @@ namespace DCGO.CardEffects.BT17
 
                         IEnumerator SelectPermanentCoroutine(Permanent chosenPermanent)
                         {
-                            int deletedLevel = chosenPermanent.Level;
+                            chosenPermanents.Add(chosenPermanent);
 
-                            yield return ContinuousController.instance.StartCoroutine(
-                                CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
-                                    targetPermanents: new List<Permanent>() { chosenPermanent }, activateClass: activateClass,
-                                    successProcess: _ => SuccessProcess(), failureProcess: null));
+                            yield return null;
+                        }
 
+                        IEnumerator AfterSelectPermanent(List<Permanent> chosenPermanent)
+                        {
                             bool CanSelectOpponentPermanentCondition(Permanent permanent)
                             {
                                 return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
                                        permanent.TopCard.HasLevel &&
-                                       permanent.Level <= deletedLevel;
+                                       permanent.Level <= chosenPermanents[0].Level;
                             }
 
-                            IEnumerator SuccessProcess()
+                            if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentPermanentCondition))
                             {
-                                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentPermanentCondition))
-                                {
-                                    selectPermanentEffect.SetUp(
-                                        selectPlayer: card.Owner,
-                                        canTargetCondition: CanSelectOpponentPermanentCondition,
-                                        canTargetCondition_ByPreSelecetedList: null,
-                                        canEndSelectCondition: null,
-                                        maxCount: 1,
-                                        canNoSelect: false,
-                                        canEndNotMax: false,
-                                        selectPermanentCoroutine: null,
-                                        afterSelectPermanentCoroutine: null,
-                                        mode: SelectPermanentEffect.Mode.Destroy,
-                                        cardEffect: activateClass);
+                                selectPermanentEffect.SetUp(
+                                    selectPlayer: card.Owner,
+                                    canTargetCondition: CanSelectOpponentPermanentCondition,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    maxCount: 1,
+                                    canNoSelect: false,
+                                    canEndNotMax: false,
+                                    selectPermanentCoroutine: SelectPermanentCoroutine,
+                                    afterSelectPermanentCoroutine: null,
+                                    mode: SelectPermanentEffect.Mode.Custom,
+                                    cardEffect: activateClass);
 
-                                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                                }
+                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                             }
+
+                            yield return ContinuousController.instance.StartCoroutine(
+                                CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
+                                    targetPermanents: chosenPermanents, activateClass: activateClass,
+                                    successProcess: null, failureProcess: null));
                         }
                     }
                 }

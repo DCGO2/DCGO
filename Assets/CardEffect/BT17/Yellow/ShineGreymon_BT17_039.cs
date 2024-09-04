@@ -103,6 +103,7 @@ namespace DCGO.CardEffects.BT17
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Return 1 Tamer to hand to prevent this Digimon from leaving Battle Area", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetHashString("Protection_BT17_039");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

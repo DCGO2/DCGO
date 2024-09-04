@@ -452,11 +452,12 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card))
                         {
-                            return true;
+                            if(!CardEffectCommons.IsByBattle(hashtable))
+                                return true;
                         }
                     }
 
