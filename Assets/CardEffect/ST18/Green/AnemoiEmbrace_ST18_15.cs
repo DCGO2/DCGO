@@ -44,31 +44,44 @@ namespace DCGO.CardEffects.ST18
                 {
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
+                        Permanent selectedPermanent = null;
                         bool ownDigimon = false;
 
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: permanent => CanSelectPermanentCondition(permanent) && permanent.CanSuspend,
+                            canTargetCondition: CanSelectPermanentCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: 1,
                             canNoSelect: false,
                             canEndNotMax: false,
-                            selectPermanentCoroutine: null,
-                            afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
-                            mode: SelectPermanentEffect.Mode.Tap,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                        IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
+                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
-                            ownDigimon = permanents.Some(permanent =>
-                                CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card));
+                            selectedPermanent = permanent;
 
                             yield return null;
+                        }
+
+                        if (selectedPermanent != null &&
+                            selectedPermanent.TopCard &&
+                            !selectedPermanent.TopCard.CanNotBeAffected(activateClass) &&
+                            !selectedPermanent.IsSuspended && selectedPermanent.CanSuspend)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(
+                                new SuspendPermanentsClass(new List<Permanent>() { selectedPermanent },
+                                    CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
+
+                            ownDigimon = selectedPermanent.IsSuspended &&
+                                         CardEffectCommons.IsOwnerPermanent(selectedPermanent, card);
                         }
 
                         if (ownDigimon && CardEffectCommons.HasMatchConditionPermanent(CanSelectSuspendedPermanentCondition))

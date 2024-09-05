@@ -36,7 +36,9 @@ namespace DCGO.CardEffects.ST18
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     return permanent.IsDigimon &&
-                           (permanent.TopCard.ContainsTraits("Bird") || permanent.TopCard.ContainsTraits("Vortex Warriors"));
+                           (permanent.TopCard.ContainsTraits("Avian") || 
+                            permanent.TopCard.ContainsTraits("Bird") || 
+                            permanent.TopCard.ContainsTraits("Vortex Warriors"));
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
