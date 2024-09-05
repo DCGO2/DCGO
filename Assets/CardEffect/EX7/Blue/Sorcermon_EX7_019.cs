@@ -10,12 +10,15 @@ namespace DCGO.CardEffects.EX7
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
-            
+
+            #region Blocker
             if (timing == EffectTiming.None)
             {
                 cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
             }
-            
+            #endregion
+
+            #region On Play
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -25,40 +28,37 @@ namespace DCGO.CardEffects.EX7
 
                 string EffectDiscription()
                 {
-                    return " If your opponent has no Digimon with digivolution cards, unsuspend 1 of your Digimon.";
+                    return "[On Play] If your opponent has no Digimon with digivolution cards, unsuspend 1 of your Digimon.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return true;
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                        return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+
+                    return false;
                 }
 
                 bool CanSelectDigimonCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
-                    {
-                        if (permanent.IsDigimon)
-                        {
-                            return true;
-                        }
-                    }
-                    return false;
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card,
-                            ((permanent) => permanent.IsDigimon && permanent.HasNoDigivolutionCards)))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        return true;
+                        if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card,(permanent) => permanent.IsDigimon && permanent.HasNoDigivolutionCards))
+                        {
+                            return true;
+                        }
                     }
+                        
                     return false;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    Permanent selectedPermanent = null;
-                    
+                {                   
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectDigimonCondition))
                     {
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectDigimonCondition));
@@ -73,38 +73,20 @@ namespace DCGO.CardEffects.EX7
                             maxCount: maxCount,
                             canNoSelect: false,
                             canEndNotMax: false,
-                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            selectPermanentCoroutine: null,
                             afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
+                            mode: SelectPermanentEffect.Mode.UnTap,
                             cardEffect: activateClass);
 
                         selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will unsuspend", "The opponent is selecting 1 Digimon to unsuspend.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                        {
-                            selectedPermanent = permanent;
-
-                            yield return null;
-                        }
-
-                        if (selectedPermanent != null)
-                        {
-                            if (selectedPermanent.TopCard != null)
-                            {
-                                if (selectedPermanent.TopCard.CanNotBeAffected(activateClass))
-                                {
-                                    Permanent suspendTargetPermanent = selectedPermanent;
-
-                                    yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(new List<Permanent>() { suspendTargetPermanent }, CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
-                                }
-                            }
-                        }
                     }
                 }
             }
+            #endregion
 
+            #region When Attacking
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -183,6 +165,8 @@ namespace DCGO.CardEffects.EX7
                     }
                 }
             }
+            #endregion
+
             return cardEffects;
         }
     }

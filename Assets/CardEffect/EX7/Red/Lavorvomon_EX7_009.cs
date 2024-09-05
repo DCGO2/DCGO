@@ -43,7 +43,7 @@ namespace DCGO.CardEffects.EX7
                         {
                             if (cardSource.Owner == card.Owner)
                             {
-                                if (cardSource.CardNames.Contains("Hina Kurihara") || cardSource.CardNames.Contains("HinaKurihara"))
+                                if (cardSource.EqualsCardName("Hina Kurihara"))
                                 {
                                     return true;
                                 }
@@ -132,7 +132,7 @@ namespace DCGO.CardEffects.EX7
                 {
                     if (cardSource != null)
                     {
-                        if (cardSource.CardNames.Contains("Hina Kurihara") || cardSource.CardNames.Contains("Hina Kurihara"))
+                        if (cardSource.EqualsCardName("Hina Kurihara"))
                         {
                             if (cardSource.Owner == card.Owner)
                             {
@@ -149,7 +149,10 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                        return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+
+                    return false;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

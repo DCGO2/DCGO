@@ -14,7 +14,10 @@ namespace DCGO.CardEffects.EX7
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.CardTraits.Contains("NSp");
+                    if(targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 3)
+                        return targetPermanent.TopCard.ContainsTraits("NSp");
+
+                    return false;
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
@@ -53,12 +56,7 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -88,7 +86,7 @@ namespace DCGO.CardEffects.EX7
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                        return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                     }
 
                     return false;
@@ -96,12 +94,7 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

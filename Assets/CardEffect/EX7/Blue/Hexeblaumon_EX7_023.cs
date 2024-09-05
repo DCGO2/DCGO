@@ -170,48 +170,36 @@ namespace DCGO.CardEffects.EX7
                     {
                         foreach (Permanent affected in card.Owner.Enemy.GetBattleAreaPermanents())
                         {
-                            if (CanSelectPermanentToNoSuspend(affected))
+                            if (!affected.IsDigimon)
+                                continue;
+
+                            if (affected.TopCard.CanNotBeAffected(activateClass))
+                                continue;
+
+                            if (affected.DigivolutionCards.Count > card.PermanentOfThisCard().DigivolutionCards.Count)
+                            {
                                 StartCoroutine(SelectPermanentCoroutine(affected));
+                            }
+                                
                         }
                         
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
-                            Permanent selectedPermanent = permanent;
+                            CanNotSuspendClass canNotSuspendClass = new CanNotSuspendClass();
+                            canNotSuspendClass.SetUpICardEffect("Can't Suspend", CanUseCondition1, card);
+                            canNotSuspendClass.SetUpCanNotSuspendClass(PermanentCondition: PermanentCondition);
+                            permanent.UntilOwnerTurnEndEffects.Add((_timing) => canNotSuspendClass);
 
-                            if (selectedPermanent != null)
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(permanent));
+
+                            bool CanUseCondition1(Hashtable hashtable)
                             {
-                                CanNotSuspendClass canNotSuspendClass = new CanNotSuspendClass();
-                                canNotSuspendClass.SetUpICardEffect("Can't Suspend", CanUseCondition1, card);
-                                canNotSuspendClass.SetUpCanNotSuspendClass(PermanentCondition: PermanentCondition);
-                                selectedPermanent.UntilOwnerTurnEndEffects.Add((_timing) => canNotSuspendClass);
+                                return true;
+                            }
 
-                                if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
-                                {
-                                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(selectedPermanent));
-                                }
-
-                                bool CanUseCondition1(Hashtable hashtable)
-                                {
-                                    if (selectedPermanent.TopCard != null)
-                                    {
-                                        if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
-                                        {
-                                            return true;
-                                        }
-                                    }
-
-                                    return false;
-                                }
-
-                                bool PermanentCondition(Permanent permanent)
-                                {
-                                    if (permanent == selectedPermanent)
-                                    {
-                                        return true;
-                                    }
-
-                                    return false;
-                                }
+                            bool PermanentCondition(Permanent permanent)
+                            {
+                                return true;
                             }
                         }
                     }

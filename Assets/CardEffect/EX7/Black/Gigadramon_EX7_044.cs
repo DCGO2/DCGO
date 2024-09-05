@@ -204,7 +204,7 @@ namespace DCGO.CardEffects.EX7
 
             #region Collision - ESS
 
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnCounterTiming)
             {
                 cardEffects.Add(CardEffectFactory.CollisionSelfStaticEffect(
                     isInheritedEffect: true,

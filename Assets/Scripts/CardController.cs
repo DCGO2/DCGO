@@ -3850,6 +3850,8 @@ public class ITrashDigivolutionCards
             {
                 yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddTrashCard(cardSource));
             }
+
+            cardSource.willBeRemoveSources = false;
         }
     }
 }
