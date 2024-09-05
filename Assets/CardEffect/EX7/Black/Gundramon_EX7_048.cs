@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.EX7
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.IsLevel5 && targetPermanent.TopCard.ContainsTraits("Three Musketeers");
+                    return targetPermanent.TopCard.IsLevel5 && targetPermanent.TopCard.HasText("Three Musketeers");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(

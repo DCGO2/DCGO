@@ -42,13 +42,10 @@ namespace DCGO.CardEffects.EX7
                 {
                     if(!cardSource.CanNotTrashFromDigivolutionCards(activateClass))
                     {
-                        foreach (CardSource card in cardSource.PermanentOfThisCard().DigivolutionCards)
+                        if (cardSource.IsOption)
                         {
-                            if (card.IsOption)
-                            {
-                                return true;
-                            }
-                        }                                            
+                            return true;
+                        }
                     }
 
                     return false;
@@ -56,18 +53,7 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
-                    {
-                        if (permanent.IsDigimon)
-                        {
-                            if (permanent.DigivolutionCards.Count(CanSelectCardCondition) >= 1)
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -85,12 +71,7 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {                      
-                        return true;                       
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -126,12 +107,9 @@ namespace DCGO.CardEffects.EX7
                 {
                     if (!cardSource.CanNotTrashFromDigivolutionCards(activateClass))
                     {
-                        foreach (CardSource card in cardSource.PermanentOfThisCard().DigivolutionCards)
+                        if (cardSource.IsOption)
                         {
-                            if (card.IsOption)
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
 
@@ -140,18 +118,7 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
-                    {
-                        if (permanent.IsDigimon)
-                        {
-                            if (permanent.DigivolutionCards.Count(CanSelectCardCondition) >= 1)
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -169,12 +136,7 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -202,11 +164,14 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    if (CardEffectCommons.IsOwnerTurn(card))
                     {
-                        if (CardEffectCommons.IsOwnerTurn(card))
+                        if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                         {
-                           return true;
+                            if(card.PermanentOfThisCard().TopCard == card)
+                            { 
+                                return true;
+                            }
                         }
                     }
 

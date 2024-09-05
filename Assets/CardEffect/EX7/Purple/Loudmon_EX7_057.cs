@@ -30,31 +30,6 @@ namespace DCGO.CardEffects.EX7
             }
             #endregion
 
-            #region Rule Text
-            if (timing == EffectTiming.None)
-            {
-                ChangeTraitsClass changeTraitsClass = new ChangeTraitsClass();
-                changeTraitsClass.SetUpICardEffect("Has the [Dark Dragon] type.", CanUseCondition, card);
-                changeTraitsClass.SetUpChangeTraitsClass(changeeTraits: changeTraits);
-                cardEffects.Add(changeTraitsClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return true;
-                }
-
-                List<string> changeTraits(CardSource cardSource, List<string> CardTraits)
-                {
-                    if (cardSource == card)
-                    {
-                        CardTraits.Add("Dark Dragon");
-                    }
-
-                    return CardTraits;
-                }
-            }
-            #endregion
-
             #region On Play
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
@@ -70,20 +45,15 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                    if(CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                        return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+
+                    return false;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (card.Owner.HandCards.Count >= 1)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -254,6 +224,19 @@ namespace DCGO.CardEffects.EX7
             #region Inherit
             if (timing == EffectTiming.None)
             {
+                bool PermanentCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                    {
+                        if (permanent.TopCard.ContainsTraits("Dark Dragon") || permanent.TopCard.ContainsTraits("Evil Dragon"))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
                 bool CanUseCondition()
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
@@ -270,20 +253,7 @@ namespace DCGO.CardEffects.EX7
                     return false;
                 }
 
-                bool PermanentCondition(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
-                    {
-                        if (permanent.TopCard.CardTraits.Contains("Dark Dragon") || permanent.TopCard.CardTraits.Contains("Evil Dragon"))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
-                cardEffects.Add(CardEffectFactory.BlockerStaticEffect(permanentCondition: PermanentCondition, isInheritedEffect: true, card: card, condition: CanUseCondition));
+                cardEffects.Add(CardEffectFactory.ChangeSAttackStaticEffect(PermanentCondition, 1, true, card, CanUseCondition));
             }
             #endregion
 

@@ -27,7 +27,7 @@ namespace DCGO.CardEffects.EX7
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        return true;
+                        return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                     }
 
                     return false;

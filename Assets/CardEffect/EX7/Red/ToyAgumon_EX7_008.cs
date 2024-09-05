@@ -14,7 +14,7 @@ namespace DCGO.CardEffects.EX7
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.HasText("Three Musketeers") && targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 2 || targetPermanent.TopCard.HasText("ThreeMusketeers") && targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 2;
+                    return targetPermanent.TopCard.HasText("Three Musketeers") && targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 2;
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 0, ignoreDigivolutionRequirement: false, card: card, condition: null));
@@ -38,7 +38,7 @@ namespace DCGO.CardEffects.EX7
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.CardTraits.Contains("Three Musketeers") || cardSource.CardTraits.Contains("ThreeMusketeers"))
+                        if (cardSource.HasText("Three Musketeers"))
                         {
                             return true;
                         }
