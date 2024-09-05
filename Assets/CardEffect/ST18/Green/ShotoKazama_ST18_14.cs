@@ -37,7 +37,9 @@ namespace DCGO.CardEffects.ST18
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card) &&
                            CardEffectCommons.IsOwnerTurn(card) &&
-                           CardEffectCommons.CanTriggerOnPermanentAttack(hashtable, AttackingPermanent);
+                           CardEffectCommons.CanTriggerOnPermanentAttack(hashtable, AttackingPermanent) &&
+                           CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(
+                               GManager.instance.attackProcess.DefendingPermanent, card);
                 }
 
                 bool AttackingPermanent(Permanent permanent)
@@ -48,7 +50,7 @@ namespace DCGO.CardEffects.ST18
                 bool DefendingPermanent(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
-                           card.PermanentOfThisCard().CanAttackTargetDigimon(permanent, activateClass);
+                           permanent.IsSuspended;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

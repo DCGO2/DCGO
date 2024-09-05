@@ -64,7 +64,7 @@ namespace DCGO.CardEffects.ST18
                                     selectCardCoroutine: null),
                                 new(
                                     canTargetCondition: CanSelectLiberatorCardCondition,
-                                    message: "Select 1 Tamer card with the [Vortex Warriors]/[LIBERATOR] trait.",
+                                    message: "Select 1 card with the [Vortex Warriors]/[LIBERATOR] trait.",
                                     mode: SelectCardEffect.Mode.AddHand,
                                     maxCount: 1,
                                     selectCardCoroutine: null),

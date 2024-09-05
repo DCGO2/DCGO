@@ -25,7 +25,7 @@ namespace DCGO.CardEffects.ST19
                         "[On Play] Reveal the top 3 cards of your deck. Add 1 card with the [Puppet] trait and 1 card with the [LIBERATOR] trait among them to the hand. Return the rest to the bottom of the deck.";
                 }
 
-                bool CanSelectBirdCardCondition(CardSource cardSource)
+                bool CanSelectPuppetCardCondition(CardSource cardSource)
                 {
                     return cardSource.ContainsTraits("Puppet");
                 }
@@ -55,14 +55,14 @@ namespace DCGO.CardEffects.ST19
                             new SimplifiedSelectCardConditionClass[]
                             {
                                 new(
-                                    canTargetCondition: CanSelectBirdCardCondition,
-                                    message: "Select 1 Digimon card with the [Bird]/[Avian] in one of its traits.",
+                                    canTargetCondition: CanSelectPuppetCardCondition,
+                                    message: "Select 1 Digimon card with the [Puppet] in one of its traits.",
                                     mode: SelectCardEffect.Mode.AddHand,
                                     maxCount: 1,
                                     selectCardCoroutine: null),
                                 new(
                                     canTargetCondition: CanSelectLiberatorCardCondition,
-                                    message: "Select 1 Tamer card with the [Vortex Warriors]/[LIBERATOR] trait.",
+                                    message: "Select 1 card with the [LIBERATOR] trait.",
                                     mode: SelectCardEffect.Mode.AddHand,
                                     maxCount: 1,
                                     selectCardCoroutine: null),
