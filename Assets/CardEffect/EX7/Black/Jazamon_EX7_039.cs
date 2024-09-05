@@ -81,33 +81,6 @@ namespace DCGO.CardEffects.EX7
 
             #endregion
 
-            #region Rule Text
-
-            if (timing == EffectTiming.None)
-            {
-                ChangeTraitsClass changeTraitsClass = new ChangeTraitsClass();
-                changeTraitsClass.SetUpICardEffect("Trait: Has the [Machine Dragon] type", CanUseCondition, card);
-                changeTraitsClass.SetUpChangeTraitsClass(changeeTraits: ChangeTraits);
-                cardEffects.Add(changeTraitsClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return true;
-                }
-
-                List<string> ChangeTraits(CardSource cardSource, List<string> cardTraits)
-                {
-                    if (cardSource == card)
-                    {
-                        cardTraits.Add("Machine Dragon");
-                    }
-
-                    return cardTraits;
-                }
-            }
-
-            #endregion
-
             #region Opponent's Turn - ESS
 
             if (timing == EffectTiming.None)

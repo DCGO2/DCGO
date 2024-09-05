@@ -170,33 +170,6 @@ namespace DCGO.CardEffects.EX7
             }
 
             #endregion
-            
-            #region Rule Text
-
-            if (timing == EffectTiming.None)
-            {
-                ChangeTraitsClass changeTraitsClass = new ChangeTraitsClass();
-                changeTraitsClass.SetUpICardEffect("Trait: Has the [Dinosaur] type", CanUseCondition, card);
-                changeTraitsClass.SetUpChangeTraitsClass(changeeTraits: ChangeTraits);
-                cardEffects.Add(changeTraitsClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return true;
-                }
-
-                List<string> ChangeTraits(CardSource cardSource, List<string> cardTraits)
-                {
-                    if (cardSource == card)
-                    {
-                        cardTraits.Add("Dinosaur");
-                    }
-
-                    return cardTraits;
-                }
-            }
-
-            #endregion
 
             #region All Turns - ESS
 
