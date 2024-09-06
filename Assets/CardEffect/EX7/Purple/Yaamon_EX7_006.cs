@@ -14,7 +14,7 @@ namespace DCGO.CardEffects.EX7
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Digivolve into [Dark Dragon]/[Evil Dragon] trait trash card", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("DigivolveTrash_EX7_006");
                 cardEffects.Add(activateClass);
@@ -37,7 +37,7 @@ namespace DCGO.CardEffects.EX7
                         {
                             if (card.Owner.HandCards.Count <= 4)
                             {
-                                if (card.Owner.TrashCards.Count >= 1)
+                                if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition)) 
                                 {
                                     return true;
                                 }

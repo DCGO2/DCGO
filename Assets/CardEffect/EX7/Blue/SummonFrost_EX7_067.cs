@@ -95,17 +95,17 @@ namespace DCGO.CardEffects.EX7
 
                     else
                     {
-                        if (card.Owner.HandCards.Count((cardSource) => CanSelectCardCondition(cardSource)) >= 1)
+                        if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
                         {
                             List<CardSource> selectedCards = new List<CardSource>();
 
-                            int maxCount = Math.Min(1, card.Owner.HandCards.Count((cardSource) => CanSelectCardCondition(cardSource)));
+                            int maxCount = Math.Min(1, card.Owner.HandCards.Count(CanSelectCardCondition);
 
                             SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
                             selectHandEffect.SetUp(
                                 selectPlayer: card.Owner,
-                                canTargetCondition: (cardSource) => CanSelectCardCondition(cardSource),
+                                canTargetCondition: CanSelectCardCondition,
                                 canTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
                                 canEndSelectCondition: CanEndSelectCondition,
                                 maxCount: maxCount,

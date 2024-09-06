@@ -108,30 +108,46 @@ namespace DCGO.CardEffects.EX7
             #region Main
             if (timing == EffectTiming.OptionSkill)
             {
+                int count()
+                {
+                    List<Permanent> cards = card.Owner.GetBattleAreaPermanents();
+
+                    bool end = false;
+
+                    while (true)
+                    {
+                        if (cards.Count == 0)
+                        {
+                            end = true;
+                        }
+
+                        if (end)
+                        {
+                            break;
+                        }
+
+                        for (int i = 0; i < cards.Count; i++)
+                        {
+                            Permanent searchTargetPermanent = cards[i];
+
+                            if (cards.Some(permanent => permanent != searchTargetPermanent && permanent.TopCard.HasSameCardName(searchTargetPermanent.TopCard)))
+                            {
+                                cards.Remove(searchTargetPermanent);
+                                break;
+                            }
+
+                            if (i == cards.Count - 1)
+                            {
+                                end = true;
+                            }
+                        }
+                    }
+                    return cards.Count;
+                }
+
                 int maxDP()
                 {
-                    int maxDP = 9000;
-                    List<string> cardIDs = new List<string>();
-
-                    foreach (Permanent p in card.Owner.GetBattleAreaPermanents())
-                    {
-                        if(p.TopCard.CardTraits.Contains("Three Musketeers") && p.IsDigimon || p.TopCard.CardTraits.Contains("ThreeMusketeers") && p.IsDigimon)
-                        {
-                            if (!cardIDs.Contains(p.TopCard.CardID))
-                            {
-                                cardIDs.Add(p.TopCard.CardID);
-                            }
-                        }                  
-                    }
-
-                    int count = cardIDs.Count();
-
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        maxDP += 3000 * count;
-                    }
-
-                    return maxDP;
+                    return 9000 + (3000 * count());
                 }
 
                 ActivateClass activateClass = new ActivateClass();

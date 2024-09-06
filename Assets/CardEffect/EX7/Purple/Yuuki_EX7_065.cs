@@ -70,45 +70,12 @@ namespace DCGO.CardEffects.EX7
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Digivolve into [Dark Dragon]/[Evil Dragon] trait trash card", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-                activateClass.SetIsInheritedEffect(true);
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
                     return "[Main] If you have 4 or fewer cards in your hand, by suspending this Tamer, 1 of your Digimon may digivolve into a Digimon card with the [Dark Dragon]/[Evil Dragon] trait in the trash.";
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        return true;
-                    }
-
-                    return false;
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (card.Owner.LibraryCards.Count >= 1)
-                        {
-                            if (card.Owner.HandCards.Count <= 4)
-                            {
-                                if (card.Owner.TrashCards.Count >= 1)
-                                {
-                                    if (CardEffectCommons.CanActivateSuspendCostEffect(card))
-                                    {
-                                        return true;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    return false;
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
@@ -127,20 +94,42 @@ namespace DCGO.CardEffects.EX7
                     return false;
                 }
 
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    if (isExistOnField(card))
+                    {
+                        if (card.Owner.HandCards.Count <= 4)
+                        {
+                            if (card.Owner.TrashCards.Count >= 1)
+                            {
+                                if (CardEffectCommons.CanActivateSuspendCostEffect(card))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+
+                    return false;
+                }
+                              
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
                     yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(new List<Permanent>() { card.PermanentOfThisCard() }, CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
 
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                       targetPermanent: card.PermanentOfThisCard(),
-                       cardCondition: CanSelectCardCondition,
-                       payCost: true,
-                       reduceCostTuple: null,
-                       fixedCostTuple: null,
-                       ignoreDigivolutionRequirementFixedCost: -1,
-                       isHand: false,
-                       activateClass: activateClass,
-                       successProcess: null));
+                    if(CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                           targetPermanent: card.PermanentOfThisCard(),
+                           cardCondition: CanSelectCardCondition,
+                           payCost: true,
+                           reduceCostTuple: null,
+                           fixedCostTuple: null,
+                           ignoreDigivolutionRequirementFixedCost: -1,
+                           isHand: false,
+                           activateClass: activateClass,
+                           successProcess: null));
+                    }
                 }
             }
             #endregion

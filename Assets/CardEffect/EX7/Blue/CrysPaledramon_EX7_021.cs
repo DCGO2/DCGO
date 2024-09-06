@@ -29,6 +29,16 @@ namespace DCGO.CardEffects.EX7
                     return "[When Digivolving] Trash any 2 digivolution cards of your opponent's Digimon. Then, if your opponent has no Digimon with digivolution cards, unsuspend this Digimon.";
                 }
 
+                bool CanSelectOpponentsDigimon(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+                }
+
+                bool CanSelectCardCondition(CardSource cardSource)
+                {
+                    return !cardSource.CanNotTrashFromDigivolutionCards(activateClass);
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
@@ -41,53 +51,25 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        return true;
-                    }
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 bool CheckOpponentDigivolutionSources()
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        int count = CardEffectCommons.MatchConditionOpponentsPermanentCount(card, (permanent) => permanent.IsDigimon && permanent.HasNoDigivolutionCards);
-
-                        if (count >= 1)
-                            return false;
-                    }
-
-                    return true;
+                    return !CardEffectCommons.HasMatchConditionOpponentsPermanent(card, (permanent) => permanent.IsDigimon && !permanent.HasNoDigivolutionCards);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (card.Owner.HandCards.Count >= 1)
-                    {
-                        int discardCount = 2;
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SelectTrashDigivolutionCards(
+                        permanentCondition: CanSelectOpponentsDigimon,
+                        cardCondition: CanSelectCardCondition,
+                        maxCount: 2,
+                        canNoTrash: false,
+                        isFromOnly1Permanent: false,
+                        activateClass: activateClass
+                    ));
 
-                        if (card.Owner.HandCards.Count < discardCount)
-                            discardCount = card.Owner.HandCards.Count;
-                        
-                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                        selectHandEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: (cardSource) => true,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: discardCount,
-                            canNoSelect: false,
-                            canEndNotMax: false,
-                            isShowOpponent: true,
-                            selectCardCoroutine: null,
-                            afterSelectCardCoroutine: null,
-                            mode: SelectHandEffect.Mode.Discard,
-                            cardEffect: activateClass);
-
-                        yield return StartCoroutine(selectHandEffect.Activate());
-                    }
                     //unsuspend 
                     if (CheckOpponentDigivolutionSources())
                     {
@@ -97,67 +79,30 @@ namespace DCGO.CardEffects.EX7
                     }
                 }
             }
-            
+
             #endregion
 
             #region Inherited Effect
-
             if (timing == EffectTiming.None)
             {
-                AddSkillClass addSkillClass = new AddSkillClass();
-                addSkillClass.SetUpICardEffect("Gain Piercing and Security Atk+1", CanUseCondition, card);
-                addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
-                addSkillClass.SetIsInheritedEffect(true);
-                addSkillClass.SetHashString("CrysPaledramon_EX7_021_GainPiercing_SecAtk1");
-                cardEffects.Add(addSkillClass);
-
-                string EffectDiscription()
+                bool Condition()
                 {
-                    return "[Your Turn] While your opponent has no Digimon with digivolution cards, this Digimon with the [Ice-Snow] trait gains <Piercing> and <Security A. +1>";
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card) && CardEffectCommons.IsOwnerTurn(card))
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (card.ContainsTraits("Ice-Snow"))
+                        if (CardEffectCommons.IsOwnerTurn(card))
                         {
-                            return true;
+                            if (!CardEffectCommons.HasMatchConditionOpponentsPermanent(card, (permanent) => permanent.IsDigimon && !permanent.HasNoDigivolutionCards))
+                            {
+                                return true;
+                            }
                         }
                     }
 
                     return false;
                 }
 
-                bool CardSourceCondition(CardSource cardSource)
-                {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        int count = CardEffectCommons.MatchConditionOpponentsPermanentCount(card, (permanent) => permanent.IsDigimon && permanent.HasNoDigivolutionCards);
-
-                        if (count >= 1)
-                            return false;
-                    }
-                    return true;
-                }
-
-                List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming timing)
-                {
-                    if (timing == EffectTiming.OnAllyAttack)
-                    {
-                        bool Condition()
-                        {
-                            return CardSourceCondition(cardSource);
-                        }
-
-                        cardEffects.Add(CardEffectFactory.PierceSelfEffect(isInheritedEffect: false, card: card,
-                            condition: Condition));
-                        cardEffects.Add(CardEffectFactory.ChangeSelfSAttackStaticEffect(changeValue: 1,
-                            isInheritedEffect: false, card: card, condition: Condition));
-                    }
-
-                    return cardEffects;
-                }
+                cardEffects.Add(CardEffectFactory.PierceSelfEffect(isInheritedEffect: true, card: card, condition: Condition));
+                cardEffects.Add(CardEffectFactory.ChangeSelfSAttackStaticEffect(changeValue: 1, isInheritedEffect: true, card: card, condition: Condition));
             }
 
             #endregion
