@@ -10,8 +10,8 @@ namespace DCGO.CardEffects.EX7
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
-            
-            
+
+            #region When Digivolving
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -26,30 +26,20 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                    {
-                        if (permanent.DigivolutionCards.Count((cardSource) => !cardSource.CanNotTrashFromDigivolutionCards(activateClass)) >= 1)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                        return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
+
+                    return false;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -100,47 +90,39 @@ namespace DCGO.CardEffects.EX7
                         }
                     }
 
-                    if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, (permanent) => permanent.IsDigimon && permanent.HasNoDigivolutionCards))
+                    if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card,
+                        (permanent) => permanent.IsDigimon && permanent.HasNoDigivolutionCards) ||
+                        card.Owner.Enemy.GetBattleAreaDigimons().Count == 0)
                     {
                         Permanent selectedPermanent = card.PermanentOfThisCard();
 
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainJamming(targetPermanent: selectedPermanent, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
-                    }
-                    
-                    if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, (permanent) => permanent.IsDigimon && permanent.HasNoDigivolutionCards))
-                    {
-                        Permanent selectedPermanent = card.PermanentOfThisCard();
-                        
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBlocker(targetPermanent: selectedPermanent, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainJamming(targetPermanent: selectedPermanent, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBlocker(targetPermanent: selectedPermanent, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
                     }
                 }
             }
+            #endregion
 
-            if (timing == EffectTiming.OnEnterFieldAnyone)
+            #region When Attacking - ESS
+            if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash digivolution cards", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
+                activateClass.SetHashString("Attacking_EX7_020");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] Trash 2 digivolution cards at the bottom of 1 of your opponent's Digimon.";
+                    return "[When Attacking] [Once Per Turn] Trash the top digivolution card of 1 of your opponent's Digimon.";
                 }
                 
                 bool CanSelectDigimonCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                    {
-                        if (permanent.IsDigimon)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
                 }
+
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
@@ -198,6 +180,8 @@ namespace DCGO.CardEffects.EX7
                     }
                 }
             }
+            #endregion
+
             return cardEffects;
         }
     }

@@ -15,7 +15,7 @@ namespace DCGO.CardEffects.EX7
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Delete 1 level 4 Digimon and 1 level 6 Digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Return this to bottom of deck, Activate Main", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -175,12 +175,12 @@ namespace DCGO.CardEffects.EX7
 
                             string EffectDiscription1()
                             {
-                                return "[Ennd of Your Turn] Delete 1 of your Digimon.";
+                                return "[End of Your Turn] Delete 1 of your Digimon.";
                             }
 
                             bool CanSelectPermanentCondition(Permanent permanent)
                             {
-                                return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
+                                return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, cardSource);
                             }
 
                             bool CanUseCondition2(Hashtable hashtable)
@@ -202,7 +202,7 @@ namespace DCGO.CardEffects.EX7
                                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                                     selectPermanentEffect.SetUp(
-                                        selectPlayer: card.Owner,
+                                        selectPlayer: cardSource.Owner,
                                         canTargetCondition: CanSelectPermanentCondition,
                                         canTargetCondition_ByPreSelecetedList: null,
                                         canEndSelectCondition: null,
@@ -229,7 +229,7 @@ namespace DCGO.CardEffects.EX7
             if (timing == EffectTiming.SecuritySkill)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(card.BaseENGCardNameFromEntity, CanUseCondition, card);
+                activateClass.SetUpICardEffect("Delete 1 Opponents unsuspended Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
                 activateClass.SetIsSecurityEffect(true);
                 cardEffects.Add(activateClass);

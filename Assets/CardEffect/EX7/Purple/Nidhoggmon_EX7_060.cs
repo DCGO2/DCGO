@@ -26,8 +26,7 @@ namespace DCGO.CardEffects.EX7
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play this card from trash with reduced cost", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
-                activateClass.SetIsInheritedEffect(true);
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -39,38 +38,12 @@ namespace DCGO.CardEffects.EX7
                 {
                     if (CardEffectCommons.IsOwnerTurn(card))
                     {
-                        if(CardEffectCommons.IsExistOnTrash(card))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (card.Owner.LibraryCards.Count >= 1)
+                        if (CardEffectCommons.IsExistOnTrash(card))
                         {
                             if (card.Owner.HandCards.Count <= 4)
                             {
                                 return true;
                             }
-                        }
-                    }
-
-                    return false;
-                }
-
-                bool CanSelectCardCondition(CardSource cardSource)
-                {
-                    if (cardSource.IsDigimon)
-                    {
-                        if(cardSource.name.Contains("Nidhoggmon"))
-                        {
-                            return true;
                         }
                     }
 
@@ -103,20 +76,12 @@ namespace DCGO.CardEffects.EX7
 
                     int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
                     {
-                        return Cost -3;
+                        return Cost -4;
                     }
 
                     bool CardSourceCondition(CardSource cardSource)
                     {
-                        if (cardSource.IsDigimon)
-                        {
-                            if (cardSource.ContainsCardName("Nidhoggmon"))
-                            {
-                                return true;
-                            }
-                        }
-
-                        return false;
+                        return (cardSource == card);
                     }
 
                     bool RootCondition(SelectCardEffect.Root root)
@@ -130,52 +95,13 @@ namespace DCGO.CardEffects.EX7
                     }
                     #endregion
 
-                    if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
-                    {
-                        List<CardSource> selectedCards = new List<CardSource>();
-
-                        int maxCount = 1;
-
-                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                        selectCardEffect.SetUp(
-                                    canTargetCondition: CanSelectCardCondition,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    canNoSelect: () => true,
-                                    selectCardCoroutine: SelectCardCoroutine,
-                                    afterSelectCardCoroutine: null,
-                                    message: "Select cards to play.",
-                                    maxCount: maxCount,
-                                    canEndNotMax: true,
-                                    isShowOpponent: true,
-                                    mode: SelectCardEffect.Mode.Custom,
-                                    root: SelectCardEffect.Root.Trash,
-                                    customRootCardList: null,
-                                    canLookReverseCard: true,
-                                    selectPlayer: card.Owner,
-                                    cardEffect: activateClass);
-
-                        selectCardEffect.SetUpCustomMessage("Select cards to play.", "The opponent is selecting cards to play.");
-                        selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
-
-                        yield return StartCoroutine(selectCardEffect.Activate());
-
-                        IEnumerator SelectCardCoroutine(CardSource cardSource)
-                        {
-                            selectedCards.Add(cardSource);
-
-                            yield return null;
-                        }
-
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                          cardSources: selectedCards,
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
+                          cardSources: new List<CardSource> { card },
                           activateClass: activateClass,
                           payCost: true,
                           isTapped: false,
                           root: SelectCardEffect.Root.Trash,
                           activateETB: true));
-                    }
 
                     #region release effect reducing play cost 
                     card.Owner.UntilCalculateFixedCostEffect.Remove(getCardEffect);
