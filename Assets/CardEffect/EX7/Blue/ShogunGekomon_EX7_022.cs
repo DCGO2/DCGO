@@ -16,7 +16,10 @@ namespace DCGO.CardEffects.EX7
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.CardTraits.Contains("NSp");
+                    if(targetPermanent.TopCard.HasLevel && targetPermanent.Level == 4)
+                        return targetPermanent.TopCard.CardTraits.Contains("NSp");
+
+                    return false;
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
@@ -182,7 +185,7 @@ namespace DCGO.CardEffects.EX7
 
                     foreach (Permanent toCheck in card.Owner.GetBattleAreaPermanents())
                     {
-                        if (toCheck.TopCard.CardTraits.Contains("NSp"))
+                        if (toCheck.TopCard.EqualsTraits("NSp"))
                             validCards.Add(toCheck);
                     }
 

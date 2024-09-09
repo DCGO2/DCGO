@@ -99,7 +99,7 @@ namespace DCGO.CardEffects.EX7
                         {
                             List<CardSource> selectedCards = new List<CardSource>();
 
-                            int maxCount = Math.Min(1, card.Owner.HandCards.Count(CanSelectCardCondition);
+                            int maxCount = Math.Min(1, card.Owner.HandCards.Count(CanSelectCardCondition));
 
                             SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 

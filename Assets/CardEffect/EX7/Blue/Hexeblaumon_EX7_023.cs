@@ -76,7 +76,10 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanSelectTamerCondition(Permanent permanent)
                 {
-                    return permanent.IsTamer;
+                    if(!CardEffectCommons.IsOwnerPermanent(permanent, card))
+                        return permanent.IsTamer;
+
+                    return false;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -123,16 +126,28 @@ namespace DCGO.CardEffects.EX7
             
             #region Opponent's Turn Effect
 
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnStartTurn)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Opponent's digimon can't suspend", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetIsBackgroundProcess(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
                     return "[Opponent's Turn] None of your opponent's Digimon with as many or fewer digivolution cards as this Digimon can suspend.";
+                }
+
+                bool CantSuspendCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card))
+                    {
+                        if (permanent.IsDigimon && permanent.DigivolutionCards.Count <= card.PermanentOfThisCard().DigivolutionCards.Count)
+                            return true;
+                    }
+
+                    return false;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -147,26 +162,19 @@ namespace DCGO.CardEffects.EX7
                 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                        return true;
-
-                    return false;
-                }
-                
-                bool CanSelectPermanentToNoSuspend(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card))
-                    {
-                        if (permanent.IsDigimon && permanent.DigivolutionCards.Count <= card.PermanentOfThisCard().DigivolutionCards.Count)
-                            return true;
-                    }
-
-                    return false;
-                }
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                }               
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (card.Owner.Enemy.GetBattleAreaPermanents().Count(CanSelectPermanentToNoSuspend) >= 1)
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotSuspendPlayerEffect(
+                        permanentCondition: CantSuspendCondition,
+                        effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                        activateClass: activateClass,
+                        isOnlyActivePhase: false,
+                        effectName: "Can't Suspend"));
+
+                    /*if (card.Owner.Enemy.GetBattleAreaPermanents().Count(CanSelectPermanentToNoSuspend) >= 1)
                     {
                         foreach (Permanent affected in card.Owner.Enemy.GetBattleAreaPermanents())
                         {
@@ -202,9 +210,7 @@ namespace DCGO.CardEffects.EX7
                                 return true;
                             }
                         }
-                    }
-
-                    yield return null;
+                    }*/
                 }
             }
 

@@ -60,9 +60,7 @@ namespace DCGO.CardEffects.ST19
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayFamiliarToken(activateClass));
-                    
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayFamiliarToken(activateClass));
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayFamiliarToken(activateClass, 2));                    
                 }
             }
 

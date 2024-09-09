@@ -24,7 +24,7 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.CardTraits.Contains("Rock Dragon") || cardSource.CardTraits.Contains("Earth Dragon") || cardSource.CardTraits.Contains("Machine Dragon") || cardSource.CardTraits.Contains("Sky Dragon"))
+                    if (cardSource.ContainsTraits("Rock Dragon") || cardSource.ContainsTraits("Earth Dragon") || cardSource.ContainsTraits("Machine Dragon") || cardSource.ContainsTraits("Sky Dragon"))
                     {
                         return true;
                     }

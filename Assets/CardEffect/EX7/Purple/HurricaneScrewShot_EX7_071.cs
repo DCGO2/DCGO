@@ -17,6 +17,7 @@ namespace DCGO.CardEffects.EX7
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Memory +1", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -85,6 +86,53 @@ namespace DCGO.CardEffects.EX7
             }
             #endregion
 
+            #region Shared Conditions
+            bool CanSelectLevel3Condition(Permanent permanent)
+            {
+                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                {
+                    if (permanent.TopCard.HasLevel)
+                    {
+                        if (permanent.Level == 3)
+                        {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+
+            bool CanSelectLevel4Condition(Permanent permanent)
+            {
+                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                {
+                    if (permanent.TopCard.HasLevel)
+                    {
+                        if (permanent.Level == 4)
+                        {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+
+            bool CanSelectLevel5Condition(Permanent permanent)
+            {
+                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                {
+                    if (permanent.TopCard.HasLevel)
+                    {
+                        if (permanent.Level == 5)
+                        {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+            #endregion
+
             #region Main
             if (timing == EffectTiming.OptionSkill)
             {
@@ -98,56 +146,11 @@ namespace DCGO.CardEffects.EX7
                     return "[Main] Delete 1 of your opponent's level 3 Digimon, level 4 Digimon, and level 5 Digimon. Then, place this card as the bottom digivolution card of 1 of your Digimon with the [Three Musketeers] trait.";
                 }
 
-                bool CanSelectLevel3Condition(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                    {
-                        if (permanent.TopCard.HasLevel)
-                        {
-                            if (permanent.Level == 3)
-                            {
-                                return true;
-                            }
-                        }
-                    }
-                    return false;
-                }
-
-                bool CanSelectLevel4Condition(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                    {
-                        if (permanent.TopCard.HasLevel)
-                        {
-                            if (permanent.Level == 4)
-                            {
-                                return true;
-                            }
-                        }
-                    }
-                    return false;
-                }
-
-                bool CanSelectLevel5Condition(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                    {
-                        if (permanent.TopCard.HasLevel)
-                        {
-                            if (permanent.Level == 5)
-                            {
-                                return true;
-                            }
-                        }
-                    }
-                    return false;
-                }
-
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent.TopCard.CardTraits.Contains("Three Musketeers") || permanent.TopCard.CardTraits.Contains("ThreeMusketeers"))
+                        if (permanent.TopCard.EqualsTraits("Three Musketeers"))
                         {
                             return true;
                         }
@@ -163,92 +166,89 @@ namespace DCGO.CardEffects.EX7
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    List<Permanent> selectedPermanents = new List<Permanent>();
+
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectLevel3Condition))
                     {
-                        List<Permanent> selectedPermanents = new List<Permanent>();
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectLevel3Condition));
 
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectLevel3Condition))
-                        {
-                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectLevel3Condition));
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectLevel3Condition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: maxCount,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectDeletionCoroutine,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
 
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: CanSelectLevel3Condition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: maxCount,
-                                canNoSelect: false,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: SelectPermanentCoroutine,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Custom,
-                                cardEffect: activateClass);
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 level 3 Digimon to delete.", "The opponent is selecting 1 level 3 Digimon to delete.");
 
-                            selectPermanentEffect.SetUpCustomMessage("Select 1 level 3 Digimon to delete.", "The opponent is selecting 1 level 3 Digimon to delete.");
-
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                        }
-
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectLevel4Condition))
-                        {
-                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectLevel4Condition));
-
-                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: CanSelectLevel4Condition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: maxCount,
-                                canNoSelect: false,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: SelectPermanentCoroutine,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Custom,
-                                cardEffect: activateClass);
-
-                            selectPermanentEffect.SetUpCustomMessage("Select 1 level 4 Digimon to delete.", "The opponent is selecting 1 level 4 Digimon to delete.");
-
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                        }
-
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectLevel5Condition))
-                        {
-                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectLevel5Condition));
-
-                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: CanSelectLevel5Condition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: maxCount,
-                                canNoSelect: false,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: SelectPermanentCoroutine,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Custom,
-                                cardEffect: activateClass);
-
-                            selectPermanentEffect.SetUpCustomMessage("Select 1 level 5 Digimon to delete.", "The opponent is selecting 1 level 5 Digimon to delete.");
-
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                        }
-
-                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                        {
-                            selectedPermanents.Add(permanent);
-                            yield return null;
-                        }
-
-                        yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(
-                            selectedPermanents,
-                            CardEffectCommons.CardEffectHashtable(activateClass)).Destroy());
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
+
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectLevel4Condition))
+                    {
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectLevel4Condition));
+
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectLevel4Condition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: maxCount,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectDeletionCoroutine,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 level 4 Digimon to delete.", "The opponent is selecting 1 level 4 Digimon to delete.");
+
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                    }
+
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectLevel5Condition))
+                    {
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectLevel5Condition));
+
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectLevel5Condition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: maxCount,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectDeletionCoroutine,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 level 5 Digimon to delete.", "The opponent is selecting 1 level 5 Digimon to delete.");
+
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                    }
+
+                    IEnumerator SelectDeletionCoroutine(Permanent permanent)
+                    {
+                        selectedPermanents.Add(permanent);
+                        yield return null;
+                    }
+
+                    yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(
+                        selectedPermanents,
+                        CardEffectCommons.CardEffectHashtable(activateClass)).Destroy());
 
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
@@ -301,51 +301,6 @@ namespace DCGO.CardEffects.EX7
                     return "[Security] Delete 1 of your opponent's level 3 Digimon, level 4 Digimon, and level 5 Digimon.";
                 }
 
-                bool CanSelectLevel3Condition(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                    {
-                        if (permanent.TopCard.HasLevel)
-                        {
-                            if (permanent.Level == 3)
-                            {
-                                return true;
-                            }
-                        }
-                    }
-                    return false;
-                }
-
-                bool CanSelectLevel4Condition(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                    {
-                        if (permanent.TopCard.HasLevel)
-                        {
-                            if (permanent.Level == 4)
-                            {
-                                return true;
-                            }
-                        }
-                    }
-                    return false;
-                }
-
-                bool CanSelectLevel5Condition(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                    {
-                        if (permanent.TopCard.HasLevel)
-                        {
-                            if (permanent.Level == 5)
-                            {
-                                return true;
-                            }
-                        }
-                    }
-                    return false;
-                }
-
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerSecurityEffect(hashtable, card);
@@ -353,92 +308,89 @@ namespace DCGO.CardEffects.EX7
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    List<Permanent> selectedPermanents = new List<Permanent>();
+
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectLevel3Condition))
                     {
-                        List<Permanent> selectedPermanents = new List<Permanent>();
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectLevel3Condition));
 
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectLevel3Condition))
-                        {
-                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectLevel3Condition));
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectLevel3Condition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: maxCount,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
 
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: CanSelectLevel3Condition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: maxCount,
-                                canNoSelect: false,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: SelectPermanentCoroutine,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Custom,
-                                cardEffect: activateClass);
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 level 3 Digimon to delete.", "The opponent is selecting 1 level 3 Digimon to delete.");
 
-                            selectPermanentEffect.SetUpCustomMessage("Select 1 level 3 Digimon to delete.", "The opponent is selecting 1 level 3 Digimon to delete.");
-
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                        }
-
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectLevel4Condition))
-                        {
-                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectLevel4Condition));
-
-                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: CanSelectLevel4Condition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: maxCount,
-                                canNoSelect: false,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: SelectPermanentCoroutine,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Custom,
-                                cardEffect: activateClass);
-
-                            selectPermanentEffect.SetUpCustomMessage("Select 1 level 4 Digimon to delete.", "The opponent is selecting 1 level 4 Digimon to delete.");
-
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                        }
-
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectLevel5Condition))
-                        {
-                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectLevel5Condition));
-
-                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: CanSelectLevel5Condition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: maxCount,
-                                canNoSelect: false,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: SelectPermanentCoroutine,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Custom,
-                                cardEffect: activateClass);
-
-                            selectPermanentEffect.SetUpCustomMessage("Select 1 level 5 Digimon to delete.", "The opponent is selecting 1 level 5 Digimon to delete.");
-
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                        }
-
-                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                        {
-                            selectedPermanents.Add(permanent);
-                            yield return null;
-                        }
-
-                        yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(
-                            selectedPermanents,
-                            CardEffectCommons.CardEffectHashtable(activateClass)).Destroy());
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
+
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectLevel4Condition))
+                    {
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectLevel4Condition));
+
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectLevel4Condition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: maxCount,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 level 4 Digimon to delete.", "The opponent is selecting 1 level 4 Digimon to delete.");
+
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                    }
+
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectLevel5Condition))
+                    {
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectLevel5Condition));
+
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectLevel5Condition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: maxCount,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 level 5 Digimon to delete.", "The opponent is selecting 1 level 5 Digimon to delete.");
+
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                    }
+
+                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                    {
+                        selectedPermanents.Add(permanent);
+                        yield return null;
+                    }
+
+                    yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(
+                        selectedPermanents,
+                        CardEffectCommons.CardEffectHashtable(activateClass)).Destroy());
                 }
             }
             #endregion

@@ -321,7 +321,7 @@ namespace DCGO.CardEffects.EX7
 
             #region When Attacking
             if (timing == EffectTiming.OnAllyAttack)
-                {
+            {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Return 1 digivolution card to play 1 Option", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
@@ -368,7 +368,7 @@ namespace DCGO.CardEffects.EX7
                 {
                     if (cardSource.IsOption)
                     {
-                        if (cardSource.CardTraits.Contains("Three Musketeers") || cardSource.CardTraits.Contains("ThreeMusketeers"))
+                        if (cardSource.EqualsTraits("Three Musketeers"))
                         {
                             if (cardSource.HasUseCost)
                             {
@@ -385,99 +385,96 @@ namespace DCGO.CardEffects.EX7
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    bool trashed = false;
+
+                    List<CardSource> selectedCards = new List<CardSource>();
+
+                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                    selectCardEffect.SetUp(
+                                canTargetCondition: CanSelectCardCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                canNoSelect: () => true,
+                                selectCardCoroutine: SelectCardCoroutine,
+                                afterSelectCardCoroutine: null,
+                                message: "Select 1 Option card to discard.",
+                                maxCount: 1,
+                                canEndNotMax: false,
+                                isShowOpponent: true,
+                                mode: SelectCardEffect.Mode.Custom,
+                                root: SelectCardEffect.Root.Custom,
+                                customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
+                                canLookReverseCard: true,
+                                selectPlayer: card.Owner,
+                                cardEffect: null);
+
+                    selectCardEffect.SetUpCustomMessage("Select 1 Option card to discard.", "The opponent is selecting 1 Option card to discard.");
+
+                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+
+                    IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
-                        bool trashed = false;
+                        selectedCards.Add(cardSource);
 
-                        List<CardSource> selectedCards = new List<CardSource>();
+                        yield return null;
+                    }
 
-                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+                    if (selectedCards.Count >= 1)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(new ITrashDigivolutionCards(card.PermanentOfThisCard(), selectedCards, activateClass).TrashDigivolutionCards());
 
-                        selectCardEffect.SetUp(
-                                    canTargetCondition: CanSelectCardCondition,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    canNoSelect: () => true,
-                                    selectCardCoroutine: SelectCardCoroutine,
-                                    afterSelectCardCoroutine: null,
-                                    message: "Select 1 Option card to discard.",
-                                    maxCount: 1,
-                                    canEndNotMax: false,
-                                    isShowOpponent: true,
-                                    mode: SelectCardEffect.Mode.Custom,
-                                    root: SelectCardEffect.Root.Custom,
-                                    customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
-                                    canLookReverseCard: true,
-                                    selectPlayer: card.Owner,
-                                    cardEffect: null);
+                        trashed = true;
+                    }
 
-                        selectCardEffect.SetUpCustomMessage("Select 1 Option card to discard.", "The opponent is selecting 1 Option card to discard.");
-
-                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-
-                        IEnumerator SelectCardCoroutine(CardSource cardSource)
+                    if (trashed)
+                    {
+                        if (card.Owner.HandCards.Count(CanSelectCardCondition1) >= 1)
                         {
-                            selectedCards.Add(cardSource);
+                            int maxCount = 1;
 
-                            yield return null;
+                            SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                            selectHandEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: CanSelectCardCondition1,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: maxCount,
+                                canNoSelect: true,
+                                canEndNotMax: false,
+                                isShowOpponent: true,
+                                selectCardCoroutine: SelectCardCoroutine1,
+                                afterSelectCardCoroutine: null,
+                                mode: SelectHandEffect.Mode.Custom,
+                                cardEffect: activateClass);
+
+                            selectHandEffect.SetUpCustomMessage(
+                                "Select 1 option card to use.",
+                                "The opponent is selecting 1 option card to use.");
+                            selectHandEffect.SetUpCustomMessage_ShowCard("Used Card");
+
+                            yield return StartCoroutine(selectHandEffect.Activate());
+
+                            IEnumerator SelectCardCoroutine1(CardSource cardSource)
+                            {
+                                selectedCards.Add(cardSource);
+
+                                yield return null;
+                            }
                         }
 
                         if (selectedCards.Count >= 1)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(new ITrashDigivolutionCards(card.PermanentOfThisCard(), selectedCards, activateClass).TrashDigivolutionCards());
-
-                            trashed = true;
+                            yield return ContinuousController.instance.StartCoroutine(
+                                CardEffectCommons.PlayOptionCards(
+                                    cardSources: selectedCards,
+                                    activateClass: activateClass,
+                                    payCost: false,
+                                    root: SelectCardEffect.Root.Hand
+                                )
+                            );
                         }
-
-                        if (trashed)
-                        {
-                            if (card.Owner.HandCards.Count(CanSelectCardCondition1) >= 1)
-                            {
-                                int maxCount = 1;
-
-                                SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                                selectHandEffect.SetUp(
-                                    selectPlayer: card.Owner,
-                                    canTargetCondition: CanSelectCardCondition1,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    maxCount: maxCount,
-                                    canNoSelect: true,
-                                    canEndNotMax: false,
-                                    isShowOpponent: true,
-                                    selectCardCoroutine: SelectCardCoroutine1,
-                                    afterSelectCardCoroutine: null,
-                                    mode: SelectHandEffect.Mode.Custom,
-                                    cardEffect: activateClass);
-
-                                selectHandEffect.SetUpCustomMessage(
-                                    "Select 1 option card to use.",
-                                    "The opponent is selecting 1 option card to use.");
-                                selectHandEffect.SetUpCustomMessage_ShowCard("Used Card");
-
-                                yield return StartCoroutine(selectHandEffect.Activate());
-
-                                IEnumerator SelectCardCoroutine1(CardSource cardSource)
-                                {
-                                    selectedCards.Add(cardSource);
-
-                                    yield return null;
-                                }
-                            }
-
-                            if (selectedCards.Count >= 1)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(
-                                    CardEffectCommons.PlayOptionCards(
-                                        cardSources: selectedCards,
-                                        activateClass: activateClass,
-                                        payCost: false,
-                                        root: SelectCardEffect.Root.Hand
-                                    )
-                                );
-                            }
-                        }                   
                     }
                 }
             }

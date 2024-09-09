@@ -217,13 +217,14 @@ public partial class CardEffectCommons
     #endregion
     
     #region Play 1 [Familiar] Token
-    public static IEnumerator PlayFamiliarToken(ICardEffect activateClass)
+    public static IEnumerator PlayFamiliarToken(ICardEffect activateClass, int quantity = 1)
     {
         yield return ContinuousController.instance.StartCoroutine(PlayToken(
             tokenData: ContinuousController.instance.FamiliarToken,
             activateClass: activateClass,
             isOwnerPermanent: true,
-            isTapped: false
+            isTapped: false,
+            quantity: quantity
         ));
     }
     #endregion

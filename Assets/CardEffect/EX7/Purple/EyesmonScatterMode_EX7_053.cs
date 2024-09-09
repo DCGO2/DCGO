@@ -11,7 +11,7 @@ namespace DCGO.CardEffects.EX7
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region On PLay
+            #region On Play
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -32,7 +32,7 @@ namespace DCGO.CardEffects.EX7
                         {
                             if (cardSource.Owner == card.Owner)
                             {
-                                if (cardSource.CardTraits.Contains("Evil") || cardSource.CardTraits.Contains("Dark Dragon") || cardSource.CardTraits.Contains("Evil Dragon"))
+                                if (cardSource.EqualsTraits("Evil") || cardSource.EqualsTraits("Dark Dragon") || cardSource.EqualsTraits("Evil Dragon"))
                                 {
                                     return true;
                                 }
@@ -45,78 +45,67 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (card.Owner.HandCards.Count >= 1)
-                        {
-                            return true;
-                        }
-                    }
+                    if(CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                        return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
 
                     return false;
                 }
 
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                }
+
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    if (isExistOnField(card))
+                    if (card.Owner.HandCards.Count >= 1)
                     {
-                        if (card.Owner.GetBattleAreaDigimons().Contains(card.PermanentOfThisCard()))
-                        {
-                            if (card.Owner.HandCards.Count >= 1)
-                            {
-                                int discardCount = 1;
+                        int discardCount = 1;
 
-                                SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
-                                selectHandEffect.SetUp(
-                                    selectPlayer: card.Owner,
-                                    canTargetCondition: (cardSource) => true,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    maxCount: discardCount,
-                                    canNoSelect: true,
-                                    canEndNotMax: false,
-                                    isShowOpponent: true,
-                                    selectCardCoroutine: null,
-                                    afterSelectCardCoroutine: null,
-                                    mode: SelectHandEffect.Mode.Discard,
-                                    cardEffect: activateClass);
+                        selectHandEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: (cardSource) => true,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: discardCount,
+                            canNoSelect: true,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            selectCardCoroutine: null,
+                            afterSelectCardCoroutine: null,
+                            mode: SelectHandEffect.Mode.Discard,
+                            cardEffect: activateClass);
 
-                                yield return StartCoroutine(selectHandEffect.Activate());
+                        yield return StartCoroutine(selectHandEffect.Activate()); 
+                    }
 
-                                if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
-                                {
-                                    int maxCount = Math.Min(1, card.Owner.TrashCards.Count(CanSelectCardCondition));
+                    if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
+                    {
+                        int maxCount = Math.Min(1, card.Owner.TrashCards.Count(CanSelectCardCondition));
 
-                                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
-                                    selectCardEffect.SetUp(
-                                        canTargetCondition: CanSelectCardCondition,
-                                        canTargetCondition_ByPreSelecetedList: null,
-                                        canEndSelectCondition: null,
-                                        canNoSelect: () => false,
-                                        selectCardCoroutine: null,
-                                        afterSelectCardCoroutine: null,
-                                        message: "Select 1 card to add to your hand.",
-                                        maxCount: maxCount,
-                                        canEndNotMax: false,
-                                        isShowOpponent: true,
-                                        mode: SelectCardEffect.Mode.AddHand,
-                                        root: SelectCardEffect.Root.Trash,
-                                        customRootCardList: null,
-                                        canLookReverseCard: true,
-                                        selectPlayer: card.Owner,
-                                        cardEffect: activateClass);
+                        selectCardEffect.SetUp(
+                            canTargetCondition: CanSelectCardCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            canNoSelect: () => false,
+                            selectCardCoroutine: null,
+                            afterSelectCardCoroutine: null,
+                            message: "Select 1 card to add to your hand.",
+                            maxCount: maxCount,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            mode: SelectCardEffect.Mode.AddHand,
+                            root: SelectCardEffect.Root.Trash,
+                            customRootCardList: null,
+                            canLookReverseCard: true,
+                            selectPlayer: card.Owner,
+                            cardEffect: activateClass);
 
-                                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-                                }                               
-                            }
-                        }
+                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
                     }
                 }
             }

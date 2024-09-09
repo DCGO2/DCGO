@@ -9,6 +9,7 @@ using UnityEngine;
 //using Hashtable = ExitGames.Client.Photon.Hashtable;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using static UnityEngine.UIElements.UxmlAttributeDescription;
 public class TurnStateMachine : MonoBehaviourPunCallbacks
 {
     //Class to manage battle status
@@ -1147,7 +1148,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
             yield return new WaitWhile(() => GManager.instance.commandText.gameObject.activeSelf);
             #endregion
 
-            #region 起動効果使用
+            #region Use activation effect
             if (UseCardEffect != null)
             {
                 if (UseCardEffect is ActivateICardEffect)
@@ -1156,14 +1157,14 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                     {
                         UseCardEffect.SetIsDeclarative(true);
 
-                        //使用回数をカウントアップ
+                        //Count up the number of uses
                         if (UseCardEffect.MaxCountPerTurn < 100)
                         {
                             UseCardEffect.EffectSourceCard.cEntity_EffectController.RegisterUseEfffectThisTurn(UseCardEffect);
                         }
 
                         // yield return StartCoroutine(((ActivateICardEffect)UseCardEffect).Activate_Optional_Effect_Execute(null));
-
+                        UnityEngine.Debug.Log($"MainPhase: UseCardEffect - {UseCardEffect.EffectSourceCard.BaseENGCardNameFromEntity}, {UseCardEffect.MaxCountPerTurn}");
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.ActivateEffectProcess(
                                 UseCardEffect,
                                 null));

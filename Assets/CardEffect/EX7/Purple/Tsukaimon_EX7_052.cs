@@ -24,7 +24,7 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.name.Contains("Lilithmon"))
+                    if (cardSource.HasText("Lilithmon"))
                     {
                         return true;
                     }                  
