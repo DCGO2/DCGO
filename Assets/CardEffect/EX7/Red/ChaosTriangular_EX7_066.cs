@@ -18,6 +18,7 @@ namespace DCGO.CardEffects.EX7
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("+3000DP", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -25,19 +26,14 @@ namespace DCGO.CardEffects.EX7
                     return "When an effect trashes this digivolution card, 1 of your Digimon gets +3000 DP until the end of your opponent's turn.";
                 }
 
-                bool CanUseCondition(Hashtable hashtable)
-                {    
-                    if (CardEffectCommons.CanTriggerOnTrashSelfDigivolutionCard(hashtable, cardEffect => cardEffect != null, card))
-                    {
-                        return true;
-                    }                        
-                     
-                    return false;
-                }
-
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {                   
+                    return CardEffectCommons.CanTriggerOnTrashSelfDigivolutionCard(hashtable, cardEffect => cardEffect != null, card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)

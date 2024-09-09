@@ -1119,6 +1119,11 @@ public class CardSource : MonoBehaviour
     #endregion
 
     #region whether this card has at least 1 card name that equals the string
+    /// <summary>
+    /// Used to check if specified name is exactly in cards name values ("dra" is not "Commandramon") 
+    /// </summary>
+    /// <param name="string">value to check for</param>
+    /// <author>Mike Bunch</author>
     public bool EqualsCardName(string name)
     {
         if (string.IsNullOrEmpty(name))
@@ -1138,6 +1143,11 @@ public class CardSource : MonoBehaviour
     #endregion
 
     #region whether this card has at least 1 card name that contains the string
+    /// <summary>
+    /// Used to check if specified trait is within cards name values ("dra" is in "Commandramon") 
+    /// </summary>
+    /// <param trait="string">value to check for</param>
+    /// <author>Mike Bunch</author>
     public bool ContainsCardName(string name)
     {
         if (string.IsNullOrEmpty(name))
@@ -1226,7 +1236,29 @@ public class CardSource : MonoBehaviour
     public bool HasXAntiBodyName => CardNames.Some(DataBase.IsContainingXAntibodyString);
     #endregion
 
+    #region whether this card has at least 1 trait that equals the string
+    /// <summary>
+    /// Used to check if specified trait is exactly in cards trait values ("Sky Dragon" is not "Dragon") 
+    /// </summary>
+    /// <param trait="string">value to check for</param>
+    /// <author>Mike Bunch</author>
+    public bool EqualsTraits(string trait)
+    {
+        if (string.IsNullOrEmpty(trait))
+            return false;
+
+        string replaced = trait.Replace(" ", "");
+
+        return CardTraits.Some(cardTrait => cardTrait.Equals(trait) || cardTrait.Equals(replaced));
+    }
+    #endregion
+
     #region whether this card has at least 1 trait that contains the string
+    /// <summary>
+    /// Used to check if specified trait is within cards trait values ("Sky Dragon" contains "Dragon") 
+    /// </summary>
+    /// <param trait="string">value to check for</param>
+    /// <author>Mike Bunch</author>
     public bool ContainsTraits(string trait)
     {
         if (string.IsNullOrEmpty(trait))

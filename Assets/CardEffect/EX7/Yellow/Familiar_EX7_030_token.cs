@@ -23,20 +23,19 @@ namespace DCGO.CardEffects.Tokens
                     return "[On Deletion] 1 of your opponent's Digimon gets -3000 DP for the turn.";
                 }
 
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
-                }
-                
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
                 }
 
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                }
+                
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletion(card) &&
-                           CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
+                    return CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

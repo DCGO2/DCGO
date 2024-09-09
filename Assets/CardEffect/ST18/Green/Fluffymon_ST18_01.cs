@@ -22,19 +22,21 @@ namespace DCGO.CardEffects.ST18
 
                 string EffectDescription()
                 {
-                    return
-                        "[When Attacking] (Once Per Turn) You may suspend 1 other Digimon with DP less than or equal to this Digimon.";
+                    return "[When Attacking] (Once Per Turn) You may suspend 1 other Digimon with DP less than or equal to this Digimon.";
+                }
+
+                bool CanSelectPermanentCondition(Permanent permanent)
+                {
+                    if(CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent))
+                        return  permanent != card.PermanentOfThisCard() && 
+                                permanent.DP <= card.PermanentOfThisCard().DP;
+
+                    return false;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
-                }
-
-                bool CanSelectPermanentCondition(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent) &&
-                           permanent.DP <= card.PermanentOfThisCard().DP;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

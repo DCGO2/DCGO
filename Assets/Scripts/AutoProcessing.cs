@@ -789,6 +789,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
 
         if (cardEffect.CanActivate(hashtable) || cardEffect.IsDeclarative)
         {
+            UnityEngine.Debug.Log($"ActivateEffectProcess - Passing CanActivate: {cardEffect.EffectSourceCard.BaseENGCardNameFromEntity}");
             bool isEffectProcessing = MainProcessingEffect != null;
 
             if (!isEffectProcessing)
