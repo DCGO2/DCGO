@@ -153,17 +153,11 @@ namespace DCGO.CardEffects.EX7
 
             if (timing == EffectTiming.None)
             {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("NSp digimon can't have attack targets switched", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false,
-                    EffectDescription());
-                cardEffects.Add(activateClass);
-
-                string EffectDescription()
-                {
-                    return
-                        "[Your Turn] All of your Digimon with the [NSp] trait trait can't have their attack targets switched.";
-                }
+                CanNotSwitchAttackTargetClass canNotSwitchAttackTargetClass = new CanNotSwitchAttackTargetClass();
+                canNotSwitchAttackTargetClass.SetUpICardEffect(
+                    "All of your Digimon with the [NSp] trait trait can't have their attack targets switched.", CanUseCondition, card);
+                canNotSwitchAttackTargetClass.SetUpCanNotSwitchAttackTargetClass(PermanentCondition: PermanentCondition);
+                cardEffects.Add(canNotSwitchAttackTargetClass);
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
@@ -171,32 +165,10 @@ namespace DCGO.CardEffects.EX7
                            CardEffectCommons.IsOwnerTurn(card);
                 }
 
-                bool CanActivateCondition(Hashtable hashtable)
+                bool PermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    foreach (var permanent in card.Owner.GetBattleAreaDigimons()
-                                 .Where(permanent => permanent != null && permanent.TopCard.ContainsTraits("NSp")))
-                    {
-                        CanNotSwitchAttackTargetClass canNotSwitchAttackTargetClass = new CanNotSwitchAttackTargetClass();
-                        canNotSwitchAttackTargetClass.SetUpICardEffect("This Digimon's attack target can't be switched", 
-                            _ => true, permanent.TopCard);
-                        canNotSwitchAttackTargetClass.SetUpCanNotSwitchAttackTargetClass(PermanentCondition: PermanentCondition);
-                        permanent.UntilEachTurnEndEffects.Add(_ => canNotSwitchAttackTargetClass);
-
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>()
-                            .CreateBuffEffect(permanent));
-
-                        bool PermanentCondition(Permanent buffPermanent)
-                        {
-                            return buffPermanent != null &&
-                                   buffPermanent.TopCard != null &&
-                                   buffPermanent == permanent;
-                        }
-                    }
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                           permanent.TopCard.ContainsTraits("NSp");
                 }
             }
 
