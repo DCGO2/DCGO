@@ -223,7 +223,7 @@ namespace DCGO.CardEffects.EX7
                 {
                     if (cardSource.IsOption)
                     {
-                        if (cardSource.CardTraits.Contains("Three Musketeers") || cardSource.CardTraits.Contains("ThreeMusketeers"))
+                        if (cardSource.EqualsTraits("Three Musketeers"))
                         {
                             if (cardSource.HasUseCost)
                             {
@@ -425,6 +425,7 @@ namespace DCGO.CardEffects.EX7
                         yield return ContinuousController.instance.StartCoroutine(new ITrashDigivolutionCards(card.PermanentOfThisCard(), selectedCards, activateClass).TrashDigivolutionCards());
 
                         trashed = true;
+                        selectedCards.Clear();
                     }
 
                     if (trashed)
