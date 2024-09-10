@@ -257,7 +257,7 @@ public partial class CardEffectCommons
                 }
             }
         }
-        Debug.Log("CAN ACTIVATE: Line 3");
+
         return false;
     }
     #endregion

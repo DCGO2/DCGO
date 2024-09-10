@@ -17,7 +17,7 @@ public partial class CardEffectCommons
 
         bool CanSelectPermanentCondition(Permanent permanent)
         {
-            if (IsPermanentExistsOnOpponentBattleArea(permanent, card))
+            if (IsPermanentExistsOnBattleArea(permanent))
             {
                 if (permanentCondition == null || permanentCondition(permanent))
                 {
@@ -48,9 +48,15 @@ public partial class CardEffectCommons
             return false;
         }
 
+        int permanentSum =
+            GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer
+                .Map(player => player.GetBattleAreaPermanents().Filter(CanSelectPermanentCondition))
+                .Flat().Count();
+
         int digivolutionCardsSum =
-                card.Owner.Enemy.GetBattleAreaPermanents()
-                .Filter(CanSelectPermanentCondition)
+                GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer
+                .Map(player => player.GetBattleAreaPermanents().Filter(CanSelectPermanentCondition))
+                .Flat()
                 .Map(permanent => permanent.DigivolutionCards.Count(CanSelectCardCondition))
                 .Sum();
 
@@ -77,16 +83,14 @@ public partial class CardEffectCommons
                 break;
             }
 
-            if (!card.Owner.Enemy.GetBattleAreaPermanents().Some(CanSelectPermanentCondition))
+            if (permanentSum < 1)
             {
                 break;
             }
-
             else
             {
                 permanentSelectedCount++;
-
-                maxCount = Math.Min(1, card.Owner.Enemy.GetBattleAreaPermanents().Count(CanSelectPermanentCondition));
+                maxCount = Math.Min(1, permanentSum);
 
                 SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
