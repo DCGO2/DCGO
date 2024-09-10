@@ -18,7 +18,7 @@ namespace DCGO.CardEffects.EX7
                 {
                     if (targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 5)
                     {
-                        if (targetPermanent.TopCard.CardTraits.Contains("Dark Dragon") || targetPermanent.TopCard.CardTraits.Contains("Evil Dragon"))
+                        if (targetPermanent.TopCard.EqualsTraits("Dark Dragon") || targetPermanent.TopCard.EqualsTraits("Evil Dragon"))
                         {
                             return true;
                         }

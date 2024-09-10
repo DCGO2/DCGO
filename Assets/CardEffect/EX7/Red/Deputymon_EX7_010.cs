@@ -35,7 +35,7 @@ namespace DCGO.CardEffects.EX7
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] You may trash any 1 Option card from 1 Digimon's digivolution cards.";
+                    return "[When Digivolving] [Once Per Turn] You may trash 1 Option card in 1 Digimon's digivolution cards.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
@@ -76,15 +76,14 @@ namespace DCGO.CardEffects.EX7
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {                      
-                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SelectTrashDigivolutionCards(
-                         permanentCondition: CanSelectPermanentCondition,
-                         cardCondition: CanSelectCardCondition,
-                         maxCount: 1,
-                         canNoTrash: true,
-                         isFromOnly1Permanent: false,
-                         activateClass: activateClass,
-                         selectString: "Digimon"
-                     ));                 
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SelectTrashDigivolutionCards(
+                        permanentCondition: CanSelectPermanentCondition,
+                        cardCondition: CanSelectCardCondition,
+                        maxCount: 1,
+                        canNoTrash: false,
+                        isFromOnly1Permanent: true,
+                        activateClass: activateClass
+                    ));
                 }
             }
             #endregion
@@ -100,7 +99,7 @@ namespace DCGO.CardEffects.EX7
 
                 string EffectDiscription()
                 {
-                    return "[When Attacking] You may trash any 1 Option card from 1 Digimon's digivolution cards.";
+                    return "[When Attacking] [Once Per Turn] You may trash 1 Option card in 1 Digimon's digivolution cards.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
@@ -148,7 +147,7 @@ namespace DCGO.CardEffects.EX7
                         canNoTrash: true,
                         isFromOnly1Permanent: false,
                         activateClass: activateClass,
-                        selectString: "Digimon"
+                        selectString: "Option"
                     ));
                 }
             }
