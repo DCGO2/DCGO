@@ -48,7 +48,7 @@ namespace DCGO.CardEffects.EX7
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card,(permanent) => permanent.IsDigimon && permanent.HasNoDigivolutionCards))
+                        if (!CardEffectCommons.HasMatchConditionOpponentsPermanent(card,(permanent) => permanent.IsDigimon && !permanent.HasNoDigivolutionCards))
                         {
                             return true;
                         }
@@ -91,7 +91,7 @@ namespace DCGO.CardEffects.EX7
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash digivolution cards", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("Unsuspend_EX7_019");
                 cardEffects.Add(activateClass);

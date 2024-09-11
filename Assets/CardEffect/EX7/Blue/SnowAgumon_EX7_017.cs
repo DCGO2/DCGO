@@ -22,13 +22,13 @@ namespace DCGO.CardEffects.EX7
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash digivolution cards", CanUseCondition, card);
                 activateClass.SetHashString("TashCard_EX7_017");
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[When Attacking] Trash 1 digivolution card at the top of 1 of your opponent's Digimon.";
+                    return "[When Attacking] [Once Per Turn] Trash the top digivolution card of 1 of your opponent's Digimon.";
                 }
                 
                 bool CanSelectDigimonCondition(Permanent permanent)
