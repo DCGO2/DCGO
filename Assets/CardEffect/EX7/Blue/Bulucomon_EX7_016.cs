@@ -12,6 +12,7 @@ namespace DCGO.CardEffects.EX7
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region On Play
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -84,18 +85,21 @@ namespace DCGO.CardEffects.EX7
                     ));
                 }
             }
+            #endregion
 
+            #region When Attacking - ESS
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash digivolution cards", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
+                activateClass.SetHashString("WhenAttacking_EX7-016");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[When Attacking] Trash 1 digivolution card at the top of 1 of your opponent's Digimon.";
+                    return "[When Attacking] [Once Per Turn] Trash the top digivolution card of 1 of your opponent's Digimon.";
                 }
                 
                 bool CanSelectDigimonCondition(Permanent permanent)
@@ -159,6 +163,8 @@ namespace DCGO.CardEffects.EX7
                     }
                 }
             }
+            #endregion
+
             return cardEffects;
         }
     }

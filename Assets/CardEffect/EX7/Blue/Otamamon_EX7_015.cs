@@ -15,7 +15,10 @@ namespace DCGO.CardEffects.EX7
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.CardTraits.Contains("NSp");
+                    if(targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.IsLevel2)
+                        return targetPermanent.TopCard.CardTraits.Contains("NSp");
+
+                    return false;
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(

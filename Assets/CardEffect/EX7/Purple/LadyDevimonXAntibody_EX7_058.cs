@@ -33,7 +33,7 @@ namespace DCGO.CardEffects.EX7
 
                 string EffectDiscription()
                 {
-                    return "[On Play] 1 of your opponent's Digimon gains \" Delete this Digimon.\" until the end of their turn. Then, if this Digimon has [LadyDevimon]/[X Antibody] in its digivolution cards, you may play 1 [Volée & Zerdrücken] Token (Digimon/Lv.4/Purple/5000 DP/<Blocker>/<Retaliation>).";
+                    return "[On Play] 1 of your opponent's Digimon gains \"[End of Attack] Delete this Digimon.\" until the end of their turn. Then, if this Digimon has [LadyDevimon]/[X Antibody] in its digivolution cards, you may play 1 [Volée & Zerdrücken] Token (Digimon/Lv.4/Purple/5000 DP/<Blocker>/<Retaliation>).";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -121,21 +121,18 @@ namespace DCGO.CardEffects.EX7
 
                                 string EffectDiscription1()
                                 {
-                                    return "[End of Attack] Delete this Digimon.";
+                                    return "[End of Your Turn] Delete this Digimon.";
                                 }
 
                                 bool CanUseCondition1(Hashtable hashtable1)
                                 {
                                     if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
                                     {
-                                        if (CardEffectCommons.CanTriggerOnAttack(hashtable, selectedPermanent.TopCard))
+                                        if (selectedPermanent.TopCard.Owner.GetBattleAreaDigimons().Contains(selectedPermanent))
                                         {
-                                            if (selectedPermanent.TopCard.Owner.GetBattleAreaDigimons().Contains(selectedPermanent))
+                                            if (GManager.instance.turnStateMachine.gameContext.TurnPlayer == selectedPermanent.TopCard.Owner)
                                             {
-                                                if (GManager.instance.turnStateMachine.gameContext.TurnPlayer == selectedPermanent.TopCard.Owner)
-                                                {
-                                                    return true;
-                                                }
+                                                return true;
                                             }
                                         }
                                     }
@@ -285,21 +282,18 @@ namespace DCGO.CardEffects.EX7
 
                                 string EffectDiscription1()
                                 {
-                                    return "[End of Attack] Delete this Digimon.";
+                                    return "[End of Your Turn] Delete this Digimon.";
                                 }
 
                                 bool CanUseCondition1(Hashtable hashtable1)
                                 {
                                     if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
                                     {
-                                        if (CardEffectCommons.CanTriggerOnAttack(hashtable, selectedPermanent.TopCard))
+                                        if (selectedPermanent.TopCard.Owner.GetBattleAreaDigimons().Contains(selectedPermanent))
                                         {
-                                            if (selectedPermanent.TopCard.Owner.GetBattleAreaDigimons().Contains(selectedPermanent))
+                                            if (GManager.instance.turnStateMachine.gameContext.TurnPlayer == selectedPermanent.TopCard.Owner)
                                             {
-                                                if (GManager.instance.turnStateMachine.gameContext.TurnPlayer == selectedPermanent.TopCard.Owner)
-                                                {
-                                                    return true;
-                                                }
+                                                return true;
                                             }
                                         }
                                     }

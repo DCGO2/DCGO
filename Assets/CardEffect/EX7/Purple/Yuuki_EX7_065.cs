@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -78,16 +79,32 @@ namespace DCGO.CardEffects.EX7
                     return "[Main] If you have 4 or fewer cards in your hand, by suspending this Tamer, 1 of your Digimon may digivolve into a Digimon card with the [Dark Dragon]/[Evil Dragon] trait in the trash.";
                 }
 
+                bool CanSelectPermanentCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                    {
+                        foreach (CardSource cardSource in card.Owner.TrashCards)
+                        {
+                            if (CanSelectCardCondition(cardSource))
+                            {
+                                if (cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, true, activateClass))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+
+                    return false;
+                }
+
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
                     if (cardSource.IsDigimon)
                     {
                         if (cardSource.ContainsTraits("Dark Dragon") || cardSource.ContainsTraits("Evil Dragon"))
                         {
-                            if (cardSource.CanPlayCardTargetFrame(card.PermanentOfThisCard().PermanentFrame, true, activateClass))
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
 
@@ -100,11 +117,14 @@ namespace DCGO.CardEffects.EX7
                     {
                         if (card.Owner.HandCards.Count <= 4)
                         {
-                            if (card.Owner.TrashCards.Count >= 1)
+                            if (CardEffectCommons.CanDeclareOptionDelayEffect(card))
                             {
-                                if (CardEffectCommons.CanActivateSuspendCostEffect(card))
+                                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                                 {
-                                    return true;
+                                    if (CardEffectCommons.CanActivateSuspendCostEffect(card))
+                                    {
+                                        return true;
+                                    }
                                 }
                             }
                         }
@@ -117,18 +137,51 @@ namespace DCGO.CardEffects.EX7
                 {
                     yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(new List<Permanent>() { card.PermanentOfThisCard() }, CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
 
-                    if(CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                           targetPermanent: card.PermanentOfThisCard(),
-                           cardCondition: CanSelectCardCondition,
-                           payCost: true,
-                           reduceCostTuple: null,
-                           fixedCostTuple: null,
-                           ignoreDigivolutionRequirementFixedCost: -1,
-                           isHand: false,
-                           activateClass: activateClass,
-                           successProcess: null));
+                        Permanent selectedPermanent = null;
+
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectPermanentCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: maxCount,
+                            canNoSelect: true,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to digivolve.", "The opponent is selecting 1 Digimon to digivolve.");
+
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                        {
+                            selectedPermanent = permanent;
+
+                            yield return null;
+                        }
+
+                        if (selectedPermanent != null)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                                targetPermanent: selectedPermanent,
+                                cardCondition: CanSelectCardCondition,
+                                payCost: true,
+                                reduceCostTuple: null,
+                                fixedCostTuple: null,
+                                ignoreDigivolutionRequirementFixedCost: -1,
+                                isHand: false,
+                                activateClass: activateClass,
+                                successProcess: null));
+                        }
                     }
                 }
             }

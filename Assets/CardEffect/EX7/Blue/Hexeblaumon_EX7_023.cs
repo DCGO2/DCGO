@@ -51,26 +51,8 @@ namespace DCGO.CardEffects.EX7
                     return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
                 }
                 
-
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.Owner.Enemy && cardSource.IsDigimon)
-                    {
-                        return true;
-                    }
-
-                    return false;
-                }
-                
-                bool CanBounceTamerCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        int count = CardEffectCommons.MatchConditionOpponentsPermanentCount(card, (permanent) => permanent.IsDigimon && permanent.HasNoDigivolutionCards);
-
-                        if (count >= 1)
-                            return false;
-                    }
                     return true;
                 }
 
@@ -96,7 +78,7 @@ namespace DCGO.CardEffects.EX7
                         ));
                     }
 
-                    if (CanBounceTamerCondition(hashtable))
+                    if (!CardEffectCommons.HasMatchConditionOpponentsPermanent(card, (permanent) => permanent.IsDigimon && !permanent.HasNoDigivolutionCards))
                     {
                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectTamerCondition))
                         {

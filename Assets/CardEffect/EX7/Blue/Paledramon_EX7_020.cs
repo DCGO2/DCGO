@@ -32,7 +32,7 @@ namespace DCGO.CardEffects.EX7
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                        return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
+                        return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
 
                     return false;
                 }
@@ -67,32 +67,10 @@ namespace DCGO.CardEffects.EX7
 
                     IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
-                        Permanent selectedPermanent = permanent;
-
-                        int maxCount = Math.Min(2, permanent.DigivolutionCards.Count);
-
-                        SelectCountEffect selectCountEffect = GManager.instance.GetComponent<SelectCountEffect>();
-
-                        selectCountEffect.SetUp(
-                            SelectPlayer: card.Owner,
-                            targetPermanent: permanent,
-                            MaxCount: maxCount,
-                            CanNoSelect: false,
-                            Message: "How many digivolution cards will you trash?",
-                            Message_Enemy: "The opponent is choosing how many digivolution cards to trash.",
-                            SelectCountCoroutine: SelectCountCoroutine);
-
-                        yield return ContinuousController.instance.StartCoroutine(selectCountEffect.Activate());
-
-                        IEnumerator SelectCountCoroutine(int count)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: selectedPermanent, trashCount: count, isFromTop: false, activateClass: activateClass));
-                        }
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: permanent, trashCount: 2, isFromTop: false, activateClass: activateClass));
                     }
 
-                    if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card,
-                        (permanent) => permanent.IsDigimon && permanent.HasNoDigivolutionCards) ||
-                        card.Owner.Enemy.GetBattleAreaDigimons().Count == 0)
+                    if (!CardEffectCommons.HasMatchConditionOpponentsPermanent(card,(permanent) => permanent.IsDigimon && !permanent.HasNoDigivolutionCards))
                     {
                         Permanent selectedPermanent = card.PermanentOfThisCard();
 
@@ -123,6 +101,16 @@ namespace DCGO.CardEffects.EX7
                     return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
                 }
 
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    {
+                        return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
+                    }
+
+                    return false;
+                }
+
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
@@ -131,16 +119,6 @@ namespace DCGO.CardEffects.EX7
                         {
                             return true;
                         }
-                    }
-
-                    return false;
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                     }
 
                     return false;

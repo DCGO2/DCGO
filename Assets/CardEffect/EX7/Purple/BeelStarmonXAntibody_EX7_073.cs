@@ -63,7 +63,7 @@ namespace DCGO.CardEffects.EX7
                 {
                     if (cardSource.IsOption)
                     {
-                        if (cardSource.CardTraits.Contains("Three Musketeers") || cardSource.CardTraits.Contains("ThreeMusketeers"))
+                        if (cardSource.EqualsTraits("Three Musketeers"))
                         {
                             if (cardSource.HasUseCost)
                             {
@@ -135,7 +135,7 @@ namespace DCGO.CardEffects.EX7
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash 2 cards to delete 1 Digimon and trash an opponent's security card", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -145,7 +145,7 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.CardTraits.Contains("Three Musketeers") || cardSource.CardTraits.Contains("ThreeMusketeers"))
+                    if (cardSource.EqualsTraits("Three Musketeers"))
                     {
                         if (!cardSource.CanNotTrashFromDigivolutionCards(activateClass))
                         {
@@ -294,7 +294,7 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.CardTraits.Contains("Three Musketeers") || cardSource.CardTraits.Contains("ThreeMusketeers"))
+                    if (cardSource.EqualsTraits("Three Musketeers"))
                     {
                         if (!cardSource.CanNotTrashFromDigivolutionCards(activateClass))
                         {

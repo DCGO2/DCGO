@@ -93,7 +93,8 @@ namespace DCGO.CardEffects.EX7
                         {
                             if (!CardEffectCommons.HasMatchConditionOpponentsPermanent(card, (permanent) => permanent.IsDigimon && !permanent.HasNoDigivolutionCards))
                             {
-                                return true;
+                                if(card.PermanentOfThisCard().TopCard.EqualsTraits("Ice-Snow"))
+                                    return true;
                             }
                         }
                     }
