@@ -57,7 +57,7 @@ namespace DCGO.CardEffects.EX7
                 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.IsDigimon && cardSource.CardTraits.Contains("Ice-Snow") && cardSource.Level <= 4)
+                    if (cardSource.IsDigimon && cardSource.EqualsTraits("Ice-Snow") && cardSource.Level <= 4)
                     {
                         if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                             return true;
@@ -95,22 +95,20 @@ namespace DCGO.CardEffects.EX7
 
                     else
                     {
-                        if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
+                        if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
                         {
                             List<CardSource> selectedCards = new List<CardSource>();
-
-                            int maxCount = Math.Min(1, card.Owner.HandCards.Count(CanSelectCardCondition));
 
                             SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
                             selectHandEffect.SetUp(
                                 selectPlayer: card.Owner,
                                 canTargetCondition: CanSelectCardCondition,
-                                canTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
-                                canEndSelectCondition: CanEndSelectCondition,
-                                maxCount: maxCount,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: 1,
                                 canNoSelect: true,
-                                canEndNotMax: true,
+                                canEndNotMax: false,
                                 isShowOpponent: true,
                                 selectCardCoroutine: SelectCardCoroutine,
                                 afterSelectCardCoroutine: null,
@@ -121,27 +119,6 @@ namespace DCGO.CardEffects.EX7
                             selectHandEffect.SetUpCustomMessage_ShowCard("Played Cards");
 
                             yield return StartCoroutine(selectHandEffect.Activate());
-
-                            bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
-                            {
-                                if (cardSources.Count(CanSelectCardCondition) < 1)
-                                    return false;
-                                
-                                return true;
-                            }
-
-                            bool CanEndSelectCondition(List<CardSource> cardSources)
-                            {
-                                if (maxCount >= 1)
-                                {
-                                    if (cardSources.Count <= 0)
-                                    {
-                                        return false;
-                                    }
-                                }
-
-                                return true;
-                            }
 
                             IEnumerator SelectCardCoroutine(CardSource cardSource)
                             {

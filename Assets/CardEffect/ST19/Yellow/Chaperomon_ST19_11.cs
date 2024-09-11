@@ -39,7 +39,7 @@ namespace DCGO.CardEffects.ST19
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("DP -3000", CanUseCondition, card);
+                activateClass.SetUpICardEffect($"DP -3000/-6000", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
