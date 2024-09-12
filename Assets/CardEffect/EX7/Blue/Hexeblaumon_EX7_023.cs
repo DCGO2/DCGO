@@ -108,25 +108,25 @@ namespace DCGO.CardEffects.EX7
             
             #region Opponent's Turn Effect
 
-            if (timing == EffectTiming.OnStartTurn)
+            if (timing == EffectTiming.None)
             {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Opponent's digimon can't suspend", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-                activateClass.SetIsBackgroundProcess(true);
-                cardEffects.Add(activateClass);
-
-                string EffectDiscription()
-                {
-                    return "[Opponent's Turn] None of your opponent's Digimon with as many or fewer digivolution cards as this Digimon can suspend.";
-                }
+                CanNotSuspendClass canNotSuspendClass = new CanNotSuspendClass();
+                canNotSuspendClass.SetUpICardEffect("Can't Suspend", CanUseCondition, card);
+                canNotSuspendClass.SetUpCanNotSuspendClass(PermanentCondition: CantSuspendCondition);
+                cardEffects.Add(canNotSuspendClass);
 
                 bool CantSuspendCondition(Permanent permanent)
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card))
                     {
-                        if (permanent.IsDigimon && permanent.DigivolutionCards.Count <= card.PermanentOfThisCard().DigivolutionCards.Count)
-                            return true;
+                        if (permanent.IsDigimon)
+                        {
+                            if(permanent.DigivolutionCards.Count <= card.PermanentOfThisCard().DigivolutionCards.Count)
+                            {
+                                if (!permanent.TopCard.CanNotBeAffected(canNotSuspendClass))
+                                    return true;
+                            }
+                        }
                     }
 
                     return false;
@@ -140,59 +140,6 @@ namespace DCGO.CardEffects.EX7
                     }
 
                     return false;
-                }
-                
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
-                }               
-
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotSuspendPlayerEffect(
-                        permanentCondition: CantSuspendCondition,
-                        effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                        activateClass: activateClass,
-                        isOnlyActivePhase: false,
-                        effectName: "Can't Suspend"));
-
-                    /*if (card.Owner.Enemy.GetBattleAreaPermanents().Count(CanSelectPermanentToNoSuspend) >= 1)
-                    {
-                        foreach (Permanent affected in card.Owner.Enemy.GetBattleAreaPermanents())
-                        {
-                            if (!affected.IsDigimon)
-                                continue;
-
-                            if (affected.TopCard.CanNotBeAffected(activateClass))
-                                continue;
-
-                            if (affected.DigivolutionCards.Count > card.PermanentOfThisCard().DigivolutionCards.Count)
-                            {
-                                StartCoroutine(SelectPermanentCoroutine(affected));
-                            }
-                                
-                        }
-                        
-                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                        {
-                            CanNotSuspendClass canNotSuspendClass = new CanNotSuspendClass();
-                            canNotSuspendClass.SetUpICardEffect("Can't Suspend", CanUseCondition1, card);
-                            canNotSuspendClass.SetUpCanNotSuspendClass(PermanentCondition: PermanentCondition);
-                            permanent.UntilOwnerTurnEndEffects.Add((_timing) => canNotSuspendClass);
-
-                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(permanent));
-
-                            bool CanUseCondition1(Hashtable hashtable)
-                            {
-                                return true;
-                            }
-
-                            bool PermanentCondition(Permanent permanent)
-                            {
-                                return true;
-                            }
-                        }
-                    }*/
                 }
             }
 
