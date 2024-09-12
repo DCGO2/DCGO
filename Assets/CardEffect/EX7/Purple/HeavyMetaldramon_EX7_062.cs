@@ -40,7 +40,7 @@ namespace DCGO.CardEffects.EX7
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] Trash2 cards in your hand. Then, delete1 of your opponent's Digimon with as much or less DP as this Digimon.";
+                    return "[When Digivolving] Trash 2 cards in your hand. Then, delete 1 of your opponent's Digimon with as much or less DP as this Digimon.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -165,7 +165,7 @@ namespace DCGO.CardEffects.EX7
 
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.CardTraits.Contains("Evil") || cardSource.CardTraits.Contains("Dark Dragon") || cardSource.CardTraits.Contains("Evil Dragon"))
+                        if (cardSource.EqualsTraits("Evil") || cardSource.EqualsTraits("Dark Dragon") || cardSource.EqualsTraits("Evil Dragon"))
                         {
                             if (cardSource.GetCostItself <= maxCost)
                             {

@@ -102,10 +102,30 @@ namespace DCGO.CardEffects.EX7
                     return false;
                 }
 
-                cardEffects.Add(CardEffectFactory.PierceSelfEffect(isInheritedEffect: true, card: card, condition: Condition));
                 cardEffects.Add(CardEffectFactory.ChangeSelfSAttackStaticEffect(changeValue: 1, isInheritedEffect: true, card: card, condition: Condition));
             }
 
+            if (timing == EffectTiming.OnDetermineDoSecurityCheck)
+            {
+                bool Condition()
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (CardEffectCommons.IsOwnerTurn(card))
+                        {
+                            if (!CardEffectCommons.HasMatchConditionOpponentsPermanent(card, (permanent) => permanent.IsDigimon && !permanent.HasNoDigivolutionCards))
+                            {
+                                if (card.PermanentOfThisCard().TopCard.EqualsTraits("Ice-Snow"))
+                                    return true;
+                            }
+                        }
+                    }
+
+                    return false;
+                }
+
+                cardEffects.Add(CardEffectFactory.PierceSelfEffect(isInheritedEffect: true, card: card, condition: Condition));
+            }
             #endregion
 
             return cardEffects;
