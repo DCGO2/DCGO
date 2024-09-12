@@ -117,14 +117,11 @@ namespace DCGO.CardEffects.EX7
                     {
                         if (card.Owner.HandCards.Count <= 4)
                         {
-                            if (CardEffectCommons.CanDeclareOptionDelayEffect(card))
+                            if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                             {
-                                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                                if (CardEffectCommons.CanActivateSuspendCostEffect(card))
                                 {
-                                    if (CardEffectCommons.CanActivateSuspendCostEffect(card))
-                                    {
-                                        return true;
-                                    }
+                                    return true;
                                 }
                             }
                         }

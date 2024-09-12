@@ -23,6 +23,26 @@ namespace DCGO.CardEffects.EX7
             }
             #endregion
 
+            #region Shared On Play/When Digivolving
+            bool CanSelectPermanentCondition(Permanent permanent)
+            {
+                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+            }
+
+            bool CanActivateSecondEffectCondition(Hashtable hashtable)
+            {
+                if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                {
+                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardNames.Contains("LadyDevimon") || cardSource.CardNames.Contains("X Antibody") || cardSource.CardNames.Contains("XAntibody")) >= 1)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+            #endregion
+
             #region On Play
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
@@ -36,11 +56,6 @@ namespace DCGO.CardEffects.EX7
                     return "[On Play] 1 of your opponent's Digimon gains \"[End of Attack] Delete this Digimon.\" until the end of their turn. Then, if this Digimon has [LadyDevimon]/[X Antibody] in its digivolution cards, you may play 1 [Volée & Zerdrücken] Token (Digimon/Lv.4/Purple/5000 DP/<Blocker>/<Retaliation>).";
                 }
 
-                bool CanSelectPermanentCondition(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
-                }
-
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
@@ -52,22 +67,6 @@ namespace DCGO.CardEffects.EX7
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
-                }
-
-                bool CanActivateSecondEffectCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                        {
-                            if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardNames.Contains("LadyDevimon") || cardSource.CardNames.Contains("X Antibody") || cardSource.CardNames.Contains("XAntibody")) >= 1)
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return false;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -99,50 +98,44 @@ namespace DCGO.CardEffects.EX7
 
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
-                            Permanent selectedPermanent = permanent;
-
-                            if (selectedPermanent != null)
+                            if (permanent != null)
                             {
-                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(selectedPermanent));
-                            }
-
-                            if (selectedPermanent != null)
-                            {
+                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(permanent));
                                 ActivateClass activateClass1 = new ActivateClass();
-                                activateClass1.SetUpICardEffect("Delete this Digimon", CanUseCondition1, selectedPermanent.TopCard);
+                                activateClass1.SetUpICardEffect("Delete this Digimon", CanUseCondition1, permanent.TopCard);
                                 activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDiscription1());
-                                activateClass1.SetEffectSourcePermanent(selectedPermanent);
-                                selectedPermanent.UntilOwnerTurnEndEffects.Add(GetCardEffect);
+                                activateClass1.SetEffectSourcePermanent(permanent);
+                                permanent.UntilOwnerTurnEndEffects.Add(GetCardEffect);
 
                                 if (!permanent.TopCard.CanNotBeAffected(activateClass))
                                 {
-                                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(selectedPermanent));
+                                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(permanent));
                                 }
 
                                 string EffectDiscription1()
                                 {
-                                    return "[End of Your Turn] Delete this Digimon.";
+                                    return "[End of Attack] Delete this Digimon.";
                                 }
 
                                 bool CanUseCondition1(Hashtable hashtable1)
                                 {
-                                    if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
+                                    if (CardEffectCommons.IsOpponentTurn(card))
                                     {
-                                        if (selectedPermanent.TopCard.Owner.GetBattleAreaDigimons().Contains(selectedPermanent))
+                                        if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, permanent.TopCard))
                                         {
-                                            if (GManager.instance.turnStateMachine.gameContext.TurnPlayer == selectedPermanent.TopCard.Owner)
+                                            if (CardEffectCommons.CanTriggerOnEndAttack(hashtable1, permanent.TopCard))
                                             {
                                                 return true;
                                             }
                                         }
-                                    }
+                                    }                                    
 
                                     return false;
                                 }
 
                                 bool CanActivateCondition1(Hashtable hashtable1)
                                 {
-                                    if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
+                                    if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
                                     {
                                         if (!permanent.TopCard.CanNotBeAffected(activateClass))
                                         {
@@ -155,10 +148,10 @@ namespace DCGO.CardEffects.EX7
 
                                 IEnumerator ActivateCoroutine1(Hashtable _hashtable1)
                                 {
-                                    if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
+                                    if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
                                     {
                                         yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(
-                                        new List<Permanent>() { selectedPermanent },
+                                        new List<Permanent>() { permanent },
                                         CardEffectCommons.CardEffectHashtable(activateClass1)).Destroy());
                                     }
                                 }
@@ -172,6 +165,7 @@ namespace DCGO.CardEffects.EX7
 
                                     return null;
                                 }
+
                             }
                         }
                     }
@@ -197,11 +191,6 @@ namespace DCGO.CardEffects.EX7
                     return "[When Digivolving] 1 of your opponent's Digimon gains \" Delete this Digimon.\" until the end of their turn. Then, if this Digimon has [LadyDevimon]/[X Antibody] in its digivolution cards, you may play 1 [Volée & Zerdrücken] Token (Digimon/Lv.4/Purple/5000 DP/<Blocker>/<Retaliation>).";
                 }
 
-                bool CanSelectPermanentCondition(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
-                }
-
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     if(CardEffectCommons.IsExistOnBattleAreaDigimon(card))
@@ -213,22 +202,6 @@ namespace DCGO.CardEffects.EX7
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
-                }
-
-                bool CanActivateSecondEffectCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                        {
-                            if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardNames.Contains("LadyDevimon") || cardSource.CardNames.Contains("X Antibody") || cardSource.CardNames.Contains("XAntibody")) >= 1)
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return false;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -260,38 +233,32 @@ namespace DCGO.CardEffects.EX7
 
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
-                            Permanent selectedPermanent = permanent;
-
-                            if (selectedPermanent != null)
+                            if (permanent != null)
                             {
-                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(selectedPermanent));
-                            }
-
-                            if (selectedPermanent != null)
-                            {
+                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(permanent));
                                 ActivateClass activateClass1 = new ActivateClass();
-                                activateClass1.SetUpICardEffect("Delete this Digimon", CanUseCondition1, selectedPermanent.TopCard);
+                                activateClass1.SetUpICardEffect("Delete this Digimon", CanUseCondition1, permanent.TopCard);
                                 activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDiscription1());
-                                activateClass1.SetEffectSourcePermanent(selectedPermanent);
-                                selectedPermanent.UntilOwnerTurnEndEffects.Add(GetCardEffect);
+                                activateClass1.SetEffectSourcePermanent(permanent);
+                                permanent.UntilOwnerTurnEndEffects.Add(GetCardEffect);
 
                                 if (!permanent.TopCard.CanNotBeAffected(activateClass))
                                 {
-                                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(selectedPermanent));
+                                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(permanent));
                                 }
 
                                 string EffectDiscription1()
                                 {
-                                    return "[End of Your Turn] Delete this Digimon.";
+                                    return "[End of Attack] Delete this Digimon.";
                                 }
 
                                 bool CanUseCondition1(Hashtable hashtable1)
                                 {
-                                    if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
+                                    if (CardEffectCommons.IsOpponentTurn(card))
                                     {
-                                        if (selectedPermanent.TopCard.Owner.GetBattleAreaDigimons().Contains(selectedPermanent))
+                                        if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, permanent.TopCard))
                                         {
-                                            if (GManager.instance.turnStateMachine.gameContext.TurnPlayer == selectedPermanent.TopCard.Owner)
+                                            if (CardEffectCommons.CanTriggerOnEndAttack(hashtable1, permanent.TopCard))
                                             {
                                                 return true;
                                             }
@@ -303,7 +270,7 @@ namespace DCGO.CardEffects.EX7
 
                                 bool CanActivateCondition1(Hashtable hashtable1)
                                 {
-                                    if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
+                                    if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
                                     {
                                         if (!permanent.TopCard.CanNotBeAffected(activateClass))
                                         {
@@ -316,10 +283,10 @@ namespace DCGO.CardEffects.EX7
 
                                 IEnumerator ActivateCoroutine1(Hashtable _hashtable1)
                                 {
-                                    if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
+                                    if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
                                     {
                                         yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(
-                                        new List<Permanent>() { selectedPermanent },
+                                        new List<Permanent>() { permanent },
                                         CardEffectCommons.CardEffectHashtable(activateClass1)).Destroy());
                                     }
                                 }
@@ -333,6 +300,7 @@ namespace DCGO.CardEffects.EX7
 
                                     return null;
                                 }
+
                             }
                         }
                     }
