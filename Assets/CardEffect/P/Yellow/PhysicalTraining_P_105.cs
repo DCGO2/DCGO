@@ -5,7 +5,7 @@ using System.Linq;
 using Photon;
 using System;
 using Photon.Pun;
-public class PhsicalTraining_P_105 : CEntity_Effect
+public class PhysicalTraining_P_105 : CEntity_Effect
 {
     public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
     {
