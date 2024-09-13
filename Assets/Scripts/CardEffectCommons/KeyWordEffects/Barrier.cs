@@ -89,7 +89,7 @@ public partial class CardEffectCommons
             isInheritedEffect: false,
             condition: CanUseCondition,
             rootCardEffect: activateClass,
-            card: card);
+            card: targetPermanent.TopCard);
 
         AddEffectToPermanent(
             targetPermanent: targetPermanent,

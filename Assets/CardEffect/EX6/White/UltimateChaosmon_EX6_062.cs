@@ -213,7 +213,7 @@ namespace DCGO.CardEffects.EX6
                             int maxCount = Math.Min(count, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
 
                             SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
+                            
                             selectPermanentEffect.SetUp(
                                 selectPlayer: card.Owner,
                                 canTargetCondition: CanSelectPermanentCondition,
@@ -221,7 +221,7 @@ namespace DCGO.CardEffects.EX6
                                 canEndSelectCondition: CanEndSelectCondition,
                                 maxCount: maxCount,
                                 canNoSelect: false,
-                                canEndNotMax: true,
+                                canEndNotMax: false,
                                 selectPermanentCoroutine: null,
                                 afterSelectPermanentCoroutine: null,
                                 mode: SelectPermanentEffect.Mode.PutLibraryBottom,

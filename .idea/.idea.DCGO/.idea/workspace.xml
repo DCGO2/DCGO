@@ -6,11 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="1f770e58-b781-4cb0-ad93-4c50994f611d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.DCGO/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.DCGO/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/EX6/Green/Antylamon_EX6_034.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/EX6/Green/Antylamon_EX6_034.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/EX6/Purple/Belphemon_Rage_Mode_EX6_060.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/EX6/Purple/Belphemon_Rage_Mode_EX6_060.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/EX6/Purple/Gate_of_Deadly_Sins_EX6_006.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/EX6/Purple/Gate_of_Deadly_Sins_EX6_006.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/EX6/Purple/Lucemon_Chaos_Mode_EX6_054.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/EX6/Purple/Lucemon_Chaos_Mode_EX6_054.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/EX6/Purple/Ogudomon_EX6_073.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/EX6/Purple/Ogudomon_EX6_073.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/EX6/White/Mega_Digimon_Assembly_EX6_072.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/EX6/White/Mega_Digimon_Assembly_EX6_072.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/EX6/White/UltimateChaosmon_EX6_062.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/EX6/White/UltimateChaosmon_EX6_062.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/CardEffectCommons/KeyWordEffects/Barrier.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/CardEffectCommons/KeyWordEffects/Barrier.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
