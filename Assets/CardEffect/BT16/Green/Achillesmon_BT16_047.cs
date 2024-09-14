@@ -147,15 +147,12 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (CardEffectCommons.IsOwnerTurn(card))
-                        {
-                            bool WinnerCondition(Permanent permanent) => permanent.cardSources.Contains(card);
-                            bool LoserCondition(Permanent permanent) => CardEffectCommons.IsOpponentPermanent(permanent, card);
+                        bool WinnerCondition(Permanent permanent) => permanent.cardSources.Contains(card);
+                        bool LoserCondition(Permanent permanent) => CardEffectCommons.IsOpponentPermanent(permanent, card);
 
-                            if (CardEffectCommons.CanTriggerWhenDeleteOpponentDigimonByBattle(hashtable: hashtable, winnerCondition: WinnerCondition, loserCondition: LoserCondition, isOnlyWinnerSurvive: false))
-                            {
-                                return true;
-                            }
+                        if (CardEffectCommons.CanTriggerWhenDeleteOpponentDigimonByBattle(hashtable: hashtable, winnerCondition: WinnerCondition, loserCondition: LoserCondition, isOnlyWinnerSurvive: false))
+                        {
+                            return true;
                         }
                     }
 
