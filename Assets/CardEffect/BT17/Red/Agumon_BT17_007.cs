@@ -52,7 +52,7 @@ namespace DCGO.CardEffects.BT17
                     if (cardSource.IsDigimon)
                     {
                         if (cardSource.ContainsCardName("Garurumon") ||
-                            cardSource.ContainsCardName("Greymon") ||
+                            cardSource.HasGreymonName ||
                             cardSource.ContainsCardName("Omnimon"))
                         {
                             return true;
