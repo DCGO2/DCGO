@@ -236,7 +236,7 @@ namespace DCGO.CardEffects.BT16
 
                 bool PermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
                         if (permanent != card.PermanentOfThisCard())
                         {
