@@ -61,17 +61,15 @@ namespace DCGO.CardEffects.ST19
 
                     List<Permanent> permanents = CardEffectCommons.GetPlayedPermanentsFromEnterFieldHashtable(
                         hashtable: hashtable,
-                        rootCondition: null);
+                        rootCondition: null)
+                        .Filter(PermanentCondition);
 
-                    if (permanents != null)
+                    if (permanents.Count > 0)
                     {
-                        foreach (Permanent permanent in permanents.Filter(PermanentCondition).Clone())
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainRush(
-                                targetPermanent: permanent,
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainRush(
+                                targetPermanent: permanents[0],
                                 effectDuration: EffectDuration.UntilEachTurnEnd,
                                 activateClass: activateClass));
-                        }
                     }
                 }
             }

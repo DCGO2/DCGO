@@ -160,7 +160,7 @@ namespace DCGO.CardEffects.EX7
                         canEndSelectCondition: CanEndSelectCondition,
                         maxCount: maxCount,
                         canNoSelect: true,
-                        canEndNotMax: false,
+                        canEndNotMax: true,
                         isShowOpponent: true,
                         selectCardCoroutine: SelectCardCoroutine,
                         afterSelectCardCoroutine: null,
