@@ -367,15 +367,6 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
     #region The same effect has already been achieved
     public static bool HasExecutedSameEffect(List<SkillInfo> skillInfos, SkillInfo skillInfo)
     {
-        /*
-        bool hasExecutedSameEffect = skillInfos.Some((skillInfo1) => skillInfo1.CardEffect.IsSameEffect(skillInfo.CardEffect));
-
-        if (hasExecutedSameEffect)
-        {
-            Debug.Log($"{skillInfo.CardEffect.EffectSourceCard.CardNames[0]}の{skillInfo.CardEffect.EffectName}は同一処理中に発動済み");
-        }
-        */
-
         return skillInfos.Some((skillInfo1) => skillInfo1.CardEffect.IsSameEffect(skillInfo.CardEffect));
     }
     #endregion

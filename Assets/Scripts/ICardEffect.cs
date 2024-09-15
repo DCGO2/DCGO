@@ -916,9 +916,10 @@ public static class ActivateICardEffectExtensionClass
                 }
             }
         }
-
+        UnityEngine.Debug.Log($"Activate_Optional_Effect_Execute: {(activateICardEffect is ICardEffect)}");
         if (activateICardEffect is ICardEffect)
         {
+            UnityEngine.Debug.Log($"Activate_Optional_Effect_Execute: {((ICardEffect)activateICardEffect).EffectSourceCard.BaseENGCardNameFromEntity}");
             //Optional effect activation selection
             if (((ICardEffect)activateICardEffect).IsOptional)
             {

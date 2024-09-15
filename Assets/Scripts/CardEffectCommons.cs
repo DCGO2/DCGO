@@ -215,6 +215,31 @@ public partial class CardEffectCommons
         ));
     }
     #endregion
+    
+    #region Play 1 [Familiar] Token
+    public static IEnumerator PlayFamiliarToken(ICardEffect activateClass, int quantity = 1)
+    {
+        yield return ContinuousController.instance.StartCoroutine(PlayToken(
+            tokenData: ContinuousController.instance.FamiliarToken,
+            activateClass: activateClass,
+            isOwnerPermanent: true,
+            isTapped: false,
+            quantity: quantity
+        ));
+    }
+    #endregion
+
+    #region Play 1 [Volée & Zerdrücken] Token
+    public static IEnumerator PlayVoléeZerdrücken(ICardEffect activateClass)
+    {
+        yield return ContinuousController.instance.StartCoroutine(PlayToken(
+            tokenData: ContinuousController.instance.VoléeZerdrückenToken,
+            activateClass: activateClass,
+            isOwnerPermanent: true,
+            isTapped: false
+        ));
+    }
+    #endregion
 
     #region Security effect of "add this card to hand"
     public static IEnumerator AddThisCardToHand(CardSource card1, ICardEffect activateClass)
@@ -309,7 +334,6 @@ public partial class CardEffectCommons
         if (targetPermanent == null) yield break;
         if (targetPermanent.TopCard == null) yield break;
         if (targetPermanent.DigivolutionCards.Count((cardSource) => !cardSource.CanNotTrashFromDigivolutionCards(activateClass)) == 0) yield break;
-        Debug.Log($"Trashing Digivolution Cards From Top/Bottom: Target Can Not Be Affected - {targetPermanent.TopCard.CanNotBeAffected(activateClass)}");
         if (targetPermanent.TopCard.CanNotBeAffected(activateClass)) yield break;
         if (trashCount <= 0) yield break;
 

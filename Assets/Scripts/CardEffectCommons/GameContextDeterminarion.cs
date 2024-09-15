@@ -271,6 +271,21 @@ public partial class CardEffectCommons
         return false;
     }
     #endregion
+    
+    #region Whether the permanent is Digimon and in the card's owner's Battle Area
+    public static bool IsPermanentExistsOnBattleAreaDigimon(Permanent permanent)
+    {
+        if (IsPermanentExistsOnBattleArea(permanent))
+        {
+            if (permanent.IsDigimon)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    #endregion
 
     #region Whether the permanent is Digimon and in the card's owner's Battle Area
     public static bool IsPermanentExistsOnOwnerBattleAreaDigimon(Permanent permanent, CardSource card)
@@ -361,7 +376,7 @@ public partial class CardEffectCommons
     #region Whether there is at least 1 card in the owner's hand that satisfies the condition
     public static bool HasMatchConditionOwnersHand(CardSource card, Func<CardSource, bool> CanSelectCardCondition)
     {
-        return card.Owner.HandCards.Some(source => CanSelectCardCondition(source));
+        return card.Owner.HandCards.Some(CanSelectCardCondition);
     }
     #endregion
 
