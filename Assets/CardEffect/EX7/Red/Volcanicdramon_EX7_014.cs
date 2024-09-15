@@ -265,7 +265,7 @@ namespace DCGO.CardEffects.EX7
                         canEndNotMax: false,
                         isShowOpponent: true,
                         mode: SelectCardEffect.Mode.Custom,
-                        root: SelectCardEffect.Root.Trash,
+                        root: SelectCardEffect.Root.Hand,
                         customRootCardList: null,
                         canLookReverseCard: true,
                         selectPlayer: card.Owner,
@@ -288,7 +288,7 @@ namespace DCGO.CardEffects.EX7
                         activateClass: activateClass,
                         payCost: false,
                         isTapped: false,
-                        root: SelectCardEffect.Root.Trash,
+                        root: SelectCardEffect.Root.Hand,
                         activateETB: true));
                 }
             }

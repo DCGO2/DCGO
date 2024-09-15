@@ -177,7 +177,8 @@ namespace DCGO.CardEffects.EX7
                             {
                                 if (CardEffectCommons.IsOwnerTurn(cardSource))
                                 {
-                                   return CardSourceCondition(cardSource);                                    
+                                    if(CardEffectCommons.IsExistOnBattleAreaDigimon(cardSource))
+                                        return CardSourceCondition(cardSource);                                    
                                 }
 
                                 return false;
