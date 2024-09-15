@@ -71,6 +71,8 @@ public partial class CardEffectCommons
                             cardEffect: activateClass);
 
                         selectAttackEffect.SetWithoutTap();
+                        selectAttackEffect.SetCanNotSelectNotAttack();
+
                         yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
                     }
                 }
