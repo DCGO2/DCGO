@@ -24,7 +24,7 @@ namespace DCGO.CardEffects.P
 
                 bool SelectDigimon(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+                    return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

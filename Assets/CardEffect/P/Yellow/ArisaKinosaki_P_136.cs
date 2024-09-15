@@ -124,7 +124,10 @@ namespace DCGO.CardEffects.P
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, IsDigmonDigivolve);
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                        return CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, IsDigmonDigivolve);
+
+                    return true;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

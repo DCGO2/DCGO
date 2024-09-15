@@ -115,7 +115,7 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
                 #region Check if the effect can be activated
                 if (!skillInfo.CardEffect.CanActivate(skillInfo.Hashtable))
                 {
-                    //Debug.Log($"{skillInfo.CardEffect.EffectName} Can't Activate");
+                    Debug.Log($"{skillInfo.CardEffect.EffectName} Can't Activate");
                     continue;
                 }
 
@@ -123,7 +123,7 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
                 {
                     if (skipCondition(_autoProcessing.skillInfos_used, skillInfo))
                     {
-                        //Debug.Log($"{skillInfo.CardEffect.EffectName} has been skipped");
+                        Debug.Log($"{skillInfo.CardEffect.EffectName} has been skipped");
 
                         continue;
                     }
@@ -131,11 +131,11 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
 
                 if (IsCutinEffect(CheckNewTriggredSkill_mainStack))
                 {
-                    //Debug.Log($"{skillInfo.CardEffect.EffectName} is Cut In effect");
+                    Debug.Log($"{skillInfo.CardEffect.EffectName} is Cut In effect");
 
                     if (GManager.instance.autoProcessing.IsCutInEffectHasUsed(skillInfo.CardEffect))
                     {
-                        //Debug.Log($"{skillInfo.CardEffect.EffectName} has been used");
+                        Debug.Log($"{skillInfo.CardEffect.EffectName} has been used");
 
                         continue;
                     }

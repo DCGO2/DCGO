@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: SaberLeomon-EX7-029
+  m_EditorClassIdentifier: 
+  CardIndex: 3742
+  cardColors: 0200000003000000
+  PlayCost: 7
+  EvoCosts:
+  - CardColor: 2
+    Level: 5
+    MemoryCost: 4
+  Level: 6
+  CardName_JPN: 
+  CardName_ENG: SaberLeomon
+  Form_JPN: []
+  Form_ENG:
+  - Mega
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Data
+  Type_JPN: []
+  Type_ENG:
+  - Ancient Animal
+  - NSp
+  CardSpriteName: EX7-029
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: "[Digivolve]Lv.5 w/[NSp]\_trait or Lv.5 w/[Leomon]\_in its
+    name: Cost 3 \n\n[Hand] [Counter] \uFF1CBlast Digivolve\uFF1E \n[On Play] [When
+    Digivolving] 2 of your opponent's suspended Digimon get -8000 DP until the end
+    of your turn.\n[When Digivolving] [When Attacking] [Once Per Turn] Suspend 1
+    of your opponent's Digimon. Then, if your opponent has no unsuspended Digimon,
+    unsuspend this Digimon."
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: '-'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: '-'
+  CardEffectClassName: SaberLeomonAce_EX7_029
+  DP: 12000
+  rarity: 3
+  OverflowMemory: 4
+  CardID: EX7-029
+  MaxCountInDeck: 4

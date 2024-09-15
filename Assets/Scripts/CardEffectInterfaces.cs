@@ -30,6 +30,13 @@ public interface IIgnoreColorConditionEffect
 }
 #endregion
 
+#region "Target permanent gains Iceclad" effect
+public interface IIcecladEffect
+{
+    bool HasIceclad(Permanent permanent);
+}
+#endregion
+
 #region "Target permanent gains Rush" effect
 public interface IRushEffect
 {
@@ -37,7 +44,7 @@ public interface IRushEffect
 }
 #endregion
 
-#region "Target permanent gains Rush" effect
+#region "Target permanent gains Reboot" effect
 public interface IRebootEffect
 {
     bool HasReboot(Permanent permanent);
@@ -324,6 +331,13 @@ public interface ICanNotDigivolveEffect
 public interface ICanNotPutFieldEffect
 {
     bool CanNotPutField(CardSource cardSource, ICardEffect cardEffect);
+}
+#endregion
+
+#region "Target card cannot be moved" effect
+public interface ICanNotMoveEffect
+{
+    bool CanNotMove(CardSource cardSource, ICardEffect cardEffect);
 }
 #endregion
 

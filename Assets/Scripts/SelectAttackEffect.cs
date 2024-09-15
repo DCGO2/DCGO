@@ -21,6 +21,7 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
 
         _canSelectNotAttack = true;
         _withoutTap = false;
+        _isVortex = false;
         _customMessage = null;
         _customMessage_Enemy = null;
         _beforeOnAttackCoroutine = null;
@@ -41,6 +42,11 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
     {
         _withoutTap = true;
     }
+    
+    public void SetIsVortex()
+    {
+        _isVortex = true;
+    }
 
     public void SetBeforeOnAttackCoroutine(Func<IEnumerator> beforeOnAttackCoroutine)
     {
@@ -52,6 +58,7 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
     Func<Permanent, bool> _defenderCondition = null;
     bool _canSelectNotAttack = true;
     bool _withoutTap = false;
+    bool _isVortex = false;
     bool _noSelect = false;
 
     bool _endSelect = false;
@@ -63,16 +70,16 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
     ICardEffect _cardEffect = null;
     Func<IEnumerator> _beforeOnAttackCoroutine = null;
 
-    #region ƒp[ƒ}ƒlƒ“ƒg‚ð‘I‘ð‚Å‚«‚é‚©
+    #region Æ’pÂ[Æ’}Æ’lÆ’â€œÆ’gâ€šÃ°â€˜Iâ€˜Ã°â€šÃ…â€šÂ«â€šÃ©â€šÂ©
     bool CanTarget(Permanent permanent)
     {
         if (_attacker != null)
         {
             if (_attacker.TopCard != null)
             {
-                if (_attacker.CanAttack(_cardEffect, _withoutTap))
+                if (_attacker.CanAttack(_cardEffect, _withoutTap, _isVortex))
                 {
-                    if (_attacker.CanAttackTargetDigimon(permanent, _cardEffect, _withoutTap))
+                    if (_attacker.CanAttackTargetDigimon(permanent, _cardEffect, _withoutTap, _isVortex))
                     {
                         if (_defenderCondition != null)
                         {
@@ -93,7 +100,7 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region UŒ‚‚Å‚«‚é‘ŠŽèƒp[ƒ}ƒlƒ“ƒg‚ª‚¢‚é‚©
+    #region ÂUÅ’â€šâ€šÃ…â€šÂ«â€šÃ©â€˜Å Å½Ã¨Æ’pÂ[Æ’}Æ’lÆ’â€œÆ’gâ€šÂªâ€šÂ¢â€šÃ©â€šÂ©
     public bool CanAttackDigimon()
     {
         foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players)
@@ -111,16 +118,16 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region ƒvƒŒƒCƒ„[‚ÉUŒ‚‚ª‰Â”\‚©
+    #region Æ’vÆ’Å’Æ’CÆ’â€žÂ[â€šÃ‰ÂUÅ’â€šâ€šÂªâ€°Ã‚â€\â€šÂ©
     bool CanAttackPlayer()
     {
         if (_attacker != null)
         {
             if (_attacker.TopCard != null)
             {
-                if (_attacker.CanAttack(_cardEffect, _withoutTap))
+                if (_attacker.CanAttack(_cardEffect, _withoutTap, _isVortex))
                 {
-                    if (_attacker.CanAttackTargetDigimon(null, _cardEffect, _withoutTap))
+                    if (_attacker.CanAttackTargetDigimon(null, _cardEffect, _withoutTap, _isVortex))
                     {
                         if (_canAttackPlayerCondition != null)
                         {
@@ -141,7 +148,7 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region ‘I‘ð‚ª‰Â”\‚©‚Ç‚¤‚©
+    #region â€˜Iâ€˜Ã°â€šÂªâ€°Ã‚â€\â€šÂ©â€šÃ‡â€šÂ¤â€šÂ©
     public bool active()
     {
         if (!CanAttackDigimon())
@@ -161,7 +168,7 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region I—¹‚Å‚«‚é‚©”»’è
+    #region ÂIâ€”Â¹â€šÃ…â€šÂ«â€šÃ©â€šÂ©â€Â»â€™Ã¨
     bool CanEndSelect(Permanent selectedPermanent)
     {
         if (selectedPermanent == null)
@@ -191,7 +198,7 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
 
         if (_attacker == null) yield break;
         if (_attacker.TopCard == null) yield break;
-        if (!_attacker.CanAttack(_cardEffect, _withoutTap)) yield break;
+        if (!_attacker.CanAttack(_cardEffect, _withoutTap, _isVortex)) yield break;
 
         if (active())
         {
@@ -209,11 +216,11 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
             {
                 if (_attacker.TopCard != null)
                 {
-                    if (_attacker.CanAttack(_cardEffect, _withoutTap))
+                    if (_attacker.CanAttack(_cardEffect, _withoutTap, _isVortex))
                     {
                         if (_attacker.TopCard.Owner.isYou)
                         {
-                            #region ƒƒbƒZ[ƒW•\Ž¦
+                            #region Æ’ÂÆ’bÆ’ZÂ[Æ’Wâ€¢\Å½Â¦
                             if (!string.IsNullOrEmpty(_customMessage))
                             {
                                 GManager.instance.commandText.OpenCommandText(_customMessage);
@@ -236,7 +243,7 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
 
                             Permanent selectedPermanent = null;
 
-                            #region ƒvƒŒƒCƒ„[‚Ö‚ÌUŒ‚
+                            #region Æ’vÆ’Å’Æ’CÆ’â€žÂ[â€šÃ–â€šÃŒÂUÅ’â€š
                             if (CanAttackPlayer())
                             {
                                 if (_attacker.TopCard.Owner.Enemy.SecurityCards.Count >= 1)
@@ -277,7 +284,7 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
 
                             CheckEndSelect();
 
-                            #region ê‚Ìƒp[ƒ}ƒlƒ“ƒg‚ªƒNƒŠƒbƒN‚³‚ê‚½Žž‚Ìˆ—
+                            #region ÂÃªâ€šÃŒÆ’pÂ[Æ’}Æ’lÆ’â€œÆ’gâ€šÂªÆ’NÆ’Å Æ’bÆ’Nâ€šÂ³â€šÃªâ€šÂ½Å½Å¾â€šÃŒÂË†â€”Â
                             void OnClickFieldPermanentCard(FieldPermanentCard fieldPermanentCard)
                             {
                                 if (selectedPermanent == fieldPermanentCard.ThisPermanent)
@@ -294,10 +301,10 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
                             }
                             #endregion
 
-                            #region ‘I‘ð‚ðI—¹‚Å‚«‚é‚©‚Ì”»’è‚ÆƒAƒEƒgƒ‰ƒCƒ“•\Ž¦
+                            #region â€˜Iâ€˜Ã°â€šÃ°ÂIâ€”Â¹â€šÃ…â€šÂ«â€šÃ©â€šÂ©â€šÃŒâ€Â»â€™Ã¨â€šÃ†Æ’AÆ’EÆ’gÆ’â€°Æ’CÆ’â€œâ€¢\Å½Â¦
                             void CheckEndSelect()
                             {
-                                #region I—¹‚Å‚«‚é‚©‚É‚æ‚Á‚ÄUI•\Ž¦
+                                #region ÂIâ€”Â¹â€šÃ…â€šÂ«â€šÃ©â€šÂ©â€šÃ‰â€šÃ¦â€šÃâ€šÃ„UIâ€¢\Å½Â¦
                                 if (CanEndSelect(selectedPermanent))
                                 {
 
@@ -309,7 +316,7 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
                                 }
                                 #endregion
 
-                                #region ƒAƒEƒgƒ‰ƒCƒ“•\Ž¦
+                                #region Æ’AÆ’EÆ’gÆ’â€°Æ’CÆ’â€œâ€¢\Å½Â¦
                                 foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players)
                                 {
                                     foreach (Permanent permanent in player.GetFieldPermanents())
@@ -354,7 +361,7 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
 
                             #endregion
 
-                            #region ‘I‘ðI—¹
+                            #region â€˜Iâ€˜Ã°ÂIâ€”Â¹
                             void EndSelect_RPC()
                             {
                                 foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players)
@@ -389,7 +396,7 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
 
                         else
                         {
-                            #region ƒƒbƒZ[ƒW•\Ž¦
+                            #region Æ’ÂÆ’bÆ’ZÂ[Æ’Wâ€¢\Å½Â¦
                             if (!string.IsNullOrEmpty(_customMessage_Enemy))
                             {
                                 GManager.instance.commandText.OpenCommandText(_customMessage_Enemy);
@@ -421,7 +428,7 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
 
                                 if (AttackcTargetCandidates.Count >= 1)
                                 {
-                                    if (!_attacker.CanAttackTargetDigimon(null, _cardEffect, _withoutTap) || (_attacker.TopCard.Owner.Enemy.SecurityCards.Count >= 3 && RandomUtility.IsSucceedProbability(0.5f)))
+                                    if (!_attacker.CanAttackTargetDigimon(null, _cardEffect, _withoutTap, _isVortex) || (_attacker.TopCard.Owner.Enemy.SecurityCards.Count >= 3 && RandomUtility.IsSucceedProbability(0.5f)))
                                     {
                                         selectedPermanent = AttackcTargetCandidates[UnityEngine.Random.Range(0, AttackcTargetCandidates.Count)];
                                     }
@@ -449,11 +456,11 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
                 }
             }
 
-            //‘I‘ð‚ªŠ®—¹‚·‚é‚Ü‚Å‘Ò‹@
+            //â€˜Iâ€˜Ã°â€šÂªÅ Â®â€”Â¹â€šÂ·â€šÃ©â€šÃœâ€šÃ…â€˜Ã’â€¹@
             yield return new WaitWhile(() => !_endSelect);
             _endSelect = false;
 
-            #region ƒŠƒZƒbƒg
+            #region Æ’Å Æ’ZÆ’bÆ’g
             foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players)
             {
                 GManager.instance.turnStateMachine.OffFieldCardTarget(player);
@@ -493,7 +500,7 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
         }
     }
 
-    #region ‘I‘ðŒˆ’è
+    #region â€˜Iâ€˜Ã°Å’Ë†â€™Ã¨
     [PunRPC]
     public void SetAttackTarget(bool isPlayer, bool isTurnPlayer, int PermanentIndex)
     {
@@ -530,7 +537,7 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region ‘I‘ð‚µ‚È‚¢
+    #region â€˜Iâ€˜Ã°â€šÂµâ€šÃˆâ€šÂ¢
     [PunRPC]
     public void SetNotAttack()
     {
