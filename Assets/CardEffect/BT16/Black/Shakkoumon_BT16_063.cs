@@ -123,41 +123,6 @@ namespace DCGO.CardEffects.BT16
                     return "[When Digivolving] This Digimon isn't affected by the effects of your opponent's Digimon until the end of their turn. Then, if DNA digivolving, place 1 of your opponent's Digimon whose level is less than or equal to the number of cards in yours or your opponent's security stack at the bottom of your opponent's security stack.";
                 }
 
-                #region Unaffected
-                bool CardUnaffectedCondition(CardSource cardSource)
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (cardSource == card.PermanentOfThisCard().TopCard)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
-                bool SkillCondition(ICardEffect cardEffect)
-                {
-                    if (cardEffect != null)
-                    {
-                        if (cardEffect.EffectSourceCard != null)
-                        {
-                            if (cardEffect.EffectSourceCard.Owner == card.Owner.Enemy)
-                            {
-                                if (cardEffect.IsDigimonEffect)
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-
-                    return false;
-                }
-                #endregion
-
-                #region Place in security
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
@@ -173,7 +138,6 @@ namespace DCGO.CardEffects.BT16
 
                     return false;
                 }
-                #endregion
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
@@ -200,6 +164,38 @@ namespace DCGO.CardEffects.BT16
                         bool CanUseUnaffectedCondition(Hashtable hashtable)
                         {
                             return CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent);
+                        }
+                        
+                        bool CardUnaffectedCondition(CardSource cardSource)
+                        {
+                            if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
+                            {
+                                if (cardSource == selectedPermanent.TopCard)
+                                {
+                                    return true;
+                                }
+                            }
+
+                            return false;
+                        }
+
+                        bool SkillCondition(ICardEffect cardEffect)
+                        {
+                            if (cardEffect != null)
+                            {
+                                if (cardEffect.EffectSourceCard != null)
+                                {
+                                    if (cardEffect.EffectSourceCard.Owner == card.Owner.Enemy)
+                                    {
+                                        if (cardEffect.IsDigimonEffect)
+                                        {
+                                            return true;
+                                        }
+                                    }
+                                }
+                            }
+
+                            return false;
                         }
                     }
 

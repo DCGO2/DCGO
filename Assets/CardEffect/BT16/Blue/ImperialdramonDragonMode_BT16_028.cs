@@ -150,7 +150,7 @@ namespace DCGO.CardEffects.BT16
                                 canTargetCondition: CanSelectOpponentsDigimonToSuspend,
                                 canEndSelectCondition: null,
                                 maxCount: 1,
-                                canNoSelect: false,
+                                canNoSelect: true,
                                 canEndNotMax: false,
                                 selectPermanentCoroutine: SelectSuspendCoroutine,
                                 afterSelectPermanentCoroutine: null,
