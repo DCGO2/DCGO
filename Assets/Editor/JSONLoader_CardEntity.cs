@@ -304,7 +304,7 @@ namespace DCGO.CardEntities
                         evoCosts.Add(evoCost);
                     }
                 }
-                else
+                else if (digivolveCondition.level.ToLower().Contains("lv"))
                 {
                     EvoCost evoCost = new EvoCost();
 
