@@ -221,7 +221,7 @@ namespace DCGO.CardEffects.EX6
                                 canEndSelectCondition: CanEndSelectCondition,
                                 maxCount: maxCount,
                                 canNoSelect: false,
-                                canEndNotMax: false,
+                                canEndNotMax: true,
                                 selectPermanentCoroutine: null,
                                 afterSelectPermanentCoroutine: null,
                                 mode: SelectPermanentEffect.Mode.PutLibraryBottom,
