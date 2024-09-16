@@ -64,12 +64,41 @@ namespace DCGO.CardEffects.ST19
                         rootCondition: null)
                         .Filter(PermanentCondition);
 
+
                     if (permanents.Count > 0)
                     {
+                        if(permanents.Count > 1)
+                        {
+                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                            selectPermanentEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: PermanentCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: 1,
+                                canNoSelect: false,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: SelectPermanentCoroutine,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Custom,
+                                cardEffect: activateClass);
+
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                        }
+                        else 
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(SelectPermanentCoroutine(permanents[0]));
+                        }
+                        
+                    }
+
+                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                    {
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainRush(
-                                targetPermanent: permanents[0],
-                                effectDuration: EffectDuration.UntilEachTurnEnd,
-                                activateClass: activateClass));
+                            targetPermanent: permanent,
+                            effectDuration: EffectDuration.UntilEachTurnEnd,
+                            activateClass: activateClass));
                     }
                 }
             }

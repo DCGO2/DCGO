@@ -234,17 +234,28 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card);
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    {
+                        if(CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card))
+                        {
+                            if (!CardEffectCommons.IsByEffect(hashtable, cardEffect => CardEffectCommons.IsOwnerEffect(cardEffect, card)))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+
+                    return false;
                 }
 
-                bool CanSelectCardToPlayFromTrash(CardSource cardSource)
+                bool CanSelectCardToPlayFromHand(CardSource cardSource)
                 {
                     return CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass) && cardSource.IsDigimon && (cardSource.ContainsTraits("Machine Drago") || cardSource.ContainsTraits("Sky Dragon"));
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardToPlayFromTrash);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardToPlayFromHand);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -254,7 +265,7 @@ namespace DCGO.CardEffects.EX7
                     SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                     selectCardEffect.SetUp(
-                        canTargetCondition: CanSelectCardToPlayFromTrash,
+                        canTargetCondition: CanSelectCardToPlayFromHand,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         canNoSelect: () => true,
