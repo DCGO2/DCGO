@@ -59,22 +59,22 @@ namespace DCGO.CardEffects.ST19
                     yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(
                         new List<Permanent>() { card.PermanentOfThisCard() }, CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
 
-                    List<Permanent> permanents = CardEffectCommons.GetPlayedPermanentsFromEnterFieldHashtable(
+                    List<Permanent> playedPermanents = CardEffectCommons.GetPlayedPermanentsFromEnterFieldHashtable(
                         hashtable: hashtable,
                         rootCondition: null)
                         .Filter(PermanentCondition);
 
 
-                    if (permanents.Count > 0)
+                    if (playedPermanents.Count > 0)
                     {
-                        if(permanents.Count > 1)
+                        if(playedPermanents.Count > 1)
                         {
                             SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                             selectPermanentEffect.SetUp(
                                 selectPlayer: card.Owner,
                                 canTargetCondition: PermanentCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
+                                canTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
                                 canEndSelectCondition: null,
                                 maxCount: 1,
                                 canNoSelect: false,
@@ -85,12 +85,16 @@ namespace DCGO.CardEffects.ST19
                                 cardEffect: activateClass);
 
                             yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                            bool CanTargetCondition_ByPreSelecetedList(List<Permanent> permanents, Permanent permanent)
+                            {
+                                return playedPermanents.Contains(permanent);
+                            }
                         }
                         else 
                         {
-                            yield return ContinuousController.instance.StartCoroutine(SelectPermanentCoroutine(permanents[0]));
+                            yield return ContinuousController.instance.StartCoroutine(SelectPermanentCoroutine(playedPermanents[0]));
                         }
-                        
                     }
 
                     IEnumerator SelectPermanentCoroutine(Permanent permanent)

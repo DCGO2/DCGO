@@ -147,7 +147,7 @@ namespace DCGO.CardEffects.BT16
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(
-                    "You may play 1 level 5 or lower Digimon with the [Free] trait. Then 1 Digimon gains [Rush] and can attack.",
+                    "You may play 1 level 5 or lower Digimon with the [Free] trait. Then 1 Digimon can gain [Rush] and attack.",
                     CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
@@ -155,7 +155,7 @@ namespace DCGO.CardEffects.BT16
                 string EffectDescription()
                 {
                     return
-                        "[When Digivolving] If DNA digivolving, you may play 1 level 5 or lower Digimon with the [Free] trait from your trash without paying the cost. Then, 1 of your Digimon gains [Rush] for the turn and may attack the player.";
+                        "[When Digivolving] If DNA digivolving, you may play 1 level 5 or lower Digimon with the [Free] trait from your trash without paying the cost. Then, 1 of your Digimon may gain [Rush] for the turn and attack the player.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -266,6 +266,8 @@ namespace DCGO.CardEffects.BT16
                                     canAttackPlayerCondition: () => true,
                                     defenderCondition: _ => false,
                                     cardEffect: activateClass);
+
+                                selectAttackEffect.SetCanNotSelectNotAttack();
 
                                 yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
                             }
