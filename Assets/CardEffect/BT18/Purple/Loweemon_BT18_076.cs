@@ -97,16 +97,14 @@ namespace DCGO.CardEffects.BT18
 
                     if (card.Owner.HandCards.Count >= 1)
                     {
-                        int discardCount = 1;
-
                         SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
                         selectHandEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: (cardSource) => true,
+                            canTargetCondition: _ => true,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: discardCount,
+                            maxCount: 1,
                             canNoSelect: false,
                             canEndNotMax: false,
                             isShowOpponent: true,
@@ -227,7 +225,7 @@ namespace DCGO.CardEffects.BT18
                 string EffectDescription()
                 {
                     return
-                        "[All Turns] (Once Per Turn) When this Digimon would leave the battle area other than by your effects, you may play 1 Tamer card with inherited effects from this Digimon's digivolution cards without paying the cost.";
+                        "[All Turns] When this Digimon would leave the battle area other than by your effects, you may play 1 Tamer card with inherited effects from this Digimon's digivolution cards without paying the cost.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

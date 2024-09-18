@@ -208,7 +208,7 @@ namespace DCGO.CardEffects.BT18
                 string EffectDescription()
                 {
                     return
-                        "[All Turns] (Once Per Turn) When this Digimon would leave the battle area other than by your effects, you may play 1 Tamer card with inherited effects from this Digimon's digivolution cards without paying the cost.";
+                        "[All Turns] When this Digimon would leave the battle area other than by your effects, you may play 1 Tamer card with inherited effects from this Digimon's digivolution cards without paying the cost.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
