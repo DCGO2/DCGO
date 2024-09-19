@@ -163,13 +163,13 @@ public class Omekamon_BT15_060 : CEntity_Effect
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("De-Digivolve 1 on 1 Digimon", CanUseCondition, card);
-            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
             activateClass.SetIsInheritedEffect(true);
             cardEffects.Add(activateClass);
 
             string EffectDiscription()
             {
-                return "[When Attacking][De-Digivolve] 1ÅÑn 1 of your opponent's Digimon (Trash up to 1 card from the top of one of your opponent's Digimon. If it has no digivolution cards, or becomes a level 3 Digimon, you can't trash any more cards).";
+                return "[When Attacking][De-Digivolve] 1ÔøΩÔøΩn 1 of your opponent's Digimon (Trash up to 1 card from the top of one of your opponent's Digimon. If it has no digivolution cards, or becomes a level 3 Digimon, you can't trash any more cards).";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
