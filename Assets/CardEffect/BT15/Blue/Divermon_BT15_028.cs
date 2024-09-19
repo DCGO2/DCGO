@@ -28,10 +28,7 @@ public class Divermon_BT15_028 : CEntity_Effect
             {
                 if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                 {
-                    if (permanent.DigivolutionCards.Count((cardSource) => !cardSource.CanNotTrashFromDigivolutionCards(activateClass)) >= 1)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
 
                 return false;
@@ -41,10 +38,7 @@ public class Divermon_BT15_028 : CEntity_Effect
             {
                 if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                 {
-                    if (permanent.DigivolutionCards.Count >= 1)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
 
                 return false;
