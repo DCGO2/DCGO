@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,45 +26,25 @@ namespace DCGO.CardEffects.BT18
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource != null)
+                    if (cardSource.IsDigimon && cardSource.HasLevel)
                     {
-                        if (cardSource.Owner == card.Owner)
+                        if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                         {
-                            if (cardSource.IsDigimon)
+                            if (cardSource.Level == 3 && cardSource.CardColors.Contains(CardColor.Blue))
                             {
-                                if (cardSource.Level == 3)
+                                if (cardSource.HasLevel)
                                 {
-                                    if (cardSource.CardColors.Contains(CardColor.Blue))
-                                    {
-                                        if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
-                                        {
-                                            if (cardSource.HasLevel)
-                                            {
-                                                return true;
-                                            }
-                                        }
-                                    }
+                                    return true;
                                 }
                             }
                         }
                     }
 
-                    return false;
-                }
-
-                bool CanSelectCardCondition1(CardSource cardSource)
-                {
-                    if (cardSource != null)
+                    if (cardSource.IsTamer)
                     {
-                        if (cardSource.Owner == card.Owner)
+                        if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                         {
-                            if (cardSource.IsTamer)
-                            {
-                                if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
-                                {
-                                    return true;                                   
-                                }                                                                 
-                            }
+                            return true;
                         }
                     }
 
@@ -79,7 +60,7 @@ namespace DCGO.CardEffects.BT18
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => CanSelectCardCondition(cardSource) || CanSelectCardCondition1(cardSource)) >= 1)
+                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => CanSelectCardCondition(cardSource)) >= 1)
                         {
                             return true;
                         }
@@ -92,33 +73,37 @@ namespace DCGO.CardEffects.BT18
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        List<CardSource> selectedCards = new List<CardSource>();
+                        Permanent selectedPermanent = card.PermanentOfThisCard();
 
-                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => CanSelectCardCondition(cardSource)) >= 1)
+                        if (selectedPermanent.DigivolutionCards.Count(CanSelectCardCondition) >= 1)
                         {
-                            int maxCount = 1;
+                            int maxCount = Math.Min(1, selectedPermanent.DigivolutionCards.Count(CanSelectCardCondition));
+
+                            List<CardSource> selectedCards = new List<CardSource>();
 
                             SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                             selectCardEffect.SetUp(
-                                canTargetCondition: (cardSource) => CanSelectCardCondition(cardSource),
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                canNoSelect: () => false,
-                                selectCardCoroutine: SelectCardCoroutine,
-                                afterSelectCardCoroutine: null,
-                                message: "Select 1 level 3 or lower blue Digimon card to play.",
-                                maxCount: maxCount,
-                                canEndNotMax: false,
-                                isShowOpponent: true,
-                                mode: SelectCardEffect.Mode.Custom,
-                                root: SelectCardEffect.Root.Custom,
-                                customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
-                                canLookReverseCard: true,
-                                selectPlayer: card.Owner,
-                                cardEffect: activateClass);
+                                        canTargetCondition: CanSelectCardCondition,
+                                        canTargetCondition_ByPreSelecetedList: null,
+                                        canEndSelectCondition: null,
+                                        canNoSelect: () => true,
+                                        selectCardCoroutine: SelectCardCoroutine,
+                                        afterSelectCardCoroutine: null,
+                                        message: "Select 1 digivolution card to play.",
+                                        maxCount: maxCount,
+                                        canEndNotMax: false,
+                                        isShowOpponent: true,
+                                        mode: SelectCardEffect.Mode.Custom,
+                                        root: SelectCardEffect.Root.Custom,
+                                        customRootCardList: selectedPermanent.DigivolutionCards,
+                                        canLookReverseCard: true,
+                                        selectPlayer: card.Owner,
+                                        cardEffect: activateClass);
 
-                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                            selectCardEffect.SetUpCustomMessage("Select 1 digivolution card to play.", "The opponent is selecting 1 digivolution card to play.");
+
+                            yield return StartCoroutine(selectCardEffect.Activate());
 
                             IEnumerator SelectCardCoroutine(CardSource cardSource)
                             {
@@ -126,49 +111,15 @@ namespace DCGO.CardEffects.BT18
 
                                 yield return null;
                             }
-                        }
 
-                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => CanSelectCardCondition1(cardSource)) >= 1)
-                        {
-                            int maxCount = 1;
-
-                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                            selectCardEffect.SetUp(
-                                canTargetCondition: (cardSource) => CanSelectCardCondition1(cardSource),
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                canNoSelect: () => false,
-                                selectCardCoroutine: SelectCardCoroutine,
-                                afterSelectCardCoroutine: null,
-                                message: "Select 1 Tamer to play.",
-                                maxCount: maxCount,
-                                canEndNotMax: false,
-                                isShowOpponent: true,
-                                mode: SelectCardEffect.Mode.Custom,
-                                root: SelectCardEffect.Root.Custom,
-                                customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
-                                canLookReverseCard: true,
-                                selectPlayer: card.Owner,
-                                cardEffect: activateClass);
-
-                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-
-                            IEnumerator SelectCardCoroutine(CardSource cardSource)
-                            {
-                                selectedCards.Add(cardSource);
-
-                                yield return null;
-                            }
-                        }
-
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
                                 cardSources: selectedCards,
                                 activateClass: activateClass,
                                 payCost: false,
                                 isTapped: false,
                                 root: SelectCardEffect.Root.DigivolutionCards,
                                 activateETB: true));
+                        }
                     }
                 }
             }
