@@ -79,9 +79,34 @@ namespace DCGO.CardEffects.P
                     return "[Main] By returning this Tamer to the bottom of the deck, you may play 1 Digimon card with the [D-Reaper] trait and play cost of 3 or less from your hand without paying the cost. For each digivolution card of 1 of your [Mother D-Reaper], add 1 to the maximum play cost you may play with this effect.";
                 }
 
+                int getMaxCost()
+                {
+                    int cost = 3;
+                    int maxCost = 0;
+
+                    foreach(Permanent permanent in card.Owner.GetBattleAreaPermanents().Filter(IsMotherDReaper))
+                    {
+                        if(permanent.DigivolutionCards.Count > maxCost)
+                            maxCost = permanent.DigivolutionCards.Count;
+                    }
+
+                    return cost + maxCost;
+                }
+
+                bool IsMotherDReaper(Permanent permanent)
+                {
+                    return permanent.TopCard.EqualsCardName("Mother D-Reaper");
+                }
+
                 bool HasDReaper(CardSource cardSource)
                 {
-                    return cardSource.EqualsTraits("D-Reaper");
+                    if (cardSource.EqualsTraits("D-Reaper"))
+                    {
+                        if(cardSource.GetCostItself <= getMaxCost())
+                            return true;
+                    }
+
+                    return false;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
