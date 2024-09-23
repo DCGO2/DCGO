@@ -41,7 +41,7 @@ public class OrimotoIzumi_BT7_088 : CEntity_Effect
                     return true;
                 }
 
-                if (cardSource.CardTraits.Contains("Ten Warriors"))
+                if (cardSource.CardTraits.Contains("TenWarriors"))
                 {
                     return true;
                 }

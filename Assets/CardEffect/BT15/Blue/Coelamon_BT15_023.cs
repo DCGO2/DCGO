@@ -27,10 +27,7 @@ public class Coelamon_BT15_023 : CEntity_Effect
             {
                 if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                 {
-                    if (permanent.DigivolutionCards.Count((cardSource) => !cardSource.CanNotTrashFromDigivolutionCards(activateClass)) >= 1)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
 
                 return false;
@@ -40,10 +37,7 @@ public class Coelamon_BT15_023 : CEntity_Effect
             {
                 if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                 {
-                    if (permanent.DigivolutionCards.Count >= 1)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
 
                 return false;

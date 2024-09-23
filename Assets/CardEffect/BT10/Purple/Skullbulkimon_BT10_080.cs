@@ -176,7 +176,7 @@ public class Skullbulkimon_BT10_080 : CEntity_Effect
 
             bool CanSelectPermanentCondition(Permanent permanent)
             {
-                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+                return CardEffectCommons.IsExistOnBattleArea(card);
             }
 
             bool RootCondition(SelectCardEffect.Root root)
