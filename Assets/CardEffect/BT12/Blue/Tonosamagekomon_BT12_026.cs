@@ -47,12 +47,9 @@ public class Tonosamagekomon_BT12_026 : CEntity_Effect
             {
                 if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                 {
-                    if (permanent.DigivolutionCards.Count((cardSource) => !cardSource.CanNotTrashFromDigivolutionCards(activateClass)) >= 1)
+                    if (permanent.CanSelectBySkill(activateClass))
                     {
-                        if (permanent.CanSelectBySkill(activateClass))
-                        {
-                            return true;
-                        }
+                        return true;
                     }
                 }
 

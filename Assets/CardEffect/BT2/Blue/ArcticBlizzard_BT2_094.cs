@@ -28,10 +28,7 @@ public class ArcticBlizzard_BT2_094 : CEntity_Effect
             {
                 if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                 {
-                    if (permanent.DigivolutionCards.Count(CanSelectCardCondition) >= 1)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
 
                 return false;

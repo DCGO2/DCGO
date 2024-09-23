@@ -1,14 +1,12 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
-using Photon;
-using System;
-using Photon.Pun;
 
-public class Metalgreymon_BT1_021 : CEntity_Effect
+namespace CardEffect.BT1.Blue
 {
-    public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
+    public class WereGarurumon_BT1_040 : CEntity_Effect
+    {
+         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
@@ -71,5 +69,6 @@ public class Metalgreymon_BT1_021 : CEntity_Effect
         }
 
         return cardEffects;
+    }
     }
 }
