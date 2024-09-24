@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.P
 {
     public class PawnDevice_P_155 : CEntity_Effect
     {

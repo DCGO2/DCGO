@@ -161,7 +161,7 @@ namespace DCGO.CardEffects.P
             #endregion
 
             #region End of Attack
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnEndAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Place top card of this digimon as top security to unsuspend", CanUseCondition, card);

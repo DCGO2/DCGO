@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.P
 {
     public class ShoutmonDoruluCannon_P_152 : CEntity_Effect
     {
