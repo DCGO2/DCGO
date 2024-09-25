@@ -381,11 +381,9 @@ namespace DCGO.CardEffects.BT18
                                 canEndNotMax: false,
                                 selectPermanentCoroutine: null,
                                 afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Custom,
+                                mode: SelectPermanentEffect.Mode.Bounce,
                                 cardEffect: activateClass);
-
-                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to return to hand.", "The opponent is selecting 1 Digimon to return to hand.");
-
+                            
                             yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                         }
 
