@@ -41,31 +41,31 @@ namespace CardEffect.BT1.Blue
             {
                 yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(3, activateClass));
 
-                        ActivateClass activateClass1 = new ActivateClass();
-                        activateClass1.SetUpICardEffect("Memory -3", CanUseCondition1, card);
-                        activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDiscription1());
-                        CardEffectCommons.AddEffectToPlayer(effectDuration: EffectDuration.UntilEachTurnEnd, card: card, cardEffect: activateClass1, timing: EffectTiming.OnEndTurn);
+                    ActivateClass activateClass1 = new ActivateClass();
+                    activateClass1.SetUpICardEffect("Memory -3", CanUseCondition1, card);
+                    activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDiscription1());
+                    CardEffectCommons.AddEffectToPlayer(effectDuration: EffectDuration.UntilEachTurnEnd, card: card, cardEffect: activateClass1, timing: EffectTiming.OnEndTurn);
 
-                        string EffectDiscription1()
-                        {
-                            return "Lose 3 memory.";
-                        }
+                    string EffectDiscription1()
+                    {
+                        return "Lose 3 memory.";
+                    }
 
-                        bool CanUseCondition1(Hashtable hashtable)
-                        {
-                            return true;
-                        }
+                    bool CanUseCondition1(Hashtable hashtable)
+                    {
+                        return true;
+                    }
 
-                        bool CanActivateCondition1(Hashtable hashtable)
-                        {
-                            return true;
-                        }
+                    bool CanActivateCondition1(Hashtable hashtable)
+                    {
+                        return true;
+                    }
 
-                        IEnumerator ActivateCoroutine1(Hashtable _hashtable1)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(-3, activateClass1));
-                        }
-            }
+                    IEnumerator ActivateCoroutine1(Hashtable _hashtable1)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(-3, activateClass1));
+                    }
+                }
         }
 
         return cardEffects;

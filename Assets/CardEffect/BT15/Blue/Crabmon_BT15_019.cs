@@ -22,27 +22,12 @@ public class Crabmon_BT15_019 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[On Play] Trash 1 digivolution card from the bottom of 1 of your opponent's Digimon.";
+                return "[On Play] Trash the bottom digivolution card of 1 of your opponent's Digimon. Then, if your opponent has no Digimon with digivolution cards, <Draw 1>.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
             {
-                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                {
-                    return true;
-                }
-
-                return false;
-            }
-
-            bool PermanentCondition(Permanent permanent)
-            {
-                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                {
-                    return true;
-                }
-
-                return false;
+                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
             }
 
             bool CanUseCondition(Hashtable hashtable)
@@ -52,23 +37,7 @@ public class Crabmon_BT15_019 : CEntity_Effect
 
             bool CanActivateCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
-                {
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                    {
-                        return true;
-                    }
-
-                    if (card.Owner.Enemy.GetBattleAreaDigimons().Count(PermanentCondition) == 0)
-                    {
-                        if (card.Owner.LibraryCards.Count >= 1)
-                        {
-                            return true;
-                        }
-                    }
-                }
-
-                return false;
+                return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
             }
 
             IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -108,7 +77,7 @@ public class Crabmon_BT15_019 : CEntity_Effect
                     }
                 }
 
-                if (card.Owner.Enemy.GetBattleAreaDigimons().Count(PermanentCondition) == 0)
+                if (card.Owner.Enemy.GetBattleAreaDigimons().Count(permanent => permanent.DigivolutionCards.Count > 0) == 0)
                 {
                     yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
                 }
