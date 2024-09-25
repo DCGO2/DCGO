@@ -26,12 +26,7 @@ public class ArcticBlizzard_BT2_094 : CEntity_Effect
 
             bool CanSelectPermanentCondition(Permanent permanent)
             {
-                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                {
-                    return true;
-                }
-
-                return false;
+                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
             }
 
             bool CanSelectCardCondition(CardSource cardSource)

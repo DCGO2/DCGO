@@ -22,7 +22,7 @@ namespace DCGO.CardEffects.P
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return !CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.IsTamer);
+                    return CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.IsTamer);
                 }
 
                 bool CardCondition(CardSource cardSource)
@@ -61,10 +61,13 @@ namespace DCGO.CardEffects.P
                     {
                         if (CardEffectCommons.CanPlayAsNewPermanent(source, false, activateClass))
                         {
-                            foreach (CardColor color in source.CardColors)
+                            if(source.GetCostItself <= 3)
                             {
-                                if (tamerColors.Contains(color))
-                                    return true;
+                                foreach (CardColor color in source.CardColors)
+                                {
+                                    if (tamerColors.Contains(color))
+                                        return true;
+                                }
                             }
                         }
                     }
@@ -110,6 +113,7 @@ namespace DCGO.CardEffects.P
                     {
                         if(permanent != null)
                         {
+                            tamerColors = permanent.TopCard.CardColors;
                             List<CardSource> cardOptions = card.Owner.HandCards.Concat(card.Owner.TrashCards).ToList().Filter(SelectDigimonCondition);
                             
                             if (cardOptions.Count > 0)

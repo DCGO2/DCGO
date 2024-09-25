@@ -103,6 +103,7 @@ namespace DCGO.CardEffects.BT17
                 activateClass.SetUpICardEffect("When you use an option, an opponent's Digimon gets Sec-1", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
+                activateClass.SetHashString("ESS_BT17_031");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
