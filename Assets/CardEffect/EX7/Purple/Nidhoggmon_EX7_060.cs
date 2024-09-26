@@ -120,24 +120,23 @@ namespace DCGO.CardEffects.EX7
 
                 string EffectDiscription()
                 {
-                    return "[On Play] You may play up to 2 level 4 or lower purple Digimon cards from your trash without paying their memory costs. Any [On Play] effects on Digimon played with this effect don't activate. ";
+                    return "[On Deletion] You may play 1 level 5 or lower Digimon card with the [Dark Dragon] or [Evil Dragon] trait from your trash without paying the cost.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.Level <= 5 && cardSource.CardTraits.Contains("Dark Dragon") || cardSource.Level <= 5 && cardSource.CardTraits.Contains("Evil Dragon"))
+                        if (cardSource.HasLevel)
                         {
-                            if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
+                            if (cardSource.Level <= 5 && (cardSource.EqualsTraits("Dark Dragon") || cardSource.EqualsTraits("Evil Dragon")))
                             {
-                                if (cardSource.HasLevel)
+                                if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                                 {
                                     return true;
                                 }
                             }
                         }
-                        
                     }
 
                     return false;

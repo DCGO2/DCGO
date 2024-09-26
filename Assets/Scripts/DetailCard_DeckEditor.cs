@@ -440,6 +440,8 @@ public class DetailCard_DeckEditor : MonoBehaviour
                 alternativeEffectDiscriptionText.font = Font_JPN;
             }
 
+            Debug.Log($"CARD DETAILS: {cEntity_Base.InheritedEffectDiscription_ENG} && _{cEntity_Base.InheritedEffectDiscription_ENG.Equals("-")}_");
+
             if (cEntity_Base.HasInhetitedEffect)
             {
                 if (ContinuousController.instance.language == Language.ENG)

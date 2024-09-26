@@ -92,10 +92,12 @@ namespace DCGO.CardEffects.LM
 
                         if (!permanent.IsToken)
                         {
+                            Player selectedOwner = permanent.TopCard.Owner;
                             int beforeEffectSecurityCount = permanent.TopCard.Owner.SecurityCards.Count;
+
                             yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(permanent, CardEffectCommons.CardEffectHashtable(activateClass), toTop: true).PutSecurity());
 
-                            if (permanent.TopCard.Owner.SecurityCards.Count > beforeEffectSecurityCount)
+                            if (selectedOwner.SecurityCards.Count > beforeEffectSecurityCount)
                                 placedToSecurity = true;
                         }
 

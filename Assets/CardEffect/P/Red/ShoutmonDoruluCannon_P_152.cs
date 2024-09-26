@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using System.Diagnostics;
 
 namespace DCGO.CardEffects.P
 {
@@ -88,8 +89,7 @@ namespace DCGO.CardEffects.P
 
                 bool DigivolutionCondition(CardSource source)
                 {
-
-                    return false;
+                    return source.EqualsTraits("Xros Heart");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -106,6 +106,7 @@ namespace DCGO.CardEffects.P
                 {
                     bool addedSource = false;
 
+                    #region DP reduction
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
@@ -135,37 +136,45 @@ namespace DCGO.CardEffects.P
                         if (permanent == null)
                             yield break;
 
-                        if (card.PermanentOfThisCard().DigivolutionCards.Count(DigivolutionCondition) > 0)
-                        {
-                            int maxCount = Math.Min(1, card.PermanentOfThisCard().DigivolutionCards.Count(DigivolutionCondition));
+                        yield return ContinuousController.instance.StartCoroutine(
+                            CardEffectCommons.ChangeDigimonDP(
+                                targetPermanent: permanent, 
+                                changeValue: -2000, 
+                                effectDuration: EffectDuration.UntilEachTurnEnd, 
+                                activateClass: activateClass));
+                    }
+                    #endregion
+                    UnityEngine.Debug.Log($"SHOUTMONDORULUCANNON: {card.PermanentOfThisCard().DigivolutionCards.Count(DigivolutionCondition)}");
+                    if (card.PermanentOfThisCard().DigivolutionCards.Count(DigivolutionCondition) > 0)
+                    {
+                        int maxCount = Math.Min(1, card.PermanentOfThisCard().DigivolutionCards.Count(DigivolutionCondition));
 
-                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
-                            selectCardEffect.SetUp(
-                                canTargetCondition: DigivolutionCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                canNoSelect: () => true,
-                                selectCardCoroutine: SelectDigivolutionCard,
-                                afterSelectCardCoroutine: null,
-                                message: "Select 1 card to place under a tamer.",
-                                maxCount: 1,
-                                canEndNotMax: false,
-                                isShowOpponent: true,
-                                mode: SelectCardEffect.Mode.Custom,
-                                root: SelectCardEffect.Root.Custom,
-                                customRootCardList: card.PermanentOfThisCard().DigivolutionCards.Filter(DigivolutionCondition),
-                                canLookReverseCard: true,
-                                selectPlayer: card.Owner,
-                                cardEffect: activateClass);
+                        selectCardEffect.SetUp(
+                            canTargetCondition: DigivolutionCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            canNoSelect: () => true,
+                            selectCardCoroutine: SelectDigivolutionCard,
+                            afterSelectCardCoroutine: null,
+                            message: "Select 1 card to place under a tamer.",
+                            maxCount: 1,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            mode: SelectCardEffect.Mode.Custom,
+                            root: SelectCardEffect.Root.Custom,
+                            customRootCardList: card.PermanentOfThisCard().DigivolutionCards.Filter(DigivolutionCondition),
+                            canLookReverseCard: true,
+                            selectPlayer: card.Owner,
+                            cardEffect: activateClass);
 
-                            selectCardEffect.SetUpCustomMessage(
-                    "Select 1 card to place at the bottom of digivolution cards.",
-                    "The opponent is selecting 1 card to place at the bottom of digivolution cards.");
-                            selectCardEffect.SetUpCustomMessage_ShowCard("Place bottom digivolution card");
+                        selectCardEffect.SetUpCustomMessage(
+                "Select 1 card to place at the bottom of digivolution cards.",
+                "The opponent is selecting 1 card to place at the bottom of digivolution cards.");
+                        selectCardEffect.SetUpCustomMessage_ShowCard("Place bottom digivolution card");
 
-                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-                        }
+                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
                     }
 
                     IEnumerator SelectDigivolutionCard(CardSource source)
