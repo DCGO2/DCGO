@@ -120,7 +120,10 @@ namespace DCGO.CardEffects.BT18
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     List<Permanent> tappedPermanents = card.Owner.Enemy.GetBattleAreaDigimons()
-                        .Where(permanent => permanent.DP <= card.PermanentOfThisCard().DP)
+                        .Where(permanent =>
+                            !permanent.TopCard.CanNotBeAffected(activateClass) && 
+                            permanent.DP <= card.PermanentOfThisCard().DP &&
+                            permanent.CanSuspend)
                         .ToList();
 
                     yield return ContinuousController.instance.StartCoroutine(
@@ -137,7 +140,7 @@ namespace DCGO.CardEffects.BT18
             }
 
             #endregion
-            
+
             #region When Digivolving
 
             if (timing == EffectTiming.OnEnterFieldAnyone)
@@ -162,7 +165,10 @@ namespace DCGO.CardEffects.BT18
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     List<Permanent> tappedPermanents = card.Owner.Enemy.GetBattleAreaDigimons()
-                        .Where(permanent => permanent.DP <= card.PermanentOfThisCard().DP)
+                        .Where(permanent =>
+                            !permanent.TopCard.CanNotBeAffected(activateClass) && 
+                            permanent.DP <= card.PermanentOfThisCard().DP &&
+                            permanent.CanSuspend)
                         .ToList();
 
                     yield return ContinuousController.instance.StartCoroutine(

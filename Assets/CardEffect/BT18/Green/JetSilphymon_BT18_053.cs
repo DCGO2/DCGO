@@ -268,11 +268,11 @@ namespace DCGO.CardEffects.BT18
                 {
                     return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
-                
+
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card) &&
-                           (permanent.IsDigimon || permanent.IsTamer);
+                           permanent.CanSuspend && (permanent.IsDigimon || permanent.IsTamer);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -284,7 +284,7 @@ namespace DCGO.CardEffects.BT18
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-                    
+
                     selectPermanentEffect.SetUp(
                         selectPlayer: card.Owner,
                         canTargetCondition: CanSelectPermanentCondition,
@@ -303,15 +303,16 @@ namespace DCGO.CardEffects.BT18
                         "The opponent is selecting 1 Digimon that will get suspended and unable to unsuspend.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                    
+
                     IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
                     {
                         foreach (Permanent permanent in permanents)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCantUnsuspendUntilOpponentTurnEnd(
-                                targetPermanent: permanent,
-                                activateClass: activateClass
-                            ));
+                            yield return ContinuousController.instance.StartCoroutine(
+                                CardEffectCommons.GainCantUnsuspendUntilOpponentTurnEnd(
+                                    targetPermanent: permanent,
+                                    activateClass: activateClass
+                                ));
                         }
                     }
                 }
