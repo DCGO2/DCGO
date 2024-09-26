@@ -64,7 +64,7 @@ namespace DCGO.CardEffects.P
             if (timing == EffectTiming.OnDeclaration)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Memory +2", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Memory +1", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -77,7 +77,7 @@ namespace DCGO.CardEffects.P
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
                     {
-                        if (!permanent.IsTamer || !permanent.IsDigimon)
+                        if (!permanent.IsTamer && !permanent.IsDigimon)
                         {
                             return !permanent.TopCard.CardColors.Contains(CardColor.Red);
                         }
@@ -133,7 +133,6 @@ namespace DCGO.CardEffects.P
                             yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
                         }
                     }
-                    
                 }
             }
             #endregion

@@ -876,29 +876,25 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
         bool CanSelect()
         {
-            //手札のカードをプレイ可能
+            //You can play cards from your hand.
             if (gameContext.TurnPlayer.HandCards.Some((_card) => _card.CanPlayFromHandDuringMainPhase))
-            {
                 return true;
-            }
 
-            //効果を使えるパーマネントが場にいる
+            //There is a permanent in play that can use the effect.
             if (gameContext.TurnPlayer.GetFieldPermanents().Count((permanent) => permanent.CanDeclareSkill()) > 0)
-            {
                 return true;
-            }
 
-            //攻撃できるパーマネントが場にいる
+            //There is a permanent in play that can attack.
             if (gameContext.TurnPlayer.GetFieldPermanents().Count((permanent) => permanent.CanAttack(null)) > 0)
-            {
                 return true;
-            }
 
-            //効果を使える手札のカードがある
+            //I have a card in my hand that can use an effect.
             if (gameContext.TurnPlayer.HandCards.Count((_card) => _card.CanDeclareSkill) > 0)
-            {
                 return true;
-            }
+
+            //I have a card in my trash that can use an effect.
+            if (gameContext.TurnPlayer.TrashCards.Count(_card => _card.CanDeclareSkill) > 0)
+                return true;
 
             return false;
         }
