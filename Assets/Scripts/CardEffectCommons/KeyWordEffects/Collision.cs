@@ -65,22 +65,34 @@ public partial class CardEffectCommons
     {
         List<Permanent> enemyDigimons = cardSource.Owner.Enemy.GetBattleAreaDigimons();
 
-        bool PermanentCondition(Permanent permanent)
+        /*bool PermanentCondition(Permanent permanent)
         {
             if (IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, cardSource))
                 return !permanent.TopCard.CanNotBeAffected(activateClass);
 
             return false;
-        }
+        }*/
 
         if (CanActivateCollision(cardSource))
         {
-            yield return ContinuousController.instance.StartCoroutine(GainBlockerPlayerEffect(
+            /*yield return ContinuousController.instance.StartCoroutine(GainBlockerPlayerEffect(
                 permanentCondition: PermanentCondition,
                 effectDuration: EffectDuration.UntilEndAttack,
                 activateClass: activateClass));
-            
-            if(HasMatchConditionOpponentsPermanent(cardSource,permanent => permanent.HasBlocker))
+            */
+
+            foreach (Permanent enemyDigimon in enemyDigimons)
+            {
+                if (enemyDigimon.TopCard.CanNotBeAffected(activateClass))
+                    continue;
+
+                yield return ContinuousController.instance.StartCoroutine(GainBlocker(
+                        targetPermanent: enemyDigimon,
+                        effectDuration: EffectDuration.UntilEndAttack,
+                        activateClass: activateClass));
+            }
+
+            if (HasMatchConditionOpponentsPermanent(cardSource, permanent => permanent.HasBlocker))
                 GManager.instance.attackProcess.IsBlocking = true;
         }
     }
