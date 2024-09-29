@@ -16,13 +16,10 @@ namespace DCGO.CardEffects.BT18
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (CardEffectCommons.IsOwnerTurn(card))
+                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.IsDigimon && permanent.TopCard.CardColors.Contains(CardColor.Blue) && permanent != card.PermanentOfThisCard()))
                         {
-                            if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.IsDigimon && permanent.TopCard.CardColors.Contains(CardColor.Blue) && permanent != card.PermanentOfThisCard()))
-                            {
-                                return true;
-                            }
-                        }
+                            return true;
+                        }                   
                     }
 
                     return false;

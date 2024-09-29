@@ -11,37 +11,12 @@ namespace DCGO.CardEffects.BT18
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Rule
-            if (timing == EffectTiming.None)
-            {
-                ChangeTraitsClass changeTraitsClass = new ChangeTraitsClass();
-                changeTraitsClass.SetUpICardEffect("Trait: Has [Aquatic] Type", CanUseCondition, card);
-                changeTraitsClass.SetUpChangeTraitsClass(changeeTraits: ChangeTraits);
-                cardEffects.Add(changeTraitsClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return true;
-                }
-
-                List<string> ChangeTraits(CardSource cardSource, List<string> cardTraits)
-                {
-                    if (cardSource == card)
-                    {
-                        cardTraits.Add("Aquatic");
-                    }
-
-                    return cardTraits;
-                }
-            }
-            #endregion
-
             #region Digivolution Condition
             if (timing == EffectTiming.None)
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.CardNames.Contains("Calmaramon");
+                    return targetPermanent.TopCard.EqualsCardName("Calmaramon");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 0, ignoreDigivolutionRequirement: false, card: card, condition: null));
@@ -63,7 +38,7 @@ namespace DCGO.CardEffects.BT18
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.HasAquaTraits || cardSource.CardTraits.Contains("Sea Animal");
+                    return cardSource.HasAquaTraits || cardSource.EqualsTraits("Sea Animal");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -159,7 +134,7 @@ namespace DCGO.CardEffects.BT18
                                     canTargetCondition_ByPreSelecetedList: null,
                                     canEndSelectCondition: null,
                                     maxCount: maxCount,
-                                    canNoSelect: true,
+                                    canNoSelect: false,
                                     canEndNotMax: false,
                                     selectPermanentCoroutine: SelectPermanentCoroutine,
                                     afterSelectPermanentCoroutine: null,
@@ -201,7 +176,7 @@ namespace DCGO.CardEffects.BT18
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.HasAquaTraits || cardSource.CardTraits.Contains("Sea Animal");
+                    return cardSource.HasAquaTraits || cardSource.EqualsTraits("Sea Animal");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -302,7 +277,7 @@ namespace DCGO.CardEffects.BT18
                                     canTargetCondition_ByPreSelecetedList: null,
                                     canEndSelectCondition: null,
                                     maxCount: maxCount,
-                                    canNoSelect: true,
+                                    canNoSelect: false,
                                     canEndNotMax: false,
                                     selectPermanentCoroutine: SelectPermanentCoroutine,
                                     afterSelectPermanentCoroutine: null,
@@ -334,7 +309,7 @@ namespace DCGO.CardEffects.BT18
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Return Digimon to hand", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("ReturnDigimon_BT18-023");
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
@@ -380,29 +355,26 @@ namespace DCGO.CardEffects.BT18
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                    {
-                        int maxCount = Math.Min(1, card.Owner.GetBattleAreaPermanents().Count(CanSelectPermanentCondition));
+                     int maxCount = Math.Min(1, card.Owner.GetBattleAreaPermanents().Count(CanSelectPermanentCondition));
 
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectPermanentCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: true,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: null,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Bounce,
-                            cardEffect: activateClass);
+                     selectPermanentEffect.SetUp(
+                         selectPlayer: card.Owner,
+                         canTargetCondition: CanSelectPermanentCondition,
+                         canTargetCondition_ByPreSelecetedList: null,
+                         canEndSelectCondition: null,
+                         maxCount: maxCount,
+                         canNoSelect: true,
+                         canEndNotMax: false,
+                         selectPermanentCoroutine: null,
+                         afterSelectPermanentCoroutine: null,
+                         mode: SelectPermanentEffect.Mode.Bounce,
+                         cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 level 3 Digimon to return to hand.", "The opponent is selecting 1 level 3 Digimon to return to hand.");
+                     selectPermanentEffect.SetUpCustomMessage("Select 1 level 3 Digimon to return to hand.", "The opponent is selecting 1 level 3 Digimon to return to hand.");
 
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());                       
-                    }
+                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());                                    
                 }
             }
             #endregion
