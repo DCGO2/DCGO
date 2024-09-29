@@ -135,7 +135,7 @@ public class Numemon_X_Antibody_BT15_057 : CEntity_Effect
             activateDeletion.SetUpICardEffect("Play 1 [Numemon] from trash", CanUseOnDeletion, card);
             activateDeletion.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             activateDeletion.SetIsInheritedEffect(true);
-            activateDeletion.SetHashString("Play1NumemonFromTrash_BT15_057");
+            activateDeletion.SetHashString("Play1NumemonFromTrashESS_BT15_057");
             cardEffects.Add(activateDeletion);
 
             if (card.PermanentOfThisCard() != null)
