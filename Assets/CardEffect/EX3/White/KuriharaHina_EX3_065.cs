@@ -227,6 +227,7 @@ public class KuriharaHina_EX3_065 : CEntity_Effect
 
                                     if (selectedEffect.CanUse(effectHashtable))
                                     {
+                                        selectedEffect.SetIsDigimonEffect(true);
                                         yield return ContinuousController.instance.StartCoroutine(((ActivateICardEffect)selectedEffect).Activate_Optional_Effect_Execute(effectHashtable));
                                     }
                                 }

@@ -164,7 +164,7 @@ namespace DCGO.CardEffects.BT17
             #endregion
 
             #region All Turns - Delay
-            if (timing == EffectTiming.OnDestroyedAnyone || timing == EffectTiming.WhenReturntoHandAnyone)
+            if (timing == EffectTiming.OnDestroyedAnyone || timing == EffectTiming.OnAddHand)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Digivolve for free", CanUseCondition, card);
@@ -197,9 +197,14 @@ namespace DCGO.CardEffects.BT17
                             return true;
                         }
 
-                        if (CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, PermanentCondition))
+                        if (CardEffectCommons.CanTriggerOnHandAdded(hashtable, card.Owner, null))
                         {
-                            return true;
+                            List<Permanent> list = CardEffectCommons.GetPermanentsFromHashtable(hashtable);
+
+                            if (list.Filter(PermanentCondition).Count > 0)
+                            {
+                                return true;
+                            }
                         }
                     }
 

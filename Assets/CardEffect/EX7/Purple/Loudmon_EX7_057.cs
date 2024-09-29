@@ -18,7 +18,7 @@ namespace DCGO.CardEffects.EX7
                 {
                     if (targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 4)
                     {
-                        if (targetPermanent.TopCard.CardTraits.Contains("Dark Dragon") || targetPermanent.TopCard.CardTraits.Contains("Evil Dragon"))
+                        if (targetPermanent.TopCard.EqualsTraits("Dark Dragon") || targetPermanent.TopCard.EqualsTraits("Evil Dragon"))
                         {
                             return true;
                         }
@@ -60,7 +60,7 @@ namespace DCGO.CardEffects.EX7
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent.DP <= 7000)
+                        if (permanent.DP <= card.Owner.MaxDP_DeleteEffect(7000, activateClass))
                         {
                             return true;
                         }
@@ -162,7 +162,7 @@ namespace DCGO.CardEffects.EX7
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent.DP <= 7000)
+                        if (permanent.DP <= card.Owner.MaxDP_DeleteEffect(7000, activateClass))
                         {
                             return true;
                         }
