@@ -105,7 +105,7 @@ namespace DCGO.CardEffects.BT18
                     {
                         int maxCost = 4;
 
-                        maxCost += 1 * card.Owner.GetBattleAreaDigimons().Count((permanent) => permanent != card.PermanentOfThisCard());
+                        maxCost += card.Owner.GetBattleAreaDigimons().Count((permanent) => permanent != card.PermanentOfThisCard());
 
                         if (permanent.TopCard.Level <= maxCost)
                         {
@@ -139,27 +139,24 @@ namespace DCGO.CardEffects.BT18
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                    {
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+                     int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
 
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectPermanentCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: false,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: null,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Bounce,
-                            cardEffect: activateClass);
+                     selectPermanentEffect.SetUp(
+                         selectPlayer: card.Owner,
+                         canTargetCondition: CanSelectPermanentCondition,
+                         canTargetCondition_ByPreSelecetedList: null,
+                         canEndSelectCondition: null,
+                         maxCount: maxCount,
+                         canNoSelect: false,
+                         canEndNotMax: false,
+                         selectPermanentCoroutine: null,
+                         afterSelectPermanentCoroutine: null,
+                         mode: SelectPermanentEffect.Mode.Bounce,
+                         cardEffect: activateClass);
 
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                    }
+                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());                   
                 }
             }
             #endregion
@@ -183,7 +180,7 @@ namespace DCGO.CardEffects.BT18
                     {
                         int maxCost = 4;
 
-                        maxCost += 1 * card.Owner.GetBattleAreaDigimons().Count((permanent) => permanent != card.PermanentOfThisCard());
+                        maxCost += card.Owner.GetBattleAreaDigimons().Count((permanent) => permanent != card.PermanentOfThisCard());
 
                         if (permanent.TopCard.Level <= maxCost)
                         {
@@ -222,27 +219,24 @@ namespace DCGO.CardEffects.BT18
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                    {
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectPermanentCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: false,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: null,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Bounce,
-                            cardEffect: activateClass);
-
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                    }
+                     int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+                
+                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                
+                     selectPermanentEffect.SetUp(
+                         selectPlayer: card.Owner,
+                         canTargetCondition: CanSelectPermanentCondition,
+                         canTargetCondition_ByPreSelecetedList: null,
+                         canEndSelectCondition: null,
+                         maxCount: maxCount,
+                         canNoSelect: false,
+                         canEndNotMax: false,
+                         selectPermanentCoroutine: null,
+                         afterSelectPermanentCoroutine: null,
+                         mode: SelectPermanentEffect.Mode.Bounce,
+                         cardEffect: activateClass);
+                
+                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());           
                 }
             }
             #endregion
@@ -272,13 +266,10 @@ namespace DCGO.CardEffects.BT18
                                 {
                                     if (cardSource.CardColors.Contains(CardColor.Blue))
                                     {
-                                        if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
+                                        if (cardSource.HasLevel)
                                         {
-                                            if (cardSource.HasLevel)
-                                            {
-                                                return true;
-                                            }
-                                        }
+                                            return true;
+                                        }                                     
                                     }
                                 }
                             }
@@ -303,7 +294,7 @@ namespace DCGO.CardEffects.BT18
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card))
                         {
@@ -316,13 +307,8 @@ namespace DCGO.CardEffects.BT18
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (card.Owner.HandCards.Count >= 1)
-                        {
-                            return true;
-                        }
-
                         if (card.PermanentOfThisCard().DigivolutionCards.Count(CanSelectCardCondition) >= 1)
                         {
                             return true;
@@ -345,10 +331,10 @@ namespace DCGO.CardEffects.BT18
                             List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
                         {
                             new SelectionElement<bool>(message: $"Return to hand", value : true, spriteIndex: 0),
-                            new SelectionElement<bool>(message: $"Play a Digimon from sources", value : false, spriteIndex: 1),
+                            new SelectionElement<bool>(message: $"Play a Digimon", value : false, spriteIndex: 1),
                         };
 
-                            string selectPlayerMessage = "Do you want to return this Digimon to the hand or play 1 level 4 or lower Digimon from its digivolution sources?";
+                            string selectPlayerMessage = "Do you want to return to hand or play 1 level 4 or lower Digimon from its digivolution sources";
                             string notSelectPlayerMessage = "The opponent is choosing which effect to activate.";
 
                             GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
@@ -369,28 +355,31 @@ namespace DCGO.CardEffects.BT18
 
                         if (toHand)
                         {
-                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: CanSelectPermanentCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: 1,
-                                canNoSelect: true,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: null,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Bounce,
-                                cardEffect: activateClass);
-                            
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                            selectCardEffect.SetUp(
+                                        canTargetCondition: CanSelectCardCondition,
+                                        canTargetCondition_ByPreSelecetedList: null,
+                                        canEndSelectCondition: null,
+                                        canNoSelect: () => true,
+                                        selectCardCoroutine: SelectCardCoroutine,
+                                        afterSelectCardCoroutine: null,
+                                        message: null,
+                                        maxCount: 1,
+                                        canEndNotMax: false,
+                                        isShowOpponent: true,
+                                        mode: SelectCardEffect.Mode.AddHand,
+                                        root: SelectCardEffect.Root.Custom,
+                                        customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
+                                        canLookReverseCard: true,
+                                        selectPlayer: card.Owner,
+                                        cardEffect: activateClass);
+
+                            yield return StartCoroutine(selectCardEffect.Activate());
                         }
 
                         else
                         {
-                            int maxCount = 1;
-
                             SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                             selectCardEffect.SetUp(
@@ -401,7 +390,7 @@ namespace DCGO.CardEffects.BT18
                                         selectCardCoroutine: SelectCardCoroutine,
                                         afterSelectCardCoroutine: null,
                                         message: "Select 1 card to play.",
-                                        maxCount: maxCount,
+                                        maxCount: 1,
                                         canEndNotMax: false,
                                         isShowOpponent: true,
                                         mode: SelectCardEffect.Mode.Custom,
@@ -422,15 +411,18 @@ namespace DCGO.CardEffects.BT18
                         if (!toHand)
                         {
                             root = SelectCardEffect.Root.DigivolutionCards;
-                        }
 
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                            cardSources: selectedCards,
-                            activateClass: activateClass,
-                            payCost: false,
-                            isTapped: false,
-                            root: root,
-                            activateETB: true));
+                            if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: selectedCards[0], payCost: false, cardEffect: activateClass))
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
+                                                            cardSources: selectedCards,
+                                                            activateClass: activateClass,
+                                                            payCost: false,
+                                                            isTapped: false,
+                                                            root: root,
+                                                            activateETB: true));
+                            }                         
+                        }                    
                     }
                 }
             }
