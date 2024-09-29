@@ -12,7 +12,7 @@ public class Geremon_BT15_035 : CEntity_Effect
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-        #region Rule Text
+        #region Rule Text - Name
 
         if (timing == EffectTiming.None)
         {

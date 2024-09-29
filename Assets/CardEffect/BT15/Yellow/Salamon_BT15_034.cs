@@ -193,7 +193,7 @@ public class Salamon_BT15_034 : CEntity_Effect
                         selectHandEffect.SetUpCustomMessage(
                             "Select 1 card to place at the top or bottom of security.",
                             "The opponent is selecting 1 card to place at the bottom of security.");
-                        selectHandEffect.SetUpCustomMessage_ShowCard("Security Bottom Card");
+                        selectHandEffect.SetUpCustomMessage_ShowCard("Security Top/Bottom Card");
 
                         yield return StartCoroutine(selectHandEffect.Activate());
 

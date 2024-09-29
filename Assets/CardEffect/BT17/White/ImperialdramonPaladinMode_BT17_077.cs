@@ -31,29 +31,6 @@ namespace DCGO.CardEffects.BT17
             }
             #endregion
 
-            #region Rule - Trait: Also has [Free]
-            if (timing == EffectTiming.None)
-            {
-                ChangeTraitsClass changeTraitsClass = new ChangeTraitsClass();
-                changeTraitsClass.SetUpICardEffect("Trait: Also has [Free]", CanUseCondition, card);
-                changeTraitsClass.SetUpChangeTraitsClass(changeeTraits: ChangeTraits);
-                cardEffects.Add(changeTraitsClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return true;
-                }
-
-                List<string> ChangeTraits(CardSource cardSource, List<string> cardTraits)
-                {
-                    if (cardSource == card)
-                        cardTraits.Add("Free");
-
-                    return cardTraits;
-                }
-            }
-            #endregion
-
             #region Blast Digivolve
             if (timing == EffectTiming.OnCounterTiming)
             {
