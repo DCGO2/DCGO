@@ -320,13 +320,12 @@ namespace DCGO.CardEffects.BT18
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    bool returnToHand = CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
                     bool canSelectDigivolutionCards = CardEffectCommons.IsExistOnBattleArea(card)
                     && card.PermanentOfThisCard().DigivolutionCards.Count(CanSelectCardCondition) >= 1;
 
-                    if (returnToHand || canSelectDigivolutionCards)
+                    if (canSelectDigivolutionCards)
                     {
-                        if (returnToHand && canSelectDigivolutionCards)
+                        if (canSelectDigivolutionCards)
                         {
                             List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
                         {
@@ -358,22 +357,22 @@ namespace DCGO.CardEffects.BT18
                             SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                             selectCardEffect.SetUp(
-                                        canTargetCondition: CanSelectCardCondition,
-                                        canTargetCondition_ByPreSelecetedList: null,
-                                        canEndSelectCondition: null,
-                                        canNoSelect: () => true,
-                                        selectCardCoroutine: SelectCardCoroutine,
-                                        afterSelectCardCoroutine: null,
-                                        message: null,
-                                        maxCount: 1,
-                                        canEndNotMax: false,
-                                        isShowOpponent: true,
-                                        mode: SelectCardEffect.Mode.AddHand,
-                                        root: SelectCardEffect.Root.Custom,
-                                        customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
-                                        canLookReverseCard: true,
-                                        selectPlayer: card.Owner,
-                                        cardEffect: activateClass);
+                                       canTargetCondition: CanSelectCardCondition,
+                                       canTargetCondition_ByPreSelecetedList: null,
+                                       canEndSelectCondition: null,
+                                       canNoSelect: () => true,
+                                       selectCardCoroutine: SelectCardCoroutine,
+                                       afterSelectCardCoroutine: null,
+                                       message: "Select 1 card to return to hand.",
+                                       maxCount: 1,
+                                       canEndNotMax: false,
+                                       isShowOpponent: true,
+                                       mode: SelectCardEffect.Mode.AddHand,
+                                       root: SelectCardEffect.Root.Custom,
+                                       customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
+                                       canLookReverseCard: true,
+                                       selectPlayer: card.Owner,
+                                       cardEffect: activateClass);
 
                             yield return StartCoroutine(selectCardEffect.Activate());
                         }
