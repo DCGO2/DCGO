@@ -300,7 +300,7 @@ namespace DCGO.CardEffects.EX6
                     {
                         if (CardEffectCommons.IsOwnerTurn(card))
                         {
-                            if (card.PermanentOfThisCard().TopCard.ContainsCardName("RagnaLoardmon"))
+                            if (card.PermanentOfThisCard().TopCard.EqualsCardName("RagnaLoardmon"))
                             {
                                 return true;
                             }

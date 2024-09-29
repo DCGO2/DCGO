@@ -156,6 +156,7 @@ namespace DCGO.CardEffects.EX7
                             ActivateClass activateClass1 = new ActivateClass();
                             activateClass1.SetUpICardEffect("Delete 1 of your Digimon", CanUseCondition2, cardSource);
                             activateClass1.SetUpActivateClass(CanActivateCondition2, ActivateCoroutine1, -1, false, EffectDiscription1());
+                            activateClass1.SetEffectSourceCard(cardSource);
                             cardEffects.Add(activateClass1);
 
                             if (cardSource.PermanentOfThisCard() != null)

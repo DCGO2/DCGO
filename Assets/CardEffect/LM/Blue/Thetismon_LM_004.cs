@@ -258,7 +258,7 @@ namespace DCGO.CardEffects.LM
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (CardEffectCommons.CanTriggerOnTrashHand(hashtable, null, CardCondition))
                         {
@@ -271,12 +271,7 @@ namespace DCGO.CardEffects.LM
 
                 bool CanActivateAllTurnsCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)

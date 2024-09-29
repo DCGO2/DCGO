@@ -307,7 +307,7 @@ public class Mustymon_ST10_06 : CEntity_Effect
 
             bool PermanentCondition(Permanent permanent)
             {
-                if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                if (permanent.IsDigimon)
                 {
                     if (permanent != card.PermanentOfThisCard())
                     {

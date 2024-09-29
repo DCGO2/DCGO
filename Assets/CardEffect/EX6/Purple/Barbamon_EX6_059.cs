@@ -79,8 +79,8 @@ namespace DCGO.CardEffects.EX6
                         canEndNotMax: false,
                         isShowOpponent: false,
                         mode: SelectCardEffect.Mode.Discard,
-                        root: SelectCardEffect.Root.Custom,
-                        customRootCardList: card.Owner.Enemy.HandCards,
+                        root: SelectCardEffect.Root.EnemyHand,
+                        customRootCardList: null,
                         canLookReverseCard: false,
                         selectPlayer: card.Owner,
                         cardEffect: activateClass);
@@ -159,8 +159,8 @@ namespace DCGO.CardEffects.EX6
                         canEndNotMax: false,
                         isShowOpponent: false,
                         mode: SelectCardEffect.Mode.Discard,
-                        root: SelectCardEffect.Root.Custom,
-                        customRootCardList: card.Owner.Enemy.HandCards,
+                        root: SelectCardEffect.Root.EnemyHand,
+                        customRootCardList: null,
                         canLookReverseCard: false,
                         selectPlayer: card.Owner,
                         cardEffect: activateClass);

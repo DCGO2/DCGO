@@ -171,7 +171,7 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.IsJogress(hashtable))
                     {
-                        int selectedLevel = 0;
+                        Permanent selectedPermanent = null;
 
                         if (CardEffectCommons.HasMatchConditionPermanent(IsOpponentsDigimon))
                         {
@@ -189,7 +189,7 @@ namespace DCGO.CardEffects.BT17
                                 canEndNotMax: false,
                                 selectPermanentCoroutine: SelectPermanentLevelCoroutine,
                                 afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.PutLibraryBottom,
+                                mode: SelectPermanentEffect.Mode.Custom,
                                 cardEffect: activateClass);
 
                             selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to destory.", "The opponent is selecting 1 Digimon to destory.");
@@ -200,15 +200,15 @@ namespace DCGO.CardEffects.BT17
                         IEnumerator SelectPermanentLevelCoroutine(Permanent permanent)
                         {
                             if (permanent != null)
-                                selectedLevel = permanent.Level;
+                                selectedPermanent = permanent;
 
                             yield return null;
                         }
 
-                        if(selectedLevel > 0)
+                        if(selectedPermanent.TopCard.HasLevel)
                         {
                             yield return ContinuousController.instance.StartCoroutine(new DeckBottomBounceClass(
-                                deckBounceTargetPermanents: card.Owner.Enemy.GetBattleAreaDigimons().Filter(permanent => permanent.Level == selectedLevel),
+                                deckBounceTargetPermanents: card.Owner.Enemy.GetBattleAreaDigimons().Filter(permanent => permanent.Level == selectedPermanent.Level),
                                 hashtable: hashtable).DeckBounce());
                         }
                     }
@@ -272,7 +272,7 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.IsJogress(hashtable))
                     {
-                        int selectedLevel = 0;
+                        Permanent selectedPermanent = null;
 
                         if (CardEffectCommons.HasMatchConditionPermanent(IsOpponentsDigimon))
                         {
@@ -290,26 +290,26 @@ namespace DCGO.CardEffects.BT17
                                 canEndNotMax: false,
                                 selectPermanentCoroutine: SelectPermanentLevelCoroutine,
                                 afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.PutLibraryBottom,
+                                mode: SelectPermanentEffect.Mode.Custom,
                                 cardEffect: activateClass);
 
-                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to bottom deck.", "The opponent is selecting 1 Digimon to bottom deck.");
+                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to destory.", "The opponent is selecting 1 Digimon to destory.");
 
                             yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                         }
 
                         IEnumerator SelectPermanentLevelCoroutine(Permanent permanent)
                         {
-                            if (permanent != null && permanent.TopCard.HasLevel)
-                                selectedLevel = permanent.Level;
+                            if (permanent != null)
+                                selectedPermanent = permanent;
 
                             yield return null;
                         }
 
-                        if (selectedLevel > 2)
+                        if (selectedPermanent.TopCard.HasLevel)
                         {
                             yield return ContinuousController.instance.StartCoroutine(new DeckBottomBounceClass(
-                                deckBounceTargetPermanents: card.Owner.Enemy.GetBattleAreaDigimons().Filter(permanent => permanent.Level == selectedLevel && !permanent.TopCard.CanNotBeAffected(activateClass)),
+                                deckBounceTargetPermanents: card.Owner.Enemy.GetBattleAreaDigimons().Filter(permanent => permanent.Level == selectedPermanent.Level),
                                 hashtable: hashtable).DeckBounce());
                         }
                     }

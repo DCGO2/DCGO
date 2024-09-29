@@ -168,6 +168,7 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
         Recollection,
         Execution,
         DigivolutionCards,
+        EnemyHand,
         None,
     }
 
@@ -219,6 +220,13 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
 
             case Root.Recollection:
                 foreach (CardSource cardSource in _selectPlayer.LostCards)
+                {
+                    RootCardList.Add(cardSource);
+                }
+                break;
+            case Root.EnemyHand:
+                _selectPlayer.Enemy.HandCards = RandomUtility.ShuffledDeckCards(_selectPlayer.Enemy.HandCards);
+                foreach (CardSource cardSource in _selectPlayer.Enemy.HandCards)
                 {
                     RootCardList.Add(cardSource);
                 }

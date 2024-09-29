@@ -149,7 +149,7 @@ public class Lunamon_EX5_016 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Main][Once Per Turn] By suspending 1 of your green Digimon, you may play 1 Digimon card with [Vegetation], [Plant] or [Fairy] in its traits and 3000 DP or less from your hand without paying its memory cost.";
+                return "[Main] [Once Per Turn] By placing the top card of this Digimon with the [Night Claw] or [Light Fang] trait as this Digimon's bottom digivolution card, gain 2 memory.";
             }
 
             bool CanUseCondition(Hashtable hashtable)
