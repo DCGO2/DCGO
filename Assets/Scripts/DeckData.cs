@@ -802,7 +802,7 @@ public class DeckData
         StringBuilder sb = new StringBuilder();
         foreach (char c in deckName)
         {
-            if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'))
+            if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c == ' '))
             {
                 sb.Append(c);
             }

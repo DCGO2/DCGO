@@ -113,11 +113,14 @@ namespace DCGO.CardEffects.EX7
                 int count()
                 {
                     List<Permanent> cards = new List<Permanent>();
+                    List<Permanent> choices = card.Owner.GetBattleAreaDigimons();
 
-                    foreach (Permanent card in card.Owner.GetBattleAreaPermanents().Filter(permanent => permanent.TopCard.EqualsTraits("Three Musketeers")))
+                    choices = choices.Filter(permanent => permanent.TopCard.EqualsTraits("Three Musketeers"));
+
+                    foreach (Permanent selection in choices)
                     {
-                        if (cards.Some(permanent => !permanent.TopCard.HasSameCardName(card.TopCard)))
-                            cards.Add(card);
+                        if (cards.Some(permanent => !permanent.TopCard.HasSameCardName(selection.TopCard)))
+                            cards.Add(selection);
                     }
 
                     return cards.Count;

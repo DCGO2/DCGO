@@ -225,8 +225,7 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
                 }
                 break;
             case Root.EnemyHand:
-                _selectPlayer.Enemy.HandCards = RandomUtility.ShuffledDeckCards(_selectPlayer.Enemy.HandCards);
-                foreach (CardSource cardSource in _selectPlayer.Enemy.HandCards)
+                foreach (CardSource cardSource in RandomUtility.ShuffledDeckCards(_selectPlayer.Enemy.HandCards))
                 {
                     RootCardList.Add(cardSource);
                 }
