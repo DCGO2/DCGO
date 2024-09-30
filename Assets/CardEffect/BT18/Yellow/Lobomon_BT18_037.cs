@@ -1,7 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System;
-using System.Linq;
 
 namespace DCGO.CardEffects.BT18
 {
@@ -99,8 +97,6 @@ namespace DCGO.CardEffects.BT18
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    int maxCount = Math.Min(1, card.Owner.SecurityCards.Count(CanSelectCardCondition));
-
                     CardSource selectedCard = null;
 
                     SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
@@ -113,7 +109,7 @@ namespace DCGO.CardEffects.BT18
                         selectCardCoroutine: null,
                         afterSelectCardCoroutine: AfterSelectCardCoroutine,
                         message: "Select 1 card to add to your hand.",
-                        maxCount: maxCount,
+                        maxCount: 1,
                         canEndNotMax: false,
                         isShowOpponent: true,
                         mode: SelectCardEffect.Mode.AddHand,
