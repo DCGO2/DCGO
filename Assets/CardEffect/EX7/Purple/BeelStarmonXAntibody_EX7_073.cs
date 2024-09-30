@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.EX7
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.EqualsTraits("Three Musketeers") && targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 6 && targetPermanent.TopCard.EqualsTraits("X Antibody");
+                    return targetPermanent.TopCard.EqualsTraits("Three Musketeers") && targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 6 && !targetPermanent.TopCard.EqualsTraits("X Antibody");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 1, ignoreDigivolutionRequirement: false, card: card, condition: null));

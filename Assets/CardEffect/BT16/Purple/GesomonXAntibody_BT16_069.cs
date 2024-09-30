@@ -255,10 +255,7 @@ namespace DCGO.CardEffects.BT16
                     {
                         if (permanent.IsDigimon || permanent.IsTamer)
                         {
-                            if (permanent.DigivolutionCards.Count(CanSelectCardCondition) >= 1)
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
 
