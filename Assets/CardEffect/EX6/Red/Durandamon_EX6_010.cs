@@ -300,10 +300,7 @@ namespace DCGO.CardEffects.EX6
                     {
                         if (CardEffectCommons.IsOwnerTurn(card))
                         {
-                            if (card.PermanentOfThisCard().TopCard.EqualsCardName("RagnaLoardmon"))
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
                     
@@ -321,7 +318,10 @@ namespace DCGO.CardEffects.EX6
                                 if (GManager.instance.attackProcess.AttackingPermanent ==
                                     card.PermanentOfThisCard())
                                 {
-                                    return true;
+                                    if (card.PermanentOfThisCard().TopCard.EqualsCardName("RagnaLoardmon"))
+                                    {
+                                        return true;
+                                    }
                                 }
                             }
                         }
