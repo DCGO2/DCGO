@@ -170,8 +170,8 @@ public class Devimon_BT14_075 : CEntity_Effect
                         canEndNotMax: false,
                         isShowOpponent: false,
                         mode: SelectCardEffect.Mode.Discard,
-                        root: SelectCardEffect.Root.EnemyHand,
-                        customRootCardList: null,
+                        root: SelectCardEffect.Root.Custom,
+                        customRootCardList: card.Owner.Enemy.HandCards,
                         canLookReverseCard: false,
                         selectPlayer: card.Owner,
                         cardEffect: activateClass);
