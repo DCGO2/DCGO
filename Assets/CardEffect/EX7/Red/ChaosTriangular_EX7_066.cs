@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Unity.Burst.Intrinsics;
 
@@ -119,7 +120,7 @@ namespace DCGO.CardEffects.EX7
 
                     foreach (Permanent selection in choices)
                     {
-                        if (cards.Some(permanent => !permanent.TopCard.HasSameCardName(selection.TopCard)))
+                        if (!cards.Some(permanent => permanent.TopCard.HasSameCardName(selection.TopCard)))
                             cards.Add(selection);
                     }
 
