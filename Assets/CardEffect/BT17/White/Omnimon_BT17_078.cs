@@ -192,7 +192,7 @@ namespace DCGO.CardEffects.BT17
                                 mode: SelectPermanentEffect.Mode.Custom,
                                 cardEffect: activateClass);
 
-                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to destory.", "The opponent is selecting 1 Digimon to destory.");
+                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to bottom deck all of same level.", "The opponent is selecting 1 Digimon to bottom deck all of same level.");
 
                             yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                         }
@@ -208,7 +208,9 @@ namespace DCGO.CardEffects.BT17
                         if(selectedPermanent.TopCard.HasLevel)
                         {
                             yield return ContinuousController.instance.StartCoroutine(new DeckBottomBounceClass(
-                                deckBounceTargetPermanents: card.Owner.Enemy.GetBattleAreaDigimons().Filter(permanent => permanent.Level == selectedPermanent.Level),
+                                deckBounceTargetPermanents: card.Owner.Enemy.GetBattleAreaDigimons().Filter(permanent => 
+                                permanent.Level == selectedPermanent.Level &&
+                                !permanent.TopCard.CanNotBeAffected(activateClass)),
                                 hashtable: hashtable).DeckBounce());
                         }
                     }
@@ -293,7 +295,7 @@ namespace DCGO.CardEffects.BT17
                                 mode: SelectPermanentEffect.Mode.Custom,
                                 cardEffect: activateClass);
 
-                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to destory.", "The opponent is selecting 1 Digimon to destory.");
+                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to bottom deck all of same level.", "The opponent is selecting 1 Digimon to bottom deck all of same level.");
 
                             yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                         }
@@ -309,7 +311,9 @@ namespace DCGO.CardEffects.BT17
                         if (selectedPermanent.TopCard.HasLevel)
                         {
                             yield return ContinuousController.instance.StartCoroutine(new DeckBottomBounceClass(
-                                deckBounceTargetPermanents: card.Owner.Enemy.GetBattleAreaDigimons().Filter(permanent => permanent.Level == selectedPermanent.Level),
+                                deckBounceTargetPermanents: card.Owner.Enemy.GetBattleAreaDigimons().Filter(permanent =>
+                                permanent.Level == selectedPermanent.Level &&
+                                !permanent.TopCard.CanNotBeAffected(activateClass)),
                                 hashtable: hashtable).DeckBounce());
                         }
                     }

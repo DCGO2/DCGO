@@ -143,8 +143,8 @@ namespace DCGO.CardEffects.P
                                 cardEffect: activateClass);
 
                             selectHandEffect.SetUpCustomMessage(
-                                "Select 1 tamer to play.",
-                                "The opponent is selecting 1 tamer to play.");
+                                "Select 1 Digimon to play.",
+                                "The opponent is selecting 1 Digimon to play.");
 
                             yield return StartCoroutine(selectHandEffect.Activate());
 
