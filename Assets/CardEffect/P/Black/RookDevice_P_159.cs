@@ -36,81 +36,78 @@ namespace DCGO.CardEffects.P
             #region When Trashed from battle area
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
-                if (timing == EffectTiming.OptionSkill)
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Gain Reboot, Blocker, +2000 DP", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
                 {
-                    ActivateClass activateClass = new ActivateClass();
-                    activateClass.SetUpICardEffect("Gain Reboot, Blocker, +2000 DP", CanUseCondition, card);
-                    activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-                    cardEffects.Add(activateClass);
+                    return "[Main] 1 of your Digimon gains <Reboot>, <Blocker> and gets +2000 DP until the end of your opponent's turn. Then, place this card in the battle area.";
+                }
 
-                    string EffectDiscription()
+                bool HasDigimon(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsOwnerPermanent(permanent, card))
+                        return permanent.IsDigimon;
+
+                    return false;
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanActivateOnDeletion(card);
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.HasMatchConditionPermanent(HasDigimon))
                     {
-                        return "[Main] 1 of your Digimon gains <Reboot>, <Blocker> and gets +2000 DP until the end of your opponent's turn. Then, place this card in the battle area.";
-                    }
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                    bool HasDigimon(Permanent permanent)
-                    {
-                        if (CardEffectCommons.IsOwnerPermanent(permanent, card))
-                            return permanent.IsDigimon;
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: HasDigimon,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectPermanentCoroutine1,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
 
-                        return false;
-                    }
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will get Reboot, Blocker, +2000 DP.", "The opponent is selecting 1 Digimon that will get Reboot, Blocker, +2000 DP.");
 
-                    bool CanUseCondition(Hashtable hashtable)
-                    {
-                        return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
-                    }
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                    bool CanActivateCondition(Hashtable hashtable)
-                    {
-                        return CardEffectCommons.CanActivateOnDeletion(card);
-                    }
-
-                    IEnumerator ActivateCoroutine(Hashtable hashtable)
-                    {
-                        if (CardEffectCommons.HasMatchConditionPermanent(HasDigimon))
+                        IEnumerator SelectPermanentCoroutine1(Permanent permanent)
                         {
-                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainReboot(
+                                targetPermanent: permanent,
+                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                                activateClass: activateClass));
 
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: HasDigimon,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: 1,
-                                canNoSelect: false,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: SelectPermanentCoroutine1,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Custom,
-                                cardEffect: activateClass);
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBlocker(
+                                targetPermanent: permanent,
+                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                                activateClass: activateClass));
 
-                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will get Reboot, Blocker, +2000 DP.", "The opponent is selecting 1 Digimon that will get Reboot, Blocker, +2000 DP.");
-
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                            IEnumerator SelectPermanentCoroutine1(Permanent permanent)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainReboot(
-                                    targetPermanent: permanent,
-                                    effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                                    activateClass: activateClass));
-
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBlocker(
-                                    targetPermanent: permanent,
-                                    effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                                    activateClass: activateClass));
-
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
-                                    targetPermanent: permanent,
-                                    changeValue: 2000,
-                                    effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                                    activateClass: activateClass));
-                            }
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
+                                targetPermanent: permanent,
+                                changeValue: 2000,
+                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                                activateClass: activateClass));
                         }
-
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlaceDelayOptionCards(card: card, cardEffect: activateClass));
                     }
+
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlaceDelayOptionCards(card: card, cardEffect: activateClass));
                 }
             }
             #endregion
