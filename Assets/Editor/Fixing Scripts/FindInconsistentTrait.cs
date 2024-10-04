@@ -17,15 +17,31 @@ namespace DCGO.Tools.Repair{
     [CreateAssetMenu(fileName = "CardEntity_Inconsistency", menuName = "Create Inconsistency Entity")]
     public class InconsistentName : ScriptableObject
     {
+        public enum DataType
+        {
+            name,
+            text,
+            attribute,
+            type
+        }
+
+        public DataType dataType;
         public string stringToFind;
         public string stringToCompare;
+    }
+
+    public class TrackedData
+    {
+        public CEntity_Base entity;
+        public string name;
+        public List<string> tags = new List<string>();
     }
 
     [CustomEditor(typeof(InconsistentName))]
     public class FindInconsistentTrait : Editor
     {
         InconsistentName _stringValue;
-        List<CEntity_Base> _entities;
+        List<TrackedData> _entities;
 
         public override void OnInspectorGUI()
         {
@@ -37,36 +53,117 @@ namespace DCGO.Tools.Repair{
 
             if (_entities == null)
                 return;
+
+            GUILayout.Space(30);
+
+            GUILayout.Label($"Inconsistencies Found: {_entities.Count}");
+
+            GUILayout.Space(10);
+
+            if (GUILayout.Button("Fix Inconsistencies"))
+                UpdateInconsistencies(_stringValue);
+
+            
+            GUILayout.BeginVertical();
+
+            //foreach (CEntity_Base card in _entities)
+
+
+            GUILayout.EndVertical();
         }
 
         IEnumerator FindInconsistency(InconsistentName value)
         {
             List<CEntity_Base> List = GetAsset.LoadAll<CEntity_Base>("Assets/CardBaseEntity/");
-            _entities = new List<CEntity_Base>();
+            _entities = new List<TrackedData>();
 
             foreach (CEntity_Base card in List)
             {
-                bool edited = false;
+                TrackedData data = new TrackedData();
 
-                for(int i = 0; i < card.Type_ENG.Count; i++)
+                switch (value.dataType)
                 {
-                    if (!card.Type_ENG[i].Contains(value.stringToFind))
-                        continue;
+                    case InconsistentName.DataType.name:
+                        if (!card.CardName_ENG.Contains(value.stringToFind))
+                            continue;
+                        Debug.Log($"{card.CardID}: {card.CardName_ENG}");
+                        if (card.CardName_ENG.Equals(value.stringToCompare))
+                            continue;
 
-                    if (card.Type_ENG[i].Equals(value.stringToCompare))
-                        continue;
+                        Debug.Log($"{card.CardID}: {card.CardName_ENG}");
+                        data.entity = card;
+                        data.name = card.CardName_ENG;
+                        _entities.Add(data);
+                        break;
+                    case InconsistentName.DataType.text:
 
-                    card.Type_ENG[i] = value.stringToCompare;
-                    _entities.Add(card);
-                    edited = true;
+                        break;
+                    case InconsistentName.DataType.attribute:
+                        List<string> attributes = card.Attribute_ENG.Clone().ToList();
+
+                        for (int i = 0; i < attributes.Count; i++)
+                        {
+                            if (!attributes[i].Contains(value.stringToFind))
+                                continue;
+
+                            if (attributes[i].Equals(value.stringToCompare))
+                                continue;
+
+                            attributes[i] = value.stringToCompare;
+                            data.entity = card;
+                            data.tags = attributes;
+
+                            _entities.Add(data);
+                        }
+                        break;
+                    case InconsistentName.DataType.type:
+                        List<string> types = card.Type_ENG.Clone().ToList();
+
+                        for (int i = 0; i < types.Count; i++)
+                        {
+                            if (!types[i].Contains(value.stringToFind))
+                                continue;
+
+                            if (types[i].Equals(value.stringToCompare))
+                                continue;
+
+                            types[i] = value.stringToCompare;
+                            data.entity = card;
+                            data.tags = types;
+
+                            _entities.Add(data);
+                        }
+                        break;
                 }
-
-                if(edited)
-                    EditorUtility.SetDirty(card);
+                
             }
 
             Debug.Log($"Inconsistency Complete: Found {_entities.Count}");
             yield return null;
+        }
+        void UpdateInconsistencies(InconsistentName value)
+        {
+            
+            foreach (TrackedData data in _entities)
+            {
+                switch (value.dataType)
+                {
+                    case InconsistentName.DataType.name:
+                        data.entity.CardName_ENG = data.name;
+                        break;
+                    case InconsistentName.DataType.text:
+
+                        break;
+                    case InconsistentName.DataType.attribute:
+                        data.entity.Attribute_ENG = data.tags;
+                        break;
+                    case InconsistentName.DataType.type:
+                        data.entity.Type_ENG = data.tags;
+                        break;
+                }
+
+                EditorUtility.SetDirty(data.entity);
+            }
         }
     }
 }
