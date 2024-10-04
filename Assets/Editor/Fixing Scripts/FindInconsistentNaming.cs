@@ -38,7 +38,7 @@ namespace DCGO.Tools.Repair{
     }
 
     [CustomEditor(typeof(InconsistentName))]
-    public class FindInconsistentTrait : Editor
+    public class FindInconsistentNaming : Editor
     {
         InconsistentName _stringValue;
         List<TrackedData> _entities;
@@ -66,8 +66,11 @@ namespace DCGO.Tools.Repair{
             
             GUILayout.BeginVertical();
 
-            //foreach (CEntity_Base card in _entities)
-
+            foreach (TrackedData data in _entities)
+            {
+                if (GUILayout.Button($"Card ID: {data.entity.CardID}"))
+                    Selection.SetActiveObjectWithContext(data.entity, null);
+            }
 
             GUILayout.EndVertical();
         }
@@ -86,13 +89,9 @@ namespace DCGO.Tools.Repair{
                     case InconsistentName.DataType.name:
                         if (!card.CardName_ENG.Contains(value.stringToFind))
                             continue;
-                        Debug.Log($"{card.CardID}: {card.CardName_ENG}");
-                        if (card.CardName_ENG.Equals(value.stringToCompare))
-                            continue;
 
-                        Debug.Log($"{card.CardID}: {card.CardName_ENG}");
                         data.entity = card;
-                        data.name = card.CardName_ENG;
+                        data.name = card.CardName_ENG.Replace(value.stringToFind,value.stringToCompare);
                         _entities.Add(data);
                         break;
                     case InconsistentName.DataType.text:
