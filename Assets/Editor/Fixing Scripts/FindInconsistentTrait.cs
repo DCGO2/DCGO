@@ -48,15 +48,15 @@ namespace DCGO.Tools.Repair{
             {
                 bool edited = false;
 
-                foreach (string trait in card.Type_ENG)
+                for(int i = 0; i < card.Type_ENG.Count; i++)
                 {
-                    if (!trait.Contains(value.stringToFind))
+                    if (!card.Type_ENG[i].Contains(value.stringToFind))
                         continue;
 
-                    if (trait.Equals(value.stringToCompare))
+                    if (card.Type_ENG[i].Equals(value.stringToCompare))
                         continue;
 
-                    card.Type_ENG[card.Type_ENG.FindIndex(str => str == trait)] = value.stringToCompare;
+                    card.Type_ENG[i] = value.stringToCompare;
                     _entities.Add(card);
                     edited = true;
                 }
