@@ -55,13 +55,17 @@ namespace DCGO.Tools.Repair{
                     if (!trait.Contains(value.stringToFind))
                         continue;
 
-                    if (!trait.Equals(value.stringToCompare))
-                        card.Attribute_ENG[card.Attribute_ENG.FindIndex(str => str == trait)] = value.stringToCompare;
+                    if (trait.Equals(value.stringToCompare))
+                        continue;
+
+                    card.Attribute_ENG[card.Attribute_ENG.FindIndex(str => str == trait)] = value.stringToCompare;
+                    _entities.Add(card);
                 }
 
                 EditorUtility.SetDirty(card);
             }
 
+            Debug.Log($"Inconsistency Complete: Found {_entities.Count}");
             yield return null;
         }
     }
