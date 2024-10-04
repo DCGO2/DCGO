@@ -22,7 +22,7 @@ namespace DCGO.Tools.Repair{
     }
 
     [CustomEditor(typeof(InconsistentName))]
-    public class FindInconsistentName : Editor
+    public class FindInconsistentTrait : Editor
     {
         InconsistentName _stringValue;
         List<CEntity_Base> _entities;
@@ -46,11 +46,9 @@ namespace DCGO.Tools.Repair{
 
             foreach (CEntity_Base card in List)
             {
-                List<string> traits = new List<string>();
-                traits.AddRange(card.Attribute_ENG);
-                traits.AddRange(card.Type_ENG);
+                bool edited = false;
 
-                foreach (string trait in card.Attribute_ENG)
+                foreach (string trait in card.Type_ENG)
                 {
                     if (!trait.Contains(value.stringToFind))
                         continue;
@@ -58,11 +56,13 @@ namespace DCGO.Tools.Repair{
                     if (trait.Equals(value.stringToCompare))
                         continue;
 
-                    card.Attribute_ENG[card.Attribute_ENG.FindIndex(str => str == trait)] = value.stringToCompare;
+                    card.Type_ENG[card.Type_ENG.FindIndex(str => str == trait)] = value.stringToCompare;
                     _entities.Add(card);
+                    edited = true;
                 }
 
-                EditorUtility.SetDirty(card);
+                if(edited)
+                    EditorUtility.SetDirty(card);
             }
 
             Debug.Log($"Inconsistency Complete: Found {_entities.Count}");
