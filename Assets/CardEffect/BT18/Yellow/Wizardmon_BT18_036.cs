@@ -1,47 +1,39 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
 namespace DCGO.CardEffects
 {
-    public class Candlemon_BT18_030 : CEntity_Effect
+    public class Wizardmon_BT18_036 : CEntity_Effect
     {
-        List<ICardEffect> cardEffects = new List<ICardEffect>();
-        
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
-            #region On Play
+            List<ICardEffect> cardEffects = new List<ICardEffect>();
+
+            #region When Digivolving
+            
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Reveal top 3, add 1 yellow Data and 1 Witchelny", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpICardEffect("Trash 1 security to draw and gain 1 memory", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[On Play] Reveal the top 3 cards of your deck. Add 1 yellow card with the [Data] trait and 1 card with the [Witchelny] trait among them to the hand. Return the rest to the bottom of the deck.";
-                }
-
-                bool CanSelectCardCondition(CardSource cardSource)
-                {
-                    return (cardSource.CardTraits.Contains("Data") && cardSource.CardColors.Contains(CardColor.Yellow));
-                }
-
-                bool CanSelectCardCondition1(CardSource cardSource)
-                {
-                    return cardSource.CardTraits.Contains("Witchelny");
+                    return "[When Digivolving] By trashing your top security card, [Draw 1] and gain 1 memory.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (card.Owner.LibraryCards.Count >= 1)
+                        if (card.Owner.SecurityCards.Count >= 1)
                             return true;
                     }
 
@@ -50,39 +42,28 @@ namespace DCGO.CardEffects
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SimplifiedRevealDeckTopCardsAndSelect(
-                        revealCount: 3,
-                        simplifiedSelectCardConditions:
-                        new SimplifiedSelectCardConditionClass[]
-                        {
-                            new SimplifiedSelectCardConditionClass(
-                                canTargetCondition:CanSelectCardCondition,
-                                message: "Select 1 yellow card with [Data] in its traits.",
-                                mode: SelectCardEffect.Mode.AddHand,
-                                maxCount: 1,
-                                selectCardCoroutine: null),
-                            new SimplifiedSelectCardConditionClass(
-                                canTargetCondition:CanSelectCardCondition1,
-                                message: "Select 1 card with [Witchelny] in its traits.",
-                                mode: SelectCardEffect.Mode.AddHand,
-                                maxCount: 1,
-                                selectCardCoroutine: null),
-                        },
-                        remainingCardsPlace: RemainingCardsPlace.DeckBottom,
-                        activateClass: activateClass
-                    ));
+                    yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
+                        player: card.Owner,
+                        destroySecurityCount: 1,
+                        cardEffect: activateClass,
+                        fromTop: true).DestroySecurity());
+
+                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
+
+                    yield return ContinuousController.instance.StartCoroutine(
+                        new DrawClass(card.Owner, 1, activateClass).Draw());
                 }
             }
             #endregion
-
+            
             #region All Turns - Inherited
 
             if (timing == EffectTiming.WhenRemoveField)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Trash 1 security to prevent this Digimon from leaving Battle Area", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Trash 1 security to stop this Digimon from leaving Battle Area", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
-                activateClass.SetHashString("TrashSecurityToStay_Candlemon_BT18_030");
+                activateClass.SetHashString("TrashSecurityToStay_Wizardmon_BT18_036");
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
@@ -146,6 +127,7 @@ namespace DCGO.CardEffects
             }
 
             #endregion
+
             return cardEffects;
         }
     }
