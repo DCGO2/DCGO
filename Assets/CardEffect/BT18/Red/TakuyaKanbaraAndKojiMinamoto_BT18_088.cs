@@ -128,9 +128,7 @@ namespace DCGO.CardEffects.BT18
                     if (cardSource == card)
                     {
                         cardNames.Add("Takuya Kanbara");
-                        cardNames.Add("TakuyaKanbara");
                         cardNames.Add("Koji Minamoto");
-                        cardNames.Add("KojiMinamoto");
                     }
 
                     return cardNames;

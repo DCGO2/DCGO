@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.BT18
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.IsLevel4 && targetPermanent.TopCard.ContainsTraits("Hybrid")
+                    return targetPermanent.TopCard.IsLevel4 && targetPermanent.TopCard.EqualsTraits("Hybrid")
                                                             && (targetPermanent.TopCard.CardColors.Contains(CardColor.Purple) ||
                                                                 targetPermanent.TopCard.CardColors.Contains(CardColor.Yellow));
                 }
@@ -335,6 +335,7 @@ namespace DCGO.CardEffects.BT18
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false,
                     EffectDescription());
                 activateClass.SetIsInheritedEffect(true);
+                activateClass.SetHashString("-4000DP_BT18_81");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
