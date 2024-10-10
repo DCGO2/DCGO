@@ -450,15 +450,19 @@ public class FieldPermanentCard : MonoBehaviour
                     if (i < ThisPermanent.TopCard.CardColors.Count)
                     {
                         cardColor = ThisPermanent.TopCard.CardColors[i];
+                        float fillAmount = (float)((i + 1) / (float)ThisPermanent.TopCard.CardColors.Count);
+
+                        if (DPBackground_color[i].color != DataBase.CardColor_ColorLightDictionary[cardColor])
+                            DPBackground_color[i].color = DataBase.CardColor_ColorLightDictionary[cardColor];
+
+                        DPBackground_color[i].fillAmount = fillAmount;
+                        DPBackground_color[i].gameObject.SetActive(true);
                     }
 
                     else
                     {
-                        cardColor = ThisPermanent.TopCard.CardColors[0];
+                        DPBackground_color[i].gameObject.SetActive(false);
                     }
-
-                    if (DPBackground_color[i].color != DataBase.CardColor_ColorLightDictionary[cardColor])
-                        DPBackground_color[i].color = DataBase.CardColor_ColorLightDictionary[cardColor];
                 }
             }
 

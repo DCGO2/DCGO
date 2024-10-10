@@ -235,12 +235,12 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         yield return new WaitForSeconds(0.2f);
         #endregion
 
-        #region ログのクリック処理を追加
+        /*#region ログのクリック処理を追加
         foreach (CardSource cardSource in gameContext.ActiveCardList)
         {
             GManager.instance.playLog.AddOnClick_ShowCard(cardSource);
         }
-        #endregion
+        #endregion*/
 
         #region メモリーを初期化
         GManager.instance.memoryObject.Init();
@@ -484,7 +484,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
                 #region Log
                 if (_isRedraw)
-                    GManager.instance.playLog.AddLogString($"\nMulligan Hand\n{player.PlayerName}\n");
+                    PlayLog.OnAddLog?.Invoke($"\nMulligan Hand\n{player.PlayerName}\n");
                 #endregion
 
                 #endregion
@@ -545,7 +545,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         }
 
         #region ログ追加
-        GManager.instance.playLog.AddLogString($"\n---------------------------------\nActive Phase:\n{gameContext.TurnPlayer.PlayerName}\n");
+        PlayLog.OnAddLog?.Invoke($"\n---------------------------------\nActive Phase:\n{gameContext.TurnPlayer.PlayerName}\n");
         #endregion
 
         TurnCount++;
@@ -642,7 +642,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         }
 
         #region ログ追加
-        GManager.instance.playLog.AddLogString($"\nDraw Phase:\n{gameContext.TurnPlayer.PlayerName}\n");
+        PlayLog.OnAddLog?.Invoke($"\nDraw Phase:\n{gameContext.TurnPlayer.PlayerName}\n");
         #endregion
 
         isSync = true;
@@ -687,7 +687,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         }
 
         #region ログ追加
-        GManager.instance.playLog.AddLogString($"\nBreeding Phase:\n{gameContext.TurnPlayer.PlayerName}\n");
+        PlayLog.OnAddLog?.Invoke($"\nBreeding Phase:\n{gameContext.TurnPlayer.PlayerName}\n");
         #endregion
 
         isSync = true;
@@ -848,7 +848,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         }
 
         #region Add log
-        GManager.instance.playLog.AddLogString($"\nMain Phase:\n{gameContext.TurnPlayer.PlayerName}\n");
+        PlayLog.OnAddLog?.Invoke($"\nMain Phase:\n{gameContext.TurnPlayer.PlayerName}\n");
 
         #endregion
 
@@ -1186,7 +1186,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                 }
 
                 //ログ追加
-                GManager.instance.playLog.AddLogString($"\nPlay Card:\n{PlayCard.BaseENGCardNameFromEntity}({PlayCard.CardID})\n");
+                PlayLog.OnAddLog?.Invoke($"\nPlay Card:\n{PlayCard.BaseENGCardNameFromEntity}({PlayCard.CardID})\n");
 
                 PlayCardClass playCard = new PlayCardClass(
                     cardSources: new List<CardSource>() { PlayCard },
@@ -3053,7 +3053,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
     IEnumerator EndPhase()
     {
         #region Add log
-        GManager.instance.playLog.AddLogString($"\nEnd Turn:\n{gameContext.TurnPlayer.PlayerName}\n");
+        PlayLog.OnAddLog?.Invoke($"\nEnd Turn:\n{gameContext.TurnPlayer.PlayerName}\n");
         #endregion
 
         #region Deselect

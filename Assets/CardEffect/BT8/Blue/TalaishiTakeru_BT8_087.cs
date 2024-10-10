@@ -18,7 +18,7 @@ public class TalaishiTakeru_BT8_087 : CEntity_Effect
             cardEffects.Add(CardEffectFactory.SetMemoryTo3TamerEffect(card));
         }
 
-        if (timing == EffectTiming.OnCounterTiming)
+        if (timing == EffectTiming.OnAllyAttack)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Draw 1", CanUseCondition, card);

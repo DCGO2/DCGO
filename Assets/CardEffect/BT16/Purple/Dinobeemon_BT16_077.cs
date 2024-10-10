@@ -228,6 +228,8 @@ namespace DCGO.CardEffects.BT16
                             activateETB: true));
                     }
 
+                    Permanent selectedPermanent = null;
+
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
@@ -252,17 +254,22 @@ namespace DCGO.CardEffects.BT16
 
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
+                            selectedPermanent = permanent;
+
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainRush(
                                 targetPermanent: permanent,
                                 effectDuration: EffectDuration.UntilEachTurnEnd,
                                 activateClass: activateClass));
+                        }
 
-                            if (permanent.CanAttack(activateClass))
+                        if(selectedPermanent != null)
+                        {
+                            if (selectedPermanent.CanAttack(activateClass))
                             {
                                 SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
 
                                 selectAttackEffect.SetUp(
-                                    attacker: permanent,
+                                    attacker: selectedPermanent,
                                     canAttackPlayerCondition: () => true,
                                     defenderCondition: _ => false,
                                     cardEffect: activateClass);

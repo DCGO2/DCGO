@@ -119,7 +119,7 @@ public class Magnadramon_BT15_042 : CEntity_Effect
                                     {
                                         GManager.instance.commandText.OpenCommandText("\"Place to the top of security\" was selected.");
 
-                                        GManager.instance.playLog.AddLogString($"\n{card.BaseENGCardNameFromEntity}({card.CardID}):Place the Digimon to the top of security\n");
+                                        PlayLog.OnAddLog?.Invoke($"\n{card.BaseENGCardNameFromEntity}({card.CardID}):Place the Digimon to the top of security\n");
 
                                         selectHandEffect.SetUpCustomMessage_ShowCard("Security Top Card");
                                     }
@@ -128,7 +128,7 @@ public class Magnadramon_BT15_042 : CEntity_Effect
                                     {
                                         GManager.instance.commandText.OpenCommandText("\"Place to the bottom of security\" was selected.");
 
-                                        GManager.instance.playLog.AddLogString($"\n{card.BaseENGCardNameFromEntity}({card.CardID}):Place the Digimon to the bottom of security\n");
+                                        PlayLog.OnAddLog?.Invoke($"\n{card.BaseENGCardNameFromEntity}({card.CardID}):Place the Digimon to the bottom of security\n");
 
                                         selectHandEffect.SetUpCustomMessage_ShowCard("Security Bottom Card");
                                     }

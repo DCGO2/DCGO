@@ -446,7 +446,7 @@ public class Darknessbagramon_BT12_111 : CEntity_Effect
             }
         }
 
-        if (timing == EffectTiming.OnCounterTiming)
+        if (timing == EffectTiming.OnAllyAttack)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Return all Tamers to hand", CanUseCondition, card);

@@ -220,14 +220,14 @@ public class Salamon_BT15_034 : CEntity_Effect
                                 {
                                     GManager.instance.commandText.OpenCommandText("\"Place to the top of security\" was selected.");
 
-                                    GManager.instance.playLog.AddLogString($"\n{card.BaseENGCardNameFromEntity}({card.CardID}):Place the Digimon to the top of security\n");
+                                    PlayLog.OnAddLog?.Invoke($"\n{card.BaseENGCardNameFromEntity}({card.CardID}):Place the Digimon to the top of security\n");
                                 }
 
                                 else
                                 {
                                     GManager.instance.commandText.OpenCommandText("\"Place to the bottom of security\" was selected.");
 
-                                    GManager.instance.playLog.AddLogString($"\n{card.BaseENGCardNameFromEntity}({card.CardID}):Place the Digimon to the bottom of security\n");
+                                    PlayLog.OnAddLog?.Invoke($"\n{card.BaseENGCardNameFromEntity}({card.CardID}):Place the Digimon to the bottom of security\n");
                                 }
 
                                 yield return new WaitForSeconds(0.4f);

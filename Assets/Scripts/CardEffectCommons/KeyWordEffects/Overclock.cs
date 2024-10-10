@@ -15,8 +15,7 @@ public partial class CardEffectCommons
     public static bool CanActivateOverclock(string trait, CardSource cardSource, ICardEffect activateClass)
     {
         return IsExistOnBattleArea(cardSource) &&
-               HasMatchConditionPermanent(permanent => CanSelectPermanentCondition(permanent, trait, cardSource)) &&
-               cardSource.PermanentOfThisCard().CanAttack(activateClass, withoutTap: true);
+               HasMatchConditionPermanent(permanent => CanSelectPermanentCondition(permanent, trait, cardSource));
     }
 
     #endregion
@@ -25,6 +24,9 @@ public partial class CardEffectCommons
 
     public static IEnumerator OverclockProcess(string trait, CardSource cardSource, ICardEffect activateClass)
     {
+        Permanent selectedPermanent = null;
+        bool isDeleted = false;
+
         if (HasMatchConditionPermanent(permanent => CanSelectPermanentCondition(permanent, trait, cardSource)))
         {
             SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
@@ -49,23 +51,37 @@ public partial class CardEffectCommons
 
             IEnumerator SelectPermanentCoroutine(Permanent permanent)
             {
+                selectedPermanent = permanent;
+
+                yield return null;
+            }
+
+            if(selectedPermanent != null)
+            {
                 yield return ContinuousController.instance.StartCoroutine(
                     DeletePeremanentAndProcessAccordingToResult(
-                        targetPermanents: new List<Permanent>() { permanent },
+                        targetPermanents: new List<Permanent>() { selectedPermanent },
                         activateClass: activateClass,
                         successProcess: _ => SuccessProcess(),
                         failureProcess: null));
 
                 IEnumerator SuccessProcess()
                 {
-                    Permanent selectedPermanent = cardSource.PermanentOfThisCard();
+                    isDeleted = true;
+                    yield return null;
+                    
+                }
 
-                    if (selectedPermanent.CanAttack(activateClass, withoutTap: true))
+                if (isDeleted)
+                {
+                    Permanent attacker = cardSource.PermanentOfThisCard();
+
+                    if (attacker.CanAttack(activateClass, withoutTap: true))
                     {
                         SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
 
                         selectAttackEffect.SetUp(
-                            attacker: selectedPermanent,
+                            attacker: attacker,
                             canAttackPlayerCondition: () => true,
                             defenderCondition: _ => false,
                             cardEffect: activateClass);

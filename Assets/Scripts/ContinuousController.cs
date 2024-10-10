@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
@@ -469,6 +470,8 @@ public class ContinuousController : MonoBehaviour
 
             CreateDeckFromFile(fileName.Split("_")[1], deckName, KeyCard, deck, SortValue);
         }
+
+        DeckDatas = DeckDatas.OrderBy(x => x.DeckName).ToList();
     }
 
     private void CreateDeckFromFile(string id, string name, int keyID, string deckCode, int index = 0)

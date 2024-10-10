@@ -117,7 +117,7 @@ namespace DCGO.CardEffects.EX6
 
                                 log += "\n";
 
-                                GManager.instance.playLog.AddLogString(log);
+                                PlayLog.OnAddLog?.Invoke(log);
                             }
                             #endregion
 
@@ -279,7 +279,7 @@ namespace DCGO.CardEffects.EX6
 
                                 log += "\n";
 
-                                GManager.instance.playLog.AddLogString(log);
+                                PlayLog.OnAddLog?.Invoke(log);
                             }
                             #endregion
 
