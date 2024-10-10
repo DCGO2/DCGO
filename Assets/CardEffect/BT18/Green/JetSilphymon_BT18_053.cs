@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.BT18
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.IsLevel4 && targetPermanent.TopCard.ContainsTraits("Hybrid")
+                    return targetPermanent.TopCard.IsLevel4 && targetPermanent.TopCard.EqualsTraits("Hybrid")
                                                             && (targetPermanent.TopCard.CardColors.Contains(CardColor.Green) ||
                                                                 targetPermanent.TopCard.CardColors.Contains(CardColor.Red));
                 }

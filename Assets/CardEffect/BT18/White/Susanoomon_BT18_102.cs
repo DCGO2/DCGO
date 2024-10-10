@@ -23,9 +23,7 @@ namespace DCGO.CardEffects.BT18
                 bool PermanentCondition(Permanent targetPermanent)
                 {
                     return (targetPermanent.TopCard.EqualsCardName("Takuya Kanbara") ||
-                            targetPermanent.TopCard.EqualsCardName("TakuyaKanbara") ||
-                            targetPermanent.TopCard.EqualsCardName("Koji Minamoto") ||
-                            targetPermanent.TopCard.EqualsCardName("KojiMinamoto")) &&
+                            targetPermanent.TopCard.EqualsCardName("Koji Minamoto")) &&
                            targetPermanent.DigivolutionCards.Count(cardSource => cardSource.ContainsTraits("Hybrid")) >= 10;
                 }
 

@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.BT18
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.IsLevel5 && targetPermanent.TopCard.ContainsTraits("Insectoid");
+                    return targetPermanent.TopCard.IsLevel5 && targetPermanent.TopCard.EqualsTraits("Insectoid");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(

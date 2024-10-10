@@ -27,7 +27,7 @@ namespace DCGO.CardEffects.BT18
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card) &&
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
                            CardEffectCommons.IsOwnerTurn(card) &&
                            CardEffectCommons.CanTriggerWhenPermanentWouldDigivolve(hashtable,
                                DigivolveFromPermanentCondition, DigivolveToCardCondition);
