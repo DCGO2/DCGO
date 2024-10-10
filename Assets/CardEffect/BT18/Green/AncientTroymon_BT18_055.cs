@@ -86,12 +86,12 @@ namespace DCGO.CardEffects.BT18
             }
             #endregion
 
-            #region All turns
+            #region All turns Once Per Turn
             if (timing == EffectTiming.OnTappedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash opponents top security", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetHashString("TrashSecurity_BT18_055");
                 cardEffects.Add(activateClass);
 
@@ -102,15 +102,7 @@ namespace DCGO.CardEffects.BT18
 
                 bool PermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                    {
-                        if (permanent.IsDigimon)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -154,7 +146,7 @@ namespace DCGO.CardEffects.BT18
             if (timing == EffectTiming.WhenRemoveField)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Return this Digimon to the hand or play a Digimon from the digivolution sources.", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Return a Digimon or play a Digimon from this Digimons digivolution sources to hand.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
