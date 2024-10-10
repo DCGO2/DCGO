@@ -83,14 +83,14 @@ public class DetailCard_DeckEditor : MonoBehaviour
             if (i < cEntity_Base.cardColors.Count)
             {
                 cardColor = cEntity_Base.cardColors[i];
+                cardNameBackgrounds[i].color = DataBase.CardColor_ColorDarkDictionary[cardColor];
+                cardNameBackgrounds[i].gameObject.SetActive(true);
             }
 
             else
             {
-                cardColor = cEntity_Base.cardColors[0];
-            }
-
-            cardNameBackgrounds[i].sprite = DataBase.instance.ColorIcons_bar[(int)cardColor];
+                cardNameBackgrounds[i].gameObject.SetActive(false);
+            }            
         }
 
         //カード名

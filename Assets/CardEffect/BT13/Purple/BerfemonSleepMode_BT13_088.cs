@@ -361,7 +361,7 @@ public class BerfemonSleepMode_BT13_088 : CEntity_Effect
             }
         }
 
-        if (timing == EffectTiming.OnCounterTiming)
+        if (timing == EffectTiming.OnAllyAttack)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Trash 2 cards from hand to end the attack", CanUseCondition, card);

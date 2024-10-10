@@ -180,7 +180,7 @@ public class Knightmon_P_111 : CEntity_Effect
             }
         }
 
-        if (timing == EffectTiming.OnAllyAttack || timing == EffectTiming.OnCounterTiming)
+        if (timing == EffectTiming.OnAllyAttack)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Play 1 Digimon from hand", CanUseCondition, card);

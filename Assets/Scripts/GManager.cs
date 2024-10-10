@@ -215,9 +215,12 @@ public class GManager : MonoBehaviour
     public int CardIndex { get; set; } = 0;
 
     #region Events
+
+    //Cards flipped
     public static Action OnReverseOpponentsCardsChanged;
     public static Action OnCardFlippedChanged;
     public static Action<bool> OnCardSuspendedChanged;
+    
     #endregion
 
     private async void Awake()
