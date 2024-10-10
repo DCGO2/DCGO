@@ -203,7 +203,7 @@ namespace DCGO.CardEffects.BT18
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card) &&
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
                            CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card);
                 }
 

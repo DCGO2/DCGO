@@ -274,7 +274,7 @@ namespace DCGO.CardEffects.BT18
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card) &&
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
                            CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
                 }
 
