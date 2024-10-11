@@ -97,7 +97,7 @@ public class Gennai_BT14_088 : CEntity_Effect
             }
         }
 
-        if (timing == EffectTiming.OnCounterTiming)
+        if (timing == EffectTiming.OnAllyAttack)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Move your Digimon", CanUseCondition, card);

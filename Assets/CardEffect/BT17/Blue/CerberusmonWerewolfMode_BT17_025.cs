@@ -24,27 +24,6 @@ namespace DCGO.CardEffects.BT17
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
                     permanentCondition: PermanentCondition, digivolutionCost: 1, ignoreDigivolutionRequirement: true,
                     card: card, condition: null));
-
-                // Rule Trait
-                ChangeTraitsClass changeTraitsClass = new ChangeTraitsClass();
-                changeTraitsClass.SetUpICardEffect("Trait: Has [Dark Animal] Type", CanUseCondition, card);
-                changeTraitsClass.SetUpChangeTraitsClass(changeeTraits: ChangeTraits);
-                cardEffects.Add(changeTraitsClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return true;
-                }
-
-                List<string> ChangeTraits(CardSource cardSource, List<string> cardTraits)
-                {
-                    if (cardSource == card)
-                    {
-                        cardTraits.Add("Dark Animal");
-                    }
-
-                    return cardTraits;
-                }
             }
 
             #endregion

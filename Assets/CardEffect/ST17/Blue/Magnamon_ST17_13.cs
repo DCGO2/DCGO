@@ -61,16 +61,7 @@ namespace DCGO.CardEffects.ST17
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
-                    {
-                        if (!permanent.TopCard.CanNotBeAffected(activateClass))
-                        {
-                            if (permanent.IsDigimon)
-                                return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

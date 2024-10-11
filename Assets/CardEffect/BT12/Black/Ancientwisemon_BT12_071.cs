@@ -11,7 +11,7 @@ public class Ancientwisemon_BT12_071 : CEntity_Effect
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-        if (timing == EffectTiming.OnCounterTiming)
+        if (timing == EffectTiming.OnAllyAttack)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Reveal the top 3 cards of deck", CanUseCondition, card);

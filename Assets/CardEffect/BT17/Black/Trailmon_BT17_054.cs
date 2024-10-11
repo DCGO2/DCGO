@@ -71,7 +71,6 @@ namespace DCGO.CardEffects.BT17
             {
                 bool condition()
                 {
-                    UnityEngine.Debug.Log($"ESS: {card.PermanentOfThisCard().TopCard != card}, {card.PermanentOfThisCard().TopCard.ContainsTraits("Machine")}");
                     if (card.PermanentOfThisCard().TopCard != card)
                         return card.PermanentOfThisCard().TopCard.ContainsTraits("Machine");
 

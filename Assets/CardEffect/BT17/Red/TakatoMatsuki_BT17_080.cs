@@ -129,16 +129,9 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card) && CardEffectCommons.IsOwnerTurn(card))
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (!card.PermanentOfThisCard().IsToken)
-                        {
-                            if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                            {
-                                return CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectGrowlmonCardCondition) &&
-                                       CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectWarGrowlmonCardCondition);
-                            }
-                        }
+                        return CardEffectCommons.IsOwnerTurn(card);
                     }
 
                     return false;
@@ -148,8 +141,14 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                            return true;
+                        if (!card.PermanentOfThisCard().IsToken)
+                        {
+                            if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                            {
+                                return CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectGrowlmonCardCondition) &&
+                                       CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectWarGrowlmonCardCondition);
+                            }
+                        }
                     }
 
                     return false;
@@ -323,7 +322,7 @@ namespace DCGO.CardEffects.BT17
                                 payCost: false,
                                 reduceCostTuple: null,
                                 fixedCostTuple: null,
-                                ignoreDigivolutionRequirementFixedCost: 0,
+                                ignoreDigivolutionRequirementFixedCost: 1,
                                 isHand: true,
                                 activateClass: activateClass,
                                 successProcess: null,

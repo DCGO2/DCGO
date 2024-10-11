@@ -205,7 +205,7 @@ public class Anfimon_P_089 : CEntity_Effect
             }
         }
 
-        if (timing == EffectTiming.OnCounterTiming)
+        if (timing == EffectTiming.OnAllyAttack)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Return cards from trash to the bottom of deck to end the attack", CanUseCondition, card);

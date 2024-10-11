@@ -31,6 +31,7 @@ public abstract class ICardEffect
         SetIsCounterEffect(false);
         SetIsDigimonEffect(false);
         SetIsTamerEffect(false);
+        SetChainActivationCount(-1);
         SetIsBackgroundProcess(false);
         SetNotShowUI(false);
 
@@ -460,6 +461,20 @@ public abstract class ICardEffect
         IsTamerEffect = isTamerEffect;
     }
     #endregion
+
+    #region How many times this effect can activate per chain
+    int _chainActivations = -1;
+    public int ChainActivations
+    {
+        get { return _chainActivations; }
+        private set { _chainActivations = value; }
+    }
+    public void SetChainActivationCount(int chainActivations)
+    {
+        ChainActivations = chainActivations;
+    }
+    #endregion
+
 
     #region Whether this effect is carried out in the background
     bool _isBackgroundProcess = false;
@@ -987,7 +1002,7 @@ public static class ActivateICardEffectExtensionClass
 
             if (card != null)
             {
-                GManager.instance.playLog.AddLogString($"\nEffect:\n{card.BaseENGCardNameFromEntity}({card.CardID})\n\"{((ICardEffect)activateICardEffect).EffectName}\"\n");
+                PlayLog.OnAddLog?.Invoke($"\nEffect:\n{card.BaseENGCardNameFromEntity}({card.CardID})\n\"{((ICardEffect)activateICardEffect).EffectName}\"\n");
             }
             #endregion
 

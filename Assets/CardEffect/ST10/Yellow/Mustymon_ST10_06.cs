@@ -295,6 +295,8 @@ public class Mustymon_ST10_06 : CEntity_Effect
 
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
+            int maxLevel = -1;
+
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Delete 1 Digimon", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
@@ -307,11 +309,27 @@ public class Mustymon_ST10_06 : CEntity_Effect
 
             bool PermanentCondition(Permanent permanent)
             {
-                if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                if (permanent.IsDigimon)
                 {
                     if (permanent != card.PermanentOfThisCard())
                     {
                         return true;
+                    }
+                }
+
+                return false;
+            }
+
+            bool CanSelectPermanentCondition(Permanent permanent)
+            {
+                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                {
+                    if (permanent.TopCard.HasLevel)
+                    {
+                        if (permanent.Level <= maxLevel)
+                        {
+                            return true;
+                        }
                     }
                 }
 
@@ -326,6 +344,22 @@ public class Mustymon_ST10_06 : CEntity_Effect
                     {
                         if (CardEffectCommons.IsByEffect(hashtable, null))
                         {
+                            List<Permanent> permanents = CardEffectCommons.GetPlayedPermanentsFromEnterFieldHashtable(
+                                hashtable: hashtable,
+                                rootCondition: null);
+
+                            if (permanents != null)
+                            {
+                                List<int> levels = permanents
+                                .Filter(permanent => permanent != null && permanent.LevelJustAfterPlayed >= 0)
+                                .Map(permanent => permanent.LevelJustAfterPlayed);
+
+                                if (levels.Count >= 1)
+                                {
+                                    maxLevel = levels.Max();
+                                }
+                            }
+
                             return true;
                         }
                     }
@@ -338,40 +372,6 @@ public class Mustymon_ST10_06 : CEntity_Effect
             {
                 if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
-                    List<Permanent> permanents = CardEffectCommons.GetPlayedPermanentsFromEnterFieldHashtable(
-                    hashtable: hashtable,
-                    rootCondition: null);
-
-                    int maxLevel = -1;
-
-                    if (permanents != null)
-                    {
-                        List<int> levels = permanents
-                        .Filter(permanent => permanent != null && permanent.LevelJustAfterPlayed >= 0)
-                        .Map(permanent => permanent.LevelJustAfterPlayed);
-
-                        if (levels.Count >= 1)
-                        {
-                            maxLevel = levels.Max();
-                        }
-                    }
-
-                    bool CanSelectPermanentCondition(Permanent permanent)
-                    {
-                        if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                        {
-                            if (permanent.TopCard.HasLevel)
-                            {
-                                if (permanent.Level <= maxLevel)
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-
-                        return false;
-                    }
-
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
                         return true;
@@ -383,61 +383,24 @@ public class Mustymon_ST10_06 : CEntity_Effect
 
             IEnumerator ActivateCoroutine(Hashtable _hashtable)
             {
-                int maxLevel = -1;
+                int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
 
-                List<Permanent> permanents = CardEffectCommons.GetPlayedPermanentsFromEnterFieldHashtable(
-                hashtable: _hashtable,
-                rootCondition: null);
+                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                if (permanents != null)
-                {
-                    List<int> levels = permanents
-                    .Filter(permanent => permanent != null && permanent.LevelJustAfterPlayed >= 0)
-                    .Map(permanent => permanent.LevelJustAfterPlayed);
+                selectPermanentEffect.SetUp(
+                    selectPlayer: card.Owner,
+                    canTargetCondition: CanSelectPermanentCondition,
+                    canTargetCondition_ByPreSelecetedList: null,
+                    canEndSelectCondition: null,
+                    maxCount: maxCount,
+                    canNoSelect: false,
+                    canEndNotMax: false,
+                    selectPermanentCoroutine: null,
+                    afterSelectPermanentCoroutine: null,
+                    mode: SelectPermanentEffect.Mode.Destroy,
+                    cardEffect: activateClass);
 
-                    if (levels.Count >= 1)
-                    {
-                        maxLevel = levels.Max();
-                    }
-                }
-
-                bool CanSelectPermanentCondition(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                    {
-                        if (permanent.TopCard.HasLevel)
-                        {
-                            if (permanent.Level <= maxLevel)
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return false;
-                }
-
-                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                {
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-
-                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                    selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectPermanentCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: maxCount,
-                        canNoSelect: false,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: null,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Destroy,
-                        cardEffect: activateClass);
-
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                }
+                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
             }
         }
 

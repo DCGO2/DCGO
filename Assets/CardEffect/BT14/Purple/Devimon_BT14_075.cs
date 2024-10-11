@@ -152,6 +152,8 @@ public class Devimon_BT14_075 : CEntity_Effect
                         }
                     }
 
+                    card.Owner.Enemy.HandCards = RandomUtility.ShuffledDeckCards(card.Owner.Enemy.HandCards);
+                    
                     List<CardSource> selectedCards = new List<CardSource>();
 
                     SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();

@@ -60,7 +60,7 @@ public class Revelation_of_Light_BT15_092 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Main] Search your security stack. You may play 1 level 4 or lower yellow Digimon card among them wihtout paying the cost. If you have a Tamer with [Kari Kamiya] in it's name, place this card at the top of your security stack.";
+                return "[Main] Search your security stack. You may play 1 level 4 or lower yellow Digimon card among it without paying the cost. Then, shuffle your security stack. If you have a Tamer with [Kari Kamiya] in its name, place this card on top of your security stack.";
             }
 
             bool CanSelectCardCondition(CardSource cardSource)
@@ -159,6 +159,8 @@ public class Revelation_of_Light_BT15_092 : CEntity_Effect
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedCards, activateClass: activateClass, payCost: false, isTapped: false, root: SelectCardEffect.Root.Security, activateETB: true));
                     }
                 }
+
+                card.Owner.SecurityCards = RandomUtility.ShuffledDeckCards(card.Owner.SecurityCards);
 
                 if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, PermanentCondition))
                 {

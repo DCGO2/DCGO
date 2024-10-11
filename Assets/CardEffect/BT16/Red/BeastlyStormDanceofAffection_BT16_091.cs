@@ -247,6 +247,8 @@ namespace DCGO.CardEffects.BT16
                                                             defenderCondition: (permanent) => false,
                                                             cardEffect: activateClass);
 
+                                                        selectAttackEffect.SetCanNotSelectNotAttack();
+
                                                         yield return ContinuousController.instance.StartCoroutine(selectAttackEffect
                                                             .Activate());
                                                     }

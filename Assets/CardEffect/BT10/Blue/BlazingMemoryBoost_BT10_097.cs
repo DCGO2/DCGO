@@ -81,7 +81,7 @@ public class BlazingMemoryBoost_BT10_097 : CEntity_Effect
                             canTargetCondition:CanSelectCardCondition1,
                             canTargetCondition_ByPreSelecetedList:null,
                             canEndSelectCondition:null,
-                            canNoSelect:true,
+                            canNoSelect:false,
                             selectCardCoroutine: SelectCardCoroutine,
                             message: "Select 1 [Kiriha Aonuma].",
                             maxCount: 1,

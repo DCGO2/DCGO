@@ -36,7 +36,7 @@ public class Solgarumon_BT14_079 : CEntity_Effect
                     }
                 }
 
-                if (cardSource.Level <= maxLevel)
+                if (cardSource.Level <= maxLevel && cardSource.Level != 2)
                 {
                     if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                     {

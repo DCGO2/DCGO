@@ -799,24 +799,23 @@ public class DeckData
             return deckName;
         }
 
-        List<string> ErrorLetters = new List<string>()
+        StringBuilder sb = new StringBuilder();
+        foreach (char c in deckName)
         {
-            ",",
-            "_",
-            "*",
-            "/",
-        };
-
-        foreach (string error in ErrorLetters)
-        {
-            deckName = deckName.Replace(error, "");
+            if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c == ' '))
+            {
+                sb.Append(c);
+            }
         }
+
+        deckName = sb.ToString();
 
         var filter = new ProfanityFilter.ProfanityFilter();
         deckName = filter.CensorString(deckName);
 
         return deckName;
     }
+
     #endregion
 }
 

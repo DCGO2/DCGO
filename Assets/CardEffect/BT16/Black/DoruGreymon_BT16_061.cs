@@ -169,33 +169,49 @@ namespace DCGO.CardEffects.BT16
                     return false;
                 }
 
+                bool DeletionCardEffect(ICardEffect cardEffect)
+                {
+                    return (cardEffect.EffectSourceCard.PermanentOfThisCard() == card.PermanentOfThisCard());
+                }
+
+                bool LoserCondition(Permanent permanent)
+                {
+                    return permanent.IsDigimon && card.PermanentOfThisCard() != permanent;
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        // Opponent's Digimon
-                        bool WinnerCondition(Permanent permanent) => permanent.cardSources.Contains(card);
-
-                        bool LoserCondition(Permanent permanent) => permanent.IsDigimon;
-
-                        if (CardEffectCommons.CanTriggerWhenDeleteOpponentDigimon(hashtable: hashtable,
-                                winnerCondition: WinnerCondition, loserCondition: LoserCondition))
+                        if (CardEffectCommons.IsByBattle(hashtable))
                         {
-                            return true;
+                            bool WinnerCondition(Permanent permanent)
+                            {
+                                if (permanent == null)
+                                    permanent = card.PermanentOfThisCard();
+
+                                return permanent.cardSources.Contains(card);
+                            }
+
+                            if (CardEffectCommons.CanTriggerWhenDeleteOpponentDigimon(hashtable, WinnerCondition, LoserCondition))
+                                return true;
                         }
-
-                        // Other Digimon
-                        bool DeletionCardEffect(ICardEffect cardEffect) =>
-                            cardEffect.EffectSourceCard.PermanentOfThisCard() == card.PermanentOfThisCard();
-
-                        bool DeletedPermanentCondition(Permanent permanent) =>
-                            permanent != card.PermanentOfThisCard() && permanent.IsDigimon;
 
                         if (CardEffectCommons.IsByEffect(hashtable, DeletionCardEffect))
                         {
-                            if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, DeletedPermanentCondition))
-                                return true;
-                        }
+                            // Other Digimon
+                            bool DeletionCardEffect(ICardEffect cardEffect) =>
+                                cardEffect.EffectSourceCard.PermanentOfThisCard() == card.PermanentOfThisCard();
+
+                            bool DeletedPermanentCondition(Permanent permanent) =>
+                                permanent != card.PermanentOfThisCard() && permanent.IsDigimon;
+
+                            if (CardEffectCommons.IsByEffect(hashtable, DeletionCardEffect))
+                            {
+                                if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, DeletedPermanentCondition))
+                                    return true;
+                            }
+                        }                        
                     }
 
                     return false;
