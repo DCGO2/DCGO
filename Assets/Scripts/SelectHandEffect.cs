@@ -42,6 +42,7 @@ public class SelectHandEffect : MonoBehaviourPunCallbacks
         _customMessage_Enemy = "";
         _showOpponentMessage = true;
         _isLocal = false;
+        _isFaceUp = false;
     }
 
     public void SetIsLocal()
@@ -57,6 +58,11 @@ public class SelectHandEffect : MonoBehaviourPunCallbacks
     public void SetDigiXros()
     {
         _digiXros = true;
+    }
+
+    public void SetIsFaceup()
+    {
+        _isFaceUp = true;
     }
 
     public void SetUpCustomMessage_ShowCard(string CustomMessage_ShowCard)
@@ -102,11 +108,14 @@ public class SelectHandEffect : MonoBehaviourPunCallbacks
     bool _showCard = true;
     bool _digiXros = false;
     bool _isLocal = false;
+    bool _isFaceUp = false;
+
     public enum Mode
     {
         Discard,
         PutLibraryTop,
         PutLibraryBottom,
+        PutSecurityBottom,
         Custom
     }
 
@@ -206,6 +215,11 @@ public class SelectHandEffect : MonoBehaviourPunCallbacks
                             {
                                 message = "Select cards to put on bottom of the deck.";
                             }
+
+                            break;
+                        case Mode.PutSecurityBottom:
+                            string str = _isFaceUp ? "faceup" : "facedown";
+                            message = $"Select card(s) to put on bottom of the security {str}.";
 
                             break;
 
@@ -630,6 +644,12 @@ public class SelectHandEffect : MonoBehaviourPunCallbacks
 
                                     break;
 
+                                case Mode.PutSecurityBottom:
+
+                                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(_targetCards, "Cards put on bottom of security", _isFaceUp, true));
+
+                                    break;
+
                                 case Mode.Custom:
 
                                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(_targetCards, "Selected cards", true, true));
@@ -673,6 +693,12 @@ public class SelectHandEffect : MonoBehaviourPunCallbacks
                     case Mode.PutLibraryBottom:
 
                         yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(_targetCards));
+                        break;
+
+                    case Mode.PutSecurityBottom:
+
+                        foreach (CardSource cardSource in _targetCards)
+                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(cardSource,false, _isFaceUp));
                         break;
 
                     case Mode.Custom:
