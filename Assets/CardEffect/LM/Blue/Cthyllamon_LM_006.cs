@@ -203,15 +203,7 @@ namespace DCGO.CardEffects.LM
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                    {
-                        if (permanent.DigivolutionCards.Count((cardSource) => !cardSource.CanNotTrashFromDigivolutionCards(activateClass)) >= 1)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -250,25 +242,22 @@ namespace DCGO.CardEffects.LM
                         }
                     }
 
+                    bool AttackerCondition(Permanent attacker)
+                    {
+                        return attacker.DigivolutionCards.Count == 0;
+                    }
+
                     bool DefenderCondition(Permanent defender)
                     {
                         return true;
                     }
 
-                    foreach(Permanent permanent in card.Owner.Enemy.GetBattleAreaDigimons())
-                    {
-                        if (permanent.DigivolutionCards.Count == 0)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotAttack(
-                                targetPermanent: permanent,
-                                defenderCondition: DefenderCondition,
-                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                                activateClass: activateClass,
-                                effectName: "Can't Attack"));
-                        }
-                    }
-
-                    
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotAttackPlayerEffect(
+                        attackerCondition: AttackerCondition,
+                        defenderCondition: DefenderCondition,
+                        effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                        activateClass: activateClass,
+                        effectName: "Can't Attack"));                    
                 }
             }
             #endregion

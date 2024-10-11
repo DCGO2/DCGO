@@ -30,14 +30,11 @@ namespace DCGO.CardEffects.LM
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
+                    if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent))
                     {
-                        if (permanent.IsDigimon)
+                        if (permanent.TopCard.Owner.CanAddSecurity(activateClass))
                         {
-                            if (permanent.TopCard.Owner.CanAddSecurity(activateClass))
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
 
@@ -51,7 +48,7 @@ namespace DCGO.CardEffects.LM
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                         {
@@ -95,10 +92,12 @@ namespace DCGO.CardEffects.LM
 
                         if (!permanent.IsToken)
                         {
-                            int beforeEffectSecurityCount = card.Owner.Enemy.SecurityCards.Count;
+                            Player selectedOwner = permanent.TopCard.Owner;
+                            int beforeEffectSecurityCount = permanent.TopCard.Owner.SecurityCards.Count;
+
                             yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(permanent, CardEffectCommons.CardEffectHashtable(activateClass), toTop: true).PutSecurity());
 
-                            if (card.Owner.Enemy.SecurityCards.Count > beforeEffectSecurityCount)
+                            if (selectedOwner.SecurityCards.Count > beforeEffectSecurityCount)
                                 placedToSecurity = true;
                         }
 

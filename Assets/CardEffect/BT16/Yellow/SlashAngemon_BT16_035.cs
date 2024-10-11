@@ -9,31 +9,6 @@ namespace DCGO.CardEffects.BT16
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Rule Text
-            if (timing == EffectTiming.None)
-            {
-                ChangeTraitsClass changeTraitsClass = new ChangeTraitsClass();
-                changeTraitsClass.SetUpICardEffect("Also treated as [Angel]", CanUseCondition, card);
-                changeTraitsClass.SetUpChangeTraitsClass(changeeTraits: changeTraits);
-                cardEffects.Add(changeTraitsClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return true;
-                }
-
-                List<string> changeTraits(CardSource cardSource, List<string> CardTraits)
-                {
-                    if (cardSource == card)
-                    {
-                        CardTraits.Add("Angel");
-                    }
-
-                    return CardTraits;
-                }
-            }
-            #endregion
-
             #region Barrier and Reboot
             if (timing == EffectTiming.WhenPermanentWouldBeDeleted)
             {

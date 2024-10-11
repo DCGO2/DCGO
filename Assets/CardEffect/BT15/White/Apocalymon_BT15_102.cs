@@ -38,6 +38,18 @@ public class Apocalymon_BT15_102 : CEntity_Effect
                 return false;
             }
 
+            bool CanSelectCardConditionPermenant(Permanent permanent)
+            {
+                if (permanent.IsDigimon)
+                {
+                    if (permanent.TopCard.ContainsTraits("Dark Masters") || permanent.TopCard.ContainsTraits("DarkMasters"))
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
             bool CardCondition(CardSource cardSource)
             {
                 if (cardSource == card)
@@ -79,6 +91,11 @@ public class Apocalymon_BT15_102 : CEntity_Effect
                 if (CardEffectCommons.IsExistOnHand(card))
                 {
                     if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
+                    {
+                        return true;
+                    }
+
+                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectCardConditionPermenant))
                     {
                         return true;
                     }

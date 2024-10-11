@@ -11,30 +11,6 @@ public class Raremon_P_101 : CEntity_Effect
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-        if (timing == EffectTiming.None)
-        {
-            ChangeTraitsClass changeTraitsClass = new ChangeTraitsClass();
-            changeTraitsClass.SetUpICardEffect("Also treated as [Cyborg]", CanUseCondition, card);
-            changeTraitsClass.SetUpChangeTraitsClass(changeeTraits: changeTraits);
-
-            cardEffects.Add(changeTraitsClass);
-
-            bool CanUseCondition(Hashtable hashtable)
-            {
-                return true;
-            }
-
-            List<string> changeTraits(CardSource cardSource, List<string> Traits)
-            {
-                if (cardSource == card)
-                {
-                    Traits.Add("Cyborg");
-                }
-
-                return Traits;
-            }
-        }
-
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();

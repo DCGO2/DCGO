@@ -20,7 +20,7 @@ public class OmegashoutmonXAntibody_BT9_013 : CEntity_Effect
                 return targetPermanent.TopCard.CardNames.Contains("OmniShoutmon");
             }
 
-            cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 0, ignoreDigivolutionRequirement: false, card: card, condition: null));
+            cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 0, ignoreDigivolutionRequirement: true, card: card, condition: null));
         }
 
         if (timing == EffectTiming.OnEnterFieldAnyone)

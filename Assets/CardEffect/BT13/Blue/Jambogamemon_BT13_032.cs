@@ -17,7 +17,7 @@ public class Jambogamemon_BT13_032 : CEntity_Effect
             cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
         }
 
-        if (timing == EffectTiming.OnCounterTiming)
+        if (timing == EffectTiming.OnAllyAttack)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Play 1 digivolution card", CanUseCondition, card);

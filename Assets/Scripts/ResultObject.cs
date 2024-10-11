@@ -109,6 +109,6 @@ public class ResultObject : MonoBehaviour
             }
         }
 
-        GManager.instance.playLog.AddLogString(log);
+        PlayLog.OnAddLog?.Invoke(log);
     }
 }

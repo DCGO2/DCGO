@@ -279,7 +279,7 @@ namespace DCGO.CardEffects.BT16
             #endregion
 
             #region Inherit
-            if (timing == EffectTiming.OnCounterTiming)
+            if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Switch attack target", CanUseCondition, card);

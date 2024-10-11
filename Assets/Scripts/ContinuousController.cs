@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
@@ -109,7 +110,7 @@ public class ContinuousController : MonoBehaviour
     public CEntity_Base GyuukimonToken { get; private set; }
     public CEntity_Base KoHagurumonToken { get; private set; }
     public CEntity_Base FamiliarToken { get; private set; }
-    public CEntity_Base VoléeZerdrückenToken { get; private set; }
+    public CEntity_Base VoleeZerdruckenToken { get; private set; }
     public CardRestriction BanList { get; private set; } = new CardRestriction(new List<CardLimitCount>(), new List<BannedPair>());
 
     void LoadBanList()
@@ -264,7 +265,7 @@ public class ContinuousController : MonoBehaviour
 
         await FamiliarToken.GetCardSprite();
 
-        VoléeZerdrückenToken = new CEntity_Base()
+        VoleeZerdruckenToken = new CEntity_Base()
         {
             cardColors = new List<CardColor>() { CardColor.Purple },
             PlayCost = -1,
@@ -283,7 +284,7 @@ public class ContinuousController : MonoBehaviour
             CardEffectClassName = "VoléeZerdrücken_EX7_030_token"
         };
 
-        await VoléeZerdrückenToken.GetCardSprite();
+        await VoleeZerdruckenToken.GetCardSprite();
     }
 
     public static ContinuousController instance = null;
@@ -469,6 +470,8 @@ public class ContinuousController : MonoBehaviour
 
             CreateDeckFromFile(fileName.Split("_")[1], deckName, KeyCard, deck, SortValue);
         }
+
+        DeckDatas = DeckDatas.OrderBy(x => x.DeckName).ToList();
     }
 
     private void CreateDeckFromFile(string id, string name, int keyID, string deckCode, int index = 0)

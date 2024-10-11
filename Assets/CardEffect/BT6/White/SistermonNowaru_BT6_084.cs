@@ -15,29 +15,6 @@ public class SistermonNowaru_BT6_084 : CEntity_Effect
 
         if (timing == EffectTiming.None)
         {
-            ChangeTraitsClass changeTraitsClass = new ChangeTraitsClass();
-            changeTraitsClass.SetUpICardEffect("Also treated as [Virus]", CanUseCondition, card);
-            changeTraitsClass.SetUpChangeTraitsClass(changeeTraits: changeTraits);
-            cardEffects.Add(changeTraitsClass);
-
-            bool CanUseCondition(Hashtable hashtable)
-            {
-                return true;
-            }
-
-            List<string> changeTraits(CardSource cardSource, List<string> Traits)
-            {
-                if (cardSource == card)
-                {
-                    Traits.Add("Virus");
-                }
-
-                return Traits;
-            }
-        }
-
-        if (timing == EffectTiming.None)
-        {
             bool Condition()
             {
                 if (CardEffectCommons.IsExistOnBattleArea(card))

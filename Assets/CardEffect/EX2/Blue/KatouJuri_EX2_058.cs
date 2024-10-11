@@ -105,7 +105,7 @@ public class KatouJuri_EX2_058 : CEntity_Effect
             }
         }
 
-        if (timing == EffectTiming.OnCounterTiming)
+        if (timing == EffectTiming.OnAllyAttack)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Draw 1", CanUseCondition, card);

@@ -24,7 +24,7 @@ namespace DCGO.CardEffects.EX6
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (card.Owner.Enemy.GetBattleAreaDigimons().Count((permanent) => permanent.TopCard.Level == 6) >= 1)
+                    if (card.Owner.Enemy.GetBattleAreaDigimons().Count((permanent) => permanent.TopCard.Level >= 6) >= 1)
                     {
                         return true;
                     }

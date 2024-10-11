@@ -13,29 +13,6 @@ public class SistermonNowaru_ST12_13 : CEntity_Effect
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-        if (timing == EffectTiming.None)
-        {
-            ChangeTraitsClass changeTraitsClass = new ChangeTraitsClass();
-            changeTraitsClass.SetUpICardEffect("Also treated as [Virus]", CanUseCondition, card);
-            changeTraitsClass.SetUpChangeTraitsClass(changeeTraits: changeTraits);
-            cardEffects.Add(changeTraitsClass);
-
-            bool CanUseCondition(Hashtable hashtable)
-            {
-                return true;
-            }
-
-            List<string> changeTraits(CardSource cardSource, List<string> Traits)
-            {
-                if (cardSource == card)
-                {
-                    Traits.Add("Virus");
-                }
-
-                return Traits;
-            }
-        }
-
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();

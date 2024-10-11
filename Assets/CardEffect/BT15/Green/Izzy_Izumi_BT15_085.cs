@@ -19,7 +19,7 @@ public class Izzy_Izumi_BT15_085 : CEntity_Effect
         }
 
         #region Opponent's Turn
-        if (timing == EffectTiming.OnCounterTiming)
+        if (timing == EffectTiming.OnAllyAttack)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Switch Attack Target to your Digimon", CanUseCondition, card);

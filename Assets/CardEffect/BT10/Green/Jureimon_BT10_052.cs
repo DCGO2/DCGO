@@ -276,7 +276,7 @@ public class Jureimon_BT10_052 : CEntity_Effect
             }
         }
 
-        if (timing == EffectTiming.OnCounterTiming)
+        if (timing == EffectTiming.OnAllyAttack)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Switch Attack Target", CanUseCondition, card);

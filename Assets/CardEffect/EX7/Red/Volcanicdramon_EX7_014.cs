@@ -234,42 +234,53 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card);
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    {
+                        if(CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card))
+                        {
+                            if (!CardEffectCommons.IsByEffect(hashtable, cardEffect => CardEffectCommons.IsOwnerEffect(cardEffect, card)))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+
+                    return false;
                 }
 
-                bool CanSelectCardToPlayFromTrash(CardSource cardSource)
+                bool CanSelectCardToPlayFromHand(CardSource cardSource)
                 {
-                    return CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass) && cardSource.IsDigimon && (cardSource.ContainsTraits("Machine Drago") || cardSource.ContainsTraits("Sky Dragon"));
+                    return CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass) && 
+                            cardSource.IsDigimon && 
+                            (cardSource.ContainsTraits("Machine Drago") || cardSource.ContainsTraits("Sky Dragon"));
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardToPlayFromTrash);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && 
+                        CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardToPlayFromHand);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     List<CardSource> selectedCards = new List<CardSource>();
 
-                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+                    SelectHandEffect selectCardEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
                     selectCardEffect.SetUp(
-                        canTargetCondition: CanSelectCardToPlayFromTrash,
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanSelectCardToPlayFromHand,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
-                        canNoSelect: () => true,
-                        selectCardCoroutine: SelectCardCoroutine,
-                        afterSelectCardCoroutine: null,
-                        message: "Select 1 card to play.",
                         maxCount: 1,
+                        canNoSelect: true,
                         canEndNotMax: false,
                         isShowOpponent: true,
-                        mode: SelectCardEffect.Mode.Custom,
-                        root: SelectCardEffect.Root.Hand,
-                        customRootCardList: null,
-                        canLookReverseCard: true,
-                        selectPlayer: card.Owner,
+                        selectCardCoroutine: SelectCardCoroutine,
+                        afterSelectCardCoroutine: null,
+                        mode: SelectHandEffect.Mode.Custom,
                         cardEffect: activateClass);
+                            
 
                     selectCardEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
                     selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
