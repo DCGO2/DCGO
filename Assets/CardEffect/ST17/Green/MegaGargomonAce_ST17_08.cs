@@ -199,7 +199,10 @@ namespace DCGO.CardEffects.ST17
                                     {
                                         if (permanent.IsDigimon || permanent.IsTamer)
                                         {
-                                            return true;
+                                            if (!permanent.TopCard.CanNotBeAffected(canNotPutFieldClass))
+                                            {
+                                                return true;
+                                            }
                                         }
                                     }
                                 }
@@ -214,7 +217,8 @@ namespace DCGO.CardEffects.ST17
                                 {
                                     if (cardSource.IsDigimon || cardSource.IsTamer)
                                     {
-                                        if (!cardSource.CanNotBeAffected(canNotPutFieldClass)){
+                                        if (!cardSource.CanNotBeAffected(canNotPutFieldClass))
+                                        {
                                             return true;
                                         }
                                     }

@@ -1549,6 +1549,9 @@ public class Permanent
             }
         }
 
+        if (!AttackingPermanent.CanSwitchAttackTarget)
+            return false;
+
         #region "Unblockable" effect
 
         #region Effects of permanents in play
@@ -1596,6 +1599,8 @@ public class Permanent
         #endregion
 
         #endregion
+
+
 
         return true;
     }

@@ -121,7 +121,7 @@ public class OmegamonXAntiBody_BT5_111 : CEntity_Effect
             }
         }
 
-        if (timing == EffectTiming.OnCounterTiming)
+        if (timing == EffectTiming.OnAllyAttack)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Trash 2 digivolution cards to end the attack", CanUseCondition, card);

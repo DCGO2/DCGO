@@ -310,9 +310,10 @@ namespace DCGO.CardEffects.EX7
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                     bool trashed = false;
+                    bool trashed = false;
+                    Permanent selectedPermanent = null;
 
-                     List<CardSource> selectedCards = new List<CardSource>();
+                    List<CardSource> selectedCards = new List<CardSource>();
 
                      SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
@@ -379,14 +380,23 @@ namespace DCGO.CardEffects.EX7
 
                              IEnumerator SelectPermanentCoroutine(Permanent permanent)
                              {
-                                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonSAttack(targetPermanent: permanent, changeValue: 1, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
+                                selectedPermanent = permanent;
 
-                                if (permanent.CanAttack(activateClass))
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonSAttack(
+                                    targetPermanent: permanent, 
+                                    changeValue: 1, 
+                                    effectDuration: EffectDuration.UntilEachTurnEnd, 
+                                    activateClass: activateClass));
+                             }
+
+                            if(selectedPermanent != null)
+                            {
+                                if (selectedPermanent.CanAttack(activateClass))
                                 {
                                     SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
 
                                     selectAttackEffect.SetUp(
-                                        attacker: permanent,
+                                        attacker: selectedPermanent,
                                         canAttackPlayerCondition: () => true,
                                         defenderCondition: (permanent) => true,
                                         cardEffect: activateClass);
@@ -395,7 +405,7 @@ namespace DCGO.CardEffects.EX7
 
                                     yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
                                 }
-                             }
+                            }
                          }
                      }                    
                 }

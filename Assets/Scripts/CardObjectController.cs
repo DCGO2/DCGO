@@ -835,7 +835,7 @@ public class CardObjectController : MonoBehaviour
 
                 log += "\n";
 
-                GManager.instance.playLog.AddLogString(log);
+                PlayLog.OnAddLog?.Invoke(log);
             }
         }
         #endregion
@@ -929,7 +929,7 @@ public class CardObjectController : MonoBehaviour
 
                 log += "\n";
 
-                GManager.instance.playLog.AddLogString(log);
+                PlayLog.OnAddLog?.Invoke(log);
             }
         }
         #endregion

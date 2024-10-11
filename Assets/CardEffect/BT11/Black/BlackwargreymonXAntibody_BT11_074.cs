@@ -27,7 +27,7 @@ public class BlackwargreymonXAntibody_BT11_074 : CEntity_Effect
             cardEffects.Add(CardEffectFactory.RebootSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
         }
 
-        if (timing == EffectTiming.OnCounterTiming)
+        if (timing == EffectTiming.OnAllyAttack)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Switch attack target to this Digimon", CanUseCondition, card);

@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.ST19
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play a Digimon from your hand or trash.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
-                activateClass.SetHashString("PlayDigimon_ST187_08");
+                activateClass.SetIsSecurityEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()

@@ -64,11 +64,11 @@ public partial class CardEffectFactory
         }
 
         bool HasValidDNATargets()
-        {
-            if (blastDNAConditions[0].Permanents.Count > 0 && blastDNAConditions[1].CardSources.Count > 0)
+        {//TODO: General - Line 20
+            if (blastDNAConditions[0].Permanents.Count(permanent => !permanent.TopCard.CanNotEvolve(permanent)) > 0 && blastDNAConditions[1].CardSources.Count > 0)
                 return true;
 
-            if (blastDNAConditions[0].CardSources.Count > 0 && blastDNAConditions[1].Permanents.Count > 0)
+            if (blastDNAConditions[0].CardSources.Count > 0 && blastDNAConditions[1].Permanents.Count(permanent => !permanent.TopCard.CanNotEvolve(permanent)) > 0)
                 return true;
 
             return false;
@@ -214,7 +214,18 @@ public partial class CardEffectFactory
                     yield return ContinuousController.instance.StartCoroutine(CardObjectController.CreateNewPermanent(playedPermanent, frameID));
                 }
                 
-                int[] JogressEvoRootsFrameIDs = { selectedPermanent.PermanentFrame.FrameID, selectedCardSource.PermanentOfThisCard().PermanentFrame.FrameID };
+                int[] JogressEvoRootsFrameIDs = { 0, 0 };
+
+                if (selectedPermanent.TopCard.EqualsCardName(blastDNAConditions[0].Name))
+                {
+                    JogressEvoRootsFrameIDs[0] = selectedPermanent.PermanentFrame.FrameID;
+                    JogressEvoRootsFrameIDs[1] = selectedCardSource.PermanentOfThisCard().PermanentFrame.FrameID;
+                }
+                else
+                {
+                    JogressEvoRootsFrameIDs[0] = selectedCardSource.PermanentOfThisCard().PermanentFrame.FrameID;
+                    JogressEvoRootsFrameIDs[1] = selectedPermanent.PermanentFrame.FrameID;
+                }                
 
                 if (card.CanPlayJogress(true))
                 {

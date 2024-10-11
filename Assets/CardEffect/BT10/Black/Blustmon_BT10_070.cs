@@ -36,7 +36,7 @@ public class Blustmon_BT10_070 : CEntity_Effect
             cardEffects.Add(CardEffectFactory.BlitzSelfEffect(isInheritedEffect: false, card: card, condition: Condition, isWhenDigivolving: false));
         }
 
-        if (timing == EffectTiming.OnCounterTiming)
+        if (timing == EffectTiming.OnAllyAttack)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Trash 1 digivolution card to delete 1 level4 or lower Digimon", CanUseCondition, card);

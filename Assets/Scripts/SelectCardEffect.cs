@@ -708,7 +708,7 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
                     {
                         log += "\n";
 
-                        GManager.instance.playLog.AddLogString(log);
+                        PlayLog.OnAddLog?.Invoke(log);
                     }
                 }
             }

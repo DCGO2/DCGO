@@ -505,6 +505,7 @@ public class HandCard : MonoBehaviour
     public bool IsExecuting { get; set; } = false;
 
     bool _firstRaycastTarget = true;
+
     private void Awake()
     {
         _firstRaycastTarget = CardImage.raycastTarget;
@@ -681,18 +682,20 @@ public class HandCard : MonoBehaviour
             for (int i = 0; i < CostIcons.Count; i++)
             {
                 CardColor cardColor = CardColor.None;
-
+                
                 if (i < cardSource.CardColors.Count)
                 {
-                    cardColor = cardSource.CardColors[i];
-                }
+                    float fillAmount = (float)((i + 1) / (float)cardSource.CardColors.Count);
 
+                    cardColor = cardSource.CardColors[i];
+                    CostIcons[i].color = DataBase.CardColor_ColorDarkDictionary[cardColor];
+                    CostIcons[i].fillAmount = fillAmount;
+                    CostIcons[i].gameObject.SetActive(true);
+                }
                 else
                 {
-                    cardColor = cardSource.CardColors[0];
+                    CostIcons[i].gameObject.SetActive(false);
                 }
-
-                CostIcons[i].sprite = DataBase.instance.ColorIcons_circle[(int)cardColor];
             }
 
             CostText.color = Color.white;
@@ -724,14 +727,14 @@ public class HandCard : MonoBehaviour
                                 if (i < cardSource.CardColors.Count)
                                 {
                                     cardColor = cardSource.CardColors[i];
+                                    LevelIcons[i].color = DataBase.CardColor_ColorDarkDictionary[cardColor];
+                                    LevelIcons[i].gameObject.SetActive(true);
                                 }
 
                                 else
                                 {
-                                    cardColor = cardSource.CardColors[0];
+                                    LevelIcons[i].gameObject.SetActive(false);
                                 }
-
-                                LevelIcons[i].sprite = DataBase.instance.ColorIcons_bar[(int)cardColor];
                             }
 
                             LevelText.color = Color.white;

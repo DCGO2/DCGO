@@ -43,14 +43,15 @@ namespace DCGO.CardEffects.LM
                     {
                         return true;
                     }
+
                     return false;
                 }
 
                 bool PermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
+                    if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent))
                     {
-                        if(permanent.TopCard == card)
+                        if(permanent.cardSources.Contains(card))
                         {
                             return true;
                         }
@@ -113,7 +114,7 @@ namespace DCGO.CardEffects.LM
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotBeDeletedPlayerEffect(
                             permanentCondition: PermanentCondition,
                             canNotBeDestroyedByBattleCondition: CanNotBeDestroyedByBattleCondition,
-                            effectDuration: EffectDuration.UntilOwnerTurnEnd,
+                            effectDuration: EffectDuration.UntilEachTurnEnd,
                             activateClass: activateClass,
                             effectName: "Can't be deleted by battle"));
                     }

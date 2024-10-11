@@ -9,31 +9,10 @@ namespace DCGO.CardEffects.EX6
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
             
-            #region Rule Text, Inherited Effect
+            #region Inherited Effect
             
             if (timing == EffectTiming.None)
-            {
-                // Trait Rule Aquatic Type
-                ChangeTraitsClass changeTraitsClass = new ChangeTraitsClass();
-                changeTraitsClass.SetUpICardEffect("Trait: Has [Aquatic] Type", CanUseCondition, card);
-                changeTraitsClass.SetUpChangeTraitsClass(changeeTraits: ChangeTraits);
-                cardEffects.Add(changeTraitsClass);
-                
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return true;
-                }
-                
-                List<string> ChangeTraits(CardSource cardSource, List<string> cardTraits)
-                {
-                    if (cardSource == card)
-                    {
-                        cardTraits.Add("Aquatic");
-                    }
-                    
-                    return cardTraits;
-                }
-                
+            {                
                 // Jamming Inherited Effect
                 cardEffects.Add(CardEffectFactory.JammingSelfStaticEffect(
                     isInheritedEffect: true,

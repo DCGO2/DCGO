@@ -50,7 +50,13 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card);
+                    if(CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card))
+                    {
+                        if(permanent.IsDigimon || permanent.IsTamer)
+                            return true;
+                    }
+
+                    return false;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

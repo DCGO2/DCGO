@@ -802,7 +802,12 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
 
     public bool IsCutInEffectHasUsed(ICardEffect cutinEffect)
     {
-        return _usedCutinEffects.Some(cardEffect => cardEffect.IsSameEffect(cutinEffect));
+        return false;//TODO: General line 17 - _usedCutinEffects.Some(cardEffect => cardEffect.IsSameEffect(cutinEffect));
+    }
+
+    public bool IsCutInEffectUsedMaxCount(ICardEffect cutinEffect)
+    {
+        return _usedCutinEffects.Count(cardEffect => cardEffect.IsSameEffect(cutinEffect)) < cutinEffect.ChainActivations;
     }
 
     public void AddCutinEffect(ICardEffect cardEffect)
