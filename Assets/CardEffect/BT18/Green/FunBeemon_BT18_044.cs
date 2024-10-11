@@ -4,23 +4,40 @@ using System.Diagnostics;
 
 namespace DCGO.CardEffects.BT18
 {
-    public class Puroromon_BT18_004 : CEntity_Effect
+    public class FunBeemon_BT18_044 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            if (timing == EffectTiming.OnStartMainPhase)
+            #region Alternate Digivolution
+
+            if (timing == EffectTiming.None)
+            {
+                bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.IsLevel2 &&
+                           targetPermanent.TopCard.EqualsTraits("Royal Base");
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
+                    permanentCondition: PermanentCondition, digivolutionCost: 0, ignoreDigivolutionRequirement: false,
+                    card: card, condition: null));
+            }
+
+            #endregion
+
+            #region On Play
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Place 1 [Royal Base] trait Digimon face up as bottom security, add top security to hand", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
-                activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[Start of Your Main Phase] By placing 1 Digimon card with the [Royal Base] trait in your hand face up as your bottom security card, add your top security card to the hand.";
+                    return "[On Play] By placing 1 Digimon card with the [Royal Base] trait in your hand face up as your bottom security card, add your top security card to the hand.";
                 }
 
                 bool IsRoyalBaseDigimon(CardSource card)
@@ -30,14 +47,13 @@ namespace DCGO.CardEffects.BT18
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsOwnerTurn(card) &&
-                           CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                        return CardEffectCommons.HasMatchConditionOwnersHand(card,IsRoyalBaseDigimon);
+                        return CardEffectCommons.HasMatchConditionOwnersHand(card, IsRoyalBaseDigimon);
 
                     return false;
                 }
@@ -85,6 +101,61 @@ namespace DCGO.CardEffects.BT18
                     }
                 }
             }
+            #endregion
+
+            #region All Turns - ESS
+            if (timing == EffectTiming.None)
+            {
+                bool Condition()
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        return true;
+                    }
+
+                    return false;
+                }
+
+                cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect(changeValue: 1000, isInheritedEffect: true, card: card, condition: Condition));
+            }
+            #endregion
+
+            #region All Turns - Security
+            if (timing == EffectTiming.None)
+            {
+                string EffectDiscription()
+                {
+                    return "(Security) [All Turns] All of your [Royal Base] trait Digimon get +1000 DP.";
+                }
+
+                bool Condition()
+                {
+                    UnityEngine.Debug.Log($"FUNBEEMON CONDITION: {CardEffectCommons.IsExistInSecurity(card, false)}");
+                    return CardEffectCommons.IsExistInSecurity(card, false);
+                }
+
+                bool PermanentCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
+                    {
+                        if (permanent.TopCard.EqualsTraits("Royal Base"))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                cardEffects.Add(CardEffectFactory.ChangeDPStaticEffect(
+                permanentCondition: PermanentCondition,
+                changeValue: 1000,
+                isInheritedEffect: false,
+                card: card,
+                condition: Condition,
+                effectName: EffectDiscription));
+            }
+            #endregion
 
             return cardEffects;
         }

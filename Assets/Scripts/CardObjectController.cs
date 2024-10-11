@@ -964,8 +964,10 @@ public class CardObjectController : MonoBehaviour
 
             if (!cardSource.IsToken)
             {
-                if(!faceUp)
+                if (!faceUp)
                     cardSource.SetReverse();
+                else
+                    cardSource.SetFace();
 
                 cardSource.Owner.SecurityCards.Insert(0, cardSource);
 

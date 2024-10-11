@@ -33,7 +33,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
     #region Initialization
 
-
     public IEnumerator Init()
     {
         yield return StartCoroutine(GManager.instance.LoadingObject.StartLoading("Now Loading"));
@@ -252,7 +251,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
             yield return StartCoroutine(player.brainStormObject.Init());
         }
 
-        #region 先攻後攻の決定
+        #region Deciding whether to attack first or last
         gameContext.TurnPlayer = gameContext.PlayerFromID(UnityEngine.Random.Range(0, 2));
 
         #region get first player from room custom property
@@ -930,7 +929,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
             StartCoroutine(SetMainPhase());
 
-            #region 選択終了まで待機
+            #region Wait until selection is complete
             while (PlayCard == null && UseCardEffect == null && AttackingPermanent == null)
             {
                 yield return null;
@@ -1160,7 +1159,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                         }
 
                         // yield return StartCoroutine(((ActivateICardEffect)UseCardEffect).Activate_Optional_Effect_Execute(null));
-                        UnityEngine.Debug.Log($"MainPhase: UseCardEffect - {UseCardEffect.EffectSourceCard.BaseENGCardNameFromEntity}, {UseCardEffect.MaxCountPerTurn}");
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.ActivateEffectProcess(
                                 UseCardEffect,
                                 null));
@@ -1169,7 +1167,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
             }
             #endregion
 
-            #region カードをプレイ
+            #region play cards
             else if (PlayCard != null)
             {
                 isSync = true;
@@ -1216,7 +1214,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
             }
             #endregion
 
-            #region アタック
+            #region attack
             else if (AttackingPermanent != null)
             {
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.attackProcess.Attack(AttackingPermanent, DefendingPermanent, null));

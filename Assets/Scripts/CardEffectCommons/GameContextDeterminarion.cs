@@ -120,6 +120,16 @@ public partial class CardEffectCommons
     }
     #endregion
 
+    #region Whether the card is in Security Area
+    public static bool IsExistInSecurity(CardSource card, bool isFlipped = false)
+    {
+        if (card.Owner.SecurityCards.Contains(card))
+            return card.IsFlipped == isFlipped;
+
+        return false;
+    }
+    #endregion
+
     #region Whether the card Can be played as a new permanent
     public static bool CanPlayAsNewPermanent(
         CardSource cardSource,

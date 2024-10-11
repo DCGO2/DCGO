@@ -323,9 +323,9 @@ public class Permanent
 
                 foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
                 {
+                    #region Effects of permanents in play
                     foreach (Permanent permanent in player.GetFieldPermanents())
                     {
-                        #region 場のパーマネントの効果
                         foreach (ICardEffect cardEffect in permanent.EffectList(EffectTiming.None))
                         {
                             if (cardEffect is IChangeDPEffect)
@@ -350,10 +350,45 @@ public class Permanent
                                 }
                             }
                         }
-                        #endregion
                     }
+                    #endregion
 
-                    #region プレイヤーの効果
+                    #region Effects of face up security
+                    foreach (CardSource cardSource in player.SecurityCards)
+                    {
+                        //if (!cardSource.IsFlipped)
+                        //    continue;
+
+                        foreach (ICardEffect cardEffect in cardSource.EffectList(EffectTiming.None))
+                        {
+                            if (cardEffect is IChangeDPEffect)
+                            {
+                                Debug.Log($"{cardSource.BaseENGCardNameFromEntity} - {cardEffect.EffectName} - {cardEffect.CanUse(null)}");
+                                if (cardEffect.CanUse(null))
+                                {
+                                    Debug.Log($"{cardSource.BaseENGCardNameFromEntity} - {((IChangeDPEffect)cardEffect).PermanentCondition(this)}");
+                                    if (((IChangeDPEffect)cardEffect).PermanentCondition(this))
+                                    {
+                                        if (((IChangeDPEffect)cardEffect).IsMinusDP())
+                                        {
+                                            if (this.ImmuneFromDPMinus(cardEffect))
+                                            {
+                                                continue;
+                                            }
+                                        }
+
+                                        if (!TopCard.CanNotBeAffected(cardEffect))
+                                        {
+                                            cardEffects_ChangeDP.Add(cardEffect);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    #endregion
+
+                    #region Player effect
                     foreach (ICardEffect cardEffect in player.EffectList(EffectTiming.None))
                     {
                         if (cardEffect is IChangeDPEffect)
