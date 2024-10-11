@@ -11,33 +11,6 @@ namespace DCGO.CardEffects.EX6
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
             
-            #region Rule Text
-            
-            if (timing == EffectTiming.None)
-            {
-                ChangeTraitsClass changeTraitsClass = new ChangeTraitsClass();
-                changeTraitsClass.SetUpICardEffect("Trait: Has [Angel] Type", CanUseCondition, card);
-                changeTraitsClass.SetUpChangeTraitsClass(changeeTraits: ChangeTraits);
-                cardEffects.Add(changeTraitsClass);
-                
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return true;
-                }
-                
-                List<string> ChangeTraits(CardSource cardSource, List<string> cardTraits)
-                {
-                    if (cardSource == card)
-                    {
-                        cardTraits.Add("Angel");
-                    }
-                    
-                    return cardTraits;
-                }
-            }
-            
-            #endregion
-            
             #region On Play/ When Digivolving Shared
 
             bool CanSelectPermanentSharedCondition(Permanent permanent)
@@ -133,6 +106,20 @@ namespace DCGO.CardEffects.EX6
                             string placementValue = (selectionValue == 0)
                                 ? "From Top Of Security"
                                 : "From Bottom Of Security";
+
+                            #region Log
+                            if (chosenSecurityCard != null)
+                            {
+                                string log = "";
+
+                                log += $"\nAdded Card {placementValue} to Hand:";
+                                log += $"\n{chosenSecurityCard.BaseENGCardNameFromEntity}({chosenSecurityCard.CardID})";
+
+                                log += "\n";
+
+                                PlayLog.OnAddLog?.Invoke(log);
+                            }
+                            #endregion
 
                             yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(new List<CardSource>() { chosenSecurityCard }, $"Added Hand Card {placementValue}", true, true));
                             yield return ContinuousController.instance.StartCoroutine(
@@ -292,7 +279,7 @@ namespace DCGO.CardEffects.EX6
 
                                 log += "\n";
 
-                                GManager.instance.playLog.AddLogString(log);
+                                PlayLog.OnAddLog?.Invoke(log);
                             }
                             #endregion
 

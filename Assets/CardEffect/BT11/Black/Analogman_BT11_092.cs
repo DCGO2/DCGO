@@ -113,7 +113,7 @@ public class Analogman_BT11_092 : CEntity_Effect
             }
         }
 
-        if (timing == EffectTiming.OnCounterTiming)
+        if (timing == EffectTiming.OnAllyAttack)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Switch Attack Target to your Digimon", CanUseCondition, card);

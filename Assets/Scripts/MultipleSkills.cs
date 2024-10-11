@@ -129,6 +129,16 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
                     }
                 }
 
+                if(skillInfo.CardEffect.ChainActivations > 0)
+                {
+                    if (GManager.instance.autoProcessing.IsCutInEffectUsedMaxCount(skillInfo.CardEffect))
+                    {
+                        Debug.Log($"{skillInfo.CardEffect.EffectName} has exceeded its use");
+
+                        continue;
+                    }
+                }
+
                 if (IsCutinEffect(CheckNewTriggredSkill_mainStack))
                 {
                     Debug.Log($"{skillInfo.CardEffect.EffectName} is Cut In effect");

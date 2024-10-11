@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Unity.Burst.Intrinsics;
 
@@ -17,7 +18,7 @@ namespace DCGO.CardEffects.EX7
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("+3000DP", CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
@@ -34,6 +35,12 @@ namespace DCGO.CardEffects.EX7
                 bool CanUseCondition(Hashtable hashtable)
                 {                   
                     return CardEffectCommons.CanTriggerOnTrashSelfDigivolutionCard(hashtable, cardEffect => cardEffect != null, card);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnTrash(card) &&
+                           CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -81,7 +88,7 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (card.Owner.GetBattleAreaDigimons().Count(permanent => permanent.TopCard.CardTraits.Contains("Three Musketeers")) >= 1 || card.Owner.GetBattleAreaDigimons().Count(permanent => permanent.TopCard.CardTraits.Contains("ThreeMusketeers")) >= 1)
+                    if (card.Owner.GetBattleAreaDigimons().Count(permanent => permanent.TopCard.EqualsTraits("Three Musketeers")) >= 1)
                     {
                         return true;
                     }
@@ -106,38 +113,17 @@ namespace DCGO.CardEffects.EX7
             {
                 int count()
                 {
-                    List<Permanent> cards = card.Owner.GetBattleAreaPermanents();
+                    List<Permanent> cards = new List<Permanent>();
+                    List<Permanent> choices = card.Owner.GetBattleAreaDigimons();
 
-                    bool end = false;
+                    choices = choices.Filter(permanent => permanent.TopCard.EqualsTraits("Three Musketeers"));
 
-                    while (true)
+                    foreach (Permanent selection in choices)
                     {
-                        if (cards.Count == 0)
-                        {
-                            end = true;
-                        }
-
-                        if (end)
-                        {
-                            break;
-                        }
-
-                        for (int i = 0; i < cards.Count; i++)
-                        {
-                            Permanent searchTargetPermanent = cards[i];
-
-                            if (cards.Some(permanent => permanent != searchTargetPermanent && permanent.TopCard.HasSameCardName(searchTargetPermanent.TopCard)))
-                            {
-                                cards.Remove(searchTargetPermanent);
-                                break;
-                            }
-
-                            if (i == cards.Count - 1)
-                            {
-                                end = true;
-                            }
-                        }
+                        if (!cards.Some(permanent => permanent.TopCard.HasSameCardName(selection.TopCard)))
+                            cards.Add(selection);
                     }
+
                     return cards.Count;
                 }
 

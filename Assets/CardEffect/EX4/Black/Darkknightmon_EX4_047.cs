@@ -309,7 +309,7 @@ public class Darkknightmon_EX4_047 : CEntity_Effect
             }
         }
 
-        if (timing == EffectTiming.OnCounterTiming)
+        if (timing == EffectTiming.OnAllyAttack)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Switch attack target to this Digimon", CanUseCondition, card);

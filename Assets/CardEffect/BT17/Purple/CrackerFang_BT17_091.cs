@@ -70,7 +70,7 @@ namespace DCGO.CardEffects.BT17
 
             #endregion
 
-            #region Rule Text
+            #region Rule Text - Name
 
             if (timing == EffectTiming.None)
             {

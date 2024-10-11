@@ -14,31 +14,6 @@ namespace DCGO.CardEffects.BT16
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Rule Text
-            if (timing == EffectTiming.None)
-            {
-                ChangeTraitsClass changeTraitsClass = new ChangeTraitsClass();
-                changeTraitsClass.SetUpICardEffect("Also treated as [Insectiod]", CanUseCondition, card);
-                changeTraitsClass.SetUpChangeTraitsClass(changeeTraits: changeTraits);
-                cardEffects.Add(changeTraitsClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return true;
-                }
-
-                List<string> changeTraits(CardSource cardSource, List<string> CardTraits)
-                {
-                    if (cardSource == card)
-                    {
-                        CardTraits.Add("Insectoid");
-                    }
-
-                    return CardTraits;
-                }
-            }
-            #endregion
-
             #region On Play
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {

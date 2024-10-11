@@ -64,14 +64,17 @@ public class ShoutmonX4B_BT10_012 : CEntity_Effect
 
             bool CanSelectCardCondition1(CardSource cardSource)
             {
-                if (cardSource.CardTraits.Contains("Xros Heart"))
+                if (cardSource.IsDigimon || cardSource.IsTamer)
                 {
-                    return true;
-                }
+                    if (cardSource.CardTraits.Contains("Xros Heart"))
+                    {
+                        return true;
+                    }
 
-                if (cardSource.CardTraits.Contains("XrosHeart"))
-                {
-                    return true;
+                    if (cardSource.CardTraits.Contains("XrosHeart"))
+                    {
+                        return true;
+                    }
                 }
 
                 return false;
@@ -351,14 +354,17 @@ public class ShoutmonX4B_BT10_012 : CEntity_Effect
 
             bool CanSelectCardCondition1(CardSource cardSource)
             {
-                if (cardSource.CardTraits.Contains("Xros Heart"))
+                if (cardSource.IsDigimon || cardSource.IsTamer)
                 {
-                    return true;
-                }
+                    if (cardSource.CardTraits.Contains("Xros Heart"))
+                    {
+                        return true;
+                    }
 
-                if (cardSource.CardTraits.Contains("XrosHeart"))
-                {
-                    return true;
+                    if (cardSource.CardTraits.Contains("XrosHeart"))
+                    {
+                        return true;
+                    }
                 }
 
                 return false;

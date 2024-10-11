@@ -49,8 +49,7 @@ namespace DCGO.CardEffects.ST18
 
                 bool DefendingPermanent(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
-                           permanent.IsSuspended;
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

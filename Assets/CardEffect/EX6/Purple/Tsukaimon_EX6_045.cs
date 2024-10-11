@@ -79,7 +79,7 @@ namespace DCGO.CardEffects.EX6
             #endregion
 
             #region Inherit
-            if(timing == EffectTiming.OnCounterTiming)
+            if(timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("End the attack by deleting 1 of your Digimon", CanUseCondition, card);

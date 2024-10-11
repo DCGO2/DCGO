@@ -55,7 +55,7 @@ public partial class CardEffectCommons
 
                         log += "\n";
 
-                        GManager.instance.playLog.AddLogString(log);
+                        PlayLog.OnAddLog?.Invoke(log);
                     }
                 }
                 break;
@@ -78,7 +78,7 @@ public partial class CardEffectCommons
 
                         log += "\n";
 
-                        GManager.instance.playLog.AddLogString(log);
+                        PlayLog.OnAddLog?.Invoke(log);
                     }
                 }
                 break;
@@ -126,7 +126,7 @@ public partial class CardEffectCommons
 
                         log += "\n";
 
-                        GManager.instance.playLog.AddLogString(log);
+                        PlayLog.OnAddLog?.Invoke(log);
                     }
                 }
                 break;
@@ -148,7 +148,7 @@ public partial class CardEffectCommons
 
                         log += "\n";
 
-                        GManager.instance.playLog.AddLogString(log);
+                        PlayLog.OnAddLog?.Invoke(log);
                     }
                 }
                 break;
@@ -758,7 +758,7 @@ public class RevealLibraryClass
 
             log += "\n";
 
-            GManager.instance.playLog.AddLogString(log);
+            PlayLog.OnAddLog?.Invoke(log);
         }
         #endregion
 

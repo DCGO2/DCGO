@@ -125,7 +125,7 @@ namespace DCGO.CardEffects.ST18
                         CanUseConditionImmunity, card);
                     canNotAffectedClass.SetUpCanNotAffectedClass(CardCondition: CardCondition,
                         SkillCondition: SkillCondition);
-                    permanentOfThisCard.UntilOpponentTurnEndEffects.Add(GetCardEffect);
+                    permanentOfThisCard.UntilEachTurnEndEffects.Add(GetCardEffect);
 
                     bool CanUseConditionImmunity(Hashtable hashtableImmunity)
                     {

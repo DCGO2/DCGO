@@ -82,19 +82,13 @@ namespace DCGO.CardEffects.ST17
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenPermanentSuspends(hashtable, (permanent) => permanent == card.PermanentOfThisCard());
-            }
+                    return CardEffectCommons.CanTriggerWhenSelfPermanentSuspends(hashtable, card);
+                }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
-
 
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

@@ -36,15 +36,7 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.IsDigimon)
-                    {
-                        if (cardSource.HasText("Three Musketeers"))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return cardSource.HasText("Three Musketeers");
                 }
 
                 bool CanSelectCardCondition1(CardSource cardSource)

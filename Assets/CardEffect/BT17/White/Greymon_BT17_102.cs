@@ -157,7 +157,7 @@ namespace DCGO.CardEffects.BT17
                     {
                         if (cardSource.ContainsCardName("Tai Kamiya") || cardSource.ContainsCardName("Kari Kamiya"))
                         {
-                            if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: true, cardEffect: activateClass))
+                            if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                             {
                                 return true;
                             }
@@ -269,7 +269,7 @@ namespace DCGO.CardEffects.BT17
                     {
                         if (cardSource.ContainsCardName("Tai Kamiya") || cardSource.ContainsCardName("Kari Kamiya"))
                         {
-                            if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: true, cardEffect: activateClass))
+                            if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                             {
                                 return true;
                             }

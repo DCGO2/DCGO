@@ -155,7 +155,8 @@ namespace DCGO.CardEffects.EX7
                         {
                             ActivateClass activateClass1 = new ActivateClass();
                             activateClass1.SetUpICardEffect("Delete 1 of your Digimon", CanUseCondition2, cardSource);
-                            activateClass1.SetUpActivateClass(null, ActivateCoroutine1, -1, false, EffectDiscription1());
+                            activateClass1.SetUpActivateClass(CanActivateCondition2, ActivateCoroutine1, -1, false, EffectDiscription1());
+                            activateClass1.SetEffectSourceCard(cardSource);
                             cardEffects.Add(activateClass1);
 
                             if (cardSource.PermanentOfThisCard() != null)
@@ -182,6 +183,11 @@ namespace DCGO.CardEffects.EX7
                                 }
 
                                 return false;
+                            }
+
+                            bool CanActivateCondition2(Hashtable hashtable)
+                            {
+                                return CardEffectCommons.IsExistOnBattleAreaDigimon(cardSource);
                             }
 
                             IEnumerator ActivateCoroutine1(Hashtable _hashtable)

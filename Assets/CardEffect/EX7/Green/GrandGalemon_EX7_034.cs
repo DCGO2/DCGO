@@ -31,7 +31,7 @@ namespace DCGO.CardEffects.EX7
                 string EffectDescription()
                 {
                     return
-                        "[When Digivolving] Suspend 1 Digimon. If this effect suspends your Digimon, this Digimon isn't affected by your opponent's Digimon's effects until the end of their turn.";
+                        "[When Digivolving] You may suspend 1 Digimon. If this effect suspended your Digimon, this Digimon isn't affected by the effect of your opponent's Digimon's until the end of their turn.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -65,7 +65,7 @@ namespace DCGO.CardEffects.EX7
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: 1,
-                            canNoSelect: false,
+                            canNoSelect: true,
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine,
                             afterSelectPermanentCoroutine: null,
