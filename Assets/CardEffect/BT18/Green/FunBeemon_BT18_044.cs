@@ -130,7 +130,6 @@ namespace DCGO.CardEffects.BT18
 
                 bool Condition()
                 {
-                    UnityEngine.Debug.Log($"FUNBEEMON CONDITION: {CardEffectCommons.IsExistInSecurity(card, false)}");
                     return CardEffectCommons.IsExistInSecurity(card, false);
                 }
 

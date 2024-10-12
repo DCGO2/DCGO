@@ -1181,23 +1181,24 @@ public static class RandomUtility
 
         foreach (CardSource cardSource in DeckCards)
         {
+            cardSource.SetReverse();
             CardDatas.Add(cardSource);
         }
 
-        // 整数 n の初期値はデッキの枚数
+        // The initial value of the integer n is the number of cards in the deck
         int n = CardDatas.Count;
 
         for (int i = 0; i < 20; i++)
         {
-            // nが1より小さくなるまで繰り返す
+            //repeat until n is less than 1
             while (n > 1)
             {
                 n--;
 
-                // kは 0 ～ n+1 の間のランダムな値
+                // k is a random value between 0 and n+1
                 int k = UnityEngine.Random.Range(0, n + 1);
 
-                // k番目のカードをtempに代入
+                // Assign kth card to temp
                 CardSource temp = CardDatas[k];
                 CardDatas[k] = CardDatas[n];
                 CardDatas[n] = temp;
