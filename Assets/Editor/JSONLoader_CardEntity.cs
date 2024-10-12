@@ -32,15 +32,20 @@ namespace DCGO.CardEntities
             if (_cardData != null)
             {
                 GUILayout.Label("Card ID: ");
-                cardIDString = GUILayout.TextField(cardIDString, 10).ToUpper();
+                cardIDString = GUILayout.TextField(cardIDString, 500).ToUpper();
 
                 if (cardIDString != "")
                 {
                     if (GUILayout.Button("Create Scriptable Object"))
                     {
+                        List<string> list = cardIDString.Split(",").ToList();
+                        List<CardData> cards = new List<CardData>();
+
+                        foreach (string str in list)
+                            cards.AddRange(_cardData.Where(x => x.cardNumber.Contains(str)).ToList());
+
                         _loadJSON.prevCardIndex = _loadJSON.setCardIndex;
-                        List<CardData> card = _cardData.Where(x => x.cardNumber.Contains(cardIDString)).ToList();
-                        SetDataToScriptableObject(card);
+                        SetDataToScriptableObject(cards);
                     }
                 }
             }
@@ -274,7 +279,7 @@ namespace DCGO.CardEntities
 
             foreach (string data in str.Split("/"))
             {
-                strings.Add(data.Trim());
+                strings.Add(data.Trim().Replace("\n","").Replace("\r", ""));
             }
 
             return strings;
