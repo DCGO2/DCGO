@@ -153,7 +153,10 @@ namespace DCGO.CardEffects.BT18
                         }
                     }
 
-                    //add logic
+                    if (card.Owner.SecurityCards.Count <= 2)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(card.PermanentOfThisCard(), CardEffectCommons.CardEffectHashtable(activateClass), toTop: false, isFaceup: false).PutSecurity());
+                    }                 
                 }
             }
             #endregion
