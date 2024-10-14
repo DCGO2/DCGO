@@ -58,7 +58,7 @@ namespace DCGO.CardEffects.ST18
                             {
                                 new(
                                     canTargetCondition: CanSelectBirdCardCondition,
-                                    message: "Select 1 Digimon card with the [Bird]/[Avian] in one of its traits.",
+                                    message: "Select 1 card with the [Bird]/[Avian] in one of its traits.",
                                     mode: SelectCardEffect.Mode.AddHand,
                                     maxCount: 1,
                                     selectCardCoroutine: null),
