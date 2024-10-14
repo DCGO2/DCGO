@@ -2509,15 +2509,18 @@ public class IPlacePermanentToDigivolutionCards
 
 public class IPutSecurityPermanent
 {
-    public IPutSecurityPermanent(Permanent permanent, Hashtable hashtable, bool toTop)
+    public IPutSecurityPermanent(Permanent permanent, Hashtable hashtable, bool toTop, bool isFaceup = false)
     {
         _permanent = permanent;
         _hashtable = hashtable;
         _toTop = toTop;
+        _isFaceup = isFaceup;
     }
     Permanent _permanent = null;
     Hashtable _hashtable = new Hashtable();
     bool _toTop = false;
+    bool _isFaceup = false;
+
     public IEnumerator PutSecurity()
     {
         if (_permanent == null) yield break;
@@ -2596,7 +2599,12 @@ public class IPutSecurityPermanent
         {
             if (!topCard.IsDigiEgg)
             {
-                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(topCard));
+                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(topCard,faceUp:_isFaceup));
+
+                if (!_isFaceup)
+                    topCard.SetReverse();
+                else
+                    topCard.SetFace();
 
                 if (!_toTop)
                 {

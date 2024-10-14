@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.BT18
 {
     public class TigerVespamon_BT18_056 : CEntity_Effect
     {
@@ -47,7 +47,7 @@ namespace DCGO.CardEffects
             #endregion
 
             #region On Play
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Suspend 1 for each face up security, Then opponents Digimon can't unsuspend", CanUseCondition, card);
@@ -56,7 +56,7 @@ namespace DCGO.CardEffects
 
                 string EffectDiscription()
                 {
-                    return "[On Play] [When Digivolving] For each of your face up security cards, suspend 1 of your opponent's Digimon. Then, none of their Digimon can unsuspend until the end of their turn.";
+                    return "[On Play] For each of your face up security cards, suspend 1 of your opponent's Digimon. Then, none of their Digimon can unsuspend until the end of their turn.";
                 }
 
                 bool PermanentCondition(Permanent permanent)
@@ -114,7 +114,7 @@ namespace DCGO.CardEffects
             #endregion
 
             #region When Digivolving
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Suspend 1 for each face up security, Then opponents Digimon can't unsuspend", CanUseCondition, card);
