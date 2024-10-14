@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: "\u30AD\u30E7\u30AD\u30E7\u30E2\u30F3-BT8-005"
+  m_EditorClassIdentifier: 
+  CardIndex: 1559
+  cardColors: 05000000
+  PlayCost: 0
+  EvoCosts: []
+  Level: 2
+  CardName_JPN: "\u30AD\u30E7\u30AD\u30E7\u30E2\u30F3"
+  CardName_ENG: Kyokyomon
+  Form_JPN:
+  - "\u5E7C\u5E74\u671F"
+  Form_ENG:
+  - In-Training
+  Attribute_JPN: []
+  Attribute_ENG: []
+  Type_JPN:
+  - "\u30EC\u30C3\u30B5\u30FC\u578B"
+  - "X\u6297\u4F53"
+  Type_ENG:
+  - Lesser
+  - X Antibody
+  CardSpriteName: BT8-005
+  cardKind: 3
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: 
+  InheritedEffectDiscription_JPN: "\u3010\u81EA\u5206\u306E\u30BF\u30FC\u30F3\u3011[\u30BF\u30FC\u30F3\u306B1\u56DE]\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u306E\u9032\u5316\u5143\u304C\u52B9\u679C\u3067\u5897\u3048\u305F\u3068\u304D\u3001\u6B21\u306E\u76F8\u624B\u306E\u30BF\u30FC\u30F3\u7D42\u4E86\u6642\u307E\u3067\u3001\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u3092DP+1000\u3002"
+  InheritedEffectDiscription_ENG: '[Your Turn][Once Per Turn] When an effect places
+    a digivolution card under this Digimon, it gets +1000 DP until the end of your
+    opponent''s next turn.'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Kyokyomon_BT8_005
+  DP: 0
+  rarity: 1
+  OverflowMemory: 0
+  CardID: BT8-005
+  MaxCountInDeck: 4

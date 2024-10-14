@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: "\u30A2\u30EB\u30D5\u30A1\u30E2\u30F3-BT6-111_P1"
+  m_EditorClassIdentifier: 
+  CardIndex: 1256
+  cardColors: 05000000
+  PlayCost: 13
+  EvoCosts:
+  - CardColor: 5
+    Level: 5
+    MemoryCost: 3
+  Level: 6
+  CardName_JPN: "\u30A2\u30EB\u30D5\u30A1\u30E2\u30F3"
+  CardName_ENG: Alphamon
+  Form_JPN:
+  - "\u7A76\u6975\u4F53"
+  Form_ENG:
+  - Mega
+  Attribute_JPN:
+  - "\u30EF\u30AF\u30C1\u30F3\u7A2E"
+  Attribute_ENG:
+  - Vaccine
+  Type_JPN:
+  - "\u8056\u9A0E\u58EB\u578B"
+  - "\u30ED\u30A4\u30E4\u30EB\u30CA\u30A4\u30C4"
+  - "X\u6297\u4F53"
+  Type_ENG:
+  - HolyWarrior
+  - RoyalKnight
+  - X Antibody
+  CardSpriteName: BT6-111_P1
+  cardKind: 0
+  EffectDiscription_JPN: "\u3010\u30BB\u30AD\u30E5\u30EA\u30C6\u30A3\u3011\u30D0\u30C8\u30EB\u7D42\u4E86\u6642\u3001\u3053\u306E\u30AB\u30FC\u30C9\u3092\u624B\u672D\u306B\u52A0\u3048\u308B\u3002\u305D\u306E\u5F8C\u3001\u7279\u5FB4\u306B\u300C\u30ED\u30A4\u30E4\u30EB\u30CA\u30A4\u30C4\u300D\u304B\u300CX\u6297\u4F53\u300D\u3092\u6301\u3064\u81EA\u5206\u304B\u76F8\u624B\u306E\u30C7\u30B8\u30E2\u30F3\u304C\u3044\u308B\u3068\u304D\u3001\u3053\u306E\u30BF\u30FC\u30F3\u306E\u9593\u3001\u76F8\u624B\u306E\u30C7\u30B8\u30E2\u30F312\u4F53\u307E\u3067\u306F\u30D7\u30EC\u30A4\u30E4\u30FC\u306B\u30A2\u30BF\u30C3\u30AF\u3067\u304D\u306A\u3044\u3002\u3010\u30A2\u30BF\u30C3\u30AF\u6642\u3011\u30B3\u30B9\u30C8\u30925\u307E\u3067\u652F\u6255\u3046\u3053\u3068\u3067\u3001\u3053\u306E\u30BF\u30FC\u30F3\u306E\u9593\u3001\u3053\u306E\u52B9\u679C\u3067\u652F\u6255\u3063\u305F\u30B3\u30B9\u30C81\u3054\u3068\u306B\u3001\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u306EDP\u3092+1000\u3059\u308B\u3002\u3010\u30A2\u30BF\u30C3\u30AF\u7D42\u4E86\u6642\u3011\u30E1\u30E2\u30EA\u30FC\u3092+2\u3059\u308B\u3002"
+  EffectDiscription_ENG: '[Security] At the end of the battle, add this card to your
+    hand. Then, if a Digimon with [Royal Knight] or [X-Antibody] in its type is in
+    play, up to 12 of your opponent''s Digimon can''t attack players for the turn.[When
+    Attacking] You may pay up to 5 memory. If you do, this Digimon gets +1000 DP
+    for the turn for each memory paid.[End of Attack] Gain 2 memory.'
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Alphamon_BT6_111
+  DP: 11000
+  rarity: 4
+  OverflowMemory: 0
+  CardID: BT6-111
+  MaxCountInDeck: 4

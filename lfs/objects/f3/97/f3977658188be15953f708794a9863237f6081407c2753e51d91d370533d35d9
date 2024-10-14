@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: "\u30A2\u30EB\u30D5\u30A1\u30E2\u30F3\uFF1A\u738B\u7ADC\u5263-BT9-111_P1"
+  m_EditorClassIdentifier: 
+  CardIndex: 1911
+  cardColors: 05000000
+  PlayCost: 15
+  EvoCosts:
+  - CardColor: 5
+    Level: 6
+    MemoryCost: 7
+  Level: 7
+  CardName_JPN: "\u30A2\u30EB\u30D5\u30A1\u30E2\u30F3\uFF1A\u738B\u7ADC\u5263"
+  CardName_ENG: Alphamon:Ouryuken
+  Form_JPN:
+  - "\u7A76\u6975\u4F53"
+  Form_ENG:
+  - Mega
+  Attribute_JPN:
+  - "\u30EF\u30AF\u30C1\u30F3\u7A2E"
+  Attribute_ENG:
+  - Vaccine
+  Type_JPN:
+  - NODATA
+  - "\u30ED\u30A4\u30E4\u30EB\u30CA\u30A4\u30C4"
+  - "X\u6297\u4F53"
+  Type_ENG:
+  - NODATA
+  - RoyalKnight
+  - X Antibody
+  CardSpriteName: BT9-111_P1
+  cardKind: 0
+  EffectDiscription_JPN: "\u9032\u5316:\u300E\u9032\u5316\u5143\u306B\u300C\u30AA\u30A6\u30EA\u30E5\u30A6\u30E2\u30F3\u300D\u304C\u3042\u308B\u300C\u30A2\u30EB\u30D5\u30A1\u30E2\u30F3\u300D\u300F\u304B\u30893\u3010\u9032\u5316\u6642\u3011\u6700\u3082\u767B\u5834\u30B3\u30B9\u30C8\u306E\u9AD8\u3044\u76F8\u624B\u306E\u30C7\u30B8\u30E2\u30F3\u5168\u3066\u3092\u6D88\u6EC5\u3055\u305B\u308B\u3002\u3010\u81EA\u5206\u306E\u30BF\u30FC\u30F3\u7D42\u4E86\u6642\u3011[\u30BF\u30FC\u30F3\u306B1\u56DE]\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u306E\u9032\u5316\u5143\u304B\u3089\u3001\u30C7\u30B8\u30BF\u30DE\u30AB\u30FC\u30C9\u4EE5\u5916\u306E\u7279\u5FB4\u306B\u300CX\u6297\u4F53\u300D\u3092\u6301\u3064\u30AB\u30FC\u30C97\u679A\u307E\u3067\u3092\u597D\u304D\u306A\u9806\u756A\u3067\u30C7\u30C3\u30AD\u306E\u4E0B\u306B\u623B\u3059\u3053\u3068\u3067\u3001\u623B\u3057\u305F1\u679A\u3054\u3068\u306B\u3001\u30E1\u30E2\u30EA\u30FC+1\u3002"
+  EffectDiscription_ENG: 'Digivolve: 3 from [Alphamon] w/ [Ouryumon] digivolution
+    card[When Digivolving] Delete all of your opponent''s Digimon with the highest
+    play cost.[End of Your Turn][Once Per Turn] You may return up to 7 non-Digi-Egg
+    cards with [X Antibody] in their traits from this Digimon''s digivolution cards
+    to the bottom of your deck in any order; if you do, gain 1 memory for each card
+    returned.'
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: AlphamonOuryuuken_BT9_111
+  DP: 16000
+  rarity: 4
+  OverflowMemory: 0
+  CardID: BT9-111
+  MaxCountInDeck: 4

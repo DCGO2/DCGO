@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: "\u30AF\u30EF\u30AC\u30FC\u30E2\u30F3X\u6297\u4F53-BT9-049"
+  m_EditorClassIdentifier: 
+  CardIndex: 1837
+  cardColors: 03000000
+  PlayCost: 5
+  EvoCosts:
+  - CardColor: 3
+    Level: 3
+    MemoryCost: 2
+  Level: 4
+  CardName_JPN: "\u30AF\u30EF\u30AC\u30FC\u30E2\u30F3X\u6297\u4F53"
+  CardName_ENG: Kuwagamon(X Antibody)
+  Form_JPN:
+  - "\u6210\u719F\u671F"
+  Form_ENG:
+  - Champion
+  Attribute_JPN:
+  - "\u30A6\u30A3\u30EB\u30B9\u7A2E"
+  Attribute_ENG:
+  - Virus
+  Type_JPN:
+  - "\u6606\u866B\u578B"
+  - "X\u6297\u4F53"
+  Type_ENG:
+  - Insectoid
+  - X Antibody
+  CardSpriteName: BT9-049
+  cardKind: 0
+  EffectDiscription_JPN: "\u9032\u5316\uFF1A\u300C\u30AF\u30EF\u30AC\u30FC\u30E2\u30F3\u300D\u304B\u30890"
+  EffectDiscription_ENG: 'Digivolve: 0 from [Kuwagamon]'
+  InheritedEffectDiscription_JPN: "\u3010\u81EA\u5206\u306E\u30BF\u30FC\u30F3\u3011\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u304C\u7279\u5FB4\u306B\u300C\u6606\u866B\u578B\u300D\u3092\u6301\u3064\u9593\u3001\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u306F\u226A\u8CAB\u901A\u226B\uFF08\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u304C\u30A2\u30BF\u30C3\u30AF\u3057\u305F\u30D0\u30C8\u30EB\u3067\u76F8\u624B\u306E\u30C7\u30B8\u30E2\u30F3\u3092\u6D88\u6EC5\u3055\u305B\u305F\u3068\u304D\u3001\u30A2\u30BF\u30C3\u30AF\u7D42\u4E86\u524D\u306B\u30C1\u30A7\u30C3\u30AF\u3059\u308B\uFF09\u3092\u5F97\u308B\u3002"
+  InheritedEffectDiscription_ENG: "[Your Turn] While this Digimon has [Insectoid]
+    in its traits, it gains \uFF1CPiercing\uFF1E. (When this Digimon attacks and
+    deletes an opponent's Digimon and survives the battle, it performs any security
+    checks it normally would.)"
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: KuwagamonXAntibody_BT9_049
+  DP: 6000
+  rarity: 0
+  OverflowMemory: 0
+  CardID: BT9-049
+  MaxCountInDeck: 4

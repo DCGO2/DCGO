@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: "\u30B0\u30E9\u30A6\u30E2\u30F3X\u6297\u4F53-BT9-011"
+  m_EditorClassIdentifier: 
+  CardIndex: 1793
+  cardColors: 00000000
+  PlayCost: 5
+  EvoCosts:
+  - CardColor: 0
+    Level: 3
+    MemoryCost: 2
+  Level: 4
+  CardName_JPN: "\u30B0\u30E9\u30A6\u30E2\u30F3X\u6297\u4F53"
+  CardName_ENG: Growlmon(X Antibody)
+  Form_JPN:
+  - "\u6210\u719F\u671F"
+  Form_ENG:
+  - Champion
+  Attribute_JPN:
+  - "\u30A6\u30A3\u30EB\u30B9\u7A2E"
+  Attribute_ENG:
+  - Virus
+  Type_JPN:
+  - "\u9B54\u7ADC\u578B"
+  - "X\u6297\u4F53"
+  Type_ENG:
+  - DarkDragon
+  - X Antibody
+  CardSpriteName: BT9-011
+  cardKind: 0
+  EffectDiscription_JPN: "\u9032\u5316:\u300C\u30B0\u30E9\u30A6\u30E2\u30F3\u300D\u304B\u30890"
+  EffectDiscription_ENG: 'Digivolve: 0 from [Growlmon]'
+  InheritedEffectDiscription_JPN: "\u3010\u81EA\u5206\u306E\u30BF\u30FC\u30F3\u3011\u81EA\u5206\u306E\u767A\u63EE\u3059\u308BDP\u6D88\u6EC5\u52B9\u679C\u306E\u4E0A\u9650+1000\u3002"
+  InheritedEffectDiscription_ENG: '[Your Turn] Add 1000 to the maximum DP you can
+    choose with DP-based deletion effects.'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: GraumonXAntibody_BT9_011
+  DP: 6000
+  rarity: 0
+  OverflowMemory: 0
+  CardID: BT9-011
+  MaxCountInDeck: 4
