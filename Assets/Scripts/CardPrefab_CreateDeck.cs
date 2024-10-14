@@ -209,10 +209,23 @@ public class CardPrefab_CreateDeck : MonoBehaviour
                 {
                     for (int i = 0; i < CostIcons.Count; i++)
                     {
-                        int cardColorIndex = i < cEntity_Base.cardColors.Count ? i : 0;
-                        CardColor cardColor = cEntity_Base.cardColors[cardColorIndex];
+                        CardColor cardColor = CardColor.None;
 
-                        CostIcons[i].sprite = DataBase.instance.ColorIcons_circle[(int)cardColor];
+                        CostIcons[i].color = DataBase.CardColor_ColorDarkDictionary[cardColor];
+
+                        if (i < cEntity_Base.cardColors.Count)
+                        {
+                            float fillAmount = (float)((i + 1) / (float)cEntity_Base.cardColors.Count);
+
+                            cardColor = cEntity_Base.cardColors[i];
+                            CostIcons[i].color = DataBase.CardColor_ColorDarkDictionary[cardColor];
+                            CostIcons[i].fillAmount = fillAmount;
+                            CostIcons[i].gameObject.SetActive(true);
+                        }
+                        else
+                        {
+                            CostIcons[i].gameObject.SetActive(false);
+                        }
                     }
 
                     CostText.color = Color.white;
