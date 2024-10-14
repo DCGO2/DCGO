@@ -148,11 +148,14 @@ namespace DCGO.CardEffects.BT17
                             {
                                 if (thisPermanent.TopCard != null)
                                 {
-                                    if (thisPermanent.CanBeDestroyedBySkill(activateClass1))
+                                    if (thisPermanent.TopCard.IsDigimon)
                                     {
-                                        if (!thisPermanent.TopCard.CanNotBeAffected(activateClass1))
+                                        if (thisPermanent.CanBeDestroyedBySkill(activateClass1))
                                         {
-                                            return true;
+                                            if (!thisPermanent.TopCard.CanNotBeAffected(activateClass1))
+                                            {
+                                                return true;
+                                            }
                                         }
                                     }
                                 }

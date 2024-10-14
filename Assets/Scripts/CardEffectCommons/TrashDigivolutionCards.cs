@@ -21,14 +21,10 @@ public partial class CardEffectCommons
             {
                 if (permanentCondition == null || permanentCondition(permanent))
                 {
-                    if (permanent.DigivolutionCards.Some(CanSelectCardCondition))
+                    if (!permanent.TopCard.CanNotBeAffected(activateClass))
                     {
-                        if (!permanent.TopCard.CanNotBeAffected(activateClass))
-                        {
-                            return true;
-                        }
+                        return true;
                     }
-
                 }
             }
 

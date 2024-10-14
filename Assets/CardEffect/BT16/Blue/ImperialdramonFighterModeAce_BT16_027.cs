@@ -173,7 +173,7 @@ namespace DCGO.CardEffects.BT16
 
                 bool HasSourceCondition(CardSource cardSource)
                 {
-                    return cardSource.CardNames.Contains("Imperialdramon: Dragon Mode") || cardSource.CardNames.Contains("ImperialdramonDragon Mode") || cardSource.CardNames.Contains("Imperialdramon:DragonMode");
+                    return cardSource.EqualsCardName("Imperialdramon: Dragon Mode") || cardSource.EqualsCardName("Imperialdramon Dragon Mode");
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)

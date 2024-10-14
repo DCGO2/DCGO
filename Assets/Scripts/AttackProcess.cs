@@ -91,7 +91,7 @@ public class AttackProcess : MonoBehaviourPunCallbacks
                 log += $"\nÅ´\nSecurity\n";
             }
 
-            GManager.instance.playLog.AddLogString(log);
+            PlayLog.OnAddLog?.Invoke(log);
 
             List<SkillInfo> stackedSkillInfos = new List<SkillInfo>();
 
@@ -384,7 +384,7 @@ public class AttackProcess : MonoBehaviourPunCallbacks
                 IBattle battle = new IBattle(AttackingPermanent: AttackingPermanent, DefendingPermanent: DefendingPermanent, null);
                 yield return ContinuousController.instance.StartCoroutine(battle.Battle());
 
-                #region effect when determine whether to do security check
+                /*#region effect when determine whether to do security check
                 Hashtable hashtable = new Hashtable()
                 {
                     {"battle", battle}
@@ -397,7 +397,7 @@ public class AttackProcess : MonoBehaviourPunCallbacks
                 {
                     GManager.instance.autoProcessing.PutStackedSkill(skillInfos_Pierce[0]);
                 }
-                #endregion
+                #endregion*/
                 
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.TriggeredSkillProcess(true, null));
                 GManager.instance.turnStateMachine.IsSelecting = true;
@@ -498,7 +498,7 @@ public class AttackProcess : MonoBehaviourPunCallbacks
                 // add log
                 string log1 = $"\nBlock:\n{DefendingPermanent.TopCard.BaseENGCardNameFromEntity}({DefendingPermanent.TopCard.CardID})\n";
 
-                GManager.instance.playLog.AddLogString(log1);
+                PlayLog.OnAddLog?.Invoke(log1);
 
                 // suspend
                 yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(new List<Permanent>() { DefendingPermanent }, hashtable).Tap());

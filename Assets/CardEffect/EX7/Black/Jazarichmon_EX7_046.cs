@@ -111,7 +111,7 @@ namespace DCGO.CardEffects.EX7
 
             #region Opponent's Turn - ESS
 
-            if (timing == EffectTiming.OnCounterTiming)
+            if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Switch attack target to this Digimon", CanUseCondition, card);

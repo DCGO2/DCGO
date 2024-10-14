@@ -65,7 +65,7 @@ namespace DCGO.CardEffects.EX6
                 }
 
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play 1 Digimon from hand", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Play 1 Digimon from hand, Then -4k DP for each digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 activateClass.SetHashString("Play1Digimon_EX6_035");
                 cardEffects.Add(activateClass);
@@ -203,7 +203,7 @@ namespace DCGO.CardEffects.EX6
                 }
 
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play 1 Digimon from hand, Then -6k DP for each digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Play 1 Digimon from hand, Then -4k DP for each digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 activateClass.SetHashString("Play1Digimon_EX6_035");
                 cardEffects.Add(activateClass);

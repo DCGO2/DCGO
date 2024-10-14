@@ -16,8 +16,9 @@ public class ShoutmonDX_BT11_018 : CEntity_Effect
         if (timing == EffectTiming.None)
         {
             ChangeCardNamesClass changeCardNamesClass = new ChangeCardNamesClass();
-            changeCardNamesClass.SetUpICardEffect("Also treated as [OmniShoutmon]", CanUseCondition, card);
+            changeCardNamesClass.SetUpICardEffect("Also treated as [OmniShoutmon]/[ZeigGreymon]", CanUseCondition, card);
             changeCardNamesClass.SetUpChangeCardNamesClass(changeCardNames: changeCardNames);
+            
             cardEffects.Add(changeCardNamesClass);
 
             bool CanUseCondition(Hashtable hashtable)
@@ -30,28 +31,6 @@ public class ShoutmonDX_BT11_018 : CEntity_Effect
                 if (cardSource == card)
                 {
                     CardNames.Add("OmniShoutmon");
-                }
-
-                return CardNames;
-            }
-        }
-
-        if (timing == EffectTiming.None)
-        {
-            ChangeCardNamesClass changeCardNamesClass = new ChangeCardNamesClass();
-            changeCardNamesClass.SetUpICardEffect("Also treated as [ZeigGreymon]", CanUseCondition, card);
-            changeCardNamesClass.SetUpChangeCardNamesClass(changeCardNames: changeCardNames);
-            cardEffects.Add(changeCardNamesClass);
-
-            bool CanUseCondition(Hashtable hashtable)
-            {
-                return true;
-            }
-
-            List<string> changeCardNames(CardSource cardSource, List<string> CardNames)
-            {
-                if (cardSource == card)
-                {
                     CardNames.Add("ZeigGreymon");
                 }
 

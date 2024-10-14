@@ -31,29 +31,6 @@ namespace DCGO.CardEffects.BT17
             }
             #endregion
 
-            #region Rule - Trait: Also has [Free]
-            if (timing == EffectTiming.None)
-            {
-                ChangeTraitsClass changeTraitsClass = new ChangeTraitsClass();
-                changeTraitsClass.SetUpICardEffect("Trait: Also has [Free]", CanUseCondition, card);
-                changeTraitsClass.SetUpChangeTraitsClass(changeeTraits: ChangeTraits);
-                cardEffects.Add(changeTraitsClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return true;
-                }
-
-                List<string> ChangeTraits(CardSource cardSource, List<string> cardTraits)
-                {
-                    if (cardSource == card)
-                        cardTraits.Add("Free");
-
-                    return cardTraits;
-                }
-            }
-            #endregion
-
             #region Blast Digivolve
             if (timing == EffectTiming.OnCounterTiming)
             {
@@ -113,7 +90,7 @@ namespace DCGO.CardEffects.BT17
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectedBottomDeck,
                             afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.PutLibraryBottom,
+                            mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
                         selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to bottom deck.", "The opponent is selecting 1 Digimon to bottom deck.");
@@ -122,10 +99,18 @@ namespace DCGO.CardEffects.BT17
 
                         IEnumerator SelectedBottomDeck(Permanent bottomDeckedPermanent)
                         {
-                            if(bottomDeckedPermanent != null && !bottomDeckedPermanent.TopCard.CanNotBeAffected(activateClass))
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeckBouncePeremanentAndProcessAccordingToResult(
+                            targetPermanents: new List<Permanent>() { bottomDeckedPermanent },
+                            activateClass: activateClass,
+                            successProcess: SuccessProcess(),
+                            failureProcess: null));
+
+                            IEnumerator SuccessProcess()
+                            {
                                 yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(
                                     new List<Permanent> { card.PermanentOfThisCard() },
                                     activateClass).Unsuspend());
+                            }                                
                         }
                     }
                 }

@@ -134,6 +134,8 @@ public class Airdramon_BT15_059 : CEntity_Effect
                                 selectedCards,
                                 activateClass));
 
+                            Permanent selectedPermanent = null;
+
                             if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                             {
                                 maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
@@ -160,10 +162,13 @@ public class Airdramon_BT15_059 : CEntity_Effect
 
                                 IEnumerator SelectPermanentCoroutine(Permanent permanent)
                                 {
-                                    Permanent selectedPermanent = permanent;
+                                    selectedPermanent = permanent;
 
-                                    yield return ContinuousController.instance.StartCoroutine(new IDegeneration(selectedPermanent, 1, activateClass).Degeneration());
+                                    yield return null;
                                 }
+
+                                if(selectedPermanent != null)
+                                    yield return ContinuousController.instance.StartCoroutine(new IDegeneration(selectedPermanent, 1, activateClass).Degeneration());
                             }
                         }
                     }

@@ -323,9 +323,9 @@ public class Permanent
 
                 foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
                 {
+                    #region Effects of permanents in play
                     foreach (Permanent permanent in player.GetFieldPermanents())
                     {
-                        #region 場のパーマネントの効果
                         foreach (ICardEffect cardEffect in permanent.EffectList(EffectTiming.None))
                         {
                             if (cardEffect is IChangeDPEffect)
@@ -350,10 +350,43 @@ public class Permanent
                                 }
                             }
                         }
-                        #endregion
                     }
+                    #endregion
 
-                    #region プレイヤーの効果
+                    #region Effects of face up security
+                    foreach (CardSource cardSource in player.SecurityCards)
+                    {
+                        if (cardSource.IsFlipped)
+                            continue;
+
+                        foreach (ICardEffect cardEffect in cardSource.EffectList(EffectTiming.None))
+                        {
+                            if (cardEffect is IChangeDPEffect)
+                            {
+                                if (cardEffect.CanUse(null))
+                                {
+                                    if (((IChangeDPEffect)cardEffect).PermanentCondition(this))
+                                    {
+                                        if (((IChangeDPEffect)cardEffect).IsMinusDP())
+                                        {
+                                            if (this.ImmuneFromDPMinus(cardEffect))
+                                            {
+                                                continue;
+                                            }
+                                        }
+
+                                        if (!TopCard.CanNotBeAffected(cardEffect))
+                                        {
+                                            cardEffects_ChangeDP.Add(cardEffect);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    #endregion
+
+                    #region Player effect
                     foreach (ICardEffect cardEffect in player.EffectList(EffectTiming.None))
                     {
                         if (cardEffect is IChangeDPEffect)
@@ -1549,6 +1582,9 @@ public class Permanent
             }
         }
 
+        if (!AttackingPermanent.CanSwitchAttackTarget)
+            return false;
+
         #region "Unblockable" effect
 
         #region Effects of permanents in play
@@ -1596,6 +1632,8 @@ public class Permanent
         #endregion
 
         #endregion
+
+
 
         return true;
     }
@@ -1791,9 +1829,9 @@ public class Permanent
         {
             foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
             {
+                #region Effects of permanents in play
                 foreach (Permanent permanent in player.GetFieldPermanents())
                 {
-                    #region 場のパーマネントの効果
                     foreach (ICardEffect cardEffect in permanent.EffectList(EffectTiming.None))
                     {
                         if (cardEffect is IBlockerEffect)
@@ -1807,8 +1845,30 @@ public class Permanent
                             }
                         }
                     }
-                    #endregion
                 }
+                #endregion
+
+                #region Effects of faceup security
+                foreach (CardSource source in player.SecurityCards)
+                {
+                    if (source.IsFlipped)
+                        continue;
+
+                    foreach (ICardEffect cardEffect in source.EffectList(EffectTiming.None))
+                    {
+                        if (cardEffect is IBlockerEffect)
+                        {
+                            if (cardEffect.CanTrigger(null))
+                            {
+                                if (((IBlockerEffect)cardEffect).IsBlocker(this))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+                #endregion
 
                 #region プレイヤーの効果
                 foreach (ICardEffect cardEffect in player.EffectList(EffectTiming.None))

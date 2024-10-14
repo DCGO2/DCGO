@@ -38,7 +38,7 @@ public class Megadramon_BT15_064 : CEntity_Effect
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("De-Digivolve 1 on 1 Digimon", CanUseCondition, card);
-            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
             activateClass.SetIsInheritedEffect(true);
             activateClass.SetHashString("AttackESS_BT15_064");
             cardEffects.Add(activateClass);
