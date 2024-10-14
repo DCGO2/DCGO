@@ -96,14 +96,13 @@ public class CardInfo : MonoBehaviour
                 if (i < cardSource.BaseCardColorsFromEntity.Count)
                 {
                     cardColor = cardSource.BaseCardColorsFromEntity[i];
+                    BackGrounds[i].color = DataBase.CardColor_ColorDarkDictionary[cardColor];
+                    BackGrounds[i].gameObject.SetActive(true);
                 }
-
                 else
                 {
-                    cardColor = cardSource.BaseCardColorsFromEntity[0];
+                    BackGrounds[i].gameObject.SetActive(false);
                 }
-
-                BackGrounds[i].sprite = DataBase.instance.ColorIcons_bar[(int)cardColor];
             }
         }
 
@@ -115,7 +114,7 @@ public class CardInfo : MonoBehaviour
 
             for (int i = 0; i < BackGrounds.Count; i++)
             {
-                BackGrounds[i].sprite = DataBase.instance.ColorIcons_bar[(int)CardColor.White];
+                BackGrounds[i].color = DataBase.CardColor_ColorDarkDictionary[CardColor.White];
             }
         }
     }
