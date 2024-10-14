@@ -14,7 +14,7 @@ namespace DCGO.CardEffects.ST19
             if (timing == EffectTiming.SecuritySkill)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play a Digimon from your hand or trash.", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Play a card from your hand or trash.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 activateClass.SetIsSecurityEffect(true);
                 cardEffects.Add(activateClass);
