@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: "\u30AC\u30EB\u30EB\u30E2\u30F3X\u6297\u4F53-BT9-024"
+  m_EditorClassIdentifier: 
+  CardIndex: 1810
+  cardColors: 01000000
+  PlayCost: 5
+  EvoCosts:
+  - CardColor: 1
+    Level: 3
+    MemoryCost: 2
+  Level: 4
+  CardName_JPN: "\u30AC\u30EB\u30EB\u30E2\u30F3X\u6297\u4F53"
+  CardName_ENG: Garurumon(X Antibody)
+  Form_JPN:
+  - "\u6210\u719F\u671F"
+  Form_ENG:
+  - Champion
+  Attribute_JPN:
+  - "\u30EF\u30AF\u30C1\u30F3\u7A2E"
+  Attribute_ENG:
+  - Vaccine
+  Type_JPN:
+  - "\u7363\u578B"
+  - "X\u6297\u4F53"
+  Type_ENG:
+  - Beast
+  - X Antibody
+  CardSpriteName: BT9-024
+  cardKind: 0
+  EffectDiscription_JPN: "\u9032\u5316:\u300C\u30AC\u30EB\u30EB\u30E2\u30F3\u300D\u304B\u30890"
+  EffectDiscription_ENG: 'Digivolve: 0 from [Garurumon]'
+  InheritedEffectDiscription_JPN: "\u3010\u304A\u4E92\u3044\u306E\u30BF\u30FC\u30F3\u3011\u540D\u79F0\u306B\u300C\u30AC\u30EB\u30EB\u30E2\u30F3\u300D\u304B\u300C\u30AA\u30E1\u30AC\u30E2\u30F3\u300D\u3092\u542B\u3080\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u304C\u30D0\u30C8\u30EB\u3067\u6D88\u6EC5\u3059\u308B\u3068\u304D\u3001\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u306E\u9032\u5316\u5143\u304B\u3089\u3001Lv.\u306E\u540C\u3058\u30AB\u30FC\u30C92\u679A\u3092\u7834\u68C4\u3059\u308B\u3053\u3068\u3067\u3001\u6D88\u6EC5\u3057\u306A\u3044\u3002"
+  InheritedEffectDiscription_ENG: '[All Turns] When this Digimon has [Garurumon]
+    or [Omnimon] in its name and would be deleted in battle, you may trash 2 cards
+    of the same level in this Digimon''s digivolution cards to prevent that deletion.'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: GarurumonXAntibody_BT9_024
+  DP: 6000
+  rarity: 0
+  OverflowMemory: 0
+  CardID: BT9-024
+  MaxCountInDeck: 4

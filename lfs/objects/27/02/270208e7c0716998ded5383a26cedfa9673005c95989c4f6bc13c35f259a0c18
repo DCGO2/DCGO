@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: "\u30C7\u30E5\u30FC\u30AF\u30E2\u30F3X\u6297\u4F53-BT9-017_P1"
+  m_EditorClassIdentifier: 
+  CardIndex: 1801
+  cardColors: 00000000
+  PlayCost: 12
+  EvoCosts:
+  - CardColor: 0
+    Level: 5
+    MemoryCost: 4
+  Level: 6
+  CardName_JPN: "\u30C7\u30E5\u30FC\u30AF\u30E2\u30F3X\u6297\u4F53"
+  CardName_ENG: Gallantmon(X Antibody)
+  Form_JPN:
+  - "\u7A76\u6975\u4F53"
+  Form_ENG:
+  - Mega
+  Attribute_JPN:
+  - "\u30A6\u30A3\u30EB\u30B9\u7A2E"
+  Attribute_ENG:
+  - Virus
+  Type_JPN:
+  - "\u8056\u9A0E\u58EB\u578B"
+  - "\u30ED\u30A4\u30E4\u30EB\u30CA\u30A4\u30C4"
+  - "X\u6297\u4F53"
+  Type_ENG:
+  - HolyWarrior
+  - RoyalKnight
+  - X Antibody
+  CardSpriteName: BT9-017_P1
+  cardKind: 0
+  EffectDiscription_JPN: "\u9032\u5316:\u300C\u30C7\u30E5\u30FC\u30AF\u30E2\u30F3\u300D\u304B\u30891\u3010\u9032\u5316\u6642\u3011\u6700\u3082DP\u306E\u4F4E\u3044\u76F8\u624B\u306E\u30C7\u30B8\u30E2\u30F31\u4F53\u3092\u6D88\u6EC5\u3055\u305B\u308B\u3002\u3053\u306E\u52B9\u679C\u3067\u76F8\u624B\u306E\u30C7\u30B8\u30E2\u30F3\u304C\u6D88\u6EC5\u3057\u306A\u304B\u3063\u305F\u3068\u304D\u3001\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u3092\u30A2\u30AF\u30C6\u30A3\u30D6\u306B\u3059\u308B\u3002\u3010\u81EA\u5206\u306E\u30BF\u30FC\u30F3\u3011[\u30BF\u30FC\u30F3\u306B1\u56DE]\u76F8\u624B\u306E\u30C7\u30B8\u30E2\u30F3\u304C\u6D88\u6EC5\u3057\u305F\u3068\u304D\u3001\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u306E\u9032\u5316\u5143\u306B\u3001\u300C\u30C7\u30E5\u30FC\u30AF\u30E2\u30F3\u300D\u304B\u300CX\u6297\u4F53\u300D\u304C\u3042\u308B\u306A\u3089\u3001\u76F8\u624B\u306E\u30BB\u30AD\u30E5\u30EA\u30C6\u30A3\u3092\u4E0A\u304B\u30891\u679A\u7834\u68C4\u3059\u308B\u3002"
+  EffectDiscription_ENG: "Digivolve: 1 from [Gallantmon][When Digivolving] Delete
+    1 of your opponent's Digimon with the lowest DP. If no Digimon is deleted by
+    this effect, unsuspend this Digimon. [Your Turn][Once Per Turn] When an opponent\u2019s
+    Digimon is deleted, if [Gallantmon] or [X Antibody] is in this Digimon\u2019s
+    digivolution cards, trash the top card of your opponent's security stack."
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: DukemonXAntibody_BT9_017
+  DP: 12000
+  rarity: 3
+  OverflowMemory: 0
+  CardID: BT9-017
+  MaxCountInDeck: 4

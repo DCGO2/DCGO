@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: "\u30C7\u30AF\u30B9\u30C9\u30EB\u30AC\u30E2\u30F3-BT9-075"
+  m_EditorClassIdentifier: 
+  CardIndex: 1869
+  cardColors: 0600000005000000
+  PlayCost: 6
+  EvoCosts:
+  - CardColor: 6
+    Level: 3
+    MemoryCost: 3
+  - CardColor: 5
+    Level: 3
+    MemoryCost: 3
+  Level: 4
+  CardName_JPN: "\u30C7\u30AF\u30B9\u30C9\u30EB\u30AC\u30E2\u30F3"
+  CardName_ENG: DexDorugamon
+  Form_JPN:
+  - "\u6210\u719F\u671F"
+  Form_ENG:
+  - Champion
+  Attribute_JPN:
+  - "\u30A6\u30A3\u30EB\u30B9\u7A2E"
+  Attribute_ENG:
+  - Virus
+  Type_JPN:
+  - "\u30A2\u30F3\u30C7\u30C3\u30C9\u578B"
+  - "X\u6297\u4F53"
+  Type_ENG:
+  - Undead
+  - X Antibody
+  CardSpriteName: BT9-075
+  cardKind: 0
+  EffectDiscription_JPN: "\u9032\u5316:\u300C\u30C9\u30EB\u30AC\u30E2\u30F3\u300D\u304B\u30890\u3010\u9032\u5316\u6642\u3011\u81EA\u5206\u306E\u624B\u672D\u304B\u3089\u3001\u540D\u79F0\u306B\u300C\u30C7\u30AF\u30B9\u300D\u3092\u542B\u3080\u304B\u7279\u5FB4\u306B\u300CX\u6297\u4F53\u300D\u3092\u6301\u3064\u30AB\u30FC\u30C91\u679A\u3092\u7834\u68C4\u3059\u308B\u3053\u3068\u3067\u3001\u30E1\u30E2\u30EA\u30FC+1\u3002\u3010\u9032\u5316\u6642\u3011\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u306E\u9032\u5316\u5143\u306B\u300C\u30C9\u30EB\u30AC\u30E2\u30F3\u300D\u304C\u3042\u308B\u304B\u3001\u30C8\u30E9\u30C3\u30B7\u30E5\u304B\u3089\u9032\u5316\u3057\u3066\u3044\u305F\u3068\u304D\u3001\u6B21\u306E\u76F8\u624B\u306E\u30BF\u30FC\u30F3\u7D42\u4E86\u307E\u3067\u3001\u81EA\u5206\u306E\u30C7\u30B8\u30E2\u30F31\u4F53\u306F\u226A\u30D6\u30ED\u30C3\u30AB\u30FC\u226B\u3068\u226A\u9053\u9023\u308C\u226B\u3092\u5F97\u308B\u3002"
+  EffectDiscription_ENG: "Digivolve: 0 from [Dorugamon][When Digivolving] You may
+    trash 1 card with [Dex] or [DeathX] in its name or [X Antibody] in its traits
+    in your hand to gain 1 memory. [When Digivolving] If this Digimon has [Dorugamon]
+    in its digivolution cards or is digivolving from the trash, 1 of your Digimon
+    gains \uFF1CBlocker\uFF1E and \uFF1CRetaliation\uFF1E until the end of your opponent\u2019s
+    turn."
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Dexdorgamon_BT9_075
+  DP: 6000
+  rarity: 1
+  OverflowMemory: 0
+  CardID: BT9-075
+  MaxCountInDeck: 4

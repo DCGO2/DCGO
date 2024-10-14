@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Monimon-P-157_P1
+  m_EditorClassIdentifier: 
+  CardIndex: 10348
+  cardColors: 05000000
+  PlayCost: 0
+  EvoCosts: []
+  Level: 2
+  CardName_JPN: 
+  CardName_ENG: Monimon
+  Form_JPN: []
+  Form_ENG:
+  - In-Training
+  Attribute_JPN: []
+  Attribute_ENG:
+  - '-'
+  Type_JPN: []
+  Type_ENG:
+  - CRT
+  - Twilight
+  - Xros Heart
+  CardSpriteName: P-157_P1
+  cardKind: 3
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '-'
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: "[On Deletion] If you have a black Tamer, \uFF1CDraw
+    1\uFF1E."
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: '-'
+  CardEffectClassName: Monimon_P_157
+  DP: 0
+  rarity: 5
+  OverflowMemory: 0
+  CardID: P-157
+  MaxCountInDeck: 4
