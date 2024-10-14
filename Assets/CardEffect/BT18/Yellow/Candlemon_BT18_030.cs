@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.BT18
 {
     public class Candlemon_BT18_030 : CEntity_Effect
     {
@@ -39,7 +39,7 @@ namespace DCGO.CardEffects
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (card.Owner.LibraryCards.Count >= 1)
                             return true;
@@ -93,7 +93,7 @@ namespace DCGO.CardEffects
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card))
                         {
@@ -107,7 +107,7 @@ namespace DCGO.CardEffects
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (card.CardColors.Contains(CardColor.Yellow) && 
                             (card.CardTraits.Contains("Data") || card.CardTraits.Contains("Witchelny")))
@@ -122,7 +122,7 @@ namespace DCGO.CardEffects
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card) || card.Owner.SecurityCards.Count >= 1)
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card) || card.Owner.SecurityCards.Count >= 1)
                     {
                         yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
                             player: card.Owner,
@@ -146,6 +146,7 @@ namespace DCGO.CardEffects
             }
 
             #endregion
+
             return cardEffects;
         }
     }
