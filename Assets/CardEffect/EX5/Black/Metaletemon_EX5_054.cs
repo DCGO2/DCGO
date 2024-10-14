@@ -192,7 +192,7 @@ public class Metaletemon_EX5_054 : CEntity_Effect
             }
         }
 
-        if (timing == EffectTiming.OnCounterTiming)
+        if (timing == EffectTiming.OnAllyAttack)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Place 1 card from hand at the top of security to switch attack target", CanUseCondition, card);

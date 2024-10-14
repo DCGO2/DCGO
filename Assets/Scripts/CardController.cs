@@ -68,7 +68,7 @@ public class IDiscardHands
 
             log += "\n";
 
-            GManager.instance.playLog.AddLogString(log);
+            PlayLog.OnAddLog?.Invoke(log);
         }
         #endregion
     }
@@ -743,7 +743,7 @@ public class PlayCardClass
 
             if (endPlayCard)
             {
-                GManager.instance.playLog.AddLogString($"\nFailed to play:\n{card.BaseENGCardNameFromEntity}({card.CardID})\n");
+                PlayLog.OnAddLog?.Invoke($"\nFailed to play:\n{card.BaseENGCardNameFromEntity}({card.CardID})\n");
 
                 GManager.instance.GetComponent<SelectDigiXrosClass>().ResetSelectDigiXrosClass();
 
@@ -1122,7 +1122,7 @@ public class PlayPermanentClass
                         {
                             oldLevels.Add(_targetPermanent.Level);
 
-                            GManager.instance.playLog.AddLogString($"\nEvolution:\n{card.BaseENGCardNameFromEntity}({card.CardID})\n");
+                            PlayLog.OnAddLog?.Invoke($"\nEvolution:\n{card.BaseENGCardNameFromEntity}({card.CardID})\n");
 
                             permanent = _targetPermanent;
                             evoRoots.Add(_targetPermanent.TopCard);
@@ -1132,7 +1132,7 @@ public class PlayPermanentClass
 
                         else
                         {
-                            GManager.instance.playLog.AddLogString($"\nPlay on field:\n{card.BaseENGCardNameFromEntity}({card.CardID})\n");
+                            PlayLog.OnAddLog?.Invoke($"\nPlay on field:\n{card.BaseENGCardNameFromEntity}({card.CardID})\n");
 
                             permanent = new Permanent(new List<CardSource>() { card }) { IsSuspended = _isTapped };
 
@@ -1235,7 +1235,7 @@ public class PlayPermanentClass
                         yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveField(evoRootPermanent, ignoreOverflow: true));
                     }
 
-                    GManager.instance.playLog.AddLogString($"\nJogress:\n{card.BaseENGCardNameFromEntity}({card.CardID})\n");
+                    PlayLog.OnAddLog?.Invoke($"\nJogress:\n{card.BaseENGCardNameFromEntity}({card.CardID})\n");
 
                     permanent = new Permanent(new List<CardSource>() { card }) { IsSuspended = false };
 
@@ -1460,7 +1460,7 @@ public class UseOptionClass
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().MoveToExecuteCardEffect(card));
             }
 
-            GManager.instance.playLog.AddLogString($"\nPlay Option:\n{card.BaseENGCardNameFromEntity}({card.CardID})\n");
+            PlayLog.OnAddLog?.Invoke($"\nPlay Option:\n{card.BaseENGCardNameFromEntity}({card.CardID})\n");
 
             card.Init();
 
@@ -1571,7 +1571,7 @@ public class DrawClass
         #region add log
         if (DrawCards.Count >= 1)
         {
-            GManager.instance.playLog.AddLogString($"\nDraw {DrawCards.Count} card{Utils.PluralFormSuffix(DrawCards.Count)}\n{_player.PlayerName}\n");
+            PlayLog.OnAddLog?.Invoke($"\nDraw {DrawCards.Count} card{Utils.PluralFormSuffix(DrawCards.Count)}\n{_player.PlayerName}\n");
         }
         #endregion
 
@@ -1655,7 +1655,7 @@ public class IAddTrashCardsFromLibraryTop
 
             log += "\n";
 
-            GManager.instance.playLog.AddLogString(log);
+            PlayLog.OnAddLog?.Invoke(log);
         }
     }
 }
@@ -1697,7 +1697,7 @@ public class IAddSecurityFromLibrary
 
             log += "\n";
 
-            GManager.instance.playLog.AddLogString(log);
+            PlayLog.OnAddLog?.Invoke(log);
 
             if (GManager.instance.turnStateMachine.DoneStartGame)
             {
@@ -1871,7 +1871,7 @@ public class IDigiBurst
 
                     log += "\n";
 
-                    GManager.instance.playLog.AddLogString(log);
+                    PlayLog.OnAddLog?.Invoke(log);
                 }
                 #endregion
             }
@@ -1951,7 +1951,7 @@ public class DeckBottomBounceClass
             }
 
             // cut in effect process
-            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.TriggeredSkillProcess(false, AutoProcessing.HasExecutedSameEffect));
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.TriggeredSkillProcess(false, null));
 
             foreach (Permanent permanent in _deckBounceTargetPermanents)
             {
@@ -2088,7 +2088,7 @@ public class HandBounceClaass
             yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.ShrinkSecurityDigimonDisplay());
 
             // cut in effect process
-            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.TriggeredSkillProcess(false, AutoProcessing.HasExecutedSameEffect));
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.TriggeredSkillProcess(false, null));
 
             foreach (Permanent permanent in _bounceTargetPermanents)
             {
@@ -2153,7 +2153,7 @@ public class HandBounceClaass
 
             log += "\n";
 
-            GManager.instance.playLog.AddLogString(log);
+            PlayLog.OnAddLog?.Invoke(log);
         }
         #endregion
 
@@ -2403,7 +2403,7 @@ public class IPlacePermanentToDigivolutionCards
             }
 
             // cut in effect process
-            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.TriggeredSkillProcess(false, AutoProcessing.HasExecutedSameEffect));
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.TriggeredSkillProcess(false, null));
 
             foreach (Permanent Permanent in removeFieldPermanents)
             {
@@ -2487,7 +2487,7 @@ public class IPlacePermanentToDigivolutionCards
 
             log += "\n";
 
-            GManager.instance.playLog.AddLogString(log);
+            PlayLog.OnAddLog?.Invoke(log);
         }
         #endregion
 
@@ -2509,15 +2509,18 @@ public class IPlacePermanentToDigivolutionCards
 
 public class IPutSecurityPermanent
 {
-    public IPutSecurityPermanent(Permanent permanent, Hashtable hashtable, bool toTop)
+    public IPutSecurityPermanent(Permanent permanent, Hashtable hashtable, bool toTop, bool isFaceup = false)
     {
         _permanent = permanent;
         _hashtable = hashtable;
         _toTop = toTop;
+        _isFaceup = isFaceup;
     }
     Permanent _permanent = null;
     Hashtable _hashtable = new Hashtable();
     bool _toTop = false;
+    bool _isFaceup = false;
+
     public IEnumerator PutSecurity()
     {
         if (_permanent == null) yield break;
@@ -2546,7 +2549,7 @@ public class IPutSecurityPermanent
             yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.ShrinkSecurityDigimonDisplay());
 
             // cut in effect process
-            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.TriggeredSkillProcess(false, AutoProcessing.HasExecutedSameEffect));
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.TriggeredSkillProcess(false,null));
 
             _permanent.HideWillRemoveFieldEffect();
         }
@@ -2570,7 +2573,7 @@ public class IPutSecurityPermanent
 
         log += "\n";
 
-        GManager.instance.playLog.AddLogString(log);
+        PlayLog.OnAddLog?.Invoke(log);
         #endregion
 
         #region show cards
@@ -2596,7 +2599,12 @@ public class IPutSecurityPermanent
         {
             if (!topCard.IsDigiEgg)
             {
-                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(topCard));
+                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(topCard,faceUp:_isFaceup));
+
+                if (!_isFaceup)
+                    topCard.SetReverse();
+                else
+                    topCard.SetFace();
 
                 if (!_toTop)
                 {
@@ -2687,7 +2695,7 @@ public class DestroyPermanentsClass
             yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.ShrinkSecurityDigimonDisplay());
 
             // cut in effect process
-            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.TriggeredSkillProcess(false, AutoProcessing.HasExecutedSameEffect));
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.TriggeredSkillProcess(false, null));
 
             foreach (Permanent permanent in _destroytargetPermanents)
             {
@@ -2753,7 +2761,7 @@ public class DestroyPermanentsClass
 
             log += "\n";
 
-            GManager.instance.playLog.AddLogString(log);
+            PlayLog.OnAddLog?.Invoke(log);
         }
         #endregion
 
@@ -2842,6 +2850,9 @@ public class ISecurityCheck
                 return true;
             }
 
+            if (!AttackingPermanent.IsDigimon)
+                return true;
+
             return false;
         }
 
@@ -2892,7 +2903,7 @@ public class ISecurityCheck
 
                         checkedCount++;
 
-                        GManager.instance.playLog.AddLogString($"\nSecurity Check:\n{brokenSecurityCard.BaseENGCardNameFromEntity}({brokenSecurityCard.CardID})\n");
+                        PlayLog.OnAddLog?.Invoke($"\nSecurity Check:\n{brokenSecurityCard.BaseENGCardNameFromEntity}({brokenSecurityCard.CardID})\n");
 
                         if (brokenSecurityCard.IsDigimon)
                         {
@@ -3277,7 +3288,7 @@ public class IDestroySecurity
 
                 log += "\n";
 
-                GManager.instance.playLog.AddLogString(log);
+                PlayLog.OnAddLog?.Invoke(log);
             }
             #endregion
         }
@@ -3388,7 +3399,7 @@ public class IBattle
                     log += $"\n??\n{DefendingCard.BaseENGCardNameFromEntity}({DefendingCard.CardID})\n";
                 }
 
-                GManager.instance.playLog.AddLogString(log);
+                PlayLog.OnAddLog?.Invoke(log);
 
                 #region "At the start of battle" effect
 
@@ -3559,6 +3570,16 @@ public class IBattle
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().BattleEffect(WinnerPermanents, LoserPermanents, LoserCard));
 
                 yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(LoserPermanents, hashtable).Destroy());
+
+                #region effect when determine whether to do security check
+                List<SkillInfo> skillInfos_Pierce = AutoProcessing.GetSkillInfos(hashtable, EffectTiming.OnDetermineDoSecurityCheck)
+                    .Filter(skillInfo => skillInfo.CardEffect != null && skillInfo.CardEffect.CanActivate(skillInfo.Hashtable));
+
+                if (skillInfos_Pierce.Count >= 1)
+                {
+                    GManager.instance.autoProcessing.PutStackedSkill(skillInfos_Pierce[0]);
+                }
+                #endregion
 
                 //Fix winner/loser permanents
                 int index = -1;
@@ -3748,7 +3769,7 @@ public class IDegeneration
 
                 log += "\n";
 
-                GManager.instance.playLog.AddLogString(log);
+                PlayLog.OnAddLog?.Invoke(log);
             }
             #endregion
         }
@@ -4242,7 +4263,7 @@ public class AceOverflowClass
     public IEnumerator Overflow()
     {
         _cardSources = _cardSources
-        .Filter(cardSource => cardSource.IsACE && CardEffectCommons.IsExistOnBattleArea(cardSource))
+        .Filter(cardSource => cardSource.IsACE && CardEffectCommons.IsExistOnBattleArea(cardSource) || CardEffectCommons.IsExistOnBreedingAreaDigimon(cardSource))
         .OrderBy(cardSource => cardSource.Owner == GManager.instance.turnStateMachine.gameContext.TurnPlayer ? -1 : 1)
         .ToList();
 
@@ -4252,7 +4273,7 @@ public class AceOverflowClass
 
             string log = $"\nOverflow -{cardSource.OverflowMemory}:\n{cardSource.BaseENGCardNameFromEntity}({cardSource.CardID})\n";
 
-            GManager.instance.playLog.AddLogString(log);
+            PlayLog.OnAddLog?.Invoke(log);
         }
     }
 }

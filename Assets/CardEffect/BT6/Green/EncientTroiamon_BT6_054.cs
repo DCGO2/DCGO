@@ -11,7 +11,7 @@ public class EncientTroiamon_BT6_054 : CEntity_Effect
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-        if (timing == EffectTiming.OnCounterTiming)
+        if (timing == EffectTiming.OnAllyAttack)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Suspend Digimons without Blocker", CanUseCondition, card);

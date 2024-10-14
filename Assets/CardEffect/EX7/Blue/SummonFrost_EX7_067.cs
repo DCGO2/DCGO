@@ -137,22 +137,21 @@ namespace DCGO.CardEffects.EX7
                         }
                     }
 
-                    foreach (Permanent selectedPermanent in card.Owner.Enemy.GetBattleAreaDigimons())
-                    {
-                        if (CanSelectPermanentCondition1(selectedPermanent))
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(
-                                CardEffectCommons.GainCanNotAttack(targetPermanent: selectedPermanent,
-                                    defenderCondition: null, effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                                    activateClass: activateClass, effectName: "Can't Attack"));
-                            
-                            yield return ContinuousController.instance.StartCoroutine(
-                                CardEffectCommons.GainCanNotBlock(targetPermanent: selectedPermanent,
-                                    attackerCondition: null, effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                                    activateClass: activateClass, effectName: "Can't Block"));
-                        }
+                    yield return ContinuousController.instance.StartCoroutine(
+                        CardEffectCommons.GainCanNotAttackPlayerEffect(
+                            attackerCondition: CanSelectPermanentCondition1,
+                            defenderCondition: null,
+                            effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                            activateClass: activateClass,
+                            effectName: "Can't Attack"));
 
-                    }
+                    yield return ContinuousController.instance.StartCoroutine(
+                        CardEffectCommons.GainCanNotBlockPlayerEffect(
+                            attackerCondition: CanSelectPermanentCondition1,
+                            defenderCondition: null,
+                            effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                            activateClass: activateClass,
+                            effectName: "Can't Block"));
                 }
             }
             

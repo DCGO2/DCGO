@@ -220,7 +220,7 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
                     {
                         if (_attacker.TopCard.Owner.isYou)
                         {
-                            #region ƒƒbƒZ[ƒW•\Ž¦
+                            #region Select Attack Target
                             if (!string.IsNullOrEmpty(_customMessage))
                             {
                                 GManager.instance.commandText.OpenCommandText(_customMessage);
@@ -243,7 +243,7 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
 
                             Permanent selectedPermanent = null;
 
-                            #region ƒvƒŒƒCƒ„[‚Ö‚ÌUŒ‚
+                            #region Can Attack Player
                             if (CanAttackPlayer())
                             {
                                 if (_attacker.TopCard.Owner.Enemy.SecurityCards.Count >= 1)
@@ -284,7 +284,7 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
 
                             CheckEndSelect();
 
-                            #region ê‚Ìƒp[ƒ}ƒlƒ“ƒg‚ªƒNƒŠƒbƒN‚³‚ê‚½Žž‚Ìˆ—
+                            #region Selecting field permanent
                             void OnClickFieldPermanentCard(FieldPermanentCard fieldPermanentCard)
                             {
                                 if (selectedPermanent == fieldPermanentCard.ThisPermanent)
@@ -301,10 +301,10 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
                             }
                             #endregion
 
-                            #region ‘I‘ð‚ðI—¹‚Å‚«‚é‚©‚Ì”»’è‚ÆƒAƒEƒgƒ‰ƒCƒ“•\Ž¦
+                            #region End Selectiong "Not Attack"
                             void CheckEndSelect()
                             {
-                                #region I—¹‚Å‚«‚é‚©‚É‚æ‚Á‚ÄUI•\Ž¦
+                                #region CanEndSelect
                                 if (CanEndSelect(selectedPermanent))
                                 {
 
@@ -316,7 +316,7 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
                                 }
                                 #endregion
 
-                                #region ƒAƒEƒgƒ‰ƒCƒ“•\Ž¦
+                                #region Visually Select Target
                                 foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players)
                                 {
                                     foreach (Permanent permanent in player.GetFieldPermanents())
@@ -361,7 +361,7 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
 
                             #endregion
 
-                            #region ‘I‘ðI—¹
+                            #region End Selection RPC
                             void EndSelect_RPC()
                             {
                                 foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players)
@@ -396,7 +396,7 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
 
                         else
                         {
-                            #region ƒƒbƒZ[ƒW•\Ž¦
+                            #region Showing Enemy Message
                             if (!string.IsNullOrEmpty(_customMessage_Enemy))
                             {
                                 GManager.instance.commandText.OpenCommandText(_customMessage_Enemy);
@@ -456,11 +456,11 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
                 }
             }
 
-            //‘I‘ð‚ªŠ®—¹‚·‚é‚Ü‚Å‘Ò‹@
+            //Wait until selection ends
             yield return new WaitWhile(() => !_endSelect);
             _endSelect = false;
 
-            #region ƒŠƒZƒbƒg
+            #region Clean up visual selections and UI
             foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players)
             {
                 GManager.instance.turnStateMachine.OffFieldCardTarget(player);

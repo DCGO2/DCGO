@@ -230,7 +230,7 @@ namespace DCGO.CardEffects.BT16
             }
             #endregion
 
-            #region Rule Text
+            #region Rule Text - Name
             if (timing == EffectTiming.None)
             {
                 ChangeCardNamesClass changeCardNamesClass = new ChangeCardNamesClass();

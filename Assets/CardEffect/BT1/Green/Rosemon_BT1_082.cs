@@ -11,7 +11,7 @@ public class Rosemon_BT1_082 : CEntity_Effect
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-        if (timing == EffectTiming.OnCounterTiming)
+        if (timing == EffectTiming.OnAllyAttack)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Suspend 1 Digimon", CanUseCondition, card);

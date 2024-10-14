@@ -230,10 +230,10 @@ public partial class CardEffectCommons
     #endregion
 
     #region Play 1 [Volée & Zerdrücken] Token
-    public static IEnumerator PlayVoléeZerdrücken(ICardEffect activateClass)
+    public static IEnumerator PlayVoleeZerdrucken(ICardEffect activateClass)
     {
         yield return ContinuousController.instance.StartCoroutine(PlayToken(
-            tokenData: ContinuousController.instance.VoléeZerdrückenToken,
+            tokenData: ContinuousController.instance.VoleeZerdruckenToken,
             activateClass: activateClass,
             isOwnerPermanent: true,
             isTapped: false

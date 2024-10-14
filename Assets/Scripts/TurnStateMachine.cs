@@ -33,7 +33,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
     #region Initialization
 
-
     public IEnumerator Init()
     {
         yield return StartCoroutine(GManager.instance.LoadingObject.StartLoading("Now Loading"));
@@ -235,12 +234,12 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         yield return new WaitForSeconds(0.2f);
         #endregion
 
-        #region ログのクリック処理を追加
+        /*#region ログのクリック処理を追加
         foreach (CardSource cardSource in gameContext.ActiveCardList)
         {
             GManager.instance.playLog.AddOnClick_ShowCard(cardSource);
         }
-        #endregion
+        #endregion*/
 
         #region メモリーを初期化
         GManager.instance.memoryObject.Init();
@@ -252,7 +251,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
             yield return StartCoroutine(player.brainStormObject.Init());
         }
 
-        #region 先攻後攻の決定
+        #region Deciding whether to attack first or last
         gameContext.TurnPlayer = gameContext.PlayerFromID(UnityEngine.Random.Range(0, 2));
 
         #region get first player from room custom property
@@ -484,7 +483,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
                 #region Log
                 if (_isRedraw)
-                    GManager.instance.playLog.AddLogString($"\nMulligan Hand\n{player.PlayerName}\n");
+                    PlayLog.OnAddLog?.Invoke($"\nMulligan Hand\n{player.PlayerName}\n");
                 #endregion
 
                 #endregion
@@ -545,7 +544,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         }
 
         #region ログ追加
-        GManager.instance.playLog.AddLogString($"\n---------------------------------\nActive Phase:\n{gameContext.TurnPlayer.PlayerName}\n");
+        PlayLog.OnAddLog?.Invoke($"\n---------------------------------\nActive Phase:\n{gameContext.TurnPlayer.PlayerName}\n");
         #endregion
 
         TurnCount++;
@@ -642,7 +641,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         }
 
         #region ログ追加
-        GManager.instance.playLog.AddLogString($"\nDraw Phase:\n{gameContext.TurnPlayer.PlayerName}\n");
+        PlayLog.OnAddLog?.Invoke($"\nDraw Phase:\n{gameContext.TurnPlayer.PlayerName}\n");
         #endregion
 
         isSync = true;
@@ -687,7 +686,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         }
 
         #region ログ追加
-        GManager.instance.playLog.AddLogString($"\nBreeding Phase:\n{gameContext.TurnPlayer.PlayerName}\n");
+        PlayLog.OnAddLog?.Invoke($"\nBreeding Phase:\n{gameContext.TurnPlayer.PlayerName}\n");
         #endregion
 
         isSync = true;
@@ -848,7 +847,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         }
 
         #region Add log
-        GManager.instance.playLog.AddLogString($"\nMain Phase:\n{gameContext.TurnPlayer.PlayerName}\n");
+        PlayLog.OnAddLog?.Invoke($"\nMain Phase:\n{gameContext.TurnPlayer.PlayerName}\n");
 
         #endregion
 
@@ -876,29 +875,25 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
         bool CanSelect()
         {
-            //手札のカードをプレイ可能
+            //You can play cards from your hand.
             if (gameContext.TurnPlayer.HandCards.Some((_card) => _card.CanPlayFromHandDuringMainPhase))
-            {
                 return true;
-            }
 
-            //効果を使えるパーマネントが場にいる
+            //There is a permanent in play that can use the effect.
             if (gameContext.TurnPlayer.GetFieldPermanents().Count((permanent) => permanent.CanDeclareSkill()) > 0)
-            {
                 return true;
-            }
 
-            //攻撃できるパーマネントが場にいる
+            //There is a permanent in play that can attack.
             if (gameContext.TurnPlayer.GetFieldPermanents().Count((permanent) => permanent.CanAttack(null)) > 0)
-            {
                 return true;
-            }
 
-            //効果を使える手札のカードがある
+            //I have a card in my hand that can use an effect.
             if (gameContext.TurnPlayer.HandCards.Count((_card) => _card.CanDeclareSkill) > 0)
-            {
                 return true;
-            }
+
+            //I have a card in my trash that can use an effect.
+            if (gameContext.TurnPlayer.TrashCards.Count(_card => _card.CanDeclareSkill) > 0)
+                return true;
 
             return false;
         }
@@ -934,7 +929,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
             StartCoroutine(SetMainPhase());
 
-            #region 選択終了まで待機
+            #region Wait until selection is complete
             while (PlayCard == null && UseCardEffect == null && AttackingPermanent == null)
             {
                 yield return null;
@@ -1164,7 +1159,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                         }
 
                         // yield return StartCoroutine(((ActivateICardEffect)UseCardEffect).Activate_Optional_Effect_Execute(null));
-                        UnityEngine.Debug.Log($"MainPhase: UseCardEffect - {UseCardEffect.EffectSourceCard.BaseENGCardNameFromEntity}, {UseCardEffect.MaxCountPerTurn}");
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.ActivateEffectProcess(
                                 UseCardEffect,
                                 null));
@@ -1173,7 +1167,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
             }
             #endregion
 
-            #region カードをプレイ
+            #region play cards
             else if (PlayCard != null)
             {
                 isSync = true;
@@ -1190,7 +1184,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                 }
 
                 //ログ追加
-                GManager.instance.playLog.AddLogString($"\nPlay Card:\n{PlayCard.BaseENGCardNameFromEntity}({PlayCard.CardID})\n");
+                PlayLog.OnAddLog?.Invoke($"\nPlay Card:\n{PlayCard.BaseENGCardNameFromEntity}({PlayCard.CardID})\n");
 
                 PlayCardClass playCard = new PlayCardClass(
                     cardSources: new List<CardSource>() { PlayCard },
@@ -1220,7 +1214,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
             }
             #endregion
 
-            #region アタック
+            #region attack
             else if (AttackingPermanent != null)
             {
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.attackProcess.Attack(AttackingPermanent, DefendingPermanent, null));
@@ -3057,7 +3051,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
     IEnumerator EndPhase()
     {
         #region Add log
-        GManager.instance.playLog.AddLogString($"\nEnd Turn:\n{gameContext.TurnPlayer.PlayerName}\n");
+        PlayLog.OnAddLog?.Invoke($"\nEnd Turn:\n{gameContext.TurnPlayer.PlayerName}\n");
         #endregion
 
         #region Deselect

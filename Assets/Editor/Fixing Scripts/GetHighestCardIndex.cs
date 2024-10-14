@@ -16,6 +16,7 @@ namespace DCGO.Tools.Repair
         {
             List<CEntity_Base> Entities = GetAsset.LoadAll<CEntity_Base>("Assets/CardBaseEntity/");
             int cardIndex = 0;
+            string name = "";
 
             foreach (CEntity_Base card in Entities)
             {
@@ -23,10 +24,38 @@ namespace DCGO.Tools.Repair
                     continue;
 
                 if (card.CardIndex > cardIndex)
+                {
                     cardIndex = card.CardIndex;
+                    name = card.CardSpriteName;
+                }
             }
 
-            Debug.Log($"Highest Card Index: {cardIndex}");
+            Debug.Log($"Highest Card Index: {cardIndex} - {name}");
+        }
+    }
+
+    public class GetHighestPromoCardIndex : MonoBehaviour
+    {
+        [MenuItem("Window/DCGO/Repair/Get Highest Promo Index")]
+        static void FixEntityClassNames()
+        {
+            List<CEntity_Base> Entities = GetAsset.LoadAll<CEntity_Base>("Assets/CardBaseEntity/");
+            int cardIndex = 0;
+            string name = "";
+
+            foreach (CEntity_Base card in Entities)
+            {
+                if (!card.CardID.Contains("P-"))
+                    continue;
+
+                if (card.CardIndex > cardIndex)
+                {
+                    cardIndex = card.CardIndex;
+                    name = card.CardSpriteName;
+                }
+            }
+
+            Debug.Log($"Highest Card Index: {cardIndex} - {name}");
         }
     }
 }

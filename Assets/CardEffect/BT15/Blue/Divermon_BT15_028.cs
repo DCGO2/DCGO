@@ -15,39 +15,18 @@ public class Divermon_BT15_028 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Trash digivolution cards and play 1 Tamre from hand", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Trash digivolution cards and play 1 Tamer from hand", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 
             string EffectDiscription()
             {
-                return "[On Play] Trash 3 digivolution card from the bottom of 1 of your opponent's Digimon.";
+                return "[On Play] Trash the bottom 3 digivolution cards of 1 of your opponent's Digimon. Then, if your opponent has no Digimon with digivolution cards, you may play 1 blue Tamer card from your hand without paying the cost.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
             {
-                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                {
-                    if (permanent.DigivolutionCards.Count((cardSource) => !cardSource.CanNotTrashFromDigivolutionCards(activateClass)) >= 1)
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
-            }
-
-            bool PermanentCondition(Permanent permanent)
-            {
-                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                {
-                    if (permanent.DigivolutionCards.Count >= 1)
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
+                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
             }
 
             bool CanSelectCardCondition(CardSource cardSource)
@@ -73,23 +52,7 @@ public class Divermon_BT15_028 : CEntity_Effect
 
             bool CanActivateCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
-                {
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                    {
-                        return true;
-                    }
-
-                    if (card.Owner.Enemy.GetBattleAreaDigimons().Count(PermanentCondition) == 0)
-                    {
-                        if (card.Owner.HandCards.Count >= 1)
-                        {
-                            return true;
-                        }
-                    }
-                }
-
-                return false;
+                return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
             }
 
             IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -129,7 +92,7 @@ public class Divermon_BT15_028 : CEntity_Effect
                     }
                 }
 
-                if (card.Owner.Enemy.GetBattleAreaDigimons().Count(PermanentCondition) == 0)
+                if (card.Owner.Enemy.GetBattleAreaDigimons().Count(permanent => permanent.DigivolutionCards.Count > 0) == 0)
                 {
                     if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
                     {
