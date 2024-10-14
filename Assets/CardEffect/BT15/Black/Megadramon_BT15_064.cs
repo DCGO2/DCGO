@@ -119,7 +119,7 @@ public class Megadramon_BT15_064 : CEntity_Effect
             {
                 if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card))
                 {
-                    if (permanent.TopCard.GetCostItself <= 3)
+                    if (permanent.TopCard.HasPlayCost && permanent.TopCard.GetCostItself <= 3)
                     {
                         if (permanent.IsDigimon || permanent.IsTamer)
                         {

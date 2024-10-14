@@ -34,7 +34,7 @@ public class Megadramon_BT9_065 : CEntity_Effect
                         {
                             if (permanent.TopCard.Owner.GetBattleAreaPermanents().Contains(permanent))
                             {
-                                if (permanent.TopCard.GetCostItself <= 3)
+                                if (permanent.TopCard.HasPlayCost && permanent.TopCard.GetCostItself <= 3)
                                 {
                                     if (permanent.IsDigimon)
                                     {
