@@ -53,6 +53,17 @@ public class AttackProcess : MonoBehaviourPunCallbacks
 
         IsAttacking = true;
 
+        // check timing
+        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
+
+        GManager.instance.turnStateMachine.IsSelecting = true;
+
+        // force to end attack
+        if (IsEndAttack)
+        {
+            goto EndAttack;
+        }
+
         #region Attack Process
         if (AttackingPermanent != null)
         {

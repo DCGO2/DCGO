@@ -115,7 +115,7 @@ public class Lampmon_BT12_044 : CEntity_Effect
         #endregion
 
         #region Your Turn
-        if (timing == EffectTiming.AfterEffectsActivate || timing == EffectTiming.OnStartTurn || timing == EffectTiming.OnEnterFieldAnyone || timing == EffectTiming.OnUseOption || timing == EffectTiming.OptionSkill || timing == EffectTiming.SecuritySkill || timing == EffectTiming.OnDestroyedAnyone)
+        if (timing == EffectTiming.AfterEffectsActivate || timing == EffectTiming.OnStartTurn || timing == EffectTiming.OnEnterFieldAnyone || timing == EffectTiming.OnUseOption || timing == EffectTiming.OptionSkill || timing == EffectTiming.SecuritySkill || timing == EffectTiming.WhenRemoveField)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Gain Security Attack", CanUseCondition, card);
