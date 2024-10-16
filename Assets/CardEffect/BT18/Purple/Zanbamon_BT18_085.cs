@@ -1,5 +1,6 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DCGO.CardEffects.BT18
 {
@@ -9,33 +10,79 @@ namespace DCGO.CardEffects.BT18
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region Shared
+
+            int OpponentTrashColorCount()
+            {
+                List<CardColor> cardColors = new List<CardColor>();
+
+                foreach (CardSource cardSource in card.Owner.Enemy.TrashCards)
+                {
+                    cardColors.AddRange(cardSource.CardColors);
+                }
+
+                cardColors = cardColors.Distinct().ToList();
+
+                return cardColors.Count;
+            }
+
+            #endregion
+
+            #region Digivolution Cost Reduction
+
             if (timing == EffectTiming.None)
             {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
-                cardEffects.Add(activateClass);
-
-                string EffectDiscription()
+                bool Condition()
                 {
-                    return "";
+                    return !CardEffectCommons.IsExistOnField(card);
                 }
 
-                bool CanUseCondition(Hashtable hashtable)
+                bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(targetPermanent, card);
+                }
+
+                bool CardSourceCondition(CardSource cardSource)
+                {
+                    return cardSource == card;
+                }
+
+                bool RootCondition(SelectCardEffect.Root root)
                 {
                     return true;
                 }
 
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    return true;
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    yield return null;
-                }
+                cardEffects.Add(CardEffectFactory.ChangeDigivolutionCostStaticEffect<Func<int>>(
+                    changeValue: () => -OpponentTrashColorCount(),
+                    permanentCondition: PermanentCondition,
+                    cardCondition: CardSourceCondition,
+                    rootCondition: RootCondition,
+                    isInheritedEffect: false,
+                    card: card,
+                    condition: Condition,
+                    setFixedCost: false));
             }
+
+            #endregion
+
+            #region Your Turn
+
+            if (timing == EffectTiming.None)
+            {
+                bool Condition()
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.IsOwnerTurn(card);
+                }
+
+                cardEffects.Add(CardEffectFactory.ChangeSelfSAttackStaticEffect(changeValue: OpponentTrashColorCount() / 2,
+                    isInheritedEffect: false, card: card, condition: Condition));
+
+                cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect(changeValue: 2000 * (OpponentTrashColorCount() / 2),
+                    isInheritedEffect: false, card: card, condition: Condition));
+            }
+
+            #endregion
 
             return cardEffects;
         }
