@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: "\u30C9\u30EB\u30B0\u30EC\u30E2\u30F3-BT7-064_P1"
+  m_EditorClassIdentifier: 
+  CardIndex: 1477
+  cardColors: 05000000
+  PlayCost: 8
+  EvoCosts:
+  - CardColor: 5
+    Level: 4
+    MemoryCost: 3
+  Level: 5
+  CardName_JPN: "\u30C9\u30EB\u30B0\u30EC\u30E2\u30F3"
+  CardName_ENG: DoruGreymon
+  Form_JPN:
+  - "\u5B8C\u5168\u4F53"
+  Form_ENG:
+  - Ultimate
+  Attribute_JPN:
+  - "\u30C7\u30FC\u30BF\u7A2E"
+  Attribute_ENG:
+  - Data
+  Type_JPN:
+  - "\u7363\u7ADC\u578B"
+  - "X\u6297\u4F53"
+  Type_ENG:
+  - BeastDragon
+  - X Antibody
+  CardSpriteName: BT7-064_P1
+  cardKind: 0
+  EffectDiscription_JPN: "\u3010\u9032\u5316\u6642\u3011\u81EA\u5206\u306E\u624B\u672D\u304B\u3089\u3001\u7279\u5FB4\u306B\u300CX\u6297\u4F53\u300D\u3092\u6301\u3064\u9ED2\u306E\u30AB\u30FC\u30C91\u679A\u3092\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u306E\u9032\u5316\u5143\u306E1\u756A\u4E0B\u306B\u7F6E\u304F\u3053\u3068\u3067\u3001\u6B21\u306E\u76F8\u624B\u306E\u30BF\u30FC\u30F3\u7D42\u4E86\u6642\u307E\u3067\u3001\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u306F\u52B9\u679C\u3067\u6D88\u6EC5\u305B\u305A\u3001DP\u3092\u30DE\u30A4\u30CA\u30B9\u3055\u308C\u306A\u3044\u3002"
+  EffectDiscription_ENG: '[When Digivolving] You may place 1 black card with [X-Antibody]
+    in its traits from your hand at the bottom of this Digimon''s digivolution cards
+    to prevent effects from deleting it or reducing its DP until the end of your
+    opponent''s next turn.'
+  InheritedEffectDiscription_JPN: "\u3010\u81EA\u5206\u306E\u30BF\u30FC\u30F3\u3011\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u304C\u7279\u5FB4\u306B\u300CX\u6297\u4F53\u300D\u3092\u6301\u3064\u9593\u3001\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u306F\u226A\u30BB\u30AD\u30E5\u30EA\u30C6\u30A3\u30A2\u30BF\u30C3\u30AF+1\u226B\uFF08\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u304C\u30C1\u30A7\u30C3\u30AF\u3059\u308B\u30BB\u30AD\u30E5\u30EA\u30C6\u30A3\u306E\u679A\u6570+1\uFF09\u3092\u5F97\u308B\u3002"
+  InheritedEffectDiscription_ENG: "[Your Turn] While this Digimon has [X-Antibody]
+    in its traits, it gains \uFF1CSecurity Attack +1\uFF1E. (This Digimon checks
+    1 additional security card.)"
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Dolgremon_BT7_064
+  DP: 7000
+  rarity: 1
+  OverflowMemory: 0
+  CardID: BT7-064
+  MaxCountInDeck: 4

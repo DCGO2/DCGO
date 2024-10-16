@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Offense_Training-P-103_P1
+  m_EditorClassIdentifier: 
+  CardIndex: 10326
+  cardColors: 00000000
+  PlayCost: 2
+  EvoCosts: []
+  Level: 0
+  CardName_JPN: 
+  CardName_ENG: Offense Training
+  Form_JPN: []
+  Form_ENG:
+  - '-'
+  Attribute_JPN: []
+  Attribute_ENG:
+  - '-'
+  Type_JPN: []
+  Type_ENG:
+  - Option
+  CardSpriteName: P-103_P1
+  cardKind: 2
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: "[Main] Reveal the top 2 cards of your deck. Add 1 red card
+    among them to your hand. Place the rest at the bottom of your deck in any order.
+    Then, place this card into your battle area.\n[Main] \uFF1CDelay\uFF1E \n\u30FB1
+    of your Digimon may digivolve into a red Digimon card in your hand for its digivolution
+    cost. When it would digivolve by this effect, reduce the cost by 2."
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: '[Security] Place this card in the battle area.'
+  CardEffectClassName: OffenseTraining_P_103
+  DP: 0
+  rarity: 5
+  OverflowMemory: 0
+  CardID: P-103
+  MaxCountInDeck: 4

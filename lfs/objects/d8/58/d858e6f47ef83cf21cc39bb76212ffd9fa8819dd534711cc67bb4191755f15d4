@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: "\u30A6\u30A9\u30FC\u30B0\u30EC\u30A4\u30E2\u30F3X\u6297\u4F53-BT9-016"
+  m_EditorClassIdentifier: 
+  CardIndex: 1798
+  cardColors: 00000000
+  PlayCost: 12
+  EvoCosts:
+  - CardColor: 0
+    Level: 5
+    MemoryCost: 4
+  Level: 6
+  CardName_JPN: "\u30A6\u30A9\u30FC\u30B0\u30EC\u30A4\u30E2\u30F3X\u6297\u4F53"
+  CardName_ENG: WarGreymon(X Antibody)
+  Form_JPN:
+  - "\u7A76\u6975\u4F53"
+  Form_ENG:
+  - Mega
+  Attribute_JPN:
+  - "\u30EF\u30AF\u30C1\u30F3\u7A2E"
+  Attribute_ENG:
+  - Vaccine
+  Type_JPN:
+  - "\u7ADC\u4EBA\u578B"
+  - "X\u6297\u4F53"
+  Type_ENG:
+  - Dragonkin
+  - X Antibody
+  CardSpriteName: BT9-016
+  cardKind: 0
+  EffectDiscription_JPN: "\u9032\u5316:\u300C\u30A6\u30A9\u30FC\u30B0\u30EC\u30A4\u30E2\u30F3\u300D\u304B\u30891\u3010\u304A\u4E92\u3044\u306E\u30BF\u30FC\u30F3\u3011\u76F8\u624B\u306E\u30BB\u30AD\u30E5\u30EA\u30C6\u30A3\u304C\u6E1B\u3063\u305F\u3068\u304D\u3001\u30E1\u30E2\u30EA\u30FC+1\u3002\u3010\u30A2\u30BF\u30C3\u30AF\u7D42\u4E86\u6642\u3011\uFF3B\u30BF\u30FC\u30F3\u306B1\u56DE\uFF3D\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u306E\u9032\u5316\u5143\u306B\u3001\u300C\u30A6\u30A9\u30FC\u30B0\u30EC\u30A4\u30E2\u30F3\u300D\u304B\u300CX\u6297\u4F53\u300D\u304C\u3042\u308B\u3068\u304D\u3001\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u306EDP\u4EE5\u4E0B\u306E\u76F8\u624B\u306E\u30C7\u30B8\u30E2\u30F31\u4F53\u3092\u6D88\u6EC5\u3055\u305B\u308B\u3002"
+  EffectDiscription_ENG: "Digivolve: 1 from [WarGreymon][All Turns] When a card is
+    removed from your opponent\u2019s security stack, gain 1 memory. [End of Attack][Once
+    Per Turn] If [WarGreymon] or [X Antibody] is in this Digimon\u2019s digivolution
+    cards, delete 1 of your opponent\u2019s Digimon with DP less than or equal to
+    this Digimon\u2019s DP."
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: WargreymonXAntibody_BT9_016
+  DP: 12000
+  rarity: 3
+  OverflowMemory: 0
+  CardID: BT9-016
+  MaxCountInDeck: 4

@@ -1,0 +1,62 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: "\u30DE\u30B0\u30CA\u30E2\u30F3X\u6297\u4F53-BT9-044"
+  m_EditorClassIdentifier: 
+  CardIndex: 1831
+  cardColors: 0200000001000000
+  PlayCost: 12
+  EvoCosts:
+  - CardColor: 2
+    Level: 5
+    MemoryCost: 3
+  - CardColor: 1
+    Level: 5
+    MemoryCost: 3
+  Level: 6
+  CardName_JPN: "\u30DE\u30B0\u30CA\u30E2\u30F3X\u6297\u4F53"
+  CardName_ENG: Magnamon(X Antibody)
+  Form_JPN:
+  - "\u7A76\u6975\u4F53"
+  Form_ENG:
+  - Mega
+  Attribute_JPN:
+  - "\u30EF\u30AF\u30C1\u30F3\u7A2E"
+  Attribute_ENG:
+  - Vaccine
+  Type_JPN:
+  - "\u8056\u9A0E\u58EB\u578B"
+  - "\u30ED\u30A4\u30E4\u30EB\u30CA\u30A4\u30C4"
+  - "X\u6297\u4F53"
+  Type_ENG:
+  - HolyWarrior
+  - RoyalKnight
+  - X Antibody
+  CardSpriteName: BT9-044
+  cardKind: 0
+  EffectDiscription_JPN: "\u9032\u5316:\u300C\u30DE\u30B0\u30CA\u30E2\u30F3\u300D\u304B\u30894\u3010\u76F8\u624B\u306E\u30BF\u30FC\u30F3\u3011\u76F8\u624B\u306E\u30C7\u30B8\u30E2\u30F3\u304C\u30A2\u30BF\u30C3\u30AF\u3057\u305F\u3068\u304D\u3001\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u306E\u9032\u5316\u5143\u306B\u7279\u5FB4\u306B\u300C\u30A2\u30FC\u30DE\u30FC\u4F53\u300D\u3092\u6301\u3064\u30AB\u30FC\u30C9\u304B\u300CX\u6297\u4F53\u300D\u304C\u3042\u308B\u306A\u3089\u3001\u30A2\u30BF\u30C3\u30AF\u306E\u5BFE\u8C61\u3092\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u306B\u5909\u66F4\u3067\u304D\u308B\u3002\u3010\u304A\u4E92\u3044\u306E\u30BF\u30FC\u30F3\u3011\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u304C\u6D88\u6EC5\u3059\u308B\u3068\u304D\u3001\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u306B\u91CD\u306D\u3089\u308C\u3066\u3044\u308B\u30AB\u30FC\u30C9\u3092\u4E0A\u304B\u30891\u679A\u81EA\u5206\u306E\u30BB\u30AD\u30E5\u30EA\u30C6\u30A3\u306E\u4E0A\u306B\u88CF\u5411\u304D\u3067\u7F6E\u304F\u3053\u3068\u3067\u3001\u6D88\u6EC5\u3057\u306A\u3044\u3002"
+  EffectDiscription_ENG: "Digivolve: 4 from [Magnamon][Opponent\u2019s Turn] When
+    an opponent\u2019s Digimon attacks, if a card with [Armor Form] in its traits
+    or [X Antibody] is in this Digimon\u2019s digivolution cards, you may switch
+    the target of attack to this Digimon. [All Turns] When this Digimon would be
+    deleted, you may place the top card of this Digimon on top of your security stack
+    face down to prevent that deletion."
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: MagnamonXAntibody_BT9_044
+  DP: 11000
+  rarity: 3
+  OverflowMemory: 0
+  CardID: BT9-044
+  MaxCountInDeck: 4

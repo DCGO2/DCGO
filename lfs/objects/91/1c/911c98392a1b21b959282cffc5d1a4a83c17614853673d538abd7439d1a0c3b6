@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: ArkhaiAngemon-EX6-021
+  m_EditorClassIdentifier: 
+  CardIndex: 3463
+  cardColors: 02000000
+  PlayCost: 7
+  EvoCosts:
+  - CardColor: 2
+    Level: 4
+    MemoryCost: 3
+  Level: 5
+  CardName_JPN: 
+  CardName_ENG: ArkhaiAngemon
+  Form_JPN: []
+  Form_ENG:
+  - Ultimate
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Vaccine
+  Type_JPN: []
+  Type_ENG:
+  - Principality
+  - Angel
+  CardSpriteName: EX6-021
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: "[On Play] [When Digivolving] By adding the top or bottom
+    card of your security stack to the hand, 1 of your opponent's Digimon gets -4000
+    DP for the turn. Then, you may place 1 Digimon card with the [Angel]/[Archangel]/[Three
+    Great Angels]\_trait from your hand at the bottom of your security stack.\n[Rule]
+    Trait: Has the [Angel] type."
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: "[Opponent's Turn] All of your Digimon with the
+    [Angel]/[Archangel]/[Three Great Angels]\_trait, gain \uFF1CBlocker\uFF1E."
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: '-'
+  CardEffectClassName: ArkhaiAngemon_EX6_021
+  DP: 7000
+  rarity: 2
+  OverflowMemory: 0
+  CardID: EX6-021
+  MaxCountInDeck: 4

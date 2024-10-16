@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: "\u30DE\u30E1\u30C6\u30A3\u30E9\u30E2\u30F3-BT7-049"
+  m_EditorClassIdentifier: 
+  CardIndex: 1455
+  cardColors: 03000000
+  PlayCost: 5
+  EvoCosts:
+  - CardColor: 3
+    Level: 4
+    MemoryCost: 3
+  Level: 5
+  CardName_JPN: "\u30DE\u30E1\u30C6\u30A3\u30E9\u30E2\u30F3"
+  CardName_ENG: MameTyramon
+  Form_JPN:
+  - "\u5B8C\u5168\u4F53"
+  Form_ENG:
+  - Ultimate
+  Attribute_JPN:
+  - "\u30C7\u30FC\u30BF\u7A2E"
+  Attribute_ENG:
+  - Data
+  Type_JPN:
+  - "\u7A81\u7136\u5909\u7570\u578B"
+  - "X\u6297\u4F53"
+  Type_ENG:
+  - Mutant
+  - X Antibody
+  CardSpriteName: BT7-049
+  cardKind: 0
+  EffectDiscription_JPN: "\u3010\u30A2\u30BF\u30C3\u30AF\u6642\u3011\u81EA\u5206\u306E\u30C7\u30C3\u30AD\u306E\u4E0A\u304B\u30893\u679A\u30AA\u30FC\u30D7\u30F3\u3059\u308B\u3002\u305D\u306E\u4E2D\u306E\u7DD1\u306ELv.6\u306E\u30AB\u30FC\u30C91\u679A\u306B\u3001\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u304B\u3089\u30B3\u30B9\u30C8\u3092\u652F\u6255\u308F\u305A\u306B\u9032\u5316\u3067\u304D\u308B\u3002\u6B8B\u3063\u305F\u30AB\u30FC\u30C9\u306F\u597D\u304D\u306A\u9806\u756A\u3067\u30C7\u30C3\u30AD\u306E\u4E0B\u306B\u623B\u3059\u3002"
+  EffectDiscription_ENG: '[When Attacking] Reveal the top 3 cards of your deck. You
+    may digivolve this Digimon into a green level 6 card among them without paying
+    its memory cost. Place the remaining cards at the bottom of your deck in any
+    order.'
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Jagamon_BT1_078
+  DP: 5000
+  rarity: 1
+  OverflowMemory: 0
+  CardID: BT7-049
+  MaxCountInDeck: 4
