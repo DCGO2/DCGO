@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: "\u30AC\u30EB\u30EB\u30E2\u30F3X\u6297\u4F53-EX5-018"
+  m_EditorClassIdentifier: 
+  CardIndex: 3057
+  cardColors: 0100000006000000
+  PlayCost: 6
+  EvoCosts:
+  - CardColor: 1
+    Level: 3
+    MemoryCost: 3
+  - CardColor: 6
+    Level: 3
+    MemoryCost: 3
+  Level: 4
+  CardName_JPN: "\u30AC\u30EB\u30EB\u30E2\u30F3X\u6297\u4F53"
+  CardName_ENG: Garurumon (X Antibody)
+  Form_JPN:
+  - "\u6210\u719F\u671F"
+  Form_ENG:
+  - Champion
+  Attribute_JPN:
+  - "\u30EF\u30AF\u30C1\u30F3\u7A2E"
+  Attribute_ENG:
+  - Data
+  Type_JPN:
+  - "\u7363\u578B"
+  - "X\u6297\u4F53"
+  Type_ENG:
+  - Beast
+  - X Antibody
+  CardSpriteName: EX5-018
+  cardKind: 0
+  EffectDiscription_JPN: "\u300C\u30AC\u30EB\u30EB\u30E2\u30F3\u300D:\u30B3\u30B9\u30C80\u3010\u9032\u5316\u6642\u3011\u226A2\u30C9\u30ED\u30FC\u226B\u3002\u305D\u306E\u5F8C\u3001\u81EA\u5206\u306E\u624B\u672D\u30922\u679A\u7834\u68C4\u3059\u308B\u3002\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u306E\u9032\u5316\u5143\u306B\u300C\u30AC\u30EB\u30EB\u30E2\u30F3\u300D/\u300CX\u6297\u4F53\u300D\u304C\u3042\u308B\u306A\u3089\u3001\u30E1\u30E2\u30EA\u30FC+1\u3002"
+  EffectDiscription_ENG: "[When Digivolving] \uFF1CDraw 2\uFF1E (Draw 2 cards from
+    your deck). Then, trash 2 cards in your hand. If [Garurumon] or [X Antibody]
+    is in this Digimon's digivolution cards, gain 1 memory."
+  InheritedEffectDiscription_JPN: "\u3010\u304A\u4E92\u3044\u306E\u30BF\u30FC\u30F3\u3011\uFF3B\u30BF\u30FC\u30F3\u306B1\u56DE\uFF3D\u540D\u79F0\u306B\u300C\u30AC\u30EB\u30EB\u30E2\u30F3\u300D/\u300C\u30AA\u30E1\u30AC\u30E2\u30F3\u300D\u3092\u542B\u3080\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u304C\u30D0\u30C8\u30EB\u3067\u6D88\u6EC5\u3059\u308B\u3068\u304D\u3001\u81EA\u5206\u306E\u30C8\u30E9\u30C3\u30B7\u30E5\u306E\u30C7\u30B8\u30BF\u30DE\u30AB\u30FC\u30C9\u4EE5\u5916\u306E\u30AB\u30FC\u30C92\u679A\u3092\u30C7\u30C3\u30AD\u306E\u4E0B\u306B\u623B\u3059\u3053\u3068\u3067\u3001\u6D88\u6EC5\u3057\u306A\u3044\u3002"
+  InheritedEffectDiscription_ENG: "[All Turns] [Once Per Turn] When this Digimon
+    with [Garurumon]/[Omnimon]\_in its name would be deleted in battle, by returning
+    2 non-Digi-Egg cards from your trash to the bottom of the deck, prevent that
+    deletion."
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: GarurumonXAntibody_EX5_018
+  DP: 6000
+  rarity: 1
+  OverflowMemory: 0
+  CardID: EX5-018
+  MaxCountInDeck: 4

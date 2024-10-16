@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: "\u30B0\u30E9\u30F3\u30C7\u30A3\u30B9\u30AF\u30EF\u30AC\u30FC\u30E2\u30F3-BT9-055"
+  m_EditorClassIdentifier: 
+  CardIndex: 1843
+  cardColors: 03000000
+  PlayCost: 12
+  EvoCosts:
+  - CardColor: 3
+    Level: 5
+    MemoryCost: 4
+  Level: 6
+  CardName_JPN: "\u30B0\u30E9\u30F3\u30C7\u30A3\u30B9\u30AF\u30EF\u30AC\u30FC\u30E2\u30F3"
+  CardName_ENG: GrandisKuwagamon
+  Form_JPN:
+  - "\u7A76\u6975\u4F53"
+  Form_ENG:
+  - Mega
+  Attribute_JPN:
+  - "\u30A6\u30A3\u30EB\u30B9\u7A2E"
+  Attribute_ENG:
+  - Virus
+  Type_JPN:
+  - "\u6606\u866B\u578B"
+  - "X\u6297\u4F53"
+  Type_ENG:
+  - Insectoid
+  - X Antibody
+  CardSpriteName: BT9-055
+  cardKind: 0
+  EffectDiscription_JPN: "\u9032\u5316:\u300C\u30B0\u30E9\u30F3\u30AF\u30EF\u30AC\u30FC\u30E2\u30F3\u300D\u304B\u30891\u3010\u9032\u5316\u6642\u3011\u76F8\u624B\u306E\u30C7\u30B8\u30E2\u30F31\u4F53\u3092\u30EC\u30B9\u30C8\u3055\u305B\u308B\u3002\u305D\u306E\u5F8C\u3001\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u304C\u30A2\u30BF\u30C3\u30AF\u4E2D\u306A\u3089\u3001\u30A2\u30BF\u30C3\u30AF\u306E\u5BFE\u8C61\u3092\u30EC\u30B9\u30C8\u72B6\u614B\u306E\u76F8\u624B\u306E\u30C7\u30B8\u30E2\u30F31\u4F53\u306B\u5909\u66F4\u3067\u304D\u308B\u3002\u3010\u81EA\u5206\u306E\u30BF\u30FC\u30F3\u3011\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u3092DP+4000\u3002\u3010\u30A2\u30BF\u30C3\u30AF\u7D42\u4E86\u6642\u3011[\u30BF\u30FC\u30F3\u306B1\u56DE]\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u306E\u9032\u5316\u5143\u306B\u3001\u300C\u30B0\u30E9\u30F3\u30AF\u30EF\u30AC\u30FC\u30E2\u30F3\u300D\u304B\u300CX\u6297\u4F53\u300D\u304C\u3042\u308B\u3068\u304D\u3001\u76F8\u624B\u306E\u30C7\u30B8\u30E2\u30F31\u4F53\u3092\u30EC\u30B9\u30C8\u3055\u305B\u3001\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u3092\u30A2\u30AF\u30C6\u30A3\u30D6\u306B\u3059\u308B\u3002"
+  EffectDiscription_ENG: "Digivolve: 1 from [GranKuwagamon][When Digivolving] Suspend
+    1 of your opponent's Digimon. Then, if this Digimon is attacking, you may switch
+    the target of attack to 1 of your opponent\u2019s suspended Digimon. [Your Turn]
+    This Digimon gets +4000 DP. [When Attacking][Once Per Turn] If [GranKuwagamon]
+    or [X Antibody] is in this Digimon\u2019s digivolution cards, suspend 1 of your
+    opponent\u2019s Digimon and unsuspend this Digimon."
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Grandiskuwagamon_BT9_055
+  DP: 12000
+  rarity: 3
+  OverflowMemory: 0
+  CardID: BT9-055
+  MaxCountInDeck: 4

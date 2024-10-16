@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: "\u30AC\u30D6\u30E2\u30F3X\u6297\u4F53-BT9-020_P1"
+  m_EditorClassIdentifier: 
+  CardIndex: 1805
+  cardColors: 01000000
+  PlayCost: 3
+  EvoCosts:
+  - CardColor: 1
+    Level: 2
+    MemoryCost: 0
+  Level: 3
+  CardName_JPN: "\u30AC\u30D6\u30E2\u30F3X\u6297\u4F53"
+  CardName_ENG: Gabumon(X Antibody)
+  Form_JPN:
+  - "\u6210\u9577\u671F"
+  Form_ENG:
+  - Rookie
+  Attribute_JPN:
+  - "\u30C7\u30FC\u30BF\u7A2E"
+  Attribute_ENG:
+  - Data
+  Type_JPN:
+  - "\u7363\u578B"
+  - "X\u6297\u4F53"
+  Type_ENG:
+  - Beast
+  - X Antibody
+  CardSpriteName: BT9-020_P1
+  cardKind: 0
+  EffectDiscription_JPN: "\u9032\u5316:\u300C\u30AC\u30D6\u30E2\u30F3\u300D\u304B\u30890\u3010\u767B\u5834\u6642\u3011\u3010\u9032\u5316\u6642\u3011\u81EA\u5206\u306E\u30C7\u30C3\u30AD\u306E\u4E0A\u304B\u30893\u679A\u30AA\u30FC\u30D7\u30F3\u3059\u308B\u3002\u305D\u306E\u4E2D\u306E\u540D\u79F0\u306B\u300C\u30AC\u30EB\u30EB\u30E2\u30F3\u300D\u304B\u300C\u30AA\u30E1\u30AC\u30E2\u30F3\u300D\u3092\u542B\u3080\u30AB\u30FC\u30C9\u3068\u300CX\u6297\u4F53\u300D1\u679A\u305A\u3064\u3092\u624B\u672D\u306B\u52A0\u3048\u308B\u3002\u6B8B\u308A\u306F\u597D\u304D\u306A\u9806\u756A\u3067\u30C7\u30C3\u30AD\u306E\u4E0B\u306B\u623B\u3059\u3002"
+  EffectDiscription_ENG: 'Digivolve: 0 from [Gabumon][On Play][When Digivolving]
+    Reveal the top 3 cards of your deck. Add 1 card with [Garurumon] or [Omnimon]
+    in its name and 1 [X Antibody] among them to your hand. Place the rest at the
+    bottom of your deck in any order.'
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: GabumonXAntibody_BT9_020
+  DP: 2000
+  rarity: 1
+  OverflowMemory: 0
+  CardID: BT9-020
+  MaxCountInDeck: 4

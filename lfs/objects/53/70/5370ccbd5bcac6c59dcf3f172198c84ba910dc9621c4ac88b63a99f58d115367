@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: "\u30C9\u30A5\u30D5\u30C8\u30E2\u30F3X\u6297\u4F53-EX5-043"
+  m_EditorClassIdentifier: 
+  CardIndex: 3082
+  cardColors: 03000000
+  PlayCost: 13
+  EvoCosts:
+  - CardColor: 3
+    Level: 5
+    MemoryCost: 4
+  Level: 6
+  CardName_JPN: "\u30C9\u30A5\u30D5\u30C8\u30E2\u30F3X\u6297\u4F53"
+  CardName_ENG: Leopardmon (X Antibody)
+  Form_JPN:
+  - "\u7A76\u6975\u4F53"
+  Form_ENG:
+  - Mega
+  Attribute_JPN:
+  - "\u30C7\u30FC\u30BF\u7A2E"
+  Attribute_ENG:
+  - Data
+  Type_JPN:
+  - "\u8056\u9A0E\u58EB\u578B"
+  - "\u30ED\u30A4\u30E4\u30EB\u30CA\u30A4\u30C4"
+  - "X\u6297\u4F53"
+  Type_ENG:
+  - Holy Warrior
+  - Royal Knight
+  - X Antibody
+  CardSpriteName: EX5-043
+  cardKind: 0
+  EffectDiscription_JPN: "\u540D\u79F0\u306B\u300C\u30C9\u30A5\u30D5\u30C8\u30E2\u30F3\u300D\u3092\u542B\u307F\u7279\u5FB4\u306B\u300CX\u6297\u4F53\u300D\u3092\u6301\u305F\u306A\u3044Lv.6:\u30B3\u30B9\u30C81\u3010\u9032\u5316\u6642\u3011\u3010\u30E1\u30A4\u30F3\u3011\uFF3B\u30BF\u30FC\u30F3\u306B1\u56DE\uFF3D\u81EA\u5206\u306E\u624B\u672D\u304B\u3089\u3001\u7DD1\u306E\u30C7\u30B8\u30E2\u30F3\u30AB\u30FC\u30C91\u679A\u3092\u652F\u6255\u3046\u767B\u5834\u30B3\u30B9\u30C8-4\u3067\u767B\u5834\u3067\u304D\u308B\u3002\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u306E\u9032\u5316\u5143\u306B\u540D\u79F0\u306B\u300C\u30C9\u30A5\u30D5\u30C8\u30E2\u30F3\u300D\u3092\u542B\u3080\u30AB\u30FC\u30C9\u304B\u300CX\u6297\u4F53\u300D\u304C\u3042\u308B\u306A\u3089\u3001\u3053\u306E\u30B3\u30B9\u30C8\u8EFD\u6E1B\u52B9\u679C\u306E\u6570\u5024-3\u3002\u3010\u81EA\u5206\u306E\u30BF\u30FC\u30F3\u3011\uFF3B\u30BF\u30FC\u30F3\u306B1\u56DE\uFF3D\u81EA\u5206\u306E\u30C7\u30B8\u30E2\u30F3\u304C\u767B\u5834\u3057\u305F\u3068\u304D\u3001DP5000\u4EE5\u4E0B\u306E\u76F8\u624B\u306E\u30C7\u30B8\u30E2\u30F31\u4F53\u3092\u624B\u672D\u306B\u623B\u305B\u308B\u3002\u4ED6\u306E\u81EA\u5206\u306E\u30C7\u30B8\u30E2\u30F31\u4F53\u3054\u3068\u306B\u3001\u3053\u306E\u52B9\u679C\u3067\u9078\u3079\u308BDP\u4E0A\u9650+3000\u3002"
+  EffectDiscription_ENG: "[When Digivolving] [Main] [Once Per Turn] You may play
+    1 green Digimon card from your hand with the play cost reduced by 4. If a card
+    with [Leopardmon]\_in its name or [X Antibody] is in this Digimon's digivolution
+    cards, further reduce it by 3.[Your Turn] [Once Per Turn] When one of your Digimon
+    is played, you may return 1 of your opponent\u2019s 5000 DP or lower Digimon
+    to the hand. For each of your other Digimon, add 3000 to the maximum DP this
+    effect can choose."
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: DufutomonXAntibody_EX5_043
+  DP: 12000
+  rarity: 3
+  OverflowMemory: 0
+  CardID: EX5-043
+  MaxCountInDeck: 4
