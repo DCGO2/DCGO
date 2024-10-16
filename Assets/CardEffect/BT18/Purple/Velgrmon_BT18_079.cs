@@ -210,7 +210,6 @@ namespace DCGO.CardEffects.BT18
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent) &&
-                           permanent.IsDigimon &&
                            permanent.TopCard.HasLevel &&
                            permanent.Level <= 4 &&
                            permanent.TopCard.CardColors.Contains(CardColor.Purple);
