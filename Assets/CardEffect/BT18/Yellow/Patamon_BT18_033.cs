@@ -20,7 +20,7 @@ namespace DCGO.CardEffects.BT18
 
                 string EffectDiscription()
                 {
-                    return "[End of Your Turn] By deleting 1 of your Digimon, you may play 1 Digimon card with the [Dark Masters] trait from your hand to an empty space in your breeding area without paying the cost.";
+                    return "[End of Your Turn] If your breeding area is empty, by returning 1 Digimon card with the [Three Great Angels] trait from your trash to the bottom of the deck, play this card in your breeding area without paying the cost.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)

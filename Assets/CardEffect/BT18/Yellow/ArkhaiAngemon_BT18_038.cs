@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.BT18
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return (targetPermanent.TopCard.CardTraits.Contains("Angel") && targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 4);
+                    return (targetPermanent.TopCard.EqualsTraits("Angel") && targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 4);
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
@@ -58,12 +58,7 @@ namespace DCGO.CardEffects.BT18
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (card.Owner.SecurityCards.Count >= 1)
-                        {
-                            return true;
-                        }
-
-                        if (card.Owner.HandCards.Count >= 1)
+                        if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
                         {
                             return true;
                         }
@@ -74,40 +69,38 @@ namespace DCGO.CardEffects.BT18
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
+                    int maxCount = Math.Min(1, card.Owner.HandCards.Count(CanSelectCardCondition));
+
+                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                    selectHandEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanSelectCardCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: maxCount,
+                        canNoSelect: true,
+                        canEndNotMax: false,
+                        isShowOpponent: true,
+                        selectCardCoroutine: SelectCardCoroutine,
+                        afterSelectCardCoroutine: null,
+                        mode: SelectHandEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    selectHandEffect.SetUpCustomMessage("Select 1 card to place at the bottom of security.", "The opponent is selecting 1 card to place at the bottom of security.");
+                    selectHandEffect.SetUpCustomMessage_ShowCard("Security Bottom Card");
+
+                    yield return StartCoroutine(selectHandEffect.Activate());
+
+                    IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
-                        int maxCount = Math.Min(1, card.Owner.HandCards.Count(CanSelectCardCondition));
+                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(cardSource, toTop: false));
 
-                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(cardSource.Owner));
 
-                        selectHandEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectCardCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: true,
-                            canEndNotMax: false,
-                            isShowOpponent: true,
-                            selectCardCoroutine: SelectCardCoroutine,
-                            afterSelectCardCoroutine: null,
-                            mode: SelectHandEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-                        selectHandEffect.SetUpCustomMessage("Select 1 card to place at the bottom of security.", "The opponent is selecting 1 card to place at the bottom of security.");
-                        selectHandEffect.SetUpCustomMessage_ShowCard("Security Bottom Card");
-
-                        yield return StartCoroutine(selectHandEffect.Activate());
-
-                        IEnumerator SelectCardCoroutine(CardSource cardSource)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(cardSource, toTop: false));
-
-                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(cardSource.Owner));
-
-                            yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(cardSource.Owner).AddSecurity());
-                        }
+                        yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(cardSource.Owner).AddSecurity());
                     }
+                
 
                     if (card.Owner.SecurityCards.Count >= 4)
                     {
@@ -158,12 +151,7 @@ namespace DCGO.CardEffects.BT18
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (card.Owner.SecurityCards.Count >= 1)
-                        {
-                            return true;
-                        }
-
-                        if (card.Owner.HandCards.Count >= 1)
+                        if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
                         {
                             return true;
                         }
@@ -174,41 +162,38 @@ namespace DCGO.CardEffects.BT18
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
+                    int maxCount = Math.Min(1, card.Owner.HandCards.Count(CanSelectCardCondition));
+
+                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                    selectHandEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanSelectCardCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: maxCount,
+                        canNoSelect: true,
+                        canEndNotMax: false,
+                        isShowOpponent: true,
+                        selectCardCoroutine: SelectCardCoroutine,
+                        afterSelectCardCoroutine: null,
+                        mode: SelectHandEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    selectHandEffect.SetUpCustomMessage("Select 1 card to place at the bottom of security.", "The opponent is selecting 1 card to place at the bottom of security.");
+                    selectHandEffect.SetUpCustomMessage_ShowCard("Security Bottom Card");
+
+                    yield return StartCoroutine(selectHandEffect.Activate());
+
+                    IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
-                        int maxCount = Math.Min(1, card.Owner.HandCards.Count(CanSelectCardCondition));
+                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(cardSource, toTop: false));
 
-                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(cardSource.Owner));
 
-                        selectHandEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectCardCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: true,
-                            canEndNotMax: false,
-                            isShowOpponent: true,
-                            selectCardCoroutine: SelectCardCoroutine,
-                            afterSelectCardCoroutine: null,
-                            mode: SelectHandEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-                        selectHandEffect.SetUpCustomMessage("Select 1 card to place at the bottom of security.", "The opponent is selecting 1 card to place at the bottom of security.");
-                        selectHandEffect.SetUpCustomMessage_ShowCard("Security Bottom Card");
-
-                        yield return StartCoroutine(selectHandEffect.Activate());
-
-                        IEnumerator SelectCardCoroutine(CardSource cardSource)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(cardSource, toTop: false));
-
-                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(cardSource.Owner));
-
-                            yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(cardSource.Owner).AddSecurity());
-                        }
+                        yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(cardSource.Owner).AddSecurity());
                     }
-
+                    
                     if (card.Owner.SecurityCards.Count >= 4)
                     {
                         CardSource topCard = card.Owner.SecurityCards[0];

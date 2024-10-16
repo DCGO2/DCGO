@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.BT18
                 bool PermanentCondition(Permanent targetPermanent)
                 {
                     if (targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 5)
-                        return targetPermanent.TopCard.ContainsTraits("NSp");
+                        return targetPermanent.TopCard.EqualsTraits("NSp");
 
                     return false;
                 }

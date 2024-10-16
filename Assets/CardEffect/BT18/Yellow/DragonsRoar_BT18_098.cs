@@ -58,7 +58,7 @@ namespace DCGO.CardEffects.BT18
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (card.Owner.GetBattleAreaDigimons().Count((permanet) => permanet.TopCard.CardColors.Contains(CardColor.Yellow) && permanet.TopCard.CardTraits.Contains("Data") || permanet.TopCard.CardTraits.Contains("Witchelny")) >= 1)
+                    if (card.Owner.GetBattleAreaDigimons().Count((permanet) => permanet.TopCard.CardColors.Contains(CardColor.Yellow) && permanet.TopCard.EqualsTraits("Data") || permanet.TopCard.EqualsTraits("Witchelny")) >= 1)
                     {
                         return true;
                     }
@@ -83,12 +83,12 @@ namespace DCGO.CardEffects.BT18
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash your 1 security and DP -6000", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[On Play] By trashing the top card of your security stack, 1 of your opponent's Digimon gets -6000 DP until the end of your opponent's turn. Then, if you have 2 or fewer security cards, place this card as your bottom security card.";
+                    return "[On Play] By trashing your top security card, 1 of your opponent's Digimon gets -6000 DP until the end of their turn. Then, if you have 2 or fewer security cards, place this card as your bottom security card.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -98,14 +98,9 @@ namespace DCGO.CardEffects.BT18
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card);
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    if (card.Owner.SecurityCards.Count >= 1)
                     {
-                        if (card.Owner.SecurityCards.Count >= 1)
+                        if(CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card))
                         {
                             return true;
                         }
@@ -113,6 +108,7 @@ namespace DCGO.CardEffects.BT18
 
                     return false;
                 }
+                        
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
@@ -166,18 +162,13 @@ namespace DCGO.CardEffects.BT18
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete 1 opponent Digimon with 6000DP or less and Recovery +1", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
                 activateClass.SetIsSecurityEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
                     return "[Security] Delete 1 of your opponent's Digimon with 6000 DP or less. Then, if you have 0 security cards, <Recovery +1>";
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnExecutingArea(card);
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
