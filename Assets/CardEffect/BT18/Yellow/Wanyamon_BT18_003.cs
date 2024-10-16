@@ -15,7 +15,7 @@ namespace DCGO.CardEffects
                 {
                     ActivateClass activateClass = new ActivateClass();
                     activateClass.SetUpICardEffect("DP -2000 when yellow tamer in play", CanUseCondition, card);
-                    activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                    activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                     activateClass.SetIsInheritedEffect(true);
                     cardEffects.Add(activateClass);
         

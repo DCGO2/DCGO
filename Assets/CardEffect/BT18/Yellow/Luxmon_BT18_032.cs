@@ -16,6 +16,7 @@ namespace DCGO.CardEffects.BT18
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Gain 1 memory", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetHashString("GainMemory_BT18-032");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -75,7 +76,7 @@ namespace DCGO.CardEffects.BT18
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("1 of opponent's Digimon gets -2000 DP", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 activateClass.SetHashString("WhenAttackingInherit_Luxmon_BT18_032");
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);

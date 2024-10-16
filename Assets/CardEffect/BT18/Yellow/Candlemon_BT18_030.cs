@@ -81,7 +81,7 @@ namespace DCGO.CardEffects.BT18
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash 1 security to prevent this Digimon from leaving Battle Area", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 activateClass.SetHashString("TrashSecurityToStay_Candlemon_BT18_030");
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
