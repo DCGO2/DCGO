@@ -397,6 +397,7 @@ public class Sukamonking_BT11_043 : CEntity_Effect
             activateClass.SetUpICardEffect("Prevent this Digimon from being deleted", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
             activateClass.SetIsInheritedEffect(true);
+            activateClass.SetChainActivationCount(2);
             activateClass.SetHashString("Substitute_BT11_043");
             cardEffects.Add(activateClass);
 

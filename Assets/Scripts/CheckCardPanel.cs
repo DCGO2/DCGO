@@ -282,13 +282,16 @@ public class CheckCardPanel : MonoBehaviour
 
         yield return new WaitForSeconds(Time.deltaTime * 0.2f);
 
-        foreach(HandCard handCard in handCards)
+        if (GManager.instance.turnStateMachine.gameContext.TurnPlayer.isYou)
         {
-            if (handCard.cardSource.CanDeclareSkill)
+            foreach (HandCard handCard in handCards)
             {
-                handCard.SetOrangeOutline();
+                if (handCard.cardSource.CanDeclareSkill)
+                {
+                    handCard.SetOrangeOutline();
 
-                handCard.AddClickTarget(OnClickHandCard);
+                    handCard.AddClickTarget(OnClickHandCard);
+                }
             }
         }
     }

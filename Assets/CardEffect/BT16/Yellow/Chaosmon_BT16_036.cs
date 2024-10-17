@@ -304,32 +304,6 @@ namespace DCGO.CardEffects.BT16
                 }
             #endregion
 
-            #region Rule Text
-            if (timing == EffectTiming.None)
-            {
-                ChangeTraitsClass changeTraitsClass = new ChangeTraitsClass();
-                changeTraitsClass.SetUpICardEffect("Also treated as [Boss]/[D-Brigade]", CanUseCondition, card);
-                changeTraitsClass.SetUpChangeTraitsClass(changeeTraits: changeTraits);
-                cardEffects.Add(changeTraitsClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return true;
-                }
-
-                List<string> changeTraits(CardSource cardSource, List<string> CardTraits)
-                {
-                    if (cardSource == card)
-                    {
-                        CardTraits.Add("Boss");
-                        CardTraits.Add("D-Brigade");
-                    }
-
-                    return CardTraits;
-                }
-            }
-            #endregion
-
             return cardEffects;
         }
     }

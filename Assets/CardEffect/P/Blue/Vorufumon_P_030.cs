@@ -81,11 +81,14 @@ public class Vorufumon_P_030 : CEntity_Effect
                         {
                             if (thisPermanent.TopCard != null)
                             {
-                                if (thisPermanent.CanBeDestroyedBySkill(activateClass1))
+                                if (thisPermanent.TopCard.IsDigimon)
                                 {
-                                    if (!thisPermanent.TopCard.CanNotBeAffected(activateClass1))
+                                    if (thisPermanent.CanBeDestroyedBySkill(activateClass1))
                                     {
-                                        return true;
+                                        if (!thisPermanent.TopCard.CanNotBeAffected(activateClass1))
+                                        {
+                                            return true;
+                                        }
                                     }
                                 }
                             }

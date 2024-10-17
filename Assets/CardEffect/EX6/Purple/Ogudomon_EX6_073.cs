@@ -416,17 +416,31 @@ namespace DCGO.CardEffects.EX6
                             maxCount: deleteCount,
                             canNoSelect: false,
                             canEndNotMax: false,
-                            selectPermanentCoroutine: SelectPermanentCoroutine,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Destroy,
+                            selectPermanentCoroutine: null,
+                            afterSelectPermanentCoroutine: SelectPermanentCoroutine,
+                            mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
 
-                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                    IEnumerator SelectPermanentCoroutine(List<Permanent> permanents)
                     {
-                        deletedPermanents.Add(permanent);
+
+                        yield return ContinuousController.instance.StartCoroutine(
+                            CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
+                                targetPermanents: permanents, 
+                                activateClass: activateClass, 
+                                successProcess: SuccessProcess, 
+                                failureProcess: null));
+
+                        yield return null;
+                    }
+
+                    IEnumerator SuccessProcess(List<Permanent> permanents)
+                    {
+                        deletedPermanents = permanents;
+
                         yield return null;
                     }
                     #endregion

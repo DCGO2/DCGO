@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: "\u30EF\u30FC\u30AC\u30EB\u30EB\u30E2\u30F3X\u6297\u4F53-EX5-023"
+  m_EditorClassIdentifier: 
+  CardIndex: 3062
+  cardColors: 0100000006000000
+  PlayCost: 8
+  EvoCosts:
+  - CardColor: 1
+    Level: 4
+    MemoryCost: 4
+  - CardColor: 6
+    Level: 4
+    MemoryCost: 4
+  Level: 5
+  CardName_JPN: "\u30EF\u30FC\u30AC\u30EB\u30EB\u30E2\u30F3X\u6297\u4F53"
+  CardName_ENG: WereGarurumon (X Antibody)
+  Form_JPN:
+  - "\u5B8C\u5168\u4F53"
+  Form_ENG:
+  - Ultimate
+  Attribute_JPN:
+  - "\u30EF\u30AF\u30C1\u30F3\u7A2E"
+  Attribute_ENG:
+  - Data
+  Type_JPN:
+  - "\u7363\u4EBA\u578B"
+  - "X\u6297\u4F53"
+  Type_ENG:
+  - Beastkin
+  - X Antibody
+  CardSpriteName: EX5-023
+  cardKind: 0
+  EffectDiscription_JPN: "\u300C\u30EF\u30FC\u30AC\u30EB\u30EB\u30E2\u30F3\u300D:\u30B3\u30B9\u30C81\u3010\u9032\u5316\u6642\u3011\u81EA\u5206\u306E\u624B\u672D\u30922\u679A\u7834\u68C4\u3059\u308B\u3053\u3068\u3067\u3001\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u3092\u30A2\u30AF\u30C6\u30A3\u30D6\u306B\u3059\u308B\u3002\u305D\u306E\u5F8C\u3001\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u306E\u9032\u5316\u5143\u306B\u300C\u30EF\u30FC\u30AC\u30EB\u30EB\u30E2\u30F3\u300D/\u300CX\u6297\u4F53\u300D\u304C\u3042\u308B\u306A\u3089\u3001\u81EA\u5206\u306E\u30C8\u30E9\u30C3\u30B7\u30E5\u304B\u3089\u3001\u540D\u79F0\u306B\u300C\u30AC\u30EB\u30EB\u30E2\u30F3\u300D/\u300CX\u6297\u4F53\u300D\u3092\u542B\u3080\u30C7\u30B8\u30E2\u30F3\u30AB\u30FC\u30C91\u679A\u3092\u624B\u672D\u306B\u623B\u305B\u308B\u3002"
+  EffectDiscription_ENG: "[When Digivolving] By trashing 2 cards in your hand, unsuspend
+    this Digimon. Then, if [WereGarurumon] or [X Antibody] is in this Digimon's digivolution
+    cards, you may return 1 Digimon card with [Garurumon]/[X Antibody]\_in its name
+    from your trash to the hand."
+  InheritedEffectDiscription_JPN: "\u3010\u30A2\u30BF\u30C3\u30AF\u6642\u3011\uFF3B\u30BF\u30FC\u30F3\u306B1\u56DE\uFF3D\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u304C\u540D\u79F0\u306B\u300C\u30AC\u30EB\u30EB\u30E2\u30F3\u300D/\u300C\u30AA\u30E1\u30AC\u30E2\u30F3\u300D\u3092\u542B\u3080\u306A\u3089\u3001\u81EA\u5206\u306E\u624B\u672D\u30921\u679A\u7834\u68C4\u3059\u308B\u3053\u3068\u3067\u3001\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u3092\u30A2\u30AF\u30C6\u30A3\u30D6\u306B\u3059\u308B\u3002"
+  InheritedEffectDiscription_ENG: "[When Attacking] [Once Per Turn] If this Digimon
+    has [Garurumon]/[Omnimon]\_in its name, by trashing 1 card in your hand, unsuspend
+    this Digimon."
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: WargarurumonXAntibody_EX5_023
+  DP: 8000
+  rarity: 2
+  OverflowMemory: 0
+  CardID: EX5-023
+  MaxCountInDeck: 4

@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: "\u30C9\u30EB\u30E2\u30F3-P-070"
+  m_EditorClassIdentifier: 
+  CardIndex: 6112
+  cardColors: 05000000
+  PlayCost: 3
+  EvoCosts:
+  - CardColor: 5
+    Level: 2
+    MemoryCost: 0
+  Level: 3
+  CardName_JPN: "\u30C9\u30EB\u30E2\u30F3"
+  CardName_ENG: Dorumon
+  Form_JPN:
+  - "\u6210\u9577\u671F"
+  Form_ENG:
+  - Rookie
+  Attribute_JPN:
+  - "\u30C7\u30FC\u30BF\u7A2E"
+  Attribute_ENG:
+  - Data
+  Type_JPN:
+  - "\u7363\u578B"
+  - "X\u6297\u4F53"
+  Type_ENG:
+  - Beast
+  - X Antibody
+  CardSpriteName: P-070
+  cardKind: 0
+  EffectDiscription_JPN: "\u3010\u30BB\u30AD\u30E5\u30EA\u30C6\u30A3\u3011\u30D0\u30C8\u30EB\u7D42\u4E86\u6642\u3001\u81EA\u5206\u306E\u30C7\u30C3\u30AD\u306E\u4E0A\u304B\u30891\u679A\u30AA\u30FC\u30D7\u30F3\u3059\u308B\u3002\u305D\u306E\u30AB\u30FC\u30C9\u304C\u9ED2\u306E\u767B\u5834\u30B3\u30B9\u30C84\u4EE5\u4E0B\u306E\u30C7\u30B8\u30E2\u30F3\u30AB\u30FC\u30C9\u306E\u3068\u304D\u3001\u30B3\u30B9\u30C8\u3092\u652F\u6255\u308F\u305A\u306B\u767B\u5834\u3067\u304D\u308B\u3002\u6B8B\u3063\u305F\u30AB\u30FC\u30C9\u306F\u624B\u672D\u306B\u52A0\u3048\u308B\u3002\u305D\u306E\u5F8C\u3001\u3053\u306E\u30AB\u30FC\u30C9\u3092\u624B\u672D\u306B\u52A0\u3048\u308B\u3002"
+  EffectDiscription_ENG: "[Security] At the end of the battle, reveal the top card
+    of your deck. If it\u2019s a black Digimon card with a play cost of 4 or less,
+    you may play it without paying its memory cost. Add the remaining cards to your
+    hand. Then, add this card to its owner\u2019s hand."
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Dorumon_P_070
+  DP: 2000
+  rarity: 5
+  OverflowMemory: 0
+  CardID: P-070
+  MaxCountInDeck: 4

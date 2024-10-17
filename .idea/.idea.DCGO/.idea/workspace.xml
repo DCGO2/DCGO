@@ -5,12 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1f770e58-b781-4cb0-ad93-4c50994f611d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.DCGO/.idea/projectSettingsUpdater.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.DCGO/.idea/projectSettingsUpdater.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.DCGO/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.DCGO/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT18/Purple/LucemonChaosMode_BT18_082.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT18/Purple/LucemonChaosMode_BT18_082.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT18/Purple/Oboromon_BT18_080.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT18/Purple/Oboromon_BT18_080.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT18/Purple/Velgrmon_BT18_079.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT18/Purple/Velgrmon_BT18_079.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT18/Purple/VioletInboots_BT18_093.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT18/Purple/VioletInboots_BT18_093.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -115,7 +109,6 @@
       <workItem from="1720456596917" duration="698000" />
       <workItem from="1722408646322" duration="10730000" />
       <workItem from="1722421835652" duration="1365000" />
-      <workItem from="1729062534516" duration="2843000" />
     </task>
     <servers />
   </component>

@@ -144,7 +144,7 @@ public class Plesiomon_X_Antibody_BT15_032 : CEntity_Effect
         #endregion
 
         #region Opponent's Turn
-        if (timing == EffectTiming.OnCounterTiming)
+        if (timing == EffectTiming.OnAllyAttack)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Memory +2", CanUseCondition, card);

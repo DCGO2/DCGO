@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: "\u30A2\u30EB\u30C6\u30A3\u30E1\u30C3\u30C8\u30D6\u30E9\u30AD\u30E2\u30F3-BT8-017"
+  m_EditorClassIdentifier: 
+  CardIndex: 1579
+  cardColors: 0000000005000000
+  PlayCost: 10
+  EvoCosts:
+  - CardColor: 0
+    Level: 5
+    MemoryCost: 3
+  - CardColor: 5
+    Level: 5
+    MemoryCost: 3
+  Level: 6
+  CardName_JPN: "\u30A2\u30EB\u30C6\u30A3\u30E1\u30C3\u30C8\u30D6\u30E9\u30AD\u30E2\u30F3"
+  CardName_ENG: UltimateBrachiomon
+  Form_JPN:
+  - "\u7A76\u6975\u4F53"
+  Form_ENG:
+  - Mega
+  Attribute_JPN:
+  - "\u30C7\u30FC\u30BF\u7A2E"
+  Attribute_ENG:
+  - Data
+  Type_JPN:
+  - "\u30B5\u30A4\u30DC\u30FC\u30B0\u578B"
+  - "X\u6297\u4F53"
+  Type_ENG:
+  - Cyborg
+  - X Antibody
+  CardSpriteName: BT8-017
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: 
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: 
+  DP: 13000
+  rarity: 0
+  OverflowMemory: 0
+  CardID: BT8-017
+  MaxCountInDeck: 4

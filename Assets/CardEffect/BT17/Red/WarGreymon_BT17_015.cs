@@ -482,6 +482,7 @@ namespace DCGO.CardEffects.BT17
                 activateClass.SetUpICardEffect("Trash the top card of opponent's security", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetIsInheritedEffect(true);
+                activateClass.SetHashString("ESS_BT17_015");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()

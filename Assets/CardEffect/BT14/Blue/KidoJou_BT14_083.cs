@@ -26,15 +26,7 @@ public class KidoJou_BT14_083 : CEntity_Effect
 
             bool CanSelectPermanentCondition(Permanent permanent)
             {
-                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                {
-                    if (permanent.DigivolutionCards.Count(CanSelectCardCondition) >= 1)
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
+                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
             }
 
             bool CanSelectCardCondition(CardSource cardSource)
@@ -49,15 +41,7 @@ public class KidoJou_BT14_083 : CEntity_Effect
 
             bool CanActivateCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
-                {
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
+                return CardEffectCommons.IsExistOnBattleArea(card);
             }
 
             IEnumerator ActivateCoroutine(Hashtable _hashtable)

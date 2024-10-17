@@ -158,7 +158,7 @@ public class Lordknightmon_BT13_090 : CEntity_Effect
             }
         }
 
-        if (timing == EffectTiming.OnCounterTiming)
+        if (timing == EffectTiming.OnAllyAttack)
         {
             int getMemory()
             {
