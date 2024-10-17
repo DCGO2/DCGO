@@ -55,6 +55,8 @@ public class FinalCrossBlade_BT12_100 : CEntity_Effect
 
             IEnumerator ActivateCoroutine(Hashtable _hashtable)
             {
+                List<Permanent> selectedPermanents = new List<Permanent>();
+
                 if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                 {
                     int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
@@ -100,26 +102,29 @@ public class FinalCrossBlade_BT12_100 : CEntity_Effect
 
                     IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
                     {
-                        foreach (Permanent permanent in permanents)
+                        selectedPermanents = permanents;
+                        yield return null;
+                    }
+
+                    foreach (Permanent permanent in selectedPermanents)
+                    {
+                        Permanent selectedPermanent = permanent;
+
+                        if (selectedPermanent != null)
                         {
-                            Permanent selectedPermanent = permanent;
-
-                            if (selectedPermanent != null)
+                            if (selectedPermanent.CanAttack(activateClass))
                             {
-                                if (selectedPermanent.CanAttack(activateClass))
+                                if (selectedPermanent.CanAttackTargetDigimon(null, activateClass))
                                 {
-                                    if (selectedPermanent.CanAttackTargetDigimon(null, activateClass))
-                                    {
-                                        SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
+                                    SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
 
-                                        selectAttackEffect.SetUp(
-                                    attacker: selectedPermanent,
-                                    canAttackPlayerCondition: () => true,
-                                    defenderCondition: (permanent) => false,
-                                    cardEffect: activateClass);
+                                    selectAttackEffect.SetUp(
+                                attacker: selectedPermanent,
+                                canAttackPlayerCondition: () => true,
+                                defenderCondition: (permanent) => false,
+                                cardEffect: activateClass);
 
-                                        yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
-                                    }
+                                    yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
                                 }
                             }
                         }

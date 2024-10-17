@@ -188,6 +188,7 @@ namespace DCGO.CardEffects.EX7
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 Digimon card with the [Rock Dragon]/[Earth Dragon] trait", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetHashString("PlayDigimon_EX7_049");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -198,8 +199,18 @@ namespace DCGO.CardEffects.EX7
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card);
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    {
+                        if (CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card))
+                        {
+                            if (!CardEffectCommons.IsByEffect(hashtable, cardEffect => CardEffectCommons.IsOwnerEffect(cardEffect, card)))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+
+                    return false;
                 }
 
                 bool CanSelectCardToPlayFromTrash(CardSource cardSource)

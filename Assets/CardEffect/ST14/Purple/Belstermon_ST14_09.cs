@@ -199,7 +199,7 @@ public class Belstermon_ST14_09 : CEntity_Effect
             }
         }
 
-        if (timing == EffectTiming.OnCounterTiming)
+        if (timing == EffectTiming.OnAllyAttack)
         {
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Trash 1 card from deck top", CanUseCondition, card);

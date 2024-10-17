@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: "\u30E1\u30BF\u30EB\u30AC\u30EB\u30EB\u30E2\u30F3X\u6297\u4F53-EX5-026"
+  m_EditorClassIdentifier: 
+  CardIndex: 3065
+  cardColors: 0100000006000000
+  PlayCost: 12
+  EvoCosts:
+  - CardColor: 1
+    Level: 5
+    MemoryCost: 4
+  - CardColor: 6
+    Level: 5
+    MemoryCost: 4
+  Level: 6
+  CardName_JPN: "\u30E1\u30BF\u30EB\u30AC\u30EB\u30EB\u30E2\u30F3X\u6297\u4F53"
+  CardName_ENG: MetalGarurumon (X Antibody)
+  Form_JPN:
+  - "\u7A76\u6975\u4F53"
+  Form_ENG:
+  - Mega
+  Attribute_JPN:
+  - "\u30C7\u30FC\u30BF\u7A2E"
+  Attribute_ENG:
+  - Data
+  Type_JPN:
+  - "\u30B5\u30A4\u30DC\u30FC\u30B0\u578B"
+  - "X\u6297\u4F53"
+  Type_ENG:
+  - Cyborg
+  - X Antibody
+  CardSpriteName: EX5-026
+  cardKind: 0
+  EffectDiscription_JPN: "\u300C\u30E1\u30BF\u30EB\u30AC\u30EB\u30EB\u30E2\u30F3\u300D:\u30B3\u30B9\u30C81\u226A\u30D6\u30ED\u30C3\u30AB\u30FC\u226B\u3010\u9032\u5316\u6642\u3011\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u306E\u9032\u5316\u5143\u306B\u300C\u30E1\u30BF\u30EB\u30AC\u30EB\u30EB\u30E2\u30F3\u300D/\u300CX\u6297\u4F53\u300D\u304C\u3042\u308B\u306A\u3089\u3001\u76F8\u624B\u306E\u30BF\u30FC\u30F3\u7D42\u4E86\u307E\u3067\u3001\u76F8\u624B\u306E\u30C7\u30B8\u30E2\u30F3\u5168\u3066\u306B\u300C\u3010\u30A2\u30BF\u30C3\u30AF\u6642\u3011\u30E1\u30E2\u30EA\u30FC-4\u3002\u300D\u306E\u52B9\u679C\u3092\u4E0E\u3048\u308B\u3002\u3010\u30A2\u30BF\u30C3\u30AF\u6642\u3011\u81EA\u5206\u306E\u30C8\u30E9\u30C3\u30B7\u30E5\u304B\u3089\u3001\u30C7\u30B8\u30E2\u30F3\u30AB\u30FC\u30C91\u679A\u3092\u30C7\u30C3\u30AD\u306E\u4E0B\u306B\u623B\u3059\u3053\u3068\u3067\u3001\u623B\u3057\u305F\u30AB\u30FC\u30C9\u3068\u540C\u3058Lv.\u306E\u76F8\u624B\u306E\u30C7\u30B8\u30E2\u30F31\u4F53\u3092\u6D88\u6EC5\u3055\u305B\u308B\u3002"
+  EffectDiscription_ENG: "\uFF1CBlocker\uFF1E (At blocker timing, by suspending this
+    Digimon, it becomes the attack target)[When Digivolving] If [MetalGarurumon]
+    or [X Antibody] is in this Digimon's digivolution cards, until the end of your
+    opponent's turn, all of their Digimon gain \"[When Attacking] Lose 4 memory\".[When
+    Attacking] By returning 1 Digimon card from your trash to the bottom of the deck,
+    delete 1 of your opponent's Digimon with the same level as that card."
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: MetalgarurumonXAntibody_EX5_026
+  DP: 12000
+  rarity: 3
+  OverflowMemory: 0
+  CardID: EX5-026
+  MaxCountInDeck: 4

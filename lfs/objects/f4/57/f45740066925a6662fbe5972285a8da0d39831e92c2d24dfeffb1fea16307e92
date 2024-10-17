@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Shoutmon_+_Dorulu_Cannon-P-152_P1
+  m_EditorClassIdentifier: 
+  CardIndex: 10337
+  cardColors: 0000000002000000
+  PlayCost: 5
+  EvoCosts:
+  - CardColor: 0
+    Level: 2
+    MemoryCost: 1
+  - CardColor: 2
+    Level: 2
+    MemoryCost: 1
+  Level: 3
+  CardName_JPN: 
+  CardName_ENG: Shoutmon + Dorulu Cannon
+  Form_JPN: []
+  Form_ENG:
+  - Rookie
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Data
+  Type_JPN: []
+  Type_ENG:
+  - Enhancement
+  - Xros Heart
+  CardSpriteName: P-152_P1
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: "[Digivolve]Play cost 4 or less [Shoutmon]/[Dorulumon]:
+    Cost 0 \n\n[When Attacking] 1 of your opponent\u2019s Digimon gets -2000 DP for
+    the turn. Then, by placing 1 Digimon card with the [Xros Heart]\_trait in this
+    Digimon\u2019s digivolution cards under 1 of your Tamers, delete 1 of their Digimon
+    with 3000 DP or less.\n[Rule] Name: Also treated as [Shoutmon]/[Dorulumon].\n\n[DigiXros\_-1]
+    [Shoutmon] x [Dorulumon] "
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: '-'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: '-'
+  CardEffectClassName: ShoutmonDoruluCannon_P_152
+  DP: 4000
+  rarity: 5
+  OverflowMemory: 0
+  CardID: P-152
+  MaxCountInDeck: 4

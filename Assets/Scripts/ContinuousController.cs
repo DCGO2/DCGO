@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
@@ -109,7 +110,7 @@ public class ContinuousController : MonoBehaviour
     public CEntity_Base GyuukimonToken { get; private set; }
     public CEntity_Base KoHagurumonToken { get; private set; }
     public CEntity_Base FamiliarToken { get; private set; }
-    public CEntity_Base VoléeZerdrückenToken { get; private set; }
+    public CEntity_Base VoleeZerdruckenToken { get; private set; }
     public CardRestriction BanList { get; private set; } = new CardRestriction(new List<CardLimitCount>(), new List<BannedPair>());
 
     void LoadBanList()
@@ -264,7 +265,7 @@ public class ContinuousController : MonoBehaviour
 
         await FamiliarToken.GetCardSprite();
 
-        VoléeZerdrückenToken = new CEntity_Base()
+        VoleeZerdruckenToken = new CEntity_Base()
         {
             cardColors = new List<CardColor>() { CardColor.Purple },
             PlayCost = -1,
@@ -283,7 +284,7 @@ public class ContinuousController : MonoBehaviour
             CardEffectClassName = "VoléeZerdrücken_EX7_030_token"
         };
 
-        await VoléeZerdrückenToken.GetCardSprite();
+        await VoleeZerdruckenToken.GetCardSprite();
     }
 
     public static ContinuousController instance = null;
@@ -469,6 +470,8 @@ public class ContinuousController : MonoBehaviour
 
             CreateDeckFromFile(fileName.Split("_")[1], deckName, KeyCard, deck, SortValue);
         }
+
+        DeckDatas = DeckDatas.OrderBy(x => x.DeckName).ToList();
     }
 
     private void CreateDeckFromFile(string id, string name, int keyID, string deckCode, int index = 0)
@@ -1178,23 +1181,24 @@ public static class RandomUtility
 
         foreach (CardSource cardSource in DeckCards)
         {
+            cardSource.SetReverse();
             CardDatas.Add(cardSource);
         }
 
-        // 整数 n の初期値はデッキの枚数
+        // The initial value of the integer n is the number of cards in the deck
         int n = CardDatas.Count;
 
         for (int i = 0; i < 20; i++)
         {
-            // nが1より小さくなるまで繰り返す
+            //repeat until n is less than 1
             while (n > 1)
             {
                 n--;
 
-                // kは 0 ～ n+1 の間のランダムな値
+                // k is a random value between 0 and n+1
                 int k = UnityEngine.Random.Range(0, n + 1);
 
-                // k番目のカードをtempに代入
+                // Assign kth card to temp
                 CardSource temp = CardDatas[k];
                 CardDatas[k] = CardDatas[n];
                 CardDatas[n] = temp;

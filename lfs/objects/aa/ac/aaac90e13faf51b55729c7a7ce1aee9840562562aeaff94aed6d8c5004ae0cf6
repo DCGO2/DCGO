@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: "\u30EC\u30AA\u30E2\u30F3X\u6297\u4F53-BT9-050"
+  m_EditorClassIdentifier: 
+  CardIndex: 1838
+  cardColors: 0300000001000000
+  PlayCost: 5
+  EvoCosts:
+  - CardColor: 3
+    Level: 3
+    MemoryCost: 2
+  - CardColor: 1
+    Level: 3
+    MemoryCost: 2
+  Level: 4
+  CardName_JPN: "\u30EC\u30AA\u30E2\u30F3X\u6297\u4F53"
+  CardName_ENG: Leomon(X Antibody)
+  Form_JPN:
+  - "\u6210\u719F\u671F"
+  Form_ENG:
+  - Champion
+  Attribute_JPN:
+  - "\u30EF\u30AF\u30C1\u30F3\u7A2E"
+  Attribute_ENG:
+  - Vaccine
+  Type_JPN:
+  - "\u7363\u4EBA\u578B"
+  - "X\u6297\u4F53"
+  Type_ENG:
+  - Beastkin
+  - X Antibody
+  CardSpriteName: BT9-050
+  cardKind: 0
+  EffectDiscription_JPN: "\u9032\u5316:\u300C\u30EC\u30AA\u30E2\u30F3\u300D\u304B\u30890\u3010\u304A\u4E92\u3044\u306E\u30BF\u30FC\u30F3\u3011\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u304C\u30D0\u30C8\u30EB\u3067\u6D88\u6EC5\u3059\u308B\u3068\u304D\u3001\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u306E\u9032\u5316\u5143\u304B\u3089\u3001\u300C\u30EC\u30AA\u30E2\u30F3\u300D1\u679A\u3092\u30B3\u30B9\u30C8\u3092\u652F\u6255\u308F\u305A\u306B\u767B\u5834\u3067\u304D\u308B\u3002"
+  EffectDiscription_ENG: "Digivolve: 0 from [Leomon][All Turns] When this Digimon
+    would be deleted in battle, you may play 1 [Leomon] from this Digimon\u2019s
+    digivolution cards without paying its memory cost."
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: LeomonXAntibody_BT9_050
+  DP: 5000
+  rarity: 0
+  OverflowMemory: 0
+  CardID: BT9-050
+  MaxCountInDeck: 4

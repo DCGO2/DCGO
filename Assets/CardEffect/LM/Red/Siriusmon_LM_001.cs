@@ -305,6 +305,7 @@ namespace DCGO.CardEffects.LM
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Gain Memory", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetHashString("AllTurn_LM_001");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

@@ -222,12 +222,12 @@ public class Skullbulkimon_BT10_080 : CEntity_Effect
 
                         bool CanUseCondition1(Hashtable hashtable1)
                         {
-                            return CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent);
+                            return CardEffectCommons.CanTriggerOnDeletion(hashtable1, card);
                         }
 
                         bool CanActivateCondition1(Hashtable hashtable1)
                         {
-                            if (CardEffectCommons.IsTopCardInTrashOnDeletion(hashtable1))
+                            if (CardEffectCommons.CanActivateOnDeletion(card))
                             {
                                 if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                                 {

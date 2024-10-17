@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: "\u30B7\u30B9\u30BF\u30E2\u30F3\u30CE\u30EF\u30FC\u30EB\uFF08\u899A\u9192\uFF09-BT7-083"
+  m_EditorClassIdentifier: 
+  CardIndex: 1512
+  cardColors: 04000000
+  PlayCost: 6
+  EvoCosts:
+  - CardColor: 4
+    Level: 4
+    MemoryCost: 2
+  Level: 4
+  CardName_JPN: "\u30B7\u30B9\u30BF\u30E2\u30F3\u30CE\u30EF\u30FC\u30EB\uFF08\u899A\u9192\uFF09"
+  CardName_ENG: SistermonCiel(Awakened)
+  Form_JPN:
+  - "\u6210\u719F\u671F"
+  Form_ENG:
+  - Champion
+  Attribute_JPN:
+  - "\u30A6\u30A3\u30EB\u30B9\u7A2E"
+  Attribute_ENG:
+  - Data
+  Type_JPN:
+  - "\u30D1\u30DA\u30C3\u30C8\u578B"
+  Type_ENG:
+  - Puppet
+  - Virus
+  CardSpriteName: BT7-083
+  cardKind: 0
+  EffectDiscription_JPN: "\u3010\u767B\u5834\u6642\u3011\u81EA\u5206\u306E\u624B\u672D\u304B\u30C8\u30E9\u30C3\u30B7\u30E5\u304B\u3089\u3001\u300C\u30B7\u30B9\u30BF\u30E2\u30F3\u30CE\u30EF\u30FC\u30EB\u300D1\u679A\u3092\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u306E\u9032\u5316\u5143\u306E1\u756A\u4E0B\u306B\u7F6E\u304F\u3053\u3068\u3067\u3001\u767B\u5834\u30B3\u30B9\u30C85\u4EE5\u4E0B\u306E\u76F8\u624B\u306E\u30C7\u30B8\u30E2\u30F31\u4F53\u3092\u6D88\u6EC5\u3055\u305B\u308B\u3002\u3010\u6D88\u6EC5\u6642\u3011\u81EA\u5206\u306E\u30C8\u30E9\u30C3\u30B7\u30E5\u304B\u3089\u3001\u300C\u30B7\u30B9\u30BF\u30E2\u30F3\u30CE\u30EF\u30FC\u30EB\uFF08\u899A\u9192\uFF09\u300D\u4EE5\u5916\u306E\u540D\u79F0\u306B\u300C\u30B8\u30A8\u30B9\u30E2\u30F3\u300D\u304B\u300C\u30CF\u30C3\u30AF\u30E2\u30F3\u300D\u304B\u300C\u30B7\u30B9\u30BF\u30E2\u30F3\u300D\u3092\u542B\u3080\u30AB\u30FC\u30C91\u679A\u3092\u624B\u672D\u306B\u623B\u3059\u3002"
+  EffectDiscription_ENG: '[On Play] You may place 1 [Sistermon Ciel] from your hand
+    or trash at the bottom of this Digimon''s digivolution cards to delete 1 of your
+    opponent''s Digimon with a play cost of 5 or less. [On Deletion] Return 1 card
+    with [Jesmon], [Huckmon], or [Sistermon] in its name other than [Sistermon Ciel
+    (Awakened)] from your trash to your hand.'
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: SistermonNowaruAwaken_BT7_083
+  DP: 6000
+  rarity: 2
+  OverflowMemory: 0
+  CardID: BT7-083
+  MaxCountInDeck: 4

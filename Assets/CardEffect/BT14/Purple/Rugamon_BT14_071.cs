@@ -193,20 +193,15 @@ public class Rugamon_BT14_071 : CEntity_Effect
             {
                 if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
                 {
-                    if (permanent.TopCard.CardTraits.Contains("Dark Animal"))
+                    if (permanent.IsDigimon || permanent.IsTamer)
                     {
-                        return true;
-                    }
+                        if (permanent.TopCard.ContainsTraits("Dark Animal"))
+                            return true;
 
-                    if (permanent.TopCard.CardTraits.Contains("DarkAnimal"))
-                    {
-                        return true;
+                        if (permanent.TopCard.HasSocTraits)
+                            return true;
                     }
-
-                    if (permanent.TopCard.CardTraits.Contains("SoC"))
-                    {
-                        return true;
-                    }
+                    
                 }
 
                 return false;

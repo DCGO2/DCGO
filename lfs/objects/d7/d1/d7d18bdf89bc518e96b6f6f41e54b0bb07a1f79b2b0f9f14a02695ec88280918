@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: "\u30C9\u30EB\u30B4\u30E9\u30E2\u30F3-BT7-065_P1"
+  m_EditorClassIdentifier: 
+  CardIndex: 1479
+  cardColors: 05000000
+  PlayCost: 11
+  EvoCosts:
+  - CardColor: 5
+    Level: 5
+    MemoryCost: 3
+  Level: 6
+  CardName_JPN: "\u30C9\u30EB\u30B4\u30E9\u30E2\u30F3"
+  CardName_ENG: Dorugoramon
+  Form_JPN:
+  - "\u7A76\u6975\u4F53"
+  Form_ENG:
+  - Mega
+  Attribute_JPN:
+  - "\u30C7\u30FC\u30BF\u7A2E"
+  Attribute_ENG:
+  - Data
+  Type_JPN:
+  - "\u7363\u7ADC\u578B"
+  - "X\u6297\u4F53"
+  Type_ENG:
+  - BeastDragon
+  - X Antibody
+  CardSpriteName: BT7-065_P1
+  cardKind: 0
+  EffectDiscription_JPN: "\u3010\u81EA\u5206\u306E\u30BF\u30FC\u30F3\u3011\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u306E\u9032\u5316\u5143\u306E\u7279\u5FB4\u306B\u300CX\u6297\u4F53\u300D\u3092\u6301\u3064\u30AB\u30FC\u30C91\u679A\u3054\u3068\u306B\u3001\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u306EDP\u3092+1000\u3059\u308B\u3002\u3010\u30A2\u30BF\u30C3\u30AF\u6642\u3011\uFF3B\u30BF\u30FC\u30F3\u306B1\u56DE\uFF3D\u81EA\u5206\u306E\u624B\u672D\u304B\u3089\u3001\u7279\u5FB4\u306B\u300CX\u6297\u4F53\u300D\u3092\u6301\u3064\u30AB\u30FC\u30C91\u679A\u3092\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u306E\u9032\u5316\u5143\u306E1\u756A\u4E0B\u306B\u7F6E\u304F\u3053\u3068\u3067\u3001\u767B\u5834\u30B3\u30B9\u30C8\u304C\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u306E\u9032\u5316\u5143\u306E\u679A\u6570\u4EE5\u4E0B\u306E\u76F8\u624B\u306E\u30C7\u30B8\u30E2\u30F32\u4F53\u307E\u3067\u3092\u6D88\u6EC5\u3055\u305B\u308B\u3002"
+  EffectDiscription_ENG: '[Your Turn] For each card with [X-Antibody] in its traits
+    in this Digimon''s digivolution cards, this Digimon gets +1000 DP. [When Attacking][Once
+    Per Turn] You may place 1 card with [X-Antibody] in its traits from your hand
+    at the bottom of this Digimon''s digivolution cards to delete up to 2 of your
+    opponent''s Digimon with play costs less than or equal to this Digimon''s digivolution
+    cards.'
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Dolgoramon_BT7_065
+  DP: 11000
+  rarity: 3
+  OverflowMemory: 0
+  CardID: BT7-065
+  MaxCountInDeck: 4

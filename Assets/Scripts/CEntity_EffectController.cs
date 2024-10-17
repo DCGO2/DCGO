@@ -112,16 +112,6 @@ public class CEntity_EffectController : MonoBehaviour
                     {
                         foreach (CardSource cardSource in thisPermanent.cardSources)
                         {
-                            /*
-                            if (cardSource != thisPermanent.TopCard)
-                            {
-                                if (!thisPermanent.IsDigimon)
-                                {
-                                    continue;
-                                }
-                            }
-                            */
-
                             foreach (ICardEffect cardEffect in cardSource.cEntity_EffectController.cEntity_Effect.GetCardEffects(EffectTiming.None, thisPermanent.TopCard))
                             {
                                 if (cardEffect is IAddSkillEffect)

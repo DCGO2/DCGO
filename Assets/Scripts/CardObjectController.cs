@@ -835,7 +835,7 @@ public class CardObjectController : MonoBehaviour
 
                 log += "\n";
 
-                GManager.instance.playLog.AddLogString(log);
+                PlayLog.OnAddLog?.Invoke(log);
             }
         }
         #endregion
@@ -929,7 +929,7 @@ public class CardObjectController : MonoBehaviour
 
                 log += "\n";
 
-                GManager.instance.playLog.AddLogString(log);
+                PlayLog.OnAddLog?.Invoke(log);
             }
         }
         #endregion
@@ -956,7 +956,7 @@ public class CardObjectController : MonoBehaviour
     #endregion
 
     #region Add card to security
-    public static IEnumerator AddSecurityCard(CardSource cardSource, bool toTop = true)
+    public static IEnumerator AddSecurityCard(CardSource cardSource, bool toTop = true, bool faceUp = false)
     {
         if (!cardSource.Owner.SecurityCards.Contains(cardSource))
         {
@@ -964,7 +964,10 @@ public class CardObjectController : MonoBehaviour
 
             if (!cardSource.IsToken)
             {
-                cardSource.SetReverse();
+                if (!faceUp)
+                    cardSource.SetReverse();
+                else
+                    cardSource.SetFace();
 
                 cardSource.Owner.SecurityCards.Insert(0, cardSource);
 

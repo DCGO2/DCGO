@@ -1,15 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Hypertext;
 using UnityEngine.UI;
+using TMPro;
+using System;
+
 public class PlayLog : MonoBehaviour
 {
     [SerializeField]
-    [Header("ログテキスト")] RegexHypertext regexHypertext;
+    TMP_Text _logText;
 
     [SerializeField]
-    [Header("スクロール")] ScrollRect scroll;
+    ScrollRect _scroll;
+
+    #region Events
+    public static Action<string> OnAddLog;
+    public static Action<string> OnLinkPressed;
+    #endregion
+
+    private void OnDestroy()
+    {
+        OnAddLog -= AddLogString;
+        OnLinkPressed -= ShowCard;
+    }
 
     string GetLogString()
     {
@@ -60,13 +73,13 @@ public class PlayLog : MonoBehaviour
             GManager.instance.PlayDecisionSE();
         }
 
-        regexHypertext.text = GetLogString();
+        _logText.text = GetLogString();
 
-        scroll.content.GetComponent<ContentSizeFitter>().SetLayoutVertical();
+        _scroll.content.GetComponent<ContentSizeFitter>().SetLayoutVertical();
 
         yield return new WaitForSeconds(Time.deltaTime);
 
-        scroll.verticalNormalizedPosition = 0;
+        _scroll.verticalNormalizedPosition = 0;
     }
 
     bool _first = false;
@@ -95,9 +108,12 @@ public class PlayLog : MonoBehaviour
     {
         OffPlayLog();
 
-        regexHypertext.text = "";
+        _logText.text = "";
 
         _logList = new List<string>();
+
+        OnAddLog += AddLogString;
+        OnLinkPressed += ShowCard;
     }
 
     public void AddLogString(string logText)
@@ -105,9 +121,10 @@ public class PlayLog : MonoBehaviour
         ContinuousController.instance.StartCoroutine(AddLogStringCoroutine(DataBase.ReplaceToASCII(logText)));
     }
 
-    IEnumerator AddLogStringCoroutine(string logText)
+    IEnumerator AddLogStringCoroutine(string log)
     {
-        _logList.Add(logText);
+        
+        _logList.Add(AddLink(log));
 
         while (GetLogString().Length >= _maxLogCharacterLength)
         {
@@ -119,32 +136,60 @@ public class PlayLog : MonoBehaviour
 
         if (gameObject.activeSelf)
         {
-            regexHypertext.text = GetLogString();
+            _logText.text = GetLogString();
 
             yield break;
-
-            scroll.content.GetComponent<ContentSizeFitter>().SetLayoutVertical();
-
-            yield return new WaitForSeconds(Time.deltaTime);
-
-            scroll.verticalNormalizedPosition = 0;
         }
-
     }
 
-    public void AddOnClick_ShowCard(CardSource cardSource)
+    string AddLink(string log)
     {
-        regexHypertext.OnClick(cardSource.CardID, new Color32(146, 246, 255, 255), ShowCard);
+        List<int> startIndex = AllIndexesOf(log, "(");
+        List<int> endIndex = AllIndexesOf(log, ")");
+        List<string> subStrings = new List<string>();
 
-        static void ShowCard(string cardID)
+        for(int i = 0; i < startIndex.Count; i++)
         {
-            CardSource founcdCardSource = GManager.instance.turnStateMachine.gameContext.ActiveCardList
-            .Find(cardSource1 => cardSource1.CardID == cardID);
+            if (startIndex[i] < 0 && endIndex[i] < 0)
+                continue;
 
-            if (founcdCardSource != null)
-            {
-                GManager.instance.cardDetail.OpenCardDetail(founcdCardSource, true);
-            }
+            startIndex[i] += 1;
+
+            string str = log.Substring(startIndex[i], endIndex[i] - startIndex[i]);
+
+            if(!subStrings.Contains(str))
+                subStrings.Add(str);
+        }
+
+        foreach(string str in subStrings)
+            log = log.Replace(str, $"<link={str}><color=#92F6FF><u>{str}</u></color></link>");
+
+        return log;
+    }
+
+    void ShowCard(string cardID)
+    {
+        CardSource founcdCardSource = GManager.instance.turnStateMachine.gameContext.ActiveCardList
+        .Find(cardSource1 => cardSource1.CardID == cardID);
+
+        if (founcdCardSource != null)
+        {
+            GManager.instance.cardDetail.OpenCardDetail(founcdCardSource, true);
+        }
+    }
+
+    //Might need to move this more relavent
+    List<int> AllIndexesOf(string str, string value)
+    {
+        if (String.IsNullOrEmpty(value))
+            throw new ArgumentException("the string to find may not be empty", "value");
+        List<int> indexes = new List<int>();
+        for (int index = 0; ; index += value.Length)
+        {
+            index = str.IndexOf(value, index);
+            if (index == -1)
+                return indexes;
+            indexes.Add(index);
         }
     }
 }
