@@ -15,7 +15,7 @@ namespace DCGO.CardEffects.BT18
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    if (targetPermanent.TopCard.CardNames.Contains("Lucemon"))
+                    if (targetPermanent.TopCard.EqualsCardName("Lucemon"))
                     {
                         return true;
                     }
