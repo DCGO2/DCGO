@@ -172,7 +172,23 @@ namespace DCGO.CardEffects.EX7
 
                     if (CanActivateSecondEffectCondition(hashtable))
                     {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayVoléeZerdrücken(activateClass));
+                        List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
+                        {
+                            new SelectionElement<bool>(message: $"Play Token", value : true, spriteIndex: 0),
+                            new SelectionElement<bool>(message: $"Not Play Token", value : false, spriteIndex: 1),
+                        };
+
+                        string selectPlayerMessage = "Will you play a token?";
+                        string notSelectPlayerMessage = "The opponent is choosing to play a token.";
+
+                        GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                        bool canPlay = GManager.instance.userSelectionManager.SelectedBoolValue;
+
+                        if (canPlay)
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayVoléeZerdrücken(activateClass));
                     }
                 }
             }
@@ -307,7 +323,23 @@ namespace DCGO.CardEffects.EX7
 
                     if (CanActivateSecondEffectCondition(hashtable))
                     {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayVoléeZerdrücken(activateClass));
+                        List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
+                        {
+                            new SelectionElement<bool>(message: $"Play Token", value : true, spriteIndex: 0),
+                            new SelectionElement<bool>(message: $"Not Play Token", value : false, spriteIndex: 1),
+                        };
+
+                        string selectPlayerMessage = "Will you play a token?";
+                        string notSelectPlayerMessage = "The opponent is choosing to play a token.";
+
+                        GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                        bool canPlay = GManager.instance.userSelectionManager.SelectedBoolValue;
+
+                        if(canPlay)
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayVoléeZerdrücken(activateClass));
                     }
                 }
             }

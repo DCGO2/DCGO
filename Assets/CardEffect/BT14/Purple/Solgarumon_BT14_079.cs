@@ -36,15 +36,18 @@ public class Solgarumon_BT14_079 : CEntity_Effect
                     }
                 }
 
-                if (cardSource.Level <= maxLevel && cardSource.Level != 2)
+                if (cardSource.Level <= maxLevel && !cardSource.IsLevel2)
                 {
-                    if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
+                    if (!cardSource.IsDigiEgg)
                     {
-                        if (cardSource.HasLevel)
+                        if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                         {
-                            if (cardSource.CardTraits.Contains("Dark Animal") || cardSource.CardTraits.Contains("DarkAnimal") || cardSource.CardTraits.Contains("SoC"))
+                            if (cardSource.HasLevel)
                             {
-                                return true;
+                                if (cardSource.CardTraits.Contains("Dark Animal") || cardSource.CardTraits.Contains("DarkAnimal") || cardSource.CardTraits.Contains("SoC"))
+                                {
+                                    return true;
+                                }
                             }
                         }
                     }

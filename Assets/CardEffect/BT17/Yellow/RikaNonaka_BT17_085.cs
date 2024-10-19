@@ -311,7 +311,7 @@ namespace DCGO.CardEffects.BT17
                                 ignoreDigivolutionRequirementFixedCost: 4,
                                 isHand: true,
                                 activateClass: activateClass,
-                                ignoreLevel: true,
+                                ignoreRequirements: CardEffectCommons.IgnoreRequirement.All,
                                 successProcess: SuccessProcess()));
 
                             IEnumerator SuccessProcess()

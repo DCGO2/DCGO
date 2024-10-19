@@ -346,7 +346,7 @@ public class CardSource : MonoBehaviour
     #endregion
 
     #region evoCosts
-    public List<Func<Permanent, int>> EvoCosts(bool ignoreLevel, bool checkAvailability)
+    public List<Func<Permanent, int>> EvoCosts(CardEffectCommons.IgnoreRequirement ignore, bool checkAvailability)
     {
         List<Func<Permanent, int>> EvoCosts = new List<Func<Permanent, int>>();
 
@@ -399,9 +399,12 @@ public class CardSource : MonoBehaviour
                     .Map<EvoCost, Func<Permanent, int>>(evoCost =>
                     (targetPermanent) =>
                     {
-                        if (targetPermanent.TopCard.CardColors.Contains(evoCost.CardColor))
+                        if(ignore.Equals(CardEffectCommons.IgnoreRequirement.All))
+                            return evoCost.MemoryCost;
+
+                        if (ignore.Equals(CardEffectCommons.IgnoreRequirement.Color) || targetPermanent.TopCard.CardColors.Contains(evoCost.CardColor))
                         {
-                            if (ignoreLevel || targetPermanent.Level == evoCost.Level)
+                            if (ignore.Equals(CardEffectCommons.IgnoreRequirement.Level) || targetPermanent.Level == evoCost.Level)
                             {
                                 return evoCost.MemoryCost;
                             }
@@ -418,7 +421,12 @@ public class CardSource : MonoBehaviour
     #region evo cost list
     public List<int> CostList(Permanent targetPermanent, bool ignoreLevel, bool checkAvailability)
     {
-        return EvoCosts(ignoreLevel, checkAvailability)
+        CardEffectCommons.IgnoreRequirement ignore = CardEffectCommons.IgnoreRequirement.None;
+
+        if(ignoreLevel)
+            ignore = CardEffectCommons.IgnoreRequirement.Level;
+
+        return EvoCosts(ignore, checkAvailability)
                 .Filter(evoCost => evoCost(targetPermanent) >= 0)
                 .Map(evoCost => evoCost(targetPermanent));
     }
@@ -816,7 +824,7 @@ public class CardSource : MonoBehaviour
     #endregion
 
     #region whether this card can be played at the frame
-    public bool CanPlayCardTargetFrame(FieldCardFrame frame, bool PayCost, ICardEffect cardEffect, SelectCardEffect.Root root = SelectCardEffect.Root.Hand, int fixedCost = -1, bool isBreedingArea = false)
+    public bool CanPlayCardTargetFrame(FieldCardFrame frame, bool PayCost, ICardEffect cardEffect, SelectCardEffect.Root root = SelectCardEffect.Root.Hand, int fixedCost = -1, bool isBreedingArea = false, CardEffectCommons.IgnoreRequirement ignore = CardEffectCommons.IgnoreRequirement.None)
     {
         bool isBattleAreaFrame = FieldCardFrame.isBattleAreaFrameID(frame.FrameID);
 
@@ -856,7 +864,7 @@ public class CardSource : MonoBehaviour
 
         if (frame.GetFramePermanent() != null)
         {
-            if (!CanEvolve(frame.GetFramePermanent(), true))
+            if (!CanEvolve(frame.GetFramePermanent(), true, ignore))
             {
                 return false;
             }
@@ -944,7 +952,7 @@ public class CardSource : MonoBehaviour
     #endregion
 
     #region whether the permanent can digivolve into this card
-    public bool CanEvolve(Permanent targetPermanent, bool checkAvailability)
+    public bool CanEvolve(Permanent targetPermanent, bool checkAvailability, CardEffectCommons.IgnoreRequirement ignore = CardEffectCommons.IgnoreRequirement.None)
     {
         if (targetPermanent != null)
         {
@@ -955,7 +963,7 @@ public class CardSource : MonoBehaviour
 
             if (targetPermanent.TopCard != null)
             {
-                foreach (Func<Permanent, int> EvoCost in EvoCosts(false, checkAvailability))
+                foreach (Func<Permanent, int> EvoCost in EvoCosts(ignore, checkAvailability))
                 {
                     if (EvoCost(targetPermanent) >= 0)
                     {

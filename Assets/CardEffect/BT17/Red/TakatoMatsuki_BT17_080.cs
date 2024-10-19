@@ -322,11 +322,11 @@ namespace DCGO.CardEffects.BT17
                                 payCost: false,
                                 reduceCostTuple: null,
                                 fixedCostTuple: null,
-                                ignoreDigivolutionRequirementFixedCost: 1,
+                                ignoreDigivolutionRequirementFixedCost: 0,
                                 isHand: true,
                                 activateClass: activateClass,
                                 successProcess: null,
-                                ignoreLevel: true));
+                                ignoreRequirements: CardEffectCommons.IgnoreRequirement.All));
                         }
                     }
                 }

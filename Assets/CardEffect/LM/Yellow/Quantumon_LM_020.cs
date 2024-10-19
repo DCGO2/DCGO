@@ -156,20 +156,6 @@ namespace DCGO.CardEffects.LM
 
                             if (selectedCard != null)
                             {
-                                #region
-                                selectedCard.Owner.securityObject.securityBreakGlass.ShowBlueMatarial();
-
-                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().BreakSecurityEffect(selectedCard.Owner));
-
-                                yield return new WaitForSeconds(0.1f);
-
-                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().EnterSecurityCardEffect(selectedCard));
-
-                                yield return new WaitForSeconds(0.5f);
-
-                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().DestroySecurityEffect(selectedCard));
-                                #endregion
-
                                 yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(new List<CardSource>() { selectedCard }));
                             }
 
@@ -269,7 +255,19 @@ namespace DCGO.CardEffects.LM
                             canNotAffectedClass.SetUpCanNotAffectedClass(CardCondition: CardCondition, SkillCondition: SkillCondition);
                             selectedPermanent.UntilOpponentTurnEndEffects.Add((_timing) => canNotAffectedClass);
 
-                            bool CardCondition(CardSource cardSource)
+                            #region Log
+                            string log = "";
+
+                            
+                            log += $"\n{card.BaseENGCardNameFromEntity}({card.CardID}) Immunity:";
+                            log += $"\n{selectedCategory} effects";
+
+                            log += "\n";
+
+                            PlayLog.OnAddLog?.Invoke(log);
+                            #endregion
+
+                        bool CardCondition(CardSource cardSource)
                             {
                                 if (cardSource == card)
                                 {

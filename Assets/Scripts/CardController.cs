@@ -3242,10 +3242,7 @@ public class IDestroySecurity
                 yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
                     player: _player,
                     refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
-            }
 
-            if (discardedCards.Count >= 1)
-            {
                 #region "When security cards are trashed" effect
 
                 #region Hashtable setting
@@ -3563,16 +3560,6 @@ public class IBattle
 
                 yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(LoserPermanents, hashtable).Destroy());
 
-                #region effect when determine whether to do security check
-                List<SkillInfo> skillInfos_Pierce = AutoProcessing.GetSkillInfos(hashtable, EffectTiming.OnDetermineDoSecurityCheck)
-                    .Filter(skillInfo => skillInfo.CardEffect != null && skillInfo.CardEffect.CanActivate(skillInfo.Hashtable));
-
-                if (skillInfos_Pierce.Count >= 1)
-                {
-                    GManager.instance.autoProcessing.PutStackedSkill(skillInfos_Pierce[0]);
-                }
-                #endregion
-
                 //Fix winner/loser permanents
                 int index = -1;
                 foreach (Permanent permanent in LoserPermanents)
@@ -3591,6 +3578,16 @@ public class IBattle
                     hashtable["LoserPermanents"] = _LoserPermanents;
                     hashtable["LoserPermanents_real"] = LoserPermanents;
                 }
+
+                #region effect when determine whether to do security check
+                List<SkillInfo> skillInfos_Pierce = AutoProcessing.GetSkillInfos(hashtable, EffectTiming.OnDetermineDoSecurityCheck)
+                    .Filter(skillInfo => skillInfo.CardEffect != null && skillInfo.CardEffect.CanActivate(skillInfo.Hashtable));
+
+                if (skillInfos_Pierce.Count >= 1)
+                {
+                    GManager.instance.autoProcessing.PutStackedSkill(skillInfos_Pierce[0]);
+                }
+                #endregion
 
                 // "At the end of battle" effect
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(hashtable, EffectTiming.OnEndBattle));
@@ -3944,7 +3941,8 @@ public class IReduceSecurity
         #region Hashtable Setting
         Hashtable hashtable = new Hashtable()
         {
-            {"Player", _player}
+            {"Player", _player},
+            {"SkillInfo",_refSkillInfos }
         };
         #endregion
 
