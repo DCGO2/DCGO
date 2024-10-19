@@ -7,7 +7,7 @@ using UnityEngine;
 public partial class CardEffectCommons
 {
     #region Target 1 Digimon gains [Collision]
-    public static IEnumerator GainCollosion(Permanent targetPermanent, EffectDuration effectDuration, ICardEffect activateClass)
+    public static IEnumerator GainCollision(Permanent targetPermanent, EffectDuration effectDuration, ICardEffect activateClass)
     {
         if (targetPermanent == null) yield break;
         if (!IsPermanentExistsOnBattleArea(targetPermanent)) yield break;

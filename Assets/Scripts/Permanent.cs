@@ -2638,7 +2638,7 @@ public class Permanent
     public bool willBeRemoveField { get; set; } = false;
     #endregion
 
-    #region このパーマネントがデジモンか
+    #region Is a Digimon card
     public bool IsDigimon
     {
         get
@@ -2696,7 +2696,7 @@ public class Permanent
     }
     #endregion
 
-    #region このパーマネントがテイマーか
+    #region Is a Tamer card
     public bool IsTamer
     {
         get
@@ -2704,6 +2704,24 @@ public class Permanent
             if (TopCard != null)
             {
                 if (TopCard.IsTamer)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+    }
+    #endregion
+    
+    #region Is an Option card
+    public bool IsOption
+    {
+        get
+        {
+            if (TopCard != null)
+            {
+                if (TopCard.IsOption)
                 {
                     return true;
                 }
