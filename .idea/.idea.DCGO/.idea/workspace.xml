@@ -5,35 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1f770e58-b781-4cb0-ad93-4c50994f611d" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Assets/CardEffect/BT1/Blue/WereGarurumon_BT1_040.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.DCGO/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.DCGO/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT1/Blue/LovelyAttack_BT1_099.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT1/Blue/LovelyAttack_BT1_099.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT1/Red/Metalgreymon_BT1_021.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT1/Red/Metalgreymon_BT1_021.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT10/Blue/Regarexmon_BT10_027.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT10/Blue/Regarexmon_BT10_027.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT10/Purple/Skullbulkimon_BT10_080.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT10/Purple/Skullbulkimon_BT10_080.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT10/Red/ShoutmonX4B_BT10_012.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT10/Red/ShoutmonX4B_BT10_012.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT11/Blue/IceStatue_BT11_099.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT11/Blue/IceStatue_BT11_099.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT12/Blue/ExLaser_BT12_101.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT12/Blue/ExLaser_BT12_101.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT12/Blue/Tonosamagekomon_BT12_026.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT12/Blue/Tonosamagekomon_BT12_026.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT13/Blue/Jellymon_BT13_023.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT13/Blue/Jellymon_BT13_023.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT13/Blue/Teslajellymon_BT13_026.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT13/Blue/Teslajellymon_BT13_026.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT14/Purple/Devimon_BT14_075.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT14/Purple/Devimon_BT14_075.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT15/Black/Omekamon_BT15_060.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT15/Black/Omekamon_BT15_060.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT15/Blue/Coelamon_BT15_023.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT15/Blue/Coelamon_BT15_023.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT15/Blue/Crabmon_BT15_019.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT15/Blue/Crabmon_BT15_019.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT15/Blue/Divermon_BT15_028.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT15/Blue/Divermon_BT15_028.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT15/White/Apocalymon_BT15_102.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT15/White/Apocalymon_BT15_102.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT2/Blue/ArcticBlizzard_BT2_094.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT2/Blue/ArcticBlizzard_BT2_094.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT5/Blue/AbsoluteBlust_BT5_097.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT5/Blue/AbsoluteBlust_BT5_097.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT5/Blue/Hexebraumon_BT5_032.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT5/Blue/Hexebraumon_BT5_032.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT6/Blue/HowlingMemoryBoost_BT6_097.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT6/Blue/HowlingMemoryBoost_BT6_097.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT7/Blue/Chackmon_BT7_021.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT7/Blue/Chackmon_BT7_021.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT7/Blue/HimiTomoki_BT7_086.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT7/Blue/HimiTomoki_BT7_086.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT7/Yellow/OrimotoIzumi_BT7_088.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT7/Yellow/OrimotoIzumi_BT7_088.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT8/Blue/Frosbergmon_BT8_031.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT8/Blue/Frosbergmon_BT8_031.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT8/Blue/Submarimon_BT8_023.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT8/Blue/Submarimon_BT8_023.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/BT8/Blue/Yukiagumon_BT8_022.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/BT8/Blue/Yukiagumon_BT8_022.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/CardEffect/ST2/Blue/Garurumon_ST2_06.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/CardEffect/ST2/Blue/Garurumon_ST2_06.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,7 +37,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "EX7-Yellow-Green",
+    "git-widget-placeholder": "BT18-Purple",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -74,13 +45,6 @@
     "nodejs_package_manager_path": "npm",
     "settings.editor.selected.configurable": "preferences.fileTypes",
     "vue.rearranger.settings.migration": "true"
-  },
-  "keyToStringList": {
-    "rider.external.source.directories": [
-      "C:\\Users\\wwm0n\\AppData\\Roaming\\JetBrains\\Rider2023.1\\resharper-host\\DecompilerCache",
-      "C:\\Users\\wwm0n\\AppData\\Roaming\\JetBrains\\Rider2023.1\\resharper-host\\SourcesCache",
-      "C:\\Users\\wwm0n\\AppData\\Local\\Symbols\\src"
-    ]
   }
 }]]></component>
   <component name="RunManager" selected="Attach to Unity Editor.Attach to Unity Editor">
@@ -145,7 +109,6 @@
       <workItem from="1720456596917" duration="698000" />
       <workItem from="1722408646322" duration="10730000" />
       <workItem from="1722421835652" duration="1365000" />
-      <workItem from="1726692825707" duration="3056000" />
     </task>
     <servers />
   </component>
@@ -160,6 +123,7 @@
   </component>
   <component name="UnityUnitTestConfiguration" currentTestLauncher="Both" />
   <component name="VcsManagerConfiguration">
+    <option name="LOCAL_CHANGES_DETAILS_PREVIEW_SHOWN" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
   </component>
 </project>
