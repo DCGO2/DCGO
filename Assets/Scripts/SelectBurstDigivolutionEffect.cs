@@ -264,7 +264,7 @@ public class SelectBurstDigivolutionEffect : MonoBehaviour
 
                 string EffectDiscription1()
                 {
-                    return "At the end of the burst digivolution turn, trash this DigimonÅf top card";
+                    return "At the end of the burst digivolution turn, trash this Digimon's top card";
                 }
 
                 ChangeDPClass rootEffect = new ChangeDPClass();
@@ -313,6 +313,8 @@ public class SelectBurstDigivolutionEffect : MonoBehaviour
                                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(permanent));
 
                                 CardSource cardSource = permanent.TopCard;
+
+                                yield return ContinuousController.instance.StartCoroutine(new AceOverflowClass(new List<CardSource>() { cardSource }).Overflow());
 
                                 yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveFromAllArea(cardSource));
 

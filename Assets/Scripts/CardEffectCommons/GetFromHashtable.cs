@@ -26,6 +26,26 @@ public partial class CardEffectCommons
     }
     #endregion
 
+    #region Get SkillInfo from hashtable
+    public static List<SkillInfo> GetSkillFromHashtable(Hashtable hashtable)
+    {
+        if (hashtable != null)
+        {
+            if (hashtable.ContainsKey("SkillInfo"))
+            {
+                if (hashtable["SkillInfo"] is List<SkillInfo>)
+                {
+                    List<SkillInfo> skillInfo = (List<SkillInfo>)hashtable["SkillInfo"];
+
+                    return skillInfo;
+                }
+            }
+        }
+
+        return null;
+    }
+    #endregion
+
     #region Get Root from hashtable
     public static SelectCardEffect.Root GetRootFromHashtable(Hashtable hashtable)
     {

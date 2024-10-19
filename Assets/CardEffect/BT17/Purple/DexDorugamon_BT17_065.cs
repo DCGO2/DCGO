@@ -117,7 +117,6 @@ namespace DCGO.CardEffects.BT17
                                 isHand: false,
                                 activateClass: activateClass,
                                 successProcess: null,
-                                ignoreLevel: false,
                                 ignoreSelection: true));
 
                             selectedPermanent.willBeRemoveField = false;

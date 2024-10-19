@@ -262,7 +262,6 @@ namespace DCGO.CardEffects.BT16
                             isHand: true,
                             activateClass: activateClass,
                             successProcess: null,
-                            ignoreLevel: false,
                             ignoreSelection: true));
                 }
             }

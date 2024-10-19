@@ -259,7 +259,7 @@ public class MatsudaTakato_BT12_089 : CEntity_Effect
                             isHand: true,
                             activateClass: activateClass,
                             successProcess: SuccessProcess(),
-                            ignoreLevel: true));
+                            ignoreRequirements: CardEffectCommons.IgnoreRequirement.Level));
 
                         IEnumerator SuccessProcess()
                         {

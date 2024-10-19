@@ -119,7 +119,10 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    if(card.PermanentOfThisCard().TopCard == card)
+                        return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+
+                    return false;
                 }
 
                 List<string> changeCardNames(CardSource cardSource, List<string> CardNames)

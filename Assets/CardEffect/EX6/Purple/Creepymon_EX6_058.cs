@@ -111,13 +111,13 @@ namespace DCGO.CardEffects.EX6
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Delete 1 opponent Digimon with the lowest level", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Delete 1 opponent Digimon with the lowest DP", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] Delete 1 of your opponent's Digimon with the lowest level. For each level of the Digimon deleted by this effect, trash the top card of your deck.";
+                    return "[When Digivolving] Delete 1 of your opponent's Digimon with the lowest DP. For each level of the Digimon deleted by this effect, trash the top card of your deck.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -127,7 +127,7 @@ namespace DCGO.CardEffects.EX6
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsMinLevel(permanent, card.Owner.Enemy);
+                    return CardEffectCommons.IsMinDP(permanent, card.Owner.Enemy);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

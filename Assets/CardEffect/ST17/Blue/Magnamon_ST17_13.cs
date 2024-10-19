@@ -112,13 +112,18 @@ namespace DCGO.CardEffects.ST17
                 ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().BuffSE);
 
                 ActivateClass activateClassDigivolve = new ActivateClass();
-                activateClassDigivolve.SetUpICardEffect("Digivolve intto this Digimon", CanUseConditionAfterBattle, card);
+                activateClassDigivolve.SetUpICardEffect("Digivolve into this Digimon", CanUseConditionAfterBattle, card);
                 activateClassDigivolve.SetUpActivateClass(CanActivateConditionAfterBattle, ActivateCoroutineAfterBattle, -1, true, EffectDiscriptionAfterBattle());
                 card.Owner.UntilEndBattleEffects.Add(GetCardEffectAfterBattle);
 
                 string EffectDiscriptionAfterBattle()
                 {
                     return "[Security] At the end of the battle, 1 of your Digimon may digivolve into this card without paying the digivolution cost.";
+                }
+
+                bool CanSelectCardConditionAferBattle(CardSource cardSource)
+                {
+                    return cardSource == card;
                 }
 
                 bool CanSelectPermanentConditionAfterBattle(Permanent permanent)
@@ -145,7 +150,6 @@ namespace DCGO.CardEffects.ST17
 
                 IEnumerator ActivateCoroutineAfterBattle(Hashtable _hashtable)
                 {
-                    yield return null;
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentConditionAfterBattle))
                     {
                         Permanent selectedPermanent = null;
@@ -181,7 +185,7 @@ namespace DCGO.CardEffects.ST17
 
                         if (selectedPermanent != null)
                         {
-                            if (card.CanPlayCardTargetFrame(selectedPermanent.PermanentFrame, false, activateClassDigivolve))
+                            /*if (card.CanPlayCardTargetFrame(selectedPermanent.PermanentFrame, false, activateClassDigivolve))
                             {
                                 PlayCardClass playCardClass = new PlayCardClass(
                                     cardSources: new List<CardSource>() { card },
@@ -193,8 +197,8 @@ namespace DCGO.CardEffects.ST17
                                     activateETB: true);
 
                                 yield return ContinuousController.instance.StartCoroutine(playCardClass.PlayCard());
-                            }
-                            /*yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoExcecutingAreaCard(
+                            }*/
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoExcecutingAreaCard(
                                 targetPermanent: selectedPermanent,
                                 cardCondition: CanSelectCardConditionAferBattle,
                                 payCost: false,
@@ -202,7 +206,7 @@ namespace DCGO.CardEffects.ST17
                                 fixedCostTuple: null,
                                 ignoreDigivolutionRequirementFixedCost: -1,
                                 activateClass: activateClass,
-                                successProcess: null));*/
+                                successProcess: null));
                         }
                     }
                 }
