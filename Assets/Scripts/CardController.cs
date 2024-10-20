@@ -2775,7 +2775,8 @@ public class DestroyPermanentsClass
             {
                 if (permanent.TopCard != null)
                 {
-                    permanent.IsDestroyedByBattle = true;
+                    if(CardEffectCommons.GetLoserPermanentsFromHashtable(battle.hashtable).Contains(permanent))
+                        permanent.IsDestroyedByBattle = true;
                 }
             }
             #endregion
@@ -3561,23 +3562,11 @@ public class IBattle
                 yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(LoserPermanents, hashtable).Destroy());
 
                 //Fix winner/loser permanents
-                int index = -1;
-                foreach (Permanent permanent in LoserPermanents)
-                {
-                    if(permanent.TopCard != null)
-                    {
-                        index = LoserPermanents.IndexOf(permanent);
-                    }
-                }
+                LoserPermanents = LoserPermanents.Filter(permanent => permanent.TopCard != null);
+                _LoserPermanents = _LoserPermanents.Filter(permanent => permanent.TopCard != null);
 
-                if(index >= 0)
-                {
-                    LoserPermanents.RemoveAt(index);
-                    _LoserPermanents.RemoveAt(index);
-
-                    hashtable["LoserPermanents"] = _LoserPermanents;
-                    hashtable["LoserPermanents_real"] = LoserPermanents;
-                }
+                hashtable["LoserPermanents"] = _LoserPermanents;
+                hashtable["LoserPermanents_real"] = LoserPermanents;
 
                 #region effect when determine whether to do security check
                 List<SkillInfo> skillInfos_Pierce = AutoProcessing.GetSkillInfos(hashtable, EffectTiming.OnDetermineDoSecurityCheck)
