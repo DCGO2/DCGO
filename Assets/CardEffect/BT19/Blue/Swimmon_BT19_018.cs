@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 
 namespace DCGO.CardEffects.BT19
@@ -9,33 +8,29 @@ namespace DCGO.CardEffects.BT19
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region Evade
+
+            if (timing == EffectTiming.WhenPermanentWouldBeDeleted)
+            {
+                cardEffects.Add(CardEffectFactory.EvadeSelfEffect(
+                    isInheritedEffect: false,
+                    card: card,
+                    condition: null));
+            }
+
+            #endregion
+
+            #region Jamming - ESS
+
             if (timing == EffectTiming.None)
             {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
-                cardEffects.Add(activateClass);
-
-                string EffectDiscription()
-                {
-                    return "";
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return true;
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    return true;
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    yield return null;
-                }
+                cardEffects.Add(CardEffectFactory.JammingSelfStaticEffect(
+                    isInheritedEffect: true,
+                    card: card,
+                    condition: null));
             }
+
+            #endregion
 
             return cardEffects;
         }
