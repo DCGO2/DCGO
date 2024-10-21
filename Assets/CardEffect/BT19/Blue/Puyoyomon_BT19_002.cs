@@ -14,7 +14,8 @@ namespace DCGO.CardEffects.BT19
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Bottom deck this Digimon to bottom deck and opponent's Digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Bottom deck this Digimon to bottom deck and opponent's Digimon with the same level",
+                    CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("BottomDeck_BT19_002");
