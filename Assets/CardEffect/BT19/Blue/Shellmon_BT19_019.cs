@@ -95,7 +95,7 @@ namespace DCGO.CardEffects.BT19
 
                 string EffectDescription()
                 {
-                    return "[End of Attack] [Once Per Turn] Gain 1 memory.";
+                    return "[End of Attack] (Once Per Turn) Gain 1 memory.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

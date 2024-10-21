@@ -23,7 +23,7 @@ namespace DCGO.CardEffects.BT19
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Place a card from hand as bottom digivolution card of 1 of our Digimon", CanUseCondition,
+                activateClass.SetUpICardEffect("Place a card from hand as the bottom digivolution card of 1 of our Digimon", CanUseCondition,
                     card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
@@ -47,7 +47,7 @@ namespace DCGO.CardEffects.BT19
                            CardEffectCommons.CanTriggerOnPermanentAttack(hashtable, AttackingPermanent);
                 }
 
-                bool CanSelectHandCards(CardSource cardSource)
+                bool CanSelectHandCardCondition(CardSource cardSource)
                 {
                     return cardSource.IsDigimon &&
                            cardSource.HasLevel && cardSource.Level <= 5 &&
@@ -58,7 +58,7 @@ namespace DCGO.CardEffects.BT19
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card) &&
                            CardEffectCommons.CanActivateSuspendCostEffect(card) &&
-                           CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectHandCards);
+                           CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectHandCardCondition);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -73,7 +73,7 @@ namespace DCGO.CardEffects.BT19
 
                     selectHandEffect.SetUp(
                         selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectHandCards,
+                        canTargetCondition: CanSelectHandCardCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: 1,
