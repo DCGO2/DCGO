@@ -533,6 +533,24 @@ public class DataBase : MonoBehaviour
     {
         return $"<Overclock [{trait}]> (At the end of your turn, by deleting 1 of your Tokens or other [{trait}] trait Digimon, this Digimon attacks a player without suspending.)";
     }
+    
+    public static string DecodeEffectDiscription(CardColor color, int level)
+    {
+        string colorString = color switch
+        {
+            CardColor.Red => "Red",
+            CardColor.Blue => "Blue",
+            CardColor.Yellow => "Yellow",
+            CardColor.Green => "Green",
+            CardColor.Black => "Black",
+            CardColor.Purple => "Purple",
+            CardColor.White => "White",
+            _ => ""
+        };
+        
+        return
+            $"<Decode {colorString} ({level})> (When this Digimon would leave the battle area other than in battle, you may play 1 {colorString} Level {level} Digimon card from its digivolution cards without paying the cost.)";
+    }
 
     public static string ReplaceToASCII(string text)
     {
