@@ -13,85 +13,8 @@ namespace DCGO.CardEffects.BT19
 
             if (timing == EffectTiming.WhenRemoveField)
             {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("<Decode Blue (Lv.5)>", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
-                cardEffects.Add(activateClass);
-
-                string EffectDescription()
-                {
-                    return
-                        "<Decode Blue (Lv.5)> (When this Digimon would leave the battle area other than in battle, you may play 1 Blue Level 5 Digimon card from its digivolution cards without paying the cost)";
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card) &&
-                           !CardEffectCommons.IsByBattle(hashtable);
-                }
-
-                bool CanSelectSourceCardCondition(CardSource cardSource)
-                {
-                    return cardSource.IsDigimon &&
-                           cardSource.CardColors.Contains(CardColor.Blue) &&
-                           cardSource.IsLevel5 &&
-                           CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           card.PermanentOfThisCard().DigivolutionCards.Some(CanSelectSourceCardCondition);
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    List<CardSource> selectedCards = new List<CardSource>();
-
-                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                    selectCardEffect.SetUp(
-                        canTargetCondition: CanSelectSourceCardCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        canNoSelect: () => true,
-                        selectCardCoroutine: SelectCardCoroutine,
-                        afterSelectCardCoroutine: null,
-                        message: "Select 1 digivolution card to play.",
-                        maxCount: 1,
-                        canEndNotMax: false,
-                        isShowOpponent: true,
-                        mode: SelectCardEffect.Mode.Custom,
-                        root: SelectCardEffect.Root.Custom,
-                        customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
-                        canLookReverseCard: true,
-                        selectPlayer: card.Owner,
-                        cardEffect: activateClass);
-
-                    selectCardEffect.SetUpCustomMessage(
-                        "Select 1 digivolution card to play.",
-                        "The opponent is selecting 1 digivolution card to play.");
-                    selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
-
-                    yield return StartCoroutine(selectCardEffect.Activate());
-
-                    IEnumerator SelectCardCoroutine(CardSource cardSource)
-                    {
-                        selectedCards.Add(cardSource);
-
-                        yield return null;
-                    }
-
-                    yield return ContinuousController.instance.StartCoroutine(
-                        CardEffectCommons.PlayPermanentCards(
-                            cardSources: selectedCards,
-                            activateClass: activateClass,
-                            payCost: false,
-                            isTapped: false,
-                            root: SelectCardEffect.Root.DigivolutionCards,
-                            activateETB: true));
-                }
+                cardEffects.Add(CardEffectFactory.DecodeSelfEffect(color: CardColor.Blue, level: 5, isInheritedEffect: false, card: card,
+                    condition: null));
             }
 
             #endregion
