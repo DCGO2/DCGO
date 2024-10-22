@@ -299,12 +299,6 @@ public class PermanentDetail : MonoBehaviour
         {
             CardInfo cardInfo = Instantiate(cardInfoPrefab, pokemonScroll.content);
             cardInfo.SetUpCardInfo(cardSource);
-
-            foreach (ScrollRect scrollRect in cardInfo.scrollRects)
-            {
-                scrollRect.content = pokemonScroll.content;
-                scrollRect.viewport = pokemonScroll.viewport;
-            }
         }
 
         Vector3 targetPositon = Vector3.zero;

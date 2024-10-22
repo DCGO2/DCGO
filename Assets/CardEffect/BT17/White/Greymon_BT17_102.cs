@@ -119,8 +119,8 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if(card.PermanentOfThisCard().TopCard == card)
-                        return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    if(CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                        return card.PermanentOfThisCard().TopCard == card;
 
                     return false;
                 }
