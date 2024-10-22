@@ -679,15 +679,16 @@ public class HandCard : MonoBehaviour
     {
         if (CostText != null)
         {
-            for (int i = 0; i < CostIcons.Count; i++)
+            for (int i = CostIcons.Count - 1; i > -1; i--)
             {
                 CardColor cardColor = CardColor.None;
-                
-                if (i < cardSource.CardColors.Count)
-                {
-                    float fillAmount = (float)((i + 1) / (float)cardSource.CardColors.Count);
+                int value = CostIcons.Count - i - 1;
 
-                    cardColor = cardSource.CardColors[i];
+                if (i >= CostIcons.Count - cardSource.CardColors.Count)
+                {
+                    float fillAmount = (float)((CostIcons.Count - i) / (float)cardSource.CardColors.Count);
+
+                    cardColor = cardSource.CardColors[value];
                     CostIcons[i].color = DataBase.CardColor_ColorDarkDictionary[cardColor];
                     CostIcons[i].fillAmount = fillAmount;
                     CostIcons[i].gameObject.SetActive(true);

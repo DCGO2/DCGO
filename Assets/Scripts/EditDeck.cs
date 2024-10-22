@@ -208,6 +208,7 @@ public class EditDeck : MonoBehaviour
         }
         #endregion
 
+        //TODO: need to find a better way, this shouldn't happen every 3rd frame, should only happen on changes. MikeB
         ShowOnlyVisibleObjects();
 
         if (EdittingDeckData != null)

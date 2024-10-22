@@ -3568,16 +3568,6 @@ public class IBattle
                 hashtable["LoserPermanents"] = _LoserPermanents;
                 hashtable["LoserPermanents_real"] = LoserPermanents;
 
-                #region effect when determine whether to do security check
-                List<SkillInfo> skillInfos_Pierce = AutoProcessing.GetSkillInfos(hashtable, EffectTiming.OnDetermineDoSecurityCheck)
-                    .Filter(skillInfo => skillInfo.CardEffect != null && skillInfo.CardEffect.CanActivate(skillInfo.Hashtable));
-
-                if (skillInfos_Pierce.Count >= 1)
-                {
-                    GManager.instance.autoProcessing.PutStackedSkill(skillInfos_Pierce[0]);
-                }
-                #endregion
-
                 // "At the end of battle" effect
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(hashtable, EffectTiming.OnEndBattle));
 
@@ -3585,6 +3575,16 @@ public class IBattle
                 if (ShowEffect())
                 {
                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.ShrinkSecurityDigimonDisplay());
+                }
+                #endregion
+
+                #region effect when determine whether to do security check
+                List<SkillInfo> skillInfos_Pierce = AutoProcessing.GetSkillInfos(hashtable, EffectTiming.OnDetermineDoSecurityCheck)
+                    .Filter(skillInfo => skillInfo.CardEffect != null && skillInfo.CardEffect.CanActivate(skillInfo.Hashtable));
+
+                if (skillInfos_Pierce.Count >= 1)
+                {
+                    GManager.instance.autoProcessing.PutStackedSkill(skillInfos_Pierce[0]);
                 }
                 #endregion
             }

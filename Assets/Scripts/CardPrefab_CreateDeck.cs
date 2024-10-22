@@ -207,17 +207,16 @@ public class CardPrefab_CreateDeck : MonoBehaviour
             {
                 if (cEntity_Base.cardKind != CardKind.DigiEgg)
                 {
-                    for (int i = 0; i < CostIcons.Count; i++)
+                    for (int i = CostIcons.Count-1; i > -1; i--)
                     {
                         CardColor cardColor = CardColor.None;
+                        int value = CostIcons.Count - i - 1;
 
-                        CostIcons[i].color = DataBase.CardColor_ColorDarkDictionary[cardColor];
-
-                        if (i < cEntity_Base.cardColors.Count)
+                        if (i >= CostIcons.Count - cEntity_Base.cardColors.Count)
                         {
-                            float fillAmount = (float)((i + 1) / (float)cEntity_Base.cardColors.Count);
+                            float fillAmount = (float)((CostIcons.Count - i) / (float)cEntity_Base.cardColors.Count);
 
-                            cardColor = cEntity_Base.cardColors[i];
+                            cardColor = cEntity_Base.cardColors[value];
                             CostIcons[i].color = DataBase.CardColor_ColorDarkDictionary[cardColor];
                             CostIcons[i].fillAmount = fillAmount;
                             CostIcons[i].gameObject.SetActive(true);
@@ -252,7 +251,16 @@ public class CardPrefab_CreateDeck : MonoBehaviour
                             int cardColorIndex = i < cEntity_Base.cardColors.Count ? i : 0;
                             CardColor cardColor = cEntity_Base.cardColors[cardColorIndex];
 
-                            LevelIcons[i].sprite = DataBase.instance.ColorIcons_bar[(int)cardColor];
+                            if (i < cEntity_Base.cardColors.Count)
+                            {
+                                cardColor = cEntity_Base.cardColors[i];
+                                LevelIcons[i].color = DataBase.CardColor_ColorDarkDictionary[cardColor];
+                                LevelIcons[i].gameObject.SetActive(true);
+                            }
+                            else
+                            {
+                                LevelIcons[i].gameObject.SetActive(false);
+                            }
                         }
 
                         LevelText.color = Color.white;
