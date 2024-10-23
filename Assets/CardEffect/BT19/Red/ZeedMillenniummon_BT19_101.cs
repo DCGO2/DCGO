@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.BT19
 {
     public class ZeedMillenniummon_BT19_101 : CEntity_Effect
     {
