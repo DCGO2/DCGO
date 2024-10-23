@@ -117,7 +117,7 @@ namespace DCGO.CardEffects.BT18
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if(!CardEffectCommons.IsOwnerTurn(card))
+                        if(CardEffectCommons.IsOpponentTurn(card))
                         {
                             return true;
                         }
@@ -200,7 +200,22 @@ namespace DCGO.CardEffects.BT18
             #endregion
 
             #region Your Turn - ESS
+            if (timing == EffectTiming.OnCounterTiming)
+            {
+                bool condition()
+                {
+                    if(CardEffectCommons.IsOwnerTurn(card))
+                        if (card.PermanentOfThisCard().TopCard != card)
+                            return card.PermanentOfThisCard().TopCard.ContainsTraits("Machine");
 
+                    return false;
+                }
+
+                cardEffects.Add(CardEffectFactory.CollisionSelfStaticEffect(
+                    isInheritedEffect: true,
+                    card: card,
+                    condition: condition));
+            }
             #endregion
 
             return cardEffects;
