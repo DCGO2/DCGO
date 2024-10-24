@@ -153,6 +153,10 @@ public class AttackProcess : MonoBehaviourPunCallbacks
                     null);
             }
 
+            // activate cutin effects
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.RuleProcess());
+            //yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.TriggeredSkillProcess(true, null));
+
             // callback that is processed before [On Attack]
             if (beforeOnAttackCoroutine != null)
             {

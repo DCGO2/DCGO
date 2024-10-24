@@ -411,7 +411,7 @@ public partial class CardEffectCommons
         {
             fixedCost = fixedCostTuple.Value.fixedCost;
         }
-
+        Debug.Log($"Digivolve into hand or trash: {ignoreDigivolutionRequirement}");
         if (ignoreDigivolutionRequirement)
         {
             fixedCost = ignoreDigivolutionRequirementFixedCost;
@@ -668,10 +668,12 @@ public partial class CardEffectCommons
             root: root,
             activateETB: true);
 
-        if (ignoreRequirements.Equals(IgnoreRequirement.All) || ignoreRequirements.Equals(IgnoreRequirement.Level)) 
-            playCardClass.SetIgnoreLevel();
+        //if (ignoreRequirements.Equals(IgnoreRequirement.All) || ignoreRequirements.Equals(IgnoreRequirement.Level)) 
+        //    playCardClass.SetIgnoreLevel();
+        playCardClass.SetIgnoreRequirements(ignoreRequirements);
 
-        if (!ignoreDigivolutionRequirement && fixedCost >= 0) 
+        //!ignoreRequirements
+        if (fixedCost >= 0) 
             playCardClass.SetFixedCost(fixedCost);
 
         yield return ContinuousController.instance.StartCoroutine(playCardClass.PlayCard());

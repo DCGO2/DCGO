@@ -113,8 +113,6 @@ public class Kervimon_EX4_059 : CEntity_Effect
                         {
                             if (selectedPermanent != null)
                             {
-                                CardSource _topCard = selectedPermanent.TopCard;
-
                                 ActivateClass activateClass1 = new ActivateClass();
                                 activateClass1.SetUpICardEffect("Play this card from trash", CanUseCondition1, selectedPermanent.TopCard);
                                 activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, true, EffectDiscription1());
@@ -130,14 +128,11 @@ public class Kervimon_EX4_059 : CEntity_Effect
 
                                 bool CanUseCondition1(Hashtable hashtable1)
                                 {
-                                    if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
+                                    if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable1, (permanent) => permanent == selectedPermanent))
                                     {
-                                        if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable1, (permanent) => permanent == selectedPermanent))
+                                        if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
                                         {
-                                            if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
-                                            {
-                                                return true;
-                                            }
+                                            return true;
                                         }
                                     }
 
@@ -146,6 +141,14 @@ public class Kervimon_EX4_059 : CEntity_Effect
 
                                 bool CanActivateCondition1(Hashtable hashtable1)
                                 {
+                                    if (CardEffectCommons.CanActivateOnDeletion(selectedPermanent.TopCard))
+                                    {
+                                        if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: selectedPermanent.TopCard, payCost: false, cardEffect: activateClass1))
+                                        {
+                                            return true;
+                                        }
+                                    }
+
                                     if (CardEffectCommons.IsTopCardInTrashOnDeletion(hashtable1))
                                     {
                                         CardSource TopCard = CardEffectCommons.GetTopCardFromEffectHashtable(hashtable1);

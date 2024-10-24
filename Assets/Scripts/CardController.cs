@@ -148,8 +148,20 @@ public class PlayCardClass
     public void SetIgnoreLevel()
     {
         _ignoreLevel = true;
+        SetIgnoreRequirements(CardEffectCommons.IgnoreRequirement.Level);
     }
 
+    public void SetIgnoreRequirements(CardEffectCommons.IgnoreRequirement ignore)
+    {
+        _ignoreRequirement = ignore;
+    }
+
+    private bool GetIgnoreRequirement(CardEffectCommons.IgnoreRequirement ignore)
+    {
+        Debug.Log($"Get Ignore Requirement: {_ignoreRequirement.Equals(ignore)}, {_ignoreRequirement.Equals(CardEffectCommons.IgnoreRequirement.All)}");
+        return _ignoreRequirement.Equals(ignore) || _ignoreRequirement.Equals(CardEffectCommons.IgnoreRequirement.All);
+    }
+    
     public void SetFixedCost(int FixedCost)
     {
         _fixedCost = FixedCost;
@@ -179,6 +191,7 @@ public class PlayCardClass
     bool _activateETB = true;
     bool _showEffect = false;
     bool _ignoreLevel = false;
+    CardEffectCommons.IgnoreRequirement _ignoreRequirement = CardEffectCommons.IgnoreRequirement.None;
     int _fixedCost = -1;
     int _reducedCost = 0;
     int[] _jogressEvoRootsFrameIDs = null;
@@ -316,7 +329,7 @@ public class PlayCardClass
 
                     else
                     {
-                        if (card.CanEvolve(targetPermanents[0], true) || _ignoreLevel)
+                        if (card.CanEvolve(targetPermanents[0], true) || GetIgnoreRequirement(CardEffectCommons.IgnoreRequirement.Level) || _ignoreLevel)
                         {
                             isEvolution = true;
                         }
@@ -381,18 +394,14 @@ public class PlayCardClass
 
                                 if (!IsBurst(card))
                                 {
-                                    foreach (int cost in card.CostList(targetPermanent, ignoreLevel: _ignoreLevel, checkAvailability: false))
+                                    foreach (int cost in card.CostList(targetPermanent, ignoreLevel: GetIgnoreRequirement(CardEffectCommons.IgnoreRequirement.Level), checkAvailability: false))
                                     {
-                                        //TODO: Wait for testing confirmation before removing - MB
-                                        //if (cost <= card.Owner.MaxMemoryCost)
-                                        //{
-                                            int evoCost = cost;
+                                        int evoCost = cost;
 
-                                            if(_reducedCost > 0)
-                                                evoCost -= _reducedCost;
+                                        if (_reducedCost > 0)
+                                            evoCost -= _reducedCost;
 
-                                            CostList.Add(evoCost);
-                                        //}
+                                        CostList.Add(evoCost);
                                     } 
                                 }
 
@@ -712,7 +721,7 @@ public class PlayCardClass
                         {
                             if (!isJogress && !IsBurst(card))
                             {
-                                if (!_ignoreLevel && !card.CanPlayCardTargetFrame(targetPermanents[0].PermanentFrame, PayCost, CardEffect, root: Root, fixedCost: -1))
+                                if (!GetIgnoreRequirement(CardEffectCommons.IgnoreRequirement.Level) && !card.CanPlayCardTargetFrame(targetPermanents[0].PermanentFrame, PayCost, CardEffect, root: Root, fixedCost: -1))
                                 {
                                     endPlayCard = true;
                                     playFailed = true;
@@ -3242,7 +3251,8 @@ public class IDestroySecurity
             {
                 yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
                     player: _player,
-                    refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
+                    refSkillInfos: ref ContinuousController.instance.nullSkillInfos,
+                    cardEffect: _cardEffect).ReduceSecurity());
 
                 #region "When security cards are trashed" effect
 
@@ -3915,13 +3925,15 @@ public class ReturnToLibraryBottomDigivolutionCardsClass
 #region Reduce security
 public class IReduceSecurity
 {
-    public IReduceSecurity(Player player, ref List<SkillInfo> refSkillInfos)
+    public IReduceSecurity(Player player, ref List<SkillInfo> refSkillInfos, ICardEffect cardEffect = null)
     {
         _player = player;
         _refSkillInfos = refSkillInfos;
+        _cardEffect = cardEffect;
     }
     Player _player = null;
     List<SkillInfo> _refSkillInfos = null;
+    ICardEffect _cardEffect = null;
 
     public IEnumerator ReduceSecurity()
     {
@@ -3931,7 +3943,8 @@ public class IReduceSecurity
         Hashtable hashtable = new Hashtable()
         {
             {"Player", _player},
-            {"SkillInfo",_refSkillInfos }
+            {"SkillInfo",_refSkillInfos },
+            {"CardEffect",_cardEffect}
         };
         #endregion
 
