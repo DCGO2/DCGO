@@ -262,7 +262,7 @@ namespace DCGO.CardEffects.BT19
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash 1 security to prevent this Digimon from leaving Battle Area", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
-                activateClass.SetHashString("TrashSecurityToStay_WizardmonX_BT19_036");
+                activateClass.SetHashString("TrashSecurityToStay_WizardmonXAntibody_BT19_036");
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
