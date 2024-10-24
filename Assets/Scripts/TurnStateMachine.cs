@@ -603,10 +603,16 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         {
             if (permanent.IsSuspended)
             {
-                if (permanent.TopCard.Owner == gameContext.TurnPlayer)
+                permanent.IsSuspended = false;
+
+                if (permanent.ShowingPermanentCard != null)
+                {
+                    permanent.ShowingPermanentCard.ShowPermanentData(true);
+                }
+                /*if (permanent.TopCard.Owner == gameContext.TurnPlayer)
                 {
                     unsuspendPermanents.Add(permanent);
-                }
+                }*/
             }
         }
 

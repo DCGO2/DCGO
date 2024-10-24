@@ -65,7 +65,7 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.HasLevel && cardSource.Level <= 4 && cardSource.ContainsTraits("SoC"))
+                    if (cardSource.HasLevel && !cardSource.IsLevel2 && cardSource.Level <= 4 && cardSource.ContainsTraits("SoC"))
                     {
                         if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                         {

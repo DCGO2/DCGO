@@ -168,18 +168,14 @@ public class Rosemon_X_Antibody_BT15_054 : CEntity_Effect
 
             bool CanUseCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
-                {
-                    if (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PermanentCondition))
-                        return true;
-                }
-
-                return false;
+                return CardEffectCommons.IsOpponentTurn(card) &&
+                       CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                       CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PermanentCondition);
             }
 
             bool CanActivateCondition(Hashtable hashtable)
             {
-                return CardEffectCommons.IsExistOnBattleArea(card);
+                return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
             }
 
             IEnumerator ActivateCoroutine(Hashtable _hashtable)

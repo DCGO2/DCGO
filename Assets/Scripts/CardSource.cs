@@ -399,12 +399,14 @@ public class CardSource : MonoBehaviour
                     .Map<EvoCost, Func<Permanent, int>>(evoCost =>
                     (targetPermanent) =>
                     {
-                        if(ignore.Equals(CardEffectCommons.IgnoreRequirement.All))
+                        if(ignore.Equals(CardEffectCommons.IgnoreRequirement.All) && !Owner.CanIgnoreDigivolutionRequirement(targetPermanent, this))
                             return evoCost.MemoryCost;
 
-                        if (ignore.Equals(CardEffectCommons.IgnoreRequirement.Color) || targetPermanent.TopCard.CardColors.Contains(evoCost.CardColor))
+                        if ((ignore.Equals(CardEffectCommons.IgnoreRequirement.Color) && !Owner.CanIgnoreDigivolutionRequirement(targetPermanent, this))
+                            || targetPermanent.TopCard.CardColors.Contains(evoCost.CardColor))
                         {
-                            if (ignore.Equals(CardEffectCommons.IgnoreRequirement.Level) || targetPermanent.Level == evoCost.Level)
+                            if ((ignore.Equals(CardEffectCommons.IgnoreRequirement.Level) && Owner.CanIgnoreDigivolutionRequirement(targetPermanent, this))
+                                || targetPermanent.Level == evoCost.Level)
                             {
                                 return evoCost.MemoryCost;
                             }
@@ -1650,6 +1652,12 @@ public class CardSource : MonoBehaviour
             DataBase.ReplaceToASCII(_cEntity_Base.InheritedEffectDiscription_ENG),
             DataBase.ReplaceToASCII(_cEntity_Base.SecurityEffectDiscription_ENG),
         };
+
+        foreach (string attribute in _cEntity_Base.Attribute_ENG)
+            checkStrings.Add(DataBase.ReplaceToASCII(attribute));
+
+        foreach (string attribute in _cEntity_Base.Type_ENG)
+            checkStrings.Add(DataBase.ReplaceToASCII(attribute));
 
         foreach (string checkString in checkStrings)
         {
