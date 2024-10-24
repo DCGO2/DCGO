@@ -188,7 +188,7 @@ namespace DCGO.CardEffects.BT19
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Recovery +1", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
-                activateClass.SetHashString("Recovery_BT19_041");
+                activateClass.SetHashString("Recovery_Dynasmon_BT19_041");
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 

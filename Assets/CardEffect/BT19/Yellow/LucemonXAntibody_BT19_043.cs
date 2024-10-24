@@ -106,7 +106,7 @@ namespace DCGO.CardEffects.BT19
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash 1 card from hand to trash the opponents top security or Recovery +1", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
-                activateClass.SetHashString("TrashSecurity_LucemonXAntibody_BT19-043");
+                activateClass.SetHashString("TrashSecurity_LucemonXAntibody_BT19_043");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
