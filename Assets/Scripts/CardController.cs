@@ -1272,7 +1272,8 @@ public class PlayPermanentClass
                 {
                     yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
                         player: card.Owner,
-                        refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
+                        refSkillInfos: ref ContinuousController.instance.nullSkillInfos,
+                        CardEffectCommons.GetCardEffectFromHashtable(_hashtable)).ReduceSecurity());
                 }
 
                 if (isEvolution)
@@ -3589,7 +3590,12 @@ public class IBattle
                 #endregion
 
                 #region effect when determine whether to do security check
-                List<SkillInfo> skillInfos_Pierce = AutoProcessing.GetSkillInfos(hashtable, EffectTiming.OnDetermineDoSecurityCheck)
+                Hashtable piercingHashtable = new Hashtable()
+                {
+                    {"battle", this}
+                };
+
+                List<SkillInfo> skillInfos_Pierce = AutoProcessing.GetSkillInfos(piercingHashtable, EffectTiming.OnDetermineDoSecurityCheck)
                     .Filter(skillInfo => skillInfo.CardEffect != null && skillInfo.CardEffect.CanActivate(skillInfo.Hashtable));
 
                 if (skillInfos_Pierce.Count >= 1)

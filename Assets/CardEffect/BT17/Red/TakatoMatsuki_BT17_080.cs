@@ -146,7 +146,8 @@ namespace DCGO.CardEffects.BT17
                             if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                             {
                                 return CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectGrowlmonCardCondition) &&
-                                       CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectWarGrowlmonCardCondition);
+                                       CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectWarGrowlmonCardCondition) &&
+                                       CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectGallantmonCardCondition);
                             }
                         }
                     }

@@ -66,7 +66,8 @@ public class TakaishiTakeru_BT14_084 : CEntity_Effect
 
                     yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
                         player: card.Owner,
-                        refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
+                        refSkillInfos: ref ContinuousController.instance.nullSkillInfos,
+                        activateClass).ReduceSecurity());
 
                     if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
                     {
