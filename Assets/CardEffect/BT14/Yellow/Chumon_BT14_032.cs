@@ -65,7 +65,8 @@ public class Chumon_BT14_032 : CEntity_Effect
 
                     yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
                         player: card.Owner,
-                        refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
+                        refSkillInfos: ref ContinuousController.instance.nullSkillInfos,
+                        activateClass).ReduceSecurity());
                 }
 
                 if (card.Owner.CanAddSecurity(activateClass))

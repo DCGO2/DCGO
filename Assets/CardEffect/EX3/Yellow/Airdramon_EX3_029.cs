@@ -92,7 +92,8 @@ public class Airdramon_EX3_029 : CEntity_Effect
                                 {
                                     yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
                                         player: card.Owner,
-                                        refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
+                                        refSkillInfos: ref ContinuousController.instance.nullSkillInfos,
+                                        activateClass).ReduceSecurity());
                                 }
 
                                 yield return null;

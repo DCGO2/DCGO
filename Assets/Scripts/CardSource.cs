@@ -399,10 +399,10 @@ public class CardSource : MonoBehaviour
                     .Map<EvoCost, Func<Permanent, int>>(evoCost =>
                     (targetPermanent) =>
                     {
-                        if(ignore.Equals(CardEffectCommons.IgnoreRequirement.All) && !Owner.CanIgnoreDigivolutionRequirement(targetPermanent, this))
+                        if(ignore.Equals(CardEffectCommons.IgnoreRequirement.All) && Owner.CanIgnoreDigivolutionRequirement(targetPermanent, this))
                             return evoCost.MemoryCost;
 
-                        if ((ignore.Equals(CardEffectCommons.IgnoreRequirement.Color) && !Owner.CanIgnoreDigivolutionRequirement(targetPermanent, this))
+                        if ((ignore.Equals(CardEffectCommons.IgnoreRequirement.Color) && Owner.CanIgnoreDigivolutionRequirement(targetPermanent, this))
                             || targetPermanent.TopCard.CardColors.Contains(evoCost.CardColor))
                         {
                             if ((ignore.Equals(CardEffectCommons.IgnoreRequirement.Level) && Owner.CanIgnoreDigivolutionRequirement(targetPermanent, this))
