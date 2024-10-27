@@ -3589,7 +3589,7 @@ public class IBattle
                 }
                 #endregion
 
-                #region effect when determine whether to do security check
+                /*#region effect when determine whether to do security check
                 Hashtable piercingHashtable = new Hashtable()
                 {
                     {"battle", this}
@@ -3602,7 +3602,7 @@ public class IBattle
                 {
                     GManager.instance.autoProcessing.PutStackedSkill(skillInfos_Pierce[0]);
                 }
-                #endregion
+                #endregion*/
             }
         }
 
