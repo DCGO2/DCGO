@@ -3573,11 +3573,29 @@ public class IBattle
                 yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(LoserPermanents, hashtable).Destroy());
 
                 //Fix winner/loser permanents
-                LoserPermanents = LoserPermanents.Filter(permanent => permanent.TopCard != null);
-                _LoserPermanents = _LoserPermanents.Filter(permanent => permanent.TopCard != null);
+                int index = -1;
+                foreach (Permanent permanent in LoserPermanents)
+                {
+                    if (permanent.TopCard != null)
+                    {
+                        index = LoserPermanents.IndexOf(permanent);
+                    }
+                }
 
-                hashtable["LoserPermanents"] = _LoserPermanents;
-                hashtable["LoserPermanents_real"] = LoserPermanents;
+                if (index >= 0)
+                {
+                    LoserPermanents.RemoveAt(index);
+                    _LoserPermanents.RemoveAt(index);
+
+                    hashtable["LoserPermanents"] = _LoserPermanents;
+                    hashtable["LoserPermanents_real"] = LoserPermanents;
+                }
+
+                //LoserPermanents = LoserPermanents.Filter(permanent => permanent.TopCard != null);
+                //_LoserPermanents = _LoserPermanents.Filter(permanent => permanent.TopCard != null);
+
+                //hashtable["LoserPermanents"] = _LoserPermanents;
+                //hashtable["LoserPermanents_real"] = LoserPermanents;
 
                 // "At the end of battle" effect
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(hashtable, EffectTiming.OnEndBattle));
@@ -3589,20 +3607,15 @@ public class IBattle
                 }
                 #endregion
 
-                /*#region effect when determine whether to do security check
-                Hashtable piercingHashtable = new Hashtable()
-                {
-                    {"battle", this}
-                };
-
-                List<SkillInfo> skillInfos_Pierce = AutoProcessing.GetSkillInfos(piercingHashtable, EffectTiming.OnDetermineDoSecurityCheck)
+                #region effect when determine whether to do security check
+                List<SkillInfo> skillInfos_Pierce = AutoProcessing.GetSkillInfos(hashtable, EffectTiming.OnDetermineDoSecurityCheck)
                     .Filter(skillInfo => skillInfo.CardEffect != null && skillInfo.CardEffect.CanActivate(skillInfo.Hashtable));
 
                 if (skillInfos_Pierce.Count >= 1)
                 {
                     GManager.instance.autoProcessing.PutStackedSkill(skillInfos_Pierce[0]);
                 }
-                #endregion*/
+                #endregion
             }
         }
 

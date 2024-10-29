@@ -399,7 +399,7 @@ public class AttackProcess : MonoBehaviourPunCallbacks
                 IBattle battle = new IBattle(AttackingPermanent: AttackingPermanent, DefendingPermanent: DefendingPermanent, null);
                 yield return ContinuousController.instance.StartCoroutine(battle.Battle());
 
-                #region effect when determine whether to do security check
+                /*#region effect when determine whether to do security check
                 Hashtable hashtable = new Hashtable()
                 {
                     {"battle", battle}
@@ -412,7 +412,7 @@ public class AttackProcess : MonoBehaviourPunCallbacks
                 {
                     GManager.instance.autoProcessing.PutStackedSkill(skillInfos_Pierce[0]);
                 }
-                #endregion
+                #endregion*/
                 
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.TriggeredSkillProcess(true, null));
                 GManager.instance.turnStateMachine.IsSelecting = true;
