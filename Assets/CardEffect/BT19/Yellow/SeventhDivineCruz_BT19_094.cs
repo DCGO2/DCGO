@@ -30,7 +30,7 @@ namespace DCGO.CardEffects.BT19
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent.TopCard.CardNames.Contains("Lucemon (X Antibody)") && permanent.TopCard.CardNames.Contains("Lucemon(XAntibody)"))
+                        if (permanent.TopCard.EqualsCardName("Lucemon(XAntibody)"))
                         {
                             return true;
                         }
@@ -200,7 +200,7 @@ namespace DCGO.CardEffects.BT19
                         {
                             if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                             {
-                                if (cardSource.CardNames.Contains("Lucemon"))
+                                if (cardSource.EqualsCardName("Lucemon"))
                                 {
                                     return true;
                                 }
