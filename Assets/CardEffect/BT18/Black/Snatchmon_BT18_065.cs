@@ -181,6 +181,48 @@ namespace DCGO.CardEffects.BT18
             }
             #endregion
 
+            #region DigiXros from trash
+            if (timing == EffectTiming.None)
+            {
+                AddMaxTrashCountDigiXrosClass addMaxTrashCountDigiXrosClass = new AddMaxTrashCountDigiXrosClass();
+                addMaxTrashCountDigiXrosClass.SetUpICardEffect($"Trash cards can be selected for DigiXros", CanUseCondition, card);
+                addMaxTrashCountDigiXrosClass.SetUpAddMaxTrashCountDigiXrosClass(getMaxTrashCount: GetCount);
+                addMaxTrashCountDigiXrosClass.SetNotShowUI(true);
+                cardEffects.Add(addMaxTrashCountDigiXrosClass);
+
+                bool CanSelectPermanentCondition1(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                    {
+                        if (permanent.TopCard.CardNames.Contains("Vemmon"))
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermanentCondition1))
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+
+                int GetCount(CardSource cardSource)
+                {
+                    if (cardSource == card)
+                    {
+                        return 100;
+                    }
+
+                    return 0;
+                }
+            }
+            #endregion
+
             #region DigiXros
             if (timing == EffectTiming.None)
             {
@@ -190,45 +232,9 @@ namespace DCGO.CardEffects.BT18
                 addDigiXrosConditionClass.SetNotShowUI(true);
                 cardEffects.Add(addDigiXrosConditionClass);
 
-                AddMaxTrashCountDigiXrosClass addMaxTrashCountDigiXrosClass = new AddMaxTrashCountDigiXrosClass();
-                addMaxTrashCountDigiXrosClass.SetUpICardEffect("Can select DigiXros cards from trash", CanUseCondition1, card);
-                addMaxTrashCountDigiXrosClass.SetUpAddMaxTrashCountDigiXrosClass(getMaxTrashCount: GetCount);
-                card.Owner.UntilCalculateFixedCostEffect.Add((_timing) => addMaxTrashCountDigiXrosClass);
-
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return true;
-                }
-
-                bool CanUseCondition1(Hashtable hashtable)
-                {
-                    return true;
-                }
-
-                int GetCount(CardSource cardSource)
-                {
-                    if (CardSourceCondition(cardSource))
-                    {
-                        return 1;
-                    }
-
-                    return 0;
-                }
-
-                bool CardSourceCondition(CardSource cardSource)
-                {
-                    if (cardSource != null)
-                    {
-                        if (cardSource.Owner == card.Owner)
-                        {
-                            if (cardSource.HasDigiXros)
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return false;
                 }
 
                 DigiXrosCondition GetDigiXros(CardSource cardSource)
@@ -269,6 +275,47 @@ namespace DCGO.CardEffects.BT18
                     }
 
                     return null;
+                }
+            }
+            #endregion
+
+            #region ESS - All Turns
+            if (timing == EffectTiming.OnDigivolutionCardReturnToDeckBottom)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Unsuspend this Digimon and it gain Blocker", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetIsInheritedEffect(true);
+                activateClass.SetHashString("Unsuspend_BT11_065");
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[All Turns][Once Per Turn] When [Vemmon] is returned from this Digimon's digivolution cards at the bottom of its owner's deck, unsuspend this Digimon, and it gains <Blocker> until the end of your opponent's turn.";
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanTriggerOnReturnRoLibraryBottomDigivolutionCard(hashtable, cardSource => cardSource.CardNames.Contains("Vemmon"), card);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        return true;
+                    }
+
+                    return false;
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                {
+                    Permanent selectedPermanent = card.PermanentOfThisCard();
+
+                    yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { selectedPermanent }, activateClass).Unsuspend());
+
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBlocker(targetPermanent: card.PermanentOfThisCard(), effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
                 }
             }
             #endregion
