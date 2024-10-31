@@ -158,7 +158,10 @@ namespace DCGO.CardEffects.BT18
                     {
                         if (cardSource.IsDigimon)
                         {
-                            return true;
+                            if (cardSource.HasLevel && cardSource.Level == 5)
+                            {
+                                return true;
+                            }
                         }
                     }
 
