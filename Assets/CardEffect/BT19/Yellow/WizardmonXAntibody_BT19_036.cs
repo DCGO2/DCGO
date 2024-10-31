@@ -15,7 +15,7 @@ namespace DCGO.CardEffects.BT19
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsCardName("Wizardmon");
+                    return targetPermanent.TopCard.EqualsCardName("Wizardmon");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 0, ignoreDigivolutionRequirement: false, card: card, condition: null));
@@ -79,7 +79,7 @@ namespace DCGO.CardEffects.BT19
                         player: card.Owner,
                         refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
 
-                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardNames.Contains("Wizardmon") || cardSource.CardNames.Contains("X Antibody") || cardSource.CardNames.Contains("XAntibody")) >= 1)
+                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.EqualsCardName("Wizardmon") || cardSource.EqualsCardName("XAntibody")) >= 1)
                     {
                         if (card.Owner.CanAddSecurity(activateClass))
                         {
@@ -200,7 +200,7 @@ namespace DCGO.CardEffects.BT19
                         player: card.Owner,
                         refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
 
-                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardNames.Contains("Wizardmon") || cardSource.CardNames.Contains("X Antibody") || cardSource.CardNames.Contains("XAntibody")) >= 1)
+                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.EqualsCardName("Wizardmon") || cardSource.EqualsCardName("XAntibody")) >= 1)
                     {
                         if (card.Owner.CanAddSecurity(activateClass))
                         {
@@ -289,7 +289,7 @@ namespace DCGO.CardEffects.BT19
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (card.CardColors.Contains(CardColor.Yellow) && (card.CardTraits.Contains("Data") || card.CardTraits.Contains("Witchelny")))
+                        if (card.CardColors.Contains(CardColor.Yellow) && (card.ContainsTraits("Data") || card.ContainsTraits("Witchelny")))
                         {
                             if (card.Owner.SecurityCards.Count >= 1)
                                 return true;

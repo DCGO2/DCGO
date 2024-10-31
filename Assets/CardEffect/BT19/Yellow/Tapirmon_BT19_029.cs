@@ -94,7 +94,7 @@ namespace DCGO.CardEffects.BT19
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (card.CardColors.Contains(CardColor.Yellow) && (card.CardTraits.Contains("Data") || card.CardTraits.Contains("Witchelny")))
+                        if (card.CardColors.Contains(CardColor.Yellow) && (card.ContainsTraits("Data") || card.ContainsTraits("Witchelny")))
                         {
                             if (card.Owner.SecurityCards.Count >= 1)
                                 return true;

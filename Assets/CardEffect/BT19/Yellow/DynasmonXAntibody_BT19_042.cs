@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.BT19
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsCardName("Dynasmon");
+                    return targetPermanent.TopCard.EqualsCardName("Dynasmon");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 1, ignoreDigivolutionRequirement: false, card: card, condition: null));
@@ -54,7 +54,7 @@ namespace DCGO.CardEffects.BT19
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardNames.Contains("Dynasmon") || cardSource.CardNames.Contains("X Antibody") || cardSource.CardNames.Contains("XAntibody")) >= 1)
+                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.EqualsCardName("Dynasmon") || cardSource.Equals("XAntibody")) >= 1)
                         {
                             if (card.Owner.SecurityCards.Count >= 1)
                             {
@@ -116,7 +116,7 @@ namespace DCGO.CardEffects.BT19
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardNames.Contains("Dynasmon") || cardSource.CardNames.Contains("X Antibody") || cardSource.CardNames.Contains("XAntibody")) >= 1)
+                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.EqualsCardName("Dynasmon") || cardSource.EqualsCardName("XAntibody")) >= 1)
                         {
                             if (card.Owner.SecurityCards.Count >= 1)
                             {
