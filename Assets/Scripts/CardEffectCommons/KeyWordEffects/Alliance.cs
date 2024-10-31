@@ -175,4 +175,47 @@ public partial class CardEffectCommons
         }
     }
     #endregion
+
+    #region Player gains effect to have Digimon gains [Alliance]
+    public static IEnumerator GainAlliancePlayerEffect(Func<Permanent, bool> permanentCondition, EffectDuration effectDuration, ICardEffect activateClass)
+    {
+        if (activateClass == null) yield break;
+        if (activateClass.EffectSourceCard == null) yield break;
+
+        CardSource card = activateClass.EffectSourceCard;
+
+        bool PermanentCondition(Permanent permanent)
+        {
+            if (IsPermanentExistsOnBattleArea(permanent))
+            {
+                if (!permanent.TopCard.CanNotBeAffected(activateClass))
+                {
+                    if (permanentCondition == null || permanentCondition(permanent))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        bool CanUseCondition()
+        {
+            return true;
+        }
+
+        AllianceClass alliance = CardEffectFactory.AllianceStaticEffect(permanentCondition: PermanentCondition, isInheritedEffect: false, card: card, condition: CanUseCondition);
+
+        AddEffectToPlayer(effectDuration: effectDuration, card: card, cardEffect: alliance, timing: EffectTiming.None);
+
+        foreach (Permanent permanent in GManager.instance.turnStateMachine.gameContext.PermanentsForTurnPlayer)
+        {
+            if (PermanentCondition(permanent))
+            {
+                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateBuffEffect(permanent));
+            }
+        }
+    }
+    #endregion
 }

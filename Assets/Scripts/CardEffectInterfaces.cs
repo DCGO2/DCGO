@@ -51,6 +51,13 @@ public interface IRebootEffect
 }
 #endregion
 
+#region "Target permanent gains Alliance" effect
+public interface IAllianceEffect
+{
+    bool HasAlliance(Permanent permanent);
+}
+#endregion
+
 #region "Treat target permanent as Digimon" effect
 public interface ITreatAsDigimonEffect
 {
