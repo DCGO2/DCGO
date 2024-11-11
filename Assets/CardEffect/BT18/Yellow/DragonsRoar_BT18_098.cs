@@ -88,7 +88,7 @@ namespace DCGO.CardEffects.BT18
 
                 string EffectDiscription()
                 {
-                    return "[On Play] By trashing your top security card, 1 of your opponent's Digimon gets -6000 DP until the end of their turn. Then, if you have 2 or fewer security cards, place this card as your bottom security card.";
+                    return "[Main] By trashing your top security card, 1 of your opponent's Digimon gets -6000 DP until the end of their turn. Then, if you have 2 or fewer security cards, place this card as your bottom security card.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)

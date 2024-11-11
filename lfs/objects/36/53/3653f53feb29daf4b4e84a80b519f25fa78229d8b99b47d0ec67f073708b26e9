@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Tapirmon-BT19-029
+  m_EditorClassIdentifier: 
+  CardIndex: 3988
+  cardColors: 02000000
+  PlayCost: 3
+  EvoCosts: []
+  Level: 3
+  CardName_JPN: 
+  CardName_ENG: Tapirmon
+  Form_JPN: []
+  Form_ENG:
+  - Rookie
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Vaccine
+  Type_JPN: []
+  Type_ENG:
+  - Holy Beast
+  CardSpriteName: BT19-029
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[On Play] By trashing your top security card, gain 1 memory.'
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: "[All Turns] [Once Per Turn] When this yellow Digimon
+    with the [Data]/[Witchelny]\_trait would leave the battle area by your opponent's
+    effects, by trashing your top security card, it doesn't leave."
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: '-'
+  CardEffectClassName: Tapirmon_BT19_029
+  DP: 1000
+  rarity: 0
+  OverflowMemory: 0
+  CardID: BT19-029
+  MaxCountInDeck: 4
