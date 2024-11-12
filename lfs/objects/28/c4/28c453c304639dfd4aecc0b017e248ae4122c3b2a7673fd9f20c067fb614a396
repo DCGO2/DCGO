@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Lucemon_(X_Antibody)-BT19-043
+  m_EditorClassIdentifier: 
+  CardIndex: 3999
+  cardColors: 0200000006000000
+  PlayCost: 14
+  EvoCosts:
+  - CardColor: 2
+    Level: 5
+    MemoryCost: 6
+  - CardColor: 6
+    Level: 5
+    MemoryCost: 6
+  Level: 6
+  CardName_JPN: 
+  CardName_ENG: Lucemon (X Antibody)
+  Form_JPN: []
+  Form_ENG:
+  - Mega
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Virus
+  Type_JPN: []
+  Type_ENG:
+  - Demon Lord
+  - X Antibody
+  - Seven Great Demon Lords
+  CardSpriteName: BT19-043
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: "[Digivolve]Lv.5 or higher w/[Lucemon]\_in its name: Cost
+    3 \n\n[All Turns] [Once Per Turn] When this Digimon would leave the battle area,
+    if a card with [Lucemon]\_in its name is in this Digimon's digivolution cards,
+    by trashing both players' top security cards, it doesn't leave.\n[End of Your
+    Turn] [Once Per Turn] Your opponent may trash their top security card. If this
+    effect didn't trash, \uFF1CRecovery +1 (Deck)\uFF1E , and delete 1 of your opponent's
+    Digimon or Tamers."
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: '-'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: '-'
+  CardEffectClassName: LucemonXAntibody_BT19_043
+  DP: 14000
+  rarity: 3
+  OverflowMemory: 0
+  CardID: BT19-043
+  MaxCountInDeck: 4

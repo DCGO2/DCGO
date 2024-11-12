@@ -4,11 +4,11 @@ using System.Collections.Generic;
 namespace DCGO.CardEffects.BT18
 {
     public class Candlemon_BT18_030 : CEntity_Effect
-    {
-        List<ICardEffect> cardEffects = new List<ICardEffect>();
-        
+    {        
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
+            List<ICardEffect> cardEffects = new List<ICardEffect>();
+
             #region On Play
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
@@ -35,6 +35,7 @@ namespace DCGO.CardEffects.BT18
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

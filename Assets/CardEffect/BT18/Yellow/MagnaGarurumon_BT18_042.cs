@@ -56,7 +56,7 @@ namespace DCGO.CardEffects.BT18
                     "Place Digivolution card as your bottom security card to delete all opponent's same level Digimon",
                     CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, 1, true, EffectDescription());
-                activateClass.SetHashString("Unsuspend_BT18_042");
+                activateClass.SetHashString("WDUnsuspend_BT18_042");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -136,7 +136,7 @@ namespace DCGO.CardEffects.BT18
                     "Place Digivolution card as your bottom security card to delete all opponent's same level Digimon",
                     CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, 1, true, EffectDescription());
-                activateClass.SetHashString("Unsuspend_BT18_042");
+                activateClass.SetHashString("EOTUnsuspend_BT18_042");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -216,7 +216,7 @@ namespace DCGO.CardEffects.BT18
                 activateClass.SetUpICardEffect("By adding the top card of your security stack to the hand, unsuspend this Digimon",
                     CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
-                activateClass.SetHashString("Unsuspend_BT18_042");
+                activateClass.SetHashString("ATUnsuspend_BT18_042");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()

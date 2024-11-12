@@ -185,6 +185,7 @@ namespace DCGO.CardEffects.BT19
                 CanNotSwitchAttackTargetClass canNotSwitchAttackTargetClass = new CanNotSwitchAttackTargetClass();
                 canNotSwitchAttackTargetClass.SetUpICardEffect("This Digimon's attack target can't be switched.", CanUseCondition, card);
                 canNotSwitchAttackTargetClass.SetUpCanNotSwitchAttackTargetClass(PermanentCondition: PermanentCondition);
+                canNotSwitchAttackTargetClass.SetIsInheritedEffect(true);
                 cardEffects.Add(canNotSwitchAttackTargetClass);
 
                 bool CanUseCondition(Hashtable hashtable)

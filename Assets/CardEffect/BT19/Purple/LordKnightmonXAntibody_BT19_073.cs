@@ -71,9 +71,7 @@ namespace DCGO.CardEffects.BT19
 
                     SelectPermanentEffect selectDeDigivolvePermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                    for (int i = 0; i < maxCount; i++)
-                    {
-                        selectDeDigivolvePermanentEffect.SetUp(
+                    selectDeDigivolvePermanentEffect.SetUp(
                         selectPlayer: card.Owner,
                         canTargetCondition: IsOpponenetsDigimon,
                         canTargetCondition_ByPreSelecetedList: null,
@@ -86,12 +84,11 @@ namespace DCGO.CardEffects.BT19
                         mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                        yield return ContinuousController.instance.StartCoroutine(selectDeDigivolvePermanentEffect.Activate());
-                    }
+                    yield return ContinuousController.instance.StartCoroutine(selectDeDigivolvePermanentEffect.Activate());
 
                     IEnumerator DeDigivolvePermanent(Permanent permanent)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(new IDegeneration(permanent, 1, activateClass).Degeneration());
+                        yield return ContinuousController.instance.StartCoroutine(new IDegeneration(permanent, maxCount, activateClass).Degeneration());
                     }
 
                     SelectPermanentEffect selectCannotEvoEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
@@ -188,52 +185,57 @@ namespace DCGO.CardEffects.BT19
             }
             #endregion
 
+            #region All Turns Shared
+            string EffectName()
+            {
+                return "+3000 DP";
+            }
+            bool AllTurnPermanentCondition(Permanent permanent)
+            {
+                if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
+                {
+                    if (permanent.IsDigimon)
+                    {
+                        if (permanent.TopCard.HasText("Knightmon"))
+                        {
+                            return true;
+                        }
+                    }
+                }
+
+                return false;
+            }
+
+            bool HasKnighmonOrXAntibody(CardSource source)
+            {
+                return source.EqualsCardName("X Antibody") || source.EqualsCardName("Knightmon");
+            }
+
+            bool CanUseAllTurnsCondition()
+            {
+                return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                       card.PermanentOfThisCard().DigivolutionCards.Count(HasKnighmonOrXAntibody) > 0;
+            }
+            #endregion
+
             #region All Turns
             if (timing == EffectTiming.None)
             {
-                string EffectName()
-                {
-                    return "+3000 DP";
-                }
-                bool PermanentCondition(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
-                    {
-                        if (permanent.IsDigimon)
-                        {
-                            if (permanent.TopCard.HasText("Knightmon"))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return false;
-                }
-
-                bool HasKnighmonOrXAntibody(CardSource source)
-                {
-                    return source.EqualsCardName("X Antibody") || source.EqualsCardName("Knightmon");
-                }
-
-                bool CanUseCondition()
-                {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           card.PermanentOfThisCard().DigivolutionCards.Count(HasKnighmonOrXAntibody) > 0;
-                }
-
-                cardEffects.Add(CardEffectFactory.AllianceStaticEffect(
-                    permanentCondition: PermanentCondition,
-                    isInheritedEffect: false,
-                    card: card, condition: CanUseCondition));
-
                 cardEffects.Add(CardEffectFactory.ChangeDPStaticEffect(
-                    permanentCondition: PermanentCondition,
+                    permanentCondition: AllTurnPermanentCondition,
                     changeValue: 3000,
                     isInheritedEffect: false,
                     card: card, 
-                    condition: CanUseCondition,
+                    condition: CanUseAllTurnsCondition,
                     effectName: EffectName));
+            }
+
+            if(timing == EffectTiming.OnAllyAttack)
+            {
+                cardEffects.Add(CardEffectFactory.AllianceStaticEffect(
+                    permanentCondition: AllTurnPermanentCondition,
+                    isInheritedEffect: false,
+                    card: card, condition: CanUseAllTurnsCondition));
             }
             #endregion
 

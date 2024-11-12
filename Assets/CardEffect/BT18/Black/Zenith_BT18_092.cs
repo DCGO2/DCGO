@@ -228,7 +228,7 @@ namespace DCGO.CardEffects.BT18
                                     if (selectedCards.Count >= 1)
                                     {
                                         yield return ContinuousController.instance.StartCoroutine(new ReturnToLibraryBottomDigivolutionCardsClass(
-                                            card.PermanentOfThisCard(),
+                                            GManager.instance.attackProcess.AttackingPermanent,
                                             selectedCards,
                                             CardEffectCommons.CardEffectHashtable(activateClass)).ReturnToLibraryBottomDigivolutionCards());
 
@@ -277,6 +277,15 @@ namespace DCGO.CardEffects.BT18
                     }
                 }
             }
+            #endregion
+
+            #region Security Effect
+
+            if (timing == EffectTiming.SecuritySkill)
+            {
+                cardEffects.Add(CardEffectFactory.PlaySelfTamerSecurityEffect(card));
+            }
+
             #endregion
 
             return cardEffects;

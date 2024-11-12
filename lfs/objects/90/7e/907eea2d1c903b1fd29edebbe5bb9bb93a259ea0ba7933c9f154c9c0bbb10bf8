@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Beetlemon-BT18-063_P1
+  m_EditorClassIdentifier: 
+  CardIndex: 3918
+  cardColors: 0500000002000000
+  PlayCost: 5
+  EvoCosts:
+  - CardColor: 5
+    Level: 3
+    MemoryCost: 3
+  - CardColor: 2
+    Level: 3
+    MemoryCost: 3
+  Level: 4
+  CardName_JPN: 
+  CardName_ENG: Beetlemon
+  Form_JPN: []
+  Form_ENG:
+  - Hybrid
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Variable
+  Type_JPN: []
+  Type_ENG:
+  - Cyborg
+  CardSpriteName: BT18-063_P1
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: "[Digivolve][J.P. Shibayama]: Cost 2 [Digivolve][MetalKabuterimon]:
+    Cost 0 \n\n[When Digivolving] Until the end of your opponent's turn, this Digimon
+    can't be deleted by your opponent's effects.\n[When Attacking] 1 of your Digimon
+    or Tamers may digivolve into a black or yellow Digimon card with the [Hybrid]\_trait
+    in your hand with the digivolution cost reduced by 1."
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: '[All Turns] When this Digimon would leave the
+    battle area other than by your effects, you may play 1 Tamer card with inherited
+    effects from this Digimon''s digivolution cards without paying the cost.'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: '-'
+  CardEffectClassName: Beetlemon_BT18_063
+  DP: 5000
+  rarity: 3
+  OverflowMemory: 0
+  CardID: BT18-063
+  MaxCountInDeck: 4

@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Kazemon-BT18-048
+  m_EditorClassIdentifier: 
+  CardIndex: 3894
+  cardColors: 0300000000000000
+  PlayCost: 5
+  EvoCosts:
+  - CardColor: 3
+    Level: 3
+    MemoryCost: 3
+  - CardColor: 0
+    Level: 3
+    MemoryCost: 3
+  Level: 4
+  CardName_JPN: 
+  CardName_ENG: Kazemon
+  Form_JPN: []
+  Form_ENG:
+  - Hybrid
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Variable
+  Type_JPN: []
+  Type_ENG:
+  - Fairy
+  CardSpriteName: BT18-048
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: "[Digivolve][Zoe Orimoto]: Cost 2 [Digivolve][Zephyrmon]:
+    Cost 0 \n\n[When Digivolving] Suspend 1 of your opponent's Digimon.\n[When Attacking]
+    [Once Per Turn] 1 of your Digimon or Tamers may digivolve into a green or red
+    Digimon card with the [Hybrid]\_trait in the hand with the digivolution cost
+    reduced by 1."
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: '[All Turns] When this Digimon would leave the
+    battle area other than by your effects, you may play 1 Tamer card with inherited
+    effects from this Digimon''s digivolution cards without paying the cost.'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: '-'
+  CardEffectClassName: Kazemon_BT18_048
+  DP: 5000
+  rarity: 3
+  OverflowMemory: 0
+  CardID: BT18-048
+  MaxCountInDeck: 4

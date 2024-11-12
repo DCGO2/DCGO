@@ -127,6 +127,7 @@ namespace DCGO.CardEffects.BT18
                 activateClass.SetUpICardEffect("1 of your Digimon or Tamers digivolves", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true,
                     EffectDescription());
+                activateClass.SetHashString("Attacking_BT18-048");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()

@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: AncientWisemon-BT18-074
+  m_EditorClassIdentifier: 
+  CardIndex: 3930
+  cardColors: 05000000
+  PlayCost: 12
+  EvoCosts:
+  - CardColor: 5
+    Level: 5
+    MemoryCost: 4
+  Level: 6
+  CardName_JPN: 
+  CardName_ENG: AncientWisemon
+  Form_JPN: []
+  Form_ENG:
+  - Mega
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Virus
+  Type_JPN: []
+  Type_ENG:
+  - Ancient Mutant
+  - Ten Warriors
+  CardSpriteName: BT18-074
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: "[On Play] [When Digivolving] You may reveal the top 3 cards
+    of your deck. Play 1 black card with a play cost of 7 or less among them without
+    paying the cost. Trash the rest.\n[All Turns] When this Digimon would leave the
+    battle area, you may return to the hand or play 1 level 4 or lower black Digimon
+    card from this Digimon's digivolution cards without paying the cost.\n\n[DigiXros\_-2]
+    [Mercurymon] x [Sephirothmon] "
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: '-'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: '-'
+  CardEffectClassName: AncientWisemon_BT18_074
+  DP: 12000
+  rarity: 1
+  OverflowMemory: 0
+  CardID: BT18-074
+  MaxCountInDeck: 4

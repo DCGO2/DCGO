@@ -115,17 +115,15 @@ namespace DCGO.CardEffects.BT18
                     int ownerTrashed = Math.Max(0, card.Owner.SecurityCards.Count - trashCount);
                     int opponentTrashed = Math.Max(0, card.Owner.Enemy.SecurityCards.Count - trashCount);
 
-                    yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
-                        player: card.Owner.Enemy,
-                        destroySecurityCount: trashCount,
-                        cardEffect: activateClass,
-                        fromTop: true).DestroySecurity());
+                    yield return ContinuousController.instance.StartCoroutine(new IAddTrashCardsFromLibraryTop(
+                        trashCount,
+                        card.Owner.Enemy, 
+                        activateClass).AddTrashCardsFromLibraryTop());
 
-                    yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
-                        player: card.Owner,
-                        destroySecurityCount: trashCount,
-                        cardEffect: activateClass,
-                        fromTop: true).DestroySecurity());
+                    yield return ContinuousController.instance.StartCoroutine(new IAddTrashCardsFromLibraryTop(
+                        trashCount,
+                        card.Owner,
+                        activateClass).AddTrashCardsFromLibraryTop());
 
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
                         targetPermanent: card.PermanentOfThisCard(),
@@ -164,17 +162,15 @@ namespace DCGO.CardEffects.BT18
                     int ownerTrashed = Math.Max(0, card.Owner.SecurityCards.Count - trashCount);
                     int opponentTrashed = Math.Max(0, card.Owner.Enemy.SecurityCards.Count - trashCount);
 
-                    yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
-                        player: card.Owner.Enemy,
-                        destroySecurityCount: trashCount,
-                        cardEffect: activateClass,
-                        fromTop: true).DestroySecurity());
+                    yield return ContinuousController.instance.StartCoroutine(new IAddTrashCardsFromLibraryTop(
+                        trashCount,
+                        card.Owner.Enemy,
+                        activateClass).AddTrashCardsFromLibraryTop());
 
-                    yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
-                        player: card.Owner,
-                        destroySecurityCount: trashCount,
-                        cardEffect: activateClass,
-                        fromTop: true).DestroySecurity());
+                    yield return ContinuousController.instance.StartCoroutine(new IAddTrashCardsFromLibraryTop(
+                        trashCount,
+                        card.Owner,
+                        activateClass).AddTrashCardsFromLibraryTop());
 
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
                         targetPermanent: card.PermanentOfThisCard(),

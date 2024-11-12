@@ -188,7 +188,7 @@ namespace DCGO.CardEffects.BT19
             {
                 bool CanUseCondition()
                 {
-                    if (CardEffectCommons.IsExistInSecurity(card, true))
+                    if (CardEffectCommons.IsExistInSecurity(card, false))
                     {
                         if (CardEffectCommons.IsOpponentTurn(card))
                         {

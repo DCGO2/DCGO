@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: QueenBeemon-BT19-053
+  m_EditorClassIdentifier: 
+  CardIndex: 4004
+  cardColors: 0300000005000000
+  PlayCost: 12
+  EvoCosts:
+  - CardColor: 3
+    Level: 5
+    MemoryCost: 4
+  - CardColor: 5
+    Level: 5
+    MemoryCost: 4
+  Level: 6
+  CardName_JPN: 
+  CardName_ENG: QueenBeemon
+  Form_JPN: []
+  Form_ENG:
+  - Mega
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Virus
+  Type_JPN: []
+  Type_ENG:
+  - Cyborg
+  - X Antibody
+  - Royal Base
+  - LIBERATOR
+  - Insectoid
+  CardSpriteName: BT19-053
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: "[Digivolve]Lv.5 w/[Royal Base]\_trait: Cost 3 \n\n\uFF1CAlliance\uFF1E
+    \n[When Attacking] [Once Per Turn] You may play 1 [Royal Base]\_trait Digimon
+    card from your face-up security cards with the play cost reduced by 8.\n[All
+    Turns] When any of your [Royal Base]\_trait Digimon would leave the battle area
+    other than in battle, you may place those Digimon face-up at the bottom of your
+    security stack.\n[Rule] Trait: Has the [Insectoid] type."
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: '-'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: '-'
+  CardEffectClassName: QueenBeemon_BT19_053
+  DP: 12000
+  rarity: 3
+  OverflowMemory: 0
+  CardID: BT19-053
+  MaxCountInDeck: 4

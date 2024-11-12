@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: DaiPenmon-BT18-026
+  m_EditorClassIdentifier: 
+  CardIndex: 3872
+  cardColors: 0100000000000000
+  PlayCost: 8
+  EvoCosts:
+  - CardColor: 1
+    Level: 4
+    MemoryCost: 4
+  - CardColor: 0
+    Level: 4
+    MemoryCost: 4
+  Level: 5
+  CardName_JPN: 
+  CardName_ENG: DaiPenmon
+  Form_JPN: []
+  Form_ENG:
+  - Hybrid
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Variable
+  Type_JPN: []
+  Type_ENG:
+  - Cyborg
+  - Ice-Snow
+  CardSpriteName: BT18-026
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: "[Digivolve]Blue/Red Lv.4 w/[Hybrid]\_trait: Cost 3 \n\n[Hand]
+    [Main] By placing 1 [Kumamon] and [Korikakumon] from your trash under 1 of your
+    blue or red Tamers, that Tamer digivolves into this card for digivolution cost
+    of 3, ignoring its digivolution requirements.\n\uFF1CIce Clad\uFF1E \n[When Digivolving]
+    Delete 1 of your opponent's Digimon with no digivolution cards.\n[Rule] Trait:
+    Has the [Ice-Snow] type."
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: '[All Turns] This Digimon gets +2000 DP.'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: '-'
+  CardEffectClassName: DaiPenmon_BT18_026
+  DP: 8000
+  rarity: 1
+  OverflowMemory: 0
+  CardID: BT18-026
+  MaxCountInDeck: 4

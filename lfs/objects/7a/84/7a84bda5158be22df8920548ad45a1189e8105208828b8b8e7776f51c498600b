@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Calmaramon-BT18-024
+  m_EditorClassIdentifier: 
+  CardIndex: 3871
+  cardColors: 01000000
+  PlayCost: 6
+  EvoCosts:
+  - CardColor: 1
+    Level: 3
+    MemoryCost: 3
+  Level: 4
+  CardName_JPN: 
+  CardName_ENG: Calmaramon
+  Form_JPN: []
+  Form_ENG:
+  - Hybrid
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Variable
+  Type_JPN: []
+  Type_ENG:
+  - Aquatic
+  CardSpriteName: BT18-024
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: "[Digivolve][Lanamon]: Cost 1 \n\n[On Play] [When Digivolving]
+    If a level 3 Digimon card Is in this Digimon's digivolution cards, return 1 of
+    your opponent's level 4 or lower Digimon to the hand. If there isn't, you may
+    place 1 blue level 3 Digimon card from your hand as this Digimon's bottom digivolution
+    card."
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: '[When Attacking] [Once Per Turn] You may return
+    1 level 3 Digimon to the hand.'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: '-'
+  CardEffectClassName: Calmaramon_BT18_024
+  DP: 6000
+  rarity: 0
+  OverflowMemory: 0
+  CardID: BT18-024
+  MaxCountInDeck: 4

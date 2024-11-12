@@ -417,6 +417,16 @@ public partial class CardEffectCommons
     }
     #endregion
 
+    #region Whether there is at least 1 permanent in the owner's Security Area that satisfies the condition
+    public static bool HasMatchConditionOwnersSecurity(CardSource card, Func<CardSource, bool> CanSelectPermanentCondition, bool flipped = true)
+    {
+        return GManager.instance.turnStateMachine.gameContext.Players
+        .Map(player => player.SecurityCards)
+        .Flat()
+        .Some(cardSource => cardSource.IsFlipped == flipped && CanSelectPermanentCondition(cardSource) && cardSource.Owner == card.Owner);
+    }
+    #endregion
+
     #region How many cards there are in the owner's trash that satisfy the condition
     public static int MatchConditionOwnersCardCountInTrash(CardSource card, Func<CardSource, bool> CanSelectCardCondition)
     {

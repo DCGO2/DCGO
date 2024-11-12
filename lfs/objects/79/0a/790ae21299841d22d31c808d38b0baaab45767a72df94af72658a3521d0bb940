@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Duskmon-BT18-078
+  m_EditorClassIdentifier: 
+  CardIndex: 3935
+  cardColors: 06000000
+  PlayCost: 6
+  EvoCosts:
+  - CardColor: 6
+    Level: 3
+    MemoryCost: 3
+  Level: 4
+  CardName_JPN: 
+  CardName_ENG: Duskmon
+  Form_JPN: []
+  Form_ENG:
+  - Hybrid
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Variable
+  Type_JPN: []
+  Type_ENG:
+  - Wizard
+  CardSpriteName: BT18-078
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: "[Digivolve][Koichi Kimura]: Cost 2 [Digivolve][Velgrmon]:
+    Cost 1 \n\n[On Play] [When Digivolving] Until the end of your opponent's turn,
+    change 1 of their Digimon or Tamers into a color other than white.\n[When Attacking]
+    1 of your Digimon or Tamers may digivolve into a level 4 card with the [Hybrid]\_trait
+    in the trash with the digivolution cost reduced by 1."
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: '[On Deletion] You may play 1 Tamer card with a
+    play cost of 4 or less from your trash without paying the cost.'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: '-'
+  CardEffectClassName: Duskmon_BT18_078
+  DP: 6000
+  rarity: 3
+  OverflowMemory: 0
+  CardID: BT18-078
+  MaxCountInDeck: 4

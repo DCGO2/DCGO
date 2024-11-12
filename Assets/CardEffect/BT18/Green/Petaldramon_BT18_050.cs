@@ -17,7 +17,14 @@ namespace DCGO.CardEffects.BT18
                     return targetPermanent.TopCard.EqualsCardName("Arbormon");
                 }
 
+                static bool TamerCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.CardColors.Contains(CardColor.Green) &&
+                           targetPermanent.IsTamer;
+                }
+
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 1, ignoreDigivolutionRequirement: true, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: TamerCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: true, card: card, condition: null));
             }
             #endregion
 

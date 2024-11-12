@@ -91,7 +91,7 @@ namespace DCGO.CardEffects.BT18
             if (timing == EffectTiming.OnAttackTargetChanged)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Unsuspend this Digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Play 1 Tamer with inherited effect", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
                 activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("PlayTamer_BT18_91");

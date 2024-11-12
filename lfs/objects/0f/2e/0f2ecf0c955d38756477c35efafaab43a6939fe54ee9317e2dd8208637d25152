@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Seventh_Divine_Cruz-BT19-094
+  m_EditorClassIdentifier: 
+  CardIndex: 4026
+  cardColors: 0200000006000000
+  PlayCost: 7
+  EvoCosts: []
+  Level: 0
+  CardName_JPN: 
+  CardName_ENG: Seventh Divine Cruz
+  Form_JPN: []
+  Form_ENG:
+  - '-'
+  Attribute_JPN: []
+  Attribute_ENG:
+  - '-'
+  Type_JPN: []
+  Type_ENG:
+  - Seven Great Demon Lords
+  CardSpriteName: BT19-094
+  cardKind: 2
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: "[Trash] [Your Turn] When any of your Digimon digivolve
+    into [Lucemon (X Antibody)], by returning this card to the bottom of the deck,
+    your opponent may trash their top security card. If this effect didn't trash,
+    \uFF1CRecovery +1 (Deck)\uFF1E \n[Main] Delete your opponent's Digimon until
+    they have as many as the number of your security cards. If this effect deleted,
+    \uFF1CRecovery +1 (Deck)\uFF1E."
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: '-'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: '[Security] You may play 1 [Lucemon] from your trash
+    without paying the cost.'
+  CardEffectClassName: SeventhDivineCruz_BT19_094
+  DP: 0
+  rarity: 2
+  OverflowMemory: 0
+  CardID: BT19-094
+  MaxCountInDeck: 4

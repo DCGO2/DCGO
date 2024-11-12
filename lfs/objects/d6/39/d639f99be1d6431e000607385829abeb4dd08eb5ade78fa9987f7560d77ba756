@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: ForgeBeemon-BT19-048
+  m_EditorClassIdentifier: 
+  CardIndex: 3994
+  cardColors: 0300000005000000
+  PlayCost: 4
+  EvoCosts:
+  - CardColor: 5
+    Level: 3
+    MemoryCost: 3
+  - CardColor: 3
+    Level: 3
+    MemoryCost: 3
+  Level: 4
+  CardName_JPN: 
+  CardName_ENG: ForgeBeemon
+  Form_JPN: []
+  Form_ENG:
+  - Champion
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Virus
+  Type_JPN: []
+  Type_ENG:
+  - Cyborg
+  - X Antibody
+  - Royal Base
+  - LIBERATOR
+  - Insectoid
+  CardSpriteName: BT19-048
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: "[Digivolve]Lv.3 w/[Royal Base]\_trait: Cost 2 \n\n[Security]
+    [All Turns] All of your [Royal Base]\_trait Digimon get +1000 DP.\n[All Turns]
+    [Once Per Turn] When any of your other Digimon with the [Royal Base]\_trait would
+    leave the battle area by effects, by placing this Digimon as the face-up bottom
+    security card, they don't leave.\n[Rule] Trait: Has the [Insectoid] type."
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: '[All Turns] This Digimon gets +1000 DP.'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: '-'
+  CardEffectClassName: ForgeBeemon_BT19_048
+  DP: 4000
+  rarity: 0
+  OverflowMemory: 0
+  CardID: BT19-048
+  MaxCountInDeck: 4

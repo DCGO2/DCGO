@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Puyoyomon-BT19-002
+  m_EditorClassIdentifier: 
+  CardIndex: 3977
+  cardColors: 01000000
+  PlayCost: 0
+  EvoCosts: []
+  Level: 2
+  CardName_JPN: 
+  CardName_ENG: Puyoyomon
+  Form_JPN: []
+  Form_ENG:
+  - In-Training
+  Attribute_JPN: []
+  Attribute_ENG:
+  - '-'
+  Type_JPN: []
+  Type_ENG:
+  - Lesser
+  - LIBERATOR
+  CardSpriteName: BT19-002
+  cardKind: 3
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '-'
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: "[Opponent's Turn] When any of your opponent's
+    Digimon attack, by returning this Digimon with [Aqua]/[Sea Animal]\_in one of
+    its traits to the bottom of the deck, return 1 of your opponent's Digimon with
+    as high or lower a level as the returned Digimon to the hand."
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: '-'
+  CardEffectClassName: Puyoyomon_BT19_002
+  DP: 0
+  rarity: 0
+  OverflowMemory: 0
+  CardID: BT19-002
+  MaxCountInDeck: 4
