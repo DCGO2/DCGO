@@ -676,6 +676,9 @@ public class SelectHandEffect : MonoBehaviourPunCallbacks
                 foreach (CardSource cardSource in _targetCards)
                 {
                     log += $"\n{cardSource.BaseENGCardNameFromEntity}({cardSource.CardID})";
+
+                    if(_selectCardCoroutine != null)
+                        yield return StartCoroutine(_selectCardCoroutine(cardSource));
                 }
 
                 switch (_mode)
@@ -699,16 +702,6 @@ public class SelectHandEffect : MonoBehaviourPunCallbacks
 
                         foreach (CardSource cardSource in _targetCards)
                             yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(cardSource,false, _isFaceUp));
-                        break;
-
-                    case Mode.Custom:
-                        if (_selectCardCoroutine != null)
-                        {
-                            foreach (CardSource cardSource in _targetCards)
-                            {
-                                yield return StartCoroutine(_selectCardCoroutine(cardSource));
-                            }
-                        }
                         break;
                 }
                 #endregion
