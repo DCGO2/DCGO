@@ -238,13 +238,13 @@ namespace DCGO.CardEffects.BT18
                         {
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainPierce(
                                 targetPermanent: selectedPermanent,
-                                effectDuration: EffectDuration.UntilEachTurnEnd,
+                                effectDuration: EffectDuration.UntilOwnerTurnEnd,
                                 activateClass: activateClass));
 
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonSAttack(
                                 targetPermanent: selectedPermanent,
                                 changeValue: 1,
-                                effectDuration: EffectDuration.UntilEachTurnEnd,
+                                effectDuration: EffectDuration.UntilOwnerTurnEnd,
                                 activateClass: activateClass));
                         }
                     }
@@ -321,7 +321,8 @@ namespace DCGO.CardEffects.BT18
                         cardSources: selectedCards, activateClass: activateClass, payCost: false, isTapped: false,
                         root: SelectCardEffect.Root.Trash, activateETB: true));
 
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.AddThisCardToHand(card, activateClass));
+                    yield return ContinuousController.instance.StartCoroutine(
+                        CardEffectCommons.PlaceDelayOptionCards(card: card, cardEffect: activateClass));
                 }
             }
 

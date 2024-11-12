@@ -11,7 +11,7 @@ namespace DCGO.CardEffects.BT18
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Main
-            if (timing == EffectTiming.OnDeclaration)
+            if (timing == EffectTiming.OnEndTurn)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete your 1 Digimon to play 1 Digimon from hand", CanUseCondition, card);
@@ -38,16 +38,18 @@ namespace DCGO.CardEffects.BT18
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return card.Owner.HandCards.Contains(card);
+                    return card.Owner.GetBreedingAreaPermanents().Count == 0 &&
+                           CardEffectCommons.HasMatchConditionOwnersCardInTrash(card,CanSelectCardCondition) &&
+                           card.Owner.HandCards.Contains(card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     if (card.Owner.GetBreedingAreaPermanents().Count == 0)
                     {
-                        if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                        if (CardEffectCommons.IsExistOnHand(card))
                         {
-                            if (card.Owner.TrashCards.Count(CanSelectCardCondition) >= 1)
+                            if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
                             {
                                 return true;
                             }

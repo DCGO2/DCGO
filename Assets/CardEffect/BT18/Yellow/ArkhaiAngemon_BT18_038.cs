@@ -149,7 +149,7 @@ namespace DCGO.CardEffects.BT18
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    if (CardEffectCommons.CanActivateOnDeletion(card))
                     {
                         if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
                         {
