@@ -177,11 +177,13 @@ namespace DCGO.CardEffects.BT19
 
                     if (selectedPermanent != null)
                     {
+                        int selectedLevel = selectedPermanent.Level;
+
                         yield return ContinuousController.instance.StartCoroutine(
                             new DeckBottomBounceClass(new List<Permanent> { selectedPermanent }, hashtable).DeckBounce());
 
                         if (CardEffectCommons.HasMatchConditionPermanent(permanent =>
-                                CanSelectOpponentPermanentLevelCondition(permanent, selectedPermanent.Level)))
+                                CanSelectOpponentPermanentLevelCondition(permanent, selectedLevel)))
                         {
                             selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
@@ -189,7 +191,7 @@ namespace DCGO.CardEffects.BT19
                                 selectPlayer: card.Owner,
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canTargetCondition: permanent =>
-                                    CanSelectOpponentPermanentLevelCondition(permanent, selectedPermanent.Level),
+                                    CanSelectOpponentPermanentLevelCondition(permanent, selectedLevel),
                                 canEndSelectCondition: null,
                                 maxCount: 1,
                                 canNoSelect: false,

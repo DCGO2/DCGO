@@ -68,9 +68,7 @@ namespace DCGO.CardEffects.BT18
 
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                    for (int i = 0; i < maxCount; i++)
-                    {
-                        selectPermanentEffect.SetUp(
+                    selectPermanentEffect.SetUp(
                         selectPlayer: card.Owner,
                         canTargetCondition: IsOpponenetsDigimon,
                         canTargetCondition_ByPreSelecetedList: null,
@@ -83,13 +81,12 @@ namespace DCGO.CardEffects.BT18
                         mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                    }
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
                     IEnumerator DeDigivolvePermanent(Permanent permanent)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(new IDegeneration(permanent, 1, activateClass).Degeneration());
-                    }
+                        yield return ContinuousController.instance.StartCoroutine(new IDegeneration(permanent, maxCount, activateClass).Degeneration());
+                    }                    
                 }
             }
             #endregion
@@ -126,9 +123,7 @@ namespace DCGO.CardEffects.BT18
 
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                    for (int i = 0; i < maxCount; i++)
-                    {
-                        selectPermanentEffect.SetUp(
+                    selectPermanentEffect.SetUp(
                         selectPlayer: card.Owner,
                         canTargetCondition: IsOpponenetsDigimon,
                         canTargetCondition_ByPreSelecetedList: null,
@@ -141,12 +136,11 @@ namespace DCGO.CardEffects.BT18
                         mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                    }
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
                     IEnumerator DeDigivolvePermanent(Permanent permanent)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(new IDegeneration(permanent, 1, activateClass).Degeneration());
+                        yield return ContinuousController.instance.StartCoroutine(new IDegeneration(permanent, maxCount, activateClass).Degeneration());
                     }
                 }
             }
@@ -209,7 +203,7 @@ namespace DCGO.CardEffects.BT18
             {
                 bool CanUseCondition()
                 {
-                    if (CardEffectCommons.IsExistInSecurity(card, true))
+                    if (CardEffectCommons.IsExistInSecurity(card, false))
                     {
                         if (CardEffectCommons.IsOpponentTurn(card))
                         {

@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Dark_to_Light,_Thunder_to_Gunfire-BT18-097
+  m_EditorClassIdentifier: 
+  CardIndex: 3968
+  cardColors: 020000000500000006000000
+  PlayCost: 3
+  EvoCosts: []
+  Level: 0
+  CardName_JPN: 
+  CardName_ENG: Dark to Light, Thunder to Gunfire
+  Form_JPN: []
+  Form_ENG:
+  - '-'
+  Attribute_JPN: []
+  Attribute_ENG:
+  - '-'
+  Type_JPN: []
+  Type_ENG:
+  - Ten Warriors
+  CardSpriteName: BT18-097
+  cardKind: 2
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: "[Main] You may place up to 5 [Hybrid]\_trait cards with
+    different names from your hand or trash under 1 of your Tamers. Then, 1 of your
+    Tamers with 5 or more cards under it may digivolve into [MagnaGarurumon] in the
+    hand or trash, ignoring digivolution requirements and without paying the cost."
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: '-'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: '[Security] You may play 1 Tamer card with inherited
+    effects from your hand or trash without paying the cost. Then, add this card
+    to the hand.'
+  CardEffectClassName: DarktoLightThundertoGunfire_BT18_097
+  DP: 0
+  rarity: 0
+  OverflowMemory: 0
+  CardID: BT18-097
+  MaxCountInDeck: 4

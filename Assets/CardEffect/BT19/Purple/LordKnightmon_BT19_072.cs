@@ -26,7 +26,7 @@ namespace DCGO.CardEffects.BT19
                 {
                     return CardEffectCommons.CanPlayAsNewPermanent(source, false, activateClass, SelectCardEffect.Root.Trash) &&
                            source.IsDigimon &&
-                           source.HasLevel && source.Level < 4;
+                           source.HasLevel && source.Level <= 4;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -109,7 +109,7 @@ namespace DCGO.CardEffects.BT19
                 {
                     return CardEffectCommons.CanPlayAsNewPermanent(source, false, activateClass, SelectCardEffect.Root.Trash) &&
                            source.IsDigimon &&
-                           source.HasLevel && source.Level < 4;
+                           source.HasLevel && source.Level <= 4;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

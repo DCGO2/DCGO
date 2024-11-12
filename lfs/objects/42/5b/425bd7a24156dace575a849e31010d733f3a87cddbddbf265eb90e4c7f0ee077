@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Lanamon-BT18-023
+  m_EditorClassIdentifier: 
+  CardIndex: 3877
+  cardColors: 01000000
+  PlayCost: 5
+  EvoCosts:
+  - CardColor: 1
+    Level: 3
+    MemoryCost: 2
+  Level: 4
+  CardName_JPN: 
+  CardName_ENG: Lanamon
+  Form_JPN: []
+  Form_ENG:
+  - Hybrid
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Variable
+  Type_JPN: []
+  Type_ENG:
+  - Fairy
+  - Aquatic
+  CardSpriteName: BT18-023
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: "[Digivolve][Calmaramon]: Cost 0 \n\n[On Play] [When Digivolving]
+    Reveal the top 3 cards of your deck. Add 1 Digimon card with the [Aqua]/[Sea
+    Animal]\_in one of its traits among them to the hand or place 1 such card as
+    any of your blue Digimon's bottom digivolution card. Return the rest to the bottom
+    of the deck.\n[Rule] Trait: Has the [Aquatic] type."
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: '[When Attacking] [Once Per Turn] You may return
+    1 level 3 Digimon to the hand.'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: '-'
+  CardEffectClassName: Lanamon_BT18_023
+  DP: 5000
+  rarity: 0
+  OverflowMemory: 0
+  CardID: BT18-023
+  MaxCountInDeck: 4

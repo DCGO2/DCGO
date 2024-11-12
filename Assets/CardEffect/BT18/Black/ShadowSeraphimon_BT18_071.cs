@@ -216,6 +216,7 @@ namespace DCGO.CardEffects.BT18
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("1 of your opponent's Digimon gets -5000 DP", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetHashString("AllTurnDP_BT18-071");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

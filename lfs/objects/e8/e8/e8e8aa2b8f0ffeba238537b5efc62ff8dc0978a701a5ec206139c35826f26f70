@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: ZeedMillenniummon-BT19-101
+  m_EditorClassIdentifier: 
+  CardIndex: 4027
+  cardColors: 000000000600000005000000
+  PlayCost: 16
+  EvoCosts:
+  - CardColor: 0
+    Level: 6
+    MemoryCost: 6
+  - CardColor: 6
+    Level: 6
+    MemoryCost: 6
+  - CardColor: 5
+    Level: 6
+    MemoryCost: 6
+  Level: 7
+  CardName_JPN: 
+  CardName_ENG: ZeedMillenniummon
+  Form_JPN: []
+  Form_ENG:
+  - Mega
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Virus
+  Type_JPN: []
+  Type_ENG:
+  - Wicked God
+  CardSpriteName: BT19-101
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: "[Digivolve]MoonMillenniummon: Cost 2 \n\n\uFF1COverclock
+    ([Composite] trait)\uFF1E(At the end of your turn, by deleting 1 of your Tokens
+    or other [Composite]\_trait Digimon, this Digimon attacks a player without suspending)\n[On
+    Play] [When Digivolving] [When Attacking] By returning 1 Digimon card from your
+    opponent's trash to the top of the deck, return 1 of their Digimon to the bottom
+    of the deck.\n[All Turns] This Digimon with no digivolution cards can't be suspended,
+    and isn't affected by your opponent's effects."
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: '-'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: '-'
+  CardEffectClassName: ZeedMillenniummon_BT19_101
+  DP: 16000
+  rarity: 4
+  OverflowMemory: 0
+  CardID: BT19-101
+  MaxCountInDeck: 4

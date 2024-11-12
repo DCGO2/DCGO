@@ -17,9 +17,16 @@ namespace DCGO.CardEffects.BT18
                     return targetPermanent.TopCard.EqualsCardName("Sephirothmon");
                 }
 
+                static bool TamerCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.CardColors.Contains(CardColor.Black) &&
+                           targetPermanent.IsTamer;
+                }
+
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
                     permanentCondition: PermanentCondition, digivolutionCost: 0, ignoreDigivolutionRequirement: false,
                     card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: TamerCondition, digivolutionCost: 2, ignoreDigivolutionRequirement: true, card: card, condition: null));
             }
             #endregion
 

@@ -34,7 +34,8 @@ namespace DCGO.CardEffects.BT19
 
                 bool IsRoyalBaseDigimon(CardSource card)
                 {
-                    return card.EqualsTraits("Royal Base");
+                    return card.IsDigimon && 
+                           card.EqualsTraits("Royal Base");
                 }
 
                 bool IsOpponenetsDigimon(Permanent permanent)

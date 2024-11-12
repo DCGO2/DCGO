@@ -25,7 +25,8 @@ namespace DCGO.CardEffects.BT18
 
                 bool IsRoyalBaseDigimon(CardSource card)
                 {
-                    return card.EqualsTraits("Royal Base");
+                    return card.IsDigimon &&
+                           card.EqualsTraits("Royal Base");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -68,7 +69,8 @@ namespace DCGO.CardEffects.BT18
 
                     IEnumerator CardSelected(CardSource cardSource)
                     {
-                        cardAdded = true;
+                        if (cardSource == null)
+                            cardAdded = true;
 
                         yield return null;
                     }

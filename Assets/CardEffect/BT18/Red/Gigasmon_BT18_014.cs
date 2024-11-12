@@ -17,7 +17,7 @@ namespace DCGO.CardEffects.BT18
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.EqualsCardName("Gigasmon");
+                    return targetPermanent.TopCard.EqualsCardName("Grumblemon");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 1, ignoreDigivolutionRequirement: false, card: card, condition: null));

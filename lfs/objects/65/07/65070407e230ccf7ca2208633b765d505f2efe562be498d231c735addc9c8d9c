@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: MoonMillenniummon-BT19-075_P1
+  m_EditorClassIdentifier: 
+  CardIndex: 4016
+  cardColors: 06000000
+  PlayCost: 15
+  EvoCosts:
+  - CardColor: 6
+    Level: 6
+    MemoryCost: 5
+  Level: 7
+  CardName_JPN: 
+  CardName_ENG: MoonMillenniummon
+  Form_JPN: []
+  Form_ENG:
+  - Mega
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Virus
+  Type_JPN: []
+  Type_ENG:
+  - Wicked God
+  CardSpriteName: BT19-075_P1
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: "[Digivolve][Millenniummon]: Cost 2 \n\n[On Play] [When
+    Digivolving] Your opponent trashes cards in their hand until they have 5 left.
+    For every 2 cards trashed by this effect, delete 1 of your opponent's Tamers.\n[All
+    Turns] When this Digimon would leave the battle area, by deleting 1 of your Digimon
+    with the [Composite]\_trait Digimon, it doesn't leave.\n[All Turns] [Once Per
+    Turn] When other Digimon or Tamers are deleted, trash your opponent's top security
+    card."
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: '-'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: '-'
+  CardEffectClassName: MoonMillenniummon_BT19_075
+  DP: 15000
+  rarity: 3
+  OverflowMemory: 0
+  CardID: BT19-075
+  MaxCountInDeck: 4

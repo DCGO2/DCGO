@@ -12,9 +12,9 @@ namespace DCGO.CardEffects.BT18
             #region All Turns
             if (timing == EffectTiming.None)
             {
-                bool CardCondition(CardSource cardSource)
+                string EffectDiscription()
                 {
-                    return cardSource.Owner == card.Owner;
+                    return "[All Turns] While this Digimon is suspended, all of your other Digimon get +1000 DP.";
                 }
 
                 bool Condition()
@@ -26,16 +26,30 @@ namespace DCGO.CardEffects.BT18
                             return true;
                         }
                     }
+
                     return false;
                 }
 
-                cardEffects.Add(CardEffectFactory.ChangeSecurityDigimonCardDPStaticEffect(
-                    cardCondition: CardCondition,
-                    changeValue: 1000,
-                    isInheritedEffect: true,
-                    card: card,
-                    condition: Condition,
-                    effectName: "All of your other Digimon get +1000 DP."));
+                bool PermanentCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                    {
+                        if (permanent != card.PermanentOfThisCard())
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                cardEffects.Add(CardEffectFactory.ChangeDPStaticEffect(
+                permanentCondition: PermanentCondition,
+                changeValue: 1000,
+                isInheritedEffect: true,
+                card: card,
+                condition: Condition,
+                effectName: EffectDiscription));
             }
             #endregion
 

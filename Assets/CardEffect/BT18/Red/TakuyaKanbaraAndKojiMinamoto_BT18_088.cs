@@ -44,6 +44,37 @@ namespace DCGO.CardEffects.BT18
                         "[Start of Your Main Phase] You may place up to 1 [Hybrid] trait card with different names from your trash under this Tamer. For each of your other Tamers, add 2 to the maximum number this effect may place.";
                 }
 
+                bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
+                {
+                    List<string> cardNames = GetNamesList(cardSources);
+
+                    foreach (string name in cardNames)
+                    {
+                        if (cardSource.CardNames.Contains(name))
+                            return false;
+                    }
+
+                    return true;
+                }
+
+                List<string> GetNamesList(List<CardSource> cardSources)
+                {
+                    List<string> cardNames = new List<string>();
+
+                    foreach (CardSource cardName in cardSources)
+                    {
+                        foreach (string name in cardName.CardNames)
+                        {
+                            if (!cardNames.Contains(name))
+                            {
+                                cardNames.Add(name);
+                            }
+                        }
+                    }
+
+                    return cardNames;
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card) &&
@@ -52,7 +83,7 @@ namespace DCGO.CardEffects.BT18
 
                 bool HasHybridInTrait(CardSource cardSource)
                 {
-                    return cardSource.HasHybridTenWarriorsTraits;
+                    return cardSource.EqualsTraits("Hybrid");
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -75,14 +106,14 @@ namespace DCGO.CardEffects.BT18
 
                     selectCardEffect.SetUp(
                         canTargetCondition: HasHybridInTrait,
-                        canTargetCondition_ByPreSelecetedList: null,
+                        canTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
                         canEndSelectCondition: null,
                         canNoSelect: () => true,
                         selectCardCoroutine: SelectCardCoroutine,
                         afterSelectCardCoroutine: null,
                         message: "Select cards to place under your Tamer.",
                         maxCount: maxCount,
-                        canEndNotMax: false,
+                        canEndNotMax: true,
                         isShowOpponent: true,
                         mode: SelectCardEffect.Mode.Custom,
                         root: SelectCardEffect.Root.Trash,
@@ -145,6 +176,7 @@ namespace DCGO.CardEffects.BT18
                 activateClass.SetUpICardEffect("This Digimon can attack a player", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
                 activateClass.SetHashString("Attack_BT18_088");
+                activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()

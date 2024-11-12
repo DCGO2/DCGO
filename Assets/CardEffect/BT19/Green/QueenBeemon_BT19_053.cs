@@ -36,11 +36,11 @@ namespace DCGO.CardEffects.BT19
             #endregion
 
             #region When Attacking
-            if (timing == EffectTiming.OnEnterFieldAnyone)
+            if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play [Royal Base] Digimon from faceup security", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("PlayDigimon_BT19_053");
                 cardEffects.Add(activateClass);
 
@@ -237,7 +237,10 @@ namespace DCGO.CardEffects.BT19
                         if (CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, HasRoyalBaseDigimon))
                         {
                             if (!CardEffectCommons.IsByBattle(hashtable))
-                                return true;
+                            {
+                                if (CardEffectCommons.GetCardEffectFromHashtable(hashtable) != activateClass)
+                                    return true;
+                            }
                         }
                     }
 

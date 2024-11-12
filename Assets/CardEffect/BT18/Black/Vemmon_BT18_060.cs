@@ -48,6 +48,11 @@ namespace DCGO.CardEffects.BT18
                     return false;
                 }
 
+                bool CanSelectOwnerDigimon(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.CanTriggerOnPlay(hashtable, card))
@@ -60,6 +65,8 @@ namespace DCGO.CardEffects.BT18
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
+                    CardSource tuckedCard = null;
+
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SimplifiedRevealDeckTopCardsAndSelect(
                         revealCount: 3,
                         simplifiedSelectCardConditions:
@@ -84,10 +91,34 @@ namespace DCGO.CardEffects.BT18
 
                     IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
-                        if (CardEffectCommons.IsExistOnBattleArea(card))
+                        if(cardSource != null)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource>() { cardSource }, activateClass));
+                            tuckedCard = cardSource;
+
+                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                            selectPermanentEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: CanSelectOwnerDigimon,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: 1,
+                                canNoSelect: false,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: SelectOwnerDigimon,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Custom,
+                                cardEffect: activateClass);
+
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                         }
+                    }
+
+                    IEnumerator SelectOwnerDigimon(Permanent permanent)
+                    {
+                        if(permanent != null)
+                            yield return ContinuousController.instance.StartCoroutine(permanent.AddDigivolutionCardsBottom(new List<CardSource>() { tuckedCard }, activateClass));
+
                     }
                 }
             }

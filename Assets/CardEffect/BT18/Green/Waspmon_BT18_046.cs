@@ -32,7 +32,8 @@ namespace DCGO.CardEffects.BT18
             {
                 bool AttackerCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
+                           permanent.DP <= card.PermanentOfThisCard().DP;
                 }
 
                 bool DefenderCondition(Permanent permanent)
@@ -46,7 +47,8 @@ namespace DCGO.CardEffects.BT18
                     {
                         if (CardEffectCommons.IsOpponentTurn(card))
                         {
-                            return true;
+                            if(card.PermanentOfThisCard().TopCard == card)
+                                return true;
                         }
                     }
 

@@ -94,17 +94,12 @@ namespace DCGO.CardEffects.BT18
                 activateClass.SetUpICardEffect("Return 1 card from trash to hand", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
                 activateClass.SetIsInheritedEffect(true);
+                activateClass.SetHashString("Return_BT18_094");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
                 {
-                    return
-                        "[When Attacking] (Once Per Turn) You may return 1 card with the [Hybrid]/[Ten Warriors] trait from your trash to the hand.";
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
+                    return "[When Attacking] (Once Per Turn) You may return 1 card with the [Hybrid]/[Ten Warriors] trait from your trash to the hand.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
@@ -112,9 +107,14 @@ namespace DCGO.CardEffects.BT18
                     return cardSource.HasHybridTenWarriorsTraits;
                 }
 
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
+                }
+
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card) &&
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
                            CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition);
                 }
 

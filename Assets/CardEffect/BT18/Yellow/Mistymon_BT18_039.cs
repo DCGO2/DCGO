@@ -76,7 +76,7 @@ namespace DCGO.CardEffects.BT18
                         mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                    selectPermanentEffect.SetUpCustomMessage(customMessageArray: CardEffectCommons.customPermanentMessageArray_ChangeOriginDP(changeValue: 3000, maxCount: maxCount));
+                    selectPermanentEffect.SetUpCustomMessage(customMessageArray: CardEffectCommons.customPermanentMessageArray_ChangeOriginDP(changeValue: 6000, maxCount: maxCount));
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
@@ -162,7 +162,7 @@ namespace DCGO.CardEffects.BT18
                         mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                    selectPermanentEffect.SetUpCustomMessage(customMessageArray: CardEffectCommons.customPermanentMessageArray_ChangeOriginDP(changeValue: 3000, maxCount: maxCount));
+                    selectPermanentEffect.SetUpCustomMessage(customMessageArray: CardEffectCommons.customPermanentMessageArray_ChangeOriginDP(changeValue: 6000, maxCount: maxCount));
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 

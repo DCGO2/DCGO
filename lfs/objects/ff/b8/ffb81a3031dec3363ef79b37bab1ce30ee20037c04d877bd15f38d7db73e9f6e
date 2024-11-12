@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Nene_Amano-BT19-087_P1
+  m_EditorClassIdentifier: 
+  CardIndex: 4018
+  cardColors: 05000000
+  PlayCost: 4
+  EvoCosts: []
+  Level: 0
+  CardName_JPN: 
+  CardName_ENG: Nene Amano
+  Form_JPN: []
+  Form_ENG:
+  - '-'
+  Attribute_JPN: []
+  Attribute_ENG:
+  - '-'
+  Type_JPN: []
+  Type_ENG:
+  - General
+  - Twilight
+  CardSpriteName: BT19-087_P1
+  cardKind: 1
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: "[Start of Your Turn] If you have 2 memory or less, set
+    your memory to 3.\n[All Turns] When any of your [Composite]/[Twilight]\_trait
+    Digimon cards with DigiXros requirements would be played, by suspending this
+    Tamer, 1 card under your Tamers and 1 card in your trash can also be placed for
+    their DigiXros."
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: '-'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: '[Security] Play this card without paying the cost.'
+  CardEffectClassName: NeneAmano_BT19_087
+  DP: 0
+  rarity: 1
+  OverflowMemory: 0
+  CardID: BT19-087
+  MaxCountInDeck: 4

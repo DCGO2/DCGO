@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Lobomon-BT18-037
+  m_EditorClassIdentifier: 
+  CardIndex: 3883
+  cardColors: 0200000001000000
+  PlayCost: 5
+  EvoCosts:
+  - CardColor: 2
+    Level: 3
+    MemoryCost: 3
+  - CardColor: 1
+    Level: 3
+    MemoryCost: 3
+  Level: 4
+  CardName_JPN: 
+  CardName_ENG: Lobomon
+  Form_JPN: []
+  Form_ENG:
+  - Hybrid
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Variable
+  Type_JPN: []
+  Type_ENG:
+  - Warrior
+  CardSpriteName: BT18-037
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: "[Digivolve][Koji Minamoto]: Cost 2 [Digivolve][KendoGarurumon]:
+    Cost 0 \n\n[When Digivolving] Search your security stack. You may add 1 card
+    with the [Hybrid]/[Ten Warriors]\_trait among them to your hand. If you added,
+    \uFF1CRecovery +1 (Deck)\uFF1E. Then, shuffle your security stack."
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: "[When Attacking] If you have 7 or fewer cards
+    in your hand, \uFF1CDraw 1\uFF1E."
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: '-'
+  CardEffectClassName: Lobomon_BT18_037
+  DP: 5000
+  rarity: 2
+  OverflowMemory: 0
+  CardID: BT18-037
+  MaxCountInDeck: 4

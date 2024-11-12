@@ -155,6 +155,7 @@ namespace DCGO.CardEffects.BT18
                 activateClass.SetUpICardEffect("Trash opponent's top security card", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetIsInheritedEffect(true);
+                activateClass.SetHashString("Trash_BT18-101");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()

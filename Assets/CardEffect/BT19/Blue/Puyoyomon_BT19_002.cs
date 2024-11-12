@@ -13,18 +13,17 @@ namespace DCGO.CardEffects.BT19
 
             if (timing == EffectTiming.OnAllyAttack)
             {
+                int bouncedLevel = 0;
+
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Bottom deck this Digimon to bottom deck and opponent's Digimon with the same level",
-                    CanUseCondition, card);
+                activateClass.SetUpICardEffect("Bottom deck this Digimon to bottom deck and opponent's Digimon with the same level", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 activateClass.SetIsInheritedEffect(true);
-                activateClass.SetHashString("BottomDeck_BT19_002");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
                 {
-                    return
-                        "[Opponent's Turn] When any of your opponent's Digimon attack, by returning this Digimon with [Aqua]/[Sea Animal] in one of its traits to the bottom of the deck, return 1 of your opponent's Digimon with as high or lower a level as the returned Digimon to the hand.";
+                    return "[Opponent's Turn] When any of your opponent's Digimon attack, by returning this Digimon with [Aqua]/[Sea Animal] in one of its traits to the bottom of the deck, return 1 of your opponent's Digimon with as high or lower a level as the returned Digimon to the hand.";
                 }
 
                 bool AttackingPermanent(Permanent permanent)
@@ -42,17 +41,20 @@ namespace DCGO.CardEffects.BT19
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
-                           permanent.TopCard.HasLevel && permanent.Level <= card.PermanentOfThisCard().Level;
+                           permanent.TopCard.HasLevel && permanent.Level <= bouncedLevel;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           card.PermanentOfThisCard().TopCard.HasLevel &&
                            card.PermanentOfThisCard().TopCard.HasAquaTraits;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    bouncedLevel = card.PermanentOfThisCard().TopCard.Level;
+
                     yield return ContinuousController.instance.StartCoroutine(
                         new DeckBottomBounceClass(new List<Permanent> { card.PermanentOfThisCard() }, hashtable).DeckBounce());
 

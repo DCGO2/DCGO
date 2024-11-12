@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: ShadowSeraphimon-BT18-071
+  m_EditorClassIdentifier: 
+  CardIndex: 3933
+  cardColors: 0500000002000000
+  PlayCost: 7
+  EvoCosts:
+  - CardColor: 2
+    Level: 5
+    MemoryCost: 4
+  - CardColor: 5
+    Level: 5
+    MemoryCost: 4
+  Level: 6
+  CardName_JPN: 
+  CardName_ENG: ShadowSeraphimon
+  Form_JPN: []
+  Form_ENG:
+  - Mega
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Virus
+  Type_JPN: []
+  Type_ENG:
+  - Seraph
+  - Three Great Angels
+  CardSpriteName: BT18-071
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: "[Digivolve][Seraphimon]: Cost 1 [Digivolve][Sephirothmon]
+    w/[Mercurymon] in digivolution cards: Cost 4 \n\n[Hand] [Counter] \uFF1CBlast
+    Digivolve\uFF1E.\n\uFF1CBlocker\uFF1E \n[On Play] [When Digivolving] \uFF1CDe-Digivolve3\uFF1E
+    1 of your opponent's Digimon \n[All Turns] [Once Per Turn] When an attack target
+    is changed, 1 of your opponent's Digimon gets -5000 DP for the turn.\n[Rule]
+    Trait: Has [Three Great Angels]."
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: '-'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: '-'
+  CardEffectClassName: ShadowSeraphimon_BT18_071
+  DP: 12000
+  rarity: 3
+  OverflowMemory: 4
+  CardID: BT18-071
+  MaxCountInDeck: 4

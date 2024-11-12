@@ -110,8 +110,8 @@ namespace DCGO.CardEffects.BT18
                                     canNoSelect: true,
                                     canEndNotMax: true,
                                     isShowOpponent: true,
-                                    selectCardCoroutine: SelectCardCoroutine,
-                                    afterSelectCardCoroutine: null,
+                                    selectCardCoroutine: null,
+                                    afterSelectCardCoroutine: SelectCardCoroutine,
                                     mode: SelectHandEffect.Mode.Custom,
                                     cardEffect: activateClass);
 
@@ -119,13 +119,6 @@ namespace DCGO.CardEffects.BT18
                                     "The opponent is selecting cards in hand to place in digivolution cards.");
 
                                 yield return StartCoroutine(selectHandEffect.Activate());
-
-                                IEnumerator SelectCardCoroutine(CardSource cardSource)
-                                {
-                                    digivolutionCards.Add(cardSource);
-
-                                    yield return null;
-                                }
                             }
 
                             if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, SelectHybridCardCondition))
@@ -137,8 +130,8 @@ namespace DCGO.CardEffects.BT18
                                     canTargetCondition_ByPreSelecetedList: null,
                                     canEndSelectCondition: null,
                                     canNoSelect: () => true,
-                                    selectCardCoroutine: SelectCardCoroutine,
-                                    afterSelectCardCoroutine: null,
+                                    selectCardCoroutine: null,
+                                    afterSelectCardCoroutine: SelectCardCoroutine,
                                     message: "Select cards in trash to place in digivolution cards.",
                                     maxCount: Math.Min(5 - digivolutionCards.Count,
                                         CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, SelectHybridCardCondition)),
@@ -152,12 +145,13 @@ namespace DCGO.CardEffects.BT18
                                     cardEffect: activateClass);
 
                                 yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                            }
 
-                                IEnumerator SelectCardCoroutine(CardSource cardSource)
-                                {
-                                    digivolutionCards.Add(cardSource);
-                                    yield return null;
-                                }
+                            IEnumerator SelectCardCoroutine(List<CardSource> cardSources)
+                            {
+                                digivolutionCards.AddRange(cardSources);
+
+                                yield return null;
                             }
 
                             if (digivolutionCards.Count >= 1)
@@ -204,7 +198,7 @@ namespace DCGO.CardEffects.BT18
                                     }
                                 }
 
-                                if (CardEffectCommons.IsExistOnBattleArea(card))
+                                if (CardEffectCommons.IsPermanentExistsOnBattleArea(tamerPermanent))
                                 {
                                     yield return ContinuousController.instance.StartCoroutine(tamerPermanent
                                         .AddDigivolutionCardsBottom(digivolutionCardsFixed, activateClass));

@@ -17,6 +17,13 @@ namespace DCGO.CardEffects.BT18
             }
             #endregion
 
+            #region Raid
+            if (timing == EffectTiming.OnAllyAttack)
+            {
+                cardEffects.Add(CardEffectFactory.RaidSelfEffect(isInheritedEffect: false, card: card, condition: null));
+            }
+            #endregion
+
             #region On Play
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
@@ -280,7 +287,7 @@ namespace DCGO.CardEffects.BT18
                     return false;
                 }
 
-                cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect(changeValue: 4000, isInheritedEffect: true, card: card, condition: Condition));
+                cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect(changeValue: 4000, isInheritedEffect: false, card: card, condition: Condition));
                 cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(isInheritedEffect: false, card: card, condition: Condition));
             }
             #endregion

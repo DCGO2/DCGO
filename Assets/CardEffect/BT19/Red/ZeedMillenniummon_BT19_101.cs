@@ -390,9 +390,9 @@ namespace DCGO.CardEffects.BT19
 
             bool ImmunityAndNoSuspendCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
+                if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                 {
-                    if (card.PermanentOfThisCard().cardSources.Count == 0)
+                    if (card.PermanentOfThisCard().DigivolutionCards.Count == 0)
                     {
                         return true;
                     }

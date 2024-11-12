@@ -54,9 +54,11 @@ namespace DCGO.CardEffects.BT19
             if (timing == EffectTiming.OnDeclaration)
             {
                 List<CardSource> cards = new List<CardSource>();
+                CardSource selectedCard = null;
+                Permanent selectedParmanent = null;
 
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("This Digimon digivolves into Digimon card in security", CanUseCondition, card);
+                activateClass.SetUpICardEffect("One of your Digimon digivolves into Digimon card in security", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -65,11 +67,13 @@ namespace DCGO.CardEffects.BT19
                     return "[Main] By suspending this Tamer, 1 of your Digimon may digivolve into a Digimon card in your face up security cards. If this effect digivolved, you may place 1 Digimon card with the [Royal Base] trait from your hand face up as your bottom security card.";
                 }
 
-                bool IsDigivolveTarget(CardSource cardSource)
+                bool OwnersDigivolveTarget(Permanent permanent)
                 {
-                    if (card.EqualsTraits("Royal Base"))
+                    if(CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        if (!cardSource.IsFlipped)
+                        if(card.Owner.SecurityCards.Count(cardSource => 
+                            !cardSource.IsFlipped && 
+                            cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, PayCost: false, activateClass, root: SelectCardEffect.Root.Security)) > 0)
                         {
                             return true;
                         }
@@ -78,12 +82,16 @@ namespace DCGO.CardEffects.BT19
                     return false;
                 }
 
-                bool IsRoyalBaseDigimon(CardSource card)
+                bool DigivolveTarget(CardSource cardSource)
                 {
-                    return card.EqualsTraits("Royal Base");
+                    return !cardSource.IsFlipped &&
+                            cardSource.CanPlayCardTargetFrame(selectedParmanent.PermanentFrame, PayCost: false, activateClass, root: SelectCardEffect.Root.Security);
                 }
 
-
+                bool IsRoyalBaseDigimon(CardSource cardSource)
+                {
+                    return cardSource.EqualsTraits("Royal Base");
+                }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
@@ -99,17 +107,45 @@ namespace DCGO.CardEffects.BT19
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    cards = card.Owner.SecurityCards.Filter(source => !source.IsFlipped);
-                    
-                    if (cards.Count >= 1)
+                    yield return ContinuousController.instance.StartCoroutine(
+                        new SuspendPermanentsClass(new List<Permanent>() { card.PermanentOfThisCard() },
+                            CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
+
+                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, OwnersDigivolveTarget))
+                    {                       
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: OwnersDigivolveTarget,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: true,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectDigivolveTarget,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                    }
+
+                    IEnumerator SelectDigivolveTarget(Permanent permanent)
                     {
-                        CardSource selectedCard = null;
-                        Permanent selectedParmanent = null;
+                        selectedParmanent = permanent;
+
+                        yield return null;
+                    }
+
+                    if (selectedParmanent != null)
+                    {
+                        cards = card.Owner.SecurityCards.Filter(source => !source.IsFlipped);
 
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                         selectCardEffect.SetUp(
-                            canTargetCondition: IsDigivolveTarget,
+                            canTargetCondition: DigivolveTarget,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             canNoSelect: () => true,
@@ -137,76 +173,40 @@ namespace DCGO.CardEffects.BT19
 
                         if (selectedCard != null)
                         {
-                            bool OwnersDigivolveTarget(Permanent permanent)
-                            {
-                                return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent,card) &&
-                                        selectedCard.CanPlayCardTargetFrame(permanent.PermanentFrame, PayCost: false, activateClass, root: SelectCardEffect.Root.Security);
-                            }
-
-                            if(CardEffectCommons.HasMatchConditionOwnersPermanent(card, OwnersDigivolveTarget))
-                            {
-                                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                                selectPermanentEffect.SetUp(
-                                    selectPlayer: card.Owner,
-                                    canTargetCondition: OwnersDigivolveTarget,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    maxCount: 1,
-                                    canNoSelect: false,
-                                    canEndNotMax: false,
-                                    selectPermanentCoroutine: SelectDigivolveTarget,
-                                    afterSelectPermanentCoroutine: null,
-                                    mode: SelectPermanentEffect.Mode.Custom,
-                                    cardEffect: activateClass);
-
-                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                            }
-
-                            IEnumerator SelectDigivolveTarget(Permanent permanent)
-                            {
-                                selectedParmanent = permanent;
-
-                                yield return null;
-                            }
-
-                            if(selectedParmanent != null)
-                            {
-                                PlayCardClass playCardClass = new PlayCardClass(
+                            PlayCardClass playCardClass = new PlayCardClass(
                                         cardSources: new List<CardSource>() { selectedCard },
                                         hashtable: CardEffectCommons.CardEffectHashtable(activateClass),
-                                        payCost: false,
+                                        payCost: true,
                                         targetPermanent: selectedParmanent,
                                         isTapped: false,
                                         root: SelectCardEffect.Root.Security,
                                         activateETB: true);
 
-                                yield return ContinuousController.instance.StartCoroutine(playCardClass.PlayCard());
+                            yield return ContinuousController.instance.StartCoroutine(playCardClass.PlayCard());
 
-                                if (CardEffectCommons.IsDigivolvedByTheEffect(selectedParmanent, selectedCard, activateClass))
+                            if (CardEffectCommons.IsDigivolvedByTheEffect(selectedParmanent, selectedCard, activateClass))
+                            {
+                                if (card.Owner.CanAddSecurity(activateClass))
                                 {
-                                    if (card.Owner.CanAddSecurity(activateClass))
-                                    {
-                                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
-                                        selectHandEffect.SetUp(
-                                            selectPlayer: card.Owner,
-                                            canTargetCondition: IsRoyalBaseDigimon,
-                                            canTargetCondition_ByPreSelecetedList: null,
-                                            canEndSelectCondition: null,
-                                            maxCount: 1,
-                                            canNoSelect: true,
-                                            canEndNotMax: false,
-                                            isShowOpponent: true,
-                                            selectCardCoroutine: null,
-                                            afterSelectCardCoroutine: null,
-                                            mode: SelectHandEffect.Mode.PutSecurityBottom,
-                                            cardEffect: activateClass);
+                                    selectHandEffect.SetUp(
+                                        selectPlayer: card.Owner,
+                                        canTargetCondition: IsRoyalBaseDigimon,
+                                        canTargetCondition_ByPreSelecetedList: null,
+                                        canEndSelectCondition: null,
+                                        maxCount: 1,
+                                        canNoSelect: true,
+                                        canEndNotMax: false,
+                                        isShowOpponent: true,
+                                        selectCardCoroutine: null,
+                                        afterSelectCardCoroutine: null,
+                                        mode: SelectHandEffect.Mode.PutSecurityBottom,
+                                        cardEffect: activateClass);
 
-                                        selectHandEffect.SetIsFaceup();
+                                    selectHandEffect.SetIsFaceup();
 
-                                        yield return StartCoroutine(selectHandEffect.Activate());
-                                    }
+                                    yield return StartCoroutine(selectHandEffect.Activate());
                                 }
                             }
                         }

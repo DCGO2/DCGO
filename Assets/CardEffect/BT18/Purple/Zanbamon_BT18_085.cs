@@ -72,7 +72,8 @@ namespace DCGO.CardEffects.BT18
                 bool Condition()
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           CardEffectCommons.IsOwnerTurn(card);
+                           CardEffectCommons.IsOwnerTurn(card) &&
+                           OpponentTrashColorCount() > 2;
                 }
 
                 cardEffects.Add(CardEffectFactory.ChangeSelfSAttackStaticEffect(changeValue: OpponentTrashColorCount() / 2,
