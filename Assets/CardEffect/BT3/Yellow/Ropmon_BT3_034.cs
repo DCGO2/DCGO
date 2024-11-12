@@ -77,7 +77,8 @@ public class Ropmon_BT3_034 : CEntity_Effect
                         {
                             yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
                                 player: card.Owner,
-                                refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
+                                refSkillInfos: ref ContinuousController.instance.nullSkillInfos,
+                                activateClass).ReduceSecurity());
 
                             yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
                         }

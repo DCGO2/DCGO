@@ -53,6 +53,17 @@ public class AttackProcess : MonoBehaviourPunCallbacks
 
         IsAttacking = true;
 
+        // check timing
+        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
+
+        GManager.instance.turnStateMachine.IsSelecting = true;
+
+        // force to end attack
+        if (IsEndAttack)
+        {
+            goto EndAttack;
+        }
+
         #region Attack Process
         if (AttackingPermanent != null)
         {
@@ -141,6 +152,10 @@ public class AttackProcess : MonoBehaviourPunCallbacks
                     null,
                     null);
             }
+
+            // activate cutin effects
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.RuleProcess());
+            //yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.TriggeredSkillProcess(true, null));
 
             // callback that is processed before [On Attack]
             if (beforeOnAttackCoroutine != null)

@@ -241,8 +241,8 @@ public class MegaSeadramon_BT15_029 : CEntity_Effect
         if (timing == EffectTiming.OnAllyAttack)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Unsuspend this Digimon", CanUseCondition, card);
-            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+            activateClass.SetUpICardEffect("Unsuspend this Digimon, by placing 1 blue Digimon as bottom source", CanUseCondition, card);
+            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
             activateClass.SetIsInheritedEffect(true);
             activateClass.SetHashString("Unsuspend_BT15_020");
             cardEffects.Add(activateClass);
@@ -300,7 +300,7 @@ public class MegaSeadramon_BT15_029 : CEntity_Effect
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: maxCount,
-                        canNoSelect: true,
+                        canNoSelect: false,
                         canEndNotMax: false,
                         selectPermanentCoroutine: SelectPermanentSourceCoroutine,
                         afterSelectPermanentCoroutine: null,

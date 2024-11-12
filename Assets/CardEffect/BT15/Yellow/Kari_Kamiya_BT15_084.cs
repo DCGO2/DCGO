@@ -122,10 +122,12 @@ public class Kari_Kamiya_BT15_084 : CEntity_Effect
                 {
                     if (CardEffectCommons.CanTriggerWhenLoseSecurity(hashtable, player => player == card.Owner))
                     {
-                        if (!GManager.instance.attackProcess.DoSecurityCheck)
+                        ICardEffect effect = CardEffectCommons.GetCardEffectFromHashtable(hashtable);
+                        if (effect != null)
                         {
                             return true;
                         }
+                        //if (!GManager.instance.attackProcess.DoSecurityCheck)
                     }
                 }
 

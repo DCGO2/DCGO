@@ -307,11 +307,11 @@ namespace DCGO.CardEffects.BT17
                                 cardCondition: CanSelectCardCondition2,
                                 payCost: true,
                                 reduceCostTuple: null,
-                                fixedCostTuple: (fixedCost: 4, fixedCostCardCondition: null),
+                                fixedCostTuple: null,
                                 ignoreDigivolutionRequirementFixedCost: 4,
                                 isHand: true,
                                 activateClass: activateClass,
-                                ignoreLevel: true,
+                                ignoreRequirements: CardEffectCommons.IgnoreRequirement.All,
                                 successProcess: SuccessProcess()));
 
                             IEnumerator SuccessProcess()

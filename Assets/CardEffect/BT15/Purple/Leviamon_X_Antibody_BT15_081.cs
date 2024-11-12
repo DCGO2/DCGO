@@ -170,9 +170,7 @@ public class Leviamon_X_Antibody_BT15_081 : CEntity_Effect
                     }
 
                     if (selectedPermanent != null)
-                    {
-                        Debug.Log("Selected Permanent: " + selectedPermanent.TopCard.CardNames[0]);
-     
+                    {     
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
                             targetPermanent: selectedPermanent,
                             cardCondition: null,
@@ -183,9 +181,7 @@ public class Leviamon_X_Antibody_BT15_081 : CEntity_Effect
                             isHand: false,
                             activateClass: activateClass,
                             successProcess: null,
-                            ignoreLevel: false,
                             ignoreSelection: true));
-                        Debug.Log("Selected Permanent: Done");
                     }
                 }
             }

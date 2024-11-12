@@ -309,15 +309,9 @@ public class Mustymon_ST10_06 : CEntity_Effect
 
             bool PermanentCondition(Permanent permanent)
             {
-                if (permanent.IsDigimon)
-                {
-                    if (permanent != card.PermanentOfThisCard())
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
+                return CardEffectCommons.IsOwnerPermanent(permanent, card) &&
+                       permanent.IsDigimon &&
+                       permanent != card.PermanentOfThisCard();
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)

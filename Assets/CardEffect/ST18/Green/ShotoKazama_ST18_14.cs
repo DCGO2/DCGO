@@ -49,7 +49,8 @@ namespace DCGO.CardEffects.ST18
 
                 bool DefendingPermanent(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
+                            GManager.instance.attackProcess.DefendingPermanent != permanent;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

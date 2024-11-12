@@ -6,7 +6,17 @@ using UnityEngine;
 using UnityEditor;
 
 public partial class CardEffectCommons
-{
+{ 
+    #region Digivolution Requirements
+    public enum IgnoreRequirement
+    {
+        None,
+        All,
+        Level,
+        Color
+    }
+    #endregion
+
     #region Play cards as new permanents
     public static IEnumerator PlayPermanentCards(List<CardSource> cardSources, ICardEffect activateClass, bool payCost, bool isTapped, SelectCardEffect.Root root, bool activateETB, bool isBreedingArea = false, int fixedCost = -1)
     {
@@ -382,8 +392,9 @@ public partial class CardEffectCommons
         bool isHand,
         ICardEffect activateClass,
         IEnumerator successProcess,
-        bool ignoreLevel = false,
-        bool ignoreSelection = false)
+        //bool ignoreLevel = false,
+        bool ignoreSelection = false,
+        IgnoreRequirement ignoreRequirements = IgnoreRequirement.None)
     {
         if (targetPermanent == null) yield break;
         if (targetPermanent.TopCard == null) yield break;
@@ -392,7 +403,7 @@ public partial class CardEffectCommons
        
         Player owner = targetPermanent.TopCard.Owner;
         SelectCardEffect.Root root = isHand ? SelectCardEffect.Root.Hand : SelectCardEffect.Root.Trash;
-        bool ignoreDigivolutionRequirement = ignoreDigivolutionRequirementFixedCost >= 0;
+        bool ignoreDigivolutionRequirement = !ignoreRequirements.Equals(IgnoreRequirement.None) || ignoreDigivolutionRequirementFixedCost >= 0;//  ignoreDigivolutionRequirementFixedCost >= 0 || ignoreRequirements;
 
         int fixedCost = -1;
 
@@ -400,7 +411,7 @@ public partial class CardEffectCommons
         {
             fixedCost = fixedCostTuple.Value.fixedCost;
         }
-
+        Debug.Log($"Digivolve into hand or trash: {ignoreDigivolutionRequirement}");
         if (ignoreDigivolutionRequirement)
         {
             fixedCost = ignoreDigivolutionRequirementFixedCost;
@@ -414,13 +425,13 @@ public partial class CardEffectCommons
                 {
                     if (!cardSource.CanNotEvolve(targetPermanent))
                     {
-                        if (ignoreLevel
-                        || cardSource.CanPlayCardTargetFrame(
+                        if (cardSource.CanPlayCardTargetFrame(
                             frame: targetPermanent.PermanentFrame,
                             PayCost: payCost,
                             cardEffect: activateClass,
                             root: root,
-                            fixedCost: fixedCost))
+                            fixedCost: fixedCost,
+                            ignore: ignoreRequirements))
                         {
                             return true;
                         }
@@ -657,8 +668,13 @@ public partial class CardEffectCommons
             root: root,
             activateETB: true);
 
-        if (ignoreLevel) playCardClass.SetIgnoreLevel();
-        if (!ignoreDigivolutionRequirement && fixedCost >= 0) playCardClass.SetFixedCost(fixedCost);
+        //if (ignoreRequirements.Equals(IgnoreRequirement.All) || ignoreRequirements.Equals(IgnoreRequirement.Level)) 
+        //    playCardClass.SetIgnoreLevel();
+        playCardClass.SetIgnoreRequirements(ignoreRequirements);
+
+        //!ignoreRequirements
+        if (fixedCost >= 0) 
+            playCardClass.SetFixedCost(fixedCost);
 
         yield return ContinuousController.instance.StartCoroutine(playCardClass.PlayCard());
 

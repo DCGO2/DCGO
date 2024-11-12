@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace CardEffect.BT1.Blue
+namespace DCGO.CardEffects.BT1
 {
     public class WereGarurumon_BT1_040 : CEntity_Effect
     {
-         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
-    {
+        public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
+        {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
         if (timing == EffectTiming.OnAllyAttack)
