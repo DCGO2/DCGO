@@ -11,6 +11,8 @@ public partial class CardEffectFactory
     {
         Permanent targetPermanent = card.PermanentOfThisCard();
 
+        bool PermanentCondition(Permanent permanent) => permanent == card.PermanentOfThisCard();
+
         bool CanUseCondition()
         {
             if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
@@ -33,12 +35,13 @@ public partial class CardEffectFactory
             return false;
         }
 
-        return CollisionStaticEffect(isInheritedEffect: isInheritedEffect, card: card, condition: CanUseCondition);
+        return CollisionStaticEffect(permanentCondition: PermanentCondition, isInheritedEffect: isInheritedEffect, card: card, condition: CanUseCondition);
     }
     #endregion
 
     #region Static effect of [Collision]
     public static ActivateClass CollisionStaticEffect(
+        Func<Permanent, bool> permanentCondition,
         bool isInheritedEffect,
         CardSource card,
         Func<bool> condition)
@@ -53,11 +56,25 @@ public partial class CardEffectFactory
             return DataBase.CollisionEffectDiscription();
         }
 
+        bool PermanentCondition(Permanent permanent)
+        {
+            if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
+            {
+                if (permanentCondition == null || permanentCondition(permanent))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         bool CanUseCondition(Hashtable hashtable)
         {
             if (condition == null || condition())
             {
-                return true;
+                if(PermanentCondition(card.PermanentOfThisCard()))
+                    return true;
             }
 
             return false;

@@ -169,7 +169,7 @@ namespace DCGO.CardEffects.BT18
                 }
                 
                 // Change to Collision
-                cardEffects.Add(CardEffectFactory.BlockerStaticEffect(
+                cardEffects.Add(CardEffectFactory.CollisionStaticEffect(
                     permanentCondition: PermanentCondition,
                     isInheritedEffect: false,
                     card: card,
