@@ -188,7 +188,7 @@ namespace DCGO.CardEffects.EX7
                         bool canPlay = GManager.instance.userSelectionManager.SelectedBoolValue;
 
                         if (canPlay)
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayVoléeZerdrücken(activateClass));
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayVoleeZerdrucken(activateClass));
                     }
                 }
             }
@@ -339,7 +339,7 @@ namespace DCGO.CardEffects.EX7
                         bool canPlay = GManager.instance.userSelectionManager.SelectedBoolValue;
 
                         if(canPlay)
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayVoléeZerdrücken(activateClass));
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayVoleeZerdrucken(activateClass));
                     }
                 }
             }
