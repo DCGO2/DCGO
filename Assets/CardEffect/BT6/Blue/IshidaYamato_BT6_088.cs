@@ -186,7 +186,7 @@ public class IshidaYamato_BT6_088 : CEntity_Effect
                             isHand: true,
                             activateClass: activateClass,
                             successProcess: SuccessProcess(),
-                            ignoreLevel: true));
+                            ignoreRequirements: CardEffectCommons.IgnoreRequirement.Level));
 
                         IEnumerator SuccessProcess()
                         {

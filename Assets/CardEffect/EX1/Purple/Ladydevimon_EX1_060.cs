@@ -64,7 +64,10 @@ public class Ladydevimon_EX1_060 : CEntity_Effect
 
             bool PermanentCondition(Permanent permanent)
             {
-                return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
+                if(!permanent.IsToken)
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
+
+                return false;
             }
 
             bool RootCondition(SelectCardEffect.Root root)

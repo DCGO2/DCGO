@@ -198,7 +198,7 @@ public class SatsumaRentaro_BT13_098 : CEntity_Effect
                             isHand: true,
                             activateClass: activateClass,
                             successProcess: null,
-                            ignoreLevel: true));
+                            ignoreRequirements: CardEffectCommons.IgnoreRequirement.Level));
                     }
                 }
             }

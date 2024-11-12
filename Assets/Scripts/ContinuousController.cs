@@ -1145,30 +1145,22 @@ public static class RandomUtility
     public static List<CEntity_Base> ShuffledDeckCards(List<CEntity_Base> DeckCards)
     {
         List<CEntity_Base> CardDatas = new List<CEntity_Base>();
+        CardDatas.AddRange(DeckCards);
 
-        foreach (CEntity_Base cEntity_Base in DeckCards)
-        {
-            CardDatas.Add(cEntity_Base);
-        }
-
-        // The initial value of integer n is the number of cards in the deck
+        // The initial value of the integer n is the number of cards in the deck
         int n = CardDatas.Count;
 
-        for (int i = 0; i < 20; i++)
+        while (n > 0)
         {
-            // Repeat until n is less than 1
-            while (n > 1)
-            {
-                n--;
+            n--;
 
-                // k is a random value between 0 and n+1
-                int k = UnityEngine.Random.Range(0, n + 1);
+            // Random index from 0 to i (inclusive)
+            int k = UnityEngine.Random.Range(0, n + 1);
 
-                // Assign the kth card to temp
-                CEntity_Base temp = CardDatas[k];
-                CardDatas[k] = CardDatas[n];
-                CardDatas[n] = temp;
-            }
+            // Swap elements at indices i and k
+            CEntity_Base temp = CardDatas[n];
+            CardDatas[n] = CardDatas[k];
+            CardDatas[k] = temp;
         }
 
 
@@ -1178,31 +1170,22 @@ public static class RandomUtility
     public static List<CardSource> ShuffledDeckCards(List<CardSource> DeckCards)
     {
         List<CardSource> CardDatas = new List<CardSource>();
-
-        foreach (CardSource cardSource in DeckCards)
-        {
-            cardSource.SetReverse();
-            CardDatas.Add(cardSource);
-        }
+        CardDatas.AddRange(DeckCards);
 
         // The initial value of the integer n is the number of cards in the deck
         int n = CardDatas.Count;
 
-        for (int i = 0; i < 20; i++)
+        while (n > 0)
         {
-            //repeat until n is less than 1
-            while (n > 1)
-            {
-                n--;
+            n--;
 
-                // k is a random value between 0 and n+1
-                int k = UnityEngine.Random.Range(0, n + 1);
+            // Random index from 0 to i (inclusive)
+            int k = UnityEngine.Random.Range(0, n + 1);
 
-                // Assign kth card to temp
-                CardSource temp = CardDatas[k];
-                CardDatas[k] = CardDatas[n];
-                CardDatas[n] = temp;
-            }
+            // Swap elements at indices i and k
+            CardSource temp = CardDatas[n];
+            CardDatas[n] = CardDatas[k];
+            CardDatas[k] = temp;
         }
 
 

@@ -146,7 +146,8 @@ namespace DCGO.CardEffects.BT17
                             if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                             {
                                 return CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectGrowlmonCardCondition) &&
-                                       CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectWarGrowlmonCardCondition);
+                                       CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectWarGrowlmonCardCondition) &&
+                                       CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectGallantmonCardCondition);
                             }
                         }
                     }
@@ -322,11 +323,11 @@ namespace DCGO.CardEffects.BT17
                                 payCost: false,
                                 reduceCostTuple: null,
                                 fixedCostTuple: null,
-                                ignoreDigivolutionRequirementFixedCost: 1,
+                                ignoreDigivolutionRequirementFixedCost: 0,
                                 isHand: true,
                                 activateClass: activateClass,
                                 successProcess: null,
-                                ignoreLevel: true));
+                                ignoreRequirements: CardEffectCommons.IgnoreRequirement.All));
                         }
                     }
                 }

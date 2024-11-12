@@ -145,7 +145,7 @@ public class EvolutionAncient_BT7_110 : CEntity_Effect
                             isHand: true,
                             activateClass: activateClass,
                             successProcess: null,
-                            ignoreLevel: true));
+                            ignoreRequirements: CardEffectCommons.IgnoreRequirement.Level));
                     }
                 }
             }

@@ -598,19 +598,20 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         }
 
         //Unsuspend raising area Permanents
-        foreach (Permanent permanent in gameContext.You.GetBreedingAreaPermanents())
+        foreach (Permanent permanent in gameContext.TurnPlayer.GetBreedingAreaPermanents())
         {
             if (permanent.IsSuspended)
             {
-                if (permanent.TopCard.Owner == gameContext.TurnPlayer)
-                {
-                    permanent.IsSuspended = false;
+                permanent.IsSuspended = false;
 
-                    if (permanent.ShowingPermanentCard != null)
-                    {
-                        permanent.ShowingPermanentCard.ShowPermanentData(true);
-                    }
+                if (permanent.ShowingPermanentCard != null)
+                {
+                    permanent.ShowingPermanentCard.ShowPermanentData(true);
                 }
+                /*if (permanent.TopCard.Owner == gameContext.TurnPlayer)
+                {
+                    unsuspendPermanents.Add(permanent);
+                }*/
             }
         }
 

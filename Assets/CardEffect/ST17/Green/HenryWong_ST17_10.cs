@@ -301,7 +301,7 @@ namespace DCGO.CardEffects.ST17
                                 isHand: true,
                                 activateClass: activateClass,
                                 successProcess: SuccessProcess(),
-                                ignoreLevel: true));
+                                ignoreRequirements: CardEffectCommons.IgnoreRequirement.All));
 
                             IEnumerator SuccessProcess()
                             {

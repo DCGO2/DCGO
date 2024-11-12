@@ -309,7 +309,7 @@ public class Igdrasil7D6_BT13_007 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Breeding][Start of Your Main Phase] Reveal the top card of your Digi - Egg deck, then pllace that card and all of your [Royal Knight] trait Digimon as this Digimon as its bottom digivolution cards.";
+                return "[Breeding][Start of Your Main Phase] Reveal the top card of your Digi-Egg deck, then place that card and all of your [Royal Knight] trait Digimon as this Digimon as its bottom digivolution cards.";
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)

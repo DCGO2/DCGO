@@ -1365,7 +1365,7 @@ public class Player : MonoBehaviour
                 #endregion
             }
 
-            #region プレイヤーの効果
+            #region Player effect
             foreach (ICardEffect cardEffect1 in player.EffectList(EffectTiming.None))
             {
                 if (cardEffect1 is ICannotIgnoreDigivolutionConditionEffect)
