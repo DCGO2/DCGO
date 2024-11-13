@@ -142,7 +142,7 @@ namespace DCGO.CardEffects.BT18
 
             bool CanUseCondition2(Hashtable hashtable)
             {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
+                if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                 {
                     if (CardEffectCommons.IsOwnerTurn(card))
                     {
@@ -156,12 +156,7 @@ namespace DCGO.CardEffects.BT18
                             {
                                 if (!evoRootTops.Contains(card))
                                 {
-                                    if (card.PermanentOfThisCard().TopCard.CardNames.Contains("Destromon"))
-                                    {
-                                        return true;
-                                    }
-
-                                    if (card.PermanentOfThisCard().TopCard.CardNames.Contains("Galacticmon"))
+                                    if (card.PermanentOfThisCard().TopCard.HasText("Vemmon"))
                                     {
                                         return true;
                                     }
@@ -250,12 +245,7 @@ namespace DCGO.CardEffects.BT18
 
                 bool CardSourceCondition(CardSource cardSource)
                 {
-                    if (cardSource.CardNames.Contains("Destromon"))
-                    {
-                        return true;
-                    }
-
-                    if (cardSource.CardNames.Contains("Galacticmon"))
+                    if (cardSource.HasText("Vemmon"))
                     {
                         return true;
                     }

@@ -258,17 +258,27 @@ namespace DCGO.CardEffects.BT19
 
                     if (deleted)
                     {
-                        Permanent selectedPermanent = CardEffectCommons.GetPermanentFromHashtable(_hashtable);
+                        List<Permanent> selectedPermanents = CardEffectCommons.GetPermanentsFromHashtable(_hashtable);
                         List<CardSource> combinedSources = new List<CardSource>();
 
                         combinedSources.AddRange(card.Owner.HandCards);
                         combinedSources.AddRange(card.Owner.TrashCards);
 
-                        combinedSources = combinedSources.Filter(source => selectedPermanent.TopCard.GetCostItself == source.GetCostItself + 1);
+                        bool FilterOutUnselectable(CardSource source)
+                        {
+                            foreach (Permanent permanent in selectedPermanents)
+                            {
+                                return permanent.TopCard.GetCostItself + 1 == source.GetCostItself;
+                            }                                
+
+                            return false;
+                        }
+
+                        combinedSources = combinedSources.Filter(FilterOutUnselectable);
 
                         if (combinedSources.Count > 0)
                         {
-                            if (selectedPermanent != null)
+                            if (selectedPermanents.Count > 0)
                             {
                                 List<CardSource> selectedCards = new List<CardSource>();
 
@@ -306,13 +316,26 @@ namespace DCGO.CardEffects.BT19
                                     yield return null;
                                 }
 
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                                    cardSources: selectedCards,
-                                    activateClass: activateClass,
-                                    payCost: false,
-                                    isTapped: false,
-                                    root: SelectCardEffect.Root.DigivolutionCards,
-                                    activateETB: true));
+                                if (CardEffectCommons.IsExistOnHand(selectedCards[0]))
+                                {
+                                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
+                                        cardSources: selectedCards,
+                                        activateClass: activateClass,
+                                        payCost: false,
+                                        isTapped: false,
+                                        root: SelectCardEffect.Root.Hand,
+                                        activateETB: true));
+                                }
+                                else if (CardEffectCommons.IsExistOnTrash(selectedCards[0]))
+                                {
+                                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
+                                        cardSources: selectedCards,
+                                        activateClass: activateClass,
+                                        payCost: false,
+                                        isTapped: false,
+                                        root: SelectCardEffect.Root.Trash,
+                                        activateETB: true));
+                                }
                             }
                         }
                     }
