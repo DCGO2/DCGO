@@ -14,11 +14,6 @@ namespace DCGO.CardEffects.BT18
             // Any blue or red tamer
             if (timing == EffectTiming.None)
             {
-                bool Condition()
-                {
-                    return card.Owner.HandCards.Contains(card);
-                }
-
                 bool PermanentCondition(Permanent targetPermanent)
                 {
                     return targetPermanent.IsTamer && (targetPermanent.TopCard.CardColors.Contains(CardColor.Blue) ||
@@ -27,7 +22,7 @@ namespace DCGO.CardEffects.BT18
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
                     permanentCondition: PermanentCondition, digivolutionCost: 4, ignoreDigivolutionRequirement: false,
-                    card: card, condition: Condition));
+                    card: card, condition: null));
             }
 
             // Tommy Himi

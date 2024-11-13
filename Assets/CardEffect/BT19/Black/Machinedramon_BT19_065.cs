@@ -108,7 +108,7 @@ namespace DCGO.CardEffects.BT19
 
                 bool IsLevel5Digimon(Permanent permanent)
                 {
-                    return permanent.IsDigimon &&
+                    return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent) && 
                            permanent.TopCard.HasLevel && permanent.TopCard.Level <= 5;
                 }
 
@@ -162,7 +162,7 @@ namespace DCGO.CardEffects.BT19
 
                 bool IsLevel5Digimon(Permanent permanent)
                 {
-                    return permanent.IsDigimon &&
+                    return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent) &&
                            permanent.TopCard.HasLevel && permanent.TopCard.Level <= 5;
                 }
 

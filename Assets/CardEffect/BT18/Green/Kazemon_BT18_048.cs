@@ -15,11 +15,6 @@ namespace DCGO.CardEffects.BT18
             // Any green or red tamer
             if (timing == EffectTiming.None)
             {
-                bool Condition()
-                {
-                    return card.Owner.HandCards.Contains(card);
-                }
-
                 bool PermanentCondition(Permanent targetPermanent)
                 {
                     return targetPermanent.IsTamer && (targetPermanent.TopCard.CardColors.Contains(CardColor.Green) ||
@@ -28,7 +23,7 @@ namespace DCGO.CardEffects.BT18
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
                     permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false,
-                    card: card, condition: Condition));
+                    card: card, condition: null));
             }
 
             // Zoe Orimoto

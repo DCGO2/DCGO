@@ -2675,7 +2675,7 @@ public class DestroyPermanentsClass
         #region cut in effect
 
         // "When permanents would be deleted" effect
-
+        
         yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.StackSkillInfos(
             CardEffectCommons.WhenPermanentWouldRemoveFieldCheckHashtable(
                 _destroytargetPermanents,
@@ -2685,7 +2685,6 @@ public class DestroyPermanentsClass
             EffectTiming.WhenPermanentWouldBeDeleted));
 
         // "When permanents would remove field" effect
-
         yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.StackSkillInfos(
             CardEffectCommons.WhenPermanentWouldRemoveFieldCheckHashtable(
                 _destroytargetPermanents,

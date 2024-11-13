@@ -137,13 +137,45 @@ namespace DCGO.CardEffects.BT18
             #endregion
 
             #region All Turns
-            if(timing == EffectTiming.None)
+            if (timing == EffectTiming.None)
             {
-                //TODO: DP Removal/deletion protection
+                bool PermanentCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                    {
+                        if (permanent.DP == 0)
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                bool NonWhiteDigimon(Permanent permanent)
+                {
+                    return permanent.IsDigimon &&
+                           !permanent.TopCard.CardColors.Contains(CardColor.White) &&
+                           permanent.TopCard.ContainsCardName("Lucemon");
+                }
+
+                bool CanUseCondition()
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.HasMatchConditionOwnersPermanent(card, NonWhiteDigimon);
+                }
+
+                string effectName = "[All Turns] While you have a non-white Digimon with [Lucemon] in its name, none of your 0 DP Digimon can be deleted.";
+
+                cardEffects.Add(CardEffectFactory.CanNotBeDestroyedStaticEffect(
+                    permanentCondition: PermanentCondition,
+                    isInheritedEffect: false,
+                    card: card,
+                    condition: CanUseCondition,
+                    effectName: effectName
+                ));
             }
             #endregion
-
-
 
             return cardEffects;
         }
