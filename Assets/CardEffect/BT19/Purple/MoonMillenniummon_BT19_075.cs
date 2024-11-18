@@ -261,18 +261,23 @@ namespace DCGO.CardEffects.BT19
                             maxCount: 1,
                             canNoSelect: true,
                             canEndNotMax: false,
-                            selectPermanentCoroutine: null,
+                            selectPermanentCoroutine: SelectCompositeDigimon,
                             afterSelectPermanentCoroutine: null,
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will trash digivolution cards.", "The opponent is selecting 1 Digimon that will trash digivolution cards.");
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to delete.", "The opponent is selecting 1 Digimon to delete.");
 
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
-                        targetPermanents: new List<Permanent>() { card.PermanentOfThisCard() },
-                        activateClass: activateClass,
-                        successProcess: permanents => SuccessProcess(),
-                        failureProcess: null));
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                        IEnumerator SelectCompositeDigimon(Permanent permanent)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
+                                targetPermanents: new List<Permanent>() { permanent },
+                                activateClass: activateClass,
+                                successProcess: permanents => SuccessProcess(),
+                                failureProcess: null));
+                        }
 
                         IEnumerator SuccessProcess()
                         {

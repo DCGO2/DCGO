@@ -74,6 +74,39 @@ namespace DCGO.CardEffects.BT18
 
             #endregion
 
+            #region Different Levels Shared
+            List <Func <CardSource, bool>> Levels = new List<Func<CardSource, bool>> { Level3Selection, Level4Selection, Level5Selection, Level6Selection, Level7Selection };
+            bool Level3Selection(CardSource source)
+            {
+                return source.IsDigimon &&
+                       source.HasLevel && source.Level == 3;
+            }
+
+            bool Level4Selection(CardSource source)
+            {
+                return source.IsDigimon &&
+                       source.HasLevel && source.Level == 4;
+            }
+
+            bool Level5Selection(CardSource source)
+            {
+                return source.IsDigimon &&
+                       source.HasLevel && source.Level == 5;
+            }
+
+            bool Level6Selection(CardSource source)
+            {
+                return source.IsDigimon &&
+                       source.HasLevel && source.Level == 6;
+            }
+
+            bool Level7Selection(CardSource source)
+            {
+                return source.IsDigimon &&
+                       source.HasLevel && source.Level == 7;
+            }
+            #endregion
+
             #region When Digivolving
 
             if (timing == EffectTiming.OnEnterFieldAnyone)
@@ -136,12 +169,82 @@ namespace DCGO.CardEffects.BT18
                             cardEffect: activateClass);
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                    }
+                    if (CardEffectCommons.IsJogress(_hashtable))
+                    {
+                        List<CardSource> selectedCards = new List<CardSource>();
 
-                        if (CardEffectCommons.IsJogress(_hashtable))
+                        foreach (Func<CardSource, bool> level in Levels)
                         {
-                            // TODO:
+                            if (CardEffectCommons.HasMatchConditionOpponentsCardInTrash(card, level))
+                            {
+                                SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                                selectCardEffect.SetUp(
+                                    canTargetCondition: level,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    canNoSelect: () => true,
+                                    selectCardCoroutine: LevelSelected,
+                                    afterSelectCardCoroutine: null,
+                                    message: $"Select level {Levels.IndexOf(level) + 3} Digimon card to add to the top of opponent's deck",
+                                    maxCount: 1,
+                                    canEndNotMax: false,
+                                    isShowOpponent: true,
+                                    mode: SelectCardEffect.Mode.Custom,
+                                    root: SelectCardEffect.Root.Custom,
+                                    customRootCardList: card.Owner.Enemy.TrashCards,
+                                    canLookReverseCard: true,
+                                    selectPlayer: card.Owner,
+                                    cardEffect: activateClass);
+
+                                yield return StartCoroutine(selectCardEffect.Activate());
+                            }
                         }
-                        yield return null;
+
+                        IEnumerator LevelSelected(CardSource source)
+                        {
+                            if (source != null)
+                                selectedCards.Add(source);
+
+                            yield return null;
+                        }
+
+                        if (selectedCards.Count >= 1)
+                        {
+
+                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                            selectCardEffect.SetUp(
+                                canTargetCondition: (CardSource) => true,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                canNoSelect: () => true,
+                                selectCardCoroutine: null,
+                                afterSelectCardCoroutine: AfterSelection,
+                                message: "Select order of cards to add to the top your deck\n(cards will be placed back to the top of the deck so that cards with lower numbers are on top).",
+                                maxCount: 1,
+                                canEndNotMax: false,
+                                isShowOpponent: true,
+                                mode: SelectCardEffect.Mode.Custom,
+                                root: SelectCardEffect.Root.Custom,
+                                customRootCardList: selectedCards,
+                                canLookReverseCard: true,
+                                selectPlayer: card.Owner,
+                                cardEffect: activateClass);
+
+                            yield return StartCoroutine(selectCardEffect.Activate());
+
+                            IEnumerator AfterSelection(List<CardSource> sources)
+                            {
+                                sources.Reverse();
+
+                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(sources));
+
+                                yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1 * sources.Count, activateClass));
+                            }
+
+                        }
                     }
                 }
             }
@@ -236,7 +339,7 @@ namespace DCGO.CardEffects.BT18
                     {
                         if (cardSource.Owner == card.Owner)
                         {
-                            if (cardSource.CardNames.Contains("Kimeramon"))
+                            if (cardSource.EqualsCardName("Kimeramon"))
                             {
                                 return true;
                             }
@@ -252,7 +355,7 @@ namespace DCGO.CardEffects.BT18
                     {
                         if (cardSource.Owner == card.Owner)
                         {
-                            if (cardSource.CardNames.Contains("Machinedramon"))
+                            if (cardSource.EqualsCardName("Machinedramon"))
                             {
                                 return true;
                             }
@@ -297,96 +400,81 @@ namespace DCGO.CardEffects.BT18
                 {
                     bool returned = false;
 
-                    if (isExistOnField(card))
+                    int maxCount = 2;
+
+                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                    selectCardEffect.SetUp(
+                    canTargetCondition: (cardSource) => CanSelectCardConditionKimeramon(cardSource) || CanSelectCardConditionMachinedramon(cardSource),
+                    canTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
+                    canEndSelectCondition: CanEndSelectCondition,
+                    canNoSelect: () => true,
+                    selectCardCoroutine: null,
+                    afterSelectCardCoroutine: AfterSelectCardCoroutine1,
+                    message: "Select cards to place at the bottom of the deck\n(cards will be placed back to the bottom of the deck so that cards with lower numbers are on top).",
+                    maxCount: maxCount,
+                    canEndNotMax: false,
+                    isShowOpponent: false,
+                    mode: SelectCardEffect.Mode.Custom,
+                    root: SelectCardEffect.Root.Trash,
+                    customRootCardList: null,
+                    canLookReverseCard: true,
+                    selectPlayer: card.Owner,
+                    cardEffect: activateClass);
+
+                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+
+                    bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
                     {
-                        if (card.Owner.GetBattleAreaDigimons().Contains(card.PermanentOfThisCard()))
+                        if (cardSources.Count(CanSelectCardConditionKimeramon) >= 1)
                         {
-                            if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardConditionKimeramon))
+                            if (CanSelectCardConditionKimeramon(cardSource))
                             {
-                                if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardConditionMachinedramon))
+                                if (!CanSelectCardConditionMachinedramon(cardSource))
                                 {
-                                    int maxCount = 2;
-
-                                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                                    selectCardEffect.SetUp(
-                                    canTargetCondition: (cardSource) => CanSelectCardConditionKimeramon(cardSource) || CanSelectCardConditionMachinedramon(cardSource),
-                                    canTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
-                                    canEndSelectCondition: CanEndSelectCondition,
-                                    canNoSelect: () => true,
-                                    selectCardCoroutine: null,
-                                    afterSelectCardCoroutine: AfterSelectCardCoroutine1,
-                                    message: "Select cards to place at the bottom of the deck\n(cards will be placed back to the bottom of the deck so that cards with lower numbers are on top).",
-                                    maxCount: maxCount,
-                                    canEndNotMax: false,
-                                    isShowOpponent: false,
-                                    mode: SelectCardEffect.Mode.Custom,
-                                    root: SelectCardEffect.Root.Trash,
-                                    customRootCardList: null,
-                                    canLookReverseCard: true,
-                                    selectPlayer: card.Owner,
-                                    cardEffect: activateClass);
-
-                                    selectCardEffect.SetNotShowCard();
-                                    selectCardEffect.SetNotAddLog();
-
-                                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-
-                                    bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
-                                    {
-                                        if (cardSources.Count(CanSelectCardConditionKimeramon) >= 1)
-                                        {
-                                            if (CanSelectCardConditionKimeramon(cardSource))
-                                            {
-                                                if (!CanSelectCardConditionMachinedramon(cardSource))
-                                                {
-                                                    return false;
-                                                }
-                                            }
-                                        }
-
-                                        if (cardSources.Count(CanSelectCardConditionMachinedramon) >= 1)
-                                        {
-                                            if (CanSelectCardConditionMachinedramon(cardSource))
-                                            {
-                                                if (!CanSelectCardConditionKimeramon(cardSource))
-                                                {
-                                                    return false;
-                                                }
-                                            }
-                                        }
-
-                                        return true;
-                                    }
-
-                                    bool CanEndSelectCondition(List<CardSource> cardSources)
-                                    {
-                                        if (cardSources.Count(CanSelectCardConditionKimeramon) == 0)
-                                        {
-                                            return false;
-                                        }
-
-                                        if (cardSources.Count(CanSelectCardConditionMachinedramon) == 0)
-                                        {
-                                            return false;
-                                        }
-
-                                        return true;
-                                    }
-
-                                    IEnumerator AfterSelectCardCoroutine1(List<CardSource> cardSources)
-                                    {
-                                        if (cardSources.Count == 2)
-                                        {
-                                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources));
-
-                                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(cardSources, "Deck Bottom Cards", true, true));
-
-                                            returned = true;
-                                        }
-                                    }
+                                    return false;
                                 }
                             }
+                        }
+
+                        if (cardSources.Count(CanSelectCardConditionMachinedramon) >= 1)
+                        {
+                            if (CanSelectCardConditionMachinedramon(cardSource))
+                            {
+                                if (!CanSelectCardConditionKimeramon(cardSource))
+                                {
+                                    return false;
+                                }
+                            }
+                        }
+
+                        return true;
+                    }
+
+                    bool CanEndSelectCondition(List<CardSource> cardSources)
+                    {
+                        if (cardSources.Count(CanSelectCardConditionKimeramon) == 0)
+                        {
+                            return false;
+                        }
+
+                        if (cardSources.Count(CanSelectCardConditionMachinedramon) == 0)
+                        {
+                            return false;
+                        }
+
+                        return true;
+                    }
+
+                    IEnumerator AfterSelectCardCoroutine1(List<CardSource> cardSources)
+                    {
+                        if (cardSources.Count == 2)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources));
+
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(cardSources, "Deck Bottom Cards", true, true));
+
+                            returned = true;
                         }
                     }
 
@@ -394,13 +482,13 @@ namespace DCGO.CardEffects.BT18
                     {
                         if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, (cardSource) => CanSelectCardConditionMilleniummon(cardSource)))
                         {
-                            int maxCount = Math.Min(1, card.Owner.TrashCards.Count((cardSource) => CanSelectCardConditionMilleniummon(cardSource)));
+                            maxCount = Math.Min(1, card.Owner.TrashCards.Count((cardSource) => CanSelectCardConditionMilleniummon(cardSource)));
 
                             List<CardSource> selectedCards = new List<CardSource>();
 
-                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+                            SelectCardEffect selectPlayEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
-                            selectCardEffect.SetUp(
+                            selectPlayEffect.SetUp(
                                         canTargetCondition: CanSelectCardConditionMilleniummon,
                                         canTargetCondition_ByPreSelecetedList: null,
                                         canEndSelectCondition: null,
@@ -418,10 +506,10 @@ namespace DCGO.CardEffects.BT18
                                         selectPlayer: card.Owner,
                                         cardEffect: activateClass);
 
-                            selectCardEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
-                            selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
+                            selectPlayEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
+                            selectPlayEffect.SetUpCustomMessage_ShowCard("Played Card");
 
-                            yield return StartCoroutine(selectCardEffect.Activate());
+                            yield return StartCoroutine(selectPlayEffect.Activate());
 
                             IEnumerator SelectCardCoroutine(CardSource cardSource)
                             {

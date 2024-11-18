@@ -30,7 +30,7 @@ namespace DCGO.CardEffects.BT19
                 {
                     if (cardSource == card)
                     {
-                        DigiXrosConditionElement element = new DigiXrosConditionElement(CanSelectCardCondition, "1 Digimon card with [Xros Heart] or [Blue Flare] trait");
+                        DigiXrosConditionElement element = new DigiXrosConditionElement(CanSelectCardCondition, "5 Lv.5 or lower [Cyborg]/[Composite] trait Digimon cards w/different card numbers.");
 
                         bool CanSelectCardCondition(CardSource cardSource)
                         {
@@ -40,14 +40,17 @@ namespace DCGO.CardEffects.BT19
                                 {
                                     if (cardSource.IsDigimon)
                                     {
-                                        if (cardSource.EqualsTraits("Cyborg"))
+                                        if(cardSource.HasLevel && cardSource.Level <= 5)
                                         {
-                                            return true;
-                                        }
+                                            if (cardSource.EqualsTraits("Cyborg"))
+                                            {
+                                                return true;
+                                            }
 
-                                        if (cardSource.EqualsTraits("Composite"))
-                                        {
-                                            return true;
+                                            if (cardSource.EqualsTraits("Composite"))
+                                            {
+                                                return true;
+                                            }
                                         }
                                     }
                                 }
@@ -219,8 +222,7 @@ namespace DCGO.CardEffects.BT19
                 {
                     return source.IsDigimon &&
                            source.HasLevel && source.Level <= 5 &&
-                           source.EqualsTraits("Cyborg") &&
-                           source.EqualsTraits("Composite") &&
+                           (source.EqualsTraits("Cyborg") || source.EqualsTraits("Composite")) &&
                            CardEffectCommons.CanPlayAsNewPermanent(source, false, activateClass,SelectCardEffect.Root.Trash);
                 }
 
@@ -296,8 +298,7 @@ namespace DCGO.CardEffects.BT19
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
-                           permanent.TopCard.EqualsTraits("Composite") &&
-                           permanent.TopCard.EqualsTraits("Wicked God");
+                           (permanent.TopCard.EqualsTraits("Composite") || permanent.TopCard.EqualsTraits("Wicked God"));
                 }
 
                 bool PermanentCondition(Permanent permanent)

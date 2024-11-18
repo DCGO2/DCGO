@@ -104,14 +104,14 @@ namespace DCGO.CardEffects.BT19
             if (timing == EffectTiming.OnEndTurn)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Trash 1 card from hand to trash the opponents top security or Recovery +1", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Opponent may trash 1 card from secuirty or Recovery +1 and delete 1 Digimon or Tamer", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetHashString("TrashSecurity_LucemonXAntibody_BT19_043");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[End of Your Turn][Once Per Turn] Your opponent may trash their top security card. If this effect didn't trash, <Recovery +1>, and delete 1 of your opponent's Digimon or Tamers.";
+                    return "[End of Your Turn] [Once Per Turn] Your opponent may trash their top security card. If this effect didn't trash, <Recovery +1 (Deck)>, and delete 1 of their Digimon or Tamers.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

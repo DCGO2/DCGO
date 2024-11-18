@@ -23,6 +23,18 @@ namespace DCGO.CardEffects.BT19
             }
             #endregion
 
+            #region Raid/Blocker
+            if (timing == EffectTiming.OnAllyAttack)
+            {
+                cardEffects.Add(CardEffectFactory.RaidSelfEffect(isInheritedEffect: false, card: card, condition: null));
+            }
+
+            if (timing == EffectTiming.None)
+            {
+                cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
+            }
+            #endregion
+
             #region When Digivolving
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
@@ -54,7 +66,7 @@ namespace DCGO.CardEffects.BT19
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.EqualsCardName("Dynasmon") || cardSource.Equals("XAntibody")) >= 1)
+                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.EqualsCardName("Dynasmon") || cardSource.Equals("X Antibody")) >= 1)
                         {
                             if (card.Owner.SecurityCards.Count >= 1)
                             {
@@ -116,7 +128,7 @@ namespace DCGO.CardEffects.BT19
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.EqualsCardName("Dynasmon") || cardSource.EqualsCardName("XAntibody")) >= 1)
+                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.EqualsCardName("Dynasmon") || cardSource.EqualsCardName("X Antibody")) >= 1)
                         {
                             if (card.Owner.SecurityCards.Count >= 1)
                             {
@@ -147,13 +159,12 @@ namespace DCGO.CardEffects.BT19
             }
             #endregion
 
-            #region Inherit
+            #region End of Turn
             if (timing == EffectTiming.OnEndTurn)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Recovery +1", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-                activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

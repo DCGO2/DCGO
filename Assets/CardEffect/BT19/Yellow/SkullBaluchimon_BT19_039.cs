@@ -205,7 +205,7 @@ namespace DCGO.CardEffects.BT19
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Unsuspend this Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("Unsuspend_SkullBaluchimon_BT19_039");
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);

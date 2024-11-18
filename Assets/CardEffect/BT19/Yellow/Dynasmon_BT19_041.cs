@@ -182,14 +182,13 @@ namespace DCGO.CardEffects.BT19
             }
             #endregion
 
-            #region Inherit
+            #region All Turns
             if (timing == EffectTiming.WhenRemoveField)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Recovery +1", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetHashString("Recovery_Dynasmon_BT19_041");
-                activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

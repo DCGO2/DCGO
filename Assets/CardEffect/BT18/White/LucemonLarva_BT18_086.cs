@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace DCGO.CardEffects.BT18
 {
@@ -141,15 +142,7 @@ namespace DCGO.CardEffects.BT18
             {
                 bool PermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
-                    {
-                        if (permanent.DP == 0)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return (permanent.DP == 0);
                 }
 
                 bool NonWhiteDigimon(Permanent permanent)

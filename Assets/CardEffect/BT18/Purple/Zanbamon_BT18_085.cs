@@ -67,13 +67,12 @@ namespace DCGO.CardEffects.BT18
 
             #region Your Turn
 
-            if (timing == EffectTiming.None)
+            /*if (timing == EffectTiming.None)
             {
                 bool Condition()
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           CardEffectCommons.IsOwnerTurn(card) &&
-                           OpponentTrashColorCount() > 2;
+                           CardEffectCommons.IsOwnerTurn(card);
                 }
 
                 cardEffects.Add(CardEffectFactory.ChangeSelfSAttackStaticEffect(changeValue: OpponentTrashColorCount() / 2,
@@ -81,7 +80,7 @@ namespace DCGO.CardEffects.BT18
 
                 cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect(changeValue: 2000 * (OpponentTrashColorCount() / 2),
                     isInheritedEffect: false, card: card, condition: Condition));
-            }
+            }*/
 
             #endregion
 

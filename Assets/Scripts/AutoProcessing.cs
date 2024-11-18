@@ -224,7 +224,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
         #endregion
 
         #region Is it necessary to deal with Digimon's DP shortage?
-        if (CardEffectCommons.HasMatchConditionPermanent(IsDigimonLackDP, true))
+        if (CardEffectCommons.HasMatchConditionPermanent(IsDigimonLackDP))
         {
             return true;
         }

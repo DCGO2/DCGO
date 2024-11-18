@@ -217,7 +217,7 @@ namespace DCGO.CardEffects.BT18
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
 
-                    if (card.Owner.SecurityCards.Count >= 6)
+                    if (card.Owner.SecurityCards.Count == 0)
                     {
                         yield return ContinuousController.instance.StartCoroutine(new IRecovery(card.Owner, 1, activateClass).Recovery());
                     }

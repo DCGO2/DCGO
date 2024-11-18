@@ -197,28 +197,25 @@ namespace DCGO.CardEffects.BT18
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent.TopCard.CardNames.Contains("Vemmon"))
+                        if (!permanent.TopCard.EqualsCardName("Vemmon"))
                         {
-                            return true;
+                            return false;
                         }
                     }
-                    return false;
+
+                    return true;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermanentCondition1))
-                    {
-                        return true;
-                    }
-                    return false;
+                    return CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermanentCondition1);
                 }
 
                 int GetCount(CardSource cardSource)
                 {
                     if (cardSource == card)
                     {
-                        return 100;
+                        return 4;
                     }
 
                     return 0;

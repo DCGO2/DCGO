@@ -157,25 +157,53 @@ namespace DCGO.CardEffects.BT18
 
             if (timing == EffectTiming.None)
             {
+                AddSkillClass addSkillClass = new AddSkillClass();
+                addSkillClass.SetUpICardEffect("Your Digimons gain Collision", CanUseCondition, card);
+                addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
+                cardEffects.Add(addSkillClass);
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                }
+
                 bool PermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent) &&
                            permanent.DP <= card.PermanentOfThisCard().DP;
                 }
 
-                bool CanUseCondition()
+                bool CardSourceCondition(CardSource cardSource)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
-                }
-                
-                // Change to Collision
-                cardEffects.Add(CardEffectFactory.CollisionStaticEffect(
-                    permanentCondition: PermanentCondition,
-                    isInheritedEffect: false,
-                    card: card,
-                    condition: CanUseCondition));
-            }
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(cardSource))
+                    {
+                        if (cardSource == cardSource.PermanentOfThisCard().TopCard)
+                        {
+                            if (PermanentCondition(cardSource.PermanentOfThisCard()))
+                            {
+                                return true;
+                            }
+                        }
+                    }
 
+                    return false;
+                }
+
+                List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming _timing)
+                {
+                    if (_timing == EffectTiming.OnCounterTiming)
+                    {
+                        bool Condition()
+                        {
+                            return CardSourceCondition(cardSource);
+                        }
+
+                        cardEffects.Add(CardEffectFactory.CollisionSelfStaticEffect(false, cardSource, Condition));
+                    }
+
+                    return cardEffects;
+                }
+            }
             #endregion
 
             return cardEffects;

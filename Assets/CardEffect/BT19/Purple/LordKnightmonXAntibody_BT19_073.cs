@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace DCGO.CardEffects.BT19
@@ -98,7 +99,7 @@ namespace DCGO.CardEffects.BT19
                         canTargetCondition: IsOpponenetsDigimon,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
-                        maxCount: maxCount,
+                        maxCount: 1,
                         canNoSelect: false,
                         canEndNotMax: false,
                         selectPermanentCoroutine: SelectPermanentCoroutine,
@@ -186,20 +187,18 @@ namespace DCGO.CardEffects.BT19
             #endregion
 
             #region All Turns Shared
+
             string EffectName()
             {
                 return "+3000 DP";
             }
             bool AllTurnPermanentCondition(Permanent permanent)
             {
-                if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
+                if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                 {
-                    if (permanent.IsDigimon)
+                    if (permanent.TopCard.HasText("Knightmon"))
                     {
-                        if (permanent.TopCard.HasText("Knightmon"))
-                        {
-                            return true;
-                        }
+                        return true;
                     }
                 }
 
@@ -208,7 +207,7 @@ namespace DCGO.CardEffects.BT19
 
             bool HasKnighmonOrXAntibody(CardSource source)
             {
-                return source.EqualsCardName("X Antibody") || source.EqualsCardName("Knightmon");
+                return source.EqualsCardName("X Antibody") || source.EqualsCardName("LordKnightmon");
             }
 
             bool CanUseAllTurnsCondition()
@@ -216,6 +215,7 @@ namespace DCGO.CardEffects.BT19
                 return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
                        card.PermanentOfThisCard().DigivolutionCards.Count(HasKnighmonOrXAntibody) > 0;
             }
+
             #endregion
 
             #region All Turns
@@ -228,14 +228,47 @@ namespace DCGO.CardEffects.BT19
                     card: card, 
                     condition: CanUseAllTurnsCondition,
                     effectName: EffectName));
-            }
 
-            if(timing == EffectTiming.OnAllyAttack)
-            {
-                cardEffects.Add(CardEffectFactory.AllianceStaticEffect(
-                    permanentCondition: AllTurnPermanentCondition,
-                    isInheritedEffect: false,
-                    card: card, condition: CanUseAllTurnsCondition));
+                AddSkillClass addSkillClass = new AddSkillClass();
+                addSkillClass.SetUpICardEffect("Your Digimons gain Alliance", CanUseCondition, card);
+                addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
+                cardEffects.Add(addSkillClass);
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CanUseAllTurnsCondition();
+                }
+
+                bool CardSourceCondition(CardSource cardSource)
+                {
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(cardSource))
+                    {
+                        if (cardSource == cardSource.PermanentOfThisCard().TopCard)
+                        {
+                            if (AllTurnPermanentCondition(cardSource.PermanentOfThisCard()))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+
+                    return false;
+                }
+
+                List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming _timing)
+                {
+                    if (_timing == EffectTiming.OnAllyAttack)
+                    {
+                        bool Condition()
+                        {
+                            return CardSourceCondition(cardSource);
+                        }
+
+                        cardEffects.Add(CardEffectFactory.AllianceSelfEffect(false, cardSource, Condition));
+                    }
+
+                    return cardEffects;
+                }
             }
             #endregion
 

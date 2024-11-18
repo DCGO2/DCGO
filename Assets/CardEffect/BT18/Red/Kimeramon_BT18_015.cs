@@ -248,13 +248,13 @@ namespace DCGO.CardEffects.BT18
                 bool HasMachinedramon(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent) &&
-                           permanent.TopCard.EqualsCardName("Kimeramon");
+                           permanent.TopCard.EqualsCardName("Machinedramon");
                 }
 
                 bool HasKimeramon(CardSource source)
                 {
                     return CardEffectCommons.IsExistOnTrash(source) &&
-                           source.EqualsCardName("Machinedramon");
+                           source.EqualsCardName("Kimeramon");
                 }
 
                 bool HasMillenniummon(CardSource source)

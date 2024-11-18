@@ -179,14 +179,14 @@ namespace DCGO.CardEffects.BT18
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Unsuspend this Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("Unsuspend_BT18_039");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[All Turns][Once Per Turn] When a card is removed from your security stack, unsuspend this Digimon.";
+                    return "[All Turns] [Once Per Turn] When your security stack is removed from, this Digimon may unsuspend.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

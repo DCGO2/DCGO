@@ -180,6 +180,7 @@ namespace DCGO.CardEffects.BT18
                     "Place Tamer digivolution cards as your bottom security cards to trash Opponent's security cards", CanUseCondition,
                     card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetHashString("WhenAttacking_BT18-102");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()

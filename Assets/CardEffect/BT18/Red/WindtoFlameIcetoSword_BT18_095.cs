@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 
 namespace DCGO.CardEffects.BT18
 {
@@ -103,8 +104,8 @@ namespace DCGO.CardEffects.BT18
                                 selectHandEffect.SetUp(
                                     selectPlayer: card.Owner,
                                     canTargetCondition: SelectHybridCardCondition,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
+                                    canTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
+                                    canEndSelectCondition: CanEndSelectCondition,
                                     maxCount: Math.Min(5,
                                         CardEffectCommons.MatchConditionOwnersCardCountInHand(card, SelectHybridCardCondition)),
                                     canNoSelect: true,
@@ -127,8 +128,8 @@ namespace DCGO.CardEffects.BT18
 
                                 selectCardEffect.SetUp(
                                     canTargetCondition: SelectHybridCardCondition,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
+                                    canTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
+                                    canEndSelectCondition: CanEndSelectCondition,
                                     canNoSelect: () => true,
                                     selectCardCoroutine: null,
                                     afterSelectCardCoroutine: SelectCardCoroutine,
@@ -145,6 +146,62 @@ namespace DCGO.CardEffects.BT18
                                     cardEffect: activateClass);
 
                                 yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                            }
+
+                            bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
+                            {
+                                List<string> cardNames = new List<string>();
+
+                                foreach (CardSource cardSource1 in cardSources)
+                                {
+                                    if (!cardNames.Any(x => cardSource1.CardNames.Any(y => y == x)))
+                                    {
+                                        cardNames.Add(cardSource1.CardID);
+                                    }
+                                }
+
+                                foreach (CardSource cardSource1 in digivolutionCards)
+                                {
+                                    if (!cardNames.Any(x => cardSource1.CardNames.Any(y => y == x)))
+                                    {
+                                        cardNames.Add(cardSource1.CardID);
+                                    }
+                                }
+
+                                if (cardNames.Any(x => cardSource.CardNames.Any(y => y == x)))
+                                {
+                                    return false;
+                                }
+
+                                return true;
+                            }
+
+                            bool CanEndSelectCondition(List<CardSource> cardSources)
+                            {
+                                List<string> cardNames = new List<string>();
+
+                                foreach (CardSource cardSource1 in cardSources)
+                                {
+                                    if (!cardNames.Any(x => cardSource1.CardNames.Any(y => y == x)))
+                                    {
+                                        cardNames.Add(cardSource1.CardID);
+                                    }
+                                }
+
+                                foreach (CardSource cardSource1 in digivolutionCards)
+                                {
+                                    if (!cardNames.Any(x => cardSource1.CardNames.Any(y => y == x)))
+                                    {
+                                        cardNames.Add(cardSource1.CardID);
+                                    }
+                                }
+
+                                if (cardNames.Count != cardSources.Count + digivolutionCards.Count)
+                                {
+                                    return false;
+                                }
+
+                                return true;
                             }
 
                             IEnumerator SelectCardCoroutine(List<CardSource> cardSources)
@@ -276,13 +333,14 @@ namespace DCGO.CardEffects.BT18
                                     CardEffectCommons.DigivolveIntoHandOrTrashCard(
                                         targetPermanent: selectedPermanent,
                                         cardCondition: DigivolveToCardCondition,
-                                        payCost: true,
+                                        payCost: false,
                                         reduceCostTuple: null,
                                         fixedCostTuple: null,
                                         ignoreDigivolutionRequirementFixedCost: 0,
                                         isHand: fromHand,
                                         activateClass: activateClass,
-                                        successProcess: null));
+                                        successProcess: null,
+                                        ignoreRequirements:CardEffectCommons.IgnoreRequirement.All));
                             }
                         }
                     }

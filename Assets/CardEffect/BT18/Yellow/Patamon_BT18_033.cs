@@ -11,7 +11,7 @@ namespace DCGO.CardEffects.BT18
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Main
-            if (timing == EffectTiming.OnEndTurn)
+            if (timing == EffectTiming.OnDeclaration)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete your 1 Digimon to play 1 Digimon from hand", CanUseCondition, card);
@@ -20,7 +20,7 @@ namespace DCGO.CardEffects.BT18
 
                 string EffectDiscription()
                 {
-                    return "[End of Your Turn] If your breeding area is empty, by returning 1 Digimon card with the [Three Great Angels] trait from your trash to the bottom of the deck, play this card in your breeding area without paying the cost.";
+                    return "[Main] If your breeding area is empty, by returning 1 Digimon card with the [Three Great Angels] trait from your trash to the bottom of the deck, play this card in your breeding area without paying the cost.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
@@ -38,7 +38,8 @@ namespace DCGO.CardEffects.BT18
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return card.Owner.GetBreedingAreaPermanents().Count == 0 &&
+                    return CardEffectCommons.IsOwnerTurn(card) &&
+                           card.Owner.GetBreedingAreaPermanents().Count == 0 &&
                            CardEffectCommons.HasMatchConditionOwnersCardInTrash(card,CanSelectCardCondition) &&
                            card.Owner.HandCards.Contains(card);
                 }
