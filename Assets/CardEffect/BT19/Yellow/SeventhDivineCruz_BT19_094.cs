@@ -18,7 +18,7 @@ namespace DCGO.CardEffects.BT19
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash opponents top security card or Recovery +1", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -30,7 +30,7 @@ namespace DCGO.CardEffects.BT19
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent.TopCard.EqualsCardName("Lucemon(XAntibody)"))
+                        if (permanent.TopCard.EqualsCardName("Lucemon (X Antibody)"))
                         {
                             return true;
                         }
@@ -53,11 +53,6 @@ namespace DCGO.CardEffects.BT19
                     }
 
                     return false;
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnTrash(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -137,14 +132,15 @@ namespace DCGO.CardEffects.BT19
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card);
+                    return CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card) &&
+                           card.Owner.Enemy.GetBattleAreaDigimons().Count > card.Owner.SecurityCards.Count;
                 }
                 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
-                        int maxCount = card.Owner.SecurityCards.Count;
+                        int maxCount = Mathf.Max(0, card.Owner.Enemy.GetBattleAreaDigimons().Count - card.Owner.SecurityCards.Count);
 
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
@@ -156,8 +152,8 @@ namespace DCGO.CardEffects.BT19
                             maxCount: maxCount,
                             canNoSelect: false,
                             canEndNotMax: false,
-                            selectPermanentCoroutine: SelectPermanentCoroutine,
-                            afterSelectPermanentCoroutine: null,
+                            selectPermanentCoroutine: null,
+                            afterSelectPermanentCoroutine: SelectPermanentCoroutine,
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
@@ -165,9 +161,9 @@ namespace DCGO.CardEffects.BT19
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                        IEnumerator SelectPermanentCoroutine(List<Permanent> permanents)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: new List<Permanent>() { permanent }, activateClass: activateClass, successProcess: permanents => SuccessProcess(), failureProcess: null));
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: permanents, activateClass: activateClass, successProcess: permanents => SuccessProcess(), failureProcess: null));
 
                             IEnumerator SuccessProcess()
                             {

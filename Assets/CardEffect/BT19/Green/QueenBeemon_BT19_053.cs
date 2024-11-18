@@ -238,8 +238,10 @@ namespace DCGO.CardEffects.BT19
                         {
                             if (!CardEffectCommons.IsByBattle(hashtable))
                             {
-                                if (CardEffectCommons.GetCardEffectFromHashtable(hashtable) != activateClass)
-                                    return true;
+                                if (CardEffectCommons.IsByEffect(hashtable, effect => effect.IsSameEffect(activateClass)))
+                                    return false;
+
+                                return true;
                             }
                         }
                     }

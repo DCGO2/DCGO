@@ -38,7 +38,13 @@ namespace DCGO.CardEffects.BT18
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.IsDigimon && cardSource.EqualsCardName("Lucemon");
+                    return cardSource.IsDigimon && cardSource.EqualsCardName("Lucemon") &&
+                           cardSource.CanPlayCardTargetFrame(
+                               frame: card.Owner.GetBreedingAreaPermanents()[0].PermanentFrame,
+                               PayCost: false,
+                               cardEffect: activateClass,
+                               root: SelectCardEffect.Root.Trash,
+                               isBreedingArea: true);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

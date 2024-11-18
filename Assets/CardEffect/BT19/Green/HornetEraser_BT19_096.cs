@@ -63,25 +63,39 @@ namespace DCGO.CardEffects.BT19
                 {
                     if(CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, IsRoyalBaseDigimon))
                     {
-                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                        CardSource selectedCard = null;
 
-                        selectHandEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: IsRoyalBaseDigimon,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: 1,
-                            canNoSelect: true,
-                            canEndNotMax: false,
-                            isShowOpponent: true,
-                            selectCardCoroutine: null,
-                            afterSelectCardCoroutine: null,
-                            mode: SelectHandEffect.Mode.PutSecurityBottom,
-                            cardEffect: activateClass);
+                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
-                        selectHandEffect.SetIsFaceup();
+                        selectCardEffect.SetUp(
+                                    canTargetCondition: IsRoyalBaseDigimon,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    canNoSelect: () => true,
+                                    selectCardCoroutine: SelectCardCoroutine,
+                                    afterSelectCardCoroutine: null,
+                                    message: "Select 1 card to place as face up bottom security.",
+                                    maxCount: 1,
+                                    canEndNotMax: false,
+                                    isShowOpponent: true,
+                                    mode: SelectCardEffect.Mode.Custom,
+                                    root: SelectCardEffect.Root.Trash,
+                                    customRootCardList: null,
+                                    canLookReverseCard: true,
+                                    selectPlayer: card.Owner,
+                                    cardEffect: activateClass);
 
-                        yield return StartCoroutine(selectHandEffect.Activate());
+                        yield return StartCoroutine(selectCardEffect.Activate());
+
+                        IEnumerator SelectCardCoroutine(CardSource cardSource)
+                        {
+                            selectedCard = cardSource;
+
+                            yield return null;
+                        }
+
+                        if (selectedCard != null)
+                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(selectedCard, false, true));
                     }
 
                     if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, IsOpponenetsDigimon))

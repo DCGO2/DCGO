@@ -2023,7 +2023,7 @@ public class Permanent
     }
     #endregion
 
-    #region 再起動を持つか
+    #region Has Reboot
     public bool HasReboot
     {
         get
@@ -2071,7 +2071,7 @@ public class Permanent
     }
     #endregion
 
-    #region 突進を持つか
+    #region Has Raid
     public bool HasRaid
     {
         get
@@ -2092,7 +2092,7 @@ public class Permanent
     }
     #endregion
 
-    #region 速攻を持つか
+    #region Has Rush
     public bool HasRush
     {
         get
@@ -2140,7 +2140,7 @@ public class Permanent
     }
     #endregion
 
-    #region 道連れを持つか
+    #region Has Retaliation
     public bool HasRetaliation
     {
         get
@@ -2181,7 +2181,7 @@ public class Permanent
     }
     #endregion
 
-    #region 不屈を持つか
+    #region Has Fortitude
     public bool HasFortitude
     {
         get
@@ -2232,7 +2232,7 @@ public class Permanent
     }
     #endregion
 
-    #region 回避を持つか
+    #region Has Evade
     public bool HasEvade
     {
         get
@@ -2261,7 +2261,7 @@ public class Permanent
     }
     #endregion
 
-    #region マインドリンクを持つか
+    #region Has Mind Link
     public bool HasMindLink
     {
         get
@@ -2288,7 +2288,7 @@ public class Permanent
     }
     #endregion
 
-    #region 防壁を持つか
+    #region Has Barrier
     public bool HasBarrier
     {
         get
@@ -2316,20 +2316,47 @@ public class Permanent
     }
     #endregion
 
-    #region 連携を持つか
+    #region Has Alliance
     public bool HasAlliance
     {
         get
         {
-            foreach (ICardEffect cardEffect in this.EffectList(EffectTiming.OnAllyAttack))
+            foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
             {
-                if (cardEffect is ActivateICardEffect)
+                foreach (Permanent permanent in player.GetFieldPermanents())
                 {
-                    if (cardEffect.EffectName == "Alliance")
+                    #region Permanent Effects
+                    foreach (ICardEffect cardEffect in permanent.EffectList(EffectTiming.OnAllyAttack))
                     {
-                        return true;
+                        if (cardEffect is IAllianceEffect)
+                        {
+                            if (cardEffect.CanTrigger(null))
+                            {
+                                if (((IAllianceEffect)cardEffect).HasAlliance(this))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                    #endregion
+                }
+
+                #region Player Effects
+                foreach (ICardEffect cardEffect in player.EffectList(EffectTiming.OnAllyAttack))
+                {
+                    if (cardEffect is IAllianceEffect)
+                    {
+                        if (cardEffect.CanTrigger(null))
+                        {
+                            if (((IAllianceEffect)cardEffect).HasAlliance(this))
+                            {
+                                return true;
+                            }
+                        }
                     }
                 }
+                #endregion
             }
 
             return false;

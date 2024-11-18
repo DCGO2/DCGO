@@ -304,9 +304,9 @@ namespace DCGO.CardEffects.BT18
                 bool DigivolveFromPermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card) &&
-                           (permanent.IsDigimon || permanent.IsTamer);// &&
-                           //card.Owner.TrashCards.Where(DigivolveToCardCondition).Any(cardSource =>
-                           //    cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass));
+                           (permanent.IsDigimon || permanent.IsTamer) &&
+                           card.Owner.TrashCards.Where(DigivolveToCardCondition).Any(cardSource =>
+                               cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass, SelectCardEffect.Root.Trash));
                 }
 
                 bool DigivolveToCardCondition(CardSource cardSource)

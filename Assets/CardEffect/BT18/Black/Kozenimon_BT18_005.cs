@@ -14,7 +14,7 @@ namespace DCGO.CardEffects.BT18
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Draw 1", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("AllTurns_BT18-005");
                 cardEffects.Add(activateClass);
@@ -30,18 +30,11 @@ namespace DCGO.CardEffects.BT18
                     {
                         bool WinnerCondition(Permanent permanent) => permanent.cardSources.Contains(card);
                         bool LoserCondition(Permanent permanent) => CardEffectCommons.IsOpponentPermanent(permanent, card);
-                        bool LoserRealCondition(Permanent permanent) => permanent.IsDigimon;
 
-                        if (CardEffectCommons.CanTriggerWhenDeleteOpponentDigimonByBattle(
-                            hashtable: hashtable,
-                            winnerCondition: WinnerCondition,
-                            loserCondition: LoserCondition,
-                            loserRealCondition: LoserRealCondition,
-                            isOnlyWinnerSurvive: false))
+                        if (CardEffectCommons.CanTriggerWhenDeleteOpponentDigimonByBattle(hashtable: hashtable, winnerCondition: WinnerCondition, loserCondition: LoserCondition, isOnlyWinnerSurvive: false))
                         {
                             return true;
                         }
-
                     }
 
                     return false;

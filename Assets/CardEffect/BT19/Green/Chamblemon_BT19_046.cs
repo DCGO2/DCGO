@@ -27,12 +27,12 @@ namespace DCGO.CardEffects.BT19
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Suspend 1 digimon, then 1 Digimon with [Data] trait can't unsuspend", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[On Play] [When Digivolving] Suspend 1 of your opponent's Digimon. Then, 1 of their Digimon with the [Data] trait can't unsuspend until the end of their turn.";
+                    return "[On Play] Suspend 1 of your opponent's Digimon. Then, 1 of their Digimon with the [Data] trait can't unsuspend until the end of their turn.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -112,7 +112,7 @@ namespace DCGO.CardEffects.BT19
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Suspend 1 digimon, then 1 Digimon with [Data] trait can't unsuspend", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

@@ -118,10 +118,10 @@ public class PlayLog : MonoBehaviour
 
     public void AddLogString(string logText)
     {
-        ContinuousController.instance.StartCoroutine(AddLogStringCoroutine(DataBase.ReplaceToASCII(logText)));
+        AddLogStringCoroutine(DataBase.ReplaceToASCII(logText));
     }
 
-    IEnumerator AddLogStringCoroutine(string log)
+    void AddLogStringCoroutine(string log)
     {
         
         _logList.Add(AddLink(log));
@@ -134,11 +134,9 @@ public class PlayLog : MonoBehaviour
             }
         }
 
-        if (gameObject.activeSelf)
+        if (gameObject != null && gameObject.activeSelf)
         {
             _logText.text = GetLogString();
-
-            yield break;
         }
     }
 

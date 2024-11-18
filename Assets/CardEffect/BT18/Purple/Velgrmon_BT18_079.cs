@@ -107,8 +107,8 @@ namespace DCGO.CardEffects.BT18
                 {
                     int trashCount = OpponentColorCount();
 
-                    int ownerTrashed = Math.Max(0, card.Owner.SecurityCards.Count - trashCount);
-                    int opponentTrashed = Math.Max(0, card.Owner.Enemy.SecurityCards.Count - trashCount);
+                    int ownerTrashed = Math.Min(card.Owner.LibraryCards.Count, trashCount);
+                    int opponentTrashed = Math.Min(card.Owner.Enemy.LibraryCards.Count, trashCount);
 
                     yield return ContinuousController.instance.StartCoroutine(new IAddTrashCardsFromLibraryTop(
                         trashCount,
@@ -154,8 +154,8 @@ namespace DCGO.CardEffects.BT18
                 {
                     int trashCount = OpponentColorCount();
 
-                    int ownerTrashed = Math.Max(0, card.Owner.SecurityCards.Count - trashCount);
-                    int opponentTrashed = Math.Max(0, card.Owner.Enemy.SecurityCards.Count - trashCount);
+                    int ownerTrashed = Math.Min(card.Owner.LibraryCards.Count, trashCount);
+                    int opponentTrashed = Math.Min(card.Owner.Enemy.LibraryCards.Count, trashCount);
 
                     yield return ContinuousController.instance.StartCoroutine(new IAddTrashCardsFromLibraryTop(
                         trashCount,

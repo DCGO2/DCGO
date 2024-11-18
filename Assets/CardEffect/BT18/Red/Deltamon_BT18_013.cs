@@ -172,22 +172,14 @@ namespace DCGO.CardEffects.BT18
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.IsDigimon)
+                    if (cardSource.EqualsTraits("Composite"))
                     {
-                        if (cardSource.CardTraits.Contains("Composite"))
-                        {
-                            return true;
-                        }
+                        return true;
+                    }
 
-                        if (cardSource.CardTraits.Contains("Wicked God"))
-                        {
-                            return true;
-                        }
-
-                        if (cardSource.CardTraits.Contains("WickedGod"))
-                        {
-                            return true;
-                        }
+                    if (cardSource.EqualsTraits("Wicked God"))
+                    {
+                        return true;
                     }
 
                     return false;

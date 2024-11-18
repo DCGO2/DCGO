@@ -46,7 +46,7 @@ namespace DCGO.CardEffects.BT18
                 cardEffects.Add(CardEffectFactory.ChangeDPStaticEffect(
                 permanentCondition: PermanentCondition,
                 changeValue: 1000,
-                isInheritedEffect: true,
+                isInheritedEffect: false,
                 card: card,
                 condition: Condition,
                 effectName: EffectDiscription));

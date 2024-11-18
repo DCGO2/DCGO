@@ -24,24 +24,19 @@ namespace DCGO.CardEffects.BT19
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (card.Owner.SecurityCards.Count >= 1)
-                    {
-                        if (CardEffectCommons.CanTriggerOnPlay(hashtable, card))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (card.Owner.CanAddMemory(activateClass))
+                        if (card.Owner.SecurityCards.Count >= 1)
                         {
-                            return true;
+                            if (card.Owner.CanAddMemory(activateClass))
+                            {
+                                return true;
+                            }
                         }
                     }
 
@@ -94,7 +89,8 @@ namespace DCGO.CardEffects.BT19
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (card.CardColors.Contains(CardColor.Yellow) && (card.ContainsTraits("Data") || card.ContainsTraits("Witchelny")))
+                        Permanent thisPermanent = card.PermanentOfThisCard();
+                        if (thisPermanent.TopCard.CardColors.Contains(CardColor.Yellow) && (thisPermanent.TopCard.EqualsTraits("Data") || thisPermanent.TopCard.EqualsTraits("Witchelny")))
                         {
                             if (card.Owner.SecurityCards.Count >= 1)
                                 return true;
@@ -106,25 +102,20 @@ namespace DCGO.CardEffects.BT19
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card) || card.Owner.SecurityCards.Count >= 1)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
+                    yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
                             player: card.Owner,
                             destroySecurityCount: 1,
                             cardEffect: activateClass,
                             fromTop: true).DestroySecurity());
 
-                        Permanent thisCardPermanent = card.PermanentOfThisCard();
+                    Permanent thisCardPermanent = card.PermanentOfThisCard();
 
-                        thisCardPermanent.willBeRemoveField = false;
+                    thisCardPermanent.willBeRemoveField = false;
 
-                        thisCardPermanent.HideDeleteEffect();
-                        thisCardPermanent.HideHandBounceEffect();
-                        thisCardPermanent.HideDeckBounceEffect();
-                        thisCardPermanent.HideWillRemoveFieldEffect();
-
-                        yield return null;
-                    }
+                    thisCardPermanent.HideDeleteEffect();
+                    thisCardPermanent.HideHandBounceEffect();
+                    thisCardPermanent.HideDeckBounceEffect();
+                    thisCardPermanent.HideWillRemoveFieldEffect();
                 }
             }
             #endregion

@@ -85,7 +85,7 @@ namespace DCGO.CardEffects.BT18
 
                     IEnumerator CardSelected(CardSource cardSource)
                     {
-                        if(cardSource == null)
+                        if (cardSource != null)
                             cardAdded = true;
 
                         yield return null;

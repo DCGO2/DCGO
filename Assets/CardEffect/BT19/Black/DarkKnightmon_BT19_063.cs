@@ -110,7 +110,7 @@ namespace DCGO.CardEffects.BT19
 
                 bool CanSelectPermanentCondition1(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card))
+                    if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
                     {
                         if(permanent.TopCard.IsDigimon || permanent.TopCard.IsTamer)
                         {
@@ -189,7 +189,7 @@ namespace DCGO.CardEffects.BT19
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
                                 maxCount: maxCount,
-                                canNoSelect: false,
+                                canNoSelect: true,
                                 canEndNotMax: false,
                                 selectPermanentCoroutine: null,
                                 afterSelectPermanentCoroutine: null,
@@ -223,7 +223,7 @@ namespace DCGO.CardEffects.BT19
 
                 bool CanSelectPermanentCondition1(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                    if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
                     {
                         if (permanent.TopCard.IsDigimon || permanent.TopCard.IsTamer)
                         {
@@ -303,7 +303,7 @@ namespace DCGO.CardEffects.BT19
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
                                 maxCount: maxCount,
-                                canNoSelect: false,
+                                canNoSelect: true,
                                 canEndNotMax: false,
                                 selectPermanentCoroutine: null,
                                 afterSelectPermanentCoroutine: null,
