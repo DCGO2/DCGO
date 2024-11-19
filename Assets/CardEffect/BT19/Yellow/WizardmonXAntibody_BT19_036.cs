@@ -167,7 +167,7 @@ namespace DCGO.CardEffects.BT19
                     {
                         if (cardSource.CardColors.Contains(CardColor.Yellow) || cardSource.CardColors.Contains(CardColor.Purple))
                         {
-                            if (cardSource.HasPlayCost && cardSource.GetCostItself <= 5)
+                            if (cardSource.HasUseCost && cardSource.GetCostItself <= 5)
                             {
                                 return true;
                             }
@@ -200,7 +200,7 @@ namespace DCGO.CardEffects.BT19
                         player: card.Owner,
                         refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
 
-                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.EqualsCardName("Wizardmon") || cardSource.EqualsCardName("XAntibody")) >= 1)
+                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.EqualsCardName("Wizardmon") || cardSource.EqualsCardName("X Antibody")) >= 1)
                     {
                         if (card.Owner.CanAddSecurity(activateClass))
                         {

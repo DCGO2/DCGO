@@ -175,12 +175,6 @@ namespace DCGO.CardEffects.BT19
 
                             return null;
                         }
-
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCantUnsuspendUntilOpponentTurnEnd(
-                                    targetPermanent: selectedPermanent,
-                                    activateClass: activateClass
-                                ));
-
                     }
                 }
             }

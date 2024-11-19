@@ -160,36 +160,40 @@ namespace DCGO.CardEffects.BT19
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
-                {                                       
-                    if (!card.Owner.isYou)
+                {   
+                    if(card.Owner.Enemy.SecurityCards.Count > 0)
                     {
-                        GManager.instance.commandText.OpenCommandText("Will you discard the top card of your security?");
+                        if (!card.Owner.isYou)
+                        {
+                            GManager.instance.commandText.OpenCommandText("Will you discard the top card of your security?");
 
-                        List<Command_SelectCommand> command_SelectCommands = new List<Command_SelectCommand>()
+                            List<Command_SelectCommand> command_SelectCommands = new List<Command_SelectCommand>()
                     {
                         new Command_SelectCommand($"Discard", () => photonView.RPC("SetDoDiscard", RpcTarget.All, true), 0),
                         new Command_SelectCommand($"Not Discard", () => photonView.RPC("SetDoDiscard", RpcTarget.All, false), 1),
                     };
 
-                        GManager.instance.selectCommandPanel.SetUpCommandButton(command_SelectCommands);
-                    }
-                    else
-                    {
-                        GManager.instance.commandText.OpenCommandText("The opponent is choosing whether to discard security.");
-
-                        #region AI
-                        if (GManager.instance.IsAI)
-                        {
-                            SetDoDiscard(RandomUtility.IsSucceedProbability(0.5f));
+                            GManager.instance.selectCommandPanel.SetUpCommandButton(command_SelectCommands);
                         }
-                        #endregion
+                        else
+                        {
+                            GManager.instance.commandText.OpenCommandText("The opponent is choosing whether to discard security.");
+
+                            #region AI
+                            if (GManager.instance.IsAI)
+                            {
+                                SetDoDiscard(RandomUtility.IsSucceedProbability(0.5f));
+                            }
+                            #endregion
+                        }
+
+                        yield return new WaitWhile(() => !endSelect);
+                        endSelect = false;
+
+                        GManager.instance.commandText.CloseCommandText();
+                        yield return new WaitWhile(() => GManager.instance.commandText.gameObject.activeSelf);
                     }
                     
-                    yield return new WaitWhile(() => !endSelect);
-                    endSelect = false;
-
-                    GManager.instance.commandText.CloseCommandText();
-                    yield return new WaitWhile(() => GManager.instance.commandText.gameObject.activeSelf);
 
                     if (!doDiscard)
                     {
