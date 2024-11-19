@@ -199,16 +199,16 @@ namespace DCGO.CardEffects.BT18
                     {
                         if (!permanent.TopCard.EqualsCardName("Vemmon"))
                         {
-                            return false;
+                            return true;
                         }
                     }
 
-                    return true;
+                    return false;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermanentCondition1);
+                    return CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition1) == 0;
                 }
 
                 int GetCount(CardSource cardSource)

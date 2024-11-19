@@ -136,20 +136,12 @@ namespace DCGO.CardEffects.BT18
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    if (card.Owner.Enemy.GetBattleAreaPermanents().Count(CanSelectPermanentCondition) >= 1)
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
                         int maxCount = Math.Min(1, card.Owner.Enemy.GetBattleAreaPermanents().Count(CanSelectPermanentCondition));
 
@@ -170,6 +162,7 @@ namespace DCGO.CardEffects.BT18
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
+
                     if (CardEffectCommons.IsJogress(_hashtable))
                     {
                         List<CardSource> selectedCards = new List<CardSource>();
@@ -369,7 +362,7 @@ namespace DCGO.CardEffects.BT18
                 {
                     if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass, root: SelectCardEffect.Root.Trash))
                     {
-                        if (cardSource.CardNames.Contains("Milleniummon"))
+                        if (cardSource.EqualsCardName("Millenniummon"))
                         {
                             return true;
                         }
@@ -480,10 +473,8 @@ namespace DCGO.CardEffects.BT18
 
                     if (returned)
                     {
-                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, (cardSource) => CanSelectCardConditionMilleniummon(cardSource)))
+                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardConditionMilleniummon))
                         {
-                            maxCount = Math.Min(1, card.Owner.TrashCards.Count((cardSource) => CanSelectCardConditionMilleniummon(cardSource)));
-
                             List<CardSource> selectedCards = new List<CardSource>();
 
                             SelectCardEffect selectPlayEffect = GManager.instance.GetComponent<SelectCardEffect>();
@@ -496,7 +487,7 @@ namespace DCGO.CardEffects.BT18
                                         selectCardCoroutine: SelectCardCoroutine,
                                         afterSelectCardCoroutine: null,
                                         message: "Select 1 card to play.",
-                                        maxCount: maxCount,
+                                        maxCount: 1,
                                         canEndNotMax: false,
                                         isShowOpponent: true,
                                         mode: SelectCardEffect.Mode.Custom,

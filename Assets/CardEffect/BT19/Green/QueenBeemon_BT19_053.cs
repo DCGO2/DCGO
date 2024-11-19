@@ -215,6 +215,7 @@ namespace DCGO.CardEffects.BT19
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Place those Digimon face up as your bottom security cards", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetHashString("AllTurns_BT19-053");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -238,10 +239,8 @@ namespace DCGO.CardEffects.BT19
                         {
                             if (!CardEffectCommons.IsByBattle(hashtable))
                             {
-                                if (CardEffectCommons.IsByEffect(hashtable, effect => effect.IsSameEffect(activateClass)))
-                                    return false;
-
-                                return true;
+                                if (!CardEffectCommons.IsByEffect(hashtable, effect => effect.HashString.Equals("AllTurns_BT19-053")))
+                                    return true;
                             }
                         }
                     }

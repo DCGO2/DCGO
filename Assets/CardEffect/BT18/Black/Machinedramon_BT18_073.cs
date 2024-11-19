@@ -596,9 +596,8 @@ namespace DCGO.CardEffects.BT18
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) && 
-                           permanent.TopCard.EqualsTraits("Composite") &&
-                           permanent.TopCard.EqualsTraits("Wicked God");
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                           (permanent.TopCard.EqualsTraits("Composite") || permanent.TopCard.EqualsTraits("Wicked God"));
                 }
 
                 bool PermanentCondition(Permanent permanent)
@@ -627,7 +626,7 @@ namespace DCGO.CardEffects.BT18
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
                         if (GManager.instance.attackProcess.IsAttacking)
                         {
@@ -643,35 +642,67 @@ namespace DCGO.CardEffects.BT18
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-
-                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                    selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectPermanentCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: maxCount,
-                        canNoSelect: false,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: SelectPermanentCoroutine,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Custom,
-                        cardEffect: activateClass);
-
-                    selectPermanentEffect.SetUpCustomMessage(
-                        "Select 1 Digimon to switch the attack to.",
-                        "The opponent is selecting 1 Digimon to switch the attack to.");
-
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.attackProcess.SwitchDefender(
-                        activateClass,
-                        false,
-                        permanent));
+                        if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(GManager.instance.attackProcess.AttackingPermanent, card))
+                        {
+                            if (GManager.instance.attackProcess.IsAttacking)
+                            {
+                                if (GManager.instance.attackProcess.AttackingPermanent.CanSwitchAttackTarget)
+                                {
+                                    List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
+                        {
+                            new SelectionElement<bool>(message: $"Switch", value : true, spriteIndex: 0),
+                            new SelectionElement<bool>(message: $"Not switch", value : false, spriteIndex: 1),
+                        };
+
+                                    string selectPlayerMessage = "Will you switch the attack target?";
+                                    string notSelectPlayerMessage = "The opponent is selecting whether to switch the attack target.";
+
+                                    GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+
+                                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                                    bool doSwitch = GManager.instance.userSelectionManager.SelectedBoolValue;
+
+
+
+                                    if (doSwitch)
+                                    {
+                                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+
+                                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                                        selectPermanentEffect.SetUp(
+                                            selectPlayer: card.Owner,
+                                            canTargetCondition: CanSelectPermanentCondition,
+                                            canTargetCondition_ByPreSelecetedList: null,
+                                            canEndSelectCondition: null,
+                                            maxCount: maxCount,
+                                            canNoSelect: false,
+                                            canEndNotMax: false,
+                                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                                            afterSelectPermanentCoroutine: null,
+                                            mode: SelectPermanentEffect.Mode.Custom,
+                                            cardEffect: activateClass);
+
+                                        selectPermanentEffect.SetUpCustomMessage(
+                                            "Select 1 Digimon to switch the attack to.",
+                                            "The opponent is selecting 1 Digimon to switch the attack to.");
+
+                                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                                        {
+                                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.attackProcess.SwitchDefender(
+                                            activateClass,
+                                            false,
+                                            permanent));
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
