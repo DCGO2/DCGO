@@ -112,6 +112,8 @@ public class PlayLog : MonoBehaviour
 
         _logList = new List<string>();
 
+        Debug.Log("INIT LOG");
+
         OnAddLog += AddLogString;
         OnLinkPressed += ShowCard;
     }
@@ -123,7 +125,7 @@ public class PlayLog : MonoBehaviour
 
     void AddLogStringCoroutine(string log)
     {
-        
+        Debug.Log("ADD LOG STRING");
         _logList.Add(AddLink(log));
 
         while (GetLogString().Length >= _maxLogCharacterLength)
@@ -134,10 +136,7 @@ public class PlayLog : MonoBehaviour
             }
         }
 
-        if (gameObject != null && gameObject.activeSelf)
-        {
-            _logText.text = GetLogString();
-        }
+        _logText.text = GetLogString();
     }
 
     string AddLink(string log)
