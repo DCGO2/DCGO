@@ -52,7 +52,7 @@ namespace DCGO.CardEffects.LM
                 {
                     return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
-                
+
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
                     return cardSource.CardColors.Contains(CardColor.Black) && cardSource.IsTamer &&
@@ -125,14 +125,17 @@ namespace DCGO.CardEffects.LM
                             yield return null;
                         }
 
-                        yield return ContinuousController.instance.StartCoroutine(new IDegeneration(
-                            selectedPermanent, 1, activateClass).Degeneration());
+                        if (selectedPermanent != null)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(new IDegeneration(
+                                selectedPermanent, 1, activateClass).Degeneration());
+                        }
                     }
                 }
             }
 
             #endregion
-            
+
             #region When Digivolving
 
             if (timing == EffectTiming.OnEnterFieldAnyone)
@@ -152,7 +155,7 @@ namespace DCGO.CardEffects.LM
                 {
                     return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
-                
+
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
                     return cardSource.CardColors.Contains(CardColor.Black) && cardSource.IsTamer &&
@@ -225,8 +228,11 @@ namespace DCGO.CardEffects.LM
                             yield return null;
                         }
 
-                        yield return ContinuousController.instance.StartCoroutine(new IDegeneration(
-                            selectedPermanent, 1, activateClass).Degeneration());
+                        if (selectedPermanent != null)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(new IDegeneration(
+                                selectedPermanent, 1, activateClass).Degeneration());
+                        }
                     }
                 }
             }
