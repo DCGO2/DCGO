@@ -231,7 +231,7 @@ namespace DCGO.CardEffects.EX6
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] [When Attacking] You may place up to 7 cards with different names and the [Seven Great Demon Lords] trait from your trash as this Digimon's bottom digivolution cards. If you placed 4 or more cards with this effect, delete 1 of your opponent's Digimon or Tamers.";
+                    return "[When Attacking] You may place up to 7 cards with different names and the [Seven Great Demon Lords] trait from your trash as this Digimon's bottom digivolution cards. If you placed 4 or more cards with this effect, delete 1 of your opponent's Digimon or Tamers.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

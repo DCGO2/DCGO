@@ -722,7 +722,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                     }
                 }
                 #endregion
-
                 #region 移動できる場合
                 else if (!gameContext.TurnPlayer.CanHatch || gameContext.TurnPlayer.CanMove)
                 {

@@ -154,18 +154,7 @@ namespace DCGO.CardEffects.BT18
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.HasText("Vemmon"))
-                    {
-                        if (cardSource.IsDigimon)
-                        {
-                            if (cardSource.HasLevel && cardSource.Level == 5)
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return false;
+                    return (cardSource.IsDigimon && cardSource.HasText("Vemmon"));
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)

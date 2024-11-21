@@ -16,6 +16,8 @@ namespace DCGO.CardEffects.BT18
 
             if (timing == EffectTiming.OptionSkill)
             {
+                List<string> selectedNames = new List<string>();
+
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(card.BaseENGCardNameFromEntity, CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
@@ -42,20 +44,18 @@ namespace DCGO.CardEffects.BT18
 
                 List<string> GetNamesList(List<CardSource> cardSources)
                 {
-                    List<string> cardNames = new List<string>();
-
                     foreach (CardSource cardName in cardSources)
                     {
                         foreach (string name in cardName.CardNames)
                         {
-                            if (!cardNames.Contains(name))
+                            if (!selectedNames.Contains(name))
                             {
-                                cardNames.Add(name);
+                                selectedNames.Add(name);
                             }
                         }
                     }
 
-                    return cardNames;
+                    return selectedNames;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -314,8 +314,7 @@ namespace DCGO.CardEffects.BT18
                                         ignoreDigivolutionRequirementFixedCost: 0,
                                         isHand: fromHand,
                                         activateClass: activateClass,
-                                        successProcess: null,
-                                        ignoreRequirements:CardEffectCommons.IgnoreRequirement.All));
+                                        successProcess: null));
                             }
                         }
                     }

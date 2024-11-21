@@ -186,7 +186,7 @@ namespace DCGO.CardEffects.BT18
                                     isShowOpponent: true,
                                     mode: SelectCardEffect.Mode.Custom,
                                     root: SelectCardEffect.Root.Custom,
-                                    customRootCardList: card.Owner.Enemy.TrashCards,
+                                    customRootCardList: card.Owner.Enemy.TrashCards.Filter(level),
                                     canLookReverseCard: true,
                                     selectPlayer: card.Owner,
                                     cardEffect: activateClass);
@@ -216,7 +216,7 @@ namespace DCGO.CardEffects.BT18
                                 selectCardCoroutine: null,
                                 afterSelectCardCoroutine: AfterSelection,
                                 message: "Select order of cards to add to the top your deck\n(cards will be placed back to the top of the deck so that cards with lower numbers are on top).",
-                                maxCount: 1,
+                                maxCount: selectedCards.Count,
                                 canEndNotMax: false,
                                 isShowOpponent: true,
                                 mode: SelectCardEffect.Mode.Custom,
