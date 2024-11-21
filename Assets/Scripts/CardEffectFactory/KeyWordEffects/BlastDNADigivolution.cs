@@ -29,7 +29,7 @@ public partial class CardEffectFactory
         if (card.Owner.GetBattleAreaPermanents().Count == 0) return null;
         if (card.Owner.HandCards.Count < 2) return null;
 
-        List<Permanent> fieldPermanents = card.Owner.GetBattleAreaDigimons();
+        List<Permanent> fieldPermanents = new List<Permanent>();
         List<Permanent> permanentSources = new List<Permanent>();
         List<CardSource> handSources = new List<CardSource>();
 
@@ -53,6 +53,8 @@ public partial class CardEffectFactory
 
         bool HasValidDNATargets()
         {
+            fieldPermanents = card.Owner.GetBattleAreaDigimons();
+
             foreach (BlastDNACondition DNACondition in blastDNAConditions)
             {
                 DNACondition.Permanents = fieldPermanents.Filter(permanent => permanent.TopCard.EqualsCardName(DNACondition.Name));
