@@ -26,6 +26,37 @@ namespace DCGO.CardEffects.BT18
                         "[Main] You may place up to 5 [Hybrid] trait cards with different names from your hand or trash under 1 of your Tamers. Then, 1 of your Tamers with 5 or more cards under it may digivolve into [MagnaGarurumon] in the hand or trash, ignoring digivolution requirements and without paying the cost.";
                 }
 
+                bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
+                {
+                    List<string> cardNames = GetNamesList(cardSources);
+
+                    foreach (string name in cardNames)
+                    {
+                        if (cardSource.CardNames.Contains(name))
+                            return false;
+                    }
+
+                    return true;
+                }
+
+                List<string> GetNamesList(List<CardSource> cardSources)
+                {
+                    List<string> cardNames = new List<string>();
+
+                    foreach (CardSource cardName in cardSources)
+                    {
+                        foreach (string name in cardName.CardNames)
+                        {
+                            if (!cardNames.Contains(name))
+                            {
+                                cardNames.Add(name);
+                            }
+                        }
+                    }
+
+                    return cardNames;
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card);
@@ -46,9 +77,9 @@ namespace DCGO.CardEffects.BT18
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card) &&
                            permanent.IsTamer && permanent.DigivolutionCards.Count >= 5 &&
                            (card.Owner.HandCards.Where(DigivolveToCardCondition).Any(cardSource =>
-                                cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass)) ||
+                                cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass, ignore: CardEffectCommons.IgnoreRequirement.All)) ||
                             card.Owner.TrashCards.Where(DigivolveToCardCondition).Any(cardSource =>
-                                cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass)));
+                                cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass, SelectCardEffect.Root.Trash, ignore: CardEffectCommons.IgnoreRequirement.All)));
                 }
 
                 bool DigivolveToCardCondition(CardSource cardSource)
@@ -80,8 +111,8 @@ namespace DCGO.CardEffects.BT18
                             cardEffect: activateClass);
 
                         selectPermanentEffect.SetUpCustomMessage(
-                            "Select 1 of your Tamers that will digivolve.",
-                            "The opponent is selecting 1 of their Tamers that will digivolve.");
+                            "Select 1 of your Tamers that will add digivolution cards.",
+                            "The opponent is selecting 1 of their Tamers that will add digivolution cards.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
@@ -103,7 +134,7 @@ namespace DCGO.CardEffects.BT18
                                 selectHandEffect.SetUp(
                                     selectPlayer: card.Owner,
                                     canTargetCondition: SelectHybridCardCondition,
-                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
                                     canEndSelectCondition: null,
                                     maxCount: Math.Min(5,
                                         CardEffectCommons.MatchConditionOwnersCardCountInHand(card, SelectHybridCardCondition)),
@@ -127,7 +158,7 @@ namespace DCGO.CardEffects.BT18
 
                                 selectCardEffect.SetUp(
                                     canTargetCondition: SelectHybridCardCondition,
-                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
                                     canEndSelectCondition: null,
                                     canNoSelect: () => true,
                                     selectCardCoroutine: null,
@@ -276,13 +307,14 @@ namespace DCGO.CardEffects.BT18
                                     CardEffectCommons.DigivolveIntoHandOrTrashCard(
                                         targetPermanent: selectedPermanent,
                                         cardCondition: DigivolveToCardCondition,
-                                        payCost: true,
+                                        payCost: false,
                                         reduceCostTuple: null,
                                         fixedCostTuple: null,
                                         ignoreDigivolutionRequirementFixedCost: 0,
                                         isHand: fromHand,
                                         activateClass: activateClass,
-                                        successProcess: null));
+                                        successProcess: null,
+                                        ignoreRequirements: CardEffectCommons.IgnoreRequirement.All));
                             }
                         }
                     }
