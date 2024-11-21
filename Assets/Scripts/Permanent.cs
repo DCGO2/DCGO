@@ -1496,7 +1496,7 @@ public class Permanent
                     return false;
                 }
 
-                if (!IsDigimon)
+                if (!IsDigimon || TopCard.IsDigiEgg)
                 {
                     return false;
                 }
