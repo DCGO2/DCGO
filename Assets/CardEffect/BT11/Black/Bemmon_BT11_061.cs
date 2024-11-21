@@ -168,7 +168,7 @@ public class Bemmon_BT11_061 : CEntity_Effect
             yield return null;
         }
 
-        if (timing == EffectTiming.OnEnterFieldAnyone)
+        if (timing == EffectTiming.BeforePayCost)
         {
             cardEffects.Add(activateClass2);
         }
