@@ -59,24 +59,27 @@ namespace DCGO.CardEffects.BT18
 
                 bool CardCondition(CardSource cardSource)
                 {
-                    if (cardSource == card)
-                    {
-                        if (CardEffectCommons.IsExistOnHand(cardSource))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return (cardSource == card);
                 }
 
                 bool CanNoSelect(CardSource cardSource)
                 {
                     if (cardSource != null)
                     {
-                        if (cardSource.PayingCost(SelectCardEffect.Root.Hand, null, checkAvailability: false) > cardSource.Owner.MaxMemoryCost)
+                        if (CardEffectCommons.IsExistOnHand(cardSource))
                         {
-                            return false;
+                            if (cardSource.PayingCost(SelectCardEffect.Root.Hand, null, checkAvailability: false) > cardSource.Owner.MaxMemoryCost)
+                            {
+                                return false;
+                            }
+                        }
+
+                        if (CardEffectCommons.IsExistOnTrash(cardSource))
+                        {
+                            if (cardSource.PayingCost(SelectCardEffect.Root.Trash, null, checkAvailability: false) > cardSource.Owner.MaxMemoryCost)
+                            {
+                                return false;
+                            }
                         }
                     }
 
@@ -90,15 +93,7 @@ namespace DCGO.CardEffects.BT18
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnHand(card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionPermanent(HasCompositeTraitInPlay))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.HasMatchConditionPermanent(HasCompositeTraitInPlay);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -219,16 +214,13 @@ namespace DCGO.CardEffects.BT18
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (card.Owner.HandCards.Contains(card))
-                    {
-                        ICardEffect activateClass = card.EffectList(EffectTiming.BeforePayCost).Find(cardEffect => cardEffect.EffectName == "Delete 1 of your [Composite] trait digimon to get Play Cost -4");
+                    ICardEffect activateClass = card.EffectList(EffectTiming.BeforePayCost).Find(cardEffect => cardEffect.EffectName == "Delete 1 of your [Composite] trait digimon to get Play Cost -4");
 
-                        if (activateClass != null)
+                    if (activateClass != null)
+                    {
+                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, HasCompositeTraitInPlay))
                         {
-                            if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, HasCompositeTraitInPlay))
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
 

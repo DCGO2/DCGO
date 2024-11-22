@@ -299,8 +299,7 @@ namespace DCGO.CardEffects.BT18
                                     GManager.instance.userSelectionManager.SetBool(canSelectHand);
                                 }
 
-                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager
-                                    .WaitForEndSelect());
+                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
                                 bool fromHand = GManager.instance.userSelectionManager.SelectedBoolValue;
 

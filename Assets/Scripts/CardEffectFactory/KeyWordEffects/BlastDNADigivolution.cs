@@ -195,18 +195,13 @@ public partial class CardEffectFactory
                 selectedCardSource = cardSource;
 
                 Permanent playedPermanent;
-                int frameID = -1; 
+                int frameID = -1;
 
-                foreach (FieldCardFrame fieldCardFrame in selectedCardSource.Owner.fieldCardFrames)
+                FieldCardFrame preferredFrame = selectedCardSource.PreferredFrame();
+
+                if (preferredFrame != null)
                 {
-                    if (card.CanPlayCardTargetFrame(fieldCardFrame, false, null))
-                    {
-                        if (fieldCardFrame.IsEmptyFrame())
-                        {
-                            frameID = fieldCardFrame.FrameID;
-                            break;
-                        }
-                    }
+                    frameID = preferredFrame.FrameID;
                 }
 
                 if (0 <= frameID && frameID < card.Owner.fieldCardFrames.Count)

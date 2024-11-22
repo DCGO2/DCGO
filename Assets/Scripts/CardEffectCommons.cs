@@ -655,7 +655,8 @@ public partial class CardEffectCommons
             }
             else
             {
-                selectedCards.Add(activateClass.EffectSourceCard);
+                //TODO:Removed as of 1.5.5, effects shouldn't reactivate if digivolution from trash failed?
+                //selectedCards.Add(activateClass.EffectSourceCard);
             }
         }
 
