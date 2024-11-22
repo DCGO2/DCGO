@@ -15,11 +15,6 @@ namespace DCGO.CardEffects.BT18
 
             if (timing == EffectTiming.None)
             {
-                bool Condition()
-                {
-                    return card.Owner.HandCards.Contains(card);
-                }
-
                 bool PermanentCondition(Permanent targetPermanent)
                 {
                     return targetPermanent.TopCard.EqualsCardName("Takuya Kanbara") &&
@@ -27,8 +22,8 @@ namespace DCGO.CardEffects.BT18
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
-                    permanentCondition: PermanentCondition, digivolutionCost: 5, ignoreDigivolutionRequirement: false,
-                    card: card, condition: Condition));
+                    permanentCondition: PermanentCondition, digivolutionCost: 5, ignoreDigivolutionRequirement: true,
+                    card: card, condition: null));
             }
 
             #endregion

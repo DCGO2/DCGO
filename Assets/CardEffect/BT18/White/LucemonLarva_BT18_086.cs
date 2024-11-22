@@ -107,7 +107,8 @@ namespace DCGO.CardEffects.BT18
 
                 bool IsLucemonRemoved(Permanent permanent)
                 {
-                    return permanent.TopCard.EqualsCardName("Lucemon: Satan Mode");
+                    return permanent.TopCard.Owner == card.Owner &&
+                           permanent.TopCard.EqualsCardName("Lucemon: Satan Mode");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
