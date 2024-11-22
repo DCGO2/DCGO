@@ -66,20 +66,9 @@ namespace DCGO.CardEffects.BT18
                 {
                     if (cardSource != null)
                     {
-                        if (CardEffectCommons.IsExistOnHand(cardSource))
+                        if (cardSource.PayingCost(SelectCardEffect.Root.Hand, null, checkAvailability: false) > cardSource.Owner.MaxMemoryCost)
                         {
-                            if (cardSource.PayingCost(SelectCardEffect.Root.Hand, null, checkAvailability: false) > cardSource.Owner.MaxMemoryCost)
-                            {
-                                return false;
-                            }
-                        }
-
-                        if (CardEffectCommons.IsExistOnTrash(cardSource))
-                        {
-                            if (cardSource.PayingCost(SelectCardEffect.Root.Trash, null, checkAvailability: false) > cardSource.Owner.MaxMemoryCost)
-                            {
-                                return false;
-                            }
+                            return false;
                         }
                     }
 
@@ -150,12 +139,7 @@ namespace DCGO.CardEffects.BT18
                                 {
                                     if (PermanentsCondition(targetPermanents))
                                     {
-                                        int targetCost = 0;
-
-                                        if (CardEffectCommons.HasMatchConditionPermanent(HasCompositeTraitInPlay))
-                                            targetCost += 4;
-
-                                        Cost -= targetCost;
+                                        Cost -= 4;
                                     }
                                 }
                             }

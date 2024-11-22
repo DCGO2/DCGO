@@ -61,7 +61,7 @@ namespace DCGO.CardEffects.BT19
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardNames.Contains("Lucemon")) >= 1)
+                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.ContainsCardName("Lucemon")) >= 1)
                         {
                             if (card.Owner.SecurityCards.Count >= 1 && card.Owner.Enemy.SecurityCards.Count >= 1)
                                 return true;
