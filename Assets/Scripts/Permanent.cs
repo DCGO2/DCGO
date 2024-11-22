@@ -1496,10 +1496,11 @@ public class Permanent
                     return false;
                 }
 
-                if (!IsDigimon || TopCard.IsDigiEgg)
-                {
+                if (!IsDigimon)
                     return false;
-                }
+
+                if (TopCard.IsDigiEgg && DP <= 0)
+                    return false;
 
                 if (GManager.instance.turnStateMachine.gameContext.TurnPlayer.fieldCardFrames.Count((frame) => frame.IsEmptyFrame() && frame.IsBattleAreaFrame()) == 0)
                 {
