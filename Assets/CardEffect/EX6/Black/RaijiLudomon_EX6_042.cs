@@ -300,7 +300,7 @@ namespace DCGO.CardEffects.EX6
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Prevent Deletion", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("Protection_EX6_042");
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);

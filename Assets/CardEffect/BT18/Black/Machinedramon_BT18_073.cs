@@ -378,7 +378,7 @@ namespace DCGO.CardEffects.BT18
 
                 bool HasKimeramon(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent) &&
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
                            permanent.TopCard.EqualsCardName("Kimeramon");
                 }
 

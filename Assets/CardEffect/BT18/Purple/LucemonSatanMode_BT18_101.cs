@@ -118,7 +118,10 @@ namespace DCGO.CardEffects.BT18
                     IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
                         selectedCards.Add(cardSource);
-                        played = true;
+
+                        if(CardEffectCommons.CanPlayAsNewPermanent(cardSource,false,activateClass,SelectCardEffect.Root.Trash,true))
+                            played = true;
+
                         yield return null;
                     }
 

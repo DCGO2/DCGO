@@ -268,7 +268,7 @@ namespace DCGO.CardEffects.BT19
                         PlayCardClass playCard = new PlayCardClass(
                                 cardSources: new List<CardSource>() { source },
                                 hashtable: CardEffectCommons.CardEffectHashtable(activateClass),
-                                payCost: true,
+                                payCost: false,
                                 targetPermanent: null,
                                 isTapped: false,
                                 root: SelectCardEffect.Root.Trash,
