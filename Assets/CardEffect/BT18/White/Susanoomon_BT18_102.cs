@@ -47,7 +47,7 @@ namespace DCGO.CardEffects.BT18
 
                 List<CardColor> cardColors = new List<CardColor>();
 
-                foreach (CardSource source in card.PermanentOfThisCard().cardSources)
+                foreach (CardSource source in card.PermanentOfThisCard().DigivolutionCards)
                 {
                     cardColors.AddRange(source.CardColors);
                 }

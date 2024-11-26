@@ -119,23 +119,20 @@ namespace DCGO.CardEffects.BT18
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    List<Permanent> tappedPermanents = card.Owner.Enemy.GetBattleAreaDigimons()
-                        .Where(permanent =>
-                            !permanent.TopCard.CanNotBeAffected(activateClass) && 
-                            permanent.DP <= card.PermanentOfThisCard().DP &&
-                            permanent.CanSuspend)
-                        .ToList();
-
-                    yield return ContinuousController.instance.StartCoroutine(
-                        new SuspendPermanentsClass(tappedPermanents, hashtable).Tap());
-
-                    foreach (Permanent selectedPermanent in card.Owner.Enemy.GetBattleAreaDigimons())
+                    bool PermanentCondition(Permanent permanent)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCantUnsuspendUntilOpponentTurnEnd(
-                            targetPermanent: selectedPermanent,
-                            activateClass: activateClass
-                        ));
+                        return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
+                               permanent.TopCard.CanNotBeAffected(activateClass) &&
+                               permanent.DP <= card.PermanentOfThisCard().DP &&
+                               permanent.CanSuspend;
                     }
+
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotUnsuspendPlayerEffect(
+                        permanentCondition: PermanentCondition,
+                        effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                        activateClass: activateClass,
+                        isOnlyActivePhase: false,
+                        effectName:"Can't Unsuspend"));
                 }
             }
 
@@ -164,23 +161,20 @@ namespace DCGO.CardEffects.BT18
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    List<Permanent> tappedPermanents = card.Owner.Enemy.GetBattleAreaDigimons()
-                        .Where(permanent =>
-                            !permanent.TopCard.CanNotBeAffected(activateClass) && 
-                            permanent.DP <= card.PermanentOfThisCard().DP &&
-                            permanent.CanSuspend)
-                        .ToList();
-
-                    yield return ContinuousController.instance.StartCoroutine(
-                        new SuspendPermanentsClass(tappedPermanents, hashtable).Tap());
-
-                    foreach (Permanent selectedPermanent in card.Owner.Enemy.GetBattleAreaDigimons())
+                    bool PermanentCondition(Permanent permanent)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCantUnsuspendUntilOpponentTurnEnd(
-                            targetPermanent: selectedPermanent,
-                            activateClass: activateClass
-                        ));
+                        return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
+                               permanent.TopCard.CanNotBeAffected(activateClass) &&
+                               permanent.DP <= card.PermanentOfThisCard().DP &&
+                               permanent.CanSuspend;
                     }
+
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotUnsuspendPlayerEffect(
+                        permanentCondition: PermanentCondition,
+                        effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                        activateClass: activateClass,
+                        isOnlyActivePhase: false,
+                        effectName: "Can't Unsuspend"));
                 }
             }
 

@@ -143,7 +143,8 @@ namespace DCGO.CardEffects.BT18
             {
                 bool PermanentCondition(Permanent permanent)
                 {
-                    return (permanent.DP == 0);
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                           (permanent.DP == 0);
                 }
 
                 bool NonWhiteDigimon(Permanent permanent)

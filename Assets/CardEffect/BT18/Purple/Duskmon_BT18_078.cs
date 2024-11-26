@@ -153,9 +153,20 @@ namespace DCGO.CardEffects.BT18
                         CardColor chosenColor = (CardColor)GManager.instance.userSelectionManager.SelectedIntValue;
 
                         ChangeBaseCardColorClass changeBaseCardNameClass = new ChangeBaseCardColorClass();
-                        changeBaseCardNameClass.SetUpICardEffect("Original card color is changed", CanUseChangeColorCondition, card);
+                        changeBaseCardNameClass.SetUpICardEffect($"Original card color is changed: {chosenColor}", CanUseChangeColorCondition, card);
                         changeBaseCardNameClass.SetUpChangeBaseCardColorClass(ChangeBaseCardColors: ChangeBaseCardColors);
                         selectedPermanent.UntilOwnerTurnEndEffects.Add(_ => changeBaseCardNameClass);
+
+                        #region Log
+                        string log = "";
+
+                        log += $"\nChanged Card Color to {chosenColor}:";
+                        log += $"\n{selectedPermanent.TopCard.BaseENGCardNameFromEntity}({selectedPermanent.TopCard.CardID})";
+
+                        log += "\n";
+
+                        PlayLog.OnAddLog?.Invoke(log);
+                        #endregion
 
                         bool CanUseChangeColorCondition(Hashtable hashtableColor)
                         {
@@ -256,9 +267,20 @@ namespace DCGO.CardEffects.BT18
                         CardColor chosenColor = (CardColor)GManager.instance.userSelectionManager.SelectedIntValue;
 
                         ChangeBaseCardColorClass changeBaseCardNameClass = new ChangeBaseCardColorClass();
-                        changeBaseCardNameClass.SetUpICardEffect("Original card color is changed", CanUseChangeColorCondition, card);
+                        changeBaseCardNameClass.SetUpICardEffect($"Original card color is changed: {chosenColor}", CanUseChangeColorCondition, card);
                         changeBaseCardNameClass.SetUpChangeBaseCardColorClass(ChangeBaseCardColors: ChangeBaseCardColors);
                         selectedPermanent.UntilOwnerTurnEndEffects.Add(_ => changeBaseCardNameClass);
+
+                        #region Log
+                        string log = "";
+
+                        log += $"\nChanged Card Color to {chosenColor}:";
+                        log += $"\n{selectedPermanent.TopCard.BaseENGCardNameFromEntity}({selectedPermanent.TopCard.CardID})";
+
+                        log += "\n";
+
+                        PlayLog.OnAddLog?.Invoke(log);
+                        #endregion
 
                         bool CanUseChangeColorCondition(Hashtable hashtableColor)
                         {
