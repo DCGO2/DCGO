@@ -111,6 +111,7 @@ public class ContinuousController : MonoBehaviour
     public CEntity_Base KoHagurumonToken { get; private set; }
     public CEntity_Base FamiliarToken { get; private set; }
     public CEntity_Base VoleeZerdruckenToken { get; private set; }
+    public CEntity_Base UkaNoMitamaToken { get; private set; }
     public CardRestriction BanList { get; private set; } = new CardRestriction(new List<CardLimitCount>(), new List<BannedPair>());
 
     void LoadBanList()
@@ -285,6 +286,27 @@ public class ContinuousController : MonoBehaviour
         };
 
         await VoleeZerdruckenToken.GetCardSprite();
+
+        UkaNoMitamaToken = new CEntity_Base()
+        {
+            cardColors = new List<CardColor>() { CardColor.Purple },
+            PlayCost = -1,
+            Level = 0,
+            CardName_JPN = "",
+            CardName_ENG = "Uka-no-Mitama",
+            Form_JPN = new List<string>(),
+            Form_ENG = new List<string>(),
+            Attribute_JPN = new List<string>(),
+            Attribute_ENG = new List<string>(),
+            Type_JPN = new List<string>(),
+            Type_ENG = new List<string>(),
+            CardSpriteName = "EX8-037-token",
+            cardKind = CardKind.Digimon,
+            DP = 9000,
+            CardEffectClassName = "UkaNoMitama_EX8_037_token"
+        };
+
+        await UkaNoMitamaToken.GetCardSprite();
     }
 
     public static ContinuousController instance = null;
