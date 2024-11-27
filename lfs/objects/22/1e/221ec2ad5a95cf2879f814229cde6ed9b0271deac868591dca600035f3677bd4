@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: "\u5E2B\u5F1F\u306E\u65C5\u8DEF-ST12-15"
+  m_EditorClassIdentifier: 
+  CardIndex: 2799
+  cardColors: 00000000
+  PlayCost: 2
+  EvoCosts: []
+  Level: 0
+  CardName_JPN: "\u5E2B\u5F1F\u306E\u65C5\u8DEF"
+  CardName_ENG: FromMastertoDisciple
+  Form_JPN: []
+  Form_ENG: []
+  Attribute_JPN: []
+  Attribute_ENG: []
+  Type_JPN:
+  - "\u30ED\u30A4\u30E4\u30EB\u30CA\u30A4\u30C4"
+  Type_ENG:
+  - Royal Knight
+  CardSpriteName: ST12-15
+  cardKind: 2
+  EffectDiscription_JPN: "\u3010\u30E1\u30A4\u30F3\u3011\u81EA\u5206\u306E\u30C7\u30C3\u30AD\u306E\u4E0A\u304B\u30893\u679A\u30AA\u30FC\u30D7\u30F3\u3059\u308B\u3002\u305D\u306E\u4E2D\u306E\u540D\u79F0\u306B\u300C\u30CF\u30C3\u30AF\u30E2\u30F3\u300D\u304B\u300C\u30B7\u30B9\u30BF\u30E2\u30F3\u300D\u3092\u542B\u3080\u304B\u7279\u5FB4\u306B\u300C\u30ED\u30A4\u30E4\u30EB\u30CA\u30A4\u30C4\u300D\u3092\u6301\u3064\u30AB\u30FC\u30C91\u679A\u3092\u624B\u672D\u306B\u52A0\u3048\u308B\u3002\u6B8B\u308A\u306F\u7834\u68C4\u3059\u308B\u3002\u305D\u306E\u5F8C\u3001\u3053\u306E\u30AB\u30FC\u30C9\u3092\u30D0\u30C8\u30EB\u30A8\u30EA\u30A2\u306B\u7F6E\u304F\u3002\u3010\u30E1\u30A4\u30F3\u3011\u226A\u30C7\u30A3\u30EC\u30A4\u226B\uFF08\u30D0\u30C8\u30EB\u30A8\u30EA\u30A2\u306E\u3053\u306E\u30AB\u30FC\u30C9\u3092\u7834\u68C4\u3059\u308B\u3053\u3068\u3067\u3001\u4EE5\u4E0B\u306E\u52B9\u679C\u3092\u767A\u63EE\u3059\u308B\u3002\u3053\u306E\u52B9\u679C\u306F\u3053\u306E\u30AB\u30FC\u30C9\u3092\u7F6E\u3044\u305F\u30BF\u30FC\u30F3\u306B\u306F\u767A\u63EE\u3067\u304D\u306A\u3044\uFF09\u30FB\u3053\u306E\u30BF\u30FC\u30F3\u306E\u9593\u3001\u6B21\u306B\u81EA\u5206\u306E\u30C7\u30B8\u30E2\u30F3\u304C\u9032\u5316\u3059\u308B\u3068\u304D\u3001\u652F\u6255\u3046\u9032\u5316\u30B3\u30B9\u30C8-1\u3002"
+  EffectDiscription_ENG: "[Main] Reveal the top 3 cards of your deck. Add 1 card
+    with [Huckmon] or [Sistermon] in its name or [Royal Knight] in its traits among
+    them to your hand. Trash the rest. Then, place this card in your Battle Area.[Main]
+    \uFF1CDelay\uFF1E (Trash this card in your battle area to activate the effect
+    below. You can't activate this effect the turn this card enters play.)\u30FBThe
+    next time one of your Digimon would digivolve this turn, reduce the digivolution
+    cost by 1."
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: "\u3010\u30BB\u30AD\u30E5\u30EA\u30C6\u30A3\u3011\u81EA\u5206\u306E\u30C7\u30C3\u30AD\u306E\u4E0A\u304B\u30893\u679A\u30AA\u30FC\u30D7\u30F3\u3059\u308B\u3002\u305D\u306E\u4E2D\u306E\u540D\u79F0\u306B\u300C\u30CF\u30C3\u30AF\u30E2\u30F3\u300D\u304B\u300C\u30B7\u30B9\u30BF\u30E2\u30F3\u300D\u3092\u542B\u3080\u304B\u7279\u5FB4\u306B\u300C\u30ED\u30A4\u30E4\u30EB\u30CA\u30A4\u30C4\u300D\u3092\u6301\u3064\u30AB\u30FC\u30C91\u679A\u3092\u624B\u672D\u306B\u52A0\u3048\u308B\u3002\u6B8B\u308A\u306F\u7834\u68C4\u3059\u308B\u3002\u305D\u306E\u5F8C\u3001\u3053\u306E\u30AB\u30FC\u30C9\u3092\u30D0\u30C8\u30EB\u30A8\u30EA\u30A2\u306B\u7F6E\u304F\u3002"
+  SecurityEffectDiscription_ENG: '[Security] Reveal 3 cards from the top of your
+    deck. Add 1 card with [Huckmon] or [Sistermon] in its name or [Royal Knight]
+    in its traits among them to your hand. Trash the rest. Then, place this card
+    in your Battle Area.'
+  CardEffectClassName: TheJourneyOfTheMasterAndDisciple_ST12_15
+  DP: 0
+  rarity: 0
+  OverflowMemory: 0
+  CardID: ST12-15
+  MaxCountInDeck: 4
