@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: "\u30BB\u30A4\u30D0\u30FC\u30CF\u30C3\u30AF\u30E2\u30F3-ST12-08"
+  m_EditorClassIdentifier: 
+  CardIndex: 2792
+  cardColors: 00000000
+  PlayCost: 7
+  EvoCosts:
+  - CardColor: 0
+    Level: 4
+    MemoryCost: 3
+  Level: 5
+  CardName_JPN: "\u30BB\u30A4\u30D0\u30FC\u30CF\u30C3\u30AF\u30E2\u30F3"
+  CardName_ENG: SaviorHuckmon
+  Form_JPN:
+  - "\u5B8C\u5168\u4F53"
+  Form_ENG:
+  - Ultimate
+  Attribute_JPN:
+  - "\u30C7\u30FC\u30BF\u7A2E"
+  Attribute_ENG:
+  - Data
+  Type_JPN:
+  - "\u7ADC\u4EBA\u578B"
+  Type_ENG:
+  - Dragonkin
+  CardSprite_JPN: {fileID: 21300000, guid: 70cd1084cd0b6e043bcae7b957d68df8, type: 3}
+  CardSprite_ENG: {fileID: 21300000, guid: b8d5fac05c1bcd243a40db1eeec017a2, type: 3}
+  CardSpriteName: ST12-08
+  cardKind: 0
+  EffectDiscription_JPN: "\u3010\u9032\u5316\u6642\u3011\u3053\u306E\u30BF\u30FC\u30F3\u306E\u9593\u3001\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u306F\u30A2\u30AF\u30C6\u30A3\u30D6\u72B6\u614B\u306E\u76F8\u624B\u306E\u30C7\u30B8\u30E2\u30F3\u306B\u3082\u30A2\u30BF\u30C3\u30AF\u3067\u304D\u308B\u3002"
+  EffectDiscription_ENG: '[When Digivolving] This Digimon may also attack your opponent''s
+    unsuspended Digimon for the turn.'
+  InheritedEffectDiscription_JPN: "\u3010\u30A2\u30BF\u30C3\u30AF\u6642\u3011\uFF3B\u30BF\u30FC\u30F3\u306B1\u56DE\uFF3D\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u304C\u7279\u5FB4\u306B\u300C\u30ED\u30A4\u30E4\u30EB\u30CA\u30A4\u30C4\u300D\u3092\u6301\u3064\u3068\u304D\u3001\u81EA\u5206\u306E\u624B\u672D\u304B\u30C8\u30E9\u30C3\u30B7\u30E5\u304B\u3089\u3001\u540D\u79F0\u306B\u300C\u30B7\u30B9\u30BF\u30E2\u30F3\u300D\u3092\u542B\u3080\u30C7\u30B8\u30E2\u30F3\u30AB\u30FC\u30C91\u679A\u3092\u30B3\u30B9\u30C8\u3092\u652F\u6255\u308F\u305A\u306B\u767B\u5834\u3067\u304D\u308B\u3002"
+  InheritedEffectDiscription_ENG: '[When Attacking][Once Per Turn] If this Digimon
+    has [Royal Knight] in its traits, you may play 1 Digimon card with [Sistermon]
+    in its name from your hand or trash without paying its memory cost.'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Saviorhackmon_ST12_08
+  DP: 7000
+  rarity: 2
+  OverflowMemory: 0
+  CardID: ST12-08
+  MaxCountInDeck: 4

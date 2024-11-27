@@ -21,6 +21,7 @@ namespace DCGO.CardEntities
 
         string cardIDString = "";
         bool onlyAA = false;
+        bool updateExisting = true;
 
         public override void OnInspectorGUI()
         {
@@ -32,6 +33,7 @@ namespace DCGO.CardEntities
 
             if (_cardData != null)
             {
+                updateExisting = GUILayout.Toggle(updateExisting, "Update Existing Assets");
                 onlyAA = GUILayout.Toggle(onlyAA, "AA Only");
 
                 GUILayout.Label("Card ID: ");
@@ -172,13 +174,16 @@ namespace DCGO.CardEntities
 
             if(File.Exists(filePath))
             {
-                Debug.Log($"{entity.name} already exists");
-                CEntity_Base asset = (CEntity_Base)AssetDatabase.LoadAssetAtPath(filePath, typeof(CEntity_Base));
-                
-                entity.CardIndex = asset.CardIndex;
+                if (updateExisting)
+                {
+                    Debug.Log($"{entity.name} already exists");
+                    CEntity_Base asset = (CEntity_Base)AssetDatabase.LoadAssetAtPath(filePath, typeof(CEntity_Base));
 
-                EditorUtility.CopySerialized(entity, asset);
-                AssetDatabase.SaveAssets();
+                    entity.CardIndex = asset.CardIndex;
+
+                    EditorUtility.CopySerialized(entity, asset);
+                    AssetDatabase.SaveAssets();
+                }
             }
             else
             {
