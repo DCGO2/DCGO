@@ -20,6 +20,7 @@ namespace DCGO.CardEntities
         public List<CardData> _cardData;
 
         string cardIDString = "";
+        bool onlyAA = false;
 
         public override void OnInspectorGUI()
         {
@@ -31,6 +32,8 @@ namespace DCGO.CardEntities
 
             if (_cardData != null)
             {
+                onlyAA = GUILayout.Toggle(onlyAA, "AA Only");
+
                 GUILayout.Label("Card ID: ");
                 cardIDString = GUILayout.TextField(cardIDString, 500).ToUpper();
 
@@ -44,8 +47,8 @@ namespace DCGO.CardEntities
                         foreach (string str in list)
                             cards.AddRange(_cardData.Where(x => x.cardNumber.Contains(str)).ToList());
 
-                        _loadJSON.prevCardIndex = _loadJSON.setCardIndex;
                         SetDataToScriptableObject(cards);
+                        _loadJSON.prevCardIndex = _loadJSON.setCardIndex-1;
                     }
                 }
             }
@@ -76,7 +79,9 @@ namespace DCGO.CardEntities
         {
             foreach (CardData card in data)
             {
-                CreateScriptableObject(card, card.cardNumber);
+                if(!onlyAA)
+                    CreateScriptableObject(card, card.cardNumber);
+                
                 CreateAA(card);
             }
         }
