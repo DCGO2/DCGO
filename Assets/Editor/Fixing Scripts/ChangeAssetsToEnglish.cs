@@ -18,7 +18,7 @@ namespace DCGO.Tools.Repair{
             foreach (CEntity_Base card in List)
             {
                 string assetName = card.name;
-                string correctName = $"{FixCharactersInName($"{card.CardName_ENG}-{card.CardSpriteName}")}";
+                string correctName = $"{FixCharactersInName($"{card.CardName_ENG.Replace(" ", "")}-{card.CardSpriteName}")}";
 
                 if (assetName.Equals(correctName))
                     continue;
