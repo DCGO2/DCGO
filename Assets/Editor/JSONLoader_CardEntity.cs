@@ -107,6 +107,7 @@ namespace DCGO.CardEntities
 
         void CreateScriptableObject(CardData card, string imageID)
         {
+            Debug.Log($"creating: {card.name.english}");
             // CardEntity‚ instance created
             CEntity_Base cardEntity = CreateInstance<CEntity_Base>();
 
