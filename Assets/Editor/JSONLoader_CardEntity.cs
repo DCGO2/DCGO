@@ -138,8 +138,7 @@ namespace DCGO.CardEntities
             cardEntity.CardID = card.id;
             cardEntity.MaxCountInDeck = GetMaxCount(card.restrictions.japanese);
 
-            cardEntity.name = FixCharactersInName($"{cardEntity.CardName_ENG}-{cardEntity.CardSpriteName}"); 
-            cardEntity.CardIndex = GetCardIndex(cardEntity);
+            cardEntity.name = FixCharactersInName($"{cardEntity.CardName_ENG.Replace(" ", "")}-{cardEntity.CardSpriteName}"); 
             Debug.Log($"created: {cardEntity.name}");
 
             SaveScriptableObject(cardEntity);
@@ -176,23 +175,23 @@ namespace DCGO.CardEntities
             {
                 if (updateExisting)
                 {
-                    Debug.Log($"{entity.name} already exists");
                     CEntity_Base asset = (CEntity_Base)AssetDatabase.LoadAssetAtPath(filePath, typeof(CEntity_Base));
 
                     entity.CardIndex = asset.CardIndex;
 
                     EditorUtility.CopySerialized(entity, asset);
                     AssetDatabase.SaveAssets();
+                    Debug.Log($"{entity.name}: Scriptable Object Updated");
                 }
             }
             else
             {
+                entity.CardIndex = GetCardIndex(entity);
                 AssetDatabase.CreateAsset(entity, filePath);
+                Debug.Log($"{entity.name}: Scriptable Object Created");
             }
 
             AssetDatabase.Refresh();
-
-            Debug.Log($"{entity.name}: Scriptable Object Created");
         }
         #endregion
 
