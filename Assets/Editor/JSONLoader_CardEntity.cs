@@ -328,10 +328,13 @@ namespace DCGO.CardEntities
                     else
                         evoCost.CardColor = DictionaryUtility.GetCardColor(digivolveCondition.color.ToLower(), DataBase.CardColorNameDictionary);
 
-                    evoCost.Level = int.Parse(digivolveCondition.level);
                     evoCost.MemoryCost = int.Parse(digivolveCondition.cost);
 
-                    evoCosts.Add(evoCost);
+                    if (digivolveCondition.level != "Tamer")
+                    {
+                        evoCost.Level = int.Parse(digivolveCondition.level);
+                        evoCosts.Add(evoCost);
+                    }
                 }
             }
 
