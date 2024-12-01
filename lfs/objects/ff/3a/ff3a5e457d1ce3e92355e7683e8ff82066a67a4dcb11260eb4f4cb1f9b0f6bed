@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: "\u30B0\u30EA\u30E2\u30F3-ST12-01"
+  m_EditorClassIdentifier: 
+  CardIndex: 2785
+  cardColors: 00000000
+  PlayCost: 0
+  EvoCosts: []
+  Level: 2
+  CardName_JPN: "\u30B0\u30EA\u30E2\u30F3"
+  CardName_ENG: Gurimon
+  Form_JPN:
+  - "\u5E7C\u5E74\u671F"
+  Form_ENG:
+  - In-Training
+  Attribute_JPN: []
+  Attribute_ENG: []
+  Type_JPN:
+  - "\u30EC\u30C3\u30B5\u30FC\u578B"
+  Type_ENG:
+  - Lesser
+  CardSprite_JPN: {fileID: 21300000, guid: 525863851f6da4e41a08af8f9925fc74, type: 3}
+  CardSprite_ENG: {fileID: 21300000, guid: d81b67e683a50544aa296ea9847e1098, type: 3}
+  CardSpriteName: ST12-01
+  cardKind: 3
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: 
+  InheritedEffectDiscription_JPN: "\u3010\u81EA\u5206\u306E\u30BF\u30FC\u30F3\u3011\u81EA\u5206\u306E\u30C7\u30B8\u30E2\u30F3\u304C2\u4F53\u4EE5\u4E0A\u3044\u308B\u9593\u3001\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u3092DP+1000\u3002"
+  InheritedEffectDiscription_ENG: '[Your Turn] While you have 2 or more Digimon in
+    play, this Digimon gets +1000 DP.'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Gurimon_ST12_01
+  DP: 0
+  rarity: 1
+  OverflowMemory: 0
+  CardID: ST12-01
+  MaxCountInDeck: 4
