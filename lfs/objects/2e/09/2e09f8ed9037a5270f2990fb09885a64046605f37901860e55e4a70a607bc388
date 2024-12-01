@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: "\u30C0\u30FC\u30AF\u30CD\u30B9\u30A6\u30A7\u30FC\u30D6-ST10-15"
+  m_EditorClassIdentifier: 
+  CardIndex: 1774
+  cardColors: 06000000
+  PlayCost: 1
+  EvoCosts: []
+  Level: 0
+  CardName_JPN: "\u30C0\u30FC\u30AF\u30CD\u30B9\u30A6\u30A7\u30FC\u30D6"
+  CardName_ENG: DarknessWave
+  Form_JPN: []
+  Form_ENG: []
+  Attribute_JPN: []
+  Attribute_ENG: []
+  Type_JPN: []
+  Type_ENG: []
+  CardSprite_JPN: {fileID: 21300000, guid: 3dc23a67e0a38d84280d31ac2a742ce7, type: 3}
+  CardSprite_ENG: {fileID: 21300000, guid: 80ed9a2881ee3a24683d54d22c803882, type: 3}
+  CardSpriteName: ST10-15
+  cardKind: 2
+  EffectDiscription_JPN: "\u3010\u30E1\u30A4\u30F3\u3011\u81EA\u5206\u306E\u30C7\u30C3\u30AD\u306E\u4E0A\u304B\u30893\u679A\u7834\u68C4\u3059\u308B\u3002\u305D\u306E\u5F8C\u3001\u9EC4\u306E\u81EA\u5206\u306E\u30C7\u30B8\u30E2\u30F3\u304C\u3044\u308B\u3068\u304D\u3001\u81EA\u5206\u306E\u30C8\u30E9\u30C3\u30B7\u30E5\u304B\u3089\u3001\u9EC4\u304B\u7D2B\u306E\u30C7\u30B8\u30E2\u30F3\u30AB\u30FC\u30C91\u679A\u3092\u624B\u672D\u306B\u623B\u3059\u3002"
+  EffectDiscription_ENG: '[Main] Trash the top 3 cards of your deck. Then, if you
+    have a yellow Digimon in play, return 1 yellow or purple Digimon card from your
+    trash to your hand.'
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: "\u3010\u30BB\u30AD\u30E5\u30EA\u30C6\u30A3\u3011\u3053\u306E\u30AB\u30FC\u30C9\u306E\u3010\u30E1\u30A4\u30F3\u3011\u52B9\u679C\u3092\u767A\u63EE\u3059\u308B\u3002"
+  SecurityEffectDiscription_ENG: '[Security] Activate this card''s [Main] effect.'
+  CardEffectClassName: DarknessWave_ST10_15
+  DP: 0
+  rarity: 1
+  HasInhetitedEffect: 0
+  HasSecutiryEffect: 1
+  CardID: ST10-15
+  MaxCountInDeck: 4
+  _IsDigitama: 0
