@@ -71,14 +71,7 @@ namespace DCGO.CardEffects.EX6
 
                 bool HasLevel6HandSource(CardSource cardSource)
                 {
-                    if (cardSource.IsDigimon)
-                    {
-                        if (cardSource.HasLevel && cardSource.Level == 6)
-                        {
-                            return true;
-                        }
-                    }
-                    return false;
+                    return cardSource.IsDigimon;
                 }
 
                 bool HasLevel6Permanent(Permanent permanent)
@@ -111,8 +104,11 @@ namespace DCGO.CardEffects.EX6
 
                             if (elements[i].EvoRootCondition(permanent))
                             {
-                                allowedPermanents.Add(permanent);
-                                added = true;
+                                if(selectedLevel7.CanEvolve(permanent, true))
+                                {
+                                    allowedPermanents.Add(permanent);
+                                    added = true;
+                                }
                             }
                         }
 
