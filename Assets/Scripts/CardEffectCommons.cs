@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using UnityEngine;
 using UnityEditor;
+using UnityEditor.Experimental.GraphView;
 
 public partial class CardEffectCommons
 { 
@@ -394,7 +395,8 @@ public partial class CardEffectCommons
         IEnumerator successProcess,
         //bool ignoreLevel = false,
         bool ignoreSelection = false,
-        IgnoreRequirement ignoreRequirements = IgnoreRequirement.None)
+        IgnoreRequirement ignoreRequirements = IgnoreRequirement.None,
+        IEnumerator failedProcess = null)
     {
         if (targetPermanent == null) yield break;
         if (targetPermanent.TopCard == null) yield break;
@@ -406,6 +408,8 @@ public partial class CardEffectCommons
         bool ignoreDigivolutionRequirement = !ignoreRequirements.Equals(IgnoreRequirement.None) || ignoreDigivolutionRequirementFixedCost >= 0;//  ignoreDigivolutionRequirementFixedCost >= 0 || ignoreRequirements;
 
         int fixedCost = -1;
+
+        bool successful = false;
 
         if (fixedCostTuple != null)
         {
@@ -696,11 +700,19 @@ public partial class CardEffectCommons
 
             if (IsDigivolvedByTheEffect(targetPermanent, selectedCards[0], activateClass))
             {
-                if (successProcess != null)
-                {
-                    yield return ContinuousController.instance.StartCoroutine(successProcess);
-                }
+                successful = true;
             }
+        }
+
+        if (successful)
+        {
+            if (successProcess != null)
+                yield return ContinuousController.instance.StartCoroutine(successProcess);
+        }
+        else
+        {
+            if (failedProcess != null)
+                yield return ContinuousController.instance.StartCoroutine(failedProcess);
         }
     }
     #endregion
