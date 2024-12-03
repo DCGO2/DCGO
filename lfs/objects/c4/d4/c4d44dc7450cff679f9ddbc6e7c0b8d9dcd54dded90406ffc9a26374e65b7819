@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Agumon-EX8-007
+  m_EditorClassIdentifier: 
+  CardIndex: 4061
+  cardColors: 0000000003000000
+  PlayCost: 3
+  EvoCosts:
+  - CardColor: 0
+    Level: 2
+    MemoryCost: 1
+  - CardColor: 3
+    Level: 2
+    MemoryCost: 1
+  Level: 3
+  CardName_JPN: 
+  CardName_ENG: Agumon
+  Form_JPN: []
+  Form_ENG:
+  - Rookie
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Vaccine
+  Type_JPN: []
+  Type_ENG:
+  - Reptile
+  - LIBERATOR
+  CardSpriteName: EX8-007
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: "[Digivolve][Koromon]: Cost 0 \n\n[On Play] Reveal the top
+    3 cards of your deck. Add 1 card with [Tyrannomon]\_in its name or the [Reptile]/[Dinosaur]\_trait
+    and 1 [Ryutaro Williams] among them to the hand. Return the rest to the bottom
+    of the deck."
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: '[Your Turn] This Digimon gets +2000 DP.'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: '-'
+  CardEffectClassName: Agumon_EX8_007
+  DP: 1000
+  rarity: 1
+  OverflowMemory: 0
+  CardID: EX8-007
+  MaxCountInDeck: 4
