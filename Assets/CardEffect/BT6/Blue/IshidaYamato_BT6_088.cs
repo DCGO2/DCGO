@@ -124,7 +124,7 @@ public class IshidaYamato_BT6_088 : CEntity_Effect
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                return cardSource.CardNames.Contains("Gabumon-BondofFriendship");
+                return cardSource.EqualsCardName("Gabumon - Bond of Friendship");
             }
 
             bool CanUseCondition(Hashtable hashtable)

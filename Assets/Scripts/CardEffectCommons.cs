@@ -4,8 +4,6 @@ using System;
 using System.Linq;
 using UnityEngine;
 using UnityEditor;
-using UnityEditor.Experimental.GraphView;
-
 public partial class CardEffectCommons
 { 
     #region Digivolution Requirements
