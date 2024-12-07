@@ -125,7 +125,7 @@ public class YagamiTaichi_BT6_087 : CEntity_Effect
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                return cardSource.CardNames.Contains("Agumon-BondofBravery");
+                return cardSource.EqualsCardName("Agumon - Bond of Bravery");
             }
 
             bool CanUseCondition(Hashtable hashtable)

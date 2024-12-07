@@ -78,7 +78,7 @@ public class Agumon_BT6_007 : CEntity_Effect
                 {
                     if (CardEffectCommons.IsOwnerTurn(card))
                     {
-                        if (card.PermanentOfThisCard().TopCard.CardNames.Contains("Agumon-BondofBravery"))
+                        if (card.PermanentOfThisCard().TopCard.EqualsCardName("Agumon - Bond of Bravery"))
                         {
                             return true;
                         }

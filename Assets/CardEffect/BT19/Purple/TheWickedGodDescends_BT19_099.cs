@@ -1,8 +1,9 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Photon.Pun;
 
 namespace DCGO.CardEffects.BT19
 {
@@ -188,7 +189,7 @@ namespace DCGO.CardEffects.BT19
 
                 string EffectDiscription()
                 {
-                    return "[All Turns] When any of your Digimon with [Millenniummon] in its name would leave the battle area, <Delay>.\r\n� You may play 1 [Wicked God] trait Digimon card with a play cost 1 greater than that Digimon from your hand or trash without paying the cost.";
+                    return "[All Turns] When any of your Digimon with [Millenniummon] in its name would leave the battle area, <Delay>.\r\n• You may play 1 [Wicked God] trait Digimon card with a play cost 1 greater than that Digimon from your hand or trash without paying the cost.";
                 }
 
                 bool PermanentCondition(Permanent permanent)
@@ -261,55 +262,67 @@ namespace DCGO.CardEffects.BT19
                     if (deleted)
                     {
                         List<Permanent> selectedPermanents = CardEffectCommons.GetPermanentsFromHashtable(_hashtable);
-                        List<CardSource> combinedSources = new List<CardSource>();
-
-                        combinedSources.AddRange(card.Owner.HandCards);
-                        combinedSources.AddRange(card.Owner.TrashCards);
 
                         bool FilterOutUnselectable(CardSource source)
                         {
                             foreach (Permanent permanent in selectedPermanents)
                             {
-                                return permanent.TopCard.GetCostItself + 1 == source.GetCostItself;
-                            }                                
+                                if (PermanentCondition(permanent))
+                                    return permanent.TopCard.GetCostItself + 1 == source.GetCostItself;
+                            }
 
                             return false;
                         }
 
-                        combinedSources = combinedSources.Filter(FilterOutUnselectable);
-
-                        if (combinedSources.Count > 0)
+                        if (selectedPermanents.Count > 0)
                         {
-                            if (selectedPermanents.Count > 0)
+                            if (card.Owner.HandCards.Count(FilterOutUnselectable) >= 1 || CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, FilterOutUnselectable))
                             {
+                                if (card.Owner.HandCards.Count(FilterOutUnselectable) >= 1 && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, FilterOutUnselectable))
+                                {
+                                    if (card.Owner.isYou)
+                                    {
+                                        GManager.instance.commandText.OpenCommandText("From which area do you play a card?");
+
+                                        List<Command_SelectCommand> command_SelectCommands = new List<Command_SelectCommand>()
+                                {
+                                    new Command_SelectCommand($"From hand", () => photonView.RPC("SetFromHand", RpcTarget.All, true), 0),
+                                    new Command_SelectCommand($"From trash", () => photonView.RPC("SetFromHand", RpcTarget.All, false), 1),
+                                };
+
+                                        GManager.instance.selectCommandPanel.SetUpCommandButton(command_SelectCommands);
+                                    }
+
+                                    else
+                                    {
+                                        GManager.instance.commandText.OpenCommandText("The opponent is choosing from which area to play a card.");
+
+                                        #region AIモード
+                                        if (GManager.instance.IsAI)
+                                        {
+                                            SetFromHand(RandomUtility.IsSucceedProbability(0.5f));
+                                        }
+                                        #endregion
+                                    }
+                                }
+
+                                else if (card.Owner.HandCards.Count(FilterOutUnselectable) == 0 && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, FilterOutUnselectable))
+                                {
+                                    SetFromHand(false);
+                                }
+
+                                else if (card.Owner.HandCards.Count(FilterOutUnselectable) >= 1 && card.Owner.TrashCards.Count(FilterOutUnselectable) == 0)
+                                {
+                                    SetFromHand(true);
+                                }
+
+                                yield return new WaitWhile(() => !endSelect);
+                                endSelect = false;
+
+                                GManager.instance.commandText.CloseCommandText();
+                                yield return new WaitWhile(() => GManager.instance.commandText.gameObject.activeSelf);
+
                                 List<CardSource> selectedCards = new List<CardSource>();
-
-                                SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                                selectCardEffect.SetUp(
-                                            canTargetCondition: CanPlayWickedGodCondition,
-                                            canTargetCondition_ByPreSelecetedList: null,
-                                            canEndSelectCondition: null,
-                                            canNoSelect: () => false,
-                                            selectCardCoroutine: SelectCardCoroutine,
-                                            afterSelectCardCoroutine: null,
-                                            message: "Select 1 [Wicked God] trait Digimon card to play.",
-                                            maxCount: 1,
-                                            canEndNotMax: false,
-                                            isShowOpponent: true,
-                                            mode: SelectCardEffect.Mode.Custom,
-                                            root: SelectCardEffect.Root.Custom,
-                                            customRootCardList: combinedSources,
-                                            canLookReverseCard: true,
-                                            selectPlayer: card.Owner,
-                                            cardEffect: activateClass);
-
-                                selectCardEffect.SetUpCustomMessage(
-                                    "Select 1 [Wicked God] trait Digimon card to play.",
-                                    "The opponent is selecting 1 [Wicked God] trait Digimon card to play.");
-                                selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
-
-                                yield return StartCoroutine(selectCardEffect.Activate());
 
                                 IEnumerator SelectCardCoroutine(CardSource cardSource)
                                 {
@@ -318,26 +331,77 @@ namespace DCGO.CardEffects.BT19
                                     yield return null;
                                 }
 
-                                if (CardEffectCommons.IsExistOnHand(selectedCards[0]))
+                                if (fromHand)
                                 {
-                                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                                        cardSources: selectedCards,
-                                        activateClass: activateClass,
-                                        payCost: false,
-                                        isTapped: false,
-                                        root: SelectCardEffect.Root.Hand,
-                                        activateETB: true));
+                                    int maxCount = 1;
+
+                                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                                    selectHandEffect.SetUp(
+                                        selectPlayer: card.Owner,
+                                        canTargetCondition: CanPlayWickedGodCondition,
+                                        canTargetCondition_ByPreSelecetedList: null,
+                                        canEndSelectCondition: null,
+                                        maxCount: maxCount,
+                                        canNoSelect: true,
+                                        canEndNotMax: false,
+                                        isShowOpponent: true,
+                                        selectCardCoroutine: SelectCardCoroutine,
+                                        afterSelectCardCoroutine: null,
+                                        mode: SelectHandEffect.Mode.Custom,
+                                        cardEffect: activateClass);
+
+                                    selectHandEffect.SetUpCustomMessage(
+                                        "Select 1 [Wicked God] trait Digimon card to play.",
+                                        "The opponent is selecting 1 [Wicked God] trait Digimon card to play.");
+                                    selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
+
+                                    yield return StartCoroutine(selectHandEffect.Activate());
                                 }
-                                else if (CardEffectCommons.IsExistOnTrash(selectedCards[0]))
+                                else
                                 {
-                                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                                        cardSources: selectedCards,
-                                        activateClass: activateClass,
-                                        payCost: false,
-                                        isTapped: false,
+                                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                                    selectCardEffect.SetUp(
+                                        canTargetCondition: CanPlayWickedGodCondition,
+                                        canTargetCondition_ByPreSelecetedList: null,
+                                        canEndSelectCondition: null,
+                                        canNoSelect: () => false,
+                                        selectCardCoroutine: SelectCardCoroutine,
+                                        afterSelectCardCoroutine: null,
+                                        message: "Select 1 [Wicked God] trait Digimon card to play.",
+                                        maxCount: 1,
+                                        canEndNotMax: false,
+                                        isShowOpponent: true,
+                                        mode: SelectCardEffect.Mode.Custom,
                                         root: SelectCardEffect.Root.Trash,
-                                        activateETB: true));
+                                        customRootCardList: null,
+                                        canLookReverseCard: true,
+                                        selectPlayer: card.Owner,
+                                        cardEffect: activateClass);
+
+                                    selectCardEffect.SetUpCustomMessage(
+                                        "Select 1 [Wicked God] trait Digimon card to play.",
+                                        "The opponent is selecting 1 [Wicked God] trait Digimon card to play.");
+                                    selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
+
+                                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
                                 }
+
+                                SelectCardEffect.Root root = SelectCardEffect.Root.Hand;
+
+                                if (!fromHand)
+                                {
+                                    root = SelectCardEffect.Root.Trash;
+                                }
+
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
+                                    cardSources: selectedCards,
+                                    activateClass: activateClass,
+                                    payCost: false,
+                                    isTapped: false,
+                                    root: root,
+                                    activateETB: true));
                             }
                         }
                     }
@@ -353,6 +417,16 @@ namespace DCGO.CardEffects.BT19
             #endregion
 
             return cardEffects;
+        }
+
+        bool endSelect = false;
+        bool fromHand = false;
+
+        [PunRPC]
+        public void SetFromHand(bool fromHand)
+        {
+            this.fromHand = fromHand;
+            endSelect = true;
         }
     }
 }

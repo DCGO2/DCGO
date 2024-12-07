@@ -160,7 +160,8 @@ namespace DCGO.CardEffects.LM
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card);
+                           CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card) &&
+                           activateClass.IsSameEffect(CardEffectCommons.GetCardEffectFromHashtable(hashtable));
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
