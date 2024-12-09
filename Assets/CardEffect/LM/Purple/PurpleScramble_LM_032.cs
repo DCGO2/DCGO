@@ -36,7 +36,8 @@ namespace DCGO.CardEffects.LM
 
                 bool CanSelectOwnPermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) && card.Owner.HandCards.Where(CanSelectHandCardCondition).Any(cardSource => cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass));
+                    return CanSelectHandCardCondition(permanent.TopCard) && 
+                           card.Owner.HandCards.Where(CanSelectHandCardCondition).Any(cardSource => cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass));
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -90,17 +91,17 @@ namespace DCGO.CardEffects.LM
             }
             #endregion
 
-            #region Main Delay
+            #region Start of Turn Delay
             if (timing == EffectTiming.OnStartTurn)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Return a purple Digimon to top of the deck from trash, then play a purple Digimon from trash.", CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[Main] <Delay> Return 1 purple Digimon card from your trash to the top of the deck. Then, if you don't have a Digimon, you may play 1 purple Digimon card with 2000 DP or less from your trash without paying the cost.";
+                    return "[Start of your Turn] If your opponent has a Digimon, <Delay>.\r\n• Return 1 purple Digimon card from your trash to the top of the deck. Then, if you don't have a Digimon, you may play 1 purple Digimon card with 2000 DP or less from your trash without paying the cost.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
