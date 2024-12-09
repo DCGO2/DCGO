@@ -182,6 +182,8 @@ namespace DCGO.CardEffects.BT19
             #region All Turns - Delay
             if (timing == EffectTiming.WhenRemoveField)
             {
+                int playCostValue = -1;
+
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 [Wicked God] trait Digimon card from hand or trash", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
@@ -200,18 +202,7 @@ namespace DCGO.CardEffects.BT19
                     }
 
                     return false;
-                }
-
-                bool CanPlayWickedGodCondition(CardSource cardSource)
-                {
-                    if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
-                    {
-                        return cardSource.IsDigimon && 
-                               cardSource.ContainsTraits("Wicked God");
-                    }
-
-                    return false;
-                }                
+                }            
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
@@ -263,22 +254,31 @@ namespace DCGO.CardEffects.BT19
                     {
                         List<Permanent> selectedPermanents = CardEffectCommons.GetPermanentsFromHashtable(_hashtable);
 
-                        bool FilterOutUnselectable(CardSource source)
+                        bool CanPlayWickedGodCondition(CardSource cardSource)
                         {
                             foreach (Permanent permanent in selectedPermanents)
                             {
                                 if (PermanentCondition(permanent))
-                                    return permanent.TopCard.GetCostItself + 1 == source.GetCostItself;
-                            }
+                                {
+                                    if(permanent.TopCard.GetCostItself + 1 == cardSource.GetCostItself)
+                                    {
+                                        if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
+                                        {
+                                            return cardSource.IsDigimon &&
+                                                   cardSource.ContainsTraits("Wicked God");
+                                        }
+                                    }
+                                }
+                            }                         
 
                             return false;
                         }
 
                         if (selectedPermanents.Count > 0)
                         {
-                            if (card.Owner.HandCards.Count(FilterOutUnselectable) >= 1 || CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, FilterOutUnselectable))
+                            if (card.Owner.HandCards.Count(CanPlayWickedGodCondition) >= 1 || CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanPlayWickedGodCondition))
                             {
-                                if (card.Owner.HandCards.Count(FilterOutUnselectable) >= 1 && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, FilterOutUnselectable))
+                                if (card.Owner.HandCards.Count(CanPlayWickedGodCondition) >= 1 && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanPlayWickedGodCondition))
                                 {
                                     if (card.Owner.isYou)
                                     {
@@ -306,12 +306,12 @@ namespace DCGO.CardEffects.BT19
                                     }
                                 }
 
-                                else if (card.Owner.HandCards.Count(FilterOutUnselectable) == 0 && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, FilterOutUnselectable))
+                                else if (card.Owner.HandCards.Count(CanPlayWickedGodCondition) == 0 && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanPlayWickedGodCondition))
                                 {
                                     SetFromHand(false);
                                 }
 
-                                else if (card.Owner.HandCards.Count(FilterOutUnselectable) >= 1 && card.Owner.TrashCards.Count(FilterOutUnselectable) == 0)
+                                else if (card.Owner.HandCards.Count(CanPlayWickedGodCondition) >= 1 && card.Owner.TrashCards.Count(CanPlayWickedGodCondition) == 0)
                                 {
                                     SetFromHand(true);
                                 }
