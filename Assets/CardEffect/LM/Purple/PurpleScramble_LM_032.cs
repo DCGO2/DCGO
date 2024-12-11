@@ -193,7 +193,7 @@ namespace DCGO.CardEffects.LM
                             }
                         }
 
-                        if(card.Owner.GetBattleAreaPermanents().Count == 0)
+                        if(card.Owner.GetBattleAreaDigimons().Count == 0)
                         {
                             if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, (cardSource) => CanSelectCardCondition1(cardSource)))
                             {
