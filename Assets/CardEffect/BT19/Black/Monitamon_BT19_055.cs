@@ -15,7 +15,7 @@ namespace DCGO.CardEffects.BT19
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Reveal the top 3 cards of your deck, add 1, place 1 under a tamer", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -64,7 +64,7 @@ namespace DCGO.CardEffects.BT19
                                 canTargetCondition:SelectKnightmonOrTwilight,
                                 message: "Select 1 card with [Knightmon] in its text or the [Twilight] trait.",
                                 mode: SelectCardEffect.Mode.Custom,
-                                maxCount: tamerCount,
+                                maxCount: 1,
                                 selectCardCoroutine: PlaceUnderTamer),
                        },
                        remainingCardsPlace: RemainingCardsPlace.DeckBottom,
@@ -76,34 +76,37 @@ namespace DCGO.CardEffects.BT19
                         yield return null;
                     }
 
-                    if(CardEffectCommons.HasMatchConditionOwnersPermanent(card, MyTamer))
+                    if(tuckedCard != null)
                     {
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: MyTamer,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: 1,
-                            canNoSelect: false,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: SelectTamerCoroutine,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will trash digivolution cards.", "The opponent is selecting 1 Digimon that will trash digivolution cards.");
-
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                        IEnumerator SelectTamerCoroutine(Permanent permanent)
+                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, MyTamer))
                         {
-                            Permanent selectedPermanent = permanent;
+                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                            if (selectedPermanent != null)
+                            selectPermanentEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: MyTamer,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: 1,
+                                canNoSelect: false,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: SelectTamerCoroutine,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Custom,
+                                cardEffect: activateClass);
+
+                            selectPermanentEffect.SetUpCustomMessage("Select 1 Tamer that will add card to sources.", "The opponent is selecting 1 Tamer that will add card to sources.");
+
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                            IEnumerator SelectTamerCoroutine(Permanent permanent)
                             {
-                                yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(new List<CardSource> { tuckedCard }, activateClass));
+                                Permanent selectedPermanent = permanent;
+
+                                if (selectedPermanent != null)
+                                {
+                                    yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(new List<CardSource> { tuckedCard }, activateClass));
+                                }
                             }
                         }
                     }

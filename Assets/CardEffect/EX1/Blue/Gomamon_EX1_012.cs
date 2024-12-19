@@ -29,10 +29,7 @@ public class Gomamon_EX1_012 : CEntity_Effect
             {
                 if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                 {
-                    if (permanent.DigivolutionCards.Count((cardSource) => !cardSource.CanNotTrashFromDigivolutionCards(activateClass)) >= 1)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
 
                 return false;

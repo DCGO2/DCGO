@@ -93,7 +93,7 @@ namespace DCGO.CardEffects.BT19
                             yield return null;
                         }
 
-                        if(trashed.Count > 2)
+                        if(trashed.Count >= 2)
                         {
                             if (CardEffectCommons.HasMatchConditionPermanent(IsTamer))
                             {
@@ -182,7 +182,7 @@ namespace DCGO.CardEffects.BT19
                             yield return null;
                         }
 
-                        if (trashed.Count > 2)
+                        if (trashed.Count >= 2)
                         {
                             if (CardEffectCommons.HasMatchConditionPermanent(IsTamer))
                             {

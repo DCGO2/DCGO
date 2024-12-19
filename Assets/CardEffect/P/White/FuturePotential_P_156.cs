@@ -49,7 +49,7 @@ namespace DCGO.CardEffects.P
 
                 bool HasTamer(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsOwnerPermanent(permanent, card))
+                    if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
                         return permanent.IsTamer;
 
                     return false;

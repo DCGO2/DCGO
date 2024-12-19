@@ -509,7 +509,7 @@ public class DufutomonXAntibody_EX5_043 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Return 1 Digimo to hand", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Return 1 Digimon to hand", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
             activateClass.SetHashString("Bounce_EX5_043");
             cardEffects.Add(activateClass);

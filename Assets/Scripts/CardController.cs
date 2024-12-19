@@ -2478,6 +2478,8 @@ public class IPlacePermanentToDigivolutionCards
                             yield return ContinuousController.instance.StartCoroutine(getDigivolutionPermanent.AddDigivolutionCardsBottom(digivolutionCards, _cardEffect, _skipEffectAndActivateSkill));
                         }
 
+                        cardSource.cEntity_EffectController.InitUseCountThisTurn();
+
                         addedDigivolutionCards.Add(cardSource);
 
                         Placed = true;

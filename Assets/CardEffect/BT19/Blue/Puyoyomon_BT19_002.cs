@@ -72,7 +72,7 @@ namespace DCGO.CardEffects.BT19
                             canEndNotMax: false,
                             selectPermanentCoroutine: null,
                             afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.PutLibraryBottom,
+                            mode: SelectPermanentEffect.Mode.Bounce,
                             cardEffect: activateClass);
 
                         selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to bottom deck.",

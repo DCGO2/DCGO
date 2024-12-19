@@ -247,6 +247,7 @@ namespace DCGO.CardEffects.LM
                 activateClass.SetUpICardEffect("<De-Digivolve 1> 1 of your opponent's Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetIsInheritedEffect(true);
+                activateClass.SetHashString("WhenAttack_LM-025");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()

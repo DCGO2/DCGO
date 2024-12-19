@@ -233,6 +233,7 @@ namespace DCGO.CardEffects.LM
                 activateClass.SetUpICardEffect("Unsuspend this Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateAllTurnsCondition, ActivateCoroutine, 1, true, EffectAllTurnsDiscription());
                 activateClass.SetIsInheritedEffect(true);
+                activateClass.SetHashString("Unsuspend_LM-004");
                 cardEffects.Add(activateClass);
 
                 string EffectAllTurnsDiscription()

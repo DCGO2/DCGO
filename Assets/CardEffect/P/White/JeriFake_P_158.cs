@@ -102,8 +102,11 @@ namespace DCGO.CardEffects.P
                 {
                     if (cardSource.EqualsTraits("D-Reaper"))
                     {
-                        if(cardSource.GetCostItself <= getMaxCost())
-                            return true;
+                        if (cardSource.IsDigimon)
+                        {
+                            if (cardSource.GetCostItself <= getMaxCost())
+                                return true;
+                        }
                     }
 
                     return false;
