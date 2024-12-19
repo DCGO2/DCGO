@@ -31,7 +31,8 @@ public class DesperadeBluster_BT3_100 : CEntity_Effect
                 {
                     if (!permanent.TopCard.CanNotBeAffected(activateClass))
                     {
-                        return true;
+                        if(permanent.DigivolutionCards.Count == 0)
+                            return true;
                     }
                 }
 

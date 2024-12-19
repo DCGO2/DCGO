@@ -15,11 +15,6 @@ namespace DCGO.CardEffects.BT17
             // Takuya Kanbara
             if (timing == EffectTiming.None)
             {
-                bool Condition()
-                {
-                    return card.Owner.HandCards.Contains(card);
-                }
-
                 bool PermanentCondition(Permanent targetPermanent)
                 {
                     return targetPermanent.TopCard.EqualsCardName("Takuya Kanbara") ||
@@ -28,7 +23,7 @@ namespace DCGO.CardEffects.BT17
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
                     permanentCondition: PermanentCondition, digivolutionCost: 2, ignoreDigivolutionRequirement: false,
-                    card: card, condition: Condition));
+                    card: card, condition: null));
             }
 
             // BurningGreymon

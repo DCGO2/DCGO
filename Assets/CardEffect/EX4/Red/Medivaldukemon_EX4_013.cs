@@ -77,7 +77,7 @@ public class Medivaldukemon_EX4_013 : CEntity_Effect
 
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        Permanent selectedPermanent = card.PermanentOfThisCard();
+                        Permanent selectedPermanent = null;
 
                         ActivateClass activateClass1 = new ActivateClass();
                         activateClass1.SetUpICardEffect("Return the Digimon to hand", CanUseCondition1, card);
@@ -91,6 +91,8 @@ public class Medivaldukemon_EX4_013 : CEntity_Effect
 
                         bool CanActivateCondition1(Hashtable hashtable)
                         {
+                            selectedPermanent = card.PermanentOfThisCard();
+
                             if (selectedPermanent.TopCard != null)
                             {
                                 if (!selectedPermanent.CannotReturnToHand(activateClass1))

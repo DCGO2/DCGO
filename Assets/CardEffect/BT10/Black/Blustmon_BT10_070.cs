@@ -24,7 +24,7 @@ public class Blustmon_BT10_070 : CEntity_Effect
             {
                 if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
-                    if (card.PermanentOfThisCard().DigivolutionCards.Count == 3)
+                    if (card.PermanentOfThisCard().DigivolutionCards.Count >= 3)
                     {
                         return true;
                     }

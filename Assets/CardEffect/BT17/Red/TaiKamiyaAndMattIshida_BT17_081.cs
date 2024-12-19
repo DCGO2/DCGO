@@ -33,12 +33,12 @@ namespace DCGO.CardEffects.BT17
 
                 bool IsGreymonPermanentCondition(Permanent permanent)
                 {
-                    return permanent.IsDigimon && permanent.TopCard.ContainsCardName("Greymon");
+                    return permanent.IsDigimon && permanent.TopCard.HasGreymonName;
                 }
 
                 bool IsGarurumonPermanentCondition(Permanent permanent)
                 {
-                    return permanent.IsDigimon && permanent.TopCard.ContainsCardName("Garurumon");
+                    return permanent.IsDigimon && permanent.TopCard.HasGarurumonName;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -61,8 +61,7 @@ namespace DCGO.CardEffects.BT17
                     {
                         if (CardEffectCommons.CanActivateSuspendCostEffect(card))
                         {
-                            return CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsGreymonPermanentCondition) ||
-                                   CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsGarurumonPermanentCondition);
+                           return true;
                         }
                     }
 

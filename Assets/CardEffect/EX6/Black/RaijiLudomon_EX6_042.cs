@@ -365,7 +365,7 @@ namespace DCGO.CardEffects.EX6
                                     canTargetCondition: HasLegendArmsTrait,
                                     canTargetCondition_ByPreSelecetedList: null,
                                     canEndSelectCondition: null,
-                                    canNoSelect: () => true,
+                                    canNoSelect: () => false,
                                     selectCardCoroutine: SelectCardCoroutine,
                                     afterSelectCardCoroutine: null,
                                     message: "Select cards to discard.",

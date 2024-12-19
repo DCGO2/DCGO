@@ -329,9 +329,12 @@ namespace DCGO.CardEffects.EX6
                 {
                     if (CardEffectCommons.CanActivateOnDeletion(card))
                     {
-                        if (card.PermanentJustBeforeRemoveField.CardTraitsJustBeforeRemoveField.Contains("Unidentified"))
+                        if (card.Owner.fieldCardFrames.Count((frame) => frame.IsEmptyFrame()) >= 1)
                         {
-                            return true;
+                            if (card.PermanentJustBeforeRemoveField.CardTraitsJustBeforeRemoveField.Contains("Unidentified"))
+                            {
+                                return true;
+                            }
                         }
                     }
                     return false;
