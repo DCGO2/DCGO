@@ -17,6 +17,7 @@ public class BelzebmonBlastMode_ST14_10 : CEntity_Effect
             ActivateClass activateClass = new ActivateClass();
             activateClass.SetUpICardEffect("Delete 1 Digimon", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+            activateClass.SetIsDigimonEffect(true);
             cardEffects.Add(activateClass);
 
             string EffectDiscription()

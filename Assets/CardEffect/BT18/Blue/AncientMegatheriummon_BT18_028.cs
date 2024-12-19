@@ -123,30 +123,20 @@ namespace DCGO.CardEffects.BT18
                             targetPermanent: selectedPermanent,
                             trashCount: 2,
                             isFromTop: false,
-                            activateClass: activateClass));
+                            activateClass: activateClass));    
+                    }
 
-                        if (!selectedPermanent.HasNoDigivolutionCards) continue;
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotSuspendPlayerEffect(
+                        permanentCondition: PermanentCanNotSuspendCondition,
+                        effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                        activateClass: activateClass,
+                        isOnlyActivePhase: false,
+                        effectName: "Can't Suspend"));
 
-                        CanNotSuspendClass canNotSuspendClass = new CanNotSuspendClass();
-                        canNotSuspendClass.SetUpICardEffect("Can't Suspend", CanUseCanNotSuspendCondition, card);
-                        canNotSuspendClass.SetUpCanNotSuspendClass(PermanentCondition: PermanentCanNotSuspendCondition);
-                        selectedPermanent.UntilOwnerTurnEndEffects.Add(_ => canNotSuspendClass);
-
-                        if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>()
-                                .CreateDebuffEffect(selectedPermanent));
-                        }
-
-                        bool CanUseCanNotSuspendCondition(Hashtable hashtableCanNotSuspend)
-                        {
-                            return selectedPermanent.TopCard != null && !selectedPermanent.TopCard.CanNotBeAffected(activateClass);
-                        }
-
-                        bool PermanentCanNotSuspendCondition(Permanent permanentCanNotSuspend)
-                        {
-                            return permanentCanNotSuspend == selectedPermanent;
-                        }
+                    bool PermanentCanNotSuspendCondition(Permanent permanentCanNotSuspend)
+                    {
+                        return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanentCanNotSuspend,card) &&
+                               !permanentCanNotSuspend.HasNoDigivolutionCards;
                     }
                 }
             }
@@ -182,29 +172,19 @@ namespace DCGO.CardEffects.BT18
                             trashCount: 2,
                             isFromTop: false,
                             activateClass: activateClass));
+                    }
 
-                        if (!selectedPermanent.HasNoDigivolutionCards) continue;
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotSuspendPlayerEffect(
+                        permanentCondition: PermanentCanNotSuspendCondition,
+                        effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                        activateClass: activateClass,
+                        isOnlyActivePhase: false,
+                        effectName: "Can't Suspend"));
 
-                        CanNotSuspendClass canNotSuspendClass = new CanNotSuspendClass();
-                        canNotSuspendClass.SetUpICardEffect("Can't Suspend", CanUseCanNotSuspendCondition, card);
-                        canNotSuspendClass.SetUpCanNotSuspendClass(PermanentCondition: PermanentCanNotSuspendCondition);
-                        selectedPermanent.UntilOwnerTurnEndEffects.Add(_ => canNotSuspendClass);
-
-                        if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>()
-                                .CreateDebuffEffect(selectedPermanent));
-                        }
-
-                        bool CanUseCanNotSuspendCondition(Hashtable hashtableCanNotSuspend)
-                        {
-                            return selectedPermanent.TopCard != null && !selectedPermanent.TopCard.CanNotBeAffected(activateClass);
-                        }
-
-                        bool PermanentCanNotSuspendCondition(Permanent permanentCanNotSuspend)
-                        {
-                            return permanentCanNotSuspend == selectedPermanent;
-                        }
+                    bool PermanentCanNotSuspendCondition(Permanent permanentCanNotSuspend)
+                    {
+                        return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanentCanNotSuspend, card) &&
+                               !permanentCanNotSuspend.HasNoDigivolutionCards;
                     }
                 }
             }

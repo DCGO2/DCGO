@@ -251,7 +251,7 @@ namespace DCGO.CardEffects.LM
                         if (revealedCards[0].CardKind.Equals(selectedCategory))
                         {
                             CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
-                            canNotAffectedClass.SetUpICardEffect("Isn't affected by opponent's Digimon's effects", CanUseCondition, card);
+                            canNotAffectedClass.SetUpICardEffect($"Isn't affected by opponent's {selectedCategory}'s effects", CanUseCondition, card);
                             canNotAffectedClass.SetUpCanNotAffectedClass(CardCondition: CardCondition, SkillCondition: SkillCondition);
                             selectedPermanent.UntilOpponentTurnEndEffects.Add((_timing) => canNotAffectedClass);
 
@@ -273,10 +273,7 @@ namespace DCGO.CardEffects.LM
                                 {
                                     if (CardEffectCommons.IsExistOnBattleArea(card))
                                     {
-                                        if (cardSource == card.PermanentOfThisCard().TopCard)
-                                        {
-                                            return true;
-                                        }
+                                        return true;
                                     }
                                 }
 

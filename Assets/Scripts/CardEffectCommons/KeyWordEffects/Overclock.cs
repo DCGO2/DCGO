@@ -76,20 +76,23 @@ public partial class CardEffectCommons
                 {
                     Permanent attacker = cardSource.PermanentOfThisCard();
 
-                    if (attacker.CanAttack(activateClass, withoutTap: true))
+                    if(attacker != null)
                     {
-                        SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
+                        if (attacker.CanAttack(activateClass, withoutTap: true))
+                        {
+                            SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
 
-                        selectAttackEffect.SetUp(
-                            attacker: attacker,
-                            canAttackPlayerCondition: () => true,
-                            defenderCondition: _ => false,
-                            cardEffect: activateClass);
+                            selectAttackEffect.SetUp(
+                                attacker: attacker,
+                                canAttackPlayerCondition: () => true,
+                                defenderCondition: _ => false,
+                                cardEffect: activateClass);
 
-                        selectAttackEffect.SetWithoutTap();
-                        selectAttackEffect.SetCanNotSelectNotAttack();
+                            selectAttackEffect.SetWithoutTap();
+                            selectAttackEffect.SetCanNotSelectNotAttack();
 
-                        yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
+                            yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
+                        }
                     }
                 }
             }

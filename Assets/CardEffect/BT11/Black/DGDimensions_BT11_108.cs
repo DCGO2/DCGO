@@ -99,7 +99,7 @@ public class DGDimensions_BT11_108 : CEntity_Effect
                 {
                     if (permanent.CanSelectBySkill(activateClass))
                     {
-                        if (permanent.TopCard.GetCostItself <= 6)
+                        if (permanent.TopCard.HasPlayCost && permanent.TopCard.GetCostItself <= 6)
                         {
                             return true;
                         }

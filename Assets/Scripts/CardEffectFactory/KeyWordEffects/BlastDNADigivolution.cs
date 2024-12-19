@@ -29,21 +29,9 @@ public partial class CardEffectFactory
         if (card.Owner.GetBattleAreaPermanents().Count == 0) return null;
         if (card.Owner.HandCards.Count < 2) return null;
 
-        List<Permanent> fieldPermanents = card.Owner.GetBattleAreaDigimons();
+        List<Permanent> fieldPermanents = new List<Permanent>();
         List<Permanent> permanentSources = new List<Permanent>();
         List<CardSource> handSources = new List<CardSource>();
-
-        foreach (BlastDNACondition DNACondition in blastDNAConditions)
-        {
-            DNACondition.Permanents = fieldPermanents.Filter(permanent => permanent.TopCard.EqualsCardName(DNACondition.Name));
-            DNACondition.CardSources = card.Owner.HandCards.Filter(cardSource => cardSource.EqualsCardName(DNACondition.Name));
-
-            permanentSources.AddRange(DNACondition.Permanents);
-            handSources.AddRange(DNACondition.CardSources);
-        }
-
-        FilterDNAPermanents();
-        FilterDNAHandSources();
 
         void FilterDNAPermanents()
         {
@@ -65,6 +53,20 @@ public partial class CardEffectFactory
 
         bool HasValidDNATargets()
         {
+            fieldPermanents = card.Owner.GetBattleAreaDigimons();
+
+            foreach (BlastDNACondition DNACondition in blastDNAConditions)
+            {
+                DNACondition.Permanents = fieldPermanents.Filter(permanent => permanent.TopCard.EqualsCardName(DNACondition.Name));
+                DNACondition.CardSources = card.Owner.HandCards.Filter(cardSource => cardSource.EqualsCardName(DNACondition.Name));
+
+                permanentSources.AddRange(DNACondition.Permanents);
+                handSources.AddRange(DNACondition.CardSources);
+            }
+
+            FilterDNAPermanents();
+            FilterDNAHandSources();
+
             if (blastDNAConditions[0].Permanents.Count(permanent => !permanent.TopCard.CanNotEvolve(permanent)) > 0 && blastDNAConditions[1].CardSources.Count > 0)
                 return true;
 
@@ -193,18 +195,13 @@ public partial class CardEffectFactory
                 selectedCardSource = cardSource;
 
                 Permanent playedPermanent;
-                int frameID = -1; 
+                int frameID = -1;
 
-                foreach (FieldCardFrame fieldCardFrame in selectedCardSource.Owner.fieldCardFrames)
+                FieldCardFrame preferredFrame = selectedCardSource.PreferredFrame();
+
+                if (preferredFrame != null)
                 {
-                    if (card.CanPlayCardTargetFrame(fieldCardFrame, false, null))
-                    {
-                        if (fieldCardFrame.IsEmptyFrame())
-                        {
-                            frameID = fieldCardFrame.FrameID;
-                            break;
-                        }
-                    }
+                    frameID = preferredFrame.FrameID;
                 }
 
                 if (0 <= frameID && frameID < card.Owner.fieldCardFrames.Count)
@@ -214,7 +211,18 @@ public partial class CardEffectFactory
                     yield return ContinuousController.instance.StartCoroutine(CardObjectController.CreateNewPermanent(playedPermanent, frameID));
                 }
 
-                int[] JogressEvoRootsFrameIDs = { selectedPermanent.PermanentFrame.FrameID, selectedCardSource.PermanentOfThisCard().PermanentFrame.FrameID };
+                int[] JogressEvoRootsFrameIDs = { 0, 0 };
+
+                if (selectedPermanent.TopCard.EqualsCardName(blastDNAConditions[0].Name))
+                {
+                    JogressEvoRootsFrameIDs[0] = selectedPermanent.PermanentFrame.FrameID;
+                    JogressEvoRootsFrameIDs[1] = selectedCardSource.PermanentOfThisCard().PermanentFrame.FrameID;
+                }
+                else
+                {
+                    JogressEvoRootsFrameIDs[0] = selectedCardSource.PermanentOfThisCard().PermanentFrame.FrameID;
+                    JogressEvoRootsFrameIDs[1] = selectedPermanent.PermanentFrame.FrameID;
+                }
 
                 if (card.CanPlayJogress(true))
                 {

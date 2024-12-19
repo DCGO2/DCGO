@@ -95,7 +95,7 @@ public class Gabumon_BT6_019 : CEntity_Effect
                 {
                     if (CardEffectCommons.CanUnsuspend(card.PermanentOfThisCard()))
                     {
-                        if (card.PermanentOfThisCard().TopCard.CardNames.Contains("Gabumon-BondofFriendship"))
+                        if (card.PermanentOfThisCard().TopCard.ContainsCardName("Gabumon - Bond of Friendship"))
                         {
                             return true;
                         }

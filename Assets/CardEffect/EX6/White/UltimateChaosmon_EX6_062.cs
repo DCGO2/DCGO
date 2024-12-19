@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.EX6
             {
                 List<PartitionCondition> partitionConditions = new List<PartitionCondition>();
                 partitionConditions.Add(new PartitionCondition(6, CardColor.Black, CardColor.Yellow));
-                partitionConditions.Add(new PartitionCondition(6, CardColor.Yellow, CardColor.Purple));
+                partitionConditions.Add(new PartitionCondition(6, CardColor.Green, CardColor.Purple));
 
                 cardEffects.Add(CardEffectFactory.PartitionSelfEffect(
                     isInheritedEffect: false,

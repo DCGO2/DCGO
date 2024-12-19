@@ -58,26 +58,21 @@ namespace DCGO.CardEffects.BT19
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (card.Owner.SecurityCards.Count >= 1)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    CardSource topCard = card.Owner.SecurityCards[0];
+                    if (card.Owner.SecurityCards.Count >= 1)
+                    {
+                        CardSource topCard = card.Owner.SecurityCards[0];
 
-                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddHandCards(new List<CardSource>() { topCard }, false, activateClass));
+                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddHandCards(new List<CardSource>() { topCard }, false, activateClass));
 
-                    yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
-                        player: card.Owner,
-                        refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
+                        yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
+                            player: card.Owner,
+                            refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
+                    }                        
 
                     if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.EqualsCardName("Wizardmon") || cardSource.EqualsCardName("X Antibody")) >= 1)
                     {
@@ -167,7 +162,7 @@ namespace DCGO.CardEffects.BT19
                     {
                         if (cardSource.CardColors.Contains(CardColor.Yellow) || cardSource.CardColors.Contains(CardColor.Purple))
                         {
-                            if (cardSource.HasPlayCost && cardSource.GetCostItself <= 5)
+                            if (cardSource.HasUseCost && cardSource.GetCostItself <= 5)
                             {
                                 return true;
                             }
@@ -179,28 +174,23 @@ namespace DCGO.CardEffects.BT19
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (card.Owner.SecurityCards.Count >= 1)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    CardSource topCard = card.Owner.SecurityCards[0];
+                    if (card.Owner.SecurityCards.Count >= 1)
+                    {
+                        CardSource topCard = card.Owner.SecurityCards[0];
 
-                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddHandCards(new List<CardSource>() { topCard }, false, activateClass));
+                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddHandCards(new List<CardSource>() { topCard }, false, activateClass));
 
-                    yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
-                        player: card.Owner,
-                        refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
+                        yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
+                            player: card.Owner,
+                            refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
+                    }
 
-                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.EqualsCardName("Wizardmon") || cardSource.EqualsCardName("XAntibody")) >= 1)
+                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.EqualsCardName("Wizardmon") || cardSource.EqualsCardName("X Antibody")) >= 1)
                     {
                         if (card.Owner.CanAddSecurity(activateClass))
                         {
@@ -289,7 +279,8 @@ namespace DCGO.CardEffects.BT19
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (card.CardColors.Contains(CardColor.Yellow) && (card.ContainsTraits("Data") || card.ContainsTraits("Witchelny")))
+                        Permanent thisPermanent = card.PermanentOfThisCard();
+                        if (thisPermanent.TopCard.CardColors.Contains(CardColor.Yellow) && (thisPermanent.TopCard.ContainsTraits("Data") || thisPermanent.TopCard.ContainsTraits("Witchelny")))
                         {
                             if (card.Owner.SecurityCards.Count >= 1)
                                 return true;

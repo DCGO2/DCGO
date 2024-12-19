@@ -24,7 +24,8 @@ public partial class CardEffectFactory
             {
                 if (card.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass))
                 {
-                    return true;
+                    if(!permanent.TopCard.CanNotBeAffected(activateClass))
+                        return true;
                 }
             }
 

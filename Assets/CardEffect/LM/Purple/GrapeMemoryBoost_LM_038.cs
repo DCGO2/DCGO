@@ -20,12 +20,7 @@ namespace DCGO.CardEffects.LM
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.TopCard.CardColors.Contains(CardColor.Green)))
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return CardEffectCommons.HasMatchConditionPermanent((permanent) => permanent.TopCard.Owner == card.Owner && permanent.TopCard.CardColors.Contains(CardColor.Green), true);
                 }
 
                 bool CardCondition(CardSource cardSource)

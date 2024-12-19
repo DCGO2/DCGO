@@ -12,19 +12,7 @@ namespace DCGO.CardEffects.BT18
 
             #region Shared
 
-            int OpponentTrashColorCount()
-            {
-                List<CardColor> cardColors = new List<CardColor>();
-
-                foreach (CardSource cardSource in card.Owner.Enemy.TrashCards)
-                {
-                    cardColors.AddRange(cardSource.CardColors);
-                }
-
-                cardColors = cardColors.Distinct().ToList();
-
-                return cardColors.Count;
-            }
+            
 
             #endregion
 
@@ -35,6 +23,20 @@ namespace DCGO.CardEffects.BT18
                 bool Condition()
                 {
                     return !CardEffectCommons.IsExistOnField(card);
+                }
+
+                int OpponentTrashColorCount()
+                {
+                    List<CardColor> cardColors = new List<CardColor>();
+
+                    foreach (CardSource cardSource in card.Owner.Enemy.TrashCards)
+                    {
+                        cardColors.AddRange(cardSource.CardColors);
+                    }
+
+                    cardColors = cardColors.Distinct().ToList();
+
+                    return cardColors.Count;
                 }
 
                 bool PermanentCondition(Permanent targetPermanent)
@@ -67,7 +69,7 @@ namespace DCGO.CardEffects.BT18
 
             #region Your Turn
 
-            /*if (timing == EffectTiming.None)
+            if (timing == EffectTiming.None)
             {
                 bool Condition()
                 {
@@ -75,12 +77,27 @@ namespace DCGO.CardEffects.BT18
                            CardEffectCommons.IsOwnerTurn(card);
                 }
 
-                cardEffects.Add(CardEffectFactory.ChangeSelfSAttackStaticEffect(changeValue: OpponentTrashColorCount() / 2,
+                int OpponentTrashColorCount()
+                {
+                    List<CardColor> cardColors = new List<CardColor>();
+
+                    foreach (CardSource cardSource in card.Owner.Enemy.TrashCards)
+                    {
+                        cardColors.AddRange(cardSource.BaseCardColorsFromEntity);
+                    }
+
+                    cardColors = cardColors.Distinct().ToList();
+
+                    return cardColors.Count / 2;
+                }
+
+
+                cardEffects.Add(CardEffectFactory.ChangeSelfSAttackStaticEffect(changeValue: OpponentTrashColorCount(),
                     isInheritedEffect: false, card: card, condition: Condition));
 
-                cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect(changeValue: 2000 * (OpponentTrashColorCount() / 2),
+                cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect(changeValue: 2000 * (OpponentTrashColorCount()),
                     isInheritedEffect: false, card: card, condition: Condition));
-            }*/
+            }
 
             #endregion
 

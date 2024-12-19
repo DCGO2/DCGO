@@ -28,11 +28,6 @@ namespace DCGO.CardEffects.BT18
             // Koichi Kimura
             if (timing == EffectTiming.None)
             {
-                bool Condition()
-                {
-                    return card.Owner.HandCards.Contains(card);
-                }
-
                 bool PermanentCondition(Permanent targetPermanent)
                 {
                     return targetPermanent.TopCard.EqualsCardName("Koichi Kimura");
@@ -40,7 +35,7 @@ namespace DCGO.CardEffects.BT18
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
                     permanentCondition: PermanentCondition, digivolutionCost: 2, ignoreDigivolutionRequirement: false,
-                    card: card, condition: Condition));
+                    card: card, condition: null));
             }
 
             // Velgrmon
@@ -153,9 +148,20 @@ namespace DCGO.CardEffects.BT18
                         CardColor chosenColor = (CardColor)GManager.instance.userSelectionManager.SelectedIntValue;
 
                         ChangeBaseCardColorClass changeBaseCardNameClass = new ChangeBaseCardColorClass();
-                        changeBaseCardNameClass.SetUpICardEffect("Original card color is changed", CanUseChangeColorCondition, card);
+                        changeBaseCardNameClass.SetUpICardEffect($"Original card color is changed: {chosenColor}", CanUseChangeColorCondition, card);
                         changeBaseCardNameClass.SetUpChangeBaseCardColorClass(ChangeBaseCardColors: ChangeBaseCardColors);
                         selectedPermanent.UntilOwnerTurnEndEffects.Add(_ => changeBaseCardNameClass);
+
+                        #region Log
+                        string log = "";
+
+                        log += $"\nChanged Card Color to {chosenColor}:";
+                        log += $"\n{selectedPermanent.TopCard.BaseENGCardNameFromEntity}({selectedPermanent.TopCard.CardID})";
+
+                        log += "\n";
+
+                        PlayLog.OnAddLog?.Invoke(log);
+                        #endregion
 
                         bool CanUseChangeColorCondition(Hashtable hashtableColor)
                         {
@@ -256,9 +262,20 @@ namespace DCGO.CardEffects.BT18
                         CardColor chosenColor = (CardColor)GManager.instance.userSelectionManager.SelectedIntValue;
 
                         ChangeBaseCardColorClass changeBaseCardNameClass = new ChangeBaseCardColorClass();
-                        changeBaseCardNameClass.SetUpICardEffect("Original card color is changed", CanUseChangeColorCondition, card);
+                        changeBaseCardNameClass.SetUpICardEffect($"Original card color is changed: {chosenColor}", CanUseChangeColorCondition, card);
                         changeBaseCardNameClass.SetUpChangeBaseCardColorClass(ChangeBaseCardColors: ChangeBaseCardColors);
                         selectedPermanent.UntilOwnerTurnEndEffects.Add(_ => changeBaseCardNameClass);
+
+                        #region Log
+                        string log = "";
+
+                        log += $"\nChanged Card Color to {chosenColor}:";
+                        log += $"\n{selectedPermanent.TopCard.BaseENGCardNameFromEntity}({selectedPermanent.TopCard.CardID})";
+
+                        log += "\n";
+
+                        PlayLog.OnAddLog?.Invoke(log);
+                        #endregion
 
                         bool CanUseChangeColorCondition(Hashtable hashtableColor)
                         {

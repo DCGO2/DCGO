@@ -48,7 +48,7 @@ public class DeadOrAlive_BT7_109 : CEntity_Effect
 
                                     if (card.Owner.TrashCards.Count >= 10)
                                     {
-                                        if (cardSource.CardNames.Contains("Lucemon"))
+                                        if (cardSource.ContainsCardName("Lucemon"))
                                         {
                                             return true;
                                         }

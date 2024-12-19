@@ -300,7 +300,7 @@ namespace DCGO.CardEffects.EX6
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Prevent Deletion", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("Protection_EX6_042");
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
@@ -365,7 +365,7 @@ namespace DCGO.CardEffects.EX6
                                     canTargetCondition: HasLegendArmsTrait,
                                     canTargetCondition_ByPreSelecetedList: null,
                                     canEndSelectCondition: null,
-                                    canNoSelect: () => true,
+                                    canNoSelect: () => false,
                                     selectCardCoroutine: SelectCardCoroutine,
                                     afterSelectCardCoroutine: null,
                                     message: "Select cards to discard.",
