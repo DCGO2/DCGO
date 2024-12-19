@@ -1141,7 +1141,10 @@ public class PlayPermanentClass
 
                         else
                         {
-                            PlayLog.OnAddLog?.Invoke($"\nPlay on field:\n{card.BaseENGCardNameFromEntity}({card.CardID})\n");
+                            if(card.IsToken)
+                                PlayLog.OnAddLog?.Invoke($"\nPlay on field:\n{card.BaseENGCardNameFromEntity} token\n");
+                            else
+                                PlayLog.OnAddLog?.Invoke($"\nPlay on field:\n{card.BaseENGCardNameFromEntity}({card.CardID})\n");
 
                             permanent = new Permanent(new List<CardSource>() { card }) { IsSuspended = _isTapped };
 
@@ -2474,6 +2477,8 @@ public class IPlacePermanentToDigivolutionCards
                         {
                             yield return ContinuousController.instance.StartCoroutine(getDigivolutionPermanent.AddDigivolutionCardsBottom(digivolutionCards, _cardEffect, _skipEffectAndActivateSkill));
                         }
+
+                        cardSource.cEntity_EffectController.InitUseCountThisTurn();
 
                         addedDigivolutionCards.Add(cardSource);
 

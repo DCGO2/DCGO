@@ -16,6 +16,8 @@ namespace DCGO.CardEffects.BT18
 
             if (timing == EffectTiming.OptionSkill)
             {
+                List<string> selectedNames = new List<string>();
+
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(card.BaseENGCardNameFromEntity, CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
@@ -25,6 +27,35 @@ namespace DCGO.CardEffects.BT18
                 {
                     return
                         "[Main] You may place up to 5 [Hybrid] trait cards with different names from your hand or trash under 1 of your Tamers. Then, 1 of your Tamers with 5 or more cards under it may digivolve into [EmperorGreymon] in the hand or trash, ignoring digivolution requirements and without paying the cost.";
+                }
+
+                bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
+                {
+                    List<string> cardNames = GetNamesList(cardSources);
+
+                    foreach (string name in cardNames)
+                    {
+                        if (cardSource.CardNames.Contains(name))
+                            return false;
+                    }
+
+                    return true;
+                }
+
+                List<string> GetNamesList(List<CardSource> cardSources)
+                {
+                    foreach (CardSource cardName in cardSources)
+                    {
+                        foreach (string name in cardName.CardNames)
+                        {
+                            if (!selectedNames.Contains(name))
+                            {
+                                selectedNames.Add(name);
+                            }
+                        }
+                    }
+
+                    return selectedNames;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -47,9 +78,9 @@ namespace DCGO.CardEffects.BT18
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card) &&
                            permanent.IsTamer && permanent.DigivolutionCards.Count >= 5 &&
                            (card.Owner.HandCards.Where(DigivolveToCardCondition).Any(cardSource =>
-                                cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass)) ||
+                                cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass, ignore:CardEffectCommons.IgnoreRequirement.All)) ||
                             card.Owner.TrashCards.Where(DigivolveToCardCondition).Any(cardSource =>
-                                cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass)));
+                                cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass, SelectCardEffect.Root.Trash, ignore: CardEffectCommons.IgnoreRequirement.All)));
                 }
 
                 bool DigivolveToCardCondition(CardSource cardSource)
@@ -81,8 +112,8 @@ namespace DCGO.CardEffects.BT18
                             cardEffect: activateClass);
 
                         selectPermanentEffect.SetUpCustomMessage(
-                            "Select 1 of your Tamers that will digivolve.",
-                            "The opponent is selecting 1 of their Tamers that will digivolve.");
+                            "Select 1 of your Tamers that will add digivolution cards.",
+                            "The opponent is selecting 1 of their Tamers that will add digivolution cards.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
@@ -105,7 +136,7 @@ namespace DCGO.CardEffects.BT18
                                     selectPlayer: card.Owner,
                                     canTargetCondition: SelectHybridCardCondition,
                                     canTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
-                                    canEndSelectCondition: CanEndSelectCondition,
+                                    canEndSelectCondition: null,
                                     maxCount: Math.Min(5,
                                         CardEffectCommons.MatchConditionOwnersCardCountInHand(card, SelectHybridCardCondition)),
                                     canNoSelect: true,
@@ -129,7 +160,7 @@ namespace DCGO.CardEffects.BT18
                                 selectCardEffect.SetUp(
                                     canTargetCondition: SelectHybridCardCondition,
                                     canTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
-                                    canEndSelectCondition: CanEndSelectCondition,
+                                    canEndSelectCondition: null,
                                     canNoSelect: () => true,
                                     selectCardCoroutine: null,
                                     afterSelectCardCoroutine: SelectCardCoroutine,
@@ -146,62 +177,6 @@ namespace DCGO.CardEffects.BT18
                                     cardEffect: activateClass);
 
                                 yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-                            }
-
-                            bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
-                            {
-                                List<string> cardNames = new List<string>();
-
-                                foreach (CardSource cardSource1 in cardSources)
-                                {
-                                    if (!cardNames.Any(x => cardSource1.CardNames.Any(y => y == x)))
-                                    {
-                                        cardNames.Add(cardSource1.CardID);
-                                    }
-                                }
-
-                                foreach (CardSource cardSource1 in digivolutionCards)
-                                {
-                                    if (!cardNames.Any(x => cardSource1.CardNames.Any(y => y == x)))
-                                    {
-                                        cardNames.Add(cardSource1.CardID);
-                                    }
-                                }
-
-                                if (cardNames.Any(x => cardSource.CardNames.Any(y => y == x)))
-                                {
-                                    return false;
-                                }
-
-                                return true;
-                            }
-
-                            bool CanEndSelectCondition(List<CardSource> cardSources)
-                            {
-                                List<string> cardNames = new List<string>();
-
-                                foreach (CardSource cardSource1 in cardSources)
-                                {
-                                    if (!cardNames.Any(x => cardSource1.CardNames.Any(y => y == x)))
-                                    {
-                                        cardNames.Add(cardSource1.CardID);
-                                    }
-                                }
-
-                                foreach (CardSource cardSource1 in digivolutionCards)
-                                {
-                                    if (!cardNames.Any(x => cardSource1.CardNames.Any(y => y == x)))
-                                    {
-                                        cardNames.Add(cardSource1.CardID);
-                                    }
-                                }
-
-                                if (cardNames.Count != cardSources.Count + digivolutionCards.Count)
-                                {
-                                    return false;
-                                }
-
-                                return true;
                             }
 
                             IEnumerator SelectCardCoroutine(List<CardSource> cardSources)
@@ -324,8 +299,7 @@ namespace DCGO.CardEffects.BT18
                                     GManager.instance.userSelectionManager.SetBool(canSelectHand);
                                 }
 
-                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager
-                                    .WaitForEndSelect());
+                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
                                 bool fromHand = GManager.instance.userSelectionManager.SelectedBoolValue;
 
@@ -339,8 +313,7 @@ namespace DCGO.CardEffects.BT18
                                         ignoreDigivolutionRequirementFixedCost: 0,
                                         isHand: fromHand,
                                         activateClass: activateClass,
-                                        successProcess: null,
-                                        ignoreRequirements:CardEffectCommons.IgnoreRequirement.All));
+                                        successProcess: null));
                             }
                         }
                     }

@@ -38,13 +38,13 @@ namespace DCGO.CardEffects.BT19
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return isExistOnField(card) &&
-                           HasFaceUpSecurity();
+                    return isExistOnField(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
+                    if(HasFaceUpSecurity())
+                        yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
                 }
             }
 
@@ -90,7 +90,8 @@ namespace DCGO.CardEffects.BT19
 
                 bool IsRoyalBaseDigimon(CardSource cardSource)
                 {
-                    return cardSource.EqualsTraits("Royal Base");
+                    return cardSource.IsDigimon &&
+                           cardSource.EqualsTraits("Royal Base");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

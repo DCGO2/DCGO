@@ -298,7 +298,7 @@ namespace DCGO.CardEffects.EX6
                                 }
                             }
 
-                            return true;
+                            return false;
                         }
 
                         bool PermanentCondition(Permanent permanent)

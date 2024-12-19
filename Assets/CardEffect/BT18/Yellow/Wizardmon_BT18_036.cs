@@ -70,14 +70,14 @@ namespace DCGO.CardEffects.BT18
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash 1 security to stop this Digimon from leaving Battle Area", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("TrashSecurityToStay_Wizardmon_BT18_036");
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[All Turns] When this yellow Digimon with the [Data] or [Witchelny] trait would leave the battle area by an opponent's effect, by trashing your top security card, it doesn't leave.";
+                    return "[All Turns] [Once Per Turn] When this yellow Digimon with the [Data] or [Witchelny] trait would leave the battle area by your opponent's effect, by trashing your top security card, it doesn't leave.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -98,8 +98,8 @@ namespace DCGO.CardEffects.BT18
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (card.CardColors.Contains(CardColor.Yellow) && 
-                            (card.CardTraits.Contains("Data") || card.CardTraits.Contains("Witchelny")))
+                        if (card.PermanentOfThisCard().TopCard.CardColors.Contains(CardColor.Yellow) && 
+                            (card.PermanentOfThisCard().TopCard.CardTraits.Contains("Data") || card.PermanentOfThisCard().TopCard.CardTraits.Contains("Witchelny")))
                         {
                             if (card.Owner.SecurityCards.Count >= 1 )
                                 return true;

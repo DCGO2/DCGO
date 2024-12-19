@@ -228,11 +228,7 @@ namespace DCGO.CardEffects.EX6
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if(CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        return true;
-                    }
-                    return true;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

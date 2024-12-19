@@ -41,7 +41,7 @@ namespace DCGO.CardEffects.BT19
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash top security card to trash opponents top security and gain +6000 DP", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
-                activateClass.SetHashString("TrashSecurity_DysnasmonXAntibody_BT19_042");
+                activateClass.SetHashString("TrashSecurity_DynasmonXAntibody_BT19_042");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -66,7 +66,7 @@ namespace DCGO.CardEffects.BT19
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.EqualsCardName("Dynasmon") || cardSource.Equals("X Antibody")) >= 1)
+                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.EqualsCardName("Dynasmon") || cardSource.EqualsCardName("X Antibody")) >= 1)
                         {
                             if (card.Owner.SecurityCards.Count >= 1)
                             {

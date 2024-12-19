@@ -95,7 +95,7 @@ namespace DCGO.CardEffects.BT17
                             canTargetCondition: CanSelectTrashCardCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            canNoSelect: () => false,
+                            canNoSelect: () => true,
                             selectCardCoroutine: null,
                             afterSelectCardCoroutine: null,
                             message: "Select 1 Digimon card with the Hybrid or Ten Warriors trait to add to your hand.",

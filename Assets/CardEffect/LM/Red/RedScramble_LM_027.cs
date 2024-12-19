@@ -36,7 +36,9 @@ namespace DCGO.CardEffects.LM
 
                 bool CanSelectOwnPermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) && card.Owner.HandCards.Where(CanSelectHandCardCondition).Any(cardSource => cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass));
+                    return CanSelectHandCardCondition(permanent.TopCard) &&
+                           CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                           card.Owner.HandCards.Where(CanSelectHandCardCondition).Any(cardSource => cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass));
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -95,12 +97,12 @@ namespace DCGO.CardEffects.LM
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Return a red Digimon to top of the deck from trash, then play a red Digimon from trash.", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[Main] <Delay> Return 1 red Digimon card from your trash to the top of the deck. Then, if you don't have a Digimon, you may play 1 red Digimon card with 2000 DP or less from your trash without paying the cost.";
+                    return "[Start of your Turn] If your opponent has a Digimon, <Delay>.\r\n• Return 1 red Digimon card from your trash to the top of the deck. Then, if you don't have a Digimon, you may play 1 red Digimon card with 2000 DP or less from your trash without paying the cost.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
@@ -132,20 +134,10 @@ namespace DCGO.CardEffects.LM
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanDeclareOptionDelayEffect(card);
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (card.Owner.Enemy.GetBattleAreaDigimons().Count >= 1)
-                        {
-                           return true;                            
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsOwnerTurn(card) &&
+                           CardEffectCommons.IsExistOnBattleArea(card) &&
+                           card.Owner.Enemy.GetBattleAreaDigimons().Count >= 1 &&
+                           CardEffectCommons.CanDeclareOptionDelayEffect(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -173,7 +165,7 @@ namespace DCGO.CardEffects.LM
                             canTargetCondition: (cardSource) => CanSelectCardCondition(cardSource),
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            canNoSelect: () => true,
+                            canNoSelect: () => false,
                             selectCardCoroutine: null,
                             afterSelectCardCoroutine: AfterSelectCardCoroutine,
                             message: "Select a red Digimon to place at the top of the deck\n(cards will be placed back to the top of the deck so that cards with lower numbers are on top).",
@@ -201,45 +193,48 @@ namespace DCGO.CardEffects.LM
                             }
                         }
 
-                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, (cardSource) => CanSelectCardCondition1(cardSource)))
+                        if (card.Owner.GetBattleAreaDigimons().Count == 0)
                         {
-                            int maxCount = Math.Min(1, card.Owner.TrashCards.Count((cardSource) => CanSelectCardCondition1(cardSource)));
-
-                            List<CardSource> selectedCards = new List<CardSource>();
-
-                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                            selectCardEffect.SetUp(
-                                        canTargetCondition: CanSelectCardCondition1,
-                                        canTargetCondition_ByPreSelecetedList: null,
-                                        canEndSelectCondition: null,
-                                        canNoSelect: () => true,
-                                        selectCardCoroutine: SelectCardCoroutine,
-                                        afterSelectCardCoroutine: null,
-                                        message: "Select 1 red Digimon with 2000 DP or less to play.",
-                                        maxCount: maxCount,
-                                        canEndNotMax: false,
-                                        isShowOpponent: true,
-                                        mode: SelectCardEffect.Mode.Custom,
-                                        root: SelectCardEffect.Root.Trash,
-                                        customRootCardList: null,
-                                        canLookReverseCard: true,
-                                        selectPlayer: card.Owner,
-                                        cardEffect: activateClass);
-
-                            selectCardEffect.SetUpCustomMessage("Select 1 red Digimon with 2000 DP or less to play.", "The opponent is selecting 1 card to play.");
-                            selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
-
-                            yield return StartCoroutine(selectCardEffect.Activate());
-
-                            IEnumerator SelectCardCoroutine(CardSource cardSource)
+                            if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, (cardSource) => CanSelectCardCondition1(cardSource)))
                             {
-                                selectedCards.Add(cardSource);
+                                int maxCount = Math.Min(1, card.Owner.TrashCards.Count((cardSource) => CanSelectCardCondition1(cardSource)));
 
-                                yield return null;
+                                List<CardSource> selectedCards = new List<CardSource>();
+
+                                SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                                selectCardEffect.SetUp(
+                                            canTargetCondition: CanSelectCardCondition1,
+                                            canTargetCondition_ByPreSelecetedList: null,
+                                            canEndSelectCondition: null,
+                                            canNoSelect: () => true,
+                                            selectCardCoroutine: SelectCardCoroutine,
+                                            afterSelectCardCoroutine: null,
+                                            message: "Select 1 red Digimon with 2000 DP or less to play.",
+                                            maxCount: maxCount,
+                                            canEndNotMax: false,
+                                            isShowOpponent: true,
+                                            mode: SelectCardEffect.Mode.Custom,
+                                            root: SelectCardEffect.Root.Trash,
+                                            customRootCardList: null,
+                                            canLookReverseCard: true,
+                                            selectPlayer: card.Owner,
+                                            cardEffect: activateClass);
+
+                                selectCardEffect.SetUpCustomMessage("Select 1 red Digimon with 2000 DP or less to play.", "The opponent is selecting 1 card to play.");
+                                selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
+
+                                yield return StartCoroutine(selectCardEffect.Activate());
+
+                                IEnumerator SelectCardCoroutine(CardSource cardSource)
+                                {
+                                    selectedCards.Add(cardSource);
+
+                                    yield return null;
+                                }
+
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedCards, activateClass: activateClass, payCost: false, isTapped: false, root: SelectCardEffect.Root.Trash, activateETB: true));
                             }
-
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedCards, activateClass: activateClass, payCost: false, isTapped: false, root: SelectCardEffect.Root.Trash, activateETB: true));
                         }
                     }                    
                 }

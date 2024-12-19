@@ -107,7 +107,8 @@ namespace DCGO.CardEffects.BT18
 
                 bool IsLucemonRemoved(Permanent permanent)
                 {
-                    return permanent.TopCard.EqualsCardName("Lucemon: Satan Mode");
+                    return permanent.TopCard.Owner == card.Owner &&
+                           permanent.TopCard.EqualsCardName("Lucemon: Satan Mode");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -142,7 +143,8 @@ namespace DCGO.CardEffects.BT18
             {
                 bool PermanentCondition(Permanent permanent)
                 {
-                    return (permanent.DP == 0);
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                           (permanent.DP == 0);
                 }
 
                 bool NonWhiteDigimon(Permanent permanent)

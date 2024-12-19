@@ -1,8 +1,9 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Photon.Pun;
 
 namespace DCGO.CardEffects.BT19
 {
@@ -35,141 +36,143 @@ namespace DCGO.CardEffects.BT19
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card) &&
-                           CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, HasCompositeTrait);
+                    return CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    #region reduce play cost
-                    ChangeCostClass changeCostClass = new ChangeCostClass();
-                    changeCostClass.SetUpICardEffect($"Play Cost -4", CanUseCondition1, card);
-                    changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
-                    Func<EffectTiming, ICardEffect> getCardEffect = GetCardEffect;
-                    card.Owner.UntilCalculateFixedCostEffect.Add(getCardEffect);
-
-                    ICardEffect GetCardEffect(EffectTiming _timing)
+                    if(CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, HasCompositeTrait))
                     {
-                        if (_timing == EffectTiming.None)
+                        #region reduce play cost
+                        ChangeCostClass changeCostClass = new ChangeCostClass();
+                        changeCostClass.SetUpICardEffect($"Play Cost -4", CanUseCondition1, card);
+                        changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
+                        Func<EffectTiming, ICardEffect> getCardEffect = GetCardEffect;
+                        card.Owner.UntilCalculateFixedCostEffect.Add(getCardEffect);
+
+                        ICardEffect GetCardEffect(EffectTiming _timing)
                         {
-                            return changeCostClass;
-                        }
-
-                        return null;
-                    }
-
-                    bool CanUseCondition1(Hashtable hashtable)
-                    {
-                        return true;
-                    }
-
-                    int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
-                    {
-                        if (CardSourceCondition(cardSource))
-                        {
-                            if (RootCondition(root))
+                            if (_timing == EffectTiming.None)
                             {
-                                if (PermanentsCondition(targetPermanents))
-                                {
-                                    Cost -= 4;
-                                }
+                                return changeCostClass;
                             }
+
+                            return null;
                         }
 
-                        return Cost;
-                    }
-
-                    bool PermanentsCondition(List<Permanent> targetPermanents)
-                    {
-                        if (targetPermanents == null)
+                        bool CanUseCondition1(Hashtable hashtable)
                         {
                             return true;
                         }
 
-                        else
+                        int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
                         {
-                            if (targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0)
+                            if (CardSourceCondition(cardSource))
+                            {
+                                if (RootCondition(root))
+                                {
+                                    if (PermanentsCondition(targetPermanents))
+                                    {
+                                        Cost -= 4;
+                                    }
+                                }
+                            }
+
+                            return Cost;
+                        }
+
+                        bool PermanentsCondition(List<Permanent> targetPermanents)
+                        {
+                            if (targetPermanents == null)
                             {
                                 return true;
                             }
+
+                            else
+                            {
+                                if (targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0)
+                                {
+                                    return true;
+                                }
+                            }
+
+                            return false;
                         }
 
-                        return false;
-                    }
-
-                    bool CardSourceCondition(CardSource cardSource)
-                    {
-                        if (cardSource.HasPlayCost)
+                        bool CardSourceCondition(CardSource cardSource)
                         {
-                            if (cardSource.IsDigimon)
-                                return cardSource.ContainsTraits("Composite");
+                            if (cardSource.HasPlayCost)
+                            {
+                                if (cardSource.IsDigimon)
+                                    return cardSource.ContainsTraits("Composite");
+                            }
+
+                            return false;
                         }
 
-                        return false;
+                        bool RootCondition(SelectCardEffect.Root root)
+                        {
+                            return true;
+                        }
+
+                        bool isUpDown()
+                        {
+                            return true;
+                        }
+                        #endregion
+
+                        List<CardSource> selectedCards = new List<CardSource>();
+
+                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                        selectCardEffect.SetUp(
+                            canTargetCondition: HasCompositeTrait,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            canNoSelect: () => true,
+                            selectCardCoroutine: null,
+                            afterSelectCardCoroutine: SelectCardCoroutine,
+                            message: "Select 1 [Composite] trait Digimon card to play.",
+                            maxCount: 1,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            mode: SelectCardEffect.Mode.Custom,
+                            root: SelectCardEffect.Root.Trash,
+                            customRootCardList: null,
+                            canLookReverseCard: true,
+                            selectPlayer: card.Owner,
+                            cardEffect: activateClass);
+
+                        selectCardEffect.SetUpCustomMessage(
+                "Select 1 [Composite] trait Digimon card to play.",
+                "The opponent is selecting 1 [Composite] trait Digimon card to play.");
+                        selectCardEffect.SetUpCustomMessage_ShowCard("Play Card");
+
+                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+
+                        IEnumerator SelectCardCoroutine(List<CardSource> sources)
+                        {
+                            selectedCards = sources;
+                            yield return null;
+                        }
+
+                        #region Place As Source
+                        if (selectedCards.Count > 0)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
+                                    cardSources: selectedCards,
+                                    activateClass: activateClass,
+                                    payCost: true,
+                                    isTapped: false,
+                                    root: SelectCardEffect.Root.Trash,
+                                    activateETB: true));
+                        }
+                        #endregion
+
+                        #region Remove Cost effect after use
+                        card.Owner.UntilCalculateFixedCostEffect.Remove(getCardEffect);
+                        #endregion
                     }
-
-                    bool RootCondition(SelectCardEffect.Root root)
-                    {
-                        return true;
-                    }
-
-                    bool isUpDown()
-                    {
-                        return true;
-                    }
-                    #endregion
-
-                    List<CardSource> selectedCards = new List<CardSource>();
-
-                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                    selectCardEffect.SetUp(
-                        canTargetCondition: HasCompositeTrait,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        canNoSelect: () => true,
-                        selectCardCoroutine: null,
-                        afterSelectCardCoroutine: SelectCardCoroutine,
-                        message: "Select 1 [Composite] trait Digimon card to play.",
-                        maxCount: 1,
-                        canEndNotMax: false,
-                        isShowOpponent: true,
-                        mode: SelectCardEffect.Mode.Custom,
-                        root: SelectCardEffect.Root.Trash,
-                        customRootCardList: null,
-                        canLookReverseCard: true,
-                        selectPlayer: card.Owner,
-                        cardEffect: activateClass);
-
-                    selectCardEffect.SetUpCustomMessage(
-            "Select 1 [Composite] trait Digimon card to play.",
-            "The opponent is selecting 1 [Composite] trait Digimon card to play.");
-                    selectCardEffect.SetUpCustomMessage_ShowCard("Play Card");
-
-                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-
-                    IEnumerator SelectCardCoroutine(List<CardSource> sources)
-                    {
-                        selectedCards = sources;
-                        yield return null;
-                    }
-
-                    #region Place As Source
-                    if (selectedCards.Count > 0)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                                cardSources: selectedCards,
-                                activateClass: activateClass,
-                                payCost: true,
-                                isTapped: false,
-                                root: SelectCardEffect.Root.Trash,
-                                activateETB: true));
-                    }
-                    #endregion
-
-                    #region Remove Cost effect after use
-                    card.Owner.UntilCalculateFixedCostEffect.Remove(getCardEffect);
-                    #endregion
 
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlaceDelayOptionCards(card: card, cardEffect: activateClass));
                 }
@@ -179,6 +182,8 @@ namespace DCGO.CardEffects.BT19
             #region All Turns - Delay
             if (timing == EffectTiming.WhenRemoveField)
             {
+                int playCostValue = -1;
+
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 [Wicked God] trait Digimon card from hand or trash", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
@@ -186,7 +191,7 @@ namespace DCGO.CardEffects.BT19
 
                 string EffectDiscription()
                 {
-                    return "[All Turns] When any of your Digimon with [Millenniummon] in its name would leave the battle area, <Delay>.\r\n� You may play 1 [Wicked God] trait Digimon card with a play cost 1 greater than that Digimon from your hand or trash without paying the cost.";
+                    return "[All Turns] When any of your Digimon with [Millenniummon] in its name would leave the battle area, <Delay>.\r\n• You may play 1 [Wicked God] trait Digimon card with a play cost 1 greater than that Digimon from your hand or trash without paying the cost.";
                 }
 
                 bool PermanentCondition(Permanent permanent)
@@ -197,18 +202,7 @@ namespace DCGO.CardEffects.BT19
                     }
 
                     return false;
-                }
-
-                bool CanPlayWickedGodCondition(CardSource cardSource)
-                {
-                    if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
-                    {
-                        return cardSource.IsDigimon && 
-                               cardSource.ContainsTraits("Wicked God");
-                    }
-
-                    return false;
-                }                
+                }            
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
@@ -259,55 +253,76 @@ namespace DCGO.CardEffects.BT19
                     if (deleted)
                     {
                         List<Permanent> selectedPermanents = CardEffectCommons.GetPermanentsFromHashtable(_hashtable);
-                        List<CardSource> combinedSources = new List<CardSource>();
 
-                        combinedSources.AddRange(card.Owner.HandCards);
-                        combinedSources.AddRange(card.Owner.TrashCards);
-
-                        bool FilterOutUnselectable(CardSource source)
+                        bool CanPlayWickedGodCondition(CardSource cardSource)
                         {
                             foreach (Permanent permanent in selectedPermanents)
                             {
-                                return permanent.TopCard.GetCostItself + 1 == source.GetCostItself;
-                            }                                
+                                if (PermanentCondition(permanent))
+                                {
+                                    if(permanent.TopCard.GetCostItself + 1 == cardSource.GetCostItself)
+                                    {
+                                        if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
+                                        {
+                                            return cardSource.IsDigimon &&
+                                                   cardSource.ContainsTraits("Wicked God");
+                                        }
+                                    }
+                                }
+                            }                         
 
                             return false;
                         }
 
-                        combinedSources = combinedSources.Filter(FilterOutUnselectable);
-
-                        if (combinedSources.Count > 0)
+                        if (selectedPermanents.Count > 0)
                         {
-                            if (selectedPermanents.Count > 0)
+                            if (card.Owner.HandCards.Count(CanPlayWickedGodCondition) >= 1 || CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanPlayWickedGodCondition))
                             {
+                                if (card.Owner.HandCards.Count(CanPlayWickedGodCondition) >= 1 && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanPlayWickedGodCondition))
+                                {
+                                    if (card.Owner.isYou)
+                                    {
+                                        GManager.instance.commandText.OpenCommandText("From which area do you play a card?");
+
+                                        List<Command_SelectCommand> command_SelectCommands = new List<Command_SelectCommand>()
+                                {
+                                    new Command_SelectCommand($"From hand", () => photonView.RPC("SetFromHand", RpcTarget.All, true), 0),
+                                    new Command_SelectCommand($"From trash", () => photonView.RPC("SetFromHand", RpcTarget.All, false), 1),
+                                };
+
+                                        GManager.instance.selectCommandPanel.SetUpCommandButton(command_SelectCommands);
+                                    }
+
+                                    else
+                                    {
+                                        GManager.instance.commandText.OpenCommandText("The opponent is choosing from which area to play a card.");
+
+                                        #region AIモード
+                                        if (GManager.instance.IsAI)
+                                        {
+                                            SetFromHand(RandomUtility.IsSucceedProbability(0.5f));
+                                        }
+                                        #endregion
+                                    }
+                                }
+
+                                else if (card.Owner.HandCards.Count(CanPlayWickedGodCondition) == 0 && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanPlayWickedGodCondition))
+                                {
+                                    SetFromHand(false);
+                                }
+
+                                else if (card.Owner.HandCards.Count(CanPlayWickedGodCondition) >= 1 && card.Owner.TrashCards.Count(CanPlayWickedGodCondition) == 0)
+                                {
+                                    SetFromHand(true);
+                                }
+
+                                yield return new WaitWhile(() => !endSelect);
+                                endSelect = false;
+
+                                GManager.instance.commandText.CloseCommandText();
+                                yield return new WaitWhile(() => GManager.instance.commandText.gameObject.activeSelf);
+
                                 List<CardSource> selectedCards = new List<CardSource>();
-
-                                SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                                selectCardEffect.SetUp(
-                                            canTargetCondition: CanPlayWickedGodCondition,
-                                            canTargetCondition_ByPreSelecetedList: null,
-                                            canEndSelectCondition: null,
-                                            canNoSelect: () => false,
-                                            selectCardCoroutine: SelectCardCoroutine,
-                                            afterSelectCardCoroutine: null,
-                                            message: "Select 1 [Wicked God] trait Digimon card to play.",
-                                            maxCount: 1,
-                                            canEndNotMax: false,
-                                            isShowOpponent: true,
-                                            mode: SelectCardEffect.Mode.Custom,
-                                            root: SelectCardEffect.Root.Custom,
-                                            customRootCardList: combinedSources,
-                                            canLookReverseCard: true,
-                                            selectPlayer: card.Owner,
-                                            cardEffect: activateClass);
-
-                                selectCardEffect.SetUpCustomMessage(
-                                    "Select 1 [Wicked God] trait Digimon card to play.",
-                                    "The opponent is selecting 1 [Wicked God] trait Digimon card to play.");
-                                selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
-
-                                yield return StartCoroutine(selectCardEffect.Activate());
 
                                 IEnumerator SelectCardCoroutine(CardSource cardSource)
                                 {
@@ -316,26 +331,77 @@ namespace DCGO.CardEffects.BT19
                                     yield return null;
                                 }
 
-                                if (CardEffectCommons.IsExistOnHand(selectedCards[0]))
+                                if (fromHand)
                                 {
-                                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                                        cardSources: selectedCards,
-                                        activateClass: activateClass,
-                                        payCost: false,
-                                        isTapped: false,
-                                        root: SelectCardEffect.Root.Hand,
-                                        activateETB: true));
+                                    int maxCount = 1;
+
+                                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                                    selectHandEffect.SetUp(
+                                        selectPlayer: card.Owner,
+                                        canTargetCondition: CanPlayWickedGodCondition,
+                                        canTargetCondition_ByPreSelecetedList: null,
+                                        canEndSelectCondition: null,
+                                        maxCount: maxCount,
+                                        canNoSelect: true,
+                                        canEndNotMax: false,
+                                        isShowOpponent: true,
+                                        selectCardCoroutine: SelectCardCoroutine,
+                                        afterSelectCardCoroutine: null,
+                                        mode: SelectHandEffect.Mode.Custom,
+                                        cardEffect: activateClass);
+
+                                    selectHandEffect.SetUpCustomMessage(
+                                        "Select 1 [Wicked God] trait Digimon card to play.",
+                                        "The opponent is selecting 1 [Wicked God] trait Digimon card to play.");
+                                    selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
+
+                                    yield return StartCoroutine(selectHandEffect.Activate());
                                 }
-                                else if (CardEffectCommons.IsExistOnTrash(selectedCards[0]))
+                                else
                                 {
-                                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                                        cardSources: selectedCards,
-                                        activateClass: activateClass,
-                                        payCost: false,
-                                        isTapped: false,
+                                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                                    selectCardEffect.SetUp(
+                                        canTargetCondition: CanPlayWickedGodCondition,
+                                        canTargetCondition_ByPreSelecetedList: null,
+                                        canEndSelectCondition: null,
+                                        canNoSelect: () => false,
+                                        selectCardCoroutine: SelectCardCoroutine,
+                                        afterSelectCardCoroutine: null,
+                                        message: "Select 1 [Wicked God] trait Digimon card to play.",
+                                        maxCount: 1,
+                                        canEndNotMax: false,
+                                        isShowOpponent: true,
+                                        mode: SelectCardEffect.Mode.Custom,
                                         root: SelectCardEffect.Root.Trash,
-                                        activateETB: true));
+                                        customRootCardList: null,
+                                        canLookReverseCard: true,
+                                        selectPlayer: card.Owner,
+                                        cardEffect: activateClass);
+
+                                    selectCardEffect.SetUpCustomMessage(
+                                        "Select 1 [Wicked God] trait Digimon card to play.",
+                                        "The opponent is selecting 1 [Wicked God] trait Digimon card to play.");
+                                    selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
+
+                                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
                                 }
+
+                                SelectCardEffect.Root root = SelectCardEffect.Root.Hand;
+
+                                if (!fromHand)
+                                {
+                                    root = SelectCardEffect.Root.Trash;
+                                }
+
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
+                                    cardSources: selectedCards,
+                                    activateClass: activateClass,
+                                    payCost: false,
+                                    isTapped: false,
+                                    root: root,
+                                    activateETB: true));
                             }
                         }
                     }
@@ -351,6 +417,16 @@ namespace DCGO.CardEffects.BT19
             #endregion
 
             return cardEffects;
+        }
+
+        bool endSelect = false;
+        bool fromHand = false;
+
+        [PunRPC]
+        public void SetFromHand(bool fromHand)
+        {
+            this.fromHand = fromHand;
+            endSelect = true;
         }
     }
 }

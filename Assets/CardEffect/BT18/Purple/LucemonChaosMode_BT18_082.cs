@@ -24,7 +24,7 @@ namespace DCGO.CardEffects.BT18
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition,
-                    digivolutionCost: 6, ignoreDigivolutionRequirement: true, card: card, condition: null));
+                    digivolutionCost: 6, ignoreDigivolutionRequirement: false, card: card, condition: null));
             }
 
             #endregion
@@ -233,6 +233,7 @@ namespace DCGO.CardEffects.BT18
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash the bottom card of your security stack to not leave", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetHashString("Protection_BT18-082");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()

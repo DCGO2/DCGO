@@ -200,6 +200,9 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
             //DP不足処理
             yield return ContinuousController.instance.StartCoroutine(DigimonLackDPProcess());
 
+            //Battle as Tamer
+            yield return ContinuousController.instance.StartCoroutine(BattleWithoutDigimon());
+
             IsRuleProcessing = false;
         }
     }
@@ -305,6 +308,17 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
 
             yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(LackPowerPermanents, hashtable).Destroy());
         }
+    }
+    #endregion
+
+    #region Battle Concerning Tamer
+    IEnumerator BattleWithoutDigimon()
+    {
+        if(GManager.instance.attackProcess.AttackingPermanent == null)
+            yield break;
+
+        if(!GManager.instance.attackProcess.AttackingPermanent.IsDigimon)
+            GManager.instance.attackProcess.IsEndAttack = true;
     }
     #endregion
 

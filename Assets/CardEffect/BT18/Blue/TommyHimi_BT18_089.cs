@@ -94,6 +94,7 @@ namespace DCGO.CardEffects.BT18
                 activateClass.SetUpICardEffect("Trash bottom digivolution card", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetIsInheritedEffect(true);
+                activateClass.SetHashString("WhenAttacking_BT18-089");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -114,44 +115,45 @@ namespace DCGO.CardEffects.BT18
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card) &&
-                           CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
+                    return CardEffectCommons.IsExistOnBattleArea(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                    selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectPermanentCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: 1,
-                        canNoSelect: false,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: SelectPermanentCoroutine,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Custom,
-                        cardEffect: activateClass);
-
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will trash digivolution cards.",
-                        "The opponent is selecting 1 Digimon that will trash digivolution cards.");
-
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
-                        yield return ContinuousController.instance.StartCoroutine(
-                            CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(
-                                targetPermanent: permanent,
-                                trashCount: 1,
-                                isFromTop: false,
-                                activateClass: activateClass));
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectPermanentCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will trash digivolution cards.",
+                            "The opponent is selecting 1 Digimon that will trash digivolution cards.");
+
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(
+                                CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(
+                                    targetPermanent: permanent,
+                                    trashCount: 1,
+                                    isFromTop: false,
+                                    activateClass: activateClass));
+                        }
                     }
 
-                    if (!CardEffectCommons.HasMatchConditionOpponentsPermanent(card,
-                            permanent => permanent.IsDigimon && !permanent.HasNoDigivolutionCards))
+                    if (!CardEffectCommons.HasMatchConditionOpponentsPermanent(card,permanent => permanent.IsDigimon && !permanent.HasNoDigivolutionCards))
                     {
                         yield return ContinuousController.instance.StartCoroutine(
                             new DrawClass(card.Owner, 1, activateClass).Draw());

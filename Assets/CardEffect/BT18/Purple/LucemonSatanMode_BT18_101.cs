@@ -38,6 +38,17 @@ namespace DCGO.CardEffects.BT18
                        (permanent.IsDigimon || permanent.IsTamer);
             }
 
+            bool CanSelectPermanentDigimon(Permanent permanent)
+            {
+                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+            }
+
+            bool CanSelectPermanentTamer(Permanent permanent)
+            {
+                return CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card) &&
+                       permanent.IsTamer;
+            }
+
             #endregion
 
             #region When Digivolving
@@ -107,7 +118,10 @@ namespace DCGO.CardEffects.BT18
                     IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
                         selectedCards.Add(cardSource);
-                        played = true;
+
+                        if(CardEffectCommons.CanPlayAsNewPermanent(cardSource,false,activateClass,SelectCardEffect.Root.Trash,true))
+                            played = true;
+
                         yield return null;
                     }
 
@@ -183,13 +197,15 @@ namespace DCGO.CardEffects.BT18
                             cardEffect: activateClass,
                             fromTop: true).DestroySecurity());
                     }
-                    else if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentConditionShared))
+                    else
                     {
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                        selectPermanentEffect.SetUp(
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentConditionShared))
+                        {
+                            selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectPermanentConditionShared,
+                            canTargetCondition: CanSelectPermanentDigimon,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: 1,
@@ -200,10 +216,32 @@ namespace DCGO.CardEffects.BT18
                             mode: SelectPermanentEffect.Mode.Destroy,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon or Tamer to delete.",
-                            "The opponent is selecting 1 Digimon or Tamer to delete.");
+                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to delete.",
+                                "The opponent is selecting 1 Digimon to delete.");
 
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                        }
+
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentConditionShared))
+                        {
+                            selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectPermanentTamer,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: null,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Destroy,
+                            cardEffect: activateClass);
+
+                            selectPermanentEffect.SetUpCustomMessage("Select 1 Tamer to delete.",
+                                "The opponent is selecting 1 Tamer to delete.");
+
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                        }
                     }
                 }
             }

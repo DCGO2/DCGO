@@ -104,7 +104,10 @@ namespace DCGO.CardEffects.EX6
                     {
                         if (card.Owner.fieldCardFrames.Count((frame) => frame.IsEmptyFrame()) >= 1)
                         {
-                            return true;
+                            if (card.PermanentJustBeforeRemoveField.CardTraitsJustBeforeRemoveField.Contains("Unidentified"))
+                            {
+                                return true;
+                            }
                         }
                     }
 
@@ -112,20 +115,8 @@ namespace DCGO.CardEffects.EX6
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {              
-                    List<Hashtable> deletionHashtables = CardEffectCommons.GetHashtablesFromHashtable(hashtable);
-
-                    if(deletionHashtables.Count > 0)
-                    {
-                        Hashtable hash = deletionHashtables[0];
-                        if (hash.ContainsKey("TopCard") && hash["TopCard"] is CardSource)
-                        {
-                            CardSource source = (CardSource)hash["TopCard"];
-
-                            if(card.ContainsTraits("Unidentified"))
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayDiaboromonToken(activateClass));
-                        }
-                    }
+                {
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayDiaboromonToken(activateClass));
                 }
             }
             #endregion

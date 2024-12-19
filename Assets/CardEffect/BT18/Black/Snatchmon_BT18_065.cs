@@ -154,18 +154,7 @@ namespace DCGO.CardEffects.BT18
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.HasText("Vemmon"))
-                    {
-                        if (cardSource.IsDigimon)
-                        {
-                            if (cardSource.HasLevel && cardSource.Level == 5)
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return false;
+                    return (cardSource.IsDigimon && cardSource.HasText("Vemmon"));
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -199,16 +188,16 @@ namespace DCGO.CardEffects.BT18
                     {
                         if (!permanent.TopCard.EqualsCardName("Vemmon"))
                         {
-                            return false;
+                            return true;
                         }
                     }
 
-                    return true;
+                    return false;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermanentCondition1);
+                    return CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition1) == 0;
                 }
 
                 int GetCount(CardSource cardSource)

@@ -110,8 +110,8 @@ namespace DCGO.CardEffects.BT18
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (card.CardColors.Contains(CardColor.Yellow) && 
-                            (card.CardTraits.Contains("Data") || card.CardTraits.Contains("Witchelny")))
+                        if (card.PermanentOfThisCard().TopCard.CardColors.Contains(CardColor.Yellow) && 
+                            (card.PermanentOfThisCard().TopCard.CardTraits.Contains("Data") || card.PermanentOfThisCard().TopCard.CardTraits.Contains("Witchelny")))
                         {
                             if (card.Owner.SecurityCards.Count >= 1 )
                                 return true;

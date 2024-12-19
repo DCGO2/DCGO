@@ -10,6 +10,13 @@ namespace DCGO.CardEffects.BT18
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region Barrier
+            if (timing == EffectTiming.WhenPermanentWouldBeDeleted)
+            {
+                cardEffects.Add(CardEffectFactory.BarrierSelfEffect(isInheritedEffect: false, card: card, condition: null));
+            }
+            #endregion
+
             #region On Play
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
