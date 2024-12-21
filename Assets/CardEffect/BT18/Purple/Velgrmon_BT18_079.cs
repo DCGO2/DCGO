@@ -177,7 +177,7 @@ namespace DCGO.CardEffects.BT18
             if (timing == EffectTiming.OnEndAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Delete 1 Digimon to delete all of your opponent's Digimon with the same level",
+                activateClass.SetUpICardEffect("Delete 1 Digimon to delete all of your opponent's Digimon with the lowest level",
                     CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);

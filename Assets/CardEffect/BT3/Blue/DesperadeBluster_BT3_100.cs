@@ -61,27 +61,32 @@ public class DesperadeBluster_BT3_100 : CEntity_Effect
 
                 if (selectedPermanents.Count >= 1)
                 {
+                    int trashCount = 0;
+
+                    SelectCountEffect selectCountEffect = GManager.instance.GetComponent<SelectCountEffect>();
+
+                    selectCountEffect.SetUp(
+                        SelectPlayer: card.Owner,
+                        targetPermanent: null,
+                        MaxCount: 2,
+                        CanNoSelect: false,
+                        Message: $"How many digivolution cards will you trash?",
+                        Message_Enemy: $"The opponent is choosing how many digivolution cards to trash.",
+                        SelectCountCoroutine: SelectCountCoroutine);
+
+                    yield return ContinuousController.instance.StartCoroutine(selectCountEffect.Activate());
+
+                    IEnumerator SelectCountCoroutine(int count)
+                    {
+                        trashCount = count;
+                        yield return null;
+                    }
+
                     foreach (Permanent selectedPermanent in selectedPermanents)
                     {
-                        int maxCount = Math.Min(2, selectedPermanent.DigivolutionCards.Count);
+                        int maxCount = Math.Min(trashCount, selectedPermanent.DigivolutionCards.Count);
 
-                        SelectCountEffect selectCountEffect = GManager.instance.GetComponent<SelectCountEffect>();
-
-                        selectCountEffect.SetUp(
-                            SelectPlayer: card.Owner,
-                            targetPermanent: selectedPermanent,
-                            MaxCount: maxCount,
-                            CanNoSelect: false,
-                            Message: $"How many digivolution cards will you trash from {selectedPermanent.TopCard.CardNames[0]}?",
-                            Message_Enemy: $"The opponent is choosing how many digivolution cards to trash from {selectedPermanent.TopCard.CardNames[0]}.",
-                            SelectCountCoroutine: SelectCountCoroutine);
-
-                        yield return ContinuousController.instance.StartCoroutine(selectCountEffect.Activate());
-
-                        IEnumerator SelectCountCoroutine(int count)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: selectedPermanent, trashCount: count, isFromTop: false, activateClass: activateClass));
-                        }
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: selectedPermanent, trashCount: maxCount, isFromTop: false, activateClass: activateClass));
                     }
                 }
 

@@ -122,7 +122,7 @@ namespace DCGO.CardEffects.EX6
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Place lvl 6 cards from trash to digivolution cards", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -157,7 +157,7 @@ namespace DCGO.CardEffects.EX6
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card) && CardEffectCommons.IsJogress(_hashtable))
+                    if (CardEffectCommons.IsJogress(_hashtable))
                     {
                         if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
                         {

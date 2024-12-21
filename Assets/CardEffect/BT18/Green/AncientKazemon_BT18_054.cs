@@ -126,20 +126,17 @@ namespace DCGO.CardEffects.BT18
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionPermanent(SuspendPermanentCondition))
+                    List<Permanent> tappedPermanents = new List<Permanent>();
+
+                    foreach (Permanent permanent in card.Owner.Enemy.GetBattleAreaDigimons())
                     {
-                        List<Permanent> tappedPermanents = new List<Permanent>();
-
-                        foreach (Permanent permanent in card.Owner.Enemy.GetBattleAreaDigimons())
+                        if (SuspendPermanentCondition(permanent))
                         {
-                            if (SuspendPermanentCondition(permanent))
-                            {
-                                tappedPermanents.Add(permanent);
-                            }
+                            tappedPermanents.Add(permanent);
                         }
-
-                        yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(tappedPermanents, hashtable).Tap());
                     }
+
+                    yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(tappedPermanents, hashtable).Tap());
 
                     bool PermanentCondition(Permanent permanent)
                     {
@@ -189,20 +186,17 @@ namespace DCGO.CardEffects.BT18
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionPermanent(SuspendPermanentCondition))
+                    List<Permanent> tappedPermanents = new List<Permanent>();
+
+                    foreach (Permanent permanent in card.Owner.Enemy.GetBattleAreaDigimons())
                     {
-                        List<Permanent> tappedPermanents = new List<Permanent>();
-
-                        foreach (Permanent permanent in card.Owner.Enemy.GetBattleAreaDigimons())
+                        if (SuspendPermanentCondition(permanent))
                         {
-                            if (SuspendPermanentCondition(permanent))
-                            {
-                                tappedPermanents.Add(permanent);
-                            }
+                            tappedPermanents.Add(permanent);
                         }
-
-                        yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(tappedPermanents, hashtable).Tap());
                     }
+
+                    yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(tappedPermanents, hashtable).Tap());
 
                     bool PermanentCondition(Permanent permanent)
                     {

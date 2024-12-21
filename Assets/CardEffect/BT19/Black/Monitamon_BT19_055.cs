@@ -49,7 +49,9 @@ namespace DCGO.CardEffects.BT19
                     int tamerCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersPermanentCount(card, MyTamer));
                     CardSource tuckedCard = null;
 
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SimplifiedRevealDeckTopCardsAndSelect(
+                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, MyTamer))
+                    {
+                       yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SimplifiedRevealDeckTopCardsAndSelect(
                        revealCount: 3,
                        simplifiedSelectCardConditions:
                        new SimplifiedSelectCardConditionClass[]
@@ -69,6 +71,26 @@ namespace DCGO.CardEffects.BT19
                        },
                        remainingCardsPlace: RemainingCardsPlace.DeckBottom,
                        activateClass: activateClass));
+                    }
+                    else
+                    {
+                       yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SimplifiedRevealDeckTopCardsAndSelect(
+                       revealCount: 3,
+                       simplifiedSelectCardConditions:
+                       new SimplifiedSelectCardConditionClass[]
+                       {
+                            new SimplifiedSelectCardConditionClass(
+                                canTargetCondition:SelectKnightmonOrTwilight,
+                                message: "Select 1 card with [Knightmon] in its text or the [Twilight] trait.",
+                                mode: SelectCardEffect.Mode.AddHand,
+                                maxCount: 1,
+                                selectCardCoroutine: null),
+                       },
+                       remainingCardsPlace: RemainingCardsPlace.DeckBottom,
+                       activateClass: activateClass));
+                    }
+
+                        
 
                     IEnumerator PlaceUnderTamer(CardSource source)
                     {
