@@ -112,12 +112,12 @@ public class AmanokawaHokuto_RB1_035 : CEntity_Effect
 
                 if (permanents != null)
                 {
-                    if (permanents.Some(permanent => permanent.Level >= 4))
+                    if (permanents.Some(permanent => permanent.TopCard.HasLevel && permanent.Level >= 4))
                     {
                         yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
                     }
 
-                    if (permanents.Some(permanent => permanent.Level == 3))
+                    if (permanents.Some(permanent => permanent.TopCard.HasLevel &&  permanent.Level == 3))
                     {
                         yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
                     }

@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.BT19
                 int bouncedLevel = 0;
 
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Bottom deck this Digimon to bottom deck and opponent's Digimon with the same level", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Bottom deck this Digimon to return to hand an opponent's Digimon with the same level", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
@@ -75,8 +75,8 @@ namespace DCGO.CardEffects.BT19
                             mode: SelectPermanentEffect.Mode.Bounce,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to bottom deck.",
-                            "The opponent is selecting 1 Digimon to bottom deck.");
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to return to hand.",
+                            "The opponent is selecting 1 Digimon to return to hand.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
