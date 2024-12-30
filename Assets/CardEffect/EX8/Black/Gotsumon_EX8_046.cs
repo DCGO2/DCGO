@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.EX8
 {
     public class Gotsumon_EX8_046 : CEntity_Effect
     {
