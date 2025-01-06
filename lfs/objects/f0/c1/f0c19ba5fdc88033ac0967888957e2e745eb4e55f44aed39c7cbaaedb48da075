@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: Antylamon-EX4-057_P1
+  m_EditorClassIdentifier: 
+  CardIndex: 3299
+  cardColors: 0600000003000000
+  PlayCost: 8
+  EvoCosts:
+  - CardColor: 6
+    Level: 4
+    MemoryCost: 4
+  - CardColor: 3
+    Level: 4
+    MemoryCost: 4
+  Level: 5
+  CardName_JPN: "\u30A2\u30F3\u30C6\u30A3\u30E9\u30E2\u30F3"
+  CardName_ENG: Antylamon
+  Form_JPN:
+  - "\u5B8C\u5168\u4F53"
+  Form_ENG:
+  - Ultimate
+  Attribute_JPN:
+  - "\u30A6\u30A3\u30EB\u30B9\u7A2E"
+  Attribute_ENG:
+  - Virus
+  Type_JPN:
+  - "\u8056\u7363\u578B"
+  Type_ENG:
+  - Holy Beast
+  CardSpriteName: EX4-057_P1
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: "Digivolve: 3 from Lv.4 2-color w/green (When this Digimon
+    attacks, by suspending 1 of your other Digimon, this Digimon adds the suspended
+    Digimon's DP and gains  for the attack.) [End of Attack] You may play 1 green
+    level 3 Digimon card from your trash without paying the cost.\r"
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: 
+  CardEffectClassName: Antiramon_EX4_057
+  DP: 8000
+  rarity: 0
+  OverflowMemory: 0
+  CardID: EX4-057
+  MaxCountInDeck: 4

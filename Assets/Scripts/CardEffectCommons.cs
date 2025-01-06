@@ -249,6 +249,18 @@ public partial class CardEffectCommons
         ));
     }
     #endregion
+    
+    #region Play 1 [Uka-no-Mitama] Token
+    public static IEnumerator PlayUkaNoMitama(ICardEffect activateClass)
+    {
+        yield return ContinuousController.instance.StartCoroutine(PlayToken(
+            tokenData: ContinuousController.instance.UkaNoMitamaToken,
+            activateClass: activateClass,
+            isOwnerPermanent: true,
+            isTapped: false
+        ));
+    }
+    #endregion
 
     #region Security effect of "add this card to hand"
     public static IEnumerator AddThisCardToHand(CardSource card1, ICardEffect activateClass)
