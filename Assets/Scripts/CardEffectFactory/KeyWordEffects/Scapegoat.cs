@@ -103,4 +103,39 @@ public partial class CardEffectFactory
     }
     #endregion
 
+    #region Static effect of [Scapegoat]
+    public static ScapegoatClass ScapegoatStaticEffect(Func<Permanent, bool> permanentCondition, bool isInheritedEffect, CardSource card, Func<bool> condition)
+    {
+        string effectName = "Scapegoat";
+
+        ScapegoatClass scapegoateClass = new ScapegoatClass();
+        scapegoateClass.SetUpICardEffect(effectName, CanUseCondition, card);
+        scapegoateClass.SetUpScapegoatClass(PermanentCondition: PermanentCondition);
+
+        if (isInheritedEffect)
+        {
+            scapegoateClass.SetIsInheritedEffect(true);
+        }
+
+        bool CanUseCondition(Hashtable hashtable)
+        {
+            return condition == null || condition();
+        }
+
+        bool PermanentCondition(Permanent permanent)
+        {
+            if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
+            {
+                if (permanentCondition == null || permanentCondition(permanent))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        return scapegoateClass;
+    }
+    #endregion
 }
