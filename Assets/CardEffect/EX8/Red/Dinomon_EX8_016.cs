@@ -190,7 +190,7 @@ namespace DCGO.CardEffects.EX8
 
                 bool DefenderCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
                         if (permanent.IsSuspended)
                         {
