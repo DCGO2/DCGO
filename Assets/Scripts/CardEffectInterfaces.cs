@@ -58,6 +58,13 @@ public interface IAllianceEffect
 }
 #endregion
 
+#region "Target permanent gains Scapegoat" effect
+public interface IScapegoatEffect
+{
+    bool HasScapegoat(Permanent permanent);
+}
+#endregion
+
 #region "Treat target permanent as Digimon" effect
 public interface ITreatAsDigimonEffect
 {

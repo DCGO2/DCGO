@@ -20,6 +20,8 @@ namespace DCGO.CardEntities
         public List<CardData> _cardData;
 
         string cardIDString = "";
+        bool onlyAA = false;
+        bool updateExisting = true;
 
         public override void OnInspectorGUI()
         {
@@ -31,6 +33,9 @@ namespace DCGO.CardEntities
 
             if (_cardData != null)
             {
+                updateExisting = GUILayout.Toggle(updateExisting, "Update Existing Assets");
+                onlyAA = GUILayout.Toggle(onlyAA, "AA Only");
+
                 GUILayout.Label("Card ID: ");
                 cardIDString = GUILayout.TextField(cardIDString, 500).ToUpper();
 
@@ -44,8 +49,8 @@ namespace DCGO.CardEntities
                         foreach (string str in list)
                             cards.AddRange(_cardData.Where(x => x.cardNumber.Contains(str)).ToList());
 
-                        _loadJSON.prevCardIndex = _loadJSON.setCardIndex;
                         SetDataToScriptableObject(cards);
+                        _loadJSON.prevCardIndex = _loadJSON.setCardIndex-1;
                     }
                 }
             }
@@ -76,7 +81,9 @@ namespace DCGO.CardEntities
         {
             foreach (CardData card in data)
             {
-                CreateScriptableObject(card, card.cardNumber);
+                if(!onlyAA)
+                    CreateScriptableObject(card, card.cardNumber);
+                
                 CreateAA(card);
             }
         }
@@ -100,6 +107,7 @@ namespace DCGO.CardEntities
 
         void CreateScriptableObject(CardData card, string imageID)
         {
+            Debug.Log($"creating: {card.name.english}");
             // CardEntity‚ instance created
             CEntity_Base cardEntity = CreateInstance<CEntity_Base>();
 
@@ -131,8 +139,7 @@ namespace DCGO.CardEntities
             cardEntity.CardID = card.id;
             cardEntity.MaxCountInDeck = GetMaxCount(card.restrictions.japanese);
 
-            cardEntity.name = FixCharactersInName($"{cardEntity.CardName_ENG}-{cardEntity.CardSpriteName}"); 
-            cardEntity.CardIndex = GetCardIndex(cardEntity);
+            cardEntity.name = FixCharactersInName($"{cardEntity.CardName_ENG.Replace(" ", "")}-{cardEntity.CardSpriteName}"); 
             Debug.Log($"created: {cardEntity.name}");
 
             SaveScriptableObject(cardEntity);
@@ -167,22 +174,25 @@ namespace DCGO.CardEntities
 
             if(File.Exists(filePath))
             {
-                Debug.Log($"{entity.name} already exists");
-                CEntity_Base asset = (CEntity_Base)AssetDatabase.LoadAssetAtPath(filePath, typeof(CEntity_Base));
-                
-                entity.CardIndex = asset.CardIndex;
+                if (updateExisting)
+                {
+                    CEntity_Base asset = (CEntity_Base)AssetDatabase.LoadAssetAtPath(filePath, typeof(CEntity_Base));
 
-                EditorUtility.CopySerialized(entity, asset);
-                AssetDatabase.SaveAssets();
+                    entity.CardIndex = asset.CardIndex;
+
+                    EditorUtility.CopySerialized(entity, asset);
+                    AssetDatabase.SaveAssets();
+                    Debug.Log($"{entity.name}: Scriptable Object Updated");
+                }
             }
             else
             {
+                entity.CardIndex = GetCardIndex(entity);
                 AssetDatabase.CreateAsset(entity, filePath);
+                Debug.Log($"{entity.name}: Scriptable Object Created");
             }
 
             AssetDatabase.Refresh();
-
-            Debug.Log($"{entity.name}: Scriptable Object Created");
         }
         #endregion
 
@@ -318,10 +328,13 @@ namespace DCGO.CardEntities
                     else
                         evoCost.CardColor = DictionaryUtility.GetCardColor(digivolveCondition.color.ToLower(), DataBase.CardColorNameDictionary);
 
-                    evoCost.Level = int.Parse(digivolveCondition.level);
                     evoCost.MemoryCost = int.Parse(digivolveCondition.cost);
 
-                    evoCosts.Add(evoCost);
+                    if (digivolveCondition.level != "Tamer")
+                    {
+                        evoCost.Level = int.Parse(digivolveCondition.level);
+                        evoCosts.Add(evoCost);
+                    }
                 }
             }
 

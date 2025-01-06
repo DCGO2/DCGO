@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: "\u30B7\u30E3\u30C9\u30FC\u30A6\u30A3\u30F3\u30B0-ST1-13_P1"
+  m_EditorClassIdentifier: 
+  CardIndex: 35
+  cardColors: 00000000
+  PlayCost: 1
+  EvoCosts: []
+  Level: 0
+  CardName_JPN: "\u30B7\u30E3\u30C9\u30FC\u30A6\u30A3\u30F3\u30B0"
+  CardName_ENG: ShadowWing
+  Form_JPN: []
+  Form_ENG: []
+  Attribute_JPN: []
+  Attribute_ENG: []
+  Type_JPN: []
+  Type_ENG: []
+  CardSprite_JPN: {fileID: 21300000, guid: 248ca0617d2ec774f90a05fbe11f5bb6, type: 3}
+  CardSprite_ENG: {fileID: 21300000, guid: 081cb8c6ef57387499de292f2d07d603, type: 3}
+  CardSpriteName: ST1-13_P1
+  cardKind: 2
+  EffectDiscription_JPN: "\u3010\u30E1\u30A4\u30F3\u3011\u3053\u306E\u30BF\u30FC\u30F3\u306E\u9593\u3001\u81EA\u5206\u306E\u30C7\u30B8\u30E2\u30F31\u4F53\u306EDP\u3092+3000\u3059\u308B\u3002"
+  EffectDiscription_ENG: '[Main] 1 of your Digimon gets +3000 DP for the turn.'
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: 
+  SecurityEffectDiscription_JPN: "\u3010\u30BB\u30AD\u30E5\u30EA\u30C6\u30A3\u3011\u6B21\u306E\u81EA\u5206\u306E\u30BF\u30FC\u30F3\u7D42\u4E86\u6642\u307E\u3067\u81EA\u5206\u306E\u30C7\u30B8\u30E2\u30F3\u5168\u3066\u306F\u3001\u226A\u30BB\u30AD\u30E5\u30EA\u30C6\u30A3\u30A2\u30BF\u30C3\u30AF+1\u226B\uFF08\u3053\u306E\u30C7\u30B8\u30E2\u30F3\u304C\u30C1\u30A7\u30C3\u30AF\u3059\u308B\u30BB\u30AD\u30E5\u30EA\u30C6\u30A3\u306E\u679A\u6570+1\uFF09\u3092\u5F97\u308B\u3002"
+  SecurityEffectDiscription_ENG: "[Security] All of your Digimon gain \uFF1CSecurity
+    Attack +1\uFF1E  (This Digimon checks 1 additional security card) until the end
+    of your next turn."
+  CardEffectClassName: ShadowWing_ST1_13
+  DP: 0
+  rarity: 0
+  CardID: ST1-13
+  MaxCountInDeck: 4
