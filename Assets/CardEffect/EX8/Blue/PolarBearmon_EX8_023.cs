@@ -184,7 +184,7 @@ namespace DCGO.CardEffects.EX8
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Trash bottom 2 sources of 1 opponents digimon. Then memory +1", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Trash any 2 digivolution sources of your opponents digimon. Then Digimon with no sources can unsuspend or activate [When Digivolving] effects", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
