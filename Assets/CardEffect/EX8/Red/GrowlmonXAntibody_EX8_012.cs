@@ -16,15 +16,20 @@ namespace DCGO.CardEffects.EX8
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsCardName("Growlmon");
+                    return targetPermanent.TopCard.EqualsCardName("Growlmon");
                 }
 
-                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 0, ignoreDigivolutionRequirement: false, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
+                    permanentCondition: PermanentCondition,
+                    digivolutionCost: 0,
+                    ignoreDigivolutionRequirement: false,
+                    card: card, condition: null)
+                );
             }
             #endregion
 
             #region When Digivolving
-            if (timing == EffectTiming.OnAllyAttack)
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Draw 1 and trash 1 card from hand. Then this Digimon gains On Deletion.", CanUseCondition, card);
@@ -82,7 +87,7 @@ namespace DCGO.CardEffects.EX8
                         yield return StartCoroutine(selectHandEffect.Activate());
                     }
 
-                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => (cardSource.ContainsCardName("Growlmon") || cardSource.ContainsCardName("X Antibody"))) >= 1)
+                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => (cardSource.EqualsCardName("Growlmon") || cardSource.EqualsCardName("X Antibody"))) >= 1)
                     {
                         Permanent selectedPermanent = card.PermanentOfThisCard();
                         CardSource _topCard = selectedPermanent.TopCard;
