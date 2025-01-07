@@ -169,6 +169,11 @@ namespace DCGO.CardEffects.EX8
                              deleteTargetPermanents = permanents.Clone();
                              yield return null;
                          }
+
+                         yield return ContinuousController.instance.StartCoroutine(
+                             CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
+                                 targetPermanents: deleteTargetPermanents, activateClass: activateClass,
+                                 successProcess: null, failureProcess: null));
                     }
 
                 }
@@ -312,6 +317,11 @@ namespace DCGO.CardEffects.EX8
                             deleteTargetPermanents = permanents.Clone();
                             yield return null;
                         }
+
+                        yield return ContinuousController.instance.StartCoroutine(
+                            CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
+                                targetPermanents: deleteTargetPermanents, activateClass: activateClass,
+                                successProcess: null, failureProcess: null));
                     }
 
                 }
