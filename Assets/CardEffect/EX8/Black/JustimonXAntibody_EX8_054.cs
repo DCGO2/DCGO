@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.EX8
                 {
                     return targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.IsLevel6 && 
                            targetPermanent.TopCard.ContainsCardName("Justimon") &&
-                           targetPermanent.TopCard.EqualsTraits("X Antibody");
+                           !targetPermanent.TopCard.EqualsTraits("X Antibody");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 1, ignoreDigivolutionRequirement: false, card: card, condition: null));

@@ -38,7 +38,7 @@ namespace DCGO.CardEffects.EX8
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                    return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent) &&
                            permanent != null &&
                            permanent.TopCard &&
                            !permanent.TopCard.CanNotBeAffected(activateClass) &&
