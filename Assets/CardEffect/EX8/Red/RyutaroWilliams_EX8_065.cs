@@ -142,6 +142,10 @@ namespace DCGO.CardEffects.EX8
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
+                    yield return ContinuousController.instance.StartCoroutine(
+                        new SuspendPermanentsClass(new List<Permanent>() { card.PermanentOfThisCard() },
+                            CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
+
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
                         Permanent selectedPermanent = null;
