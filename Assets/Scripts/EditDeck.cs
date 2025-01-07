@@ -1034,14 +1034,14 @@ public class EditDeck : MonoBehaviour
                 cardPrefab_CreateDeck.OffAddRemoveButton();
             }
         }
-
+        Debug.Log($"CARD TO ADD: {_cardPrefab_CreateDeck.cEntity_Base}");
         yield return StartCoroutine(AddDeckCards(_cardPrefab_CreateDeck.cEntity_Base));
 
         List<CEntity_Base> DeckCards = new List<CEntity_Base>();
 
         foreach (CEntity_Base cEntity_Base in EdittingDeckData.AllDeckCards())
         {
-            Debug.Log($"ADD: {cEntity_Base.CardIndex} || {cEntity_Base.CardID}");
+            //Debug.Log($"ADD: {cEntity_Base.CardIndex} || {cEntity_Base.CardID}");
             DeckCards.Add(cEntity_Base);
         }
         Debug.Log($"ADDED EDITTING DECK DATA ENTITIES TO DECK CARDS LIST: {DeckCards.Count} || {DeckCards.IndexOf(_cardPrefab_CreateDeck.cEntity_Base)}  || {DeckCards.Count((cEntity_Base) => cEntity_Base == _cardPrefab_CreateDeck.cEntity_Base)}");
@@ -1183,16 +1183,19 @@ public class EditDeck : MonoBehaviour
     #region add cards to deck
     public IEnumerator AddDeckCards(CEntity_Base cEntity_Base)
     {
+        Debug.Log($"ADD DECK CARD: {cEntity_Base.CardID}: {DeckBuildingRule.CanAddCard(cEntity_Base, EdittingDeckData)}");
         if (!DeckBuildingRule.CanAddCard(cEntity_Base, EdittingDeckData))
         {
             yield break;
         }
-
+        Debug.Log($"ADD DECK CARD: {EdittingDeckData.DeckCardIDs.Count}");
         EdittingDeckData.AddCard(cEntity_Base);
 
+        Debug.Log($"ADD DECK CARD: {EdittingDeckData.DeckCardIDs.Count}");
+        Debug.Log($"ADD DECK CARD: {EdittingDeckData.DeckCards().Count}");
         EdittingDeckData.DeckCardIDs = DeckData.GetDeckCardCodes(DeckData.SortedDeckCardsList(EdittingDeckData.DeckCards()));
         EdittingDeckData.DigitamaDeckCardIDs = DeckData.GetDeckCardCodes(DeckData.SortedDeckCardsList(EdittingDeckData.DigitamaDeckCards()));
-
+        
         ReflectDeckData();
         cardDistribution.SetCardDistribution(EdittingDeckData);
     }
