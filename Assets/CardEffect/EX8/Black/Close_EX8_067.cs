@@ -18,7 +18,7 @@ namespace DCGO.CardEffects.EX8
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("", CanUseCondition, card);
+                activateClass.SetUpICardEffect("place up to 2 cards with the [Mineral] or [Rock] trait from your trash as bottom digivolution sources", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -73,6 +73,7 @@ namespace DCGO.CardEffects.EX8
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    List<Permanent> digivolvedPermanent = CardEffectCommons.GetPlayedPermanentsFromEnterFieldHashtable(hashtable, null);
                     List<CardSource> selectedCards = new List<CardSource>();
 
                     yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(new List<Permanent>() { card.PermanentOfThisCard() }, CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
@@ -121,7 +122,7 @@ namespace DCGO.CardEffects.EX8
 
                     if (selectedCards.Count >= 1)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(selectedCards, activateClass));
+                        yield return ContinuousController.instance.StartCoroutine(digivolvedPermanent[0].AddDigivolutionCardsBottom(selectedCards, activateClass));
                     }
                 }
             }

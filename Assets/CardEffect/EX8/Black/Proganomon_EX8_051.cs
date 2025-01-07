@@ -56,7 +56,8 @@ namespace DCGO.CardEffects.EX8
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return card.PermanentOfThisCard().TopCard.ContainsTraits("Mineral") || card.PermanentOfThisCard().TopCard.ContainsTraits("Rock") &&
+                    Permanent trashedPermanent = CardEffectCommons.GetPermanentFromHashtable(hashtable);
+                    return trashedPermanent.TopCard.ContainsTraits("Mineral") || trashedPermanent.TopCard.ContainsTraits("Rock") &&
                            CardEffectCommons.CanTriggerOnTrashSelfDigivolutionCard(hashtable, cardEffect => cardEffect != null, card);
                 }
 

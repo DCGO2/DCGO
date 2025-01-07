@@ -29,7 +29,8 @@ namespace DCGO.CardEffects.EX8
 
                 bool Condition()
                 {
-                    return CardEffectCommons.HasMatchConditionOpponentsPermanent(card, permanent => permanent.IsDigimon && permanent.DP >= 13000);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && 
+                           CardEffectCommons.HasMatchConditionOpponentsPermanent(card, permanent => permanent.IsDigimon && permanent.DP >= 13000);
                 }
 
                 bool PermanentCondition(Permanent permanent)
