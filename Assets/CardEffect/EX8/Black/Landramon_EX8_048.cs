@@ -13,7 +13,7 @@ namespace DCGO.CardEffects.EX8
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Play 1 [Close] from your hand", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -56,7 +56,7 @@ namespace DCGO.CardEffects.EX8
 
                         selectHandEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: (cardSource) => true,
+                            canTargetCondition: HasClose,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: 1,
@@ -65,7 +65,7 @@ namespace DCGO.CardEffects.EX8
                             isShowOpponent: true,
                             selectCardCoroutine: SelectCardCoroutine,
                             afterSelectCardCoroutine: null,
-                            mode: SelectHandEffect.Mode.Discard,
+                            mode: SelectHandEffect.Mode.Custom,
                             cardEffect: activateClass);
 
                         yield return StartCoroutine(selectHandEffect.Activate());
@@ -87,25 +87,36 @@ namespace DCGO.CardEffects.EX8
             if (timing == EffectTiming.OnDigivolutionCardDiscarded)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Memory +1", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Delete 4 cost or less Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "When effects trash this card from digivolution cards of a [Mineral] or [Rock] trait Digimon, gain 1 memory.";
+                    return "When effects trash this card from a [Mineral] or [Rock] trait Digimon's digivolution cards, delete 1 of your opponent's Digimon with a play cost of 4 or less.";
+                }
+
+                bool CanSelectOpponentsDigimon(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                        return permanent.TopCard.HasPlayCost && permanent.TopCard.GetCostItself <= 4;
+
+                    return false;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return card.PermanentOfThisCard().TopCard.ContainsTraits("Mineral") || card.PermanentOfThisCard().TopCard.ContainsTraits("Rock");                }
+                    Permanent trashedPermanent = CardEffectCommons.GetPermanentFromHashtable(hashtable);
+                    return trashedPermanent.TopCard.ContainsTraits("Mineral") || trashedPermanent.TopCard.ContainsTraits("Rock") &&
+                           CardEffectCommons.CanTriggerOnTrashSelfDigivolutionCard(hashtable, cardEffect => cardEffect != null, card);
+                }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnTrash(card))
                     {
-                        if (card.Owner.CanAddMemory(activateClass))
+                        if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectOpponentsDigimon))
                         {
                             return true;
                         }
@@ -116,7 +127,22 @@ namespace DCGO.CardEffects.EX8
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                    selectPermanentEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanSelectOpponentsDigimon,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: true,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: null,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Destroy,
+                        cardEffect: activateClass);
+
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                 }
             }
             #endregion

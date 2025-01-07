@@ -199,6 +199,7 @@ namespace DCGO.CardEffects.EX8
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Place 3 cards from trash as bottom sources", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetHashString("EOT_EX8_055");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

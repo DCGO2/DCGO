@@ -13,7 +13,7 @@ namespace DCGO.CardEffects.EX8
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Memory +1", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
@@ -24,7 +24,8 @@ namespace DCGO.CardEffects.EX8
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return card.PermanentOfThisCard().TopCard.ContainsTraits("Mineral") || card.PermanentOfThisCard().TopCard.ContainsTraits("Rock") && 
+                    Permanent trashedPermanent = CardEffectCommons.GetPermanentFromHashtable(hashtable);
+                    return trashedPermanent.TopCard.ContainsTraits("Mineral") || trashedPermanent.TopCard.ContainsTraits("Rock") && 
                            CardEffectCommons.CanTriggerOnTrashSelfDigivolutionCard(hashtable, cardEffect => cardEffect != null, card);
                 }
 

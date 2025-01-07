@@ -29,12 +29,12 @@ namespace DCGO.CardEffects.EX8
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletion(card);
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                    return CardEffectCommons.CanActivateOnDeletion(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
