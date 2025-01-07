@@ -14,19 +14,51 @@ namespace DCGO.CardEffects.EX8
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsCardName("Guilmon") || targetPermanent.TopCard.ContainsCardName("Gigimon");
+                    return targetPermanent.TopCard.EqualsCardName("Guilmon") || targetPermanent.TopCard.EqualsCardName("Gigimon");
                 }
 
-                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 0, ignoreDigivolutionRequirement: false, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
+                    permanentCondition: PermanentCondition,
+                    digivolutionCost: 0,
+                    ignoreDigivolutionRequirement: false,
+                    card: card, condition: null)
+                );
             }
             #endregion
 
+            #region On Play/When Digivolving Shared
+            
+            bool CanSelectGrowlmonGallantmonCondition(CardSource cardSource)
+            {
+                return cardSource.ContainsCardName("Growlmon") || cardSource.ContainsCardName("Gallantmon");
+            }
+
+            bool CanSelectXAntibodyCondition(CardSource cardSource)
+            {
+                return cardSource.EqualsCardName("X Antibody");
+            }
+
+            bool CanActivateOnPlayWhenDigivolvingCondition(Hashtable hashtable)
+            {
+                if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                {
+                    if (card.Owner.LibraryCards.Count >= 1)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+            
+            #endregion
+            
             #region On Play
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Reveal the top 3 cards of deck", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateOnPlayWhenDigivolvingCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -34,42 +66,9 @@ namespace DCGO.CardEffects.EX8
                     return "[On Play] Reveal the top 3 cards of your deck. Add 1 card with [Growlmon]/[Gallantmon] in its name and 1 [X Antibody] among them to the hand. Return the rest to the bottom of the deck.";
                 }
 
-                bool CanSelectCardCondition(CardSource cardSource)
-                {
-                    if (cardSource.ContainsCardName("Growlmon") || cardSource.ContainsCardName("Gallantmon"))
-                    {
-                        return true;
-                    }
-
-                    return false;
-                }
-
-                bool CanSelectCardCondition1(CardSource cardSource)
-                {
-                    if (cardSource.ContainsCardName("X Antibody"))
-                    {
-                        return true;
-                    }
-
-                    return false;
-                }
-
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (card.Owner.LibraryCards.Count >= 1)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -80,13 +79,13 @@ namespace DCGO.CardEffects.EX8
                         new SimplifiedSelectCardConditionClass[]
                         {
                         new SimplifiedSelectCardConditionClass(
-                            canTargetCondition:CanSelectCardCondition,
+                            canTargetCondition:CanSelectGrowlmonGallantmonCondition,
                             message: "Select 1 card with [Growlmon] or [Gallantmon] in its name.",
                             mode: SelectCardEffect.Mode.AddHand,
                             maxCount: 1,
                             selectCardCoroutine: null),
                         new SimplifiedSelectCardConditionClass(
-                            canTargetCondition:CanSelectCardCondition1,
+                            canTargetCondition:CanSelectXAntibodyCondition,
                             message:"Select 1 [X Antibody].",
                             mode: SelectCardEffect.Mode.AddHand,
                             maxCount: 1,
@@ -104,7 +103,7 @@ namespace DCGO.CardEffects.EX8
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Reveal the top 3 cards of deck", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateOnPlayWhenDigivolvingCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -112,44 +111,11 @@ namespace DCGO.CardEffects.EX8
                     return "[When Digivolving] Reveal the top 3 cards of your deck. Add 1 card with [Growlmon]/[Gallantmon] in its name and 1 [X Antibody] among them to the hand. Return the rest to the bottom of the deck.";
                 }
 
-                bool CanSelectCardCondition(CardSource cardSource)
-                {
-                    if (cardSource.ContainsCardName("Growlmon") || cardSource.ContainsCardName("Gallantmon"))
-                    {
-                        return true;
-                    }
-
-                    return false;
-                }
-
-                bool CanSelectCardCondition1(CardSource cardSource)
-                {
-                    if (cardSource.ContainsCardName("X Antibody"))
-                    {
-                        return true;
-                    }
-
-                    return false;
-                }
-
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (card.Owner.LibraryCards.Count >= 1)
                         {
                             return true;
                         }
@@ -166,13 +132,13 @@ namespace DCGO.CardEffects.EX8
                         new SimplifiedSelectCardConditionClass[]
                         {
                         new SimplifiedSelectCardConditionClass(
-                            canTargetCondition:CanSelectCardCondition,
+                            canTargetCondition:CanSelectGrowlmonGallantmonCondition,
                             message: "Select 1 card with [Growlmon] or [Gallantmon] in its name.",
                             mode: SelectCardEffect.Mode.AddHand,
                             maxCount: 1,
                             selectCardCoroutine: null),
                         new SimplifiedSelectCardConditionClass(
-                            canTargetCondition:CanSelectCardCondition1,
+                            canTargetCondition:CanSelectXAntibodyCondition,
                             message:"Select 1 [X Antibody].",
                             mode: SelectCardEffect.Mode.AddHand,
                             maxCount: 1,

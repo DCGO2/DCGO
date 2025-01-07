@@ -16,10 +16,15 @@ namespace DCGO.CardEffects.EX8
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsCardName("WarGrowlmon");
+                    return targetPermanent.TopCard.EqualsCardName("WarGrowlmon");
                 }
 
-                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 1, ignoreDigivolutionRequirement: false, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
+                    permanentCondition: PermanentCondition,
+                    digivolutionCost: 1,
+                    ignoreDigivolutionRequirement: false,
+                    card: card, condition: null)
+                );
             }
             #endregion
 
@@ -27,7 +32,7 @@ namespace DCGO.CardEffects.EX8
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Can't be returned to the hand or deck", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Can't be returned to the hand or deck and delete 1 Digimon with 10000 DP or less.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -66,7 +71,7 @@ namespace DCGO.CardEffects.EX8
                 {
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
-                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => (cardSource.ContainsCardName("Growlmon") || cardSource.ContainsCardName("X Antibody"))) >= 1)
+                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => (cardSource.EqualsCardName("WarGrowlmon") || cardSource.EqualsCardName("X Antibody"))) >= 1)
                         {
                             return true;
                         }
@@ -112,7 +117,7 @@ namespace DCGO.CardEffects.EX8
                             effectDuration: EffectDuration.UntilOpponentTurnEnd,
                             activateClass: activateClass));
 
-                    if(CanActivateEffect(hashtable))
+                    if (CanActivateEffect(hashtable))
                     {
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
 

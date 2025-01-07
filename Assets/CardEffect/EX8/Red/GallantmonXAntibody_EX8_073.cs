@@ -16,10 +16,16 @@ namespace DCGO.CardEffects.EX8
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsCardName("Gallantmon");
+                    return targetPermanent.TopCard.EqualsCardName("Gallantmon");
                 }
 
-                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 1, ignoreDigivolutionRequirement: false, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
+                    permanentCondition: PermanentCondition,
+                    digivolutionCost: 1,
+                    ignoreDigivolutionRequirement: false,
+                    card: card,
+                    condition: null)
+                );
             }
             #endregion
 
@@ -27,7 +33,7 @@ namespace DCGO.CardEffects.EX8
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("This Digimong gets +4000 DP and gives -4000 DP to an opponent's Digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("This Digimon gets +4000 DP and gives -4000 DP to an opponent's Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -202,7 +208,7 @@ namespace DCGO.CardEffects.EX8
 
                 string EffectDescription()
                 {
-                    return "[When Digivolving][Once Per Turn] Delete 1 of your opponent's Digimon with 10000 DP or less. If this didn't delete, trash your opponent's top security card and this Digimon unsuspends.";
+                    return "[When Digivolving] [Once Per Turn] Delete 1 of your opponent's Digimon with 10000 DP or less. If this didn't delete, trash your opponent's top security card and this Digimon unsuspends.";
                 }
 
                 bool CanSelectOpponentPermanentCondition(Permanent permanent)
@@ -229,6 +235,96 @@ namespace DCGO.CardEffects.EX8
                     }
 
                     return false;
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    List<Permanent> deleteTargetPermanents = new List<Permanent>();
+
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentPermanentCondition))
+                    {
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectOpponentPermanentCondition));
+
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectOpponentPermanentCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: maxCount,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: null,
+                            afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to delete.", "The opponent is selecting 1 Digimon to delete.");
+
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                        IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
+                        {
+                            deleteTargetPermanents = permanents.Clone();
+                            yield return null;
+                        }
+                    }
+
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: deleteTargetPermanents, activateClass: activateClass, successProcess: null, failureProcess: FailureProcess));
+
+                    IEnumerator FailureProcess()
+                    {
+                        if (card.Owner.Enemy.SecurityCards.Count >= 1)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
+                                player: card.Owner.Enemy,
+                                destroySecurityCount: 1,
+                                cardEffect: activateClass,
+                                fromTop: true).DestroySecurity());
+                        }
+
+                        yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() }, activateClass).Unsuspend());
+                    }
+                }
+            }
+            #endregion
+            
+            #region End of Attack - Once Per Turn
+            if (timing == EffectTiming.OnEndAttack)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Delete 1 Digimon with 10000 DP or less, or trash the opponent's top security and unsuspend", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetHashString("Delete_EX8_073");
+                cardEffects.Add(activateClass);
+
+                string EffectDescription()
+                {
+                    return "[End of Attack] [Once Per Turn] Delete 1 of your opponent's Digimon with 10000 DP or less. If this didn't delete, trash your opponent's top security card and this Digimon unsuspends.";
+                }
+
+                bool CanSelectOpponentPermanentCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                    {
+                        if (permanent.DP <= card.Owner.MaxDP_DeleteEffect(10000, activateClass))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanTriggerOnEndAttack(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

@@ -47,7 +47,6 @@ namespace DCGO.CardEffects.EX8
                            permanent.TopCard.EqualsTraits("NSo");
                 }
 
-                // TODO: Apply Scapegoat to all NSo Digimon
                 cardEffects.Add(CardEffectFactory.ScapegoatStaticEffect(
                     permanentCondition: PermanentCondition,
                     isInheritedEffect: false,
