@@ -9,11 +9,14 @@ public partial class CardEffectCommons
     #region Can activate [Fragment]
     public static bool CanActivateFragment(Permanent permanent, int trashValue, ICardEffect activateClass)
     {
+        Debug.Log($"FRAGMENT CAN ACTIVATE: {IsPermanentExistsOnBattleArea(permanent)}");
         if (IsPermanentExistsOnBattleArea(permanent))
         {
+            Debug.Log($"FRAGMENT CAN ACTIVATE: {permanent.CanBeDestroyedBySkill(activateClass)}");
             if (permanent.CanBeDestroyedBySkill(activateClass))
             {
-                return (permanent.DigivolutionCards.Count < trashValue);
+                Debug.Log($"FRAGMENT CAN ACTIVATE: {permanent.DigivolutionCards.Count} <= {trashValue}");
+                return (permanent.DigivolutionCards.Count <= trashValue);
             }
         }
 
@@ -30,22 +33,47 @@ public partial class CardEffectCommons
 
         bool cardsTrashed = false;
 
-        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SelectTrashDigivolutionCards(
-            permanentCondition: (target => target == permanent),
-            cardCondition: (CardSource) =>  true,
-            maxCount: 3,
-            canNoTrash: true,
-            isFromOnly1Permanent: false,
-            activateClass: activateClass,
-            afterSelectionCoroutine: AfterTrashedCards
-        ));
+        List<CardSource> selectedCards = new List<CardSource>();
 
-        IEnumerator AfterTrashedCards(Permanent permanent, List<CardSource> cards)
+        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+        selectCardEffect.SetUp(
+                    canTargetCondition: (CardSource) => true,
+                    canTargetCondition_ByPreSelecetedList: null,
+                    canEndSelectCondition: null,
+                    canNoSelect: () => false,
+                    selectCardCoroutine: SelectCardCoroutine,
+                    afterSelectCardCoroutine: null,
+                    message: "Select digivolution cards to trash.",
+                    maxCount: 3,
+                    canEndNotMax: false,
+                    isShowOpponent: true,
+                    mode: SelectCardEffect.Mode.Custom,
+                    root: SelectCardEffect.Root.Custom,
+                    customRootCardList: permanent.DigivolutionCards,
+                    canLookReverseCard: true,
+                    selectPlayer: activateClass.EffectSourceCard.Owner,
+                    cardEffect: activateClass);
+
+        selectCardEffect.SetUpCustomMessage("Select digivolution cards to trash.", "The opponent is selecting digivolution cards to trash.");
+
+        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+
+        IEnumerator SelectCardCoroutine(CardSource cardSource)
         {
-            if (cards.Count == trashValue)
-                cardsTrashed = true;
+            selectedCards.Add(cardSource);
 
             yield return null;
+        }
+
+        if (selectedCards.Count == trashValue)
+        {
+            yield return ContinuousController.instance.StartCoroutine(new ITrashDigivolutionCards(
+                permanent,
+                selectedCards,
+                activateClass).TrashDigivolutionCards());
+
+            cardsTrashed = true;
         }
 
         if (cardsTrashed)

@@ -182,4 +182,5 @@ public partial class CardEffectCommons
             }
         }
     }
+
 }

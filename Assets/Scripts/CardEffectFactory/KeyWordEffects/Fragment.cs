@@ -48,22 +48,18 @@ public partial class CardEffectFactory
             activateClass.SetRootCardEffect(rootCardEffect);
         }
 
-        bool CanSelectPermanentCondition(Permanent permanent) => permanent == targetPermanent && CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) && targetPermanent.DigivolutionCards.Count < trashValue;
-
         bool CanUseCondition(Hashtable hashtable)
         {
-            bool CardEffectCondition(ICardEffect cardEffect) => cardEffect.EffectSourceCard.Owner == card.Owner.Enemy;
-
+            Debug.Log($"FRAGMENT CAN USE: {CardEffectCommons.IsPermanentExistsOnBattleArea(targetPermanent)}");
             if (CardEffectCommons.IsPermanentExistsOnBattleArea(targetPermanent))
             {
-                if (CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, CanSelectPermanentCondition))
+                Debug.Log($"FRAGMENT CAN USE: {CardEffectCommons.CanTriggerWhenRemoveField(hashtable, targetPermanent.TopCard)}");
+                if (CardEffectCommons.CanTriggerWhenRemoveField(hashtable, targetPermanent.TopCard))
                 {
-                    if (CardEffectCommons.IsByEffect(hashtable, CardEffectCondition))
+                    if (condition == null || condition())
                     {
-                        if (condition == null || condition())
-                        {
-                            return true;
-                        }
+                        Debug.Log($"FRAGMENT CAN USE: TRUE");
+                        return true;
                     }
                 }
             }
