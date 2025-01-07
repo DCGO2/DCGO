@@ -866,10 +866,15 @@ public class ContinuousController : MonoBehaviour
     #region カードIndexからカードを取得
     public CEntity_Base getCardEntityByCardID(int cardIndex)
     {
-        int searchIndex = cardIndex - 1;
-        int count = 0;
+        //int searchIndex = cardIndex - 1;
+        //int count = 0;
 
-        do
+        CEntity_Base cEntity_Base = SortedCardList.First(entity => entity.CardIndex == cardIndex);
+
+        return cEntity_Base;
+
+        //TODO: REMOVE IN FUTURE
+        /*do
         {
             if (count != 0)
             {
@@ -920,7 +925,7 @@ public class ContinuousController : MonoBehaviour
 
         while (count <= 20);
 
-        return null;
+        return null;*/
     }
     #endregion
 
