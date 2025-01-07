@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.EX8
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.IsLevel2 && targetPermanent.TopCard.EqualsTraits("NSo");
+                    return targetPermanent.TopCard.IsLevel3 && targetPermanent.TopCard.EqualsTraits("NSo");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
