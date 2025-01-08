@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.P
 {
     public class ShoeShoemon_P_165 : CEntity_Effect
     {
