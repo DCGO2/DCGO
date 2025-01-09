@@ -2151,7 +2151,7 @@ public class Permanent
     }
     #endregion
 
-    #region 道連れを持つ個数
+    #region Retaliation Count
     public int RetaliationCount
     {
         get
@@ -2336,6 +2336,28 @@ public class Permanent
                         }
                     }
                     #endregion
+
+                    #region Effects of faceup security
+                    foreach (CardSource source in player.SecurityCards)
+                    {
+                        if (source.IsFlipped)
+                            continue;
+
+                        foreach (ICardEffect cardEffect in permanent.EffectList(EffectTiming.OnAllyAttack))
+                        {
+                            if (cardEffect is IAllianceEffect)
+                            {
+                                if (cardEffect.CanTrigger(null))
+                                {
+                                    if (((IAllianceEffect)cardEffect).HasAlliance(this))
+                                    {
+                                        return true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    #endregion
                 }
 
                 #region Player Effects
@@ -2480,7 +2502,7 @@ public class Permanent
     }
     #endregion
 
-    #region このデジモンが戦闘によって消滅するか
+    #region Can Be Destroyed By Battle
     public bool CanBeDestroyedByBattle(Permanent AttackingPermanent, Permanent DefendingPermanent, CardSource DefendingCard)
     {
         if (!CanBeDestroyed())
@@ -2509,6 +2531,28 @@ public class Permanent
                 }
                 #endregion
             }
+
+            #region Effects of faceup security
+            foreach (CardSource source in player.SecurityCards)
+            {
+                if (source.IsFlipped)
+                    continue;
+
+                foreach (ICardEffect cardEffect in source.EffectList(EffectTiming.None))
+                {
+                    if (cardEffect is ICanNotBeDestroyedByBattleEffect)
+                    {
+                        if (cardEffect.CanUse(null))
+                        {
+                            if (((ICanNotBeDestroyedByBattleEffect)cardEffect).CanNotBeDestroyedByBattle(this, AttackingPermanent, DefendingPermanent, DefendingCard))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            #endregion
 
             #region プレイヤーの効果
             foreach (ICardEffect cardEffect in player.EffectList(EffectTiming.None))
