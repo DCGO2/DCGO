@@ -5,7 +5,7 @@ using System.Linq;
 using Photon;
 using System;
 using Photon.Pun;
-public class XAntibodyPF_EX5_070 : CEntity_Effect
+public class XAntibodyProtoForm_EX5_070 : CEntity_Effect
 {
     public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
     {

@@ -110,6 +110,7 @@ public class ContinuousController : MonoBehaviour
     public CEntity_Base GyuukimonToken { get; private set; }
     public CEntity_Base KoHagurumonToken { get; private set; }
     public CEntity_Base FamiliarToken { get; private set; }
+    public CEntity_Base SelfDeleteFamiliarToken { get; private set; }
     public CEntity_Base VoleeZerdruckenToken { get; private set; }
     public CEntity_Base UkaNoMitamaToken { get; private set; }
     public CardRestriction BanList { get; private set; } = new CardRestriction(new List<CardLimitCount>(), new List<BannedPair>());
@@ -265,6 +266,27 @@ public class ContinuousController : MonoBehaviour
         };
 
         await FamiliarToken.GetCardSprite();
+        
+        SelfDeleteFamiliarToken = new CEntity_Base()
+        {
+            cardColors = new List<CardColor>() { CardColor.Yellow },
+            PlayCost = -1,
+            Level = 0,
+            CardName_JPN = "",
+            CardName_ENG = "Familiar",
+            Form_JPN = new List<string>(),
+            Form_ENG = new List<string>(),
+            Attribute_JPN = new List<string>(),
+            Attribute_ENG = new List<string>(),
+            Type_JPN = new List<string>(),
+            Type_ENG = new List<string>(),
+            CardSpriteName = "EX7-030-token",
+            cardKind = CardKind.Digimon,
+            DP = 3000,
+            CardEffectClassName = "SelfDeleteFamiliar_P_165_token"
+        };
+
+        await SelfDeleteFamiliarToken.GetCardSprite();
 
         VoleeZerdruckenToken = new CEntity_Base()
         {
@@ -866,10 +888,15 @@ public class ContinuousController : MonoBehaviour
     #region カードIndexからカードを取得
     public CEntity_Base getCardEntityByCardID(int cardIndex)
     {
-        int searchIndex = cardIndex - 1;
-        int count = 0;
+        //int searchIndex = cardIndex - 1;
+        //int count = 0;
 
-        do
+        CEntity_Base cEntity_Base = SortedCardList.First(entity => entity.CardIndex == cardIndex);
+
+        return cEntity_Base;
+
+        //TODO: REMOVE IN FUTURE
+        /*do
         {
             if (count != 0)
             {
@@ -920,7 +947,7 @@ public class ContinuousController : MonoBehaviour
 
         while (count <= 20);
 
-        return null;
+        return null;*/
     }
     #endregion
 

@@ -13,6 +13,7 @@ public class AttachCardData : MonoBehaviour
         List<CEntity_Base> List = GetAsset.LoadAll<CEntity_Base>("Assets/CardBaseEntity/");
 
         List<string> UnimplementedCardSpriteNames = new List<string>() { "P-147" };
+        List<string> DebugCardSpriteNames = new List<string>() { "EX5-070_P1" };
 
         foreach (GameObject obj in Selection.gameObjects)
         {
@@ -33,9 +34,16 @@ public class AttachCardData : MonoBehaviour
                         continue;
                     }
 
+                    
+
                     if (String.IsNullOrEmpty(cEntity_Base.CardSpriteName))
                     {
                         continue;
+                    }
+
+                    if (DebugCardSpriteNames.Contains(cEntity_Base.CardSpriteName))
+                    {
+                        Debug.Log(cEntity_Base.CardID);
                     }
 
                     cEntity_Bases.Add(cEntity_Base);

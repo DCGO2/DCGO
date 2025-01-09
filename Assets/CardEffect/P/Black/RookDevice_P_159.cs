@@ -43,7 +43,7 @@ namespace DCGO.CardEffects.P
 
                 string EffectDiscription()
                 {
-                    return "[Main] 1 of your Digimon gains <Reboot>, <Blocker> and gets +2000 DP until the end of your opponent's turn. Then, place this card in the battle area.";
+                    return "1 of your Digimon gains <Reboot>, <Blocker> and gets +2000 DP until the end of your opponent's turn.";
                 }
 
                 bool HasDigimon(Permanent permanent)
@@ -106,8 +106,6 @@ namespace DCGO.CardEffects.P
                                 activateClass: activateClass));
                         }
                     }
-
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlaceDelayOptionCards(card: card, cardEffect: activateClass));
                 }
             }
             #endregion

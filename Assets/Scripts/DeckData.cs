@@ -218,6 +218,7 @@ public class DeckData
 
         if (DeckCardIDs != null)
         {
+            Debug.Log(DeckCardIDs.Count);
             foreach (int DeckCardID in DeckCardIDs)
             {
                 CEntity_Base cEntity_Base = ContinuousController.instance.getCardEntityByCardID(DeckCardID);
@@ -360,7 +361,6 @@ public class DeckData
         List<CEntity_Base> _DeckCards = DeckCards();
 
         _DeckCards.Add(cEntity_Base);
-
         _DeckCards = SortedDeckCardsList(_DeckCards);
 
         DeckCardIDs = GetDeckCardCodes(_DeckCards);
