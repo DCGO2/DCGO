@@ -78,7 +78,7 @@ namespace DCGO.CardEffects.EX8
                         {
                             if (cardSource.GetCostItself == 7)
                             {
-                                if (cardSource.EqualsTraits("Fallen Angel") || cardSource.EqualsTraits("FallenAngel"))
+                                if (cardSource.EqualsTraits("Fallen Angel"))
                                 {
                                     return true;
                                 }
