@@ -71,8 +71,6 @@ namespace DCGO.CardEffects.EX8
                 {
                     if (CanActivateTokenEffectCondition(hashtable))
                     {
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-
                         bool canPlay = GManager.instance.userSelectionManager.SelectedBoolValue;
 
                         if (canPlay)
@@ -108,7 +106,7 @@ namespace DCGO.CardEffects.EX8
                 {
                     if (cardSource.IsOption)
                     {
-                        if (cardSource.CardColors.Count == 1 && cardSource.GetCostItself >= 5)
+                        if (cardSource.CardColors.Count == 1 && cardSource.GetCostItself <= 5)
                         {
                             if (!cardSource.CanNotPlayThisOption)
                             {

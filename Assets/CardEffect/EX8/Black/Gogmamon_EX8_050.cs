@@ -86,6 +86,7 @@ namespace DCGO.CardEffects.EX8
                 activateClass.SetUpICardEffect("You may change the attack target to this Digimon.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("Redirect_BT19-072");
+                activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

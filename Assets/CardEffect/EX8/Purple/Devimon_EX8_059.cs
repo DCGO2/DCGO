@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.EX8
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.IsLevel2 && targetPermanent.TopCard.EqualsTraits("NSo");
+                    return targetPermanent.TopCard.IsLevel3 && targetPermanent.TopCard.EqualsTraits("NSo");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
@@ -134,6 +134,7 @@ namespace DCGO.CardEffects.EX8
                                     {
                                         yield return ContinuousController.instance.StartCoroutine(GManager.instance
                                             .GetComponent<Effects>().CreateDebuffEffect(permanent));
+
                                         ActivateClass activateClass1 = new ActivateClass();
                                         activateClass1.SetUpICardEffect("Trash 1 card in your hand.", GivenEffectCanUseCondition,
                                             permanent.TopCard);
@@ -158,7 +159,7 @@ namespace DCGO.CardEffects.EX8
 
                                         bool GivenEffectCanUseCondition(Hashtable hashtable)
                                         {
-                                            return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                                            return CardEffectCommons.CanTriggerOnDeletion(hashtable, permanent.TopCard);
                                         }
 
                                         bool GivenEffectCanActivateCondition(Hashtable hashtable1)

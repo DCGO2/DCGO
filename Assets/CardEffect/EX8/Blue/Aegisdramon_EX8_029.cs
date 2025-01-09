@@ -28,10 +28,10 @@ namespace DCGO.CardEffects.EX8
                 {
                     if (cardSource == card)
                     {
-                        bool PermanentCondition1(Permanent permanent) => permanent.TopCard.CardColors.Contains(CardColor.Blue) || permanent.TopCard.CardColors.Contains(CardColor.Purple) &&
+                        bool PermanentCondition1(Permanent permanent) => (permanent.TopCard.CardColors.Contains(CardColor.Blue) || permanent.TopCard.CardColors.Contains(CardColor.Purple)) &&
                                                                          permanent.Levels_ForJogress(card).Contains(6);
 
-                        bool PermanentCondition2(Permanent permanent) => permanent.TopCard.CardColors.Contains(CardColor.Black) || permanent.TopCard.CardColors.Contains(CardColor.Yellow) &&
+                        bool PermanentCondition2(Permanent permanent) => (permanent.TopCard.CardColors.Contains(CardColor.Black) || permanent.TopCard.CardColors.Contains(CardColor.Yellow)) &&
                                                                          permanent.Levels_ForJogress(card).Contains(6);
 
                         JogressConditionElement[] elements = new JogressConditionElement[]
@@ -220,7 +220,7 @@ namespace DCGO.CardEffects.EX8
 
                     if (CardEffectCommons.IsJogress(_hashtable))
                     {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                        if (card.PermanentOfThisCard().DigivolutionCards.Count(CanSelectCardCondition) > 0)
                         {
                             List<CardSource> selectedCards = new List<CardSource>();
 
@@ -233,9 +233,9 @@ namespace DCGO.CardEffects.EX8
                                         canNoSelect: () => true,
                                         selectCardCoroutine: SelectCardCoroutine,
                                         afterSelectCardCoroutine: null,
-                                        message: "Select 1 card to play.",
+                                        message: "Select up to 12 play cost to play.",
                                         maxCount: card.PermanentOfThisCard().DigivolutionCards.Count,
-                                        canEndNotMax: false,
+                                        canEndNotMax: true,
                                         isShowOpponent: true,
                                         mode: SelectCardEffect.Mode.Custom,
                                         root: SelectCardEffect.Root.Custom,
@@ -244,7 +244,7 @@ namespace DCGO.CardEffects.EX8
                                         selectPlayer: card.Owner,
                                         cardEffect: activateClass);
 
-                            selectCardEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
+                            selectCardEffect.SetUpCustomMessage("Select up to 12 play cost to play.", "The opponent is selecting up to 12 play cost to play.");
 
                             yield return StartCoroutine(selectCardEffect.Activate());
 

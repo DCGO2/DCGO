@@ -289,7 +289,7 @@ public class ContinuousController : MonoBehaviour
 
         UkaNoMitamaToken = new CEntity_Base()
         {
-            cardColors = new List<CardColor>() { CardColor.Purple },
+            cardColors = new List<CardColor>() { CardColor.Yellow },
             PlayCost = -1,
             Level = 0,
             CardName_JPN = "",

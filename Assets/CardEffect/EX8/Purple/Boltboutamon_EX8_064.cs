@@ -264,6 +264,79 @@ namespace DCGO.CardEffects.EX8
                         if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectNSoDigimonCondition))
                         {
                             List<CardSource> selectedCards = new List<CardSource>();
+                            int maxCount = CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, CanSelectNSoDigimonCondition);
+
+                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                            selectCardEffect.SetUp(
+                                        canTargetCondition: CanSelectNSoDigimonCondition,
+                                        canTargetCondition_ByPreSelecetedList: CanTargetCardCondition_ByPreSelecetedList,
+                                        canEndSelectCondition: CanEndSelectCardCondition,
+                                        canNoSelect: () => true,
+                                        selectCardCoroutine: SelectCardCoroutine,
+                                        afterSelectCardCoroutine: null,
+                                        message: "Select up to 10 play cost to play.",
+                                        maxCount: maxCount,
+                                        canEndNotMax: true,
+                                        isShowOpponent: true,
+                                        mode: SelectCardEffect.Mode.Custom,
+                                        root: SelectCardEffect.Root.Trash,
+                                        customRootCardList: null,
+                                        canLookReverseCard: true,
+                                        selectPlayer: card.Owner,
+                                        cardEffect: activateClass);
+
+                            selectCardEffect.SetUpCustomMessage("Select up to 10 play cost to play.", "The opponent is selecting up to 10 play cost to play.");
+
+                            yield return StartCoroutine(selectCardEffect.Activate());
+
+                            bool CanEndSelectCardCondition(List<CardSource> cards)
+                            {
+                                if (cards.Count <= 0)
+                                {
+                                    return false;
+                                }
+
+                                int sumCost = 0;
+
+                                foreach (CardSource source in cards)
+                                {
+                                    sumCost += source.GetCostItself;
+                                }
+
+                                if (sumCost > maxCost)
+                                {
+                                    return false;
+                                }
+
+                                return true;
+                            }
+
+                            bool CanTargetCardCondition_ByPreSelecetedList(List<CardSource> cards, CardSource source)
+                            {
+                                int sumCost = 0;
+
+                                foreach (CardSource source1 in cards)
+                                {
+                                    sumCost += source1.GetCostItself;
+                                }
+
+                                sumCost += source.GetCostItself;
+
+                                if (sumCost > maxCost)
+                                {
+                                    return false;
+                                }
+
+                                return true;
+                            }
+
+                            IEnumerator SelectCardCoroutine(CardSource cardSource)
+                            {
+                                selectedCards.Add(cardSource);
+
+                                yield return null;
+                            }
 
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
                                 cardSources: selectedCards,
@@ -271,8 +344,7 @@ namespace DCGO.CardEffects.EX8
                                 payCost: false,
                                 isTapped: false,
                                 root: SelectCardEffect.Root.Trash,
-                                activateETB: true));
-                            
+                                activateETB: true));                            
                         }
                     }
                 }

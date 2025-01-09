@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DCGO.CardEffects.EX8
 {
-    public class MetalSeadramonAce_EX8_026 : CEntity_Effect
+    public class MetalSeadramon_EX8_026 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
