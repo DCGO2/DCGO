@@ -75,7 +75,7 @@ namespace DCGO.CardEffects.EX8
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete opponents level 3 Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("WhenAttacking_EX8_058");
                 cardEffects.Add(activateClass);
@@ -114,53 +114,22 @@ namespace DCGO.CardEffects.EX8
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    bool discarded = false;
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                    selectHandEffect.SetUp(
+                    selectPermanentEffect.SetUp(
                         selectPlayer: card.Owner,
-                        canTargetCondition: (cardSource) => true,
+                        canTargetCondition: SelectOpponentsLevel3Digimon,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: 1,
-                        canNoSelect: true,
+                        canNoSelect: false,
                         canEndNotMax: false,
-                        isShowOpponent: true,
-                        selectCardCoroutine: null,
-                        afterSelectCardCoroutine: AfterSelectCardCoroutine,
-                        mode: SelectHandEffect.Mode.Discard,
+                        selectPermanentCoroutine: null,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Destroy,
                         cardEffect: activateClass);
 
-                    yield return StartCoroutine(selectHandEffect.Activate());
-                    
-                    IEnumerator AfterSelectCardCoroutine(List<CardSource> selectedCards)
-                    {
-                        if(selectedCards.Count > 0)
-                            discarded = true;
-
-                        yield return null;
-                    }
-
-                    if (discarded)
-                    {
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: SelectOpponentsLevel3Digimon,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: 1,
-                            canNoSelect: false,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: null,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Destroy,
-                            cardEffect: activateClass);
-
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                    }
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                 }
             }
             

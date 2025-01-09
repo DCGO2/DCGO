@@ -329,15 +329,9 @@ namespace DCGO.CardEffects.EX8
 
                 bool CardCondition(CardSource cardSource)
                 {
-                    if (cardSource == card)
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(cardSource.PermanentOfThisCard(), card))
                     {
-                        if (CardEffectCommons.IsExistOnBattleArea(card))
-                        {
-                            if (cardSource == card.PermanentOfThisCard().TopCard)
-                            {
-                                return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(cardSource.PermanentOfThisCard(), card);
-                            }
-                        }
+                        return cardSource.EqualsTraits("DS");
                     }
 
                     return false;

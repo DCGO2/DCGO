@@ -36,7 +36,13 @@ namespace DCGO.CardEffects.EX8
 
             if (timing == EffectTiming.None)
             {
-                bool CanUseCondition()
+                AddSkillClass addSkillClass = new AddSkillClass();
+                addSkillClass.SetUpICardEffect("Your NSo trait Digimon gain Scapegoat", CanUseCondition, card);
+                addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
+                addSkillClass.SetIsInheritedEffect(true);
+                cardEffects.Add(addSkillClass);
+
+                bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistInSecurity(card, false);
                 }
@@ -47,11 +53,34 @@ namespace DCGO.CardEffects.EX8
                            permanent.TopCard.EqualsTraits("NSo");
                 }
 
-                cardEffects.Add(CardEffectFactory.ScapegoatStaticEffect(
-                    permanentCondition: PermanentCondition,
-                    isInheritedEffect: false,
-                    card: card,
-                    condition: CanUseCondition));
+                bool CardSourceCondition(CardSource cardSource)
+                {
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(cardSource))
+                    {
+                        if (cardSource.Owner == card.Owner)
+                        {
+                            if (cardSource == cardSource.PermanentOfThisCard().TopCard)
+                            {
+                                if (PermanentCondition(cardSource.PermanentOfThisCard()))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+
+                    return false;
+                }
+
+                List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming _timing)
+                {
+                    if (_timing == EffectTiming.WhenPermanentWouldBeDeleted)
+                    {
+                        cardEffects.Add(CardEffectFactory.ScapegoatSelfEffect(isInheritedEffect: false, card: card, condition: null, effectName: "<Scapegoat>", effectDiscription: null));
+                    }
+
+                    return cardEffects;
+                }
             }
 
             #endregion
