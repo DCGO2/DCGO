@@ -45,7 +45,7 @@ namespace DCGO.CardEffects.EX8
 
                         selectHandEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: (cardSource) => true,
+                            canTargetCondition: HasMineralOrRock,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: 1,
