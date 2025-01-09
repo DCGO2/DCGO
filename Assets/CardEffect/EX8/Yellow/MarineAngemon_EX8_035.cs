@@ -130,7 +130,7 @@ namespace DCGO.CardEffects.EX8
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (card.Owner.MemoryForPlayer <= 1)
+                        if (card.Owner.MemoryForPlayer >= 1)
                         {
                             if (cardEffect != null)
                             {
