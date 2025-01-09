@@ -160,10 +160,11 @@ namespace DCGO.CardEffects.EX8
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    if (permanent.IsDigimon)
+                    if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent))
                     {
                         if (permanent.DigivolutionCards.Count == 0)
                         {
+                            
                             return true;
                         }
                     }
@@ -250,10 +251,11 @@ namespace DCGO.CardEffects.EX8
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    if (permanent.IsDigimon)
+                    if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent))
                     {
                         if (permanent.DigivolutionCards.Count == 0)
                         {
+
                             return true;
                         }
                     }
