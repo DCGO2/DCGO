@@ -171,11 +171,6 @@ namespace DCGO.CardEffects.EX8
                             }
                         }
                     }
-
-                    if (card.Owner.Enemy.GetBattleAreaDigimons().Count(permanent => permanent.DigivolutionCards.Count > 0) == 0)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
-                    }
                 }
             }
             #endregion
@@ -320,11 +315,6 @@ namespace DCGO.CardEffects.EX8
                                 return false;
                             }
                         }
-                    }
-
-                    if (card.Owner.Enemy.GetBattleAreaDigimons().Count(permanent => permanent.DigivolutionCards.Count > 0) == 0)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
                     }
                 }
             }

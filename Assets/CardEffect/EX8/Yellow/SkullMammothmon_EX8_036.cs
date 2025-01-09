@@ -37,13 +37,13 @@ namespace DCGO.CardEffects.EX8
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play 1 NSo Digimon card with a play cost 5 or less from your hand", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Play 1 NSo Digimon card with a play cost 5 or less from your hand or trash", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
                 {
-                    return "[When Digivolving] You may play 1 [NSo] trait Digimon card with a play cost of 5 or less from your hand without paying the cost.";
+                    return "[When Digivolving] You may play 1 [NSo] trait Digimon card with a play cost of 5 or less from your hand or trash without paying the cost.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
