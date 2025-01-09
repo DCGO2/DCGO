@@ -33,8 +33,8 @@ namespace DCGO.CardEffects.ST18
 
                 bool CanSelectLiberatorCardCondition(CardSource cardSource)
                 {
-                    return cardSource.ContainsTraits("Vortex Warriors") ||
-                           cardSource.ContainsTraits("LIBERATOR");
+                    return cardSource.EqualsTraits("Vortex Warriors") ||
+                           cardSource.EqualsTraits("LIBERATOR");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

@@ -237,8 +237,21 @@ public partial class CardEffectCommons
         ));
     }
     #endregion
+    
+    #region Play 1 Self Deleting [Familiar] Token
+    public static IEnumerator PlaySelfDeleteFamiliarToken(ICardEffect activateClass, int quantity = 1)
+    {
+        yield return ContinuousController.instance.StartCoroutine(PlayToken(
+            tokenData: ContinuousController.instance.SelfDeleteFamiliarToken,
+            activateClass: activateClass,
+            isOwnerPermanent: true,
+            isTapped: false,
+            quantity: quantity
+        ));
+    }
+    #endregion
 
-    #region Play 1 [Volée & Zerdrücken] Token
+    #region Play 1 [Volï¿½e & Zerdrï¿½cken] Token
     public static IEnumerator PlayVoleeZerdrucken(ICardEffect activateClass)
     {
         yield return ContinuousController.instance.StartCoroutine(PlayToken(
