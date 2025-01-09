@@ -29,7 +29,7 @@ namespace DCGO.CardEffects.EX8
 
                 bool HasLiberator(CardSource source)
                 {
-                    return source.ContainsTraits("LIBERATOR") || source.ContainsTraits("Rock");
+                    return source.ContainsTraits("LIBERATOR");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -57,7 +57,7 @@ namespace DCGO.CardEffects.EX8
                             maxCount: 1,
                             selectCardCoroutine: null),
                         new SimplifiedSelectCardConditionClass(
-                            canTargetCondition:HasMineralOrRock,
+                            canTargetCondition:HasLiberator,
                             message: "Select 1 [LIBERATOR] card.",
                             mode: SelectCardEffect.Mode.AddHand,
                             maxCount: 1,
