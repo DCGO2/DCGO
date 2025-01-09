@@ -120,7 +120,7 @@ namespace DCGO.CardEffects.EX8
 
                 string EffectDescription()
                 {
-                    return "[On Deletion] 1 of your opponent's Digimon gets -4000 DP for the turn.";
+                    return "[On Deletion] Give 2 of your opponent's Digimon <Security A. -1> until the end of their turn.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
