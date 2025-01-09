@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DCGO.CardEffects.EX8
 {
-    public class Dolpmon_EX8_020 : CEntity_Effect
+    public class Dolphmon_EX8_020 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {

@@ -280,7 +280,7 @@ namespace DCGO.CardEffects.BT19
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] By returning 1 Digimon card from your opponent's trash to the top of the deck, return 1 of their Digimon to the bottom of the deck.";
+                    return "[When Attacking] By returning 1 Digimon card from your opponent's trash to the top of the deck, return 1 of their Digimon to the bottom of the deck.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
