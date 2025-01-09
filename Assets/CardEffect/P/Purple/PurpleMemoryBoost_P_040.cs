@@ -6,7 +6,7 @@ using Photon;
 using System;
 using Photon.Pun;
 
-public class VioletMemoryBoost_P_040 : CEntity_Effect
+public class PurpleMemoryBoost_P_040ine : CEntity_Effect
 {
     public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
     {
