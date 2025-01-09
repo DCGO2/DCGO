@@ -15,7 +15,7 @@ namespace DCGO.CardEffects.EX8
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsCardName("Cyberdramon");
+                    return targetPermanent.TopCard.EqualsCardName("Cyberdramon");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 0, ignoreDigivolutionRequirement: false, card: card, condition: null));

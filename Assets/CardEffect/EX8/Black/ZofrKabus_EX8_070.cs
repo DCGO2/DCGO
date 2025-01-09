@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using System.Diagnostics;
 
 namespace DCGO.CardEffects.EX8
 {
@@ -12,7 +13,7 @@ namespace DCGO.CardEffects.EX8
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Main
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnUseOption)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By trashing 1 source, gain collision, piercing, reboot, +3000 DP, and can't be returned to hand or deck by opponent", CanUseCondition, card);

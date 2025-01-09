@@ -128,26 +128,12 @@ namespace DCGO.CardEffects.EX8
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("DNA Digivolve.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
-                activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("DNADigivolve_EX8_060");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
                 {
                     return "[Your Turn] [Once Per Turn] When your Digimon are played or digivolve, if any of them have the [NSo] trait, 2 of your Digimon may DNA digivolve into a Digimon card with the [NSo] trait in the hand. Then, that DNA digivolved Digimon may attack.";
-                }
-
-                bool PermanentCondition(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
-                    {
-                        if (permanent.IsDigimon)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
                 }
 
                 bool PermanentConditionNSoEnterField(Permanent permanent)

@@ -224,7 +224,8 @@ namespace DCGO.CardEffects.EX8
 
                 bool DPCondition()
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && SourceCount() >= 1;
+                    return CardEffectCommons.IsOwnerTurn(card) &&
+                           CardEffectCommons.IsExistOnBattleAreaDigimon(card) && SourceCount() >= 1;
                 }
 
                 cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect<Func<int>>(changeValue: () => 1000 * SourceCount(),

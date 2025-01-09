@@ -67,7 +67,7 @@ namespace DCGO.CardEffects.EX8
                                             {
                                                 if (permanent.TopCard.CardColors.Contains(CardColor.Yellow))
                                                 {
-                                                    if (permanent.Levels_ForJogress(card).Contains(5))
+                                                    if (permanent.Levels_ForJogress(card).Contains(4))
                                                     {
                                                         return true;
                                                     }
@@ -95,7 +95,7 @@ namespace DCGO.CardEffects.EX8
                                             {
                                                 if (permanent.TopCard.CardColors.Contains(CardColor.Purple) || permanent.TopCard.CardColors.Contains(CardColor.Red))
                                                 {
-                                                    if (permanent.Levels_ForJogress(card).Contains(5))
+                                                    if (permanent.Levels_ForJogress(card).Contains(4))
                                                     {
                                                         return true;
                                                     }
