@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace DCGO.CardEffects.P
@@ -49,7 +50,7 @@ namespace DCGO.CardEffects.P
             
             if (timing == EffectTiming.OnDigivolutionCardDiscarded)
             {
-                List<Permanent> trashedFromPermanents = new List<Permanent>();
+                Permanent trashedFromPermanent = null;
                 
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Place 1 digivolution card", CanUseCondition, card);
@@ -63,36 +64,35 @@ namespace DCGO.CardEffects.P
 
                 bool IsRockMineralDigimon(Permanent permanent)
                 {
-                    return permanent.TopCard.EqualsTraits("Mineral") || permanent.TopCard.EqualsTraits("Rock");
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                           permanent.TopCard.EqualsTraits("Mineral") || permanent.TopCard.EqualsTraits("Rock");
                 }
 
                 bool HasProperTraits(CardSource source)
                 {
-                    return source.IsDigimon && (source.EqualsTraits("Mineral") || source.EqualsTraits("Rock"));
+                    return (source.EqualsTraits("Mineral") || source.EqualsTraits("Rock"));
                 }
 
                 bool CanSelectDigimonToAddSources(Permanent permanent)
                 {
-                    return trashedFromPermanents.Contains(permanent);
+                    return permanent == trashedFromPermanent;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    List<Permanent> trashedPermanents = CardEffectCommons.GetPermanentsFromHashtable(hashtable).Filter(IsRockMineralDigimon);
-                    return
-                        trashedPermanents.Any(p => p.TopCard.EqualsTraits("Mineral")) ||
-                        trashedPermanents.Any(p => p.TopCard.EqualsTraits("Rock"));
+                    trashedFromPermanent = CardEffectCommons.GetPermanentFromHashtable(hashtable);
+                    return isExistOnField(card) &&
+                            IsRockMineralDigimon(trashedFromPermanent);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
-                {
-                    trashedFromPermanents = CardEffectCommons.GetPermanentsFromHashtable(hashtable).Filter(IsRockMineralDigimon);
-                    
+                {                    
                     return isExistOnField(card) && CardEffectCommons.CanActivateSuspendCostEffect(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    Permanent selectedPermanent = null;
                     List<CardSource> selectedCards = new List<CardSource>();
 
                     yield return ContinuousController.instance.StartCoroutine(
@@ -121,53 +121,62 @@ namespace DCGO.CardEffects.P
                     IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
                         if (permanent != null)
+                            selectedPermanent = permanent;
+
+                        yield return null;
+
+                    }
+
+                    if(selectedPermanent != null)
+                    {
+                        if(CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, HasProperTraits))
                         {
                             SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
-                            selectCardEffect.SetUp(
-                                canTargetCondition: HasProperTraits,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: CanEndSelectCondition,
-                                canNoSelect: () => true,
-                                selectCardCoroutine: SelectCardCoroutine,
-                                afterSelectCardCoroutine: null,
-                                message: "Select [Mineral] or [Rock] to place on bottom of digivolution cards.",
-                                maxCount: 1,
-                                canEndNotMax: true,
-                                isShowOpponent: true,
-                                mode: SelectCardEffect.Mode.Custom,
-                                root: SelectCardEffect.Root.Trash,
-                                customRootCardList: null,
-                                canLookReverseCard: true,
-                                selectPlayer: card.Owner,
-                                cardEffect: activateClass);
-                            
-                            selectCardEffect.SetUpCustomMessage_ShowCard("Digivolution Card");
-                            selectCardEffect.SetUpCustomMessage("Select [Mineral] or [Rock] to place on bottom of digivolution cards.", "The opponent is selecting [Mineral] or [Rock] to place on bottom of digivolution cards.");
+                        selectCardEffect.SetUp(
+                            canTargetCondition: HasProperTraits,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: CanEndSelectCondition,
+                            canNoSelect: () => true,
+                            selectCardCoroutine: SelectCardCoroutine,
+                            afterSelectCardCoroutine: null,
+                            message: "Select [Mineral] or [Rock] to place on bottom of digivolution cards.",
+                            maxCount: 1,
+                            canEndNotMax: true,
+                            isShowOpponent: true,
+                            mode: SelectCardEffect.Mode.Custom,
+                            root: SelectCardEffect.Root.Trash,
+                            customRootCardList: null,
+                            canLookReverseCard: true,
+                            selectPlayer: card.Owner,
+                            cardEffect: activateClass);
 
-                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                        selectCardEffect.SetUpCustomMessage_ShowCard("Digivolution Card");
+                        selectCardEffect.SetUpCustomMessage("Select [Mineral] or [Rock] to place on bottom of digivolution cards.", "The opponent is selecting [Mineral] or [Rock] to place on bottom of digivolution cards.");
 
-                            bool CanEndSelectCondition(List<CardSource> cardSources)
+                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+
+                        bool CanEndSelectCondition(List<CardSource> cardSources)
+                        {
+                            if (CardEffectCommons.HasNoElement(cardSources))
                             {
-                                if (CardEffectCommons.HasNoElement(cardSources))
-                                {
-                                    return false;
-                                }
-
-                                return true;
+                                return false;
                             }
 
-                            IEnumerator SelectCardCoroutine(CardSource cardSource)
-                            {
-                                selectedCards.Add(cardSource);
+                            return true;
+                        }
 
-                                yield return null;
-                            }
+                        IEnumerator SelectCardCoroutine(CardSource cardSource)
+                        {
+                            selectedCards.Add(cardSource);
 
-                            if (selectedCards.Count >= 1)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(permanent.AddDigivolutionCardsBottom(selectedCards, activateClass));
-                            }
+                            yield return null;
+                        }
+
+                        if (selectedCards.Count >= 1)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(selectedCards, activateClass));
+                        }
                         }
                     }
                 }

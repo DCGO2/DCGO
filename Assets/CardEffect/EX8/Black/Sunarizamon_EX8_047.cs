@@ -24,12 +24,12 @@ namespace DCGO.CardEffects.EX8
 
                 bool HasMineralOrRock(CardSource source)
                 {
-                    return source.ContainsTraits("Mineral") || source.ContainsTraits("Rock");
+                    return source.EqualsTraits("Mineral") || source.EqualsTraits("Rock");
                 }
 
                 bool HasLiberator(CardSource source)
                 {
-                    return source.ContainsTraits("LIBERATOR");
+                    return source.EqualsTraits("LIBERATOR");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
