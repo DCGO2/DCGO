@@ -79,7 +79,7 @@ namespace DCGO.CardEffects.BT20
 
                 string EffectDiscription()
                 {
-                    return "[On Play] Trash 2 cards in your hand. Then, for the turn, 1 of your Digimon gains <Raid> and <Piercing>.";
+                    return "[On Play] Trash 2 cards in your hand. Then, for the turn, 1 of your Digimon gains <Raid> and <Piercing> and +4000 DP.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -150,7 +150,7 @@ namespace DCGO.CardEffects.BT20
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will gain <Raid> and <Piercing>.", "The opponent is selecting 1 Digimon that will gain <Raid> and <Piercing>.");
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will gain <Raid> and <Piercing> and +4000 DP.", "The opponent is selecting 1 Digimon that will gain <Raid> and <Piercing> and +4000 DP.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
@@ -158,6 +158,7 @@ namespace DCGO.CardEffects.BT20
                         {
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainRaid(targetPermanent: permanent, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainPierce(targetPermanent: permanent, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: permanent, changeValue: 4000, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
                         }
                     }
 
@@ -176,7 +177,7 @@ namespace DCGO.CardEffects.BT20
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] Trash 2 cards in your hand. Then, for the turn, 1 of your Digimon gains <Raid> and <Piercing>.";
+                    return "[On Play] Trash 2 cards in your hand. Then, for the turn, 1 of your Digimon gains <Raid> and <Piercing> and +4000 DP.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -247,7 +248,7 @@ namespace DCGO.CardEffects.BT20
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will gain <Raid> and <Piercing>.", "The opponent is selecting 1 Digimon that will gain <Raid> and <Piercing>.");
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will gain <Raid> and <Piercing> and +4000 DP.", "The opponent is selecting 1 Digimon that will gain <Raid> and <Piercing> and +4000 DP.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
@@ -255,6 +256,7 @@ namespace DCGO.CardEffects.BT20
                         {
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainRaid(targetPermanent: permanent, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainPierce(targetPermanent: permanent, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: permanent, changeValue: 4000, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
                         }
                     }
 
