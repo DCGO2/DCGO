@@ -12,6 +12,7 @@ namespace DCGO.CardEffects.EX8
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Alternate Digivolution Requirement
+
             if (timing == EffectTiming.None)
             {
                 static bool PermanentCondition(Permanent targetPermanent)
@@ -43,7 +44,7 @@ namespace DCGO.CardEffects.EX8
                     {
                         bool PermanentCondition1(Permanent permanent) => permanent.TopCard.CardColors.Contains(CardColor.Blue) && permanent.Levels_ForJogress(card).Contains(4);
 
-                        bool PermanentCondition2(Permanent permanent) => permanent.TopCard.CardColors.Contains(CardColor.Black) || permanent.TopCard.CardColors.Contains(CardColor.Purple) &&
+                        bool PermanentCondition2(Permanent permanent) => permanent.TopCard.CardColors.Contains(CardColor.Black) && permanent.Levels_ForJogress(card).Contains(4) || permanent.TopCard.CardColors.Contains(CardColor.Purple) &&
                                                                          permanent.Levels_ForJogress(card).Contains(4);
 
                         JogressConditionElement[] elements = new JogressConditionElement[]
