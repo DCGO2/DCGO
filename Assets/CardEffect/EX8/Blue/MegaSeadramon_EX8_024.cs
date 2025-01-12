@@ -29,10 +29,7 @@ namespace DCGO.CardEffects.EX8
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
-                {
-                    return "[On Play] 1 of your Digimon unsuspends.";
-                }
+                string EffectDescription() => "[On Play] 1 of your Digimon unsuspends.";
 
                 bool CanSelectYourSuspendedDigimon(Permanent permanent)
                 {
@@ -83,10 +80,7 @@ namespace DCGO.CardEffects.EX8
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
-                {
-                    return "[When Digivolving] 1 of your Digimon unsuspends.";
-                }
+                string EffectDescription() => "[When Digivolving] 1 of your Digimon unsuspends.";
 
                 bool CanSelectYourSuspendedDigimon(Permanent permanent)
                 {
