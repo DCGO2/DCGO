@@ -68,7 +68,7 @@ namespace DCGO.CardEffects.EX8
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Place 1 of your Digimon with [DS] trait from trash as this Digimon's bottom digivolution card to unsuspend this Digimon.", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Place 1 Digimon with [DS] trait from trash as this Digimon's bottom digivolution card", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
@@ -151,7 +151,7 @@ namespace DCGO.CardEffects.EX8
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Place 1 of your Digimon with [DS] trait from trash as this Digimon's bottom digivolution card to unsuspend this Digimon.", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Place 1 Digimon with [DS] trait from trash as this Digimon's bottom digivolution card", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
