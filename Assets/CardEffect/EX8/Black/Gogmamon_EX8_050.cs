@@ -54,18 +54,26 @@ namespace DCGO.CardEffects.EX8
                 {
                     List<CardSource> selectedCards = new List<CardSource>();
 
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.RevealDeckTopCardsAndProcessForAll(
-                        revealCount: 1,
-                        simplifiedSelectCardCondition:
-                        new SimplifiedSelectCardConditionClass(
-                            canTargetCondition: PlayableMineralorRock,
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.RevealDeckTopCardsAndSelect(
+                    revealCount: 3,
+                    selectCardConditions:
+                    new SelectCardConditionClass[]
+                    {
+                        new SelectCardConditionClass(
+                            canTargetCondition:PlayableMineralorRock,
+                            canTargetCondition_ByPreSelecetedList:null,
+                            canEndSelectCondition:null,
+                            canNoSelect:true,
+                            selectCardCoroutine: CardToPlay,
                             message: "Select 1 [Mineral] or [Rock] trait digimon with 5 cost or less to play",
-                            mode: SelectCardEffect.Mode.Custom,
-                            maxCount: -1,
-                            selectCardCoroutine: CardToPlay),
-                        remainingCardsPlace: RemainingCardsPlace.Trash,
-                        activateClass: activateClass
-                    ));
+                            maxCount: 1,
+                            canEndNotMax:false,
+                            mode: SelectCardEffect.Mode.Custom
+                            )
+                    },
+                    remainingCardsPlace: RemainingCardsPlace.Trash,
+                    activateClass: activateClass,
+                    canNoAction: false));
 
                     IEnumerator CardToPlay(CardSource source)
                     {

@@ -20,6 +20,8 @@ namespace DCGO.CardEffects.EX8
                 activateClass.SetHashString("PlayCost-4_EX8_074");
                 cardEffects.Add(activateClass);
 
+                activateClass.SetIsDigimonEffect(true);
+
                 string EffectDescription()
                 {
                     return

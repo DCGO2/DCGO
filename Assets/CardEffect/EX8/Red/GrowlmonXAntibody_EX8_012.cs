@@ -107,7 +107,7 @@ namespace DCGO.CardEffects.EX8
 
                         bool CanSelectCardCondition(CardSource cardSource)
                         {
-                            if (cardSource.CardNames.Contains("Guilmon"))
+                            if (cardSource.ContainsCardName("Guilmon"))
                             {
                                 if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                                 {

@@ -59,7 +59,7 @@ namespace DCGO.CardEffects.EX8
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     if(CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                        return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                        return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
 
                     return false;
                 }

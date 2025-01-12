@@ -227,11 +227,11 @@ namespace DCGO.CardEffects.EX8
                     {
                         if (permanent.IsSuspended)
                         {
-                            return true;
+                            return false;
                         }
                     }
 
-                    return false;
+                    return true;
                 }
 
                 bool Condition()
