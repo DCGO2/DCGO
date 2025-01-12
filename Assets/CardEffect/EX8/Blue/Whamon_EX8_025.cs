@@ -22,9 +22,11 @@ namespace DCGO.CardEffects.EX8
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
             }
-            #endregion
+
+            #endregion Alternate Digivolution Requirement
 
             #region DNA Digivolve
+
             if (timing == EffectTiming.None)
             {
                 AddJogressConditionClass addJogressConditionClass = new AddJogressConditionClass();
@@ -62,9 +64,11 @@ namespace DCGO.CardEffects.EX8
                     return null;
                 }
             }
-            #endregion
+
+            #endregion DNA Digivolve
 
             #region On Play
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -145,9 +149,11 @@ namespace DCGO.CardEffects.EX8
                     }
                 }
             }
-            #endregion
+
+            #endregion On Play
 
             #region When Digivolving
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -228,9 +234,11 @@ namespace DCGO.CardEffects.EX8
                     }
                 }
             }
-            #endregion
+
+            #endregion When Digivolving
 
             #region End of Attack
+
             if (timing == EffectTiming.OnEndAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -335,7 +343,8 @@ namespace DCGO.CardEffects.EX8
                     }
                 }
             }
-            #endregion
+
+            #endregion End of Attack
 
             #region Your Turn - ESS
 
@@ -359,7 +368,7 @@ namespace DCGO.CardEffects.EX8
                 }
             }
 
-            #endregion
+            #endregion Your Turn - ESS
 
             return cardEffects;
         }
