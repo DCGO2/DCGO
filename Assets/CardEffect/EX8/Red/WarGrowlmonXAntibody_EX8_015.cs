@@ -32,7 +32,7 @@ namespace DCGO.CardEffects.EX8
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Can't be returned to the hand or deck and delete 1 Digimon with 10000 DP or less.", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Can't be returned to the hand or deck and gains 3000 DP until end of opponents turn, and delete 1 Digimon with 10000 DP or less.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
