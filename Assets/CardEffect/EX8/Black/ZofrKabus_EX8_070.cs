@@ -13,7 +13,7 @@ namespace DCGO.CardEffects.EX8
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Main
-            if (timing == EffectTiming.OnUseOption)
+            if (timing == EffectTiming.OptionSkill)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By trashing 1 source, gain collision, piercing, reboot, +3000 DP, and can't be returned to hand or deck by opponent", CanUseCondition, card);
@@ -34,12 +34,14 @@ namespace DCGO.CardEffects.EX8
                 {
                     return CardEffectCommons.IsOwnerPermanent(permanent, card) &&
                            permanent.IsDigimon &&
-                           permanent.DigivolutionCards.Count(HasProperTrait) > 0;
+                           HasProperTrait(permanent.TopCard) &&
+                           permanent.DigivolutionCards.Count() > 0;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.HasMatchConditionPermanent(DigimonWithProperSource);
+                    return CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card) && 
+                           CardEffectCommons.HasMatchConditionPermanent(DigimonWithProperSource);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

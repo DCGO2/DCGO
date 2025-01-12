@@ -59,15 +59,7 @@ namespace DCGO.CardEffects.EX8
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (card.Owner.Enemy.HandCards.Count >= 1)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleArea(card);
                 }
                 
                 bool CanSelectCardInTrash(CardSource cardSource)
@@ -211,26 +203,18 @@ namespace DCGO.CardEffects.EX8
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (card.Owner.Enemy.HandCards.Count >= 1)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleArea(card);
                 }
-                
+
                 bool CanSelectCardInTrash(CardSource cardSource)
                 {
                     if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                     {
                         if (cardSource.IsDigimon)
                         {
-                            if (cardSource.GetCostItself == 7)
+                            if (cardSource.GetCostItself <= 7)
                             {
-                                if (cardSource.EqualsTraits("Fallen Angel") || cardSource.EqualsTraits("FallenAngel"))
+                                if (cardSource.EqualsTraits("Fallen Angel"))
                                 {
                                     return true;
                                 }

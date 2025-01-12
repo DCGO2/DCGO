@@ -36,7 +36,7 @@ namespace DCGO.CardEffects.EX8
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.ContainsTraits("Reptile") || cardSource.ContainsTraits("Dinosaur") || cardSource.ContainsCardName("Tyrannomon"))
+                    if (cardSource.EqualsTraits("Reptile") || cardSource.EqualsTraits("Dinosaur") || cardSource.ContainsCardName("Tyrannomon"))
                     {
                         return true;
                     }
@@ -46,7 +46,7 @@ namespace DCGO.CardEffects.EX8
 
                 bool CanSelectCardCondition1(CardSource cardSource)
                 {
-                    if (cardSource.EqualsCardName("Ryutaro William"))
+                    if (cardSource.EqualsCardName("Ryutaro Williams"))
                     {
                         return true;
                     }

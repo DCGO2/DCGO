@@ -164,7 +164,7 @@ namespace DCGO.CardEffects.EX8
 
                                         bool GivenEffectCanActivateCondition(Hashtable hashtable1)
                                         {
-                                            if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
+                                            if (CardEffectCommons.CanActivateOnDeletion(permanent.TopCard))
                                             {
                                                 if (!permanent.TopCard.CanNotBeAffected(activateClass))
                                                 {
@@ -177,14 +177,14 @@ namespace DCGO.CardEffects.EX8
                                         
                                         IEnumerator GivenEffectActivateCoroutine(Hashtable _hashtable)
                                         {
-                                            if (card.Owner.HandCards.Count >= 1)
+                                            if (permanent.TopCard.Owner.HandCards.Count >= 1)
                                             {
                                                 int discardCount = 1;
 
                                                 SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
                                                 selectHandEffect.SetUp(
-                                                    selectPlayer: card.Owner,
+                                                    selectPlayer: permanent.TopCard.Owner,
                                                     canTargetCondition: (cardSource) => true,
                                                     canTargetCondition_ByPreSelecetedList: null,
                                                     canEndSelectCondition: null,

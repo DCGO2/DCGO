@@ -47,7 +47,7 @@ namespace DCGO.CardEffects.P
 
             bool CanActivateCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
+                if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                 {
                     return CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
                 }
@@ -98,6 +98,8 @@ namespace DCGO.CardEffects.P
                         cardEffect: activateClass);
 
                     selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will gain effects.", "The opponent is selecting 1 Digimon that will gain effects.");
+
+                    yield return StartCoroutine(selectPermanentEffect.Activate());
 
                     IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
@@ -183,6 +185,8 @@ namespace DCGO.CardEffects.P
                         cardEffect: activateClass);
 
                     selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will digivolve.", "The opponent is selecting 1 Digimon that will digivolve.");
+
+                    yield return StartCoroutine(selectPermanentEffect.Activate());
 
                     IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
