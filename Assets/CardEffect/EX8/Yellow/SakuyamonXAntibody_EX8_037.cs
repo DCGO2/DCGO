@@ -32,7 +32,7 @@ namespace DCGO.CardEffects.EX8
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Give effects to opponent's Digimon and play a Token", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Play a Token", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
@@ -58,7 +58,7 @@ namespace DCGO.CardEffects.EX8
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardNames.Contains("Sakuyamon") || cardSource.CardNames.Contains("X Antibody") || cardSource.CardNames.Contains("XAntibody")) >= 1)
+                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.EqualsCardName("Sakuyamon") || cardSource.EqualsCardName("X Antibody") || cardSource.EqualsCardName("XAntibody")) >= 1)
                         {
                             return true;
                         }
@@ -71,10 +71,7 @@ namespace DCGO.CardEffects.EX8
                 {
                     if (CanActivateTokenEffectCondition(hashtable))
                     {
-                        bool canPlay = GManager.instance.userSelectionManager.SelectedBoolValue;
-
-                        if (canPlay)
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayUkaNoMitama(activateClass));
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayUkaNoMitama(activateClass));
                     }
                 }
             }
