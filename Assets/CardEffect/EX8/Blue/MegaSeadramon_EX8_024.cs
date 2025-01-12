@@ -31,11 +31,7 @@ namespace DCGO.CardEffects.EX8
 
                 string EffectDescription() => "[On Play] 1 of your Digimon unsuspends.";
 
-                bool CanSelectYourSuspendedDigimon(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
-                           permanent.IsSuspended;
-                }
+                bool CanSelectDigimon(Permanent permanent) => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
@@ -55,7 +51,7 @@ namespace DCGO.CardEffects.EX8
                     selectPermanentEffect.SetUp(
                         selectPlayer: card.Owner,
                         canTargetCondition_ByPreSelecetedList: null,
-                        canTargetCondition: CanSelectYourSuspendedDigimon,
+                        canTargetCondition: CanSelectDigimon,
                         canEndSelectCondition: null,
                         maxCount: 1,
                         canNoSelect: false,
@@ -82,11 +78,7 @@ namespace DCGO.CardEffects.EX8
 
                 string EffectDescription() => "[When Digivolving] 1 of your Digimon unsuspends.";
 
-                bool CanSelectYourSuspendedDigimon(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
-                           permanent.IsSuspended;
-                }
+                bool CanSelectYourDigimon(Permanent permanent) => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
@@ -107,7 +99,7 @@ namespace DCGO.CardEffects.EX8
                     selectPermanentEffect.SetUp(
                         selectPlayer: card.Owner,
                         canTargetCondition_ByPreSelecetedList: null,
-                        canTargetCondition: CanSelectYourSuspendedDigimon,
+                        canTargetCondition: CanSelectYourDigimon,
                         canEndSelectCondition: null,
                         maxCount: 1,
                         canNoSelect: false,
