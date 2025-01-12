@@ -70,7 +70,7 @@ namespace DCGO.CardEffects.EX8
                         List<ICardEffect> candidateEffects = card.PermanentOfThisCard().EffectList(EffectTiming.OnEnterFieldAnyone)
                             .Clone()
                             .Filter(cardEffect => cardEffect != null && cardEffect is ActivateICardEffect && !cardEffect.IsSecurityEffect && cardEffect.IsWhenDigivolving)
-                            .Filter(cardEffect => cardEffect.EffectSourceCard.EqualsCardName("Justimon"));
+                            .Filter(cardEffect => cardEffect.EffectSourceCard.ContainsCardName("Justimon") && !cardEffect.EffectSourceCard.EqualsTraits("X Antibody"));
 
                         if (candidateEffects.Count >= 1)
                         {
@@ -88,7 +88,7 @@ namespace DCGO.CardEffects.EX8
                         List<ICardEffect> candidateEffects = card.PermanentOfThisCard().EffectList(EffectTiming.OnEnterFieldAnyone)
                             .Clone()
                             .Filter(cardEffect => cardEffect != null && cardEffect is ActivateICardEffect && !cardEffect.IsSecurityEffect && cardEffect.IsWhenDigivolving)
-                            .Filter(cardEffect => cardEffect.EffectSourceCard.EqualsCardName("Justimon")); ;
+                            .Filter(cardEffect => cardEffect.EffectSourceCard.ContainsCardName("Justimon") && !cardEffect.EffectSourceCard.EqualsTraits("X Antibody"));
 
                         if (candidateEffects.Count >= 1)
                         {
