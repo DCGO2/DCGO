@@ -129,14 +129,14 @@ namespace DCGO.CardEffects.EX8
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card) &&
-                           card.Owner.MemoryForPlayer >= 1;
+                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           CardEffectCommons.HasMatchConditionPermanent(OpponentsDigimon);
+                           CardEffectCommons.HasMatchConditionPermanent(OpponentsDigimon) &&
+                           card.Owner.MemoryForPlayer >= 1;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
