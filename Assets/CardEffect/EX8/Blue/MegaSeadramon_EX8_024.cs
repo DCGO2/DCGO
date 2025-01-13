@@ -21,7 +21,7 @@ namespace DCGO.CardEffects.EX8
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
             }
 
-            #endregion Alternate Digivolution Requirement
+            #endregion
 
             #region On Play
 
@@ -63,7 +63,7 @@ namespace DCGO.CardEffects.EX8
                 }
             }
 
-            #endregion On Play
+            #endregion
 
             #region When Digivolving
 
@@ -105,7 +105,7 @@ namespace DCGO.CardEffects.EX8
                 }
             }
 
-            #endregion When Digivolving
+            #endregion
 
             #region When Attacking
 
@@ -200,7 +200,7 @@ namespace DCGO.CardEffects.EX8
                 }
             }
 
-            #endregion When Attacking
+            #endregion
 
             #region When Attacking - ESS
 
@@ -298,7 +298,7 @@ namespace DCGO.CardEffects.EX8
                 }
             }
 
-            #endregion When Attacking - ESS
+            #endregion
 
             return cardEffects;
         }
