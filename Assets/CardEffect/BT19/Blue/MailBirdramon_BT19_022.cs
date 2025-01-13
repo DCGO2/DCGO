@@ -47,7 +47,7 @@ namespace DCGO.CardEffects.BT19
                            && permanent.IsTamer;
                 }
 
-                bool CanSelectTrashCardCondition(CardSource cardSource)
+                bool HasBlueFlareTraitCondition(CardSource cardSource)
                 {
                     return cardSource.IsDigimon && cardSource.EqualsTraits("Blue Flare");
                 }
@@ -55,20 +55,20 @@ namespace DCGO.CardEffects.BT19
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanActivateOnDeletion(card) &&
-                           (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectTrashCardCondition) ||
+                           (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, HasBlueFlareTraitCondition) ||
                             CardEffectCommons.CanActivateSave(hashtable, CanSelectSaveTamerPermanentCondition));
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectTrashCardCondition))
+                    if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, HasBlueFlareTraitCondition))
                     {
                         List<CardSource> selectedCards = new List<CardSource>();
 
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                         selectCardEffect.SetUp(
-                            canTargetCondition: CanSelectTrashCardCondition,
+                            canTargetCondition: HasBlueFlareTraitCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             canNoSelect: () => true,
