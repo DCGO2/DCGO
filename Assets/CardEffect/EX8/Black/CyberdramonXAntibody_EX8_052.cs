@@ -54,7 +54,7 @@ namespace DCGO.CardEffects.EX8
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return card.PermanentOfThisCard().DigivolutionCards.Count(HasCyberdraorXAnti) > 0 &&
-                           CardEffectCommons.HasMatchConditionOwnersHand(card, IsDeviceTrait) || CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, IsDeviceTrait) ;
+                           (CardEffectCommons.HasMatchConditionOwnersHand(card, IsDeviceTrait) || CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, IsDeviceTrait));
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -277,14 +277,10 @@ namespace DCGO.CardEffects.EX8
                     return "[When Attacking] [Once Per Turn] By trashing 1 of your Option cards in the battle area, trash your opponent's top security card.";
                 }
 
-                bool OpponentsDigimon(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card);
-                }
-
                 bool IsDeviceTrait(Permanent permanent)
                 {
-                    return permanent.IsOption;
+                    return CardEffectCommons.IsOwnerPermanent(permanent, card) && 
+                           permanent.IsOption;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

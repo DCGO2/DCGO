@@ -15,7 +15,7 @@ public class MetalgreymonCyberLauncher_BT11_030 : CEntity_Effect
         if (timing == EffectTiming.None)
         {
             ChangeCardNamesClass changeCardNamesClass = new ChangeCardNamesClass();
-            changeCardNamesClass.SetUpICardEffect("Also treated as [MetalGreymon]", CanUseCondition, card);
+            changeCardNamesClass.SetUpICardEffect("Also treated as [MetalGreymon]/[Cyberdramon]", CanUseCondition, card);
             changeCardNamesClass.SetUpChangeCardNamesClass(changeCardNames: changeCardNames);
 
             cardEffects.Add(changeCardNamesClass);
@@ -32,31 +32,6 @@ public class MetalgreymonCyberLauncher_BT11_030 : CEntity_Effect
                 if (cardSource == card)
                 {
                     CardNames.Add("MetalGreymon");
-                }
-
-                return CardNames;
-            }
-        }
-
-        if (timing == EffectTiming.None)
-        {
-            ChangeCardNamesClass changeCardNamesClass = new ChangeCardNamesClass();
-            changeCardNamesClass.SetUpICardEffect("Also treated as [Cyberdramon]", CanUseCondition, card);
-            changeCardNamesClass.SetUpChangeCardNamesClass(changeCardNames: changeCardNames);
-
-            cardEffects.Add(changeCardNamesClass);
-
-            bool CanUseCondition(Hashtable hashtable)
-            {
-                return true;
-            }
-
-
-
-            List<string> changeCardNames(CardSource cardSource, List<string> CardNames)
-            {
-                if (cardSource == card)
-                {
                     CardNames.Add("Cyberdramon");
                 }
 
