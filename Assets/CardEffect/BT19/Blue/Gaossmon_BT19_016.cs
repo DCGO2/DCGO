@@ -134,7 +134,7 @@ namespace DCGO.CardEffects.BT19
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Place 1 [Blue Flare] card under 1 of your Tamers to <Draw 1>", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Place 1 [Blue Flare] card from hand under 1 of your Tamers to <Draw 1>", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
@@ -177,7 +177,7 @@ namespace DCGO.CardEffects.BT19
                         cardEffect: activateClass);
 
                     selectHandEffect.SetUpCustomMessage("Select 1 card to place under a tamer.",
-                        "The opponent is selecting 1 card to play.");
+                        "The opponent is selecting 1 card to place under a tamer.");
                     selectHandEffect.SetUpCustomMessage_ShowCard("Placed card");
 
                     yield return StartCoroutine(selectHandEffect.Activate());
