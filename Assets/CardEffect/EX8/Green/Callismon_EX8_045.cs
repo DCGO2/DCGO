@@ -173,7 +173,7 @@ namespace DCGO.CardEffects.EX8
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectSuspendedTamerCondition,
+                            canTargetCondition: CanSelectPermanentCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: 1,
