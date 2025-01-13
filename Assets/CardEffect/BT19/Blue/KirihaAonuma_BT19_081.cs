@@ -30,13 +30,13 @@ namespace DCGO.CardEffects.BT19
                     return CardEffectCommons.IsExistOnBattleArea(card) && CardEffectCommons.IsOwnerTurn(card);
                 }
                 
-                bool CanSelectTamerPermanentCondition(Permanent permanent)
+                bool IsOwnTamerCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card) &&
                            permanent.IsTamer;
                 }
 
-                bool CanSelectHandCardCondition(CardSource cardSource)
+                bool HasBlueFlareXrosHeartTraitCondition(CardSource cardSource)
                 {
                     return cardSource.IsDigimon && 
                            (cardSource.EqualsTraits("Blue Flare") || cardSource.EqualsTraits("Xros Heart"));
@@ -45,7 +45,7 @@ namespace DCGO.CardEffects.BT19
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card) &&
-                           CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectHandCardCondition);
+                           CardEffectCommons.HasMatchConditionOwnersHand(card, HasBlueFlareXrosHeartTraitCondition);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -56,7 +56,7 @@ namespace DCGO.CardEffects.BT19
 
                     selectHandEffect.SetUp(
                         selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectHandCardCondition,
+                        canTargetCondition: HasBlueFlareXrosHeartTraitCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: 1,
@@ -89,7 +89,7 @@ namespace DCGO.CardEffects.BT19
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectTamerPermanentCondition,
+                            canTargetCondition: IsOwnTamerCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: 1,

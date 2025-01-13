@@ -11,13 +11,13 @@ namespace DCGO.CardEffects.BT19
 
             #region On Play, On Deletion Shared
 
-            bool CanSelectTamerPermanentConditionShared(Permanent permanent)
+            bool IsOwnTamerCondition(Permanent permanent)
             {
                 return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card) &&
                        permanent.IsTamer;
             }
 
-            bool CanSelectHandCardConditionShared(CardSource cardSource)
+            bool HasBlueFlareTraitCondition(CardSource cardSource)
             {
                 return cardSource.IsDigimon && cardSource.EqualsTraits("Blue Flare");
             }
@@ -47,8 +47,8 @@ namespace DCGO.CardEffects.BT19
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectHandCardConditionShared) &&
-                           CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectTamerPermanentConditionShared);
+                           CardEffectCommons.HasMatchConditionOwnersHand(card, HasBlueFlareTraitCondition) &&
+                           CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsOwnTamerCondition);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -59,7 +59,7 @@ namespace DCGO.CardEffects.BT19
 
                     selectHandEffect.SetUp(
                         selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectHandCardConditionShared,
+                        canTargetCondition: HasBlueFlareTraitCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: 1,
@@ -92,7 +92,7 @@ namespace DCGO.CardEffects.BT19
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectTamerPermanentConditionShared,
+                            canTargetCondition: IsOwnTamerCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: 1,
@@ -152,8 +152,8 @@ namespace DCGO.CardEffects.BT19
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanActivateOnDeletion(card) &&
-                           CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectHandCardConditionShared) &&
-                           CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectTamerPermanentConditionShared);
+                           CardEffectCommons.HasMatchConditionOwnersHand(card, HasBlueFlareTraitCondition) &&
+                           CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsOwnTamerCondition);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -164,7 +164,7 @@ namespace DCGO.CardEffects.BT19
 
                     selectHandEffect.SetUp(
                         selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectHandCardConditionShared,
+                        canTargetCondition: HasBlueFlareTraitCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: 1,
@@ -197,7 +197,7 @@ namespace DCGO.CardEffects.BT19
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectTamerPermanentConditionShared,
+                            canTargetCondition: IsOwnTamerCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: 1,
