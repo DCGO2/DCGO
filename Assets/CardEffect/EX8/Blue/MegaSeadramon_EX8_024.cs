@@ -10,6 +10,7 @@ namespace DCGO.CardEffects.EX8
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Alternate Digivolution Requirement
+
             if (timing == EffectTiming.None)
             {
                 static bool PermanentCondition(Permanent targetPermanent)
@@ -19,37 +20,25 @@ namespace DCGO.CardEffects.EX8
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
             }
+
             #endregion
 
             #region On Play
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Unsuspend 1 of your Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
-                {
-                    return "[On Play] 1 of your Digimon unsuspends.";
-                }
+                string EffectDescription() => "[On Play] 1 of your Digimon unsuspends.";
 
-                bool CanSelectYourSuspendedDigimon(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
-                           permanent.IsSuspended;
-                }
+                bool CanSelectDigimon(Permanent permanent) => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
 
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-                }
+                bool CanUseCondition(Hashtable hashtable) => CardEffectCommons.CanTriggerOnPlay(hashtable, card);
 
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           CardEffectCommons.HasMatchConditionPermanent(CanSelectYourSuspendedDigimon);
-                }
+                bool CanActivateCondition(Hashtable hashtable) => CardEffectCommons.IsExistOnBattleAreaDigimon(card) && CardEffectCommons.HasMatchConditionPermanent(CanSelectDigimon);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
@@ -58,7 +47,7 @@ namespace DCGO.CardEffects.EX8
                     selectPermanentEffect.SetUp(
                         selectPlayer: card.Owner,
                         canTargetCondition_ByPreSelecetedList: null,
-                        canTargetCondition: CanSelectYourSuspendedDigimon,
+                        canTargetCondition: CanSelectDigimon,
                         canEndSelectCondition: null,
                         maxCount: 1,
                         canNoSelect: false,
@@ -73,38 +62,25 @@ namespace DCGO.CardEffects.EX8
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                 }
             }
+
             #endregion
 
             #region When Digivolving
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Unsuspend 1 of your Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
-                {
-                    return "[When Digivolving] 1 of your Digimon unsuspends.";
-                }
+                string EffectDescription() => "[When Digivolving] 1 of your Digimon unsuspends.";
 
-                bool CanSelectYourSuspendedDigimon(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
-                           permanent.IsSuspended;
-                }
+                bool CanSelectYourDigimon(Permanent permanent) => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
 
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card) &&
-                           CardEffectCommons.IsExistOnBattleAreaDigimon(card);
-                }
+                bool CanUseCondition(Hashtable hashtable) => CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card) && CardEffectCommons.IsExistOnBattleAreaDigimon(card);
 
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           CardEffectCommons.HasMatchConditionPermanent(CanSelectYourSuspendedDigimon);
-                }
+                bool CanActivateCondition(Hashtable hashtable) => CardEffectCommons.IsExistOnBattleAreaDigimon(card) && CardEffectCommons.HasMatchConditionPermanent(CanSelectYourDigimon);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
@@ -113,7 +89,7 @@ namespace DCGO.CardEffects.EX8
                     selectPermanentEffect.SetUp(
                         selectPlayer: card.Owner,
                         canTargetCondition_ByPreSelecetedList: null,
-                        canTargetCondition: CanSelectYourSuspendedDigimon,
+                        canTargetCondition: CanSelectYourDigimon,
                         canEndSelectCondition: null,
                         maxCount: 1,
                         canNoSelect: false,
@@ -128,9 +104,11 @@ namespace DCGO.CardEffects.EX8
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                 }
             }
+
             #endregion
 
             #region When Attacking
+
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -151,14 +129,14 @@ namespace DCGO.CardEffects.EX8
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card) &&
-                           card.Owner.MemoryForPlayer >= 1;
+                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           CardEffectCommons.HasMatchConditionPermanent(OpponentsDigimon);
+                           CardEffectCommons.HasMatchConditionPermanent(OpponentsDigimon) &&
+                           card.Owner.MemoryForPlayer >= 1;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -221,13 +199,15 @@ namespace DCGO.CardEffects.EX8
                     }
                 }
             }
+
             #endregion
 
             #region When Attacking - ESS
+
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect( "Place 1 of your other Digimon as this Digimon's bottom digivolution card to unsuspend this Digimon.", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Place 1 of your other Digimon as this Digimon's bottom digivolution card to unsuspend this Digimon.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
                 activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("Attacking_EX8_024");
@@ -317,6 +297,7 @@ namespace DCGO.CardEffects.EX8
                     }
                 }
             }
+
             #endregion
 
             return cardEffects;
