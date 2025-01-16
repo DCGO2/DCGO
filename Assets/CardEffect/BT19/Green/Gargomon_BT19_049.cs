@@ -14,7 +14,7 @@ namespace DCGO.CardEffects.BT19
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play 1 [Yuuki] from hand", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Play 1 [Henry Wong] from hand", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
@@ -93,6 +93,7 @@ namespace DCGO.CardEffects.BT19
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Suspend 1 opponent's Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetHashString("Suspend1_BT19_049");
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
