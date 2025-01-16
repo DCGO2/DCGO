@@ -27,7 +27,6 @@ namespace DCGO.CardEffects.BT19
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Return 1 suspended Digimon to the bottom of deck", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
-                activateClass.SetHashString("ReturnSuspended_BT19_054");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -96,7 +95,6 @@ namespace DCGO.CardEffects.BT19
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Return 1 suspended Digimon to the bottom of deck", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
-                activateClass.SetHashString("ReturnSuspended_BT19_054");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
