@@ -262,7 +262,7 @@ public class ContinuousController : MonoBehaviour
             CardSpriteName = "EX7-030-token",
             cardKind = CardKind.Digimon,
             DP = 3000,
-            CardEffectClassName = "Familiar_EX7_030_token"
+            CardEffectClassName = "EX7_030_token"
         };
 
         await FamiliarToken.GetCardSprite();
@@ -283,7 +283,7 @@ public class ContinuousController : MonoBehaviour
             CardSpriteName = "EX7-030-token",
             cardKind = CardKind.Digimon,
             DP = 3000,
-            CardEffectClassName = "SelfDeleteFamiliar_P_165_token"
+            CardEffectClassName = "P_165_token"
         };
 
         await SelfDeleteFamiliarToken.GetCardSprite();
@@ -304,7 +304,7 @@ public class ContinuousController : MonoBehaviour
             CardSpriteName = "EX7-058-token",
             cardKind = CardKind.Digimon,
             DP = 5000,
-            CardEffectClassName = "VoléeZerdrücken_EX7_030_token"
+            CardEffectClassName = "EX7_058_token"
         };
 
         await VoleeZerdruckenToken.GetCardSprite();
@@ -325,7 +325,7 @@ public class ContinuousController : MonoBehaviour
             CardSpriteName = "EX8-037-token",
             cardKind = CardKind.Digimon,
             DP = 9000,
-            CardEffectClassName = "UkaNoMitama_EX8_037_token"
+            CardEffectClassName = "EX8_037_token"
         };
 
         await UkaNoMitamaToken.GetCardSprite();
