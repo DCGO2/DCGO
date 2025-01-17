@@ -158,7 +158,7 @@ public class ContinuousController : MonoBehaviour
             CardSpriteName = "BT14-018-token-red",
             cardKind = CardKind.Digimon,
             DP = 6000,
-            CardEffectClassName = "Bushiagumon_BT4_038"
+            CardEffectClassName = "BT4_038"
         };
 
         await AmonToken.GetCardSprite();
@@ -179,7 +179,7 @@ public class ContinuousController : MonoBehaviour
             CardSpriteName = "BT14-018-token-yellow",
             cardKind = CardKind.Digimon,
             DP = 6000,
-            CardEffectClassName = "Koemon_BT1_031"
+            CardEffectClassName = "BT1_031"
         };
 
         await UmonToken.GetCardSprite();
@@ -200,7 +200,7 @@ public class ContinuousController : MonoBehaviour
             CardSpriteName = "EX5-058-token",
             cardKind = CardKind.Digimon,
             DP = 3000,
-            CardEffectClassName = "Fujitsumon_EX5_058_token"
+            CardEffectClassName = "EX5_058_token"
         };
 
         await FujitsumonToken.GetCardSprite();
@@ -241,7 +241,7 @@ public class ContinuousController : MonoBehaviour
             CardSpriteName = "BT16-052-token",
             cardKind = CardKind.Digimon,
             DP = 1000,
-            CardEffectClassName = "KoHagurumon_BT16_052_token"
+            CardEffectClassName = "BT16_052_token"
         };
 
         await KoHagurumonToken.GetCardSprite();
