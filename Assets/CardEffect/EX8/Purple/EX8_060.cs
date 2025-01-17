@@ -313,10 +313,6 @@ namespace DCGO.CardEffects.EX8
 
                                     if (willAttack)
                                     {
-                                        yield return ContinuousController.instance.StartCoroutine(
-                                            CardEffectCommons.ChangeDigimonSAttack(selectedCard.PermanentOfThisCard(), 1,
-                                                EffectDuration.UntilEachTurnEnd, activateClass));
-
                                         if (selectedCard.PermanentOfThisCard() != null)
                                         {
                                             if (selectedCard.PermanentOfThisCard().CanAttack(activateClass))

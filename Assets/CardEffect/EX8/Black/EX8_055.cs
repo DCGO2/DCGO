@@ -78,8 +78,7 @@ namespace DCGO.CardEffects.EX8
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    bool cardsTrashed = false;
-                    Permanent selectedPermanent = null;
+                    int trashedCount = 0;
 
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SelectTrashDigivolutionCards(
                         permanentCondition: CanSelectPermanentCondition,
@@ -93,18 +92,15 @@ namespace DCGO.CardEffects.EX8
 
                     IEnumerator AfterTrashedCards(Permanent permanent, List<CardSource> cards)
                     {
-                        if (cards.Count == 3)
-                            cardsTrashed = true;
-
-                        selectedPermanent = permanent;
+                        trashedCount += cards.Count;
 
                         yield return null;
                     }
 
-                    if (cardsTrashed)
+                    if (trashedCount == 3)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { selectedPermanent }, activateClass).Unsuspend());
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonSAttack(targetPermanent: selectedPermanent, changeValue: 1, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
+                        yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() }, activateClass).Unsuspend());
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonSAttack(targetPermanent: card.PermanentOfThisCard(), changeValue: 1, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
                     }
                 }
             }
@@ -164,7 +160,7 @@ namespace DCGO.CardEffects.EX8
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    bool cardsTrashed = false;
+                    int trashedCount = 0;
 
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SelectTrashDigivolutionCards(
                         permanentCondition: CanSelectPermanentCondition,
@@ -178,13 +174,12 @@ namespace DCGO.CardEffects.EX8
 
                     IEnumerator AfterTrashedCards(Permanent permanent, List<CardSource> cards)
                     {
-                        if (cards.Count == 3)
-                            cardsTrashed = true;
+                        trashedCount += cards.Count;
 
                         yield return null;
                     }
 
-                    if (cardsTrashed)
+                    if (trashedCount == 3)
                     {
                         yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() }, activateClass).Unsuspend());
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonSAttack(targetPermanent: card.PermanentOfThisCard(), changeValue: 1, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
