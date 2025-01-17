@@ -68,33 +68,30 @@ namespace DCGO.CardEffects.BT19
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
-                    {
-                        int maxCount = Math.Min(1, card.Owner.TrashCards.Count(CanSelectCardCondition));
-
-                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                        selectCardEffect.SetUp(
-                            canTargetCondition: CanSelectCardCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            canNoSelect: () => false,
-                            selectCardCoroutine: null,
-                            afterSelectCardCoroutine: null,
-                            message: "Select 1 card to add to your hand.",
-                            maxCount: maxCount,
-                            canEndNotMax: false,
-                            isShowOpponent: true,
-                            mode: SelectCardEffect.Mode.AddHand,
-                            root: SelectCardEffect.Root.Trash,
-                            customRootCardList: null,
-                            canLookReverseCard: true,
-                            selectPlayer: card.Owner,
-                            cardEffect: activateClass);
-
-                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-                    }
-                }
+                     int maxCount = Math.Min(1, card.Owner.TrashCards.Count(CanSelectCardCondition));
+                   
+                     SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+                   
+                     selectCardEffect.SetUp(
+                         canTargetCondition: CanSelectCardCondition,
+                         canTargetCondition_ByPreSelecetedList: null,
+                         canEndSelectCondition: null,
+                         canNoSelect: () => false,
+                         selectCardCoroutine: null,
+                         afterSelectCardCoroutine: null,
+                         message: "Select 1 card to add to your hand.",
+                         maxCount: maxCount,
+                         canEndNotMax: false,
+                         isShowOpponent: true,
+                         mode: SelectCardEffect.Mode.AddHand,
+                         root: SelectCardEffect.Root.Trash,
+                         customRootCardList: null,
+                         canLookReverseCard: true,
+                         selectPlayer: card.Owner,
+                         cardEffect: activateClass);
+                   
+                     yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                }             
             }
             #endregion
 

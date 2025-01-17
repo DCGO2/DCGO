@@ -30,7 +30,7 @@ namespace DCGO.CardEffects.BT19
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Draw 2 and you may use 1 single-color Option", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -74,55 +74,52 @@ namespace DCGO.CardEffects.BT19
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    if (card.Owner.LibraryCards.Count >= 1)
                     {
-                        if (card.Owner.LibraryCards.Count >= 1)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 2, activateClass).Draw());
-                        }
-
-                        if (card.Owner.HandCards.Count(CanSelectOptionCard) >= 1)
-                        {
-                            List<CardSource> selectedCards = new List<CardSource>();
-
-                            int maxCount = 1;
-
-                            SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                            selectHandEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: CanSelectOptionCard,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: maxCount,
-                                canNoSelect: true,
-                                canEndNotMax: false,
-                                isShowOpponent: true,
-                                selectCardCoroutine: SelectCardCoroutine,
-                                afterSelectCardCoroutine: null,
-                                mode: SelectHandEffect.Mode.Custom,
-                                cardEffect: activateClass);
-
-                            selectHandEffect.SetUpCustomMessage("Select 1 option card to use.", "The opponent is selecting 1 option card to use.");
-                            selectHandEffect.SetUpCustomMessage_ShowCard("Used Card");
-
-                            yield return StartCoroutine(selectHandEffect.Activate());
-
-                            IEnumerator SelectCardCoroutine(CardSource cardSource)
-                            {
-                                selectedCards.Add(cardSource);
-
-                                yield return null;
-                            }
-
-                            yield return ContinuousController.instance.StartCoroutine(
-                                CardEffectCommons.PlayOptionCards(
-                                cardSources: selectedCards,
-                                activateClass: activateClass,
-                                payCost: false,
-                                root: SelectCardEffect.Root.Hand));
-                        }
+                        yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 2, activateClass).Draw());
                     }
+
+                    if (card.Owner.HandCards.Count(CanSelectOptionCard) >= 1)
+                    {
+                        List<CardSource> selectedCards = new List<CardSource>();
+
+                        int maxCount = 1;
+
+                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                        selectHandEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectOptionCard,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: maxCount,
+                            canNoSelect: true,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            selectCardCoroutine: SelectCardCoroutine,
+                            afterSelectCardCoroutine: null,
+                            mode: SelectHandEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        selectHandEffect.SetUpCustomMessage("Select 1 option card to use.", "The opponent is selecting 1 option card to use.");
+                        selectHandEffect.SetUpCustomMessage_ShowCard("Used Card");
+
+                        yield return StartCoroutine(selectHandEffect.Activate());
+
+                        IEnumerator SelectCardCoroutine(CardSource cardSource)
+                        {
+                            selectedCards.Add(cardSource);
+
+                            yield return null;
+                        }
+
+                        yield return ContinuousController.instance.StartCoroutine(
+                            CardEffectCommons.PlayOptionCards(
+                            cardSources: selectedCards,
+                            activateClass: activateClass,
+                            payCost: false,
+                            root: SelectCardEffect.Root.Hand));
+                    }               
                 }
             }
             #endregion
@@ -181,10 +178,7 @@ namespace DCGO.CardEffects.BT19
                 {
                     if (CanActivateTokenEffectCondition(_hashtable))
                     {
-                        bool canPlay = GManager.instance.userSelectionManager.SelectedBoolValue;
-
-                        if (canPlay)
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPipeFox(activateClass));
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPipeFox(activateClass));
                     }
                 }
             }
