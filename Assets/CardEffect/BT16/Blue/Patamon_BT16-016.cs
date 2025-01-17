@@ -1,24 +1,25 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System;
 
 namespace DCGO.CardEffects.BT16
 {
-    public class Patamon_BT16_016 : CEntity_Effect
+    public class BT16_016 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
-            
+
             #region Alternate Digivolution Requirement
+
             if (timing == EffectTiming.None)
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
                     return targetPermanent.TopCard.CardNames.Contains("Tokomon");
                 }
-                
+
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
                     permanentCondition: PermanentCondition,
                     digivolutionCost: 0,
@@ -26,9 +27,11 @@ namespace DCGO.CardEffects.BT16
                     card: card,
                     condition: null));
             }
+
             #endregion
 
             #region Start of Main Phase
+
             if (timing == EffectTiming.OnStartMainPhase)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -41,7 +44,6 @@ namespace DCGO.CardEffects.BT16
                 {
                     return "[Start of your Main Phase] If it's your turn, 1 of your Digimon may digivolve into a level 4 Digimon card with the [Angel] or [Free] trait from your hand with the digivolution cost reduced by 1.";
                 }
-
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
@@ -142,9 +144,11 @@ namespace DCGO.CardEffects.BT16
                     }
                 }
             }
+
             #endregion
-            
+
             #region On Play Effect
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -157,7 +161,6 @@ namespace DCGO.CardEffects.BT16
                 {
                     return "[On Play] If it's your turn, 1 of your Digimon may digivolve into a level 4 Digimon card with the [Angel] or [Free] trait from your hand with the digivolution cost reduced by 1.";
                 }
-
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
@@ -193,7 +196,7 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (card.Owner.HandCards.Count(CanSelectCardCondition) >=1)
+                        if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
                         {
                             return true;
                         }
@@ -250,9 +253,11 @@ namespace DCGO.CardEffects.BT16
                     }
                 }
             }
+
             #endregion
-            
+
             #region Inherited Effect
+
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -284,7 +289,7 @@ namespace DCGO.CardEffects.BT16
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    var maxCount = Math.Min(1,CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+                    var maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
                     var selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
@@ -314,6 +319,7 @@ namespace DCGO.CardEffects.BT16
                     }
                 }
             }
+
             #endregion
 
             return cardEffects;
