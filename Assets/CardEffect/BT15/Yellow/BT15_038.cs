@@ -1,26 +1,32 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace DCGO.CardEffects.BT15
 {
-    public class Holydramon_BT15_042 : CEntity_Effect
+    public class BT15_038 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            if (timing == EffectTiming.OnCounterTiming)
+            {
+                cardEffects.Add(CardEffectFactory.BlastDigivolveEffect(card: card, condition: null));
+            }
+
+            #region On Play
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Trash the top card of your security so that opponent's 1 Digimon gains DP -9000 until the end of their turn", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Trash the top card of your security so that opponent's 1 Digimon gains DP -6000", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[On Play] You may trash the top card of your security stack to unsuspend this Digimon.";
+                    return "[On Play] By trashing the top or bottom card of your security stack, 1 of your opponent's Digimon gets -6000 DP until the end of your opponent's turn.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -91,8 +97,8 @@ namespace DCGO.CardEffects.BT15
                                 cardEffect: activateClass);
 
                             selectPermanentEffect.SetUpCustomMessage(
-                                "Select 1 Digimon that will get DP -9000.",
-                                "The opponent is selecting 1 Digimon that will get DP -9000.");
+                                "Select 1 Digimon that will get DP -6000.",
+                                "The opponent is selecting 1 Digimon that will get DP -6000.");
 
                             yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
@@ -100,7 +106,7 @@ namespace DCGO.CardEffects.BT15
                             {
                                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
                                   targetPermanent: permanent,
-                                  changeValue: -9000,
+                                  changeValue: -6000,
                                   effectDuration: EffectDuration.UntilOpponentTurnEnd,
                                   activateClass: activateClass));
                             }
@@ -109,16 +115,20 @@ namespace DCGO.CardEffects.BT15
                 }
             }
 
+            #endregion
+
+            #region When Digivolving
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Trash the top card of your security so that opponent's 1 Digimon gains DP -9000", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Trash the top card of your security so that opponent's 1 Digimon gains DP -6000", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] You may trash the top card of your security stack to unsuspend this Digimon.";
+                    return "[On Play] By trashing the top or bottom card of your security stack, 1 of your opponent's Digimon gets -6000 DP until the end of your opponent's turn.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -189,8 +199,8 @@ namespace DCGO.CardEffects.BT15
                                 cardEffect: activateClass);
 
                             selectPermanentEffect.SetUpCustomMessage(
-                                "Select 1 Digimon that will get DP -9000.",
-                                "The opponent is selecting 1 Digimon that will get DP -9000.");
+                                "Select 1 Digimon that will get DP -6000.",
+                                "The opponent is selecting 1 Digimon that will get DP -6000.");
 
                             yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
@@ -198,7 +208,7 @@ namespace DCGO.CardEffects.BT15
                             {
                                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
                                   targetPermanent: permanent,
-                                  changeValue: -9000,
+                                  changeValue: -6000,
                                   effectDuration: EffectDuration.UntilOpponentTurnEnd,
                                   activateClass: activateClass));
                             }
@@ -207,22 +217,21 @@ namespace DCGO.CardEffects.BT15
                 }
             }
 
+            #endregion
+
+            #region All Turns
+
             if (timing == EffectTiming.OnLoseSecurity)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Place 1 card from hand to the top or bottom of the security", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
-                activateClass.SetHashString("Place1CardFromHandToSecurity_BT15_042");
+                activateClass.SetUpICardEffect("Recovery +1 (Deck)", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetHashString("Recovery1_BT15_038");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
                     return "[All Turns][Once Per Turn] When a card is removed from your security stack, if you have 3 or fewer security cards, trigger <Recovery +1 (Deck)>. (Place the top card of your deck on top of your security stack.)";
-                }
-
-                bool CanSelectCardCondition(CardSource cardSource)
-                {
-                    return cardSource.CardColors.Contains(CardColor.Yellow);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -244,13 +253,7 @@ namespace DCGO.CardEffects.BT15
                     {
                         if (card.Owner.SecurityCards.Count <= 3)
                         {
-                            if (card.Owner.HandCards.Count >= 1)
-                            {
-                                if (card.Owner.CanAddSecurity(activateClass))
-                                {
-                                    return true;
-                                }
-                            }
+                            return true;
                         }
                     }
 
@@ -259,76 +262,11 @@ namespace DCGO.CardEffects.BT15
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
-                    {
-                        if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
-                        {
-                            List<CardSource> selectedCards = new List<CardSource>();
-
-                            int maxCount = 1;
-
-                            SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                            selectHandEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: CanSelectCardCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: maxCount,
-                                canNoSelect: true,
-                                canEndNotMax: false,
-                                isShowOpponent: true,
-                                selectCardCoroutine: SelectCardCoroutine,
-                                afterSelectCardCoroutine: null,
-                                mode: SelectHandEffect.Mode.Custom,
-                                cardEffect: activateClass);
-
-                            selectHandEffect.SetUpCustomMessage(
-                                "Select 1 card to place on the security.",
-                                "The opponent is selecting 1 card to place on the security.");
-
-                            yield return StartCoroutine(selectHandEffect.Activate());
-
-                            IEnumerator SelectCardCoroutine(CardSource cardSource)
-                            {
-                                selectedCards.Add(cardSource);
-
-                                yield return null;
-                            }
-
-                            foreach (CardSource cardSource in selectedCards)
-                            {
-                                List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
-                    {
-                        new SelectionElement<bool>(message: $"Security Top", value : true, spriteIndex: 0),
-                        new SelectionElement<bool>(message: $"Security Bottom", value : false, spriteIndex: 1),
-                    };
-
-                                string selectPlayerMessage = "Which will you place the card on the top or bottom card of the security?";
-                                string notSelectPlayerMessage = "The opponent is selecting whether to place the card on the top or bottom card of security.";
-
-                                GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
-
-                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-
-                                bool toTop = GManager.instance.userSelectionManager.SelectedBoolValue;
-
-                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(cardSource));
-
-                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(cardSource.Owner));
-
-                                yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(cardSource.Owner).AddSecurity());
-
-                                if (!toTop)
-                                {
-                                    cardSource.Owner.SecurityCards.Remove(cardSource);
-                                    cardSource.Owner.SecurityCards.Add(cardSource);
-                                }
-                            }
-                        }
-                    }
+                    yield return ContinuousController.instance.StartCoroutine(new IRecovery(card.Owner, 1, activateClass).Recovery());
                 }
             }
+
+            #endregion
 
             return cardEffects;
         }

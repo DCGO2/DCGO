@@ -1,15 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
-using Photon;
-using System;
-using Photon.Pun;
-using System.Runtime.InteropServices.WindowsRuntime;
+using UnityEngine;
 
 namespace DCGO.CardEffects.BT15
 {
-    public class Magnadramon_BT15_042 : CEntity_Effect
+    public class BT15_042 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
