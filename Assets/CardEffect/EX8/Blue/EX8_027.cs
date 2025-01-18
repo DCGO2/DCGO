@@ -75,56 +75,46 @@ namespace DCGO.CardEffects.EX8
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    List<CardSource> selectedCards = new List<CardSource>();
+
+                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                    selectCardEffect.SetUp(
+                                canTargetCondition: CanSelectCardCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                canNoSelect: () => true,
+                                selectCardCoroutine: SelectCardCoroutine,
+                                afterSelectCardCoroutine: null,
+                                message: "Select 1 digivolution card to play.",
+                                maxCount: 1,
+                                canEndNotMax: false,
+                                isShowOpponent: true,
+                                mode: SelectCardEffect.Mode.Custom,
+                                root: SelectCardEffect.Root.Custom,
+                                customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
+                                canLookReverseCard: true,
+                                selectPlayer: card.Owner,
+                                cardEffect: activateClass);
+
+                    selectCardEffect.SetUpCustomMessage("Select 1 digivolution card to play.", "The opponent is selecting 1 digivolution card to play.");
+
+                    yield return StartCoroutine(selectCardEffect.Activate());
+
+                    IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
-                        Permanent selectedPermanent = card.PermanentOfThisCard();
+                        selectedCards.Add(cardSource);
 
-                        if (selectedPermanent.DigivolutionCards.Count(CanSelectCardCondition) >= 1)
-                        {
-                            int maxCount = Math.Min(1, selectedPermanent.DigivolutionCards.Count(CanSelectCardCondition));
-
-                            List<CardSource> selectedCards = new List<CardSource>();
-
-                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                            selectCardEffect.SetUp(
-                                        canTargetCondition: CanSelectCardCondition,
-                                        canTargetCondition_ByPreSelecetedList: null,
-                                        canEndSelectCondition: null,
-                                        canNoSelect: () => true,
-                                        selectCardCoroutine: SelectCardCoroutine,
-                                        afterSelectCardCoroutine: null,
-                                        message: "Select 1 digivolution card to play.",
-                                        maxCount: maxCount,
-                                        canEndNotMax: false,
-                                        isShowOpponent: true,
-                                        mode: SelectCardEffect.Mode.Custom,
-                                        root: SelectCardEffect.Root.Custom,
-                                        customRootCardList: selectedPermanent.DigivolutionCards,
-                                        canLookReverseCard: true,
-                                        selectPlayer: card.Owner,
-                                        cardEffect: activateClass);
-
-                            selectCardEffect.SetUpCustomMessage("Select 1 digivolution card to play.", "The opponent is selecting 1 digivolution card to play.");
-
-                            yield return StartCoroutine(selectCardEffect.Activate());
-
-                            IEnumerator SelectCardCoroutine(CardSource cardSource)
-                            {
-                                selectedCards.Add(cardSource);
-
-                                yield return null;
-                            }
-
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                                cardSources: selectedCards,
-                                activateClass: activateClass,
-                                payCost: false,
-                                isTapped: false,
-                                root: SelectCardEffect.Root.DigivolutionCards,
-                                activateETB: true));
-                        }
+                        yield return null;
                     }
+
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
+                        cardSources: selectedCards,
+                        activateClass: activateClass,
+                        payCost: false,
+                        isTapped: false,
+                        root: SelectCardEffect.Root.DigivolutionCards,
+                        activateETB: true));
                 }
             }
             #endregion

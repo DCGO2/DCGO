@@ -2336,29 +2336,29 @@ public class Permanent
                         }
                     }
                     #endregion
+                }
 
-                    #region Effects of faceup security
-                    foreach (CardSource source in player.SecurityCards)
+                #region Effects of faceup security
+                foreach (CardSource source in player.SecurityCards)
+                {
+                    if (source.IsFlipped)
+                        continue;
+
+                    foreach (ICardEffect cardEffect in source.EffectList(EffectTiming.OnAllyAttack))
                     {
-                        if (source.IsFlipped)
-                            continue;
-
-                        foreach (ICardEffect cardEffect in permanent.EffectList(EffectTiming.OnAllyAttack))
+                        if (cardEffect is IAllianceEffect)
                         {
-                            if (cardEffect is IAllianceEffect)
+                            if (cardEffect.CanTrigger(null))
                             {
-                                if (cardEffect.CanTrigger(null))
+                                if (((IAllianceEffect)cardEffect).HasAlliance(this))
                                 {
-                                    if (((IAllianceEffect)cardEffect).HasAlliance(this))
-                                    {
-                                        return true;
-                                    }
+                                    return true;
                                 }
                             }
                         }
                     }
-                    #endregion
                 }
+                #endregion
 
                 #region Player Effects
                 foreach (ICardEffect cardEffect in player.EffectList(EffectTiming.OnAllyAttack))
@@ -2510,12 +2510,12 @@ public class Permanent
             return false;
         }
 
-        #region 戦闘で消滅しない効果
+        #region Given Effects
         foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
         {
             foreach (Permanent permanent in player.GetFieldPermanents())
             {
-                #region 場のパーマネントの効果
+                #region Permanents
                 foreach (ICardEffect cardEffect in permanent.EffectList(EffectTiming.None))
                 {
                     if (cardEffect is ICanNotBeDestroyedByBattleEffect)
@@ -2538,6 +2538,8 @@ public class Permanent
                 if (source.IsFlipped)
                     continue;
 
+
+
                 foreach (ICardEffect cardEffect in source.EffectList(EffectTiming.None))
                 {
                     if (cardEffect is ICanNotBeDestroyedByBattleEffect)
@@ -2546,7 +2548,7 @@ public class Permanent
                         {
                             if (((ICanNotBeDestroyedByBattleEffect)cardEffect).CanNotBeDestroyedByBattle(this, AttackingPermanent, DefendingPermanent, DefendingCard))
                             {
-                                return true;
+                                return false;
                             }
                         }
                     }
@@ -2554,7 +2556,7 @@ public class Permanent
             }
             #endregion
 
-            #region プレイヤーの効果
+            #region Player Effects
             foreach (ICardEffect cardEffect in player.EffectList(EffectTiming.None))
             {
                 if (cardEffect is ICanNotBeDestroyedByBattleEffect)
