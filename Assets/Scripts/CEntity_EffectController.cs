@@ -86,6 +86,25 @@ public class CEntity_EffectController : MonoBehaviour
                         }
                         #endregion
 
+                        #region Effects from security
+                        foreach (CardSource source in player.SecurityCards)
+                        {
+                            if (source.IsFlipped)
+                                continue;
+
+                            foreach (ICardEffect cardEffect in source.EffectList(EffectTiming.None))
+                            {
+                                if (cardEffect is IAddSkillEffect)
+                                {
+                                    if (cardEffect.CanUse(null))
+                                    {
+                                        GetCardEffects = ((IAddSkillEffect)cardEffect).GetCardEffect(card, GetCardEffects, timing);
+                                    }
+                                }
+                            }
+                        }
+                        #endregion
+
                         #region Effects added by players
                         foreach (ICardEffect cardEffect in player.EffectList(EffectTiming.None))
                         {
@@ -126,6 +145,20 @@ public class CEntity_EffectController : MonoBehaviour
                                         GetCardEffects = ((IAddSkillEffect)cardEffect).GetCardEffect(card, GetCardEffects, timing);
                                     }
                                 }
+                            }
+                        }
+                    }
+                }
+
+                if (CardEffectCommons.IsExistInSecurity(card))
+                {
+                    foreach (ICardEffect cardEffect in card.cEntity_EffectController.cEntity_Effect.GetCardEffects(EffectTiming.None, card))
+                    {
+                        if (cardEffect is IAddSkillEffect)
+                        {
+                            if (cardEffect.CanUse(null))
+                            {
+                                GetCardEffects = ((IAddSkillEffect)cardEffect).GetCardEffect(card, GetCardEffects, timing);
                             }
                         }
                     }
