@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace DCGO.CardEffects.BT18
 {
-    public class TigerVespamon_BT18_056 : CEntity_Effect
+    public class BT18_056 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
