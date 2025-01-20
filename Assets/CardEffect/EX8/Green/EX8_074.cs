@@ -359,6 +359,8 @@ namespace DCGO.CardEffects.EX8
                             Hashtable effectHashtable =
                                 CardEffectCommons.WhenDigivolvingCheckHashtableOfCard(selectedEffect.EffectSourceCard);
 
+                            selectedEffect.SetIsDigimonEffect(true);
+
                             yield return ContinuousController.instance.StartCoroutine(
                                 ((ActivateICardEffect)selectedEffect).Activate_Optional_Effect_Execute(effectHashtable));
                         }

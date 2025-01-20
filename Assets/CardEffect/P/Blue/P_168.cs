@@ -63,7 +63,7 @@ namespace DCGO.CardEffects
 
                 bool IsValidPermanentToDigivolveCondition(Permanent permanent)
                 {
-                    return permanent.TopCard.HasAquaTraits;
+                    return permanent.TopCard.EqualsTraits("Aqua") || permanent.TopCard.EqualsTraits("Sea Animal");
                 }
 
                 bool IsValidCardToDigivolveIntoCondition(CardSource cardSource)
