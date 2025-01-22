@@ -48,7 +48,8 @@ namespace DCGO.CardEffects.EX8
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card) &&
+                           CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -177,21 +178,22 @@ namespace DCGO.CardEffects.EX8
                     return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
                 }
 
-                bool IsDeviceTrait(Permanent permanent)
+                bool IsOptionCard(Permanent permanent)
                 {
                     return permanent.IsOption &&
-                           permanent.TopCard.EqualsTraits("Device");
+                           CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card) &&
+                           CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.HasMatchConditionPermanent(OpponentsDigimon) &&
-                           CardEffectCommons.HasMatchConditionPermanent(IsDeviceTrait);
+                           CardEffectCommons.HasMatchConditionPermanent(IsOptionCard);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -202,7 +204,7 @@ namespace DCGO.CardEffects.EX8
 
                     selectPermanentEffect.SetUp(
                         selectPlayer: card.Owner,
-                        canTargetCondition: IsDeviceTrait,
+                        canTargetCondition: IsOptionCard,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: 1,

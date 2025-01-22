@@ -39,6 +39,8 @@ namespace DCGO.CardEffects.EX8
             #region When Attacking
             if (timing == EffectTiming.OnAllyAttack)
             {
+                List<ICardEffect> candidateEffects = new List<ICardEffect>();
+
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Activate 1 [When Digivolving] effect", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
@@ -67,10 +69,20 @@ namespace DCGO.CardEffects.EX8
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        List<ICardEffect> candidateEffects = card.PermanentOfThisCard().EffectList(EffectTiming.OnEnterFieldAnyone)
+                        candidateEffects = new List<ICardEffect>();
+
+                        foreach (CardSource source in card.PermanentOfThisCard().DigivolutionCards)
+                        {
+                            if (source.ContainsCardName("Justimon"))
+                                continue;
+
+                            List<ICardEffect> effects = source.EffectList(EffectTiming.OnEnterFieldAnyone)
                             .Clone()
-                            .Filter(cardEffect => cardEffect != null && cardEffect is ActivateICardEffect && !cardEffect.IsSecurityEffect && cardEffect.IsWhenDigivolving)
-                            .Filter(cardEffect => cardEffect.EffectSourceCard.ContainsCardName("Justimon") && !cardEffect.EffectSourceCard.EqualsTraits("X Antibody"));
+                            .Filter(cardEffect => cardEffect != null && cardEffect is ActivateICardEffect && !cardEffect.IsSecurityEffect && cardEffect.IsWhenDigivolving);
+
+                            candidateEffects.AddRange(effects);
+                        }
+                        
 
                         if (candidateEffects.Count >= 1)
                         {
@@ -85,11 +97,6 @@ namespace DCGO.CardEffects.EX8
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        List<ICardEffect> candidateEffects = card.PermanentOfThisCard().EffectList(EffectTiming.OnEnterFieldAnyone)
-                            .Clone()
-                            .Filter(cardEffect => cardEffect != null && cardEffect is ActivateICardEffect && !cardEffect.IsSecurityEffect && cardEffect.IsWhenDigivolving)
-                            .Filter(cardEffect => cardEffect.EffectSourceCard.ContainsCardName("Justimon") && !cardEffect.EffectSourceCard.EqualsTraits("X Antibody"));
-
                         if (candidateEffects.Count >= 1)
                         {
                             ICardEffect selectedEffect = null;
