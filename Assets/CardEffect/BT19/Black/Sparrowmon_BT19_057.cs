@@ -4,35 +4,51 @@ using System.Linq;
 
 namespace DCGO.CardEffects.BT19
 {
-    public class Ballistamon_BT19_047 : CEntity_Effect
+    public class Sparrowmon_BT19_057 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
-            
-            #region On Play
 
-            if (timing == EffectTiming.OnEnterFieldAnyone)
+            #region Alternate Digivolution
+
+            if (timing == EffectTiming.None)
+            {
+                bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 2 &&
+                           (targetPermanent.TopCard.EqualsTraits("Twilight") || targetPermanent.TopCard.EqualsTraits("Xros Heart"));
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition,
+                    digivolutionCost: 0, ignoreDigivolutionRequirement: false, card: card, condition: null));
+            }
+
+            #endregion
+
+            #region When Attacking
+
+            if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Digivolve into [AtlurBallistamon] from under your Tamers", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Digivolve into [RaptorSparrowmon] from under your Tamers", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
                 {
                     return
-                        "[On Play] This Digimon may digivolve into [AtlurBallistamon] under your Tamers without paying the cost.";
+                        "[When Attacking] This Digimon may digivolve into [RaptorSparrowmon] under your Tamers without paying the cost.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
                 }
 
                 bool DigivolveCardCondition(CardSource cardSource)
                 {
-                    return cardSource.IsDigimon && cardSource.EqualsCardName("AtlurBallistamon") &&
+                    return cardSource.IsDigimon && cardSource.EqualsCardName("RaptorSparrowmon") &&
                            cardSource.CanPlayCardTargetFrame(card.PermanentOfThisCard().PermanentFrame, false, activateClass);
                 }
 
@@ -140,7 +156,7 @@ namespace DCGO.CardEffects.BT19
 
             #region Your Turn - ESS
 
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnCounterTiming)
             {
                 bool Condition()
                 {
@@ -148,7 +164,7 @@ namespace DCGO.CardEffects.BT19
                            card.PermanentOfThisCard().TopCard.EqualsTraits("Xros Heart");
                 }
 
-                cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(isInheritedEffect: true, card: card, condition: Condition));
+                cardEffects.Add(CardEffectFactory.CollisionSelfStaticEffect(isInheritedEffect: true, card: card, condition: Condition));
             }
 
             #endregion
