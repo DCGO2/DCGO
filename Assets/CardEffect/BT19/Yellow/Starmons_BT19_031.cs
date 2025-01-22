@@ -304,6 +304,8 @@ namespace DCGO.CardEffects.BT19
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    Permanent selectedPermanent = null;
+
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
@@ -326,8 +328,15 @@ namespace DCGO.CardEffects.BT19
 
                     IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
+                        selectedPermanent = permanent;
+
+                        yield return null;
+                    }
+
+                    if (selectedPermanent != null)
+                    {
                         yield return ContinuousController.instance.StartCoroutine(
-                            CardEffectCommons.ChangeDigimonDP(targetPermanent: permanent, changeValue: -2000,
+                            CardEffectCommons.ChangeDigimonDP(targetPermanent: selectedPermanent, changeValue: -2000,
                                 effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
                     }
                 }
