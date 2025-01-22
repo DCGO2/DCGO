@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: P_168
+  m_EditorClassIdentifier: 
+  CardIndex: 10442
+  cardColors: 01000000
+  PlayCost: 3
+  EvoCosts: []
+  Level: 0
+  CardName_JPN: 
+  CardName_ENG: Yao Qinglan
+  Form_JPN: []
+  Form_ENG:
+  - '-'
+  Attribute_JPN: []
+  Attribute_ENG:
+  - '-'
+  Type_JPN: []
+  Type_ENG:
+  - LIBERATOR
+  CardSpriteName: P-168
+  cardKind: 1
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: "[Start of Your Main Phase] If your opponent has a Digimon,
+    gain 1 memory.\n[Your Turn] When effects add digivolution cards under any of
+    your Digimon with [Aqua]/[Sea Animal]\_in any of its traits, by suspending this
+    Tamer, one of those Digimon may digivolve into a Digimon card with the [Aqua]/[Sea
+    Animal]\_in any of its traits in your hand with the digivolution cost reduced
+    by 1."
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: '-'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: '[Security] Play this card without paying the cost.'
+  CardEffectClassName: P_168
+  DP: 0
+  rarity: 5
+  OverflowMemory: 0
+  CardID: P-168
+  MaxCountInDeck: 4

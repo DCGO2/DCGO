@@ -103,6 +103,8 @@ namespace DCGO.CardEffects.EX8
                         {
                             if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                             {
+                                Permanent selectedPermanent = null;
+
                                 int maxCount = Math.Min(1,
                                     CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
 
@@ -130,87 +132,87 @@ namespace DCGO.CardEffects.EX8
 
                                 IEnumerator SelectPermanentCoroutine(Permanent permanent)
                                 {
-                                    if (permanent != null)
+                                    if(permanent != null)
+                                        selectedPermanent = permanent;
+
+                                    yield return null;
+                                }
+
+                                if (selectedPermanent != null)
+                                {
+                                    ActivateClass activateClass1 = new ActivateClass();
+                                    activateClass1.SetUpICardEffect("Trash 1 card in your hand.", GivenEffectCanUseCondition, selectedPermanent.TopCard);
+                                    activateClass1.SetUpActivateClass(
+                                        GivenEffectCanActivateCondition,
+                                        GivenEffectActivateCoroutine,
+                                        -1,
+                                        false, GivenEffectDescription());
+                                    activateClass1.SetEffectSourcePermanent(selectedPermanent);
+                                    selectedPermanent.UntilOwnerTurnEndEffects.Add(GetCardEffect);
+
+                                    if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
                                     {
                                         yield return ContinuousController.instance.StartCoroutine(GManager.instance
-                                            .GetComponent<Effects>().CreateDebuffEffect(permanent));
+                                            .GetComponent<Effects>().CreateDebuffEffect(selectedPermanent));
+                                    }
 
-                                        ActivateClass activateClass1 = new ActivateClass();
-                                        activateClass1.SetUpICardEffect("Trash 1 card in your hand.", GivenEffectCanUseCondition,
-                                            permanent.TopCard);
-                                        activateClass1.SetUpActivateClass(
-                                            GivenEffectCanActivateCondition,
-                                            GivenEffectActivateCoroutine,
-                                            -1,
-                                            false, GivenEffectDescription());
-                                        activateClass1.SetEffectSourcePermanent(permanent);
-                                        permanent.UntilOwnerTurnEndEffects.Add(GetCardEffect);
+                                    string GivenEffectDescription()
+                                    {
+                                        return "[On Deletion] Trash 1 card in your hand.";
+                                    }
 
-                                        if (!permanent.TopCard.CanNotBeAffected(activateClass))
+                                    bool GivenEffectCanUseCondition(Hashtable hashtable)
+                                    {
+                                        return CardEffectCommons.CanTriggerOnDeletion(hashtable, selectedPermanent.TopCard);
+                                    }
+
+                                    bool GivenEffectCanActivateCondition(Hashtable hashtable1)
+                                    {
+                                        if (CardEffectCommons.CanActivateOnDeletion(selectedPermanent.TopCard))
                                         {
-                                            yield return ContinuousController.instance.StartCoroutine(GManager.instance
-                                                .GetComponent<Effects>().CreateDebuffEffect(permanent));
-                                        }
-
-                                        string GivenEffectDescription()
-                                        {
-                                            return "[On Deletion] Trash 1 card in your hand.";
-                                        }
-
-                                        bool GivenEffectCanUseCondition(Hashtable hashtable)
-                                        {
-                                            return CardEffectCommons.CanTriggerOnDeletion(hashtable, permanent.TopCard);
-                                        }
-
-                                        bool GivenEffectCanActivateCondition(Hashtable hashtable1)
-                                        {
-                                            if (CardEffectCommons.CanActivateOnDeletion(permanent.TopCard))
+                                            if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
                                             {
-                                                if (!permanent.TopCard.CanNotBeAffected(activateClass))
-                                                {
-                                                    return true;
-                                                }
-                                            }
-
-                                            return false;
-                                        }
-                                        
-                                        IEnumerator GivenEffectActivateCoroutine(Hashtable _hashtable)
-                                        {
-                                            if (permanent.TopCard.Owner.HandCards.Count >= 1)
-                                            {
-                                                int discardCount = 1;
-
-                                                SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                                                selectHandEffect.SetUp(
-                                                    selectPlayer: permanent.TopCard.Owner,
-                                                    canTargetCondition: (cardSource) => true,
-                                                    canTargetCondition_ByPreSelecetedList: null,
-                                                    canEndSelectCondition: null,
-                                                    maxCount: discardCount,
-                                                    canNoSelect: false,
-                                                    canEndNotMax: false,
-                                                    isShowOpponent: true,
-                                                    selectCardCoroutine: null,
-                                                    afterSelectCardCoroutine: null,
-                                                    mode: SelectHandEffect.Mode.Discard,
-                                                    cardEffect: activateClass);
-
-                                                yield return StartCoroutine(selectHandEffect.Activate());
+                                                return true;
                                             }
                                         }
 
-                                        ICardEffect GetCardEffect(EffectTiming _timing)
-                                        {
-                                            if (_timing == EffectTiming.OnDestroyedAnyone)
-                                            {
-                                                return activateClass1;
-                                            }
+                                        return false;
+                                    }
 
-                                            return null;
+                                    IEnumerator GivenEffectActivateCoroutine(Hashtable _hashtable)
+                                    {
+                                        if (selectedPermanent.TopCard.Owner.HandCards.Count >= 1)
+                                        {
+                                            int discardCount = 1;
+
+                                            SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                                            selectHandEffect.SetUp(
+                                                selectPlayer: selectedPermanent.TopCard.Owner,
+                                                canTargetCondition: (cardSource) => true,
+                                                canTargetCondition_ByPreSelecetedList: null,
+                                                canEndSelectCondition: null,
+                                                maxCount: discardCount,
+                                                canNoSelect: false,
+                                                canEndNotMax: false,
+                                                isShowOpponent: true,
+                                                selectCardCoroutine: null,
+                                                afterSelectCardCoroutine: null,
+                                                mode: SelectHandEffect.Mode.Discard,
+                                                cardEffect: activateClass);
+
+                                            yield return StartCoroutine(selectHandEffect.Activate());
+                                        }
+                                    }
+
+                                    ICardEffect GetCardEffect(EffectTiming _timing)
+                                    {
+                                        if (_timing == EffectTiming.OnDestroyedAnyone)
+                                        {
+                                            return activateClass1;
                                         }
 
+                                        return null;
                                     }
                                 }
                             }
@@ -286,6 +288,8 @@ namespace DCGO.CardEffects.EX8
                         {
                             if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                             {
+                                Permanent selectedPermanent = null;
+
                                 int maxCount = Math.Min(1,
                                     CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
 
@@ -314,85 +318,86 @@ namespace DCGO.CardEffects.EX8
                                 IEnumerator SelectPermanentCoroutine(Permanent permanent)
                                 {
                                     if (permanent != null)
+                                        selectedPermanent = permanent;
+
+                                    yield return null;
+                                }
+
+                                if (selectedPermanent != null)
+                                {
+                                    ActivateClass activateClass1 = new ActivateClass();
+                                    activateClass1.SetUpICardEffect("Trash 1 card in your hand.", GivenEffectCanUseCondition, selectedPermanent.TopCard);
+                                    activateClass1.SetUpActivateClass(
+                                        GivenEffectCanActivateCondition,
+                                        GivenEffectActivateCoroutine,
+                                        -1,
+                                        false, GivenEffectDescription());
+                                    activateClass1.SetEffectSourcePermanent(selectedPermanent);
+                                    selectedPermanent.UntilOwnerTurnEndEffects.Add(GetCardEffect);
+
+                                    if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
                                     {
                                         yield return ContinuousController.instance.StartCoroutine(GManager.instance
-                                            .GetComponent<Effects>().CreateDebuffEffect(permanent));
-                                        ActivateClass activateClass1 = new ActivateClass();
-                                        activateClass1.SetUpICardEffect("Trash 1 card in your hand.", GivenEffectCanUseCondition,
-                                            permanent.TopCard);
-                                        activateClass1.SetUpActivateClass(
-                                            GivenEffectCanActivateCondition,
-                                            GivenEffectActivateCoroutine,
-                                            -1,
-                                            false, GivenEffectDescription());
-                                        activateClass1.SetEffectSourcePermanent(permanent);
-                                        permanent.UntilOwnerTurnEndEffects.Add(GetCardEffect);
+                                            .GetComponent<Effects>().CreateDebuffEffect(selectedPermanent));
+                                    }
 
-                                        if (!permanent.TopCard.CanNotBeAffected(activateClass))
-                                        {
-                                            yield return ContinuousController.instance.StartCoroutine(GManager.instance
-                                                .GetComponent<Effects>().CreateDebuffEffect(permanent));
-                                        }
+                                    string GivenEffectDescription()
+                                    {
+                                        return "[On Deletion] Trash 1 card in your hand.";
+                                    }
 
-                                        string GivenEffectDescription()
-                                        {
-                                            return "[On Deletion] Trash 1 card in your hand.";
-                                        }
+                                    bool GivenEffectCanUseCondition(Hashtable hashtable)
+                                    {
+                                        return CardEffectCommons.CanTriggerOnDeletion(hashtable, selectedPermanent.TopCard);
+                                    }
 
-                                        bool GivenEffectCanUseCondition(Hashtable hashtable)
+                                    bool GivenEffectCanActivateCondition(Hashtable hashtable1)
+                                    {
+                                        if (CardEffectCommons.CanActivateOnDeletion(selectedPermanent.TopCard))
                                         {
-                                            return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
-                                        }
-
-                                        bool GivenEffectCanActivateCondition(Hashtable hashtable1)
-                                        {
-                                            if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
+                                            if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
                                             {
-                                                if (!permanent.TopCard.CanNotBeAffected(activateClass))
-                                                {
-                                                    return true;
-                                                }
-                                            }
-
-                                            return false;
-                                        }
-                                        
-                                        IEnumerator GivenEffectActivateCoroutine(Hashtable _hashtable)
-                                        {
-                                            if (card.Owner.HandCards.Count >= 1)
-                                            {
-                                                int discardCount = 1;
-
-                                                SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                                                selectHandEffect.SetUp(
-                                                    selectPlayer: card.Owner,
-                                                    canTargetCondition: (cardSource) => true,
-                                                    canTargetCondition_ByPreSelecetedList: null,
-                                                    canEndSelectCondition: null,
-                                                    maxCount: discardCount,
-                                                    canNoSelect: false,
-                                                    canEndNotMax: false,
-                                                    isShowOpponent: true,
-                                                    selectCardCoroutine: null,
-                                                    afterSelectCardCoroutine: null,
-                                                    mode: SelectHandEffect.Mode.Discard,
-                                                    cardEffect: activateClass);
-
-                                                yield return StartCoroutine(selectHandEffect.Activate());
+                                                return true;
                                             }
                                         }
 
-                                        ICardEffect GetCardEffect(EffectTiming _timing)
-                                        {
-                                            if (_timing == EffectTiming.OnDestroyedAnyone)
-                                            {
-                                                return activateClass1;
-                                            }
+                                        return false;
+                                    }
 
-                                            return null;
+                                    IEnumerator GivenEffectActivateCoroutine(Hashtable _hashtable)
+                                    {
+                                        if (selectedPermanent.TopCard.Owner.HandCards.Count >= 1)
+                                        {
+                                            int discardCount = 1;
+
+                                            SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                                            selectHandEffect.SetUp(
+                                                selectPlayer: selectedPermanent.TopCard.Owner,
+                                                canTargetCondition: (cardSource) => true,
+                                                canTargetCondition_ByPreSelecetedList: null,
+                                                canEndSelectCondition: null,
+                                                maxCount: discardCount,
+                                                canNoSelect: false,
+                                                canEndNotMax: false,
+                                                isShowOpponent: true,
+                                                selectCardCoroutine: null,
+                                                afterSelectCardCoroutine: null,
+                                                mode: SelectHandEffect.Mode.Discard,
+                                                cardEffect: activateClass);
+
+                                            yield return StartCoroutine(selectHandEffect.Activate());
+                                        }
+                                    }
+
+                                    ICardEffect GetCardEffect(EffectTiming _timing)
+                                    {
+                                        if (_timing == EffectTiming.OnDestroyedAnyone)
+                                        {
+                                            return activateClass1;
                                         }
 
+                                        return null;
                                     }
                                 }
                             }

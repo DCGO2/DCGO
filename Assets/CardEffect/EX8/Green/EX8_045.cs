@@ -239,15 +239,21 @@ namespace DCGO.CardEffects.EX8
                            card.PermanentOfThisCard().DP > card.Owner.Enemy.GetBattleAreaDigimons().Map(p => p.DP).Max();
                 }
 
-                cardEffects.Add(CardEffectFactory.PierceSelfEffect(
-                    isInheritedEffect: false,
-                    card: card,
-                    condition: KeywordCondition));
-
                 cardEffects.Add(CardEffectFactory.ChangeSelfSAttackStaticEffect(changeValue: 1,
                     isInheritedEffect: false,
                     card: card,
                     condition: KeywordCondition));
+            }
+
+            if (timing == EffectTiming.OnDetermineDoSecurityCheck)
+            {
+                bool KeywordCondition()
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           card.PermanentOfThisCard().DP > card.Owner.Enemy.GetBattleAreaDigimons().Map(p => p.DP).Max();
+                }
+
+                cardEffects.Add(CardEffectFactory.PierceSelfEffect(isInheritedEffect: false, card: card, condition: KeywordCondition));
             }
 
             #endregion

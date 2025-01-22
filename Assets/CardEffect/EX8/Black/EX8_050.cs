@@ -37,7 +37,7 @@ namespace DCGO.CardEffects.EX8
                     return CardEffectCommons.CanPlayAsNewPermanent(cardSource: source, payCost: false, cardEffect: activateClass) &&
                            source.IsDigimon &&
                            source.HasPlayCost && source.GetCostItself <= 5 &&
-                           source.ContainsTraits("Mineral") || source.ContainsTraits("Rock");
+                           (source.ContainsTraits("Mineral") || source.ContainsTraits("Rock"));
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

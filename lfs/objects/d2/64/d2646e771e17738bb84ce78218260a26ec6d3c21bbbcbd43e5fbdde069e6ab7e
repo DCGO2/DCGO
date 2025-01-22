@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: P_167
+  m_EditorClassIdentifier: 
+  CardIndex: 10435
+  cardColors: 05000000
+  PlayCost: 4
+  EvoCosts:
+  - CardColor: 5
+    Level: 3
+    MemoryCost: 2
+  Level: 4
+  CardName_JPN: 
+  CardName_ENG: Landramon
+  Form_JPN: []
+  Form_ENG:
+  - Champion
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Virus
+  Type_JPN: []
+  Type_ENG:
+  - Mineral
+  - LIBERATOR
+  CardSpriteName: P-167
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: "[Start of Your Main Phase] [When Digivolving] By trashing
+    1 [Mineral]/[Rock]\_trait from any of your Digimon\u2019s digivolution cards,
+    reveal the top 3 cards of your deck. Among them, add 1 [Mineral]/[Rock]\_trait
+    card to the hand, or place 1 such card as this Digimon's bottom digivolution
+    card. Return the rest to the top or bottom of the deck."
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: "When effects trash this card from digivolution
+    cards of a [Mineral]/[Rock]\_trait Digimon,\uFF1CDe-Digivolve1\uFF1E 1 of your
+    opponent's Digimon."
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: '-'
+  CardEffectClassName: P_167
+  DP: 4000
+  rarity: 5
+  OverflowMemory: 0
+  CardID: P-167
+  MaxCountInDeck: 4

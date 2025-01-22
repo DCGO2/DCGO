@@ -65,6 +65,8 @@ namespace DCGO.CardEffects.EX8
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    Permanent dedigivolveSelected = null;
+
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
@@ -85,8 +87,12 @@ namespace DCGO.CardEffects.EX8
 
                     IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(new IDegeneration(permanent, 1, activateClass).Degeneration());
+                        dedigivolveSelected = permanent;
+                        yield return null;
                     }
+
+                    if(dedigivolveSelected != null)
+                        yield return ContinuousController.instance.StartCoroutine(new IDegeneration(dedigivolveSelected, 1, activateClass).Degeneration());
 
                     if (CardEffectCommons.HasMatchConditionPermanent(OpponentsDigimonToReturn))
                     {
@@ -151,6 +157,8 @@ namespace DCGO.CardEffects.EX8
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    Permanent dedigivolveSelected = null;
+
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
@@ -171,8 +179,12 @@ namespace DCGO.CardEffects.EX8
 
                     IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(new IDegeneration(permanent, 1, activateClass).Degeneration());
+                        dedigivolveSelected = permanent;
+                        yield return null;
                     }
+
+                    if (dedigivolveSelected != null)
+                        yield return ContinuousController.instance.StartCoroutine(new IDegeneration(dedigivolveSelected, 1, activateClass).Degeneration());
 
                     if (CardEffectCommons.HasMatchConditionPermanent(OpponentsDigimonToReturn))
                     {

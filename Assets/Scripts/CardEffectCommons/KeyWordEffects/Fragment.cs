@@ -1,22 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
-using System;
-using System.Linq;
-using UnityEngine;
 
 public partial class CardEffectCommons
 {
     #region Can activate [Fragment]
     public static bool CanActivateFragment(Permanent permanent, int trashValue, ICardEffect activateClass)
     {
-        Debug.Log($"FRAGMENT CAN ACTIVATE: {IsPermanentExistsOnBattleArea(permanent)}");
         if (IsPermanentExistsOnBattleArea(permanent))
         {
-            Debug.Log($"FRAGMENT CAN ACTIVATE: {permanent.CanBeDestroyedBySkill(activateClass)}");
             if (permanent.CanBeDestroyedBySkill(activateClass))
             {
-                Debug.Log($"FRAGMENT CAN ACTIVATE: {permanent.DigivolutionCards.Count} <= {trashValue}");
-                return (permanent.DigivolutionCards.Count <= trashValue);
+                return (permanent.DigivolutionCards.Count >= trashValue);
             }
         }
 

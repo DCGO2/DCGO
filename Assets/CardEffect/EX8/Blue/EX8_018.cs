@@ -25,13 +25,13 @@ namespace DCGO.CardEffects.EX8
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("1 of your digimon gains <Blocker>", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Reveal top 3 cards. Add 1 card with [DS] and 1 card with [Sea Beast] or [Plesiosaur] trait.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[On Play] 1 of your Digimon gains <Blocker> until the end of your opponent's turn.";
+                    return "[On Play] Reveal the top 3 cards of your deck. Add 1 card with the [DS] trait and 1 card with the [Sea Beast] or [Plesiosaur] trait among them to the hand. Return the rest to the bottom of the deck.";
                 }
 
                 bool SelectDSTrait(CardSource source)

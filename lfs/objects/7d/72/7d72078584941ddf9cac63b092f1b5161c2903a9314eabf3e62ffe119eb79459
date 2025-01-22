@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: P_165
+  m_EditorClassIdentifier: 
+  CardIndex: 10448
+  cardColors: 02000000
+  PlayCost: 4
+  EvoCosts:
+  - CardColor: 2
+    Level: 3
+    MemoryCost: 2
+  Level: 4
+  CardName_JPN: 
+  CardName_ENG: ShoeShoemon
+  Form_JPN: []
+  Form_ENG:
+  - Champion
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Virus
+  Type_JPN: []
+  Type_ENG:
+  - Puppet
+  - LIBERATOR
+  CardSpriteName: P-165
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: '[Security] At the end of the battle, play this card without
+    paying the cost.
+
+    [On Play] [When Digivolving] Play 1 [Familiar] Token (Digimon/Yellow/3000
+    DP/[On Deletion] 1 of your opponent''s Digimon gets -3000 DP for the turn). At
+    the end of your opponent''s turn, delete that token.'
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: "\uFF1CBarrier\uFF1E."
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: '-'
+  CardEffectClassName: P_165
+  DP: 4000
+  rarity: 5
+  OverflowMemory: 0
+  CardID: P-165
+  MaxCountInDeck: 4

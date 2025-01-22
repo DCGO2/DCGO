@@ -40,14 +40,14 @@ namespace DCGO.CardEffects.EX8
                 bool HasProperTrait(CardSource source)
                 {
                     return !source.CanNotTrashFromDigivolutionCards(activateClass) &&
-                           source.EqualsTraits("Mineral") || source.EqualsTraits("Rock");
+                           (source.EqualsTraits("Mineral") || source.EqualsTraits("Rock"));
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        totalSourceCount = permanent.DigivolutionCards.Count(HasProperTrait);
+                        totalSourceCount += permanent.DigivolutionCards.Count(HasProperTrait);
                         if (totalSourceCount >= 1)
                         {
                             return true;
@@ -122,14 +122,14 @@ namespace DCGO.CardEffects.EX8
                 bool HasProperTrait(CardSource source)
                 {
                     return !source.CanNotTrashFromDigivolutionCards(activateClass) &&
-                           source.EqualsTraits("Mineral") || source.EqualsTraits("Rock");
+                           (source.EqualsTraits("Mineral") || source.EqualsTraits("Rock"));
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        totalSourceCount = permanent.DigivolutionCards.Count(HasProperTrait);
+                        totalSourceCount += permanent.DigivolutionCards.Count(HasProperTrait);
                         if (totalSourceCount >= 1)
                         {
                             return true;
@@ -211,6 +211,7 @@ namespace DCGO.CardEffects.EX8
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsOwnerTurn(card) &&
+                           CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
                            CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, HasProperTrait);
                 }
 

@@ -71,7 +71,7 @@ namespace DCGO.CardEffects.EX8
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Suspend and delete an opponent's Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateOnPlayWhenDigivolvingCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -81,20 +81,14 @@ namespace DCGO.CardEffects.EX8
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card) &&
+                           CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentForSuspendCondition))
                     {
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectLowestDPSuspendedCondition));
-
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
@@ -102,7 +96,7 @@ namespace DCGO.CardEffects.EX8
                             canTargetCondition: CanSelectPermanentForSuspendCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: maxCount,
+                            maxCount: 1,
                             canNoSelect: true,
                             canEndNotMax: false,
                             selectPermanentCoroutine: null,
@@ -113,7 +107,7 @@ namespace DCGO.CardEffects.EX8
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
                     }
-                    
+
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectLowestDPSuspendedCondition))
                     {
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectLowestDPSuspendedCondition));
@@ -157,7 +151,8 @@ namespace DCGO.CardEffects.EX8
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card) &&
+                           CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
