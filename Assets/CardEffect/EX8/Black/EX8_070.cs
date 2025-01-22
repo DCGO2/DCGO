@@ -71,7 +71,44 @@ namespace DCGO.CardEffects.EX8
 
                     if (cardsTrashed)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCollision(selectedPermanent, EffectDuration.UntilOpponentTurnEnd, activateClass));
+                        AddSkillClass addSkillClass = new AddSkillClass();
+                        addSkillClass.SetUpICardEffect("Gain Collision", CanUseCondition1, card);
+                        addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
+
+                        selectedPermanent.TopCard.Owner.UntilOpponentTurnEndEffects.Add((_timing) => addSkillClass);
+
+                        bool CanUseCondition1(Hashtable hashtable)
+                        {
+                            return true;
+                        }
+
+                        bool CardSourceCondition(CardSource cardSource)
+                        {
+                            if (PermanentCondition(selectedPermanent))
+                            {
+                                if (cardSource == selectedPermanent.TopCard)
+                                {
+                                    return true;
+                                }
+                            }
+
+                            return false;
+                        }
+
+                        bool PermanentCondition(Permanent permanent)
+                        {
+                            if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                            {
+                                if (!permanent.TopCard.CanNotBeAffected(activateClass))
+                                {
+                                    return true;
+                                }
+                            }
+
+                            return false;
+                        }
+
+                        //yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCollision(selectedPermanent, EffectDuration.UntilOpponentTurnEnd, activateClass));
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainPierce(selectedPermanent, EffectDuration.UntilOpponentTurnEnd, activateClass));
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainReboot(selectedPermanent, EffectDuration.UntilOpponentTurnEnd, activateClass));
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(selectedPermanent, 3000, EffectDuration.UntilOpponentTurnEnd, activateClass));
@@ -94,6 +131,16 @@ namespace DCGO.CardEffects.EX8
                             effectDuration: EffectDuration.UntilOpponentTurnEnd,
                             activateClass: activateClass,
                             effectName: "Can't return to deck by opponent's effects"));
+
+                        List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming _timing)
+                        {
+                            if (_timing == EffectTiming.OnCounterTiming)
+                            {
+                                cardEffects.Add(CardEffectFactory.CollisionSelfStaticEffect(false, cardSource, null));
+                            }
+
+                            return cardEffects;
+                        }
                     }
                 }
             }

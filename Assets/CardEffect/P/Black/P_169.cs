@@ -82,6 +82,7 @@ namespace DCGO.CardEffects.P
                 {
                     trashedFromPermanent = CardEffectCommons.GetPermanentFromHashtable(hashtable);
                     return isExistOnField(card) &&
+                           CardEffectCommons.IsOwnerPermanent(trashedFromPermanent, card) &&
                             IsRockMineralDigimon(trashedFromPermanent);
                 }
 

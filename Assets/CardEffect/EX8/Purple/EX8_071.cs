@@ -39,7 +39,6 @@ namespace DCGO.CardEffects.EX8
                 AddSkillClass addSkillClass = new AddSkillClass();
                 addSkillClass.SetUpICardEffect("Your NSo trait Digimon gain Scapegoat", CanUseCondition, card);
                 addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
-                addSkillClass.SetIsInheritedEffect(true);
                 cardEffects.Add(addSkillClass);
 
                 bool CanUseCondition(Hashtable hashtable)

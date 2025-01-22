@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: P_159
+  m_EditorClassIdentifier: 
+  CardIndex: 10465
+  cardColors: 05000000
+  PlayCost: 3
+  EvoCosts: []
+  Level: 0
+  CardName_JPN: 
+  CardName_ENG: Rook Device
+  Form_JPN: []
+  Form_ENG:
+  - '-'
+  Attribute_JPN: []
+  Attribute_ENG:
+  - '-'
+  Type_JPN: []
+  Type_ENG:
+  - Device
+  CardSpriteName: P-159
+  cardKind: 2
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: "While you don't have [Rook Device], you may ignore this
+    card's color requirements.When an effect trashes this card in your battle area,
+    1 of your Digimon gains \uFF1CReboot\uFF1E , \uFF1CBlocker\uFF1Eand gets +2000
+    DP until the end of your opponent's turn.\n[Main] 1 of your Digimon gains \uFF1CReboot\uFF1E
+    , \uFF1CBlocker\uFF1Eand gets +2000 DP until the end of your opponent's turn.
+    Then, place this card in the battle area."
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: '-'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: "[Security] \uFF1CDe-Digivolve2\uFF1E 1 of your
+    opponent's Digimon. Then, add this card to the hand."
+  CardEffectClassName: P_159
+  DP: 0
+  rarity: 5
+  OverflowMemory: 0
+  CardID: P-159
+  MaxCountInDeck: 4

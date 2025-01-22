@@ -56,6 +56,11 @@ namespace DCGO.CardEffects.EX8
                         return true;
                     }
 
+                    if (permanent == DefendingPermanent)
+                    {
+                        return true;
+                    }
+
                     return false;
                 }
 

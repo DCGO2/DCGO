@@ -109,15 +109,18 @@ namespace DCGO.CardEffects.EX8
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    // Add your bottom security card to the hand
-                    CardSource bottomCard = card.Owner.SecurityCards[^1];
+                    if (card.Owner.SecurityCards.Count > 1)
+                    {
+                        // Add your bottom security card to the hand
+                        CardSource bottomCard = card.Owner.SecurityCards[^1];
 
-                    yield return ContinuousController.instance.StartCoroutine(
-                        CardObjectController.AddHandCards(new List<CardSource>() { bottomCard }, false, activateClass));
+                        yield return ContinuousController.instance.StartCoroutine(
+                            CardObjectController.AddHandCards(new List<CardSource>() { bottomCard }, false, activateClass));
 
-                    yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
-                        player: card.Owner,
-                        refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
+                        yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
+                            player: card.Owner,
+                            refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
+                    }
 
                     // Place this card face up as the bottom security card
                     yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(

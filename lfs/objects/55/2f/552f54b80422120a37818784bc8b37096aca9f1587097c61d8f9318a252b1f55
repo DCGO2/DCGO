@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: P_164
+  m_EditorClassIdentifier: 
+  CardIndex: 10439
+  cardColors: 01000000
+  PlayCost: 4
+  EvoCosts:
+  - CardColor: 1
+    Level: 3
+    MemoryCost: 2
+  Level: 4
+  CardName_JPN: 
+  CardName_ENG: Shellmon
+  Form_JPN: []
+  Form_ENG:
+  - Champion
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Data
+  Type_JPN: []
+  Type_ENG:
+  - Mollusk
+  - LIBERATOR
+  - Aquatic
+  CardSpriteName: P-164
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: "[On Play] [When Digivolving] By placing 1 Level 5 or lower
+    Digimon card with [Aqua]/[Sea Animal]\_in any of its traits from your hand as
+    1 of your Digimon's bottom digivolution card, \uFF1CDraw 1\uFF1E \n[Rule] Trait:
+    Has [Aquatic] type."
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: "[End of Attack] [Once Per Turn] \uFF1CDraw 1\uFF1E."
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: '-'
+  CardEffectClassName: P_164
+  DP: 4000
+  rarity: 5
+  OverflowMemory: 0
+  CardID: P-164
+  MaxCountInDeck: 4

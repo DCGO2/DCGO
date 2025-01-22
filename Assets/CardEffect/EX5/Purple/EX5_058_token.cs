@@ -1,83 +1,87 @@
 using System.Collections;
 using System.Collections.Generic;
-public class EX5_058_token : CEntity_Effect
+
+namespace DCGO.CardEffects.Tokens
 {
-    public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
+    public class EX5_058_token : CEntity_Effect
     {
-        List<ICardEffect> cardEffects = new List<ICardEffect>();
-
-        if (timing == EffectTiming.None)
+        public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
-            bool CanUseCondition()
+            List<ICardEffect> cardEffects = new List<ICardEffect>();
+
+            if (timing == EffectTiming.None)
             {
-                return CardEffectCommons.IsExistOnBattleArea(card);
-            }
-
-            string effectName = "This Digimon doesn't unsuspend.";
-
-            cardEffects.Add(CardEffectFactory.CantUnsuspendStaticEffect(
-                permanentCondition: permanent => permanent == card.PermanentOfThisCard(),
-                isInheritedEffect: false,
-                card: card,
-                condition: CanUseCondition,
-                effectName: effectName
-            ));
-        }
-
-        if (timing == EffectTiming.OnDestroyedAnyone)
-        {
-            ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Trash 1 card from hand", CanUseCondition, card);
-            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-            cardEffects.Add(activateClass);
-
-            string EffectDiscription()
-            {
-                return "[On Deletion] Trash 1 card in your hand.";
-            }
-
-            bool CanUseCondition(Hashtable hashtable)
-            {
-                return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
-            }
-
-            bool CanActivateCondition(Hashtable hashtable)
-            {
-                if (card.Owner.HandCards.Count >= 1)
+                bool CanUseCondition()
                 {
-                    return true;
+                    return CardEffectCommons.IsExistOnBattleArea(card);
                 }
 
-                return false;
+                string effectName = "This Digimon doesn't unsuspend.";
+
+                cardEffects.Add(CardEffectFactory.CantUnsuspendStaticEffect(
+                    permanentCondition: permanent => permanent == card.PermanentOfThisCard(),
+                    isInheritedEffect: false,
+                    card: card,
+                    condition: CanUseCondition,
+                    effectName: effectName
+                ));
             }
 
-            IEnumerator ActivateCoroutine(Hashtable _hashtable)
+            if (timing == EffectTiming.OnDestroyedAnyone)
             {
-                if (card.Owner.HandCards.Count >= 1)
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Trash 1 card from hand", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
                 {
-                    int discardCount = 1;
+                    return "[On Deletion] Trash 1 card in your hand.";
+                }
 
-                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                }
 
-                    selectHandEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: (cardSource) => true,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: discardCount,
-                        canNoSelect: false,
-                        canEndNotMax: false,
-                        isShowOpponent: true,
-                        selectCardCoroutine: null,
-                        afterSelectCardCoroutine: null,
-                        mode: SelectHandEffect.Mode.Discard,
-                        cardEffect: activateClass);
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    if (card.Owner.HandCards.Count >= 1)
+                    {
+                        return true;
+                    }
 
-                    yield return StartCoroutine(selectHandEffect.Activate());
+                    return false;
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                {
+                    if (card.Owner.HandCards.Count >= 1)
+                    {
+                        int discardCount = 1;
+
+                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                        selectHandEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: (cardSource) => true,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: discardCount,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            selectCardCoroutine: null,
+                            afterSelectCardCoroutine: null,
+                            mode: SelectHandEffect.Mode.Discard,
+                            cardEffect: activateClass);
+
+                        yield return StartCoroutine(selectHandEffect.Activate());
+                    }
                 }
             }
-        }
 
-        return cardEffects;
+            return cardEffects;
+        }
     }
 }

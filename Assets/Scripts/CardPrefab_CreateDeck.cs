@@ -374,9 +374,9 @@ public class CardPrefab_CreateDeck : MonoBehaviour
 
                 int maxCount = DeckBuildingRule.MaxCount_BanList(cEntity_Base);
 
-                if (maxCount < cEntity_Base.MaxCountInDeck)
+                if (maxCount <= cEntity_Base.MaxCountInDeck)
                 {
-                    if (maxCount >= 1)
+                    if (maxCount == 1)
                     {
                         LimitObject.SetActive(true);
                         LimitText.gameObject.SetActive(true);

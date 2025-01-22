@@ -9,11 +9,16 @@ public partial class CardEffectCommons
     #region Target 1 Digimon gains [Collision]
     public static IEnumerator GainCollision(Permanent targetPermanent, EffectDuration effectDuration, ICardEffect activateClass)
     {
+        Debug.Log($"GAIN COLLISION: START");
         if (targetPermanent == null) yield break;
+        Debug.Log($"GAIN COLLISION: PERMANENT");
         if (!IsPermanentExistsOnBattleArea(targetPermanent)) yield break;
+        Debug.Log($"GAIN COLLISION: BATTLE AREA");
         if (activateClass == null) yield break;
+        Debug.Log($"GAIN COLLISION: ACTIVATE CLASS");
         if (activateClass.EffectSourceCard == null) yield break;
 
+        Debug.Log($"GAIN COLLISION: PASSED");
         CardSource card = activateClass.EffectSourceCard;
 
         bool PermanentCondition(Permanent permanent) => permanent == targetPermanent;
@@ -33,7 +38,7 @@ public partial class CardEffectCommons
 
         ActivateClass collision = CardEffectFactory.CollisionStaticEffect(permanentCondition: PermanentCondition, isInheritedEffect: false, card: card, condition: CanUseCondition);
 
-        AddEffectToPermanent(targetPermanent: targetPermanent, effectDuration: effectDuration, card: card, cardEffect: collision, timing: EffectTiming.None);
+        AddEffectToPermanent(targetPermanent: targetPermanent, effectDuration: effectDuration, card: card, cardEffect: collision, timing: EffectTiming.OnCounterTiming);
 
         if (!targetPermanent.TopCard.CanNotBeAffected(activateClass))
         {
