@@ -113,6 +113,9 @@ public class ContinuousController : MonoBehaviour
     public CEntity_Base SelfDeleteFamiliarToken { get; private set; }
     public CEntity_Base VoleeZerdruckenToken { get; private set; }
     public CEntity_Base UkaNoMitamaToken { get; private set; }
+    public CEntity_Base WarGrowlmonToken { get; private set; }
+    public CEntity_Base TaomonToken { get; private set; }
+    public CEntity_Base RapidmonToken { get; private set; }
     public CardRestriction BanList { get; private set; } = new CardRestriction(new List<CardLimitCount>(), new List<BannedPair>());
 
     void LoadBanList()
@@ -329,6 +332,66 @@ public class ContinuousController : MonoBehaviour
         };
 
         await UkaNoMitamaToken.GetCardSprite();
+
+        WarGrowlmonToken = new CEntity_Base()
+        {
+            cardColors = new List<CardColor>() { CardColor.Red },
+            PlayCost = -1,
+            Level = 0,
+            CardName_JPN = "",
+            CardName_ENG = "WarGrowlmon",
+            Form_JPN = new List<string>(),
+            Form_ENG = new List<string>(),
+            Attribute_JPN = new List<string>(),
+            Attribute_ENG = new List<string>(),
+            Type_JPN = new List<string>(),
+            Type_ENG = new List<string>(),
+            CardSpriteName = "BT19-091-token",
+            cardKind = CardKind.Digimon,
+            DP = 6000
+        };
+
+        await WarGrowlmonToken.GetCardSprite();
+
+        TaomonToken = new CEntity_Base()
+        {
+            cardColors = new List<CardColor>() { CardColor.Yellow },
+            PlayCost = -1,
+            Level = 0,
+            CardName_JPN = "",
+            CardName_ENG = "Taomon",
+            Form_JPN = new List<string>(),
+            Form_ENG = new List<string>(),
+            Attribute_JPN = new List<string>(),
+            Attribute_ENG = new List<string>(),
+            Type_JPN = new List<string>(),
+            Type_ENG = new List<string>(),
+            CardSpriteName = "BT19-091-token",
+            cardKind = CardKind.Digimon,
+            DP = 6000
+        };
+
+        await TaomonToken.GetCardSprite();
+
+        RapidmonToken = new CEntity_Base()
+        {
+            cardColors = new List<CardColor>() { CardColor.Green },
+            PlayCost = -1,
+            Level = 0,
+            CardName_JPN = "",
+            CardName_ENG = "Rapidmon",
+            Form_JPN = new List<string>(),
+            Form_ENG = new List<string>(),
+            Attribute_JPN = new List<string>(),
+            Attribute_ENG = new List<string>(),
+            Type_JPN = new List<string>(),
+            Type_ENG = new List<string>(),
+            CardSpriteName = "BT19-091-token",
+            cardKind = CardKind.Digimon,
+            DP = 6000
+        };
+
+        await RapidmonToken.GetCardSprite();
     }
 
     public static ContinuousController instance = null;
