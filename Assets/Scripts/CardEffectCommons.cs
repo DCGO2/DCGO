@@ -275,6 +275,42 @@ public partial class CardEffectCommons
     }
     #endregion
 
+    #region Play 1 [WarGrowlmon] Token
+    public static IEnumerator PlayWarGrowlmonToken(ICardEffect activateClass)
+    {
+        yield return ContinuousController.instance.StartCoroutine(PlayToken(
+            tokenData: ContinuousController.instance.WarGrowlmonToken,
+            activateClass: activateClass,
+            isOwnerPermanent: true,
+            isTapped: false
+        ));
+    }
+    #endregion
+
+    #region Play 1 [Taomon] Token
+    public static IEnumerator PlayTaomonToken(ICardEffect activateClass)
+    {
+        yield return ContinuousController.instance.StartCoroutine(PlayToken(
+            tokenData: ContinuousController.instance.TaomonToken,
+            activateClass: activateClass,
+            isOwnerPermanent: true,
+            isTapped: false
+        ));
+    }
+    #endregion
+
+    #region Play 1 [Rapidmon] Token
+    public static IEnumerator PlayRapidmonToken(ICardEffect activateClass)
+    {
+        yield return ContinuousController.instance.StartCoroutine(PlayToken(
+            tokenData: ContinuousController.instance.RapidmonToken,
+            activateClass: activateClass,
+            isOwnerPermanent: true,
+            isTapped: false
+        ));
+    }
+    #endregion
+
     #region Security effect of "add this card to hand"
     public static IEnumerator AddThisCardToHand(CardSource card1, ICardEffect activateClass)
     {
