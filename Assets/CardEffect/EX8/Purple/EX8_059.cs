@@ -150,7 +150,7 @@ namespace DCGO.CardEffects.EX8
                                     addSkillClass.SetUpICardEffect("Trash 1 card in your hand", CanUseCondition1, card);
                                     addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
 
-                                    card.Owner.UntilOpponentTurnEndEffects.Add((_timing) => addSkillClass);
+                                    selectedPermanent.UntilOwnerTurnEndEffects.Add((_timing) => addSkillClass);
 
                                     bool CanUseCondition1(Hashtable hashtable)
                                     {
@@ -352,7 +352,7 @@ namespace DCGO.CardEffects.EX8
                                     addSkillClass.SetUpICardEffect("Trash 1 card in your hand", CanUseCondition1, card);
                                     addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
 
-                                    card.Owner.UntilOpponentTurnEndEffects.Add((_timing) => addSkillClass);
+                                    selectedPermanent.UntilOwnerTurnEndEffects.Add((_timing) => addSkillClass);
 
                                     bool CanUseCondition1(Hashtable hashtable)
                                     {
