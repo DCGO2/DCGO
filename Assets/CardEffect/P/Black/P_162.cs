@@ -184,7 +184,7 @@ namespace DCGO.CardEffects.P
                         mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will digivolve.", "The opponent is selecting 1 Digimon that will digivolve.");
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will gain effects.", "The opponent is selecting 1 Digimon that will gain effects.");
 
                     yield return StartCoroutine(selectPermanentEffect.Activate());
 

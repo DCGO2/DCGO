@@ -236,7 +236,8 @@ namespace DCGO.CardEffects.EX8
                 bool KeywordCondition()
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           card.PermanentOfThisCard().DP > card.Owner.Enemy.GetBattleAreaDigimons().Map(p => p.DP).Max();
+                           (card.Owner.Enemy.GetBattleAreaDigimons().Count == 0 || 
+                           card.PermanentOfThisCard().DP > card.Owner.Enemy.GetBattleAreaDigimons().Map(p => p.DP).Max());
                 }
 
                 cardEffects.Add(CardEffectFactory.ChangeSelfSAttackStaticEffect(changeValue: 1,
@@ -250,7 +251,8 @@ namespace DCGO.CardEffects.EX8
                 bool KeywordCondition()
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           card.PermanentOfThisCard().DP > card.Owner.Enemy.GetBattleAreaDigimons().Map(p => p.DP).Max();
+                           (card.Owner.Enemy.GetBattleAreaDigimons().Count == 0 ||
+                           card.PermanentOfThisCard().DP > card.Owner.Enemy.GetBattleAreaDigimons().Map(p => p.DP).Max());
                 }
 
                 cardEffects.Add(CardEffectFactory.PierceSelfEffect(isInheritedEffect: false, card: card, condition: KeywordCondition));

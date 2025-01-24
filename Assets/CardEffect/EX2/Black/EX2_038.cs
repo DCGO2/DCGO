@@ -25,6 +25,7 @@ namespace DCGO.CardEffects.EX2
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
+                    UnityEngine.Debug.Log($"CAN USE CONDITION: {CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card)}");
                     return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
 
