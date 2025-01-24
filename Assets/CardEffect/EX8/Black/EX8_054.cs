@@ -98,7 +98,7 @@ namespace DCGO.CardEffects.EX8
                             if (!source.ContainsCardName("Justimon"))
                                 continue;
 
-                            List<ICardEffect> effects = source.EffectList(EffectTiming.OnEnterFieldAnyone)
+                            List<ICardEffect> effects = source.EffectList_ForCard(EffectTiming.OnEnterFieldAnyone, card)
                             .Clone()
                             .Filter(cardEffect => cardEffect != null && cardEffect is ActivateICardEffect && !cardEffect.IsSecurityEffect && cardEffect.IsWhenDigivolving);
 
@@ -165,8 +165,6 @@ namespace DCGO.CardEffects.EX8
                                     {
                                         Hashtable effectHashtable = CardEffectCommons.WhenDigivolvingCheckHashtableOfCard(card);
 
-                                        UnityEngine.Debug.Log($"CAN USE: {selectedEffect.CanUseCondition(effectHashtable)}");
-
                                         if (selectedEffect.CanUse(effectHashtable))
                                         {
                                             yield return ContinuousController.instance.StartCoroutine(((ActivateICardEffect)selectedEffect).Activate_Optional_Effect_Execute(effectHashtable));
@@ -174,7 +172,7 @@ namespace DCGO.CardEffects.EX8
                                     }
                                 }
                             }
-                        }
+                        }                        
                     }
                 }
             }
