@@ -39,8 +39,6 @@ namespace DCGO.CardEffects.EX8
             #region When Attacking
             if (timing == EffectTiming.OnAllyAttack)
             {
-                List<ICardEffect> candidateEffects = new List<ICardEffect>();
-
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Activate 1 [When Digivolving] effect", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
@@ -69,23 +67,19 @@ namespace DCGO.CardEffects.EX8
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        candidateEffects = new List<ICardEffect>();
-
                         foreach (CardSource source in card.PermanentOfThisCard().DigivolutionCards)
                         {
-                            if (source.ContainsCardName("Justimon"))
+                            if (!source.ContainsCardName("Justimon"))
                                 continue;
 
                             List<ICardEffect> effects = source.EffectList(EffectTiming.OnEnterFieldAnyone)
                             .Clone()
                             .Filter(cardEffect => cardEffect != null && cardEffect is ActivateICardEffect && !cardEffect.IsSecurityEffect && cardEffect.IsWhenDigivolving);
 
-                            candidateEffects.AddRange(effects);
-                        }
-                        
 
-                        if (candidateEffects.Count >= 1)
-                        {
+                            if (effects.Count == 0)
+                                continue;
+
                             return true;
                         }
                     }
@@ -97,6 +91,20 @@ namespace DCGO.CardEffects.EX8
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
+                        List<ICardEffect> candidateEffects = new List<ICardEffect>();
+
+                        foreach (CardSource source in card.PermanentOfThisCard().DigivolutionCards)
+                        {
+                            if (!source.ContainsCardName("Justimon"))
+                                continue;
+
+                            List<ICardEffect> effects = source.EffectList(EffectTiming.OnEnterFieldAnyone)
+                            .Clone()
+                            .Filter(cardEffect => cardEffect != null && cardEffect is ActivateICardEffect && !cardEffect.IsSecurityEffect && cardEffect.IsWhenDigivolving);
+
+                            candidateEffects.AddRange(effects);
+                        }
+
                         if (candidateEffects.Count >= 1)
                         {
                             ICardEffect selectedEffect = null;
@@ -105,7 +113,6 @@ namespace DCGO.CardEffects.EX8
                             {
                                 selectedEffect = candidateEffects[0];
                             }
-
                             else
                             {
                                 List<SkillInfo> skillInfos = candidateEffects
@@ -156,7 +163,9 @@ namespace DCGO.CardEffects.EX8
                                 {
                                     if (selectedEffect.EffectSourceCard.PermanentOfThisCard() != null)
                                     {
-                                        Hashtable effectHashtable = CardEffectCommons.WhenDigivolvingCheckHashtableOfCard(selectedEffect.EffectSourceCard);
+                                        Hashtable effectHashtable = CardEffectCommons.WhenDigivolvingCheckHashtableOfCard(card);
+
+                                        UnityEngine.Debug.Log($"CAN USE: {selectedEffect.CanUseCondition(effectHashtable)}");
 
                                         if (selectedEffect.CanUse(effectHashtable))
                                         {

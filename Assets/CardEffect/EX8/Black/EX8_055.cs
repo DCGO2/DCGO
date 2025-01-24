@@ -10,8 +10,6 @@ namespace DCGO.CardEffects.EX8
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            int totalSourceCount = 0;
-
             #region Fragment
             if (timing == EffectTiming.WhenPermanentWouldBeDeleted)
             {
@@ -43,35 +41,35 @@ namespace DCGO.CardEffects.EX8
                            (source.EqualsTraits("Mineral") || source.EqualsTraits("Rock"));
                 }
 
+                bool HasProperAmountOfSources()
+                {
+                    int totalSourceCount = 0;
+
+                    foreach (Permanent permanent in card.Owner.GetBattleAreaDigimons())
+                    {
+                        totalSourceCount += permanent.DigivolutionCards.Count(HasProperTrait);
+                    }
+
+                    return totalSourceCount >= 3;
+                }
+
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
-                    {
-                        totalSourceCount += permanent.DigivolutionCards.Count(HasProperTrait);
-                        if (totalSourceCount >= 1)
-                        {
-                            return true;
-                        }
-                    }
+                        return permanent.DigivolutionCards.Count(HasProperTrait) >= 1;
 
                     return false;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                        {
-                            if (totalSourceCount >= 3)
-                                return true;
-                        }
-                    }
+                        return HasProperAmountOfSources();
 
                     return false;
                 }
@@ -125,16 +123,22 @@ namespace DCGO.CardEffects.EX8
                            (source.EqualsTraits("Mineral") || source.EqualsTraits("Rock"));
                 }
 
+                bool HasProperAmountOfSources()
+                {
+                    int totalSourceCount = 0;
+
+                    foreach (Permanent permanent in card.Owner.GetBattleAreaDigimons())
+                    {
+                        totalSourceCount += permanent.DigivolutionCards.Count(HasProperTrait);
+                    }
+
+                   return totalSourceCount >= 3;
+                }
+
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
-                    {
-                        totalSourceCount += permanent.DigivolutionCards.Count(HasProperTrait);
-                        if (totalSourceCount >= 1)
-                        {
-                            return true;
-                        }
-                    }
+                        return permanent.DigivolutionCards.Count(HasProperTrait) >= 1;
 
                     return false;
                 }
@@ -147,13 +151,7 @@ namespace DCGO.CardEffects.EX8
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                        {
-                            if (totalSourceCount >= 3)
-                                return true;
-                        }
-                    }
+                        return HasProperAmountOfSources();
 
                     return false;
                 }
