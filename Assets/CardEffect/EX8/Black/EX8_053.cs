@@ -9,6 +9,8 @@ namespace DCGO.CardEffects.EX8
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            bool opponentHas13kDP = false;
+
             #region Blocker
             if (timing == EffectTiming.None)
             {
@@ -20,6 +22,18 @@ namespace DCGO.CardEffects.EX8
             #endregion
 
             #region All Turns
+            if(timing == EffectTiming.None)
+            {
+                bool Condition()
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.HasMatchConditionOpponentsPermanent(card, permanent => permanent.IsDigimon && permanent.DP >= 13000);
+                }
+
+                if (Condition() != opponentHas13kDP)
+                    opponentHas13kDP = Condition();
+            }
+
             if (timing == EffectTiming.None)
             {
                 string EffectDiscription()
@@ -29,8 +43,8 @@ namespace DCGO.CardEffects.EX8
 
                 bool Condition()
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && 
-                           CardEffectCommons.HasMatchConditionOpponentsPermanent(card, permanent => permanent.IsDigimon && permanent.DP >= 13000);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           opponentHas13kDP;
                 }
 
                 bool PermanentCondition(Permanent permanent)

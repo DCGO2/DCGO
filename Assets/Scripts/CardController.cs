@@ -280,6 +280,10 @@ public class PlayCardClass
             {
                 Root = SelectCardEffect.Root.Security;
             }
+            else if (CardEffectCommons.IsExistOnExecutingArea(card))
+            {
+                Root = SelectCardEffect.Root.Execution;
+            }
 
             List<Permanent> targetPermanents = new List<Permanent>();
 
