@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-
+using System.Linq;
 namespace DCGO.CardEffects
 {
     public class BT20_068 : CEntity_Effect
