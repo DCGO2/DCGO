@@ -26,6 +26,7 @@ namespace DCGO.CardEffects
                 activateClass.SetUpICardEffect("Trash 1 card from hand to delete 1 of your opponent's level 4 or lower Digimon",
                     CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
+                activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
