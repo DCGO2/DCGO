@@ -152,6 +152,60 @@ namespace DCGO.CardEffects.EX8
 
             #endregion
 
+            #region Reduce Play Cost - Not Shown
+
+            if (timing == EffectTiming.None)
+            {
+                ChangeCostClass changeCostClass = new ChangeCostClass();
+                changeCostClass.SetUpICardEffect("Play Cost -4", CanUseCondition1, card);
+                changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition,
+                    rootCondition: RootCondition, isUpDown: IsUpDown, isCheckAvailability: () => true,
+                    isChangePayingCost: () => true);
+
+                changeCostClass.SetNotShowUI(true);
+                cardEffects.Add(changeCostClass);
+
+                bool CanUseCondition1(Hashtable hashtable1)
+                {
+                    return true;
+                }
+
+                int ChangeCost(CardSource cardSource, int cost, SelectCardEffect.Root root,
+                    List<Permanent> targetPermanents)
+                {
+                    if (CardSourceCondition(cardSource) &&
+                        RootCondition(root) &&
+                        PermanentsCondition(targetPermanents))
+                    {
+                        cost -= 4;
+                    }
+
+                    return cost;
+                }
+
+                bool PermanentsCondition(List<Permanent> targetPermanents)
+                {
+                    return targetPermanents == null || targetPermanents.Count(targetPermanent => targetPermanent != null) == 0;
+                }
+
+                bool CardSourceCondition(CardSource cardSource)
+                {
+                    return cardSource == card;
+                }
+
+                bool RootCondition(SelectCardEffect.Root root)
+                {
+                    return true;
+                }
+
+                bool IsUpDown()
+                {
+                    return true;
+                }
+            }
+
+            #endregion
+
             #region Alliance
 
             if (timing == EffectTiming.OnAllyAttack)
@@ -198,7 +252,7 @@ namespace DCGO.CardEffects.EX8
 
                 int DeletionMaxDP()
                 {
-                    return 8000 + 3000 * CardEffectCommons.MatchConditionPermanentCount(permanent => permanent.IsSuspended);
+                    return 8000 + (3000 * CardEffectCommons.MatchConditionPermanentCount(permanent => permanent.IsSuspended));
                 }
 
                 bool CanSelectDeletePermanentCondition(Permanent permanent)
@@ -248,7 +302,7 @@ namespace DCGO.CardEffects.EX8
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: 1,
-                            canNoSelect: false,
+                            canNoSelect: true,
                             canEndNotMax: false,
                             selectPermanentCoroutine: null,
                             afterSelectPermanentCoroutine: null,

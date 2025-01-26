@@ -89,20 +89,22 @@ namespace DCGO.CardEffects.P
                         cardEffect: activateClass);
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                    
-                    int suspendedCount = CardEffectCommons.MatchConditionPermanentCount(DigimonIsSuspended);
-                    
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                        targetPermanent: card.PermanentOfThisCard(),
-                        cardCondition: CanSelectDigimonToDigivolveCondition,
-                        payCost: true,
-                        reduceCostTuple: (reduceCost: suspendedCount, reduceCostCardCondition: null),
-                        fixedCostTuple: null,
-                        ignoreDigivolutionRequirementFixedCost: -1,
-                        isHand: true,
-                        activateClass: activateClass,
-                        successProcess: null));
 
+                    if (CardEffectCommons.IsOwnerTurn(card))
+                    {
+                        int suspendedCount = CardEffectCommons.MatchConditionPermanentCount(DigimonIsSuspended);
+
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                            targetPermanent: card.PermanentOfThisCard(),
+                            cardCondition: CanSelectDigimonToDigivolveCondition,
+                            payCost: true,
+                            reduceCostTuple: (reduceCost: suspendedCount, reduceCostCardCondition: null),
+                            fixedCostTuple: null,
+                            ignoreDigivolutionRequirementFixedCost: -1,
+                            isHand: true,
+                            activateClass: activateClass,
+                            successProcess: null));
+                    }
                 }
             }
             
@@ -145,20 +147,22 @@ namespace DCGO.CardEffects.P
                         cardEffect: activateClass);
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                    
-                    int suspendedCount = CardEffectCommons.MatchConditionPermanentCount(DigimonIsSuspended);
-                    
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                        targetPermanent: card.PermanentOfThisCard(),
-                        cardCondition: CanSelectDigimonToDigivolveCondition,
-                        payCost: true,
-                        reduceCostTuple: (reduceCost: suspendedCount, reduceCostCardCondition: null),
-                        fixedCostTuple: null,
-                        ignoreDigivolutionRequirementFixedCost: -1,
-                        isHand: true,
-                        activateClass: activateClass,
-                        successProcess: null));
 
+                    if (CardEffectCommons.IsOwnerTurn(card))
+                    {
+                        int suspendedCount = CardEffectCommons.MatchConditionPermanentCount(DigimonIsSuspended);
+
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                            targetPermanent: card.PermanentOfThisCard(),
+                            cardCondition: CanSelectDigimonToDigivolveCondition,
+                            payCost: true,
+                            reduceCostTuple: (reduceCost: suspendedCount, reduceCostCardCondition: null),
+                            fixedCostTuple: null,
+                            ignoreDigivolutionRequirementFixedCost: -1,
+                            isHand: true,
+                            activateClass: activateClass,
+                            successProcess: null));
+                    }
                 }
             }
             

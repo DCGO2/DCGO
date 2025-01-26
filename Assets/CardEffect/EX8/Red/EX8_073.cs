@@ -68,7 +68,7 @@ namespace DCGO.CardEffects.EX8
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.ContainsCardName("Gallantmon") || cardSource.ContainsCardName("X Antibody")) >= 1)
+                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.EqualsCardName("Gallantmon") || cardSource.EqualsCardName("X Antibody")) >= 1)
                         {
                             return true;
                         }
@@ -117,7 +117,7 @@ namespace DCGO.CardEffects.EX8
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("This Digimong ets +4000 DP and gives -4000 DP to an opponent's Digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("This Digimon gets +4000 DP and gives -4000 DP to an opponent's Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -152,7 +152,7 @@ namespace DCGO.CardEffects.EX8
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.ContainsCardName("Gallantmon") || cardSource.ContainsCardName("X Antibody")) >= 1)
+                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.EqualsCardName("Gallantmon") || cardSource.EqualsCardName("X Antibody")) >= 1)
                         {
                             return true;
                         }
