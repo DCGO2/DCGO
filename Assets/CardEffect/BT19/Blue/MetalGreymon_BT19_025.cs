@@ -232,9 +232,9 @@ namespace DCGO.CardEffects.BT19
                 {
                     if (cardSource == card)
                     {
-                        DigiXrosConditionElement elementA = new DigiXrosConditionElement(CanSelectCardCondition, "Blue Greymon");
+                        DigiXrosConditionElement elementA = new DigiXrosConditionElement(CanSelectCardConditionA, "Blue Greymon");
 
-                        bool CanSelectCardCondition(CardSource conditionCardSource)
+                        bool CanSelectCardConditionA(CardSource conditionCardSource)
                         {
                             if (conditionCardSource != null)
                             {
@@ -256,9 +256,9 @@ namespace DCGO.CardEffects.BT19
                             return false;
                         }
 
-                        DigiXrosConditionElement elementB = new DigiXrosConditionElement(CanSelectCardCondition1, "MailBirdramon");
+                        DigiXrosConditionElement elementB = new DigiXrosConditionElement(CanSelectCardConditionB, "MailBirdramon");
 
-                        bool CanSelectCardCondition1(CardSource conditionCardSource)
+                        bool CanSelectCardConditionB(CardSource conditionCardSource)
                         {
                             if (conditionCardSource != null)
                             {
