@@ -10,7 +10,13 @@ namespace DCGO.CardEffects
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Execute -- Pending
+            #region Execute
+
+            if (timing == EffectTiming.OnEndTurn)
+            {
+                cardEffects.Add(CardEffectFactory.ExecuteSelfEffect(isInheritedEffect: false, card: card,
+                    condition: null));
+            }
 
             #endregion
             

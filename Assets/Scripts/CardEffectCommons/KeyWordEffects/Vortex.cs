@@ -67,7 +67,7 @@ public partial class CardEffectCommons
             effectDuration: effectDuration,
             card: card,
             cardEffect: vortex,
-            timing: EffectTiming.OnAllyAttack);
+            timing: EffectTiming.OnEndTurn);
 
         if (!targetPermanent.TopCard.CanNotBeAffected(activateClass))
         {
