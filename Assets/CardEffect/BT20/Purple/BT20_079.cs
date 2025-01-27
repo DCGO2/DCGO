@@ -10,14 +10,21 @@ namespace DCGO.CardEffects
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Execute -- Pending
-            #endregion
-
             #region Security attack +1
             if (timing == EffectTiming.None)
             {
                 cardEffects.Add(CardEffectFactory.ChangeSelfSAttackStaticEffect(changeValue: 1, isInheritedEffect: false, card: card, condition: null));
             }
+            #endregion
+
+            #region Execute
+
+            if (timing == EffectTiming.OnEndTurn)
+            {
+                cardEffects.Add(CardEffectFactory.ExecuteSelfEffect(isInheritedEffect: false, card: card,
+                    condition: null));
+            }
+
             #endregion
 
             #region On Play/When Digivolving Shared
