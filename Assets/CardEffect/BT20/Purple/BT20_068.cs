@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-namespace DCGO.CardEffects
+
+namespace DCGO.CardEffects.BT20
 {
     public class BT20_068 : CEntity_Effect
     {
@@ -87,6 +88,7 @@ namespace DCGO.CardEffects
             #endregion
 
             #region On Deletion - ESS
+
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -115,8 +117,9 @@ namespace DCGO.CardEffects
                     yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
                 }
             }
+
             #endregion
-            
+
             return cardEffects;
         }
     }
