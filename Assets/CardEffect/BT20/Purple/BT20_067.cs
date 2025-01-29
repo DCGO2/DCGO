@@ -15,7 +15,7 @@ namespace DCGO.CardEffects.BT20
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Your 1 Digimon gains Retaliation", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Your 1 Digimon gains <Retaliation>", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -37,7 +37,7 @@ namespace DCGO.CardEffects.BT20
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                         {
@@ -69,8 +69,8 @@ namespace DCGO.CardEffects.BT20
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will get Retaliation.",
-                            "The opponent is selecting 1 Digimon that will get Retaliation.");
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will get <Retaliation>.",
+                            "The opponent is selecting 1 Digimon that will get <Retaliation>.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
@@ -92,7 +92,7 @@ namespace DCGO.CardEffects.BT20
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Your 1 Digimon gains Retaliation", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Your 1 Digimon gains <Retaliation>", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -114,7 +114,7 @@ namespace DCGO.CardEffects.BT20
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                         {
@@ -146,8 +146,8 @@ namespace DCGO.CardEffects.BT20
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will get Retaliation.",
-                            "The opponent is selecting 1 Digimon that will get Retaliation.");
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will get <Retaliation>.",
+                            "The opponent is selecting 1 Digimon that will get <Retaliation>.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
