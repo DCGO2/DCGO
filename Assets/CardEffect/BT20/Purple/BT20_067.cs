@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.BT20
 {
     public class BT20_067 : CEntity_Effect
     {
@@ -21,7 +21,8 @@ namespace DCGO.CardEffects
 
                 string EffectDiscription()
                 {
-                    return "[On Play] 1 of your Digimon gains <Retaliation> (When this Digimon is deleted after losing a battle, delete the Digimon it was battling), until the end of your opponent's turn.";
+                    return
+                        "[On Play] 1 of your Digimon gains <Retaliation> (When this Digimon is deleted after losing a battle, delete the Digimon it was battling), until the end of your opponent's turn.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -69,7 +70,7 @@ namespace DCGO.CardEffects
                             cardEffect: activateClass);
 
                         selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will get Retaliation.",
-                        "The opponent is selecting 1 Digimon that will get Retaliation.");
+                            "The opponent is selecting 1 Digimon that will get Retaliation.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
@@ -97,7 +98,8 @@ namespace DCGO.CardEffects
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] 1 of your Digimon gains <Retaliation> (When this Digimon is deleted after losing a battle, delete the Digimon it was battling), until the end of your opponent's turn.";
+                    return
+                        "[When Digivolving] 1 of your Digimon gains <Retaliation> (When this Digimon is deleted after losing a battle, delete the Digimon it was battling), until the end of your opponent's turn.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -145,7 +147,7 @@ namespace DCGO.CardEffects
                             cardEffect: activateClass);
 
                         selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will get Retaliation.",
-                        "The opponent is selecting 1 Digimon that will get Retaliation.");
+                            "The opponent is selecting 1 Digimon that will get Retaliation.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
@@ -161,7 +163,7 @@ namespace DCGO.CardEffects
             }
 
             #endregion
-            
+
             #region On Deletion - ESS
 
             if (timing == EffectTiming.OnDestroyedAnyone)

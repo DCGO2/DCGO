@@ -1,7 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-namespace DCGO.CardEffects
+
+namespace DCGO.CardEffects.BT20
 {
     public class BT20_073 : CEntity_Effect
     {
@@ -10,6 +11,7 @@ namespace DCGO.CardEffects
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Alternative Evolution
+
             if (timing == EffectTiming.None)
             {
                 bool PermanentCondition(Permanent targetPermanent)
@@ -24,13 +26,16 @@ namespace DCGO.CardEffects
                     card: card,
                     condition: null));
             }
+
             #endregion
 
             #region Blocker
+
             if (timing == EffectTiming.None)
             {
                 cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
             }
+
             #endregion
 
             #region On Play/ When Digivolving Shared
@@ -116,7 +121,6 @@ namespace DCGO.CardEffects
 
                     IEnumerator SuccessProcess()
                     {
-
                         if (CardEffectCommons.HasMatchConditionPermanent(permanent =>
                                 CanSelectLevelOpponentPermanentConditionShared(permanent)))
                         {
@@ -134,7 +138,7 @@ namespace DCGO.CardEffects
                                 cardEffect: activateClass);
 
                             selectPermanentEffect.SetUpCustomMessage("Select 1 of your opponents lvl 5 or lower Digimon to delete.",
-                        "The opponent is selecting 1 of your Digimon to delete.");
+                                "The opponent is selecting 1 of your Digimon to delete.");
                             yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                         }
                     }
@@ -203,7 +207,6 @@ namespace DCGO.CardEffects
 
                     IEnumerator SuccessProcess()
                     {
-
                         if (CardEffectCommons.HasMatchConditionPermanent(permanent =>
                                 CanSelectLevelOpponentPermanentConditionShared(permanent)))
                         {
@@ -221,7 +224,7 @@ namespace DCGO.CardEffects
                                 cardEffect: activateClass);
 
                             selectPermanentEffect.SetUpCustomMessage("Select 1 of your opponents lvl 5 or lower Digimon to delete.",
-                        "The opponent is selecting 1 of your Digimon to delete.");
+                                "The opponent is selecting 1 of your Digimon to delete.");
                             yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                         }
                     }
@@ -242,7 +245,8 @@ namespace DCGO.CardEffects
 
                 string EffectDiscription()
                 {
-                    return "[On Deletion] ��De-Digivolve  1��n 1 of your opponent's Digimon (Trash up to 1 card from the top of one of your opponent's Digimon. If it has no digivolution cards, or becomes a level 3 Digimon, you can't trash any more cards).";
+                    return
+                        "[On Deletion] ��De-Digivolve  1��n 1 of your opponent's Digimon (Trash up to 1 card from the top of one of your opponent's Digimon. If it has no digivolution cards, or becomes a level 3 Digimon, you can't trash any more cards).";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -289,14 +293,16 @@ namespace DCGO.CardEffects
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to De-Digivolve.", "The opponent is selecting 1 Digimon to De-Digivolve.");
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to De-Digivolve.",
+                            "The opponent is selecting 1 Digimon to De-Digivolve.");
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
                             Permanent selectedPermanent = permanent;
 
-                            yield return ContinuousController.instance.StartCoroutine(new IDegeneration(selectedPermanent, 1, activateClass).Degeneration());
+                            yield return ContinuousController.instance.StartCoroutine(new IDegeneration(selectedPermanent, 1, activateClass)
+                                .Degeneration());
                         }
                     }
                 }

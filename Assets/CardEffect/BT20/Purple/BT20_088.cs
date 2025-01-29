@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.BT20
 {
     public class BT20_088 : CEntity_Effect
     {
@@ -20,6 +20,7 @@ namespace DCGO.CardEffects
             #endregion
 
             #region Your Turn
+
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -29,7 +30,8 @@ namespace DCGO.CardEffects
 
                 string EffectDescription()
                 {
-                    return "[Your Turn] When any of your [Ghost] trait Digimon are deleted, by suspending this Tamer, 1 of your Digimon may digivolve into a Digimon card with the [Ghost] trait in the hand with the digivolution cost reduced by 2.";
+                    return
+                        "[Your Turn] When any of your [Ghost] trait Digimon are deleted, by suspending this Tamer, 1 of your Digimon may digivolve into a Digimon card with the [Ghost] trait in the hand with the digivolution cost reduced by 2.";
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -51,7 +53,7 @@ namespace DCGO.CardEffects
 
                     return false;
                 }
-                
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
@@ -91,9 +93,10 @@ namespace DCGO.CardEffects
                 }
 
 
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(new List<Permanent>() { card.PermanentOfThisCard() }, CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
+                    yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(
+                        new List<Permanent>() { card.PermanentOfThisCard() }, CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
 
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
@@ -116,7 +119,8 @@ namespace DCGO.CardEffects
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will digivolve.", "The opponent is selecting 1 Digimon that will digivolve.");
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will digivolve.",
+                            "The opponent is selecting 1 Digimon that will digivolve.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
@@ -154,6 +158,7 @@ namespace DCGO.CardEffects
             }
 
             #endregion
+
             return cardEffects;
         }
     }
