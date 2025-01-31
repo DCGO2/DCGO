@@ -84,6 +84,8 @@ namespace DCGO.CardEffects.EX8
 
                     if (CardEffectCommons.HasMatchConditionPermanent(OpponentsDigimonWithoutSources))
                     {
+                        Permanent selectedPermanent = null;
+
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
@@ -107,6 +109,14 @@ namespace DCGO.CardEffects.EX8
                         {
                             Permanent selectedPermanent = permanent;
 
+                            if (permanent != null)
+                                selectedPermanent = permanent;
+
+                            yield return null;
+                        }
+
+                        if (selectedPermanent != null)
+                        {
                             CanNotSuspendClass canNotSuspendClass = new CanNotSuspendClass();
                             canNotSuspendClass.SetUpICardEffect("Can't Suspend", CanUseCondition1, card);
                             canNotSuspendClass.SetUpCanNotSuspendClass(PermanentCondition: PermanentCondition);
@@ -179,7 +189,7 @@ namespace DCGO.CardEffects.EX8
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Trash any 2 digivolution sources of your opponents digimon. Then Digimon with no sources can unsuspend or activate [When Digivolving] effects", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Trash bottom 2 sources of 1 opponents digimon. Then, 1 of your opponent's Digimon can't suspend or activate [When Digivolving]", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -229,6 +239,8 @@ namespace DCGO.CardEffects.EX8
 
                     if (CardEffectCommons.HasMatchConditionPermanent(OpponentsDigimonWithoutSources))
                     {
+                        Permanent selectedPermanent = null;
+
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
@@ -252,6 +264,14 @@ namespace DCGO.CardEffects.EX8
                         {
                             Permanent selectedPermanent = permanent;
 
+                            if (permanent != null)
+                                selectedPermanent = permanent;
+
+                            yield return null;
+                        }
+
+                        if(selectedPermanent != null)
+                        {
                             CanNotSuspendClass canNotSuspendClass = new CanNotSuspendClass();
                             canNotSuspendClass.SetUpICardEffect("Can't Suspend", CanUseCondition1, card);
                             canNotSuspendClass.SetUpCanNotSuspendClass(PermanentCondition: PermanentCondition);
@@ -329,7 +349,32 @@ namespace DCGO.CardEffects.EX8
                     {
                         if (CardEffectCommons.IsOwnerTurn(card))
                         {
-                            if (!CardEffectCommons.HasMatchConditionOpponentsPermanent(card, (permanent) => permanent.IsDigimon && !permanent.HasNoDigivolutionCards))
+                            if (!CardEffectCommons.HasMatchConditionOpponentsPermanent(card, (permanent) =>
+                                permanent.IsDigimon && !permanent.HasNoDigivolutionCards &&
+                                permanent.TopCard.EqualsTraits("Ice-Snow")))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+
+                    return false;
+                }
+
+                cardEffects.Add(CardEffectFactory.ChangeSelfSAttackStaticEffect(1, true, card, Condition));
+            }
+
+            if (timing == EffectTiming.OnSecurityCheck)
+            {
+                bool Condition()
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (CardEffectCommons.IsOwnerTurn(card))
+                        {
+                            if (!CardEffectCommons.HasMatchConditionOpponentsPermanent(card, (permanent) =>
+                                permanent.IsDigimon && !permanent.HasNoDigivolutionCards &&
+                                permanent.TopCard.EqualsTraits("Ice-Snow")))
                             {
                                 return true;
                             }
@@ -340,7 +385,6 @@ namespace DCGO.CardEffects.EX8
                 }
 
                 cardEffects.Add(CardEffectFactory.PierceSelfEffect(isInheritedEffect: true, card: card, condition: Condition));
-                cardEffects.Add(CardEffectFactory.ChangeSelfSAttackStaticEffect(1, true, card, Condition));
             }
             #endregion
 
