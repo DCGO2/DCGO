@@ -185,6 +185,8 @@ namespace DCGO.CardEffects.EX8
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    bool DNADigivolved = false;
+
                     // DNA digivolve
                     if (card.Owner.GetBattleAreaDigimons().Count >= 2)
                     {
@@ -286,20 +288,52 @@ namespace DCGO.CardEffects.EX8
                                                 activateETB: true);
 
                                             playCard.SetJogress(_jogressEvoRootsFrameIDs);
-
+                                            DNADigivolved = true;
                                             yield return ContinuousController.instance.StartCoroutine(playCard.PlayCard());
+                                        }
 
-                                            if (CardEffectCommons.IsExistOnBattleArea(selectedCard))
+                                        if (DNADigivolved)
+                                        {
+                                            List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
                                             {
-                                                SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
+                                                new SelectionElement<bool>(message: $"Yes", value: true, spriteIndex: 0),
+                                                new SelectionElement<bool>(message: $"No", value: false, spriteIndex: 1),
+                                            };
 
-                                                selectAttackEffect.SetUp(
-                                                    attacker: card.PermanentOfThisCard(),
-                                                    canAttackPlayerCondition: () => true,
-                                                    defenderCondition: (permanent) => true,
-                                                    cardEffect: activateClass);
+                                            string selectPlayerMessage = "Attack?";
+                                            string notSelectPlayerMessage = "The opponent is choosing effects.";
 
-                                                yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
+                                            GManager.instance.userSelectionManager.SetBoolSelection(
+                                                selectionElements: selectionElements, selectPlayer: card.Owner,
+                                                selectPlayerMessage: selectPlayerMessage,
+                                                notSelectPlayerMessage: notSelectPlayerMessage);
+
+                                            yield return ContinuousController.instance.StartCoroutine(GManager.instance
+                                                .userSelectionManager.WaitForEndSelect());
+
+                                            bool willAttack = GManager.instance.userSelectionManager.SelectedBoolValue;
+
+                                            if (willAttack)
+                                            {
+                                                if (selectedCard.PermanentOfThisCard() != null)
+                                                {
+                                                    if (selectedCard.PermanentOfThisCard().CanAttack(activateClass))
+                                                    {
+                                                        SelectAttackEffect selectAttackEffect =
+                                                            GManager.instance.GetComponent<SelectAttackEffect>();
+
+                                                        selectAttackEffect.SetUp(
+                                                            attacker: selectedCard.PermanentOfThisCard(),
+                                                            canAttackPlayerCondition: () => true,
+                                                            defenderCondition: (permanent) => true,
+                                                            cardEffect: activateClass);
+
+                                                        selectAttackEffect.SetCanNotSelectNotAttack();
+
+                                                        yield return ContinuousController.instance.StartCoroutine(selectAttackEffect
+                                                            .Activate());
+                                                    }
+                                                }
                                             }
                                         }
                                     }

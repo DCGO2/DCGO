@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace DCGO.CardEffects.EX4
 {
-    public class EX4_01 : CEntity_Effect
+    public class EX4_013 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {

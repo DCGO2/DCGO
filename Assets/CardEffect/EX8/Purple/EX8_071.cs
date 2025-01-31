@@ -44,12 +44,13 @@ namespace DCGO.CardEffects.EX8
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistInSecurity(card, false) &&
-                        CardEffectCommons.HasMatchConditionPermanent(PermanentCondition);
+                           CardEffectCommons.HasMatchConditionPermanent(PermanentCondition);
                 }
 
                 bool PermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                    return card.Owner == permanent.TopCard.Owner &&
+                           CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
                            permanent.TopCard.HasLevel && permanent.TopCard.Level >= 4 &&
                            permanent.TopCard.EqualsTraits("NSo");
                 }

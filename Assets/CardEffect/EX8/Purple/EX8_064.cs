@@ -92,8 +92,8 @@ namespace DCGO.CardEffects.EX8
 
                         JogressConditionElement[] elements =
                         {
-                            new(PermanentConditionPurpleBlack, "a level 5 Purple or Black Digimon"),
-                            new(PermanentConditionYellowGreen, "a level 5 Yellow or Green Digimon")
+                            new(PermanentConditionPurpleBlack, "a level 6 Purple or Black Digimon"),
+                            new(PermanentConditionYellowGreen, "a level 6 Yellow or Green Digimon")
                         };
 
                         JogressCondition jogressCondition = new JogressCondition(elements, 0);

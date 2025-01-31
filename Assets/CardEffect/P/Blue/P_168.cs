@@ -64,7 +64,7 @@ namespace DCGO.CardEffects.P
                 bool IsValidPermanentToDigivolveCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
-                           (permanent.TopCard.EqualsTraits("Aqua") || permanent.TopCard.EqualsTraits("Sea Animal"));
+                           (permanent.TopCard.ContainsTraits("Aqua") || permanent.TopCard.ContainsTraits("Sea Animal"));
                 }
 
                 bool IsValidCardToDigivolveIntoCondition(CardSource cardSource)

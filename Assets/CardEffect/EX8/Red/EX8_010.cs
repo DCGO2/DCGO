@@ -103,7 +103,7 @@ namespace DCGO.CardEffects.EX8
             #endregion
 
             #region When Digivolving
-            if (timing == EffectTiming.OnEnterFieldAnyone)
+            if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete 1 Digimon with 4000 DP or less", CanUseCondition, card);
@@ -112,7 +112,7 @@ namespace DCGO.CardEffects.EX8
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] Delete 1 of your opponent's Digimon with 4000 DP or less.";
+                    return "[On Deletion] Delete 1 of your opponent's Digimon with 4000 DP or less.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -130,20 +130,12 @@ namespace DCGO.CardEffects.EX8
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    if (CardEffectCommons.CanActivateOnDeletion(card))
                     {
                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                         {

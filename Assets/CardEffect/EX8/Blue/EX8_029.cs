@@ -28,17 +28,16 @@ namespace DCGO.CardEffects.EX8
                 {
                     if (cardSource == card)
                     {
-                        bool PermanentCondition1(Permanent permanent) => (permanent.TopCard.CardColors.Contains(CardColor.Blue) || permanent.TopCard.CardColors.Contains(CardColor.Purple)) &&
-                                                                         permanent.Levels_ForJogress(card).Contains(6);
+                        bool PermanentCondition1(Permanent permanent) => permanent.TopCard.EqualsCardName("Plesiomon");
 
-                        bool PermanentCondition2(Permanent permanent) => (permanent.TopCard.CardColors.Contains(CardColor.Black) || permanent.TopCard.CardColors.Contains(CardColor.Yellow)) &&
-                                                                         permanent.Levels_ForJogress(card).Contains(6);
+                        bool PermanentCondition2(Permanent permanent) => permanent.TopCard.ContainsCardName("Seadramon") &&
+                                                                         permanent.Levels_ForJogress(card).Any(value => value >= 5);
 
                         JogressConditionElement[] elements = new JogressConditionElement[]
                         {
-                        new JogressConditionElement(PermanentCondition1, "a level 6 blue/purple Digimon"),
+                        new JogressConditionElement(PermanentCondition1, "Plesiomon"),
 
-                        new JogressConditionElement(PermanentCondition2, "a level 6 black/yellow Digimon"),
+                        new JogressConditionElement(PermanentCondition2, "a level 5 or higher w/[Seadramon] in name"),
                         };
 
                         JogressCondition jogressCondition = new JogressCondition(elements, 0);
@@ -69,16 +68,17 @@ namespace DCGO.CardEffects.EX8
                 {
                     if (cardSource == card)
                     {
-                        bool PermanentCondition1(Permanent permanent) => permanent.TopCard.EqualsCardName("Plesiomon");
+                        bool PermanentCondition1(Permanent permanent) => (permanent.TopCard.CardColors.Contains(CardColor.Blue) || permanent.TopCard.CardColors.Contains(CardColor.Purple)) &&
+                                                                         permanent.Levels_ForJogress(card).Contains(6);
 
-                        bool PermanentCondition2(Permanent permanent) => permanent.TopCard.ContainsCardName("Seadramon") &&
-                                                                         permanent.Levels_ForJogress(card).Any(value => value >= 5);
+                        bool PermanentCondition2(Permanent permanent) => (permanent.TopCard.CardColors.Contains(CardColor.Black) || permanent.TopCard.CardColors.Contains(CardColor.Yellow)) &&
+                                                                         permanent.Levels_ForJogress(card).Contains(6);
 
                         JogressConditionElement[] elements = new JogressConditionElement[]
                         {
-                        new JogressConditionElement(PermanentCondition1, "Plesiomon"),
+                        new JogressConditionElement(PermanentCondition1, "a level 6 blue/purple Digimon"),
 
-                        new JogressConditionElement(PermanentCondition2, "a level 5 or higher w/[Seadramon] in name"),
+                        new JogressConditionElement(PermanentCondition2, "a level 6 black/yellow Digimon"),
                         };
 
                         JogressCondition jogressCondition = new JogressCondition(elements, 0);
@@ -367,7 +367,7 @@ namespace DCGO.CardEffects.EX8
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         return card.Owner.MemoryForPlayer <= 1;
                     }
@@ -383,13 +383,14 @@ namespace DCGO.CardEffects.EX8
                         {
                             if (cardEffect.EffectSourceCard != null)
                             {
-                                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(cardEffect.EffectSourceCard.PermanentOfThisCard(), card))
+                                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(cardEffect.EffectSourceCard.PermanentOfThisCard(), card))
                                 {
                                     if (!cardEffect.EffectSourceCard.PermanentOfThisCard().TopCard.CanNotBeAffected(invalidationClass))
                                     {
                                         if (cardEffect.IsOnPlay)
                                         {
-                                            return true;
+
+                                            return card.Owner.MemoryForPlayer <= 1;
                                         }
                                     }
                                 }

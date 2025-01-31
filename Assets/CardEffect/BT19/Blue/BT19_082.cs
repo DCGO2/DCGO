@@ -57,8 +57,7 @@ namespace DCGO.CardEffects.BT19
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card) &&
-                           CardEffectCommons.CanActivateSuspendCostEffect(card) &&
-                           CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectHandCardCondition);
+                           CardEffectCommons.CanActivateSuspendCostEffect(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -67,42 +66,45 @@ namespace DCGO.CardEffects.BT19
                         new SuspendPermanentsClass(new List<Permanent>() { card.PermanentOfThisCard() },
                             CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
 
-                    List<CardSource> selectedCards = new List<CardSource>();
-
-                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                    selectHandEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectHandCardCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: 1,
-                        canNoSelect: true,
-                        canEndNotMax: false,
-                        isShowOpponent: true,
-                        selectCardCoroutine: SelectCardCoroutine,
-                        afterSelectCardCoroutine: null,
-                        mode: SelectHandEffect.Mode.Custom,
-                        cardEffect: activateClass);
-
-                    selectHandEffect.SetUpCustomMessage("Select 1 card to place on bottom of digivolution cards.",
-                        "The opponent is selecting 1 card to place on bottom of digivolution cards.");
-                    selectHandEffect.SetUpCustomMessage_ShowCard("Digivolution Card");
-
-                    yield return StartCoroutine(selectHandEffect.Activate());
-
-                    IEnumerator SelectCardCoroutine(CardSource cardSource)
+                    if(CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectHandCardCondition))
                     {
-                        selectedCards.Add(cardSource);
+                        List<CardSource> selectedCards = new List<CardSource>();
 
-                        yield return null;
-                    }
+                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
-                    if (selectedCards.Count >= 1)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.attackProcess.AttackingPermanent
-                            .AddDigivolutionCardsBottom(selectedCards, activateClass));
-                    }
+                        selectHandEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectHandCardCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: true,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            selectCardCoroutine: SelectCardCoroutine,
+                            afterSelectCardCoroutine: null,
+                            mode: SelectHandEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        selectHandEffect.SetUpCustomMessage("Select 1 card to place on bottom of digivolution cards.",
+                            "The opponent is selecting 1 card to place on bottom of digivolution cards.");
+                        selectHandEffect.SetUpCustomMessage_ShowCard("Digivolution Card");
+
+                        yield return StartCoroutine(selectHandEffect.Activate());
+
+                        IEnumerator SelectCardCoroutine(CardSource cardSource)
+                        {
+                            selectedCards.Add(cardSource);
+
+                            yield return null;
+                        }
+
+                        if (selectedCards.Count >= 1)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.attackProcess.AttackingPermanent
+                                .AddDigivolutionCardsBottom(selectedCards, activateClass));
+                        }
+                    }                    
                 }
             }
 

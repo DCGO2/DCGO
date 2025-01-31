@@ -27,7 +27,7 @@ namespace DCGO.CardEffects.P
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.HasAquaTraits)
+                    if (cardSource.ContainsTraits("Aqua") || cardSource.ContainsTraits("Sea Animal"))
                     {
                         if (cardSource.HasLevel)
                         {
@@ -134,7 +134,7 @@ namespace DCGO.CardEffects.P
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.HasAquaTraits)
+                    if(cardSource.ContainsTraits("Aqua") || cardSource.ContainsTraits("Sea Animal"))
                     {
                         if (cardSource.HasLevel)
                         {
