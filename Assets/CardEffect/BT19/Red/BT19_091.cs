@@ -22,19 +22,12 @@ namespace DCGO.CardEffects.BT19
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.IsDigimon && permanent.TopCard.HasLevel &&  permanent.Level == 5 &&  permanent.TopCard.EqualsCardName("WarGrowlmon")))
+                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.IsDigimon && permanent.TopCard.HasLevel && permanent.Level == 5))
                     {
-                        return true;
-                    }
-
-                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.IsDigimon && permanent.TopCard.HasLevel && permanent.Level == 5 && permanent.TopCard.EqualsCardName("Taomon")))
-                    {
-                        return true;
-                    }
-
-                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.IsDigimon && permanent.TopCard.HasLevel && permanent.Level == 5 && permanent.TopCard.EqualsCardName("Rapidmon")))
-                    {
-                        return true;
+                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.TopCard.EqualsCardName("WarGrowlmon") || permanent.TopCard.EqualsCardName("Taomon") || permanent.TopCard.EqualsCardName("Rapidmon")))
+                        {
+                            return true;
+                        }
                     }
 
                     return false;
