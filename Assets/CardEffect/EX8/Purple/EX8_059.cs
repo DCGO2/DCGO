@@ -163,10 +163,10 @@ namespace DCGO.CardEffects.EX8
                                     {
                                         if (CardEffectCommons.CanActivateOnDeletion(selectedPermanent.TopCard))
                                         {
-                                            if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
+                                            /*if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
                                             {
                                                 return true;
-                                            }
+                                            }*/
                                         }
 
                                         return false;
@@ -341,10 +341,10 @@ namespace DCGO.CardEffects.EX8
                                     {
                                         if (CardEffectCommons.CanActivateOnDeletion(selectedPermanent.TopCard))
                                         {
-                                            if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
+                                            /*if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
                                             {
                                                 return true;
-                                            }
+                                            }*/
                                         }
 
                                         return false;
