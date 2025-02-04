@@ -43,8 +43,9 @@ namespace DCGO.CardEffects.EX8
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistInSecurity(card, false) &&
-                           CardEffectCommons.HasMatchConditionPermanent(PermanentCondition);
+                    return  CardEffectCommons.IsOwnerEffect(addSkillClass, card) &&
+                            CardEffectCommons.IsExistInSecurity(card, false) &&
+                            CardEffectCommons.HasMatchConditionPermanent(PermanentCondition);
                 }
 
                 bool PermanentCondition(Permanent permanent)
@@ -80,7 +81,7 @@ namespace DCGO.CardEffects.EX8
                     {
                         bool Condition()
                         {
-                            return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(cardSource.PermanentOfThisCard(), cardSource) &&
+                            return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(cardSource.PermanentOfThisCard(), card) &&
                                    cardSource.HasLevel && cardSource.Level >= 4 &&
                                    cardSource.EqualsTraits("NSo");
                         }

@@ -31,7 +31,7 @@ namespace DCGO.CardEffects.EX8
                         bool PermanentCondition1(Permanent permanent) => permanent.TopCard.EqualsCardName("Plesiomon");
 
                         bool PermanentCondition2(Permanent permanent) => permanent.TopCard.ContainsCardName("Seadramon") &&
-                                                                         permanent.Levels_ForJogress(card).Any(value => value >= 5);
+                                                                         permanent.Levels_ForJogress(card).Any(value => value == 5);
 
                         JogressConditionElement[] elements = new JogressConditionElement[]
                         {

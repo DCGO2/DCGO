@@ -185,7 +185,12 @@ namespace DCGO.CardEffects.EX8
 
                 bool PermanentsCondition(List<Permanent> targetPermanents)
                 {
-                    return targetPermanents == null || targetPermanents.Count(targetPermanent => targetPermanent != null) == 0;
+                    return targetPermanents == null || 
+                           targetPermanents.Count(targetPermanent => CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(targetPermanent) &&
+                                                                     targetPermanent != null &&
+                                                                     targetPermanent.TopCard &&
+                                                                     !targetPermanent.TopCard.CanNotBeAffected(changeCostClass) &&
+                                                                     !targetPermanent.IsSuspended && targetPermanent.CanSuspend) < 2;
                 }
 
                 bool CardSourceCondition(CardSource cardSource)
@@ -252,7 +257,7 @@ namespace DCGO.CardEffects.EX8
 
                 int DeletionMaxDP()
                 {
-                    return 8000 + (3000 * CardEffectCommons.MatchConditionPermanentCount(permanent => permanent.IsSuspended));
+                    return 8000 + (3000 * CardEffectCommons.MatchConditionPermanentCount(permanent => permanent.IsSuspended && permanent != card.PermanentOfThisCard()));
                 }
 
                 bool CanSelectDeletePermanentCondition(Permanent permanent)
@@ -410,13 +415,16 @@ namespace DCGO.CardEffects.EX8
 
                         if (selectedEffect != null)
                         {
-                            Hashtable effectHashtable =
+                            if (!selectedEffect.IsDisabled)
+                            {
+                                Hashtable effectHashtable =
                                 CardEffectCommons.WhenDigivolvingCheckHashtableOfCard(selectedEffect.EffectSourceCard);
 
-                            selectedEffect.SetIsDigimonEffect(true);
+                                selectedEffect.SetIsDigimonEffect(true);
 
-                            yield return ContinuousController.instance.StartCoroutine(
-                                ((ActivateICardEffect)selectedEffect).Activate_Optional_Effect_Execute(effectHashtable));
+                                yield return ContinuousController.instance.StartCoroutine(
+                                    ((ActivateICardEffect)selectedEffect).Activate_Optional_Effect_Execute(effectHashtable));
+                            }
                         }
                     }
                 }

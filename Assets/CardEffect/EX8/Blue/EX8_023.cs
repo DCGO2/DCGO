@@ -107,8 +107,6 @@ namespace DCGO.CardEffects.EX8
 
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
-                            Permanent selectedPermanent = permanent;
-
                             if (permanent != null)
                                 selectedPermanent = permanent;
 
@@ -123,7 +121,7 @@ namespace DCGO.CardEffects.EX8
                             selectedPermanent.UntilOwnerTurnEndEffects.Add((_timing) => canNotSuspendClass);
 
                             DisableEffectClass invalidationClass = new DisableEffectClass();
-                            invalidationClass.SetUpICardEffect("Ignore [When Digivolving] Effect", CanUseCondition, card);
+                            invalidationClass.SetUpICardEffect("Ignore [When Digivolving] Effect", CanUseCondition1, card);
                             invalidationClass.SetUpDisableEffectClass(DisableCondition: InvalidateCondition);
                             selectedPermanent.UntilOwnerTurnEndEffects.Add((_timing) => invalidationClass);
 
@@ -165,11 +163,14 @@ namespace DCGO.CardEffects.EX8
                                         {
                                             if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(cardEffect.EffectSourceCard.PermanentOfThisCard(), card))
                                             {
-                                                if (!cardEffect.EffectSourceCard.PermanentOfThisCard().TopCard.CanNotBeAffected(invalidationClass))
+                                                if(cardEffect.EffectSourceCard.PermanentOfThisCard() == selectedPermanent)
                                                 {
-                                                    if (cardEffect.IsWhenDigivolving)
+                                                    if (!cardEffect.EffectSourceCard.PermanentOfThisCard().TopCard.CanNotBeAffected(invalidationClass))
                                                     {
-                                                        return true;
+                                                        if (cardEffect.IsWhenDigivolving)
+                                                        {
+                                                            return true;
+                                                        }
                                                     }
                                                 }
                                             }
@@ -256,14 +257,12 @@ namespace DCGO.CardEffects.EX8
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will trash digivolution cards.", "The opponent is selecting 1 Digimon that will trash digivolution cards.");
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will gain effects.", "The opponent is selecting 1 Digimon that will will gain effects.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
-                            Permanent selectedPermanent = permanent;
-
                             if (permanent != null)
                                 selectedPermanent = permanent;
 
@@ -320,11 +319,14 @@ namespace DCGO.CardEffects.EX8
                                         {
                                             if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(cardEffect.EffectSourceCard.PermanentOfThisCard(), card))
                                             {
-                                                if (!cardEffect.EffectSourceCard.PermanentOfThisCard().TopCard.CanNotBeAffected(invalidationClass))
+                                                if (cardEffect.EffectSourceCard.PermanentOfThisCard() == selectedPermanent)
                                                 {
-                                                    if (cardEffect.IsWhenDigivolving)
+                                                    if (!cardEffect.EffectSourceCard.PermanentOfThisCard().TopCard.CanNotBeAffected(invalidationClass))
                                                     {
-                                                        return true;
+                                                        if (cardEffect.IsWhenDigivolving)
+                                                        {
+                                                            return true;
+                                                        }
                                                     }
                                                 }
                                             }
@@ -349,12 +351,14 @@ namespace DCGO.CardEffects.EX8
                     {
                         if (CardEffectCommons.IsOwnerTurn(card))
                         {
-                            if (!CardEffectCommons.HasMatchConditionOpponentsPermanent(card, (permanent) =>
-                                permanent.IsDigimon && !permanent.HasNoDigivolutionCards &&
-                                permanent.TopCard.EqualsTraits("Ice-Snow")))
+                            if (card.PermanentOfThisCard().TopCard.EqualsTraits("Ice-Snow"))
                             {
-                                return true;
-                            }
+                                if (!CardEffectCommons.HasMatchConditionOpponentsPermanent(card, (permanent) =>
+                                permanent.IsDigimon && !permanent.HasNoDigivolutionCards))
+                                {
+                                    return true;
+                                }
+                            }                            
                         }
                     }
 
@@ -364,7 +368,7 @@ namespace DCGO.CardEffects.EX8
                 cardEffects.Add(CardEffectFactory.ChangeSelfSAttackStaticEffect(1, true, card, Condition));
             }
 
-            if (timing == EffectTiming.OnSecurityCheck)
+            if (timing == EffectTiming.OnDetermineDoSecurityCheck)
             {
                 bool Condition()
                 {
@@ -372,11 +376,13 @@ namespace DCGO.CardEffects.EX8
                     {
                         if (CardEffectCommons.IsOwnerTurn(card))
                         {
-                            if (!CardEffectCommons.HasMatchConditionOpponentsPermanent(card, (permanent) =>
-                                permanent.IsDigimon && !permanent.HasNoDigivolutionCards &&
-                                permanent.TopCard.EqualsTraits("Ice-Snow")))
+                            if (card.PermanentOfThisCard().TopCard.EqualsTraits("Ice-Snow"))
                             {
-                                return true;
+                                if (!CardEffectCommons.HasMatchConditionOpponentsPermanent(card, (permanent) =>
+                                permanent.IsDigimon && !permanent.HasNoDigivolutionCards))
+                                {
+                                    return true;
+                                }
                             }
                         }
                     }
