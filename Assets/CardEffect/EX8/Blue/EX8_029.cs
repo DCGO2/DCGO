@@ -37,7 +37,7 @@ namespace DCGO.CardEffects.EX8
                         {
                         new JogressConditionElement(PermanentCondition1, "Plesiomon"),
 
-                        new JogressConditionElement(PermanentCondition2, "a level 5 or higher w/[Seadramon] in name"),
+                        new JogressConditionElement(PermanentCondition2, "a level 5 w/[Seadramon] in name"),
                         };
 
                         JogressCondition jogressCondition = new JogressCondition(elements, 0);
