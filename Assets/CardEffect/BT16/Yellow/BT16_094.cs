@@ -27,7 +27,7 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Yellow) || cardSource.CardTraits.Contains("FourGreatDragons"))
+                    if (cardSource.CardColors.Contains(CardColor.Yellow) || cardSource.EqualsCardName("Four Great Dragons"))
                     {
                         return true;
                     }
@@ -99,7 +99,7 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (card.Owner.HandCards.Count >= 1)
                     {
-                        if (cardSource.CardNames.Contains("TrialoftheFourGreatDragons"))
+                        if (cardSource.EqualsCardName("Trial of the Four Great Dragons"))
                         {
                             return true;
                         }
@@ -121,7 +121,7 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (card.Owner.HandCards.Count >= 1)
                     {
-                        if (card.CardTraits.Contains("FourGreatDragons") || card.CardTraits.Contains("Four Great Dragons"))
+                        if (card.EqualsTraits("Four Great Dragons"))
                         {
                             return true;
                         }
