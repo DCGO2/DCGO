@@ -304,6 +304,17 @@ public partial class CardEffectCommons
     {
         yield return ContinuousController.instance.StartCoroutine(PlayToken(
             tokenData: ContinuousController.instance.RapidmonToken,
+          activateClass: activateClass,
+            isOwnerPermanent: true,
+            isTapped: false
+        ));
+    }
+    #endregion
+    #region Play 1 [Pipe-Fox] Token
+    public static IEnumerator PlayPipeFox(ICardEffect activateClass)
+    {
+        yield return ContinuousController.instance.StartCoroutine(PlayToken(
+            tokenData: ContinuousController.instance.PipeFoxToken,
             activateClass: activateClass,
             isOwnerPermanent: true,
             isTapped: false
