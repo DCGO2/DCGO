@@ -58,13 +58,13 @@ namespace DCGO.CardEffects.BT19
                        {
                             new SimplifiedSelectCardConditionClass(
                                 canTargetCondition:SelectKnightmonOrTwilight,
-                                message: "Select 1 card with [Knightmon] in its text or the [Twilight] trait.",
+                                message: "Select 1 card with [Knightmon] in its text or the [Twilight] trait to add to hand.",
                                 mode: SelectCardEffect.Mode.AddHand,
                                 maxCount: 1,
                                 selectCardCoroutine: null),
                             new SimplifiedSelectCardConditionClass(
                                 canTargetCondition:SelectKnightmonOrTwilight,
-                                message: "Select 1 card with [Knightmon] in its text or the [Twilight] trait.",
+                                message: "Select 1 card with [Knightmon] in its text or the [Twilight] trait to place under a tamer.",
                                 mode: SelectCardEffect.Mode.Custom,
                                 maxCount: 1,
                                 selectCardCoroutine: PlaceUnderTamer),
@@ -81,7 +81,7 @@ namespace DCGO.CardEffects.BT19
                        {
                             new SimplifiedSelectCardConditionClass(
                                 canTargetCondition:SelectKnightmonOrTwilight,
-                                message: "Select 1 card with [Knightmon] in its text or the [Twilight] trait.",
+                                message: "Select 1 card with [Knightmon] in its text or the [Twilight] trait to add to hand.",
                                 mode: SelectCardEffect.Mode.AddHand,
                                 maxCount: 1,
                                 selectCardCoroutine: null),

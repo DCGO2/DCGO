@@ -353,7 +353,7 @@ namespace DCGO.CardEffects.BT18
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    int maxCount = Math.Min(1, card.Owner.GetBattleAreaPermanents().Count(CanSelectPermanentCondition));
+                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
                  
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
                  

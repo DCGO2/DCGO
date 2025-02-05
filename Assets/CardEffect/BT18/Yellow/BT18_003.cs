@@ -14,13 +14,14 @@ namespace DCGO.CardEffects.BT18
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("DP -2000 when yellow tamer in play", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
+                activateClass.SetHashString("MinusDP_BT18-003");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[When Attacking] If you have a yellow Tamer, 1 of your opponent's Digimon gets -2000 DP for the turn.";
+                    return "[When Attacking] [Once Per Turn] If you have a yellow Tamer, 1 of your opponent's Digimon gets -2000 DP for the turn.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)

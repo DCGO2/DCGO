@@ -304,7 +304,7 @@ namespace DCGO.CardEffects.BT17
                 activateClass.SetUpICardEffect(
                     "Return 1 Tamer card and 1 Hybrid trait Digimon card from trash to hand, then play 1 Tamer from hand", CanUseCondition,
                     card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -376,7 +376,7 @@ namespace DCGO.CardEffects.BT17
                             canTargetCondition: IsTamerCardCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            canNoSelect: () => false,
+                            canNoSelect: () => true,
                             selectCardCoroutine: null,
                             afterSelectCardCoroutine: null,
                             message: "Select 1 Tamer card to add to your hand.",
@@ -403,7 +403,7 @@ namespace DCGO.CardEffects.BT17
                             canTargetCondition: IsHybridDigimonCardCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            canNoSelect: () => false,
+                            canNoSelect: () => true,
                             selectCardCoroutine: null,
                             afterSelectCardCoroutine: null,
                             message: "Select 1 Hybrid Digimon card to add to your hand.",
