@@ -319,6 +319,9 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
 
         if(!GManager.instance.attackProcess.AttackingPermanent.IsDigimon)
             GManager.instance.attackProcess.IsEndAttack = true;
+
+        if(GManager.instance.attackProcess.DefendingPermanent == null && GManager.instance.attackProcess.HasDefender)
+            GManager.instance.attackProcess.IsEndAttack = true;
     }
     #endregion
 

@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: P_155_P1
+  m_EditorClassIdentifier: 
+  CardIndex: 10457
+  cardColors: 00000000
+  PlayCost: 2
+  EvoCosts: []
+  Level: 0
+  CardName_JPN: 
+  CardName_ENG: Pawn Device
+  Form_JPN: []
+  Form_ENG:
+  - '-'
+  Attribute_JPN: []
+  Attribute_ENG:
+  - '-'
+  Type_JPN: []
+  Type_ENG:
+  - Device
+  CardSpriteName: P-155_P1
+  cardKind: 2
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: "While you don't have [Pawn Device], you may ignore this
+    card's color requirements.\n[Main] \uFF1CDraw 1\uFF1E. Then, place this card
+    in the battle area.\n[Main] \uFF1CDelay\uFF1E \n\u30FBBy trashing 1 of your non-red
+    option cards in your battle area, gain 1 memory."
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: '-'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: '[Security] Delete 1 of your opponent''s Digimon
+    with 11000 DP or less. Then, add this card to the hand.'
+  CardEffectClassName: P_155
+  DP: 0
+  rarity: 5
+  OverflowMemory: 0
+  CardID: P-155
+  MaxCountInDeck: 4

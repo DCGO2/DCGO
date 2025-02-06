@@ -12,6 +12,7 @@ public class AttackProcess : MonoBehaviourPunCallbacks
     public Permanent DefendingPermanent { get; private set; } = null;
     public int AttackCount { get; set; } = 0;
     public bool IsAttacking { get; set; } = false;
+    public bool HasDefender { get; set; } = false;
     public bool IsBlocking { get; set; } = false;
     public CardSource SecurityDigimon { get; set; } = null;
     public bool DoSecurityCheck { get; set; } = false;
@@ -23,6 +24,9 @@ public class AttackProcess : MonoBehaviourPunCallbacks
     {
         AttackingPermanent = attackingPermanent;
         DefendingPermanent = defendingPermanent;
+
+        if (defendingPermanent != null)
+            HasDefender = true;
     }
 
     public IEnumerator Attack(Permanent attackingPermanent, Permanent defendingPermanent, ICardEffect attackEffect, bool withoutTap = false, Func<IEnumerator> beforeOnAttackCoroutine = null)
@@ -44,6 +48,7 @@ public class AttackProcess : MonoBehaviourPunCallbacks
         IsBlocking = false;
         SecurityDigimon = null;
         IsAttacking = false;
+        HasDefender = false;
         IsEndAttack = false;
 
         SetAttackerDefender(attackingPermanent, defendingPermanent);

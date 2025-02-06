@@ -218,7 +218,6 @@ public class DeckData
 
         if (DeckCardIDs != null)
         {
-            Debug.Log(DeckCardIDs.Count);
             foreach (int DeckCardID in DeckCardIDs)
             {
                 CEntity_Base cEntity_Base = ContinuousController.instance.getCardEntityByCardID(DeckCardID);

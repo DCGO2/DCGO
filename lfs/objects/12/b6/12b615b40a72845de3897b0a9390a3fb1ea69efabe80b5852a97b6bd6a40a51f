@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: P_169_P1
+  m_EditorClassIdentifier: 
+  CardIndex: 10438
+  cardColors: 05000000
+  PlayCost: 3
+  EvoCosts: []
+  Level: 0
+  CardName_JPN: 
+  CardName_ENG: Close
+  Form_JPN: []
+  Form_ENG:
+  - '-'
+  Attribute_JPN: []
+  Attribute_ENG:
+  - LIBERATOR
+  Type_JPN: []
+  Type_ENG:
+  - Tamer
+  CardSpriteName: P-169_P1
+  cardKind: 1
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: "[Start of Your Main Phase] If your opponent has a Digimon,
+    gain 1 memory.\n[All Turns] When effects trash digivolution cards of any of your
+    [Mineral]/[Rock]\_trait Digimon, by suspending this Tamer, place 1 card with
+    the [Mineral]/[Rock]\_trait from your trash as any of your Digimon\u2019s bottom
+    digivolution card."
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: '-'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: '[Security] Play this card without paying the cost.'
+  CardEffectClassName: P_169
+  DP: 0
+  rarity: 5
+  OverflowMemory: 0
+  CardID: P-169
+  MaxCountInDeck: 4
