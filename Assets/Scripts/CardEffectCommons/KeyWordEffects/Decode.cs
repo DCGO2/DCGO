@@ -106,7 +106,7 @@ public partial class CardEffectCommons
             effectDuration: effectDuration,
             card: card,
             cardEffect: decode,
-            timing: EffectTiming.OnAllyAttack);
+            timing: EffectTiming.WhenRemoveField);
 
         if (!targetPermanent.TopCard.CanNotBeAffected(activateClass))
         {
