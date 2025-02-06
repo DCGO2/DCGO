@@ -74,18 +74,11 @@ crashlytics-build.properties
 
 /Assets/Titles/
 /Assets/Titles.meta
-/Assets/Photon/PhotonUnityNetworking/Resources/
-/Assets/Photon/PhotonUnityNetworking/Resources.meta
 /Assets/MHLab/
 /Assets/MHLab.meta
 /Assets/ToDo.txt
 /Assets/ToDo.txt.meta
 /PATCHWorkspace/
-/Assets/Resources/
-/Assets/Resources.meta
-/Assets/Resources/Fonts & Materials/Makinas-4-Flat SDF.asset
-/Assets/Resources/Fonts & Materials/mplus-1c-regular SDF.asset
-/Assets/Resources/Fonts & Materials/ANTQUAB SDF.asset
-/Assets/StreamingAssets/Card/
+
 /.idea
 /.idea/.idea.DCGO

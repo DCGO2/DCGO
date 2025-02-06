@@ -1,11 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEditor.SceneManagement;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using DCGO.CardEntities;
 
 namespace DCGO.Tools.Repair{
     public class CleanUpClassName : MonoBehaviour
@@ -60,7 +56,36 @@ namespace DCGO.Tools.Repair{
             }
         }
 
-        
+        [MenuItem("Window/DCGO/Repair/Convert Entity Class Names")]
+        static void ConvertEntityClassNames()
+        {
+            string path = "Assets/CardBaseEntity/";
+
+            if (Selection.assetGUIDs.Length != 0)
+                path = AssetDatabase.GUIDToAssetPath(Selection.assetGUIDs[0]);
+
+            List<CEntity_Base> List = GetAsset.LoadAll<CEntity_Base>(path);
+
+            string cardList = "";
+            int count = 0;
+
+            foreach (CEntity_Base card in List)
+            {
+                string cardID = card.CardID.Replace("-", "_");
+
+                if(!String.IsNullOrEmpty(card.CardEffectClassName))
+                    card.CardEffectClassName = card.CardEffectClassName.Substring(card.CardEffectClassName.IndexOf("_") + 1);
+                EditorUtility.SetDirty(card);
+                Debug.Log($"{card.CardSpriteName.Replace("-", "_")} - {cardID} - {card.CardEffectClassName}");
+                AssetDatabase.RenameAsset(AssetDatabase.GetAssetPath(card), card.CardSpriteName.Replace("-", "_"));
+                count++;
+                EditorUtility.SetDirty(card);
+            }
+
+            Debug.Log("Cards using another class:\n" + cardList);
+            Debug.Log($"Fixed all class names in CardBaseEntity: {count}");
+            return;
+        }
     }
 }
 

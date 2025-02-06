@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using System;
-using System.Linq;
-using UnityEngine;
+using System.Collections;
 
 public partial class CardEffectFactory
 {
@@ -50,15 +47,12 @@ public partial class CardEffectFactory
 
         bool CanUseCondition(Hashtable hashtable)
         {
-            Debug.Log($"FRAGMENT CAN USE: {CardEffectCommons.IsPermanentExistsOnBattleArea(targetPermanent)}");
             if (CardEffectCommons.IsPermanentExistsOnBattleArea(targetPermanent))
             {
-                Debug.Log($"FRAGMENT CAN USE: {CardEffectCommons.CanTriggerWhenRemoveField(hashtable, targetPermanent.TopCard)}");
                 if (CardEffectCommons.CanTriggerWhenRemoveField(hashtable, targetPermanent.TopCard))
                 {
                     if (condition == null || condition())
                     {
-                        Debug.Log($"FRAGMENT CAN USE: TRUE");
                         return true;
                     }
                 }

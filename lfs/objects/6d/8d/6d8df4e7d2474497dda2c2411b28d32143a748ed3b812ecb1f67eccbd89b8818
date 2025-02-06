@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: P_156_P1
+  m_EditorClassIdentifier: 
+  CardIndex: 10459
+  cardColors: 04000000
+  PlayCost: 2
+  EvoCosts: []
+  Level: 0
+  CardName_JPN: 
+  CardName_ENG: Future Potential!
+  Form_JPN: []
+  Form_ENG:
+  - '-'
+  Attribute_JPN: []
+  Attribute_ENG:
+  - '-'
+  Type_JPN: []
+  Type_ENG:
+  - Option
+  CardSpriteName: P-156_P1
+  cardKind: 2
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: 'While you have a tamer, you may use this card ignoring
+    its color requirements.
+
+    [Main] Choose 1 Tamer. You may play 1 Digimon card
+    with the same color as the chosen tamer with a play cost of 3 or less from your
+    hand or trash without paying the cost.'
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: '-'
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: '[Security] You may play 1 tamer card from your
+    hand without paying the cost. Then, add this card to your hand.'
+  CardEffectClassName: P_156
+  DP: 0
+  rarity: 5
+  OverflowMemory: 0
+  CardID: P-156
+  MaxCountInDeck: 4

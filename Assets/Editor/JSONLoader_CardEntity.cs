@@ -131,7 +131,7 @@ namespace DCGO.CardEntities
             cardEntity.InheritedEffectDiscription_ENG = card.digivolveEffect;
             cardEntity.SecurityEffectDiscription_ENG = card.securityEffect;
 
-            cardEntity.CardEffectClassName = FixCharactersInClassName($"{card.name.english.Replace(" ", "")}_{card.cardNumber}");
+            cardEntity.CardEffectClassName = FixCharactersInClassName($"{card.cardNumber}");
 
             cardEntity.DP = intParse(card.dp);
             cardEntity.rarity = (Rarity)Enum.Parse(typeof(Rarity), card.rarity);
