@@ -69,7 +69,7 @@ namespace DCGO.CardEffects.BT19
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card) && card.Owner.LibraryCards.Count >= 1)
+                    if (card.Owner.LibraryCards.Count >= 1)
                     {
                         yield return ContinuousController.instance.StartCoroutine(new IAddTrashCardsFromLibraryTop(2, card.Owner, activateClass).AddTrashCardsFromLibraryTop());
                     }

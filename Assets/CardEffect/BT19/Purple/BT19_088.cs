@@ -54,56 +54,23 @@ namespace DCGO.CardEffects.BT19
                     return "[Main] If you have 20 or more cards in your trash, by suspending this Tamer, 1 of your [Impmon] may digivolve into [Beelzemon] in the hand or trash for a digivolution cost of 4, ignoring its digivolution requirements.";
                 }
 
-                bool CanSelectPermanentCondition(Permanent permanent)
+                bool CanSelectOwnPermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
-                    {
-                        if (permanent.TopCard.EqualsCardName("Impmon"))
-                        {
-                            foreach (CardSource cardSource in card.Owner.HandCards)
-                            {
-                                if (CanSelectCardCondition(cardSource))
-                                {
-                                    if (!cardSource.CanNotEvolve(permanent))
-                                    {
-                                        return true;
-                                    }
-                                }
-                            }
-
-                            foreach (CardSource cardSource in card.Owner.TrashCards)
-                            {
-                                if (CanSelectCardCondition(cardSource))
-                                {
-                                    if (!cardSource.CanNotEvolve(permanent))
-                                    {
-                                        return true;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                        permanent.TopCard.EqualsCardName("Impmon");
                 }
-
-                bool CanSelectCardCondition(CardSource cardSource)
-                {
-                    return cardSource.ContainsCardName("Beelzemon");
-                }
-
-
+                
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
+                    {                
+                        if (card.Owner.TrashCards.Count >= 20)
                         {
-                            if (card.Owner.TrashCards.Count >= 20)
+                            if (CardEffectCommons.CanActivateSuspendCostEffect(card))
                             {
                                 return true;
-                            }
-                        }
+                            }                           
+                        }                    
                     }
 
                     return false;
@@ -111,7 +78,7 @@ namespace DCGO.CardEffects.BT19
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOwnPermanentCondition))
                     {
                         Permanent selectedPermanent = null;
 
@@ -119,7 +86,7 @@ namespace DCGO.CardEffects.BT19
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectPermanentCondition,
+                            canTargetCondition: CanSelectOwnPermanentCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: 1,
@@ -144,6 +111,11 @@ namespace DCGO.CardEffects.BT19
 
                         if (selectedPermanent != null)
                         {
+                            bool CanSelectCardCondition(CardSource cardSource)
+                            {
+                                return cardSource.EqualsCardName("Beelzemon") && cardSource.CanPlayCardTargetFrame(selectedPermanent.PermanentFrame, false, activateClass);
+                            }
+
                             bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);
                             bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition);
 
