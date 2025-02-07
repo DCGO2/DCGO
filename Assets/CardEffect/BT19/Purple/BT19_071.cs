@@ -31,21 +31,16 @@ namespace DCGO.CardEffects.BT19
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (card.Owner.LibraryCards.Count >= 1)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(new IAddTrashCardsFromLibraryTop(2, card.Owner, activateClass).AddTrashCardsFromLibraryTop());
-
+                    if (card.Owner.LibraryCards.Count >= 1)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(new IAddTrashCardsFromLibraryTop(2, card.Owner, activateClass).AddTrashCardsFromLibraryTop());
+                    }
+                 
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBlocker(
                         targetPermanent: card.PermanentOfThisCard(), effectDuration: EffectDuration.UntilEachTurnEnd,
                         activateClass: activateClass));
@@ -83,10 +78,7 @@ namespace DCGO.CardEffects.BT19
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (card.Owner.LibraryCards.Count >= 1)
-                        {
-                            return true;
-                        }
+                        return true;
                     }
 
                     return false;
@@ -94,7 +86,10 @@ namespace DCGO.CardEffects.BT19
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(new IAddTrashCardsFromLibraryTop(2, card.Owner, activateClass).AddTrashCardsFromLibraryTop());
+                    if (card.Owner.LibraryCards.Count >= 1)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(new IAddTrashCardsFromLibraryTop(2, card.Owner, activateClass).AddTrashCardsFromLibraryTop());
+                    }
 
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBlocker(
                         targetPermanent: card.PermanentOfThisCard(), effectDuration: EffectDuration.UntilEachTurnEnd,
