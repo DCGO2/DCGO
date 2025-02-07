@@ -38,7 +38,7 @@ namespace DCGO.CardEffects.BT19
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card) &&
-                           card.Owner.HandCards.Count >= 1;
+                           CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)

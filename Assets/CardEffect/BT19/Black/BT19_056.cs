@@ -27,12 +27,12 @@ namespace DCGO.CardEffects.BT19
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.CardTraits.Contains("Dragonkin"))
+                    if (cardSource.EqualsTraits("Dragonkin"))
                     {
                         return true;
                     }
                     
-                    if (cardSource.CardTraits.Contains("Cyborg"))
+                    if (cardSource.EqualsTraits("Cyborg"))
                     {
                         return true;
                     }
@@ -42,12 +42,12 @@ namespace DCGO.CardEffects.BT19
 
                 bool CanSelectSecondCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.ContainsCardName("Ryo Akiyama"))
+                    if (cardSource.EqualsCardName("Ryo Akiyama"))
                     {
                         return true;
                     }
 
-                    if (cardSource.CardTraits.Contains("Device") && cardSource.IsOption)
+                    if (cardSource.EqualsTraits("Device") && cardSource.IsOption)
                     {
                         return true;
                     }
