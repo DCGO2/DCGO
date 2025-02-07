@@ -85,7 +85,7 @@ namespace DCGO.CardEffects.BT19
                         mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will digivolve.", "The opponent is selecting 1 Digimon that will digivolve.");
+                    selectPermanentEffect.SetUpCustomMessage($"Select 1 Digimon that will get -{1000* getMaxCount()} DP.", "The opponent is selecting 1 Digimon that will be DP reduced.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
