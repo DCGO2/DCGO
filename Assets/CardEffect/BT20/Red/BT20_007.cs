@@ -9,33 +9,96 @@ namespace DCGO.CardEffects.BT20
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            if (timing == EffectTiming.None)
+            #region Start of Your Main Phase
+
+            if (timing == EffectTiming.OnStartMainPhase)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpICardEffect("Trash 1 [Dracomon]/[Examon] text card, <Draw 1> and gain 1 memory", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
-                    return "";
+                    return
+                        "[Start of Your Main Phase] By trashing 1 card with [Dracomon]/[Examon] in its text in your hand, <Draw 1> and gain 1 memory.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return true;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.IsOwnerTurn(card);
+                }
+
+                bool HasDragonText(CardSource cardSource)
+                {
+                    return cardSource.HasText("Dracomon") ||
+                           cardSource.HasText("Examon");
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return true;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.HasMatchConditionOwnersHand(card, HasDragonText);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return null;
+                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                    selectHandEffect.SetUp(
+                        canTargetCondition: HasDragonText,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        canNoSelect: true,
+                        selectCardCoroutine: null,
+                        afterSelectCardCoroutine: AfterSelectCardCoroutine,
+                        maxCount: 1,
+                        canEndNotMax: false,
+                        isShowOpponent: true,
+                        mode: SelectHandEffect.Mode.Discard,
+                        selectPlayer: card.Owner,
+                        cardEffect: activateClass);
+
+                    selectHandEffect.SetUpCustomMessage("Select 1 card with [Dracomon]/[Examon] in its text to discard.",
+                        "The opponent is selecting 1 card with [Dracomon]/[Examon] in its text to discard.");
+
+                    yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+
+                    IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
+                    {
+                        if (cardSources.Count > 0)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(
+                                new DrawClass(card.Owner, 1, activateClass).Draw());
+
+                            yield return ContinuousController.instance.StartCoroutine(
+                                card.Owner.AddMemory(1, activateClass));
+                        }
+                    }
                 }
             }
+
+            #endregion
+
+            #region Your Turn - ESS
+
+            if (timing == EffectTiming.None)
+            {
+                bool Condition()
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.IsOwnerTurn(card);
+                }
+
+                cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect(
+                    changeValue: 2000,
+                    isInheritedEffect: true,
+                    card: card,
+                    condition: Condition));
+            }
+
+            #endregion
 
             return cardEffects;
         }
