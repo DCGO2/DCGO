@@ -40,7 +40,7 @@ namespace DCGO.CardEffects.BT20
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent.TopCard.ContainsTraits("Dark Dragon") || permanent.TopCard.ContainsTraits("Evil Dragon") || permanent.TopCard.ContainsTraits("DarkDragon") || permanent.TopCard.ContainsTraits("EvilDragon"))
+                        if (permanent.TopCard.EqualsTraits("Dark Dragon") || permanent.TopCard.EqualsTraits("Evil Dragon"))
                         {
                             return true;
                         }
@@ -73,7 +73,7 @@ namespace DCGO.CardEffects.BT20
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Trash 2 cards then, activate effects.", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Trash 2 cards then, gain Raid, Piercing, and +4000 DP.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -171,7 +171,7 @@ namespace DCGO.CardEffects.BT20
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Trash 2 cards then, activate effects.", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Trash 2 cards then, gain Raid, Piercing, and +4000 DP.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 

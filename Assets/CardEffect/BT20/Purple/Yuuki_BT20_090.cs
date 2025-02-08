@@ -49,8 +49,8 @@ namespace DCGO.CardEffects.BT20
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) && (permanent.TopCard.ContainsTraits("Evil Dragon") || permanent.TopCard.ContainsTraits("EvilDragon") 
-                        || permanent.TopCard.ContainsTraits("Dark Dragon") || permanent.TopCard.ContainsTraits("DarkDragon")) ;
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) && (permanent.TopCard.EqualsTraits("Evil Dragon")
+                        || permanent.TopCard.EqualsTraits("Dark Dragon"));
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

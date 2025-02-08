@@ -342,7 +342,7 @@ namespace DCGO.CardEffects.BT20
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent.TopCard.CardTraits.Contains("Dark Dragon") || permanent.TopCard.CardTraits.Contains("DarkDragon") || permanent.TopCard.CardTraits.Contains("Evil Dragon") || permanent.TopCard.CardTraits.Contains("EvilDragon"))
+                        if (permanent.TopCard.EqualsTraits("Dark Dragon") || permanent.TopCard.EqualsTraits("Evil Dragon"))
                         {
                             return true;
                         }
