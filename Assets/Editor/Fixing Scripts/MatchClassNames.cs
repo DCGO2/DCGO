@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
+using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.Analytics;
+using WebSocketSharp;
 
 namespace DCGO.Tools.Repair
 {
@@ -49,6 +51,7 @@ namespace DCGO.Tools.Repair
                 if (className == card.CardEffectClassName)
                 {
                     Debug.Log($"Matches already: {card.name}");
+                    className = "";
                     continue;
                 }
 
@@ -78,8 +81,13 @@ namespace DCGO.Tools.Repair
                     //Debug.Log($"{card.name}: {card.CardIndex} - {card.CardEffectClassName} != {className}");
                 }*/
 
-
-                //card.CardEffectClassName = className;
+                if (!className.IsNullOrEmpty())
+                {
+                    card.CardEffectClassName = className;
+                    AssetDatabase.RenameAsset(AssetDatabase.GetAssetPath(card), card.CardSpriteName.Replace("-", "_"));
+                    EditorUtility.SetDirty(card);
+                }
+                
             }
 
 
