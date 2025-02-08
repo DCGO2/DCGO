@@ -132,7 +132,7 @@ public partial class CardEffectCommons
             effectDuration: effectDuration,
             card: card,
             cardEffect: overclock,
-            timing: EffectTiming.OnAllyAttack);
+            timing: EffectTiming.OnEndTurn);
 
         if (!targetPermanent.TopCard.CanNotBeAffected(activateClass))
         {
