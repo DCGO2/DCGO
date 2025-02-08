@@ -14,7 +14,7 @@ namespace DCGO.CardEffects.BT20
             if (timing == EffectTiming.OnDeclaration)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play this card from trash with reduced cost", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Return this card to the bottom of the deck to delete 1 opponent Digimon.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -95,7 +95,7 @@ namespace DCGO.CardEffects.BT20
             if (timing == EffectTiming.OptionSkill)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(card.BaseENGCardNameFromEntity, CanUseCondition, card);
+                activateClass.SetUpICardEffect("Trash 1, Delete 1 opponent Level 4 Digimon.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 

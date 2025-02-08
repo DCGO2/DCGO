@@ -19,7 +19,7 @@ namespace DCGO.CardEffects.BT20
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return (targetPermanent.TopCard.CardTraits.Contains("Evil") && targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 3);
+                    return (targetPermanent.TopCard.EqualsTraits("Evil") && targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 3);
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 2, ignoreDigivolutionRequirement: false, card: card, condition: null));

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Assertions.Must;
 
 namespace DCGO.CardEffects.BT20
 {
@@ -14,7 +15,7 @@ namespace DCGO.CardEffects.BT20
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.CardNames.Contains("Yaamon");
+                    return targetPermanent.TopCard.EqualsCardName("Yaamon");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 0, ignoreDigivolutionRequirement: false, card: card, condition: null));
@@ -39,13 +40,12 @@ namespace DCGO.CardEffects.BT20
 
                 bool CanSelectFirstCardCondition(CardSource cardSource)
                 {
-                    return cardSource.CardTraits.Contains("Evil") || cardSource.CardTraits.Contains("Dark Dragon") || cardSource.CardTraits.Contains("Evil Dragon") ||
-                        cardSource.CardTraits.Contains("DarkDragon") || cardSource.CardTraits.Contains("EvilDragon");
+                    return cardSource.EqualsTraits("Evil") || cardSource.EqualsTraits("Dark Dragon") || cardSource.EqualsTraits("Evil Dragon");
                 }
 
                 bool CanSelectYuukiCardCondition(CardSource cardSource)
                 {
-                    return cardSource.CardNames.Contains("Yuuki");
+                    return cardSource.EqualsCardName("Yuuki");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
