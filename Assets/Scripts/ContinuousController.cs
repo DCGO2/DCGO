@@ -410,7 +410,7 @@ public class ContinuousController : MonoBehaviour
             CardSpriteName = "BT19-040-token",
             cardKind = CardKind.Digimon,
             DP = 6000,
-            CardEffectClassName = "PipeFox_BT19_040_token"
+            CardEffectClassName = "BT19_040_token"
         };
 
         await PipeFoxToken.GetCardSprite();
