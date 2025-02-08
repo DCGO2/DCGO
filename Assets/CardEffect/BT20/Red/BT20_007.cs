@@ -9,6 +9,21 @@ namespace DCGO.CardEffects.BT20
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region Alternate Digivolution
+
+            if (timing == EffectTiming.None)
+            {
+                bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.CardNames.Contains("Bebydomon");
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition,
+                    digivolutionCost: 0, ignoreDigivolutionRequirement: false, card: card, condition: null));
+            }
+
+            #endregion
+
             #region Start of Your Main Phase
 
             if (timing == EffectTiming.OnStartMainPhase)
@@ -32,8 +47,7 @@ namespace DCGO.CardEffects.BT20
 
                 bool HasDragonText(CardSource cardSource)
                 {
-                    return cardSource.HasText("Dracomon") ||
-                           cardSource.HasText("Examon");
+                    return cardSource.HasText("Dracomon") || cardSource.HasText("Examon");
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
