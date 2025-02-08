@@ -551,6 +551,11 @@ public class DataBase : MonoBehaviour
         return
             $"<Decode {colorString} ({level})> (When this Digimon would leave the battle area other than in battle, you may play 1 {colorString} Level {level} Digimon card from its digivolution cards without paying the cost.)";
     }
+    
+    public static string ExecuteEffectDiscription()
+    {
+        return "<Execute> (At the end of your turn, this Digimon may attack. At the end of that attack, delete this Digimon. Your opponent's unsuspended Digimon can also be attacked with this effect.)";
+    }
 
     public static string ReplaceToASCII(string text)
     {
