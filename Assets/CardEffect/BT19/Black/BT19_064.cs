@@ -271,13 +271,12 @@ namespace DCGO.CardEffects.BT19
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By trashing 1 option card, unsuspend", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
-                activateClass.SetIsInheritedEffect(true);
-                activateClass.SetHashString("WhenAttacking_BT19_062");
+                activateClass.SetHashString("TrashUnsuspend_BT19_062");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
                 {
-                    return "[When Attacking] (Once Per Turn) By trashing 1 Option card in the battle area, unsuspend this Digimon.";
+                    return "[When Digivolving] (Once Per Turn) By trashing 1 Option card in the battle area, unsuspend this Digimon.";
                 }
 
                 bool IsOption(Permanent permanent)
@@ -353,8 +352,7 @@ namespace DCGO.CardEffects.BT19
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By trashing 1 option card, unsuspend", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
-                activateClass.SetIsInheritedEffect(true);
-                activateClass.SetHashString("WhenAttacking_BT19_062");
+                activateClass.SetHashString("TrashUnsuspend_BT19_062");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
