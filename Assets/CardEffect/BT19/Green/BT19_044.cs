@@ -40,7 +40,7 @@ namespace DCGO.CardEffects.BT19
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.TopCard.CardNames.Contains("Henry Wong") || permanent.TopCard.CardNames.Contains("Calumon")))
+                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.TopCard.EqualsCardName("Henry Wong") || permanent.TopCard.EqualsCardName("Calumon")))
                         {
                             if (card.Owner.CanAddMemory(activateClass))
                             {

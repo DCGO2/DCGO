@@ -415,13 +415,14 @@ namespace DCGO.CardEffects.BT19
 
             #endregion
 
-            #region Your Turn - ESS
+            #region Opponents Turn - ESS
 
             if (timing == EffectTiming.None)
             {
                 bool Condition()
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && CardEffectCommons.IsOwnerTurn(card) &&
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && 
+                           CardEffectCommons.IsOpponentTurn(card) &&
                            card.PermanentOfThisCard().TopCard.EqualsTraits("Xros Heart");
                 }
 

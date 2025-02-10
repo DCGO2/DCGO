@@ -38,7 +38,7 @@ namespace DCGO.CardEffects.BT19
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Gain Piercing, +4000 DP", CanUseCondition, card);
+                activateClass.SetUpICardEffect("place 1 [Device] trait Option card from trash to battle area", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
@@ -117,7 +117,7 @@ namespace DCGO.CardEffects.BT19
             if (timing == EffectTiming.OptionSkill)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Gain Piercing, +4000 DP, then place in battle area", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Place 1 [Device] trait Option card from trash in battle area, then place this card in battle area", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
@@ -180,6 +180,8 @@ namespace DCGO.CardEffects.BT19
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlaceDelayOptionCards(card: selectedCard, cardEffect: activateClass));
                     }
+
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlaceDelayOptionCards(card: card, cardEffect: activateClass));
                 }
             }
             

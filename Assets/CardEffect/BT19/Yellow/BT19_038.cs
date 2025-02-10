@@ -141,7 +141,7 @@ namespace DCGO.CardEffects.BT19
                         DisableEffectClass invalidationClass = new DisableEffectClass();
                         invalidationClass.SetUpICardEffect("Ignore [When Digivolving] Effect", CanUseConditionDebuff, card);
                         invalidationClass.SetUpDisableEffectClass(DisableCondition: InvalidateCondition);
-                        selectedPermanent.UntilEachTurnEndEffects.Add(_ => invalidationClass);
+                        selectedPermanent.UntilOpponentTurnEndEffects.Add(_ => invalidationClass);
 
                         bool CanUseConditionDebuff(Hashtable hashtableDebuff)
                         {
@@ -262,7 +262,7 @@ namespace DCGO.CardEffects.BT19
                         DisableEffectClass invalidationClass = new DisableEffectClass();
                         invalidationClass.SetUpICardEffect("Ignore [When Digivolving] Effect", CanUseConditionDebuff, card);
                         invalidationClass.SetUpDisableEffectClass(DisableCondition: InvalidateCondition);
-                        selectedPermanent.UntilEachTurnEndEffects.Add(_ => invalidationClass);
+                        selectedPermanent.UntilOpponentTurnEndEffects.Add(_ => invalidationClass);
 
                         bool CanUseConditionDebuff(Hashtable hashtableDebuff)
                         {
