@@ -98,6 +98,15 @@ namespace DCGO.CardEffects.BT20
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    yield return ContinuousController.instance.StartCoroutine(
+                        CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
+                            targetPermanents: new List<Permanent>() { card.PermanentOfThisCard() },
+                            activateClass: activateClass, successProcess: _ => SuccessProcess(),
+                            failureProcess: null));
+                }
+
+                IEnumerator SuccessProcess()
+                {
                     if (card.Owner.GetBreedingAreaPermanents().Count(BreedingAreaPermanentCondition) >= 1 &&
                         card.Owner.fieldCardFrames.Count(frame => frame.IsEmptyFrame()) >= 1)
                     {
