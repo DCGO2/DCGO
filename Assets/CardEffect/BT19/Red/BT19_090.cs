@@ -45,14 +45,16 @@ namespace DCGO.CardEffects.BT19
 
                 bool IsUnsuspendedShoutmonCondition(Permanent permanent)
                 {
-                    return permanent.TopCard.EqualsCardName("Shoutmon EX6") &&
+                    return CardEffectCommons.IsOwnerPermanent(permanent, card) &&
+                           permanent.TopCard.EqualsCardName("Shoutmon EX6") &&
                            !permanent.TopCard.CanNotBeAffected(activateClass) &&
                            !permanent.IsSuspended && permanent.CanSuspend;
                 }
 
                 bool IsUnsuspendedStarmonCondition(Permanent permanent)
                 {
-                    return permanent.TopCard.EqualsCardName("ShootingStarmon") &&
+                    return CardEffectCommons.IsOwnerPermanent(permanent, card) &&
+                           permanent.TopCard.EqualsCardName("ShootingStarmon") &&
                            !permanent.TopCard.CanNotBeAffected(activateClass) &&
                            !permanent.IsSuspended && permanent.CanSuspend;
                 }
@@ -180,7 +182,7 @@ namespace DCGO.CardEffects.BT19
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine1,
                             afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
+                            mode: SelectPermanentEffect.Mode.UnTap,
                             cardEffect: activateClass);
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
@@ -195,21 +197,12 @@ namespace DCGO.CardEffects.BT19
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine1,
                             afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
+                            mode: SelectPermanentEffect.Mode.UnTap,
                             cardEffect: activateClass);
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
                         bool unsuspended = selectedPermanents.Count == 2;
-
-                        foreach (var selectedPermanent in selectedPermanents.Where(selectedPermanent => selectedPermanent != null))
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(
-                                new SuspendPermanentsClass(new List<Permanent>() { selectedPermanent },
-                                    CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
-
-                            unsuspended = unsuspended && selectedPermanent.IsSuspended;
-                        }
 
                         if (unsuspended)
                         {

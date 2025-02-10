@@ -78,7 +78,7 @@ namespace DCGO.CardEffects.BT19
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: 1,
-                        canNoSelect: true,
+                        canNoSelect: false,
                         canEndNotMax: false,
                         selectPermanentCoroutine: SelectPermanentCoroutine,
                         afterSelectPermanentCoroutine: null,
@@ -204,7 +204,7 @@ namespace DCGO.CardEffects.BT19
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("You may change the attack target to 1 of your Digimon with the [Royal Knight] trait.", CanUseCondition, card);
+                activateClass.SetUpICardEffect("You may play 1 [ADR-01 Jeri] from this Digimon's digivolution cards, then change the attack target to the  Digimon played.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
@@ -274,8 +274,11 @@ namespace DCGO.CardEffects.BT19
                             root: SelectCardEffect.Root.Custom,
                             activateETB: true));
 
-                        didPlay = true;
-                        selectedPermanent = cardSources[0].PermanentOfThisCard();
+                        if(cardSources.Count > 0)
+                        {
+                            didPlay = true;
+                            selectedPermanent = cardSources[0].PermanentOfThisCard();
+                        }
                     }
 
                     if (didPlay)

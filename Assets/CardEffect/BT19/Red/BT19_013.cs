@@ -136,7 +136,7 @@ namespace DCGO.CardEffects.BT19
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play 1 level 4 or lower [Xros Heart] Digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Play 1 play cost 4 or lower [Xros Heart] Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
@@ -154,7 +154,7 @@ namespace DCGO.CardEffects.BT19
                 bool HasXrosHeartTraitCondition(CardSource cardSource)
                 {
                     return cardSource.IsDigimon && cardSource.EqualsTraits("Xros Heart") &&
-                           cardSource.HasLevel && cardSource.Level <= 4 &&
+                           cardSource.HasPlayCost && cardSource.GetCostItself <= 4 &&
                            CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
                 }
 

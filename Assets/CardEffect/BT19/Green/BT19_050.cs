@@ -34,7 +34,8 @@ namespace DCGO.CardEffects.BT19
 
                 bool SelectOpponentDigimonOrTamer(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card);
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card) &&
+                           (permanent.IsDigimon || permanent.IsTamer);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -129,7 +130,8 @@ namespace DCGO.CardEffects.BT19
 
                 bool SelectOpponentDigimonOrTamer(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card);
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card) &&
+                           (permanent.IsDigimon || permanent.IsTamer);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

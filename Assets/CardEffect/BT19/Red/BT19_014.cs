@@ -51,7 +51,7 @@ namespace DCGO.CardEffects.BT19
                 activateClass.SetUpICardEffect(
                     "All of your opponent's Digimon get -DP for the turn then, play 1 [ShootingStarmon] from under your Tamers",
                     CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -73,7 +73,7 @@ namespace DCGO.CardEffects.BT19
                 bool PlayCardCondition(CardSource cardSource)
                 {
                     return cardSource.IsDigimon && cardSource.EqualsCardName("ShootingStarmon") &&
-                           cardSource.CanPlayCardTargetFrame(card.PermanentOfThisCard().PermanentFrame, false, activateClass);
+                           CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass, SelectCardEffect.Root.DigivolutionCards);
                 }
 
                 bool TamerHasDigimonCondition(Permanent permanent)

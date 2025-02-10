@@ -1710,6 +1710,55 @@ public class CardSource : MonoBehaviour
     }
     #endregion
 
+    #region whether this card has at least 1 card name checked when digixros that equals the string
+    /// <summary>
+    /// Used to check if specified name is exactly in cards name values ("dra" is not "Commandramon") 
+    /// </summary>
+    /// <param name="string">value to check for</param>
+    /// <author>Mike Bunch</author>
+    public bool EqualsCardNameDigiXros(string name)
+    {
+        if (string.IsNullOrEmpty(name))
+        {
+            return false;
+        }
+
+        string replaced = name.Replace(" ", "");
+        replaced = replaced.Replace(":", "");
+        string lower = name.ToLower();
+
+        return CardNames_DigiXros.Some((cardName) =>
+        cardName.Equals(name)
+        || cardName.Equals(replaced)
+        || cardName.Equals(lower)
+        || cardName.ToLower().Equals(lower));
+    }
+    #endregion
+
+    #region whether this card has at least 1 card name that contains the string
+    /// <summary>
+    /// Used to check if specified trait is within cards name values ("dra" is in "Commandramon") 
+    /// </summary>
+    /// <param trait="string">value to check for</param>
+    /// <author>Mike Bunch</author>
+    public bool ContainsCardNameDigiXros(string name)
+    {
+        if (string.IsNullOrEmpty(name))
+        {
+            return false;
+        }
+
+        string replaced = name.Replace(" ", "");
+        string lower = name.ToLower();
+
+        return CardNames_DigiXros.Some((cardName) =>
+        cardName.Contains(name)
+        || cardName.Contains(replaced)
+        || cardName.Contains(lower)
+        || cardName.ToLower().Contains(lower));
+    }
+    #endregion
+
     #region preferered frame to play
     public FieldCardFrame PreferredFrame()
     {

@@ -37,7 +37,7 @@ namespace DCGO.CardEffects.BT19
                             {
                                 if (cardSource.Owner == card.Owner)
                                 {
-                                    if (cardSource.CardNames_DigiXros.Contains("Nene Amano"))
+                                    if (cardSource.EqualsCardNameDigiXros("Nene Amano"))
                                     {
                                         return true;
                                     }

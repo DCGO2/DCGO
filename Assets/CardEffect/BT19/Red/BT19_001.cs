@@ -22,7 +22,7 @@ namespace DCGO.CardEffects.BT19
                 string EffectDescription()
                 {
                     return
-                        "[When Attacking] (Once Per Turn) By placing 1 Digimon card with the [Xros Heart]/[Blue Flare] trait rom your hand under any of your Tamers.";
+                        "[When Attacking] (Once Per Turn) By placing 1 Digimon card with the [Xros Heart]/[Blue Flare] trait from your hand under any of your Tamers.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
