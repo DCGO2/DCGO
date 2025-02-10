@@ -488,6 +488,10 @@ public class GManager : MonoBehaviour
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.T))
             StartCoroutine(TrashCard());
 
+        //Top deck a card
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.L))
+            StartCoroutine(TopDeckCard());
+
         //Place Top Security
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.R))
             StartCoroutine(PlaceInSecurity());
@@ -538,7 +542,30 @@ public class GManager : MonoBehaviour
         yield return StartCoroutine(selectHandEffect.Activate());
 
         yield return StartCoroutine(turnStateMachine.SetMainPhase());
-    }    
+    }
+
+    IEnumerator TopDeckCard()
+    {
+        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+        selectHandEffect.SetUp(
+            selectPlayer: You,
+            canTargetCondition: (CardSource) => true,
+            canTargetCondition_ByPreSelecetedList: null,
+            canEndSelectCondition: null,
+            maxCount: 1,
+            canNoSelect: true,
+            canEndNotMax: false,
+            isShowOpponent: true,
+            selectCardCoroutine: null,
+            afterSelectCardCoroutine: null,
+            mode: SelectHandEffect.Mode.PutLibraryTop,
+            cardEffect: null);
+
+        yield return StartCoroutine(selectHandEffect.Activate());
+
+        yield return StartCoroutine(turnStateMachine.SetMainPhase());
+    }
 
     IEnumerator PlaceInSecurity()
     {
