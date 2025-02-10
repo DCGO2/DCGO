@@ -88,7 +88,7 @@ namespace DCGO.CardEffects.BT19
                 bool PlayCardCondition(CardSource cardSource)
                 {
                     return cardSource.IsDigimon && cardSource.EqualsCardName("ShootingStarmon") &&
-                           cardSource.CanPlayCardTargetFrame(card.PermanentOfThisCard().PermanentFrame, false, activateClass);
+                           CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass, SelectCardEffect.Root.DigivolutionCards);
                 }
 
                 bool TamerHasDigimonCondition(Permanent permanent)
