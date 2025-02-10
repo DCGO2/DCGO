@@ -1,13 +1,9 @@
-﻿using System.Collections;
+﻿using Photon.Pun;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
-using System.Linq;
-using Photon;
-using Photon.Pun;
-using System.IO;
-using System;
 
 public class GManager : MonoBehaviour
 {
@@ -472,5 +468,118 @@ public class GManager : MonoBehaviour
                 }
             }
         }
+
+        AllowAlphaInputs();
+    }
+
+    void AllowAlphaInputs()
+    {
+        if (turnStateMachine == null)
+            return;
+        
+        if (!Application.version.Contains("A"))
+            return;
+
+        //Draw a card
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.D))
+            StartCoroutine(DrawCard());
+
+        //Trash a card
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.T))
+            StartCoroutine(TrashCard());
+
+        //Place Top Security
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.R))
+            StartCoroutine(PlaceInSecurity());
+
+        //Gain Memory
+        if(Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Equals))
+            StartCoroutine(AlterMemory(1));
+
+        //Lose Memory
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Minus))
+            StartCoroutine(AlterMemory(-1));
+    }
+
+    IEnumerator DrawCard()
+    {
+        yield return StartCoroutine(new DrawClass(You, 1, null).Draw());
+
+        yield return StartCoroutine(turnStateMachine.SetMainPhase());
+    }
+
+    IEnumerator AlterMemory(int value)
+    {
+        yield return StartCoroutine(You.AddMemory(value, null));
+
+        yield return StartCoroutine(turnStateMachine.SetMainPhase());
+
+        yield return StartCoroutine(autoProcessing.EndTurnCheck());
+    }
+
+    IEnumerator TrashCard()
+    {
+        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+        selectHandEffect.SetUp(
+            selectPlayer: You,
+            canTargetCondition: (CardSource) => true,
+            canTargetCondition_ByPreSelecetedList: null,
+            canEndSelectCondition: null,
+            maxCount: 1,
+            canNoSelect: true,
+            canEndNotMax: false,
+            isShowOpponent: true,
+            selectCardCoroutine: null,
+            afterSelectCardCoroutine: null,
+            mode: SelectHandEffect.Mode.Discard,
+            cardEffect: null);
+
+        yield return StartCoroutine(selectHandEffect.Activate());
+
+        yield return StartCoroutine(turnStateMachine.SetMainPhase());
+    }    
+
+    IEnumerator PlaceInSecurity()
+    {
+        CardSource selectedSource = null;
+
+        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+        selectHandEffect.SetUp(
+            selectPlayer: You,
+            canTargetCondition: (CardSource) => true,
+            canTargetCondition_ByPreSelecetedList: null,
+            canEndSelectCondition: null,
+            maxCount: 1,
+            canNoSelect: true,
+            canEndNotMax: false,
+            isShowOpponent: true,
+            selectCardCoroutine: CardSelectCoroutine,
+            afterSelectCardCoroutine: null,
+            mode: SelectHandEffect.Mode.Custom,
+            cardEffect: null);
+
+        yield return StartCoroutine(selectHandEffect.Activate());
+
+        IEnumerator CardSelectCoroutine(CardSource source)
+        {
+            if (source != null)
+                selectedSource = source;
+
+            yield return null;
+        }
+
+        if (selectedSource != null)
+        {
+            // Place this card face up as the top security card
+            yield return StartCoroutine(CardObjectController.AddSecurityCard(selectedSource, toTop: true, faceUp: true));
+
+            yield return StartCoroutine(GetComponent<Effects>().CreateRecoveryEffect(selectedSource.Owner));
+
+            yield return StartCoroutine(new IAddSecurity(selectedSource.Owner).AddSecurity());
+        }
+
+        yield return StartCoroutine(turnStateMachine.SetMainPhase());
     }
 }
