@@ -107,11 +107,6 @@ namespace DCGO.CardEffects.BT19
                     return cardSource.IsDigimon && cardSource.EqualsCardName("Pickmons");
                 }
 
-                bool RootCondition(SelectCardEffect.Root root)
-                {
-                    return root == SelectCardEffect.Root.DigivolutionCards;
-                }
-
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanActivateOnDeletion(card) &&
@@ -121,7 +116,8 @@ namespace DCGO.CardEffects.BT19
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     bool played = false;
-                    Permanent selectedPermanent = null;
+                    Permanent selectedTamer = null;
+                    List<CardSource> selectedCards = new List<CardSource>();
 
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
@@ -144,15 +140,13 @@ namespace DCGO.CardEffects.BT19
 
                     IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
-                        selectedPermanent = permanent;
+                        selectedTamer = permanent;
 
                         yield return null;
                     }
 
-                    if (selectedPermanent != null)
+                    if (selectedTamer != null)
                     {
-                        List<CardSource> selectedCards = new List<CardSource>();
-
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                         selectCardEffect.SetUp(
@@ -168,7 +162,7 @@ namespace DCGO.CardEffects.BT19
                             isShowOpponent: true,
                             mode: SelectCardEffect.Mode.Custom,
                             root: SelectCardEffect.Root.Custom,
-                            customRootCardList: selectedPermanent.DigivolutionCards,
+                            customRootCardList: selectedTamer.DigivolutionCards,
                             canLookReverseCard: true,
                             selectPlayer: card.Owner,
                             cardEffect: activateClass);
@@ -187,21 +181,23 @@ namespace DCGO.CardEffects.BT19
                             yield return null;
                         }
 
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                            cardSources: selectedCards,
-                            activateClass: activateClass,
-                            payCost: false,
-                            isTapped: false,
-                            root: SelectCardEffect.Root.DigivolutionCards,
-                            activateETB: true));
+                        if(selectedCards.Count > 0)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
+                                cardSources: selectedCards,
+                                activateClass: activateClass,
+                                payCost: false,
+                                isTapped: false,
+                                root: SelectCardEffect.Root.DigivolutionCards,
+                                activateETB: true));
 
-                        played = true;
+                            played = true;
+                        }
                     }
 
                     if (played)
                     {
-                        List<Permanent> playedPermanent =
-                            CardEffectCommons.GetPlayedPermanentsFromEnterFieldHashtable(hashtable, RootCondition);
+                        List<Permanent> playedPermanent = selectedCards.Map(source => source.PermanentOfThisCard());
                         List<CardSource> selectedSourceCards = new List<CardSource>();
 
                         IEnumerator SelectCardCoroutine(CardSource cardSource)

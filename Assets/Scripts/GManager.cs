@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GManager : MonoBehaviour
+public class GManager : MonoBehaviourPun
 {
     [Header("あなた")]
     public Player You;
@@ -484,11 +484,19 @@ public class GManager : MonoBehaviour
 
         //Draw a card
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.D))
-            StartCoroutine(DrawCard());
+        {
+            photonView.RPC("DrawCardRPC", RpcTarget.Others);
+            StartCoroutine(DrawCard(You));
+        }
+           
 
         //Trash a card
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.T))
-            StartCoroutine(TrashCard());
+        {
+            photonView.RPC("TrashCardRPC", RpcTarget.Others);
+            StartCoroutine(TrashCard(You));
+        }
+            
 
         //Top deck a card
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.L))
@@ -500,21 +508,48 @@ public class GManager : MonoBehaviour
 
         //Gain Memory
         if(Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Equals))
-            StartCoroutine(AlterMemory(1));
+        {
+            photonView.RPC("AlterMemoryRPC", RpcTarget.Others, 1);
+            StartCoroutine(AlterMemory(You, 1));
+        }
+            
 
         //Lose Memory
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Minus))
-            StartCoroutine(AlterMemory(-1));
+        {
+            photonView.RPC("AlterMemoryRPC", RpcTarget.Others, -1);
+            StartCoroutine(AlterMemory(You, -1));
+        }
+            
     }
 
-    IEnumerator DrawCard()
+    [PunRPC]
+    public void DrawCardRPC()
     {
-        yield return StartCoroutine(new DrawClass(You, 1, null).Draw());
+        StartCoroutine(DrawCard(Opponent));
+    }
+
+    [PunRPC]
+    public void TrashCardRPC()
+    {
+        StartCoroutine(TrashCard(Opponent));
+    }
+
+    [PunRPC]
+    public void AlterMemoryRPC(int value)
+    {
+        StartCoroutine(AlterMemory(Opponent,value));
+    }
+
+
+    public IEnumerator DrawCard(Player _player)
+    {
+        yield return StartCoroutine(new DrawClass(_player, 1, null).Draw());
 
         yield return StartCoroutine(turnStateMachine.SetMainPhase());
     }
 
-    IEnumerator AlterMemory(int value)
+    IEnumerator AlterMemory(Player _player, int value)
     {
         yield return StartCoroutine(You.AddMemory(value, null));
 
@@ -523,12 +558,12 @@ public class GManager : MonoBehaviour
         yield return StartCoroutine(autoProcessing.EndTurnCheck());
     }
 
-    IEnumerator TrashCard()
+    IEnumerator TrashCard(Player _player)
     {
         SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
         selectHandEffect.SetUp(
-            selectPlayer: You,
+            selectPlayer: _player,
             canTargetCondition: (CardSource) => true,
             canTargetCondition_ByPreSelecetedList: null,
             canEndSelectCondition: null,
