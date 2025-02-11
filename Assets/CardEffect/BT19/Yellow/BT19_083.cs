@@ -91,7 +91,7 @@ namespace DCGO.CardEffects.BT19
             #endregion
 
             #region Your Turn 
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnUseOption)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Memory +1", CanUseCondition, card);

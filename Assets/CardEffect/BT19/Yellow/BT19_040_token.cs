@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace DCGO.CardEffects.BT19
+namespace DCGO.CardEffects.Tokens
 {
     public class BT19_040_token : CEntity_Effect
     {
