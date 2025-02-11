@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using System.Linq;
 
 public class SecurityObject : MonoBehaviour
 {
@@ -11,6 +12,9 @@ public class SecurityObject : MonoBehaviour
 
     [Header("セキュリティテキスト")]
     public Text SecurityText;
+
+    [Header("Face up card Icon")]
+    public GameObject faceupIcon;
 
     [Header("ライフカード")]
     public List<Image> LifeCards = new List<Image>();
@@ -62,6 +66,8 @@ public class SecurityObject : MonoBehaviour
                 }
             }
         }
+
+        GManager.OnSecurityStackChanged += CheckFaceupSecurity;
     }
 
     public void OffShowSecurityAttackObject()
@@ -157,6 +163,19 @@ public class SecurityObject : MonoBehaviour
     {
         OnClickAction?.Invoke();
         RemoveClickTarget();
+    }
+
+    public void CheckFaceupSecurity(Player changedPlayer)
+    {
+        if (player != changedPlayer)
+            return;
+
+        faceupIcon.SetActive((changedPlayer.SecurityCards.Count(cardSource => !cardSource.IsFlipped) > 0));
+    }
+
+    public void OnDestroy()
+    {
+        GManager.OnSecurityStackChanged -= CheckFaceupSecurity;
     }
 }
 

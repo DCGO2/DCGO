@@ -4011,6 +4011,8 @@ public class IAddSecurity
 
     public IEnumerator AddSecurity()
     {
+        GManager.OnSecurityStackChanged?.Invoke(_player);
+
         #region "When security cards are added" effect
 
         #region Hashtable setting
