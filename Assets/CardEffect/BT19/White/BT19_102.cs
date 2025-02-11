@@ -109,16 +109,17 @@ namespace DCGO.CardEffects.BT19
 
                 string EffectDescription()
                 {
-                    return  "[On Play] [When Digivolving] Choose 1 other Digimon. By playing level 4 or lower Digimon card from it's digivolution cards, delete the chosen Digimon.";
+                    return  "[On Play] Choose 1 other Digimon. By playing level 4 or lower Digimon card from it's digivolution cards, delete the chosen Digimon.";
                 }
 
                 bool CanSelectDigimon(Permanent permanent)
                 {
-                    return permanent != card.PermanentOfThisCard() &&
+                    return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent) &&
+                           permanent != card.PermanentOfThisCard() &&
                            permanent.DigivolutionCards.Count(CanSelectDigimonToPlay) > 0;
                 }
 
-                bool CanSelectDigimonToPlay(CardSource cardSource)
+                bool CanSelectDigimonToPlay(CardSource cardSource) 
                 {
                     if (cardSource.IsDigimon)
                     {
@@ -233,12 +234,13 @@ namespace DCGO.CardEffects.BT19
 
                 string EffectDescription()
                 {
-                    return "[When Digivolving] [When Digivolving] Choose 1 other Digimon. By playing level 4 or lower Digimon card from it's digivolution cards, delete the chosen Digimon.";
+                    return "[When Digivolving] Choose 1 other Digimon. By playing level 4 or lower Digimon card from it's digivolution cards, delete the chosen Digimon.";
                 }
 
                 bool CanSelectDigimon(Permanent permanent)
                 {
-                    return permanent != card.PermanentOfThisCard() &&
+                    return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent) &&
+                           permanent != card.PermanentOfThisCard() &&
                            permanent.DigivolutionCards.Count(CanSelectDigimonToPlay) > 0;
                 }
 

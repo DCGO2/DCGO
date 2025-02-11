@@ -25,7 +25,7 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
         addDigivolutionCardInfos.Add(digivolutionCardsInfo);
     }
 
-    #region トラッシュのカードをデジクロスに選択できる最大枚数
+    #region Max Trash Count
     int maxTrashCount(CardSource card)
     {
         int maxTrashCount = 0;
@@ -120,7 +120,7 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region テイマーの進化元のカードをデジクロスに選択できる最大枚数
+    #region Max Tamer Digivolution Cards Count
     int maxTamerDigivolutionCardsCount(CardSource card)
     {
         int maxTamerDigivolutionCardsCount = 0;
@@ -210,17 +210,14 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region 手札のカードか
+    #region Is Hand Card
     bool isHandCard(CardSource cardSource)
     {
         if (cardSource != null)
         {
             if (cardSource.Owner.HandCards.Contains(cardSource))
             {
-                if (cardSource.IsDigimon)
-                {
-                    return true;
-                }
+                return true;
             }
         }
 
@@ -228,14 +225,14 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region バトルエリアのカードか
+    #region Is Battle Area Card
     bool isBattleAreaCard(CardSource cardSource)
     {
         if (cardSource != null)
         {
             if (cardSource.PermanentOfThisCard() != null)
             {
-                if (cardSource.Owner.GetBattleAreaDigimons().Contains(cardSource.PermanentOfThisCard()))
+                if (cardSource.Owner.GetBattleAreaPermanents().Contains(cardSource.PermanentOfThisCard()))
                 {
                     if (cardSource == cardSource.PermanentOfThisCard().TopCard)
                     {
@@ -249,17 +246,14 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region トラッシュのカードか
+    #region Is Trash Card
     bool isTrashCard(CardSource cardSource)
     {
         if (cardSource != null)
         {
             if (CardEffectCommons.IsExistOnTrash(cardSource))
             {
-                if (cardSource.IsDigimon)
-                {
-                    return true;
-                }
+                return true;
             }
         }
 
@@ -267,7 +261,7 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region テイマーの進化元か
+    #region is Tamer Digivolution Card
     bool isTamerDigivolutionCard(CardSource cardSource)
     {
         if (cardSource != null)
@@ -278,10 +272,7 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
                 {
                     if (cardSource.PermanentOfThisCard().DigivolutionCards.Contains(cardSource))
                     {
-                        if (cardSource.IsDigimon)
-                        {
-                            return true;
-                        }
+                        return true;
                     }
                 }
             }
@@ -291,7 +282,7 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region デジクロスの素材として選択できる
+    #region Can Select DigiXros
     bool CanSelectDigiXros(DigiXrosConditionElement element, CardSource targetCard, CardSource card)
     {
         if (card != targetCard)
@@ -349,7 +340,7 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region デジクロス選択
+    #region Select
     public IEnumerator Select(CardSource card)
     {
         GManager.instance.turnStateMachine.isSync = true;
@@ -388,7 +379,7 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
 
                     bool canSelectField = false;
 
-                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.IsDigimon && CanSelectDigiXros(element, permanent.TopCard, card)))
+                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) =>  CanSelectDigiXros(element, permanent.TopCard, card)))
                     {
                         canSelectField = true;
                     }
@@ -414,7 +405,7 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
                     }
 
                     Func<IEnumerator> _SelectHandCard = () => SelectHandCard(digiXrosCondition, element, card);
-                    Func<IEnumerator> _SelectBattleAreaDigimon = () => SelectBattleAreaDigimon(digiXrosCondition, element, card);
+                    Func<IEnumerator> _SelectBattleAreaDigimon = () => SelectBattleAreaPermanent(digiXrosCondition, element, card);
                     Func<IEnumerator> _SelectTrashCard = () => SelectTrashCard(digiXrosCondition, element, card);
                     Func<IEnumerator> _SelectTamerDigivolutionCard = () => SelectTamerDigivolutionCard(digiXrosCondition, element, card);
                     Func<IEnumerator> _EndSelectDigiXros = () => EndSelectDigiXros();
@@ -560,7 +551,7 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region 手札のカードを選択する
+    #region Select Hand Card
 
     IEnumerator SelectHandCard(DigiXrosCondition digiXrosCondition, DigiXrosConditionElement element, CardSource card)
     {
@@ -618,10 +609,10 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region 場のデジモンのカードを選択する
-    IEnumerator SelectBattleAreaDigimon(DigiXrosCondition digiXrosCondition, DigiXrosConditionElement element, CardSource card)
+    #region 輯elect Battle Area Permanent
+    IEnumerator SelectBattleAreaPermanent(DigiXrosCondition digiXrosCondition, DigiXrosConditionElement element, CardSource card)
     {
-        bool CanSelectPermanentCondition(Permanent permanent) => permanent.TopCard.Owner.GetBattleAreaDigimons().Contains(permanent) && CanSelectDigiXros(element, permanent.TopCard, card);
+        bool CanSelectPermanentCondition(Permanent permanent) => permanent.TopCard.Owner.GetBattleAreaPermanents().Contains(permanent) && CanSelectDigiXros(element, permanent.TopCard, card);
 
         ActivateClass activateClass = new ActivateClass();
         activateClass.SetUpICardEffect("", null, card);
@@ -676,7 +667,7 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region テイマーの進化元を選択する
+    #region Select Tamer Digivolution Card
     IEnumerator SelectTamerDigivolutionCard(DigiXrosCondition digiXrosCondition, DigiXrosConditionElement element, CardSource card)
     {
         bool CanSelectCardCondition(CardSource cardSource) => CanSelectDigiXros(element, cardSource, card);
@@ -797,7 +788,7 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region トラッシュのカードを選択する
+    #region Select Trash Card
     IEnumerator SelectTrashCard(DigiXrosCondition digiXrosCondition, DigiXrosConditionElement element, CardSource card)
     {
         bool CanSelectCardCondition(CardSource cardSource) => CanSelectDigiXros(element, cardSource, card);
@@ -858,7 +849,7 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region 選択を終了する
+    #region End Select DigiXros
     IEnumerator EndSelectDigiXros()
     {
         _endSelectDigiXros = true;
@@ -866,7 +857,7 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region 選択した進化元を付与
+    #region Add Digivolution Cards
     public IEnumerator AddDigivolutiuonCards(CardSource card)
     {
         if (selectedDigicrossCards.Count >= 1)

@@ -216,6 +216,8 @@ public class GManager : MonoBehaviour
     public static Action OnReverseOpponentsCardsChanged;
     public static Action OnCardFlippedChanged;
     public static Action<bool> OnCardSuspendedChanged;
+
+    public static Action<Player> OnSecurityStackChanged;
     
     #endregion
 

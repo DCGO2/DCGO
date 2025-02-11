@@ -24,10 +24,8 @@ namespace DCGO.CardEffects.BT19
 
                 bool HasPermanentsCondition(Permanent permanent)
                 {
-                    if (permanent.IsDigimon && permanent.TopCard.EqualsCardName("Calumon") || permanent.IsTamer && permanent.TopCard.EqualsCardName("Takato Matsuki"))
-                    {
+                    if (permanent.TopCard.EqualsCardName("Calumon") || permanent.TopCard.EqualsCardName("Takato Matsuki"))
                         return true;
-                    }
 
                     return false;
                 }
@@ -47,17 +45,13 @@ namespace DCGO.CardEffects.BT19
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.HasMatchConditionOwnersPermanent(card, HasPermanentsCondition);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
-
-                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, HasPermanentsCondition))
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
-                    }
                 }
             }
             #endregion

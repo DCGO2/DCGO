@@ -25,22 +25,10 @@ namespace DCGO.CardEffects.BT19
                     return "[Security] [Opponent's Turn] When an opponent's Digimon attacks, if all of your Digimon and Tamers have the [D-Reaper] trait, for each of 1 of your [Mother D-Reaper]'s digivolution cards, the attacking Digimon get -1000 DP for the turn.";
                 }
 
-                int getMaxCount()
-                {
-                    int count = 0;
-
-                    foreach (Permanent permanent in card.Owner.GetBattleAreaPermanents().Filter(IsMotherDReaper))
-                    {
-                        if (permanent.DigivolutionCards.Count > count)
-                            count = permanent.DigivolutionCards.Count;
-                    }
-
-                    return count;
-                }
-
                 bool IsMotherDReaper(Permanent permanent)
                 {
-                    return permanent.TopCard.EqualsCardName("Mother D-Reaper");
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                           permanent.TopCard.EqualsCardName("Mother D-Reaper");
                 }
 
                 bool HaveAllDReaper()
@@ -78,14 +66,44 @@ namespace DCGO.CardEffects.BT19
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
                     Permanent selectedPermanent = GManager.instance.attackProcess.AttackingPermanent;
+                    Permanent selectedMother = null;
 
-                    if (selectedPermanent != null)
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                    selectPermanentEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: IsMotherDReaper,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: false,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: SelectMotherCoroutine,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    selectPermanentEffect.SetUpCustomMessage($"Choose 1 [Mother D-Reaper].", "The opponent is choosing 1 [Mother D-Reaper].");
+
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                    IEnumerator SelectMotherCoroutine(Permanent permanent)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
-                                                        targetPermanent: selectedPermanent,
-                                                        changeValue: -1000 * getMaxCount(),
-                                                        effectDuration: EffectDuration.UntilEachTurnEnd,
-                                                        activateClass: activateClass));
+                        selectedMother = permanent;
+
+                        yield return null;
+                    }
+
+                    if (selectedMother != null)
+                    {
+                        if (selectedPermanent != null)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
+                                                            targetPermanent: selectedPermanent,
+                                                            changeValue: -1000 * selectedMother.DigivolutionCards.Count,
+                                                            effectDuration: EffectDuration.UntilEachTurnEnd,
+                                                            activateClass: activateClass));
+                        }
                     }
                 }
             }

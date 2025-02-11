@@ -46,7 +46,7 @@ namespace DCGO.CardEffects.BT19
 
                 bool HasDigimon(Permanent permanent)
                 {
-                    return CardEffectCommons.IsOpponentPermanent(permanent, card) && permanent.IsDigimon;
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -152,7 +152,7 @@ namespace DCGO.CardEffects.BT19
 
                 bool HasDigimon(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
