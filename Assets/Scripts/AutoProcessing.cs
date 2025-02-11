@@ -611,6 +611,31 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
         }
         #endregion
 
+        #region Effects of faceup security
+        foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
+        {
+            foreach (CardSource source in player.SecurityCards)
+            {
+                if (source.IsFlipped)
+                    continue;
+
+                foreach (ICardEffect cardEffect in source.EffectList(timing).Filter(cardEffect => cardEffectCondition == null || cardEffectCondition(cardEffect)))
+                {
+                    if (cardEffect is ActivateICardEffect)
+                    {
+                        if (!cardEffect.IsBackgroundProcess)
+                        {
+                            if (cardEffect.CanTrigger(hashtable))
+                            {
+                                skillInfos.Add(new SkillInfo(cardEffect, hashtable, timing));
+                            }
+                        }
+                    }
+                }
+            }
+        }            
+        #endregion
+
         return skillInfos;
     }
     #endregion
