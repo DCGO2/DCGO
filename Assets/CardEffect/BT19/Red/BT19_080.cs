@@ -34,7 +34,7 @@ namespace DCGO.CardEffects.BT19
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent.IsDigimon && permanent.TopCard.EqualsCardName("Growlmon") || permanent.IsDigimon && permanent.TopCard.EqualsCardName("Gallantmon"))
+                        if (permanent.IsDigimon && permanent.TopCard.ContainsCardName("Growlmon") || permanent.IsDigimon && permanent.TopCard.ContainsCardName("Gallantmon"))
                         {
                             return true;
                         }
