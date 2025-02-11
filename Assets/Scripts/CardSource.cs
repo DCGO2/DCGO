@@ -1723,7 +1723,6 @@ public class CardSource : MonoBehaviour
         }
 
         string replaced = name.Replace(" ", "");
-        replaced = replaced.Replace(":", "");
         string lower = name.ToLower();
 
         return CardNames_DigiXros.Some((cardName) =>
