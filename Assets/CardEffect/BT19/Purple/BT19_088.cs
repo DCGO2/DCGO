@@ -78,6 +78,8 @@ namespace DCGO.CardEffects.BT19
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
+                    yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(new List<Permanent>() { card.PermanentOfThisCard() }, CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
+
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOwnPermanentCondition))
                     {
                         Permanent selectedPermanent = null;
@@ -113,7 +115,7 @@ namespace DCGO.CardEffects.BT19
                         {
                             bool CanSelectCardCondition(CardSource cardSource)
                             {
-                                return cardSource.EqualsCardName("Beelzemon") && cardSource.CanPlayCardTargetFrame(selectedPermanent.PermanentFrame, false, activateClass);
+                                return cardSource.EqualsCardName("Beelzemon") && cardSource.CanPlayCardTargetFrame(selectedPermanent.PermanentFrame, false, activateClass, ignore:CardEffectCommons.IgnoreRequirement.All);
                             }
 
                             bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);
@@ -156,7 +158,8 @@ namespace DCGO.CardEffects.BT19
                                     ignoreDigivolutionRequirementFixedCost: 4,
                                     isHand: fromHand,
                                     activateClass: activateClass,
-                                    successProcess: null));
+                                    successProcess: null,
+                                    ignoreRequirements:CardEffectCommons.IgnoreRequirement.All));
                             }
                         }
                     }
