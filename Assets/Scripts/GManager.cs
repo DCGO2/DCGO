@@ -477,7 +477,7 @@ public class GManager : MonoBehaviour
         if (turnStateMachine == null)
             return;
         
-        if (!Application.version.Contains("A"))
+        if (!Application.version.Contains("a"))
             return;
 
         //Draw a card
