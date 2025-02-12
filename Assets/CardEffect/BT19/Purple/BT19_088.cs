@@ -115,7 +115,7 @@ namespace DCGO.CardEffects.BT19
                         {
                             bool CanSelectCardCondition(CardSource cardSource)
                             {
-                                return cardSource.EqualsCardName("Beelzemon") && cardSource.CanPlayCardTargetFrame(selectedPermanent.PermanentFrame, false, activateClass, ignore:CardEffectCommons.IgnoreRequirement.All);
+                                return cardSource.EqualsCardName("Beelzemon");
                             }
 
                             bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);
@@ -152,7 +152,7 @@ namespace DCGO.CardEffects.BT19
                                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
                                     targetPermanent: selectedPermanent,
                                     cardCondition: CanSelectCardCondition,
-                                    payCost: false,
+                                    payCost: true,
                                     reduceCostTuple: null,
                                     fixedCostTuple: null,
                                     ignoreDigivolutionRequirementFixedCost: 4,
