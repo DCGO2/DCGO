@@ -141,7 +141,7 @@ namespace DCGO.CardEffects.BT19
                         DisableEffectClass invalidationClass = new DisableEffectClass();
                         invalidationClass.SetUpICardEffect("Ignore [When Digivolving] Effect", CanUseConditionDebuff, card);
                         invalidationClass.SetUpDisableEffectClass(DisableCondition: InvalidateCondition);
-                        selectedPermanent.UntilOpponentTurnEndEffects.Add(_ => invalidationClass);
+                        selectedPermanent.UntilOwnerTurnEndEffects.Add(_ => invalidationClass);
 
                         bool CanUseConditionDebuff(Hashtable hashtableDebuff)
                         {
@@ -150,20 +150,28 @@ namespace DCGO.CardEffects.BT19
 
                         bool InvalidateCondition(ICardEffect cardEffect)
                         {
+                            UnityEngine.Debug.Log($"DISABLE CLASS: {selectedPermanent.TopCard}");
                             if (selectedPermanent.TopCard != null)
                             {
+                                UnityEngine.Debug.Log($"DISABLE CLASS: {cardEffect}");
                                 if (cardEffect != null)
                                 {
+                                    UnityEngine.Debug.Log($"DISABLE CLASS: {cardEffect.EffectSourceCard}");
                                     if (cardEffect.EffectSourceCard != null)
                                     {
+                                        UnityEngine.Debug.Log($"DISABLE CLASS: {isExistOnField(cardEffect.EffectSourceCard)}");
                                         if (isExistOnField(cardEffect.EffectSourceCard))
                                         {
+                                            UnityEngine.Debug.Log($"DISABLE CLASS: {(cardEffect.EffectSourceCard.PermanentOfThisCard() == selectedPermanent)}");
                                             if (cardEffect.EffectSourceCard.PermanentOfThisCard() == selectedPermanent)
                                             {
+                                                UnityEngine.Debug.Log($"DISABLE CLASS: {cardEffect.IsWhenDigivolving}");
                                                 if (cardEffect.IsWhenDigivolving)
                                                 {
+                                                    UnityEngine.Debug.Log($"DISABLE CLASS: {!selectedPermanent.TopCard.CanNotBeAffected(activateClass)}");
                                                     if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
                                                     {
+                                                        UnityEngine.Debug.Log($"DISABLE CLASS: DONE");
                                                         return true;
                                                     }
                                                 }
@@ -262,7 +270,7 @@ namespace DCGO.CardEffects.BT19
                         DisableEffectClass invalidationClass = new DisableEffectClass();
                         invalidationClass.SetUpICardEffect("Ignore [When Digivolving] Effect", CanUseConditionDebuff, card);
                         invalidationClass.SetUpDisableEffectClass(DisableCondition: InvalidateCondition);
-                        selectedPermanent.UntilOpponentTurnEndEffects.Add(_ => invalidationClass);
+                        selectedPermanent.UntilOwnerTurnEndEffects.Add(_ => invalidationClass);
 
                         bool CanUseConditionDebuff(Hashtable hashtableDebuff)
                         {
