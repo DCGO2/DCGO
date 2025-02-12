@@ -48,7 +48,7 @@ namespace DCGO.CardEffects.BT19
                     return CardEffectCommons.IsOwnerPermanent(permanent, card) &&
                            permanent.TopCard.EqualsCardName("Shoutmon EX6") &&
                            !permanent.TopCard.CanNotBeAffected(activateClass) &&
-                           !permanent.IsSuspended && permanent.CanSuspend;
+                           permanent.IsSuspended;
                 }
 
                 bool IsUnsuspendedStarmonCondition(Permanent permanent)
@@ -56,7 +56,7 @@ namespace DCGO.CardEffects.BT19
                     return CardEffectCommons.IsOwnerPermanent(permanent, card) &&
                            permanent.TopCard.EqualsCardName("ShootingStarmon") &&
                            !permanent.TopCard.CanNotBeAffected(activateClass) &&
-                           !permanent.IsSuspended && permanent.CanSuspend;
+                           permanent.IsSuspended;
                 }
 
                 bool IsYourDigimon(Permanent permanent)

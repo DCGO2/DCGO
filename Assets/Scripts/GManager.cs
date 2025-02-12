@@ -488,7 +488,6 @@ public class GManager : MonoBehaviourPun
             photonView.RPC("DrawCardRPC", RpcTarget.Others);
             StartCoroutine(DrawCard(You));
         }
-           
 
         //Trash a card
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.T))
@@ -496,28 +495,32 @@ public class GManager : MonoBehaviourPun
             photonView.RPC("TrashCardRPC", RpcTarget.Others);
             StartCoroutine(TrashCard(You));
         }
-            
 
         //Top deck a card
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.L))
-            StartCoroutine(TopDeckCard());
+        {
+            photonView.RPC("TopDeckCardRPC", RpcTarget.Others);
+            StartCoroutine(TopDeckCard(You));
+        }
 
         //Place Top Security
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.R))
-            StartCoroutine(PlaceInSecurity());
+        {
+            photonView.RPC("PlaceInSecurityRPC", RpcTarget.Others);
+            StartCoroutine(PlaceInSecurity(You));
+        }
 
         //Gain Memory
         if(Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Equals))
         {
-            photonView.RPC("AlterMemoryRPC", RpcTarget.Others, 1);
+            photonView.RPC("AlterMemoryRPC", RpcTarget.Others, -1);
             StartCoroutine(AlterMemory(You, 1));
         }
-            
 
         //Lose Memory
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Minus))
         {
-            photonView.RPC("AlterMemoryRPC", RpcTarget.Others, -1);
+            photonView.RPC("AlterMemoryRPC", RpcTarget.Others, 1);
             StartCoroutine(AlterMemory(You, -1));
         }
             
@@ -533,6 +536,18 @@ public class GManager : MonoBehaviourPun
     public void TrashCardRPC()
     {
         StartCoroutine(TrashCard(Opponent));
+    }
+
+    [PunRPC]
+    public void TopDeckCardRPC()
+    {
+        StartCoroutine(TopDeckCard(Opponent));
+    }
+
+    [PunRPC]
+    public void PlaceInSecurityRPC()
+    {
+        StartCoroutine(PlaceInSecurity(Opponent));
     }
 
     [PunRPC]
@@ -567,9 +582,9 @@ public class GManager : MonoBehaviourPun
             canTargetCondition: (CardSource) => true,
             canTargetCondition_ByPreSelecetedList: null,
             canEndSelectCondition: null,
-            maxCount: 1,
+            maxCount: _player.HandCards.Count,
             canNoSelect: true,
-            canEndNotMax: false,
+            canEndNotMax: true,
             isShowOpponent: true,
             selectCardCoroutine: null,
             afterSelectCardCoroutine: null,
@@ -581,18 +596,18 @@ public class GManager : MonoBehaviourPun
         yield return StartCoroutine(turnStateMachine.SetMainPhase());
     }
 
-    IEnumerator TopDeckCard()
+    IEnumerator TopDeckCard(Player _player)
     {
         SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
         selectHandEffect.SetUp(
-            selectPlayer: You,
+            selectPlayer: _player,
             canTargetCondition: (CardSource) => true,
             canTargetCondition_ByPreSelecetedList: null,
             canEndSelectCondition: null,
-            maxCount: 1,
+            maxCount: _player.HandCards.Count,
             canNoSelect: true,
-            canEndNotMax: false,
+            canEndNotMax: true,
             isShowOpponent: true,
             selectCardCoroutine: null,
             afterSelectCardCoroutine: null,
@@ -604,14 +619,14 @@ public class GManager : MonoBehaviourPun
         yield return StartCoroutine(turnStateMachine.SetMainPhase());
     }
 
-    IEnumerator PlaceInSecurity()
+    IEnumerator PlaceInSecurity(Player _player)
     {
         CardSource selectedSource = null;
 
         SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
         selectHandEffect.SetUp(
-            selectPlayer: You,
+            selectPlayer: _player,
             canTargetCondition: (CardSource) => true,
             canTargetCondition_ByPreSelecetedList: null,
             canEndSelectCondition: null,

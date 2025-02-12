@@ -104,7 +104,7 @@ namespace DCGO.CardEffects.BT19
 
                 bool IsPickmonsCardCondition(CardSource cardSource)
                 {
-                    return cardSource.IsDigimon && cardSource.EqualsCardName("Pickmons");
+                    return cardSource.IsDigiEgg && cardSource.EqualsCardName("Pickmons");
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -209,53 +209,59 @@ namespace DCGO.CardEffects.BT19
 
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
-                        selectCardEffect.SetUp(
-                            canTargetCondition: IsStarmonsCardCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            canNoSelect: () => true,
-                            selectCardCoroutine: SelectCardCoroutine,
-                            afterSelectCardCoroutine: null,
-                            message: "Select 1 [Starmons] to place on bottom of digivolution cards.",
-                            maxCount: 1,
-                            canEndNotMax: true,
-                            isShowOpponent: true,
-                            mode: SelectCardEffect.Mode.Custom,
-                            root: SelectCardEffect.Root.Trash,
-                            customRootCardList: null,
-                            canLookReverseCard: true,
-                            selectPlayer: card.Owner,
-                            cardEffect: activateClass);
+                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, IsStarmonsCardCondition))
+                        {
+                            selectCardEffect.SetUp(
+                                canTargetCondition: IsStarmonsCardCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                canNoSelect: () => true,
+                                selectCardCoroutine: SelectCardCoroutine,
+                                afterSelectCardCoroutine: null,
+                                message: "Select 1 [Starmons] to place on bottom of digivolution cards.",
+                                maxCount: 1,
+                                canEndNotMax: true,
+                                isShowOpponent: true,
+                                mode: SelectCardEffect.Mode.Custom,
+                                root: SelectCardEffect.Root.Trash,
+                                customRootCardList: null,
+                                canLookReverseCard: true,
+                                selectPlayer: card.Owner,
+                                cardEffect: activateClass);
 
-                        selectCardEffect.SetUpCustomMessage_ShowCard("Digivolution Card");
-                        selectCardEffect.SetUpCustomMessage("Select 1 [Starmons] to place on bottom of digivolution cards.",
-                            "The opponent is selecting 1 [Starmons] to place on bottom of digivolution cards.");
+                            selectCardEffect.SetUpCustomMessage_ShowCard("Digivolution Card");
+                            selectCardEffect.SetUpCustomMessage("Select 1 [Starmons] to place on bottom of digivolution cards.",
+                                "The opponent is selecting 1 [Starmons] to place on bottom of digivolution cards.");
 
-                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                        }
 
-                        selectCardEffect.SetUp(
-                            canTargetCondition: IsPickmonsCardCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            canNoSelect: () => true,
-                            selectCardCoroutine: SelectCardCoroutine,
-                            afterSelectCardCoroutine: null,
-                            message: "Select 1 [Pickmons] to place on bottom of digivolution cards.",
-                            maxCount: 1,
-                            canEndNotMax: true,
-                            isShowOpponent: true,
-                            mode: SelectCardEffect.Mode.Custom,
-                            root: SelectCardEffect.Root.Trash,
-                            customRootCardList: null,
-                            canLookReverseCard: true,
-                            selectPlayer: card.Owner,
-                            cardEffect: activateClass);
+                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, IsPickmonsCardCondition))
+                        {
+                            selectCardEffect.SetUp(
+                                canTargetCondition: IsPickmonsCardCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                canNoSelect: () => true,
+                                selectCardCoroutine: SelectCardCoroutine,
+                                afterSelectCardCoroutine: null,
+                                message: "Select 1 [Pickmons] to place on bottom of digivolution cards.",
+                                maxCount: 1,
+                                canEndNotMax: true,
+                                isShowOpponent: true,
+                                mode: SelectCardEffect.Mode.Custom,
+                                root: SelectCardEffect.Root.Trash,
+                                customRootCardList: null,
+                                canLookReverseCard: true,
+                                selectPlayer: card.Owner,
+                                cardEffect: activateClass);
 
-                        selectCardEffect.SetUpCustomMessage_ShowCard("Digivolution Card");
-                        selectCardEffect.SetUpCustomMessage("Select 1 [Pickmons] to place on bottom of digivolution cards.",
-                            "The opponent is selecting 1 [Pickmons] to place on bottom of digivolution cards.");
+                            selectCardEffect.SetUpCustomMessage_ShowCard("Digivolution Card");
+                            selectCardEffect.SetUpCustomMessage("Select 1 [Pickmons] to place on bottom of digivolution cards.",
+                                "The opponent is selecting 1 [Pickmons] to place on bottom of digivolution cards.");
 
-                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                        }
 
                         yield return ContinuousController.instance.StartCoroutine(playedPermanent[0]
                             .AddDigivolutionCardsBottom(selectedSourceCards, activateClass));
