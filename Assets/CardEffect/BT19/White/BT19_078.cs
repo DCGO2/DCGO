@@ -25,22 +25,10 @@ namespace DCGO.CardEffects.BT19
                     return "[On Play] For each digivolution card of 1 of your [Mother D-Reaper]s, 1 of your opponent's Digimon gets -1000 for the turn.";
                 }
 
-                int getMaxCount()
-                {
-                    int count = 0;
-
-                    foreach (Permanent permanent in card.Owner.GetBattleAreaPermanents().Filter(IsMotherDReaper))
-                    {
-                        if (permanent.DigivolutionCards.Count > count)
-                            count = permanent.DigivolutionCards.Count;
-                    }
-
-                    return count;
-                }
-
                 bool IsMotherDReaper(Permanent permanent)
                 {
-                    return permanent.TopCard.EqualsCardName("Mother D-Reaper");
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                           permanent.TopCard.EqualsCardName("Mother D-Reaper");
                 }
 
                 bool CanSelectOpponentsDigimon(Permanent permanent)
@@ -68,42 +56,70 @@ namespace DCGO.CardEffects.BT19
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
+                    Permanent selectedMother = null;
                     Permanent selectedPermanent = null;
 
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
                         selectPlayer: card.Owner,
+                        canTargetCondition: IsMotherDReaper,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: false,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: SelectMotherCoroutine,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    selectPermanentEffect.SetUpCustomMessage($"Choose 1 [Mother D-Reaper].", "The opponent is choosing 1 [Mother D-Reaper].");
+
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                    IEnumerator SelectMotherCoroutine(Permanent permanent)
+                    {
+                        selectedMother = permanent;
+
+                        yield return null;
+                    }
+
+                    if(selectedMother != null)
+                    {
+                        selectPermanentEffect.SetUp(
+                        selectPlayer: card.Owner,
                         canTargetCondition: CanSelectOpponentsDigimon,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: 1,
-                        canNoSelect: true,
+                        canNoSelect: false,
                         canEndNotMax: false,
                         selectPermanentCoroutine: SelectPermanentCoroutine,
                         afterSelectPermanentCoroutine: null,
                         mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                    selectPermanentEffect.SetUpCustomMessage($"Select 1 Digimon that will get -{1000* getMaxCount()} DP.", "The opponent is selecting 1 Digimon that will be DP reduced.");
+                        selectPermanentEffect.SetUpCustomMessage($"Select 1 Digimon that will get -{1000 * selectedMother.DigivolutionCards.Count} DP.", "The opponent is selecting 1 Digimon that will be DP reduced.");
 
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                    {
-                        selectedPermanent = permanent;
+                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                        {
+                            selectedPermanent = permanent;
 
-                        yield return null;
-                    }
+                            yield return null;
+                        }
 
-                    if (selectedPermanent != null)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
-                                                        targetPermanent: selectedPermanent,
-                                                        changeValue: -1000 * getMaxCount(),
-                                                        effectDuration: EffectDuration.UntilEachTurnEnd,
-                                                        activateClass: activateClass));
-                    }
+                        if (selectedPermanent != null)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
+                                                            targetPermanent: selectedPermanent,
+                                                            changeValue: -1000 * selectedMother.DigivolutionCards.Count,
+                                                            effectDuration: EffectDuration.UntilEachTurnEnd,
+                                                            activateClass: activateClass));
+                        }
+                    }                    
                 }
             }
             #endregion
@@ -204,7 +220,7 @@ namespace DCGO.CardEffects.BT19
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("You may change the attack target to 1 of your Digimon with the [Royal Knight] trait.", CanUseCondition, card);
+                activateClass.SetUpICardEffect("You may play 1 [ADR-01 Jeri] from this Digimon's digivolution cards, then change the attack target to the  Digimon played.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
@@ -274,8 +290,11 @@ namespace DCGO.CardEffects.BT19
                             root: SelectCardEffect.Root.Custom,
                             activateETB: true));
 
-                        didPlay = true;
-                        selectedPermanent = cardSources[0].PermanentOfThisCard();
+                        if(cardSources.Count > 0)
+                        {
+                            didPlay = true;
+                            selectedPermanent = cardSources[0].PermanentOfThisCard();
+                        }
                     }
 
                     if (didPlay)

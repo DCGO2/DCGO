@@ -50,7 +50,7 @@ namespace DCGO.CardEffects.BT19
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play tokens, give alliance and attack", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -60,7 +60,8 @@ namespace DCGO.CardEffects.BT19
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card);
+                    return CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card) &&
+                    card.Owner.fieldCardFrames.Count((frame) => frame.IsEmptyFrame() && frame.IsBattleAreaFrame()) >= 1;
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -79,19 +80,6 @@ namespace DCGO.CardEffects.BT19
                 bool CanPlayTokens(string cardName)
                 {                
                     return !card.Owner.GetBattleAreaPermanents().Some(permanent => permanent.TopCard.EqualsCardName(cardName));
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (card.Owner.fieldCardFrames.Count((frame) => frame.IsEmptyFrame() && frame.IsBattleAreaFrame()) >= 1)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)

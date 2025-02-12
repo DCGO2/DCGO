@@ -32,85 +32,6 @@ namespace DCGO.CardEffects.BT19
             
             #endregion
             
-            #region When Digivolving
-            
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("This Digimon gains Blocker and it gets DP+", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-                cardEffects.Add(activateClass);
-
-                string EffectDiscription()
-                {
-                    return "[When Digivolving] Until the end of your opponent's turn, this Digimon gains <Blocker> (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead) and gets +2000 DP for every 4 cards in your opponent's hand.";
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        return true;
-                    }
-
-                    return false;
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
-                {
-                    Permanent selectedPermanent = card.PermanentOfThisCard();
-
-                    CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
-                    canNotAffectedClass.SetUpICardEffect("Isn't affected by opponent's digimon's effects", CanUseCondition1, card);
-                    canNotAffectedClass.SetUpCanNotAffectedClass(CardCondition: CardCondition, SkillCondition: SkillCondition);
-                    selectedPermanent.UntilOpponentTurnEndEffects.Add((_timing) => canNotAffectedClass);
-
-                    bool CanUseCondition1(Hashtable hashtable)
-                    {
-                        return CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent);
-                    }
-
-                    bool CardCondition(CardSource cardSource)
-                    {
-                        if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
-                        {
-                            if (cardSource == selectedPermanent.TopCard)
-                            {
-                                return true;
-                            }
-                        }
-
-                        return false;
-                    }
-
-                    bool SkillCondition(ICardEffect cardEffect)
-                    {
-                        if (CardEffectCommons.IsOpponentEffect(cardEffect, card))
-                        {
-                            if (cardEffect.IsDigimonEffect)
-                            {
-                                return true;
-                            }
-                        }
-
-                        return false;
-                    }
-                    
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBlocker(
-                        targetPermanent: card.PermanentOfThisCard(),
-                        effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                        activateClass: activateClass));
-                    
-                }
-            }
-            
-            #endregion
-            
             #region On Play
             
             if (timing == EffectTiming.OnEnterFieldAnyone)
@@ -271,13 +192,12 @@ namespace DCGO.CardEffects.BT19
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By trashing 1 option card, unsuspend", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
-                activateClass.SetIsInheritedEffect(true);
-                activateClass.SetHashString("WhenAttacking_BT19_062");
+                activateClass.SetHashString("TrashUnsuspend_BT19_062");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
                 {
-                    return "[When Attacking] (Once Per Turn) By trashing 1 Option card in the battle area, unsuspend this Digimon.";
+                    return "[When Digivolving] (Once Per Turn) By trashing 1 Option card in the battle area, unsuspend this Digimon.";
                 }
 
                 bool IsOption(Permanent permanent)
@@ -353,8 +273,7 @@ namespace DCGO.CardEffects.BT19
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By trashing 1 option card, unsuspend", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
-                activateClass.SetIsInheritedEffect(true);
-                activateClass.SetHashString("WhenAttacking_BT19_062");
+                activateClass.SetHashString("TrashUnsuspend_BT19_062");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()

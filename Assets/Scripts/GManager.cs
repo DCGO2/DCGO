@@ -1,15 +1,11 @@
-﻿using System.Collections;
+﻿using Photon.Pun;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
-using System.Linq;
-using Photon;
-using Photon.Pun;
-using System.IO;
-using System;
 
-public class GManager : MonoBehaviour
+public class GManager : MonoBehaviourPun
 {
     [Header("あなた")]
     public Player You;
@@ -220,6 +216,8 @@ public class GManager : MonoBehaviour
     public static Action OnReverseOpponentsCardsChanged;
     public static Action OnCardFlippedChanged;
     public static Action<bool> OnCardSuspendedChanged;
+
+    public static Action<Player> OnSecurityStackChanged;
     
     #endregion
 
@@ -472,5 +470,195 @@ public class GManager : MonoBehaviour
                 }
             }
         }
+
+        AllowAlphaInputs();
+    }
+
+    void AllowAlphaInputs()
+    {
+        if (turnStateMachine == null)
+            return;
+        
+        if (!Application.version.Contains("a"))
+            return;
+
+        //Draw a card
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.D))
+        {
+            photonView.RPC("DrawCardRPC", RpcTarget.Others);
+            StartCoroutine(DrawCard(You));
+        }
+
+        //Trash a card
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.T))
+        {
+            photonView.RPC("TrashCardRPC", RpcTarget.Others);
+            StartCoroutine(TrashCard(You));
+        }
+
+        //Top deck a card
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.L))
+        {
+            photonView.RPC("TopDeckCardRPC", RpcTarget.Others);
+            StartCoroutine(TopDeckCard(You));
+        }
+
+        //Place Top Security
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.R))
+        {
+            photonView.RPC("PlaceInSecurityRPC", RpcTarget.Others);
+            StartCoroutine(PlaceInSecurity(You));
+        }
+
+        //Gain Memory
+        if(Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Equals))
+        {
+            photonView.RPC("AlterMemoryRPC", RpcTarget.Others, -1);
+            StartCoroutine(AlterMemory(You, 1));
+        }
+
+        //Lose Memory
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Minus))
+        {
+            photonView.RPC("AlterMemoryRPC", RpcTarget.Others, 1);
+            StartCoroutine(AlterMemory(You, -1));
+        }
+            
+    }
+
+    [PunRPC]
+    public void DrawCardRPC()
+    {
+        StartCoroutine(DrawCard(Opponent));
+    }
+
+    [PunRPC]
+    public void TrashCardRPC()
+    {
+        StartCoroutine(TrashCard(Opponent));
+    }
+
+    [PunRPC]
+    public void TopDeckCardRPC()
+    {
+        StartCoroutine(TopDeckCard(Opponent));
+    }
+
+    [PunRPC]
+    public void PlaceInSecurityRPC()
+    {
+        StartCoroutine(PlaceInSecurity(Opponent));
+    }
+
+    [PunRPC]
+    public void AlterMemoryRPC(int value)
+    {
+        StartCoroutine(AlterMemory(Opponent,value));
+    }
+
+
+    public IEnumerator DrawCard(Player _player)
+    {
+        yield return StartCoroutine(new DrawClass(_player, 1, null).Draw());
+
+        yield return StartCoroutine(turnStateMachine.SetMainPhase());
+    }
+
+    IEnumerator AlterMemory(Player _player, int value)
+    {
+        yield return StartCoroutine(You.AddMemory(value, null));
+
+        yield return StartCoroutine(turnStateMachine.SetMainPhase());
+
+        yield return StartCoroutine(autoProcessing.EndTurnCheck());
+    }
+
+    IEnumerator TrashCard(Player _player)
+    {
+        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+        selectHandEffect.SetUp(
+            selectPlayer: _player,
+            canTargetCondition: (CardSource) => true,
+            canTargetCondition_ByPreSelecetedList: null,
+            canEndSelectCondition: null,
+            maxCount: _player.HandCards.Count,
+            canNoSelect: true,
+            canEndNotMax: true,
+            isShowOpponent: true,
+            selectCardCoroutine: null,
+            afterSelectCardCoroutine: null,
+            mode: SelectHandEffect.Mode.Discard,
+            cardEffect: null);
+
+        yield return StartCoroutine(selectHandEffect.Activate());
+
+        yield return StartCoroutine(turnStateMachine.SetMainPhase());
+    }
+
+    IEnumerator TopDeckCard(Player _player)
+    {
+        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+        selectHandEffect.SetUp(
+            selectPlayer: _player,
+            canTargetCondition: (CardSource) => true,
+            canTargetCondition_ByPreSelecetedList: null,
+            canEndSelectCondition: null,
+            maxCount: _player.HandCards.Count,
+            canNoSelect: true,
+            canEndNotMax: true,
+            isShowOpponent: true,
+            selectCardCoroutine: null,
+            afterSelectCardCoroutine: null,
+            mode: SelectHandEffect.Mode.PutLibraryTop,
+            cardEffect: null);
+
+        yield return StartCoroutine(selectHandEffect.Activate());
+
+        yield return StartCoroutine(turnStateMachine.SetMainPhase());
+    }
+
+    IEnumerator PlaceInSecurity(Player _player)
+    {
+        CardSource selectedSource = null;
+
+        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+        selectHandEffect.SetUp(
+            selectPlayer: _player,
+            canTargetCondition: (CardSource) => true,
+            canTargetCondition_ByPreSelecetedList: null,
+            canEndSelectCondition: null,
+            maxCount: 1,
+            canNoSelect: true,
+            canEndNotMax: false,
+            isShowOpponent: true,
+            selectCardCoroutine: CardSelectCoroutine,
+            afterSelectCardCoroutine: null,
+            mode: SelectHandEffect.Mode.Custom,
+            cardEffect: null);
+
+        yield return StartCoroutine(selectHandEffect.Activate());
+
+        IEnumerator CardSelectCoroutine(CardSource source)
+        {
+            if (source != null)
+                selectedSource = source;
+
+            yield return null;
+        }
+
+        if (selectedSource != null)
+        {
+            // Place this card face up as the top security card
+            yield return StartCoroutine(CardObjectController.AddSecurityCard(selectedSource, toTop: true, faceUp: true));
+
+            yield return StartCoroutine(GetComponent<Effects>().CreateRecoveryEffect(selectedSource.Owner));
+
+            yield return StartCoroutine(new IAddSecurity(selectedSource.Owner).AddSecurity());
+        }
+
+        yield return StartCoroutine(turnStateMachine.SetMainPhase());
     }
 }
