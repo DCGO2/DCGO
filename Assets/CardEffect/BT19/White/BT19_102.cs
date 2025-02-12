@@ -60,7 +60,7 @@ namespace DCGO.CardEffects.BT19
                             {
                                 if (cardSource.Owner == card.Owner)
                                 {
-                                    if (cardSource.CardNames_DigiXros.Contains("Nene Amano"))
+                                    if (cardSource.EqualsCardNameDigiXros("Nene Amano"))
                                     {
                                         return true;
                                     }
@@ -76,7 +76,7 @@ namespace DCGO.CardEffects.BT19
                             {
                                 if (cardSource.Owner == card.Owner)
                                 {
-                                    if (cardSource.CardNames_DigiXros.Contains("Luminamon") || cardSource.CardNames_DigiXros.Contains("Shademon"))
+                                    if (cardSource.EqualsCardNameDigiXros("Luminamon") || cardSource.EqualsCardNameDigiXros("Shademon"))
                                     {
                                         return true;
                                     }
@@ -109,17 +109,17 @@ namespace DCGO.CardEffects.BT19
 
                 string EffectDescription()
                 {
-                    return  "[On Play] [When Digivolving] Choose 1 other Digimon. By playing level 4 or lower Digimon card from it's digivolution cards, delete the chosen Digimon.";
+                    return  "[On Play] Choose 1 other Digimon. By playing level 4 or lower Digimon card from it's digivolution cards, delete the chosen Digimon.";
                 }
 
                 bool CanSelectDigimon(Permanent permanent)
                 {
-                    return permanent.TopCard.Owner == card.Owner &&
+                    return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent) &&
                            permanent != card.PermanentOfThisCard() &&
                            permanent.DigivolutionCards.Count(CanSelectDigimonToPlay) > 0;
                 }
 
-                bool CanSelectDigimonToPlay(CardSource cardSource)
+                bool CanSelectDigimonToPlay(CardSource cardSource) 
                 {
                     if (cardSource.IsDigimon)
                     {
@@ -212,6 +212,136 @@ namespace DCGO.CardEffects.BT19
                         }
 
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedCards, activateClass: activateClass, payCost: false, isTapped: false, root: SelectCardEffect.Root.DigivolutionCards, activateETB: true));
+
+                        Hashtable hash = new Hashtable();
+                        hashtable.Add("CardEffect", activateClass);
+
+                        yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(new List<Permanent> { selectedPermanent }, hash).Destroy());
+                    }
+                }
+            }
+
+            #endregion
+
+            #region When Digivolving
+
+            if (timing == EffectTiming.OnEnterFieldAnyone)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Play level 4 from source, delete target Digimon", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
+                cardEffects.Add(activateClass);
+
+                string EffectDescription()
+                {
+                    return "[When Digivolving] Choose 1 other Digimon. By playing level 4 or lower Digimon card from it's digivolution cards, delete the chosen Digimon.";
+                }
+
+                bool CanSelectDigimon(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent) &&
+                           permanent != card.PermanentOfThisCard() &&
+                           permanent.DigivolutionCards.Count(CanSelectDigimonToPlay) > 0;
+                }
+
+                bool CanSelectDigimonToPlay(CardSource cardSource)
+                {
+                    if (cardSource.IsDigimon)
+                    {
+                        if (cardSource.HasLevel && cardSource.Level <= 4)
+                        {
+                            if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+
+                    return false;
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.HasMatchConditionPermanent(CanSelectDigimon);
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    Permanent selectedPermanent = null;
+
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                    selectPermanentEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanSelectDigimon,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: true,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: SelectPermanentCoroutine,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    selectPermanentEffect.SetUpCustomMessage($"Select 1 Digimon to play source from.", "The opponent is selecting 1 Digimon to play source from.");
+
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                    {
+                        selectedPermanent = permanent;
+
+                        yield return null;
+                    }
+
+                    if (selectedPermanent != null)
+                    {
+                        List<CardSource> selectedCards = new List<CardSource>();
+
+                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                        selectCardEffect.SetUp(
+                                    canTargetCondition: CanSelectDigimonToPlay,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    canNoSelect: () => true,
+                                    selectCardCoroutine: SelectCardCoroutine,
+                                    afterSelectCardCoroutine: null,
+                                    message: "Select 1 digivolution card to play.",
+                                    maxCount: 1,
+                                    canEndNotMax: false,
+                                    isShowOpponent: true,
+                                    mode: SelectCardEffect.Mode.Custom,
+                                    root: SelectCardEffect.Root.Custom,
+                                    customRootCardList: selectedPermanent.DigivolutionCards,
+                                    canLookReverseCard: true,
+                                    selectPlayer: card.Owner,
+                                    cardEffect: activateClass);
+
+                        selectCardEffect.SetUpCustomMessage("Select 1 digivolution card to play.", "The opponent is selecting 1 digivolution card to play.");
+
+                        yield return StartCoroutine(selectCardEffect.Activate());
+
+                        IEnumerator SelectCardCoroutine(CardSource cardSource)
+                        {
+                            selectedCards.Add(cardSource);
+
+                            yield return null;
+                        }
+
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedCards, activateClass: activateClass, payCost: false, isTapped: false, root: SelectCardEffect.Root.DigivolutionCards, activateETB: true));
+
+                        Hashtable hash = new Hashtable();
+                        hashtable.Add("CardEffect", activateClass);
+
+                        yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(new List<Permanent> { selectedPermanent }, hash).Destroy());
                     }
                 }
             }

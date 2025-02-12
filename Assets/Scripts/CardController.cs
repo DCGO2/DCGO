@@ -3972,6 +3972,8 @@ public class IReduceSecurity
 
     public IEnumerator ReduceSecurity()
     {
+        GManager.OnSecurityStackChanged?.Invoke(_player);
+
         #region "When cards are removed from security" effect
 
         #region Hashtable Setting
@@ -4011,6 +4013,8 @@ public class IAddSecurity
 
     public IEnumerator AddSecurity()
     {
+        GManager.OnSecurityStackChanged?.Invoke(_player);
+
         #region "When security cards are added" effect
 
         #region Hashtable setting

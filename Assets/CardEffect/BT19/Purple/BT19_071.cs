@@ -42,7 +42,7 @@ namespace DCGO.CardEffects.BT19
                     }
                  
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBlocker(
-                        targetPermanent: card.PermanentOfThisCard(), effectDuration: EffectDuration.UntilEachTurnEnd,
+                        targetPermanent: card.PermanentOfThisCard(), effectDuration: EffectDuration.UntilOpponentTurnEnd,
                         activateClass: activateClass));
                 }
             }
@@ -92,7 +92,7 @@ namespace DCGO.CardEffects.BT19
                     }
 
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBlocker(
-                        targetPermanent: card.PermanentOfThisCard(), effectDuration: EffectDuration.UntilEachTurnEnd,
+                        targetPermanent: card.PermanentOfThisCard(), effectDuration: EffectDuration.UntilOpponentTurnEnd,
                         activateClass: activateClass));
                 }
             }

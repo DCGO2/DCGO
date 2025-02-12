@@ -295,7 +295,8 @@ namespace DCGO.CardEffects.EX2
                     {
                         if (cardSource.CardTraits.Contains("D-Reaper"))
                         {
-                            return true;
+                            if(!cardSource.IsOption)
+                                return true;
                         }
                     }
                 }
