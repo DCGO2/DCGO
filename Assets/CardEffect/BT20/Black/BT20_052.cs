@@ -170,6 +170,7 @@ namespace DCGO.CardEffects.BT20
             }
 
             #endregion
+
             return cardEffects;
         }
     }

@@ -172,13 +172,6 @@ namespace DCGO.CardEffects.BT20
                                 yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
                             }
 
-                            SelectCardEffect.Root root = SelectCardEffect.Root.Hand;
-
-                            if (!fromHand)
-                            {
-                                root = SelectCardEffect.Root.Trash;
-                            }
-
                             if(selectedCards.Count > 0)
                             {
                                 yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(selectedCards, activateClass));
