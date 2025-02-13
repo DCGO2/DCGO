@@ -26,7 +26,7 @@ namespace DCGO.CardEffects.BT20
             #endregion
 
             #region When Digivolving
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("", CanUseCondition, card);
