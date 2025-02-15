@@ -14,7 +14,7 @@ namespace DCGO.CardEffects.BT20
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.TopCard.EqualsCardName("MegaSeadramon");
+                    return targetPermanent.TopCard.EqualsCardName("MegaSeadramon");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
