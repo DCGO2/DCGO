@@ -77,7 +77,6 @@ namespace DCGO.CardEffects.BT20
                         "The opponent is selecting 1 Digimon that will get effects.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                    yield break;
 
                     IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
@@ -87,7 +86,6 @@ namespace DCGO.CardEffects.BT20
                             effectDuration: EffectDuration.UntilOpponentTurnEnd,
                             activateClass: activatePlayClass,
                             effectName: "Can't be deleted in battle"));
-                        yield break;
 
                         bool CanNotBeDestroyedByBattleCondition(Permanent permanent1, Permanent attackingPermanent, Permanent defendingPermanent, CardSource defendingCard)
                         {
@@ -151,7 +149,6 @@ namespace DCGO.CardEffects.BT20
                         "The opponent is selecting 1 Digimon that will get effects.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                    yield break;
 
                     IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
@@ -161,7 +158,6 @@ namespace DCGO.CardEffects.BT20
                             effectDuration: EffectDuration.UntilOpponentTurnEnd,
                             activateClass: activatePlayClass,
                             effectName: "Can't be deleted in battle"));
-                        yield break;
 
                         bool CanNotBeDestroyedByBattleCondition(Permanent permanent1, Permanent attackingPermanent, Permanent defendingPermanent, CardSource defendingCard)
                         {

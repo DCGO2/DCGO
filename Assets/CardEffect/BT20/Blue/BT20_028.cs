@@ -222,6 +222,7 @@ namespace DCGO.CardEffects.BT20
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("<De-Digivolve 2> 1 of your opponent's Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetHashString("DeDigivolve_BT20_028");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
