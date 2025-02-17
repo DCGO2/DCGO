@@ -257,6 +257,7 @@ namespace DCGO.CardEffects.EX8
                                        cardSource: cardSource,
                                        payCost: false,
                                        cardEffect: activateClass) &&
+                                   cardSource.IsDigimon &&
                                    cardSource.GetCostItself <= maxCost &&
                                    cardSource.ContainsTraits("NSo");
                         }

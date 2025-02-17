@@ -190,7 +190,7 @@ namespace DCGO.CardEffects.EX8
                                                                      targetPermanent != null &&
                                                                      targetPermanent.TopCard &&
                                                                      !targetPermanent.TopCard.CanNotBeAffected(changeCostClass) &&
-                                                                     !targetPermanent.IsSuspended && targetPermanent.CanSuspend) < 2;
+                                                                     !targetPermanent.IsSuspended && targetPermanent.CanSuspend) >= 2;
                 }
 
                 bool CardSourceCondition(CardSource cardSource)
@@ -257,7 +257,7 @@ namespace DCGO.CardEffects.EX8
 
                 int DeletionMaxDP()
                 {
-                    return 8000 + (3000 * CardEffectCommons.MatchConditionPermanentCount(permanent => permanent.IsSuspended && permanent != card.PermanentOfThisCard()));
+                    return 8000 + (3000 * CardEffectCommons.MatchConditionPermanentCount(permanent => permanent.IsDigimon && permanent.IsSuspended && permanent != card.PermanentOfThisCard()));
                 }
 
                 bool CanSelectDeletePermanentCondition(Permanent permanent)
