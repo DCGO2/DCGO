@@ -101,14 +101,7 @@ namespace DCGO.CardEffects.P
                             yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(
                                 new List<CardSource> { selectedCard },
                                 activateClass));
-                        }
 
-                        List<ICardEffect> candidateEffects = selectedCard.EffectList_ForCard(EffectTiming.OnEnterFieldAnyone, card)
-                                .Clone()
-                                .Filter(cardEffect => cardEffect != null && cardEffect is ActivateICardEffect && !cardEffect.IsSecurityEffect && cardEffect.IsOnPlay);
-
-                        if (candidateEffects.Count >= 1)
-                        {
                             yield return ContinuousController.instance.StartCoroutine(
                                 new DrawClass(card.Owner, 1, activateClass).Draw());
                         }

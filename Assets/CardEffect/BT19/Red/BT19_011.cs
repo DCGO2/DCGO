@@ -18,65 +18,12 @@ namespace DCGO.CardEffects.BT19
             }
             #endregion
 
-            #region On Play/When Digivolving Shared
-            int enemyCount = Math.Min(card.Owner.Enemy.GetBattleAreaDigimons().Count, card.Owner.fieldCardFrames.Count((frame) => frame.IsEmptyFrame() && frame.IsBattleAreaFrame()));
-            int maxDP = 3000 + 2000 * enemyCount;
-
-            bool CanSelectOpponentsPermanent(Permanent permanent)
-            {
-                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                {
-                    if (permanent.TopCard.CardDP <= maxDP)
-                    {
-                        if (permanent.TopCard.HasDP)
-                        {
-                            return true;
-                        }
-                    }
-                }
-
-                return false;
-            }
-
-            bool CanEndSelectCondition(List<Permanent> permanents)
-            {
-                if (permanents.Count <= 0)
-                    return false;
-
-                int sumDP = 0;
-
-                foreach (Permanent permanent1 in permanents)
-                {
-                    sumDP += permanent1.TopCard.CardDP;
-                }
-
-                if (sumDP > maxDP)
-                    return false;
-
-                return true;
-            }
-
-            bool CanTargetCondition_ByPreSelecetedList(List<Permanent> permanents, Permanent permanent)
-            {
-                int sumDP = 0;
-
-                foreach (Permanent permanent1 in permanents)
-                {
-                    sumDP += permanent1.TopCard.CardDP;
-                }
-
-                sumDP += permanent.TopCard.CardDP;
-
-                if (sumDP > maxDP)
-                    return false;
-
-                return true;
-            }
-            #endregion
-
             #region On Play
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
+                int enemyCount = Math.Min(card.Owner.Enemy.GetBattleAreaDigimons().Count, card.Owner.fieldCardFrames.Count((frame) => frame.IsEmptyFrame() && frame.IsBattleAreaFrame()));
+                int maxDP = 3000 + 2000 * enemyCount;
+
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete up to 3000 DP of your opponents Digimon, this DP-based deletion increases by 2000 DP for each of your opponent's Digimon and gain memory", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
@@ -85,6 +32,57 @@ namespace DCGO.CardEffects.BT19
                 string EffectDiscription()
                 {
                     return "[On Play] Delete any of your opponent's Digimon with DP adding up to 3000. For each of your opponent's Digimon, add 2000 to this DP-Based deletion effect's maximum. Then, for each Digimon deleted by this effect, gain 1 memory.";
+                }
+
+                bool CanSelectOpponentsPermanent(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                    {
+                        if (permanent.TopCard.CardDP <= card.Owner.MaxDP_DeleteEffect(maxDP, activateClass))
+                        {
+                            if (permanent.TopCard.HasDP)
+                            {
+                                return true;
+                            }
+                        }
+                    }
+
+                    return false;
+                }
+
+                bool CanEndSelectCondition(List<Permanent> permanents)
+                {
+                    if (permanents.Count <= 0)
+                        return false;
+
+                    int sumDP = 0;
+
+                    foreach (Permanent permanent1 in permanents)
+                    {
+                        sumDP += permanent1.TopCard.CardDP;
+                    }
+
+                    if (sumDP > card.Owner.MaxDP_DeleteEffect(maxDP, activateClass))
+                        return false;
+
+                    return true;
+                }
+
+                bool CanTargetCondition_ByPreSelecetedList(List<Permanent> permanents, Permanent permanent)
+                {
+                    int sumDP = 0;
+
+                    foreach (Permanent permanent1 in permanents)
+                    {
+                        sumDP += permanent1.TopCard.CardDP;
+                    }
+
+                    sumDP += permanent.TopCard.CardDP;
+
+                    if (sumDP > card.Owner.MaxDP_DeleteEffect(maxDP, activateClass))
+                        return false;
+
+                    return true;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -138,6 +136,9 @@ namespace DCGO.CardEffects.BT19
             #region When Digivolving
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
+                int enemyCount = Math.Min(card.Owner.Enemy.GetBattleAreaDigimons().Count, card.Owner.fieldCardFrames.Count((frame) => frame.IsEmptyFrame() && frame.IsBattleAreaFrame()));
+                int maxDP = 3000 + 2000 * enemyCount;
+
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete up to 3000 DP of your opponents Digimon, this DP-based deletion increases by 2000 DP for each of your opponent's Digimon and gain memory", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
@@ -146,6 +147,57 @@ namespace DCGO.CardEffects.BT19
                 string EffectDiscription()
                 {
                     return "[When Digivolving] Delete any of your opponent's Digimon with DP adding up to 3000. For each of your opponent's Digimon, add 2000 to this DP-Based deletion effect's maximum. Then, for each Digimon deleted by this effect, gain 1 memory.";
+                }
+
+                bool CanSelectOpponentsPermanent(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                    {
+                        if (permanent.TopCard.CardDP <= card.Owner.MaxDP_DeleteEffect(maxDP, activateClass))
+                        {
+                            if (permanent.TopCard.HasDP)
+                            {
+                                return true;
+                            }
+                        }
+                    }
+
+                    return false;
+                }
+
+                bool CanEndSelectCondition(List<Permanent> permanents)
+                {
+                    if (permanents.Count <= 0)
+                        return false;
+
+                    int sumDP = 0;
+
+                    foreach (Permanent permanent1 in permanents)
+                    {
+                        sumDP += permanent1.TopCard.CardDP;
+                    }
+
+                    if (sumDP > card.Owner.MaxDP_DeleteEffect(maxDP, activateClass))
+                        return false;
+
+                    return true;
+                }
+
+                bool CanTargetCondition_ByPreSelecetedList(List<Permanent> permanents, Permanent permanent)
+                {
+                    int sumDP = 0;
+
+                    foreach (Permanent permanent1 in permanents)
+                    {
+                        sumDP += permanent1.TopCard.CardDP;
+                    }
+
+                    sumDP += permanent.TopCard.CardDP;
+
+                    if (sumDP > card.Owner.MaxDP_DeleteEffect(maxDP, activateClass))
+                        return false;
+
+                    return true;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

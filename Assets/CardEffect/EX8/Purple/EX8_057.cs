@@ -52,7 +52,7 @@ namespace DCGO.CardEffects.EX8
 
                 bool CanSelectFallenAngelCardCondition(CardSource cardSource)
                 {
-                    return cardSource.ContainsTraits("Fallen Angel") || cardSource.ContainsTraits("FallenAngel");
+                    return cardSource.EqualsTraits("Fallen Angel");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

@@ -64,7 +64,7 @@ namespace DCGO.CardEffects.BT19
 
                 string EffectDiscription()
                 {
-                    return "[Main] By suspending this Tamer, 1 of your Digimon may digivolve into a Digimon card in your face up security cards. If this effect digivolved, you may place 1 Digimon card with the [Royal Base] trait from your hand face up as your bottom security card.";
+                    return "[Main] By suspending this Tamer, 1 of your Digimon digivolves into a Digimon card in your face up security cards. If this effect digivolved, you may place 1 Digimon card with the [Royal Base] trait from your hand face up as your bottom security card.";
                 }
 
                 bool OwnersDigivolveTarget(Permanent permanent)
@@ -122,7 +122,7 @@ namespace DCGO.CardEffects.BT19
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: 1,
-                            canNoSelect: true,
+                            canNoSelect: false,
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectDigivolveTarget,
                             afterSelectPermanentCoroutine: null,
@@ -149,7 +149,7 @@ namespace DCGO.CardEffects.BT19
                             canTargetCondition: DigivolveTarget,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            canNoSelect: () => true,
+                            canNoSelect: () => false,
                             selectCardCoroutine: SelectCardCoroutine,
                             afterSelectCardCoroutine: null,
                             message: "Select 1 card to digivolve.",

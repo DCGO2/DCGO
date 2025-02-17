@@ -124,7 +124,8 @@ namespace DCGO.CardEffects.EX8
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("DNA Digivole into [DS] trait, then attack", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetHashString("DNA_EX8-027");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -161,13 +162,16 @@ namespace DCGO.CardEffects.EX8
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsOwnerTurn(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, MyDigimonCondition))
-                            return true;
+                        if (CardEffectCommons.IsOwnerTurn(card))
+                        {
+                            if (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, MyDigimonCondition))
+                                return true;
 
-                        if (CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, MyDigimonCondition))
-                            return true;
+                            if (CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, MyDigimonCondition))
+                                return true;
+                        }
                     }
 
                     return false;
