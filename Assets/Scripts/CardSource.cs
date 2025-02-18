@@ -1658,8 +1658,11 @@ public class CardSource : MonoBehaviour
         foreach (string attribute in _cEntity_Base.Type_ENG)
             checkStrings.Add(DataBase.ReplaceToASCII(attribute));
 
-        foreach(JogressConditionElement element in jogressCondition.elements)
-            checkStrings.Add(element.SelectMessage);
+        if(jogressCondition != null){
+            foreach (JogressConditionElement element in jogressCondition.elements)
+                checkStrings.Add(element.SelectMessage);
+        }
+        
 
         foreach (string checkString in checkStrings)
         {
