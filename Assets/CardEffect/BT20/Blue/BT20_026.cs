@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System;
 
 namespace DCGO.CardEffects.BT20
 {
@@ -37,7 +39,7 @@ namespace DCGO.CardEffects.BT20
 
                 string EffectDiscription()
                 {
-                    return "[On Play] Return 1 of your opponent's level 4 or lower Digimon to the bottom of the deck. Then, if [MegaSeadramon]/[X Antibody] is in this Digimon's digivolution cards, 1 of your opponent's Digimon can't suspend until the end of their turn."
+                    return "[On Play] Return 1 of your opponent's level 4 or lower Digimon to the bottom of the deck. Then, if [MegaSeadramon]/[X Antibody] is in this Digimon's digivolution cards, 1 of your opponent's Digimon can't suspend until the end of their turn.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -184,7 +186,7 @@ namespace DCGO.CardEffects.BT20
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] Return 1 of your opponent's level 4 or lower Digimon to the bottom of the deck. Then, if [MegaSeadramon]/[X Antibody] is in this Digimon's digivolution cards, 1 of your opponent's Digimon can't suspend until the end of their turn."
+                    return "[When Digivolving] Return 1 of your opponent's level 4 or lower Digimon to the bottom of the deck. Then, if [MegaSeadramon]/[X Antibody] is in this Digimon's digivolution cards, 1 of your opponent's Digimon can't suspend until the end of their turn.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
