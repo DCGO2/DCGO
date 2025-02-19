@@ -25,7 +25,7 @@ namespace DCGO.CardEffects.BT20
                 string EffectDescription()
                 {
                     return
-                        "[Main] By returning up to 9 levels' total worth of Digimon cards from your opponent's trash to the bottom of the deck, you may play 1 [Ghost] trait Digimon card of each returned card's level from your trash without paying the costs. Then, the Digimon this effect played gain <Rush> and <Blocker> until the end of your opponent's turn.";
+                        "[Main] By returning 9 levels' total worth of Digimon cards from your opponent's trash to the bottom of the deck, you may play 1 [Ghost] trait Digimon card of each returned card's level from your trash without paying the costs. Then, the Digimon this effect played gain <Rush> and <Blocker> until the end of your opponent's turn.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -35,7 +35,7 @@ namespace DCGO.CardEffects.BT20
 
                 bool CanSelectReturnCardCondition(CardSource cardSource)
                 {
-                    return cardSource.IsDigimon && cardSource.HasPlayCost && cardSource.GetCostItself <= maxLevel;
+                    return cardSource.IsDigimon && cardSource.HasLevel && cardSource.Level <= maxLevel;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -84,9 +84,9 @@ namespace DCGO.CardEffects.BT20
                                 return false;
                             }
 
-                            int sumLevel = cardSources.Sum(source => source.GetCostItself);
+                            int sumLevel = cardSources.Sum(source => source.Level);
 
-                            if (sumLevel > maxLevel)
+                            if (sumLevel != maxLevel)
                             {
                                 return false;
                             }
@@ -96,11 +96,11 @@ namespace DCGO.CardEffects.BT20
 
                         bool CanTargetConditionByPreSelectedList(List<CardSource> cardSources, CardSource cardSource)
                         {
-                            int sumLevel = cardSources.Sum(source => source.GetCostItself);
+                            int sumLevel = cardSources.Sum(source => source.Level);
 
-                            sumLevel += cardSource.GetCostItself;
+                            sumLevel += cardSource.Level;
 
-                            if (sumLevel > maxLevel)
+                            if (sumLevel != maxLevel)
                             {
                                 return false;
                             }
