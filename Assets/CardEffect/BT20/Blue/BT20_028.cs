@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DCGO.CardEffects.BT20
 {
@@ -235,9 +236,14 @@ namespace DCGO.CardEffects.BT20
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
                 }
 
+                bool CanSelectDeDigiPermanentCondition(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card);
+                    if(CardEffectCommons.IsExistOnBattleArea(card))
                     {
                         if (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PermanentCondition))
                         {
@@ -275,7 +281,7 @@ namespace DCGO.CardEffects.BT20
 
                     selectPermanentEffect.SetUp(
                         selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectDeDigiPermanentConditionShared,
+                        canTargetCondition: CanSelectDeDigiPermanentCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: 1,
