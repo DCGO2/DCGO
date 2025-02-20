@@ -7,12 +7,12 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using DCGO.CardEntities;
 
-namespace DCGO.Tools.Repair 
+namespace DCGO.Tools 
 {
     public class GetHighestCardIndex : MonoBehaviour
     {
-        [MenuItem("Window/DCGO/Repair/Get Highest Card Index")]
-        static void FixEntityClassNames()
+        [MenuItem("Window/DCGO/Get Index/Get Highest Card Index")]
+        static void GetIndex()
         {
             List<CEntity_Base> Entities = GetAsset.LoadAll<CEntity_Base>("Assets/CardBaseEntity/");
             int cardIndex = 0;
@@ -22,6 +22,9 @@ namespace DCGO.Tools.Repair
             {
                 if (card.CardID.Contains("P-"))
                     continue;
+
+                if (cardIndex == card.CardIndex)
+                    Debug.LogWarning($"DUPLICATE INDEX FOUND: {card.CardSpriteName} - {cardIndex}");
 
                 if (card.CardIndex > cardIndex)
                 {
@@ -36,8 +39,8 @@ namespace DCGO.Tools.Repair
 
     public class GetHighestPromoCardIndex : MonoBehaviour
     {
-        [MenuItem("Window/DCGO/Repair/Get Highest Promo Index")]
-        static void FixEntityClassNames()
+        [MenuItem("Window/DCGO/Get Index/Get Highest Promo Index")]
+        static void GetIndex()
         {
             List<CEntity_Base> Entities = GetAsset.LoadAll<CEntity_Base>("Assets/CardBaseEntity/");
             int cardIndex = 0;
@@ -47,6 +50,9 @@ namespace DCGO.Tools.Repair
             {
                 if (!card.CardID.Contains("P-"))
                     continue;
+
+                if (cardIndex == card.CardIndex)
+                    Debug.LogWarning($"DUPLICATE INDEX FOUND: {card.CardSpriteName} - {cardIndex}");
 
                 if (card.CardIndex > cardIndex)
                 {
