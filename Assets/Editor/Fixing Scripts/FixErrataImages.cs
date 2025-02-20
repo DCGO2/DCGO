@@ -1,0 +1,178 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEditor;
+using UnityEditor.VersionControl;
+using UnityEngine;
+using UnityEngine.Analytics;
+using UnityEngine.Networking;
+using WebSocketSharp;
+using DCGO.CardEntities;
+using Unity.EditorCoroutines.Editor;
+using MHLab.Patch.Core.IO;
+using System.Runtime.CompilerServices;
+
+namespace DCGO.Tools.Repair
+{
+    public class FixErrataImages : MonoBehaviour
+    {
+        static FixErrataImages instance;
+        string baseURL = "https://raw.githubusercontent.com/TakaOtaku/Digimon-Card-App/main/src/";
+        public List<CardData> _cardData;
+
+        [MenuItem("Window/DCGO/Repair/Fix Errata Images")]
+        static void ErrataImages()
+        {
+            instance = new FixErrataImages();
+            EditorCoroutineUtility.StartCoroutine(instance.FixImages(), instance);
+        }
+
+        IEnumerator FixImages()
+        {
+            yield return EditorCoroutineUtility.StartCoroutine(instance.GetJsonData(), instance);
+
+            List<CardData> cards = _cardData.Where(x => x.AAs.Any(aa => aa.id.Contains("Errata"))).ToList();
+
+            string debugText = "";
+            int matchedCount = 0;
+
+            foreach (CardData data in cards)
+            {
+                string fileName = $"{FixCharactersInClassName($"{data.cardNumber}")}.asset";
+
+                string folderName_SetID = $"{GetParseByHyphen(data.id)[0]}";
+                string folderName_CardColor = $"{DataBase.CardColorNameDictionary[GetCardColors(data.color)[0]]}";
+                folderName_CardColor = char.ToUpper(folderName_CardColor[0]) + folderName_CardColor.Substring(1);
+
+                string folderName_CardKind = $"{DataBase.CardKindENNameDictionary[DictionaryUtility.GetCardKind(data.cardType.Replace("-", ""), DataBase.CardKindENNameDictionary)]}";
+                string folderPath = $"Assets/CardBaseEntity/{folderName_SetID}/{folderName_CardColor}/{folderName_CardKind}";
+                string filePath = $"{folderPath}/{fileName}".Trim().Replace("\t", "").Replace("\n", "").Replace("\r", "").Replace(" ", "");
+
+                
+
+                CEntity_Base card = GetAsset.Load<CEntity_Base>(filePath);
+
+                if(card == null)
+                {
+                    Debug.Log($"NO ASSET FOUND: {fileName}");
+                    continue;
+                }
+                string errataName = GetImageURL(data.cardImage, data.cardNumber, data.AAs);
+
+                if (!errataName.Equals(card.CardSpriteName))
+                {
+                    debugText += $"{errataName}\n";
+                    matchedCount++;
+                    //card.CardSpriteName = errataName;
+                    //EditorUtility.SetDirty(card);
+                }
+            }
+
+            Debug.Log(debugText);
+            Debug.Log($"COMPLETED: {matchedCount}");
+        }
+
+        string GetImageURL(string url, string ID, List<AlternateArt> AA)
+        {
+            string[] urlSplit = url.Split(".");
+            string startURL = urlSplit[0].Substring(0, urlSplit[0].LastIndexOf("/"));
+
+            if (!ID.Contains("Errata") && !ID.Contains("_") && AA.Count > 0)
+            {
+                AlternateArt errata = AA.Where(x => x.id.StartsWith(ID) && x.id.Contains("Errata")).FirstOrDefault();
+
+                if (errata != null)
+                    ID = errata.id;
+            }
+
+            return $"{ID}";
+        }
+
+        IEnumerator GetJsonData()
+        {
+            string url = baseURL + "assets/cardlists/DigimonCards.json";
+            UnityWebRequest jsonWebRequest = UnityWebRequest.Get(url);
+
+            yield return jsonWebRequest.SendWebRequest();
+
+            if (jsonWebRequest.result != UnityWebRequest.Result.Success)
+            {
+                Debug.Log(jsonWebRequest.error);
+            }
+            else
+            {
+
+                RootObject root = JsonUtility.FromJson<RootObject>("{\"cards\":" + jsonWebRequest.downloadHandler.text + "}");
+                _cardData = root.cards;
+            }
+
+            yield return null;
+        }
+
+        //Parse ScriptableObject Name
+        string FixCharactersInName(string str)
+        {
+            string name = str;
+
+            name = name
+                .Replace(" ", "_")
+                .Replace(":", "")
+                .Replace("?", "")
+                .Replace("!", "")
+                .Replace("<", "")
+                .Replace(">", "");
+
+            return name;
+        }
+
+        //Parse ScriptableObject Class Name
+        public string FixCharactersInClassName(string str)
+        {
+            string name = str;
+
+            name = FixCharactersInName(name);
+
+            name = name
+                .Replace("-", "_")
+                .Replace(".", "")
+                .Replace("'", "")
+                .Replace("&", "And")
+                .Replace("(", "")
+                .Replace(")", "");
+
+            return name;
+        }
+
+        public static string[] GetParseByHyphen(string CardImageName)
+        {
+            string[] parseByHyphen = new string[] { CardImageName };
+
+            if (CardImageName.Contains('-'))
+            {
+                parseByHyphen = CardImageName.Split('-');
+            }
+
+            return parseByHyphen;
+        }
+
+        //Parse card colors to list
+        List<CardColor> GetCardColors(string colors)
+        {
+            List<CardColor> cardColors = new List<CardColor>();
+
+            foreach (string cardColorName in colors.Split("/"))
+            {
+                foreach (string cardColorNameValues in DataBase.CardColorNameDictionary.Values)
+                {
+                    if (cardColorName.ToLower().Trim() == cardColorNameValues)
+                    {
+                        cardColors.Add(DictionaryUtility.GetCardColor(cardColorName.ToLower().Trim(), DataBase.CardColorNameDictionary));
+                    }
+                }
+            }
+
+            return cardColors;
+        }
+    }
+}
