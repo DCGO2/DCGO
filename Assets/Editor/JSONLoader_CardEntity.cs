@@ -21,7 +21,8 @@ namespace DCGO.CardEntities
 
         string cardIDString = "";
         bool onlyAA = false;
-        bool updateExisting = true;
+        bool updateExisting = false;
+        bool debugMode = false;
 
         public override void OnInspectorGUI()
         {
@@ -35,6 +36,7 @@ namespace DCGO.CardEntities
             {
                 updateExisting = GUILayout.Toggle(updateExisting, "Update Existing Assets");
                 onlyAA = GUILayout.Toggle(onlyAA, "AA Only");
+                debugMode = GUILayout.Toggle(debugMode, "Run in Debug Mode");
 
                 GUILayout.Label("Card ID: ");
                 cardIDString = GUILayout.TextField(cardIDString, 500).ToUpper();
@@ -50,7 +52,9 @@ namespace DCGO.CardEntities
                             cards.AddRange(_cardData.Where(x => x.cardNumber.Contains(str)).ToList());
 
                         SetDataToScriptableObject(cards);
-                        _loadJSON.prevCardIndex = _loadJSON.setCardIndex-1;
+
+                        if(!debugMode)
+                            _loadJSON.prevCardIndex = _loadJSON.setCardIndex-1;
                     }
                 }
             }
@@ -92,6 +96,9 @@ namespace DCGO.CardEntities
         {
             string[] urlSplit = url.Split(".");
             string startURL = urlSplit[0].Substring(0, urlSplit[0].LastIndexOf("/"));
+
+            if (debugMode)
+                Debug.Log($"{ID} - {AA.Count}");
 
             if (!ID.Contains("Errata") && !ID.Contains("_") && AA.Count > 0)
             {
@@ -139,10 +146,16 @@ namespace DCGO.CardEntities
             cardEntity.CardID = card.id;
             cardEntity.MaxCountInDeck = GetMaxCount(card.restrictions.japanese);
 
-            cardEntity.name = FixCharactersInName($"{cardEntity.CardName_ENG.Replace(" ", "")}-{cardEntity.CardSpriteName}"); 
-            Debug.Log($"created: {cardEntity.name}");
+            cardEntity.name = cardEntity.CardEffectClassName;
 
-            SaveScriptableObject(cardEntity);
+
+            if (!debugMode)
+            {
+                Debug.Log($"created: {cardEntity.name}");
+                SaveScriptableObject(cardEntity);
+            }
+            else
+                Debug.Log($"DATA {cardEntity.name}: {cardEntity.CardSpriteName}, {cardEntity.CardEffectClassName}");
         }
 
         void CreateAA(CardData data)
