@@ -21,7 +21,8 @@ namespace DCGO.CardEntities
 
         string cardIDString = "";
         bool onlyAA = false;
-        bool updateExisting = true;
+        bool updateExisting = false;
+        bool debugMode = false;
 
         public override void OnInspectorGUI()
         {
@@ -35,6 +36,7 @@ namespace DCGO.CardEntities
             {
                 updateExisting = GUILayout.Toggle(updateExisting, "Update Existing Assets");
                 onlyAA = GUILayout.Toggle(onlyAA, "AA Only");
+                debugMode = GUILayout.Toggle(debugMode, "Run in Debug Mode");
 
                 GUILayout.Label("Card ID: ");
                 cardIDString = GUILayout.TextField(cardIDString, 500).ToUpper();
@@ -50,7 +52,9 @@ namespace DCGO.CardEntities
                             cards.AddRange(_cardData.Where(x => x.cardNumber.Contains(str)).ToList());
 
                         SetDataToScriptableObject(cards);
-                        _loadJSON.prevCardIndex = _loadJSON.setCardIndex-1;
+
+                        if(!debugMode)
+                            _loadJSON.prevCardIndex = _loadJSON.setCardIndex-1;
                     }
                 }
             }
@@ -93,6 +97,9 @@ namespace DCGO.CardEntities
             string[] urlSplit = url.Split(".");
             string startURL = urlSplit[0].Substring(0, urlSplit[0].LastIndexOf("/"));
 
+            if (debugMode)
+                Debug.Log($"{ID} - {AA.Count}");
+
             if (!ID.Contains("Errata") && !ID.Contains("_") && AA.Count > 0)
             {
                 AlternateArt errata = AA.Where(x => x.id.StartsWith(ID) && x.id.Contains("Errata")).FirstOrDefault();
@@ -121,7 +128,7 @@ namespace DCGO.CardEntities
 
             cardEntity.Form_ENG = GetCardInfo(card.form);
             cardEntity.Attribute_ENG = GetCardInfo(card.attribute);
-            cardEntity.Type_ENG = GetCardInfo(card.type);
+            cardEntity.Type_ENG = GetCardInfo(card.type, card.rule);
 
             cardEntity.CardSpriteName = GetImageURL(card.cardImage, imageID, card.AAs);
 
@@ -139,10 +146,16 @@ namespace DCGO.CardEntities
             cardEntity.CardID = card.id;
             cardEntity.MaxCountInDeck = GetMaxCount(card.restrictions.japanese);
 
-            cardEntity.name = FixCharactersInName($"{cardEntity.CardName_ENG.Replace(" ", "")}-{cardEntity.CardSpriteName}"); 
-            Debug.Log($"created: {cardEntity.name}");
+            cardEntity.name = cardEntity.CardEffectClassName;
 
-            SaveScriptableObject(cardEntity);
+
+            if (!debugMode)
+            {
+                Debug.Log($"created: {cardEntity.name}");
+                SaveScriptableObject(cardEntity);
+            }
+            else
+                Debug.Log($"DATA {cardEntity.name}: {cardEntity.CardSpriteName}, {cardEntity.CardEffectClassName}");
         }
 
         void CreateAA(CardData data)
@@ -283,7 +296,7 @@ namespace DCGO.CardEntities
             return effect;
         }
         //Parse card info split by "/" to list
-        List<string> GetCardInfo(string str)
+        List<string> GetCardInfo(string str, string rule = "")
         {
             List<string> strings = new List<string>();
 
@@ -291,6 +304,33 @@ namespace DCGO.CardEntities
             {
                 strings.Add(data.Trim().Replace("\n","").Replace("\r", ""));
             }
+
+            if (!String.IsNullOrEmpty(rule))
+                strings.AddRange(GetRuleText(rule));
+
+            string debugTxt = "";
+            foreach (string data in strings)
+                debugTxt += data + "\n";
+
+            return strings;
+        }
+
+        //Parse RULE text
+        List<string> GetRuleText(string str)
+        {
+            List<string> strings = new List<string>();
+
+            if (!str.Contains("[Rule] Trait:"))
+                return new List<string>();
+
+            string traitRule = str.Split("[Rule] Trait:")[1];
+            int startIndex = traitRule.IndexOf("[");
+            traitRule = traitRule.Substring(startIndex, traitRule.LastIndexOf("]") - startIndex)
+                .Replace("[","")
+                .Replace("]", "");
+       
+            foreach (string data in traitRule.Split("/"))
+                strings.Add(data.Trim().Replace("\n", "").Replace("\r", ""));
 
             return strings;
         }
