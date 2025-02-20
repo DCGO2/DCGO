@@ -128,7 +128,7 @@ namespace DCGO.CardEntities
 
             cardEntity.Form_ENG = GetCardInfo(card.form);
             cardEntity.Attribute_ENG = GetCardInfo(card.attribute);
-            cardEntity.Type_ENG = GetCardInfo(card.type);
+            cardEntity.Type_ENG = GetCardInfo(card.type, card.rule);
 
             cardEntity.CardSpriteName = GetImageURL(card.cardImage, imageID, card.AAs);
 
@@ -296,7 +296,7 @@ namespace DCGO.CardEntities
             return effect;
         }
         //Parse card info split by "/" to list
-        List<string> GetCardInfo(string str)
+        List<string> GetCardInfo(string str, string rule = "")
         {
             List<string> strings = new List<string>();
 
@@ -304,6 +304,33 @@ namespace DCGO.CardEntities
             {
                 strings.Add(data.Trim().Replace("\n","").Replace("\r", ""));
             }
+
+            if (!String.IsNullOrEmpty(rule))
+                strings.AddRange(GetRuleText(rule));
+
+            string debugTxt = "";
+            foreach (string data in strings)
+                debugTxt += data + "\n";
+
+            return strings;
+        }
+
+        //Parse RULE text
+        List<string> GetRuleText(string str)
+        {
+            List<string> strings = new List<string>();
+
+            if (!str.Contains("[Rule] Trait:"))
+                return new List<string>();
+
+            string traitRule = str.Split("[Rule] Trait:")[1];
+            int startIndex = traitRule.IndexOf("[");
+            traitRule = traitRule.Substring(startIndex, traitRule.LastIndexOf("]") - startIndex)
+                .Replace("[","")
+                .Replace("]", "");
+       
+            foreach (string data in traitRule.Split("/"))
+                strings.Add(data.Trim().Replace("\n", "").Replace("\r", ""));
 
             return strings;
         }
