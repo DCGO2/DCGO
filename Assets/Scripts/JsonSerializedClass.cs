@@ -39,6 +39,7 @@ namespace DCGO.CardEntities
         public string playCost;
         public string rarity;
         public Restriction restrictions;
+        public string rule;
         public string securityEffect;
         public string specialDigivolve;
         public string type;
