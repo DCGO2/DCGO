@@ -155,7 +155,7 @@ namespace DCGO.CardEntities
                 SaveScriptableObject(cardEntity);
             }
             else
-                Debug.Log($"DATA {cardEntity.name}: {cardEntity.CardSpriteName}, {cardEntity.CardEffectClassName}");
+                Debug.Log($"DATA {cardEntity.name}: {cardEntity.CardSpriteName}, {cardEntity.CardEffectClassName}, {GetCardIndex(cardEntity)}");
         }
 
         void CreateAA(CardData data)
@@ -216,17 +216,29 @@ namespace DCGO.CardEntities
         {
             int index = _loadJSON.setCardIndex;
 
-            if (entity.SetID.Equals("P"))
+            /*f (entity.SetID.Equals("P"))
             {
                 index = _loadJSON.promoCardIndex;
                 _loadJSON.promoCardIndex++;
             }
-            else
-                _loadJSON.setCardIndex++;
+            else*/
+            _loadJSON.setCardIndex++;
 
-            EditorUtility.SetDirty(_loadJSON);
+            while (CheckIndexIsUsed())
+            {
+                _loadJSON.setCardIndex++;
+            }
+
+            if (!debugMode)
+                EditorUtility.SetDirty(_loadJSON);
 
             return index;
+        }
+
+        bool CheckIndexIsUsed()
+        {
+            return GetAsset.LoadAll<CEntity_Base>("Assets/CardBaseEntity/")
+                .Any(x => x.CardIndex == _loadJSON.setCardIndex);
         }
 
         //Parse ScriptableObject Name
