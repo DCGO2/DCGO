@@ -118,7 +118,7 @@ namespace DCGO.CardEffects
 
                      IEnumerator ActivateCoroutine(Hashtable _hashtable)
             {
-                if (isExistOnField(card))
+                if (isExistOnField(card) && CardEffectCommons.IsOwnerTurn(card))
                 {
                     if (card.Owner.GetBattleAreaDigimons().Contains(card.PermanentOfThisCard()))
                     {
@@ -352,7 +352,7 @@ namespace DCGO.CardEffects
 
                      IEnumerator ActivateCoroutine(Hashtable _hashtable)
             {
-                if (isExistOnField(card))
+                if (isExistOnField(card) && CardEffectCommons.IsOwnerTurn(card)))
                 {
                     if (card.Owner.GetBattleAreaDigimons().Contains(card.PermanentOfThisCard()))
                     {
