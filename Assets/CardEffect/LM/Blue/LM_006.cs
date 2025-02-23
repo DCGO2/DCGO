@@ -45,7 +45,7 @@ namespace DCGO.CardEffects.LM
                     {
                         if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectTamerCondition))
                         {
-                            if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: card, payCost: true, cardEffect: activateClass))
+                            if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: card, payCost: false, cardEffect: activateClass))
                             {
                                 return true;
                             }

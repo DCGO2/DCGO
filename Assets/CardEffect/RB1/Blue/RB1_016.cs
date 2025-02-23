@@ -331,7 +331,7 @@ public class RB1_016 : CEntity_Effect
                 {
                     if (permanent.TopCard.CardColors.Contains(CardColor.Blue))
                     {
-                        return true;
+                        return permanent.willBeRemoveField;
                     }
                 }
 
@@ -357,7 +357,7 @@ public class RB1_016 : CEntity_Effect
                 {
                     if (card.Owner.TrashCards.Count(CanSelectCardCondition) >= 3)
                     {
-                        return true;
+                        return CardEffectCommons.HasMatchConditionOwnersPermanent(card, PermanentCondition);
                     }
                 }
 

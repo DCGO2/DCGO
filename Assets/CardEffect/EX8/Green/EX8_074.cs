@@ -167,7 +167,13 @@ namespace DCGO.CardEffects.EX8
 
                 bool CanUseCondition1(Hashtable hashtable1)
                 {
-                    return true;
+                    return CardEffectCommons.MatchConditionPermanentCount(PermanentCondition) >= 2;
+                }
+
+                bool PermanentCondition(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent) &&
+                           !permanent.IsSuspended && permanent.CanSuspend;
                 }
 
                 int ChangeCost(CardSource cardSource, int cost, SelectCardEffect.Root root,

@@ -194,8 +194,8 @@ namespace DCGO.CardEffects.BT19
                                 new(message: "From trash", value: false, spriteIndex: 1),
                             };
 
-                            string selectPlayerMessage = "From which area do you play a card?";
-                            string notSelectPlayerMessage = "The opponent is choosing from which area to play a card.";
+                            string selectPlayerMessage = "From which area do you place a card?";
+                            string notSelectPlayerMessage = "The opponent is choosing from which area to place a card.";
 
                             GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements,
                                 selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage,
@@ -239,7 +239,7 @@ namespace DCGO.CardEffects.BT19
                                 cardEffect: activateClass);
 
                             selectHandEffect.SetUpCustomMessage("Select 1 card to place under a tamer.",
-                                "The opponent is selecting 1 card to play.");
+                                "The opponent is selecting 1 card to place.");
                             selectHandEffect.SetUpCustomMessage_ShowCard("Placed card");
 
                             yield return StartCoroutine(selectHandEffect.Activate());
