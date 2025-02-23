@@ -117,6 +117,7 @@ public class ContinuousController : MonoBehaviour
     public CEntity_Base TaomonToken { get; private set; }
     public CEntity_Base RapidmonToken { get; private set; }
     public CEntity_Base PipeFoxToken { get; private set; }
+    public CEntity_Base AthoRenePorToken { get; private set; }
     public CardRestriction BanList { get; private set; } = new CardRestriction(new List<CardLimitCount>(), new List<BannedPair>());
 
     void LoadBanList()
@@ -414,6 +415,27 @@ public class ContinuousController : MonoBehaviour
         };
 
         await PipeFoxToken.GetCardSprite();
+
+        AthoRenePorToken = new CEntity_Base()
+        {
+            cardColors = new List<CardColor>() { CardColor.White },
+            PlayCost = -1,
+            Level = 0,
+            CardName_JPN = "",
+            CardName_ENG = "Atho, René & Por",
+            Form_JPN = new List<string>(),
+            Form_ENG = new List<string>(),
+            Attribute_JPN = new List<string>(),
+            Attribute_ENG = new List<string>(),
+            Type_JPN = new List<string>(),
+            Type_ENG = new List<string>(),
+            CardSpriteName = "BT20-017-token",
+            cardKind = CardKind.Digimon,
+            DP = 6000,
+            CardEffectClassName = "BT20_017_token"
+        };
+
+        await AthoRenePorToken.GetCardSprite();
     }
 
     public static ContinuousController instance = null;

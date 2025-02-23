@@ -322,6 +322,16 @@ public partial class CardEffectCommons
     }
     #endregion
 
+    public static IEnumerator PlayAthoRenePorToken (ICardEffect activateClass)
+    {
+        yield return ContinuousController.instance.StartCoroutine(PlayToken(
+            tokenData: ContinuousController.instance.AthoRenePorToken,
+            activateClass: activateClass,
+            isOwnerPermanent: true,
+            isTapped: false
+            ));
+    }
+
     #region Security effect of "add this card to hand"
     public static IEnumerator AddThisCardToHand(CardSource card1, ICardEffect activateClass)
     {
