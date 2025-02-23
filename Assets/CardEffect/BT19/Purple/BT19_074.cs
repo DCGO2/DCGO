@@ -82,7 +82,7 @@ namespace DCGO.CardEffects.BT19
                     {
                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition1))
                         {
-                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition1));
 
                             SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
@@ -185,7 +185,7 @@ namespace DCGO.CardEffects.BT19
                     {
                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition1))
                         {
-                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition1));
 
                             SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 

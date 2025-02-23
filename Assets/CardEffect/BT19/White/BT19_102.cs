@@ -214,7 +214,7 @@ namespace DCGO.CardEffects.BT19
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedCards, activateClass: activateClass, payCost: false, isTapped: false, root: SelectCardEffect.Root.DigivolutionCards, activateETB: true));
 
                         Hashtable hash = new Hashtable();
-                        hashtable.Add("CardEffect", activateClass);
+                        hash.Add("CardEffect", activateClass);
 
                         yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(new List<Permanent> { selectedPermanent }, hash).Destroy());
                     }
@@ -339,7 +339,7 @@ namespace DCGO.CardEffects.BT19
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedCards, activateClass: activateClass, payCost: false, isTapped: false, root: SelectCardEffect.Root.DigivolutionCards, activateETB: true));
 
                         Hashtable hash = new Hashtable();
-                        hashtable.Add("CardEffect", activateClass);
+                        hash.Add("CardEffect", activateClass);
 
                         yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(new List<Permanent> { selectedPermanent }, hash).Destroy());
                     }

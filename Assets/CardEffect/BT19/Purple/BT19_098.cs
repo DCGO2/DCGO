@@ -51,7 +51,7 @@ namespace DCGO.CardEffects.BT19
                 {
                     return cardSource.IsOption &&
                            cardSource.EqualsTraits("Device") &&
-                           cardSource.GetCostItself <= 3;
+                           cardSource.GetCostItself == 3;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -130,7 +130,7 @@ namespace DCGO.CardEffects.BT19
                 {
                     return cardSource.IsOption &&
                            cardSource.EqualsTraits("Device") &&
-                           cardSource.GetCostItself <= 3;
+                           cardSource.GetCostItself == 3;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

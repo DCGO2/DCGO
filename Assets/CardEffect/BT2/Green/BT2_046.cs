@@ -33,15 +33,13 @@ public class BT2_046 : CEntity_Effect
                     if (CardEffectCommons.IsOwnerTurn(card))
                     {
                         bool WinnerCondition(Permanent permanent) => permanent.cardSources.Contains(card);
-                        bool LoserCondition(Permanent permanent) => CardEffectCommons.IsOpponentPermanent(permanent, card);
-                        bool LoserRealCondition(Permanent permanent) => permanent.LevelJustBeforeRemoveField >= 6;
+                        bool LoserCondition(Permanent permanent) => CardEffectCommons.IsOpponentPermanent(permanent, card) && permanent.LevelJustBeforeRemoveField >= 6;
 
                         if (CardEffectCommons.CanTriggerWhenDeleteOpponentDigimonByBattle(
                             hashtable: hashtable,
                             winnerCondition: WinnerCondition,
                             loserCondition: LoserCondition,
-                            loserRealCondition: LoserRealCondition,
-                            isOnlyWinnerSurvive: false))
+                            isOnlyWinnerSurvive: true))
                         {
                             return true;
                         }

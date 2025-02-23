@@ -299,10 +299,28 @@ namespace DCGO.CardEffects.BT19
 
                     if (didPlay)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.attackProcess.SwitchDefender(
-                            activateClass,
-                            false,
-                            selectedPermanent));
+                        List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
+                        {
+                            new SelectionElement<bool>(message: $"Yes", value : true, spriteIndex: 0),
+                            new SelectionElement<bool>(message: $"No", value : false, spriteIndex: 1),
+                        };
+
+                        string selectPlayerMessage = "Will you change attack target?";
+                        string notSelectPlayerMessage = "The opponent is choosing whether or not to change attack target.";
+
+                        GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                        bool willRedirect = GManager.instance.userSelectionManager.SelectedBoolValue;
+
+                        if (willRedirect)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.attackProcess.SwitchDefender(
+                                activateClass,
+                                false,
+                                selectedPermanent));
+                        }
                     }
                 }
             }

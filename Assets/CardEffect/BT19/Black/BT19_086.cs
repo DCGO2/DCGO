@@ -77,7 +77,9 @@ namespace DCGO.CardEffects.BT19
                     if (selectedCard != null)
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlaceDelayOptionCards(card: selectedCard, cardEffect: activateClass));
-                        yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
+
+                        if(CardEffectCommons.IsExistOnBattleArea(selectedCard))
+                            yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
                     }
                 }
             }
@@ -101,7 +103,8 @@ namespace DCGO.CardEffects.BT19
                 bool IsDeviceTrait(Permanent permanent)
                 {
                     return permanent.IsOption &&
-                           permanent.TopCard.EqualsTraits("Device");
+                           permanent.TopCard.EqualsTraits("Device") &&
+                           CardEffectCommons.IsOwnerPermanent(permanent, card);
                 }
 
                 bool IsCyberdramon(CardSource source)
@@ -123,6 +126,8 @@ namespace DCGO.CardEffects.BT19
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(new List<Permanent>() { card.PermanentOfThisCard() }, CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
+
                     List<Permanent> selectedPermanents = new List<Permanent>();
 
                     SelectPermanentEffect selectPermanentEffect =

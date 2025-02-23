@@ -81,59 +81,25 @@ namespace DCGO.CardEffects.BT19
 
                     yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(new List<Permanent>() { card.PermanentOfThisCard() }, CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
 
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                    {
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-                        Permanent selectedPermanent = null;
-
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectPermanentCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: false,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: SelectPermanentCoroutine,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will get Raid and attack a Player.", "The opponent is selecting 1 Digimon.");
-
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                        {
-                            selectedPermanent = permanent;
-
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainRaid(
-                            targetPermanent: permanent,
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainRaid(
+                            targetPermanent: digivolvedPermanent[0],
                             effectDuration: EffectDuration.UntilEachTurnEnd,
                             activateClass: activateClass));
-                        }
 
-                        if (selectedPermanent != null)
-                        {
-                            if (selectedPermanent.CanAttack(activateClass))
-                            {
-                                SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
+                    if (digivolvedPermanent[0].CanAttack(activateClass))
+                    {
+                        SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
 
-                                selectAttackEffect.SetUp(
-                                    attacker: selectedPermanent,
-                                    canAttackPlayerCondition: () => true,
-                                    defenderCondition: (permanent) => false,
-                                    cardEffect: activateClass);
+                        selectAttackEffect.SetUp(
+                            attacker: digivolvedPermanent[0],
+                            canAttackPlayerCondition: () => true,
+                            defenderCondition: (permanent) => false,
+                            cardEffect: activateClass);
 
-                                selectAttackEffect.SetCanNotSelectNotAttack();
+                        selectAttackEffect.SetCanNotSelectNotAttack();
 
-                                yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
-                            }
-                        }
+                        yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
                     }
-
                 }
             }
             #endregion

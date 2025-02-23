@@ -123,7 +123,7 @@ namespace DCGO.CardEffects.BT13
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonSAttack(
                                 targetPermanent: permanent,
                                 changeValue: -1,
-                                effectDuration: EffectDuration.UntilEachTurnEnd,
+                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
                                 activateClass: activateClass));
                         }
                     }
