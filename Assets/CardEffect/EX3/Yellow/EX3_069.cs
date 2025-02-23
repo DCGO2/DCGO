@@ -50,7 +50,7 @@ namespace DCGO.CardEffects.EX3
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.CardTraits.Contains("Four Great Dragons") || cardSource.CardTraits.Contains("FourGreatDragons"))
+                    if (cardSource.EqualsTraits("Four Great Dragons"))
                     {
                         if (cardSource.IsDigimon)
                         {

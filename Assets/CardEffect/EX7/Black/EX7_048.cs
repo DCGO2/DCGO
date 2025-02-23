@@ -80,6 +80,8 @@ namespace DCGO.CardEffects.EX7
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    CardSource selectedCard = null;
+
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SimplifiedRevealDeckTopCardsAndSelect(
                         revealCount: 6,
                         simplifiedSelectCardConditions:
@@ -99,15 +101,20 @@ namespace DCGO.CardEffects.EX7
 
                     IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
+                        selectedCard = cardSource;
+                        yield return null;
+                    }
+
+                    if(selectedCard != null)
+                    {
                         yield return ContinuousController.instance.StartCoroutine(
                             CardEffectCommons.PlayOptionCards(
-                                cardSources: new List<CardSource>() { cardSource },
+                                cardSources: new List<CardSource>() { selectedCard },
                                 activateClass: activateClass,
                                 payCost: false,
                                 root: SelectCardEffect.Root.Library
                             )
                         );
-                        yield return null;
                     }
                 }
             }

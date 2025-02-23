@@ -193,7 +193,7 @@ namespace DCGO.CardEffects.EX8
                                             SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
                                             selectHandEffect.SetUp(
-                                                selectPlayer: selectedPermanent.TopCard.Owner,
+                                                selectPlayer: card.Owner.Enemy,
                                                 canTargetCondition: (cardSource) => true,
                                                 canTargetCondition_ByPreSelecetedList: null,
                                                 canEndSelectCondition: null,
@@ -373,7 +373,7 @@ namespace DCGO.CardEffects.EX8
                                             SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
                                             selectHandEffect.SetUp(
-                                                selectPlayer: selectedPermanent.TopCard.Owner,
+                                                selectPlayer: card.Owner.Enemy,
                                                 canTargetCondition: (cardSource) => true,
                                                 canTargetCondition_ByPreSelecetedList: null,
                                                 canEndSelectCondition: null,
