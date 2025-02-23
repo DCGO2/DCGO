@@ -38,7 +38,7 @@ namespace DCGO.CardEffects.BT14
                 {
                     if (cardSource.Owner == card.Owner.Enemy)
                     {
-                        if (cardSource.IsDigimon)
+                        if (!CardEffectCommons.IsExistOnBreedingAreaDigimon(card))
                         {
                             if (cardSource.CardDP <= 6000)
                             {

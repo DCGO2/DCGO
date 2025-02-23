@@ -28,7 +28,7 @@ namespace DCGO.CardEffects.EX2
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.CardNames.Contains("Beelzemon Blast Mode") || cardSource.CardNames.Contains("BeelzemonBlastMode");
+                    return cardSource.EqualsCardName("Beelzemon Blast Mode");
                 }
 
                 bool PermanentCondition(Permanent permanent)
