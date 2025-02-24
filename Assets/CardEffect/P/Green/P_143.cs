@@ -42,7 +42,7 @@ namespace DCGO.CardEffects.P
                     {
                         if (card.Owner.GetBreedingAreaPermanents().Count == 0)
                         {
-                            return GManager.instance.turnStateMachine.gameContext.TurnPlayer.CanMove;
+                            return true;
                         }
                     }
                         return false;

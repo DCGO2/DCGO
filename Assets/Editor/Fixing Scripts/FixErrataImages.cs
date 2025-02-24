@@ -1,17 +1,11 @@
-using System;
+using DCGO.CardEntities;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor;
-using UnityEditor.VersionControl;
-using UnityEngine;
-using UnityEngine.Analytics;
-using UnityEngine.Networking;
-using WebSocketSharp;
-using DCGO.CardEntities;
 using Unity.EditorCoroutines.Editor;
-using MHLab.Patch.Core.IO;
-using System.Runtime.CompilerServices;
+using UnityEditor;
+using UnityEngine;
+using UnityEngine.Networking;
 
 namespace DCGO.Tools.Repair
 {
