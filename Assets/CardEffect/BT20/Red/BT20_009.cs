@@ -68,7 +68,7 @@ namespace DCGO.CardEffects.BT20
                         {
                             foreach (CardSource cardSource in card.Owner.HandCards)
                             {
-                                if (CanSelectCardCondition(cardSource))
+                                if (canEvolveIntoFree(cardSource))
                                 {
                                     if (cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass))
                                     {
@@ -120,7 +120,7 @@ namespace DCGO.CardEffects.BT20
                         {
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
                                 targetPermanent: selectedPermanent,
-                                cardCondition: CanSelectCardCondition,
+                                cardCondition: canEvolveIntoFree,
                                 payCost: true,
                                 reduceCostTuple: (reduceCost: 1, reduceCostCardCondition: null),
                                 fixedCostTuple: null,
