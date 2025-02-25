@@ -2569,6 +2569,24 @@ public class CardSource : MonoBehaviour
 
     #region The permanent that belonged to this card just before it left the field
     public Permanent PermanentJustBeforeRemoveField { get; set; } = null;
+
+    #endregion
+
+    #region whether this card has "SEEKERS" trait
+
+    public bool HasSeekersTraits
+    {
+        get
+        {
+            if (CardTraits.Contains("SEEKERS"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
     #endregion
 }
 
