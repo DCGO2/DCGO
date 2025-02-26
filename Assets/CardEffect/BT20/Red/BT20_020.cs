@@ -72,10 +72,6 @@ namespace DCGO.CardEffects.BT20
                     return true;
                 }
 
-            }
-                
-
-
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Gains raid, piercing, trash security stack", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
@@ -120,6 +116,8 @@ namespace DCGO.CardEffects.BT20
                                 fromTop: true).DestroySecurity());
                     }
                 }
+
+            }
             }
             #endregion
 
