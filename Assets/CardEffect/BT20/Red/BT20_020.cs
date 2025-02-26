@@ -72,10 +72,6 @@ namespace DCGO.CardEffects.BT20
                     return true;
                 }
 
-            }
-                
-
-
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Gains raid, piercing, trash security stack", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
@@ -120,6 +116,8 @@ namespace DCGO.CardEffects.BT20
                                 fromTop: true).DestroySecurity());
                     }
                 }
+
+            }
             }
             #endregion
 
@@ -129,7 +127,7 @@ namespace DCGO.CardEffects.BT20
             {
                 ActivateClass activateClass1 = new ActivateClass();
                 activateClass1.SetUpICardEffect("Delete 1 Digimon with as much or less DP as this Digimon", CanUseCondition1, card);
-                activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, 1, true, EffectDiscription1());
+                activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, 1, false, EffectDiscription1());
                 activateClass1.SetHashString("ImperialDramon_BT20_020");
                 cardEffects.Add(activateClass1);
 
