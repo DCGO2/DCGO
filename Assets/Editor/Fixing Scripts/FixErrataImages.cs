@@ -15,6 +15,9 @@ namespace DCGO.Tools.Repair
         string baseURL = "https://raw.githubusercontent.com/TakaOtaku/Digimon-Card-App/main/src/";
         public List<CardData> _cardData;
 
+        string debugText = "";
+        int matchedCount = 0;
+
         [MenuItem("Window/DCGO/Repair/Fix Errata Images")]
         static void ErrataImages()
         {
@@ -26,45 +29,51 @@ namespace DCGO.Tools.Repair
         {
             yield return EditorCoroutineUtility.StartCoroutine(instance.GetJsonData(), instance);
 
-            List<CardData> cards = _cardData.Where(x => x.AAs.Any(aa => aa.id.Contains("Errata"))).ToList();
-
-            string debugText = "";
-            int matchedCount = 0;
+            List<CardData> cards = _cardData.Where(x => x.AAs.Any(aa => aa.id.Contains("Errata"))).ToList();            
 
             foreach (CardData data in cards)
             {
-                string fileName = $"{FixCharactersInClassName($"{data.cardNumber}")}.asset";
+                SetSpriteName(data.id, data);
 
-                string folderName_SetID = $"{GetParseByHyphen(data.id)[0]}";
-                string folderName_CardColor = $"{DataBase.CardColorNameDictionary[GetCardColors(data.color)[0]]}";
-                folderName_CardColor = char.ToUpper(folderName_CardColor[0]) + folderName_CardColor.Substring(1);
-
-                string folderName_CardKind = $"{DataBase.CardKindENNameDictionary[DictionaryUtility.GetCardKind(data.cardType.Replace("-", ""), DataBase.CardKindENNameDictionary)]}";
-                string folderPath = $"Assets/CardBaseEntity/{folderName_SetID}/{folderName_CardColor}/{folderName_CardKind}";
-                string filePath = $"{folderPath}/{fileName}".Trim().Replace("\t", "").Replace("\n", "").Replace("\r", "").Replace(" ", "");
-
+                foreach(AlternateArt aa in data.AAs)
+                {
+                    SetSpriteName(aa.id.Replace("-Errata",""), data);
+                }
                 
-
-                CEntity_Base card = GetAsset.Load<CEntity_Base>(filePath);
-
-                if(card == null)
-                {
-                    Debug.Log($"NO ASSET FOUND: {fileName}");
-                    continue;
-                }
-                string errataName = GetImageURL(data.cardImage, data.cardNumber, data.AAs);
-
-                if (!errataName.Equals(card.CardSpriteName))
-                {
-                    debugText += $"{errataName}\n";
-                    matchedCount++;
-                    //card.CardSpriteName = errataName;
-                    //EditorUtility.SetDirty(card);
-                }
             }
 
             Debug.Log(debugText);
             Debug.Log($"COMPLETED: {matchedCount}");
+        }
+
+        void SetSpriteName(string ID, CardData data)
+        {
+            string fileName = $"{FixCharactersInClassName($"{ID}")}.asset";
+
+            string folderName_SetID = $"{GetParseByHyphen(data.id)[0]}";
+            string folderName_CardColor = $"{DataBase.CardColorNameDictionary[GetCardColors(data.color)[0]]}";
+            folderName_CardColor = char.ToUpper(folderName_CardColor[0]) + folderName_CardColor.Substring(1);
+
+            string folderName_CardKind = $"{DataBase.CardKindENNameDictionary[DictionaryUtility.GetCardKind(data.cardType.Replace("-", ""), DataBase.CardKindENNameDictionary)]}";
+            string folderPath = $"Assets/CardBaseEntity/{folderName_SetID}/{folderName_CardColor}/{folderName_CardKind}";
+            string filePath = $"{folderPath}/{fileName}".Trim().Replace("\t", "").Replace("\n", "").Replace("\r", "").Replace(" ", "");
+
+            CEntity_Base card = GetAsset.Load<CEntity_Base>(filePath);
+
+            if (card == null)
+            {
+                Debug.Log($"NO ASSET FOUND: {fileName}");
+                return;
+            }
+            string errataName = GetImageURL(data.cardImage, data.cardNumber, data.AAs);
+
+            if (!errataName.Equals(card.CardSpriteName))
+            {
+                debugText += $"{errataName}\n";
+                matchedCount++;
+                //card.CardSpriteName = errataName;
+                //EditorUtility.SetDirty(card);
+            }
         }
 
         string GetImageURL(string url, string ID, List<AlternateArt> AA)
