@@ -377,14 +377,11 @@ namespace DCGO.CardEffects.BT20
                 }
 
                 bool CanActivateCondition1(Hashtable hashtable)
-                {
-                    if (card.Owner.GetBattleAreaDigimons().Count < 2)
-                        return false;
-
-                    if (card.Owner.HandCards.Count(CanSelectDNACardCondition) < 1)
-                        return false;
-
-                    return true;
+                {                    
+                    if (CardEffectCommons.MatchConditionPermanentCount(isPaildramonOrDinoBeemon)>=2){
+                        return true;
+                    }
+                    return false;
                 }
 
                 IEnumerator ActivateCoroutine1(Hashtable hashtable)
