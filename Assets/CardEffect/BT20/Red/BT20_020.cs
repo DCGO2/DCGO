@@ -43,85 +43,82 @@ namespace DCGO.CardEffects.BT20
 
             #region When Digievolving
             if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                
-                IEnumerator ActivateCoroutine1(Hashtable hashtable)
-                {
-                    yield return null;
-                    CanNotPutFieldClass canNotPutFieldClass = new CanNotPutFieldClass();
-                    canNotPutFieldClass.SetUpICardEffect("Can't play Digimon or Tamers by effect", CanUseCondition1, card);
-                    canNotPutFieldClass.SetUpCanNotPutFieldClass(cardCondition: CardCondition, cardEffectCondition: CardEffectCondition1);
-                    card.Owner.Enemy.UntilOwnerTurnEndEffects.Add((_timing) => canNotPutFieldClass);
-                    ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().DebuffSE);
+            {              
+              
+                    ActivateClass activateClass = new ActivateClass();
+                    activateClass.SetUpICardEffect("Gains raid, piercing, trash security stack", CanUseCondition, card);
+                    activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                    cardEffects.Add(activateClass);
+                    
 
-                    bool CanUseCondition1(Hashtable hashtable)
+                    bool CardEffectCondition(ICardEffect cardEffect)
+                    {
+                        return cardEffect != null;
+                    }
+                    
+                    string EffectDiscription()
+                    {
+                        return "[When Digivolving] Your opponent can't play Digimon or Tamers by effects until the end of their turn. Then, if [Imperialdramon: Dragon Mode] is in this Digimon's digivolution cards, trash your opponent's top security card.";
+                    }
+
+                    bool CanUseCondition(Hashtable hashtable)
+                    {
+                        if (CardEffectCommons.IsExistOnBattleArea(card))
+                        {
+                            if (CardEffectCommons.IsOwnerTurn(card))                                                    
+                                {
+                                    return true;
+                                }
+                            return false;                        
+                        }                
+                        return false;          
+                    }
+
+                    bool CanActivateCondition(Hashtable hashtable)
                     {
                         return true;
                     }
 
-                    bool CardCondition(CardSource cardSource)
+                    IEnumerator ActivateCoroutine(Hashtable _hashtable)
                     {
-                    if (cardSource.Owner == card.Owner.Enemy)
-                    {
-                        if (cardSource.IsDigimon || cardSource.IsTamer)
+                        CanNotPutFieldClass canNotPutFieldClass = new CanNotPutFieldClass();
+                        canNotPutFieldClass.SetUpICardEffect("Can't play Digimon or Tamers by effect", CanUseCondition1, card);
+                        canNotPutFieldClass.SetUpCanNotPutFieldClass(cardCondition: CardCondition, cardEffectCondition: CardEffectCondition1);
+                        card.Owner.Enemy.UntilOwnerTurnEndEffects.Add((_timing) => canNotPutFieldClass);
+                        ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().DebuffSE);
+
+                        bool CanUseCondition1(Hashtable hashtable)
                         {
                             return true;
                         }
-                    }
-                        return false;
-                    }
 
-                bool CardEffectCondition1(ICardEffect cardEffect)
-                {
-                    return true;
-                }
-
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Gains raid, piercing, trash security stack", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-                cardEffects.Add(activateClass);
-
-                bool CardEffectCondition(ICardEffect cardEffect)
-                {
-                    return cardEffect != null;
-                }
-                
-                string EffectDiscription()
-                {
-                    return "[When Digivolving] Your opponent can't play Digimon or Tamers by effects until the end of their turn. Then, if [Imperialdramon: Dragon Mode] is in this Digimon's digivolution cards, trash your opponent's top security card.";
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.IsOwnerTurn(card))                                                    
+                        bool CardCondition(CardSource cardSource)
+                        {
+                        if (cardSource.Owner == card.Owner.Enemy)
+                        {
+                            if (cardSource.IsDigimon || cardSource.IsTamer)
                             {
                                 return true;
                             }
-                        return false;                        
-                    }                
-                    return false;          
-                }
+                        }
+                            return false;
+                        }
 
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    return true;
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
-                {
-                    if(card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardNames.Contains("Imperialdramon: Imperialdramon: Dragon Mode")) >= 1)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
-                                player: card.Owner.Enemy,
-                                destroySecurityCount: 1,
-                                cardEffect: activateClass,
-                                fromTop: true).DestroySecurity());
+                        bool CardEffectCondition1(ICardEffect cardEffect)
+                        {
+                            return true;
+                        }
+                        if(card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardNames.Contains("Imperialdramon: Imperialdramon: Dragon Mode")) >= 1)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
+                                    player: card.Owner.Enemy,
+                                    destroySecurityCount: 1,
+                                    cardEffect: activateClass,
+                                    fromTop: true).DestroySecurity());
+                        }
                     }
-                }
 
-            }
+                
             }
             #endregion
 
