@@ -24,18 +24,24 @@ namespace DCGO.CardEffects.BT20
 
                 
 
-                bool isPurpleDigimon(Permanent permanent)
+                bool PermanentCondition(Permanent permanent)
                 {                 
-                    return permanent.TopCard.CardColors.Contains(CardColor.Purple);                    
+                    if(permanent != card.PermanentOfThisCard())
+                    {
+                        if(permanent.TopCard.CardColors.Contains(CardColor.Purple))
+                        {
+                            if(permanent.IsDigimon)
+                            {
+                                if(CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent,card))
+                                {
+                                    return true;
+                                }
+                            }
+                        }                    
+                    }
+                    return false;
                 }
-
-                bool isOwnerDigimon(CardSource cardSource)
-                {                          
-                    return (cardSource.Owner == card.Owner && cardSource.IsDigimon && cardSource.CanPlayCardTargetFrame(card.PermanentOfThisCard().PermanentFrame, false, activateClass));
-                }
-
                 
-
                 bool canEvolveIntoFree(CardSource cardSource){
                     if (cardSource.CardTraits.Contains("Free")){
                         return true;
@@ -45,19 +51,23 @@ namespace DCGO.CardEffects.BT20
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if(CardEffectCommons.HasMatchConditionOwnersHand(card, isOwnerDigimon))
-                    {
-                        if (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, isPurpleDigimon))
+                    if(CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    {                    
+                        if (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PermanentCondition))
                         {
                             return true;
                         }
-                    }
+                    }                    
                     return false;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return true;
+                    if(CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    {
+                        return true;
+                    }
+                    return false;
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -85,41 +95,9 @@ namespace DCGO.CardEffects.BT20
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                    {
-                        Permanent selectedPermanent = null;
-
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectPermanentCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: true,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: SelectPermanentCoroutine,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will digivolve.", "The opponent is selecting 1 Digimon that will digivolve.");
-
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                        {
-                            selectedPermanent = permanent;
-
-                            yield return null;
-                        }
-
-                        if (selectedPermanent != null)
-                        {
+                    {                        
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                                targetPermanent: selectedPermanent,
+                                targetPermanent: card.PermanentOfThisCard(),
                                 cardCondition: canEvolveIntoFree,
                                 payCost: true,
                                 reduceCostTuple: (reduceCost: 1, reduceCostCardCondition: null),
@@ -127,8 +105,8 @@ namespace DCGO.CardEffects.BT20
                                 ignoreDigivolutionRequirementFixedCost: -1,
                                 isHand: true,
                                 activateClass: activateClass,
-                                successProcess: null));
-                        }
+                                successProcess: null)
+                                );
                     }
                 }
             }

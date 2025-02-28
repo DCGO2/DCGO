@@ -103,12 +103,12 @@ namespace DCGO.CardEffects.BT20
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("1 Digimon gains Piercing and 4000DP, then this digimon may attack", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] For the turn, 1 of your Digimon gains ＜Piercing＞ (When this Digimon attacks and deletes an opponent's Digimon and survives the battle, it performs any security checks it normally would) and gets +4000 DP. Then, this Digimon may attack. [All Turns] When any of your [Paildramon]/[Dinobeemon] would be deleted, 2 of your Digimon may DNA digivolve into [Imperialdramon: Dragon Mode] in the hand.";
+                    return "[When Digivolving] For the turn, 1 of your Digimon gains ＜Piercing＞ (When this Digimon attacks and deletes an opponent's Digimon and survives the battle, it performs any security checks it normally would) and gets +4000 DP. Then, this Digimon may attack.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -123,7 +123,7 @@ namespace DCGO.CardEffects.BT20
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable,card);
+                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable,card);
                 }
 
             IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -167,48 +167,21 @@ namespace DCGO.CardEffects.BT20
 
                     }
                 }
-            }
-            ActivateClass activateAttackClass = new ActivateClass();
-                activateAttackClass.SetUpICardEffect("This Digimon may attack", CanUseConditionA, card);
-                activateAttackClass.SetUpActivateClass(CanActivateConditionA, ActivateCoroutineA, 1, true, EffectDiscriptionA());
-                cardEffects.Add(activateAttackClass);
-
-                string EffectDiscriptionA()
-                {
-                    return "This Digimon may attack";
-                }
-
-                bool CanUseConditionA(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                
+                if (card.PermanentOfThisCard().CanAttack(activateClass))
                     {
-                        if (CardEffectCommons.IsOwnerTurn(card))
-                        {
-                            return true;
-                        }
+                        SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
+
+                        selectAttackEffect.SetUp(
+                            attacker: card.PermanentOfThisCard(),
+                            canAttackPlayerCondition: () => true,
+                            defenderCondition: _ => true,
+                            cardEffect: activateClass);
+
+                        yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
                     }
-
-                    return false;
-                }
-
-                bool CanActivateConditionA(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           card.PermanentOfThisCard().CanAttack(activateAttackClass);
-                }
-
-                IEnumerator ActivateCoroutineA(Hashtable hashtable)
-                {
-                    SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
-
-                    selectAttackEffect.SetUp(
-                        attacker: card.PermanentOfThisCard(),
-                        canAttackPlayerCondition: () => true,
-                        defenderCondition: (permanent) => false,
-                        cardEffect: activateAttackClass);
-
-                    yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
-                }
+            }
+            
             #endregion
             
             #region On Play
@@ -216,12 +189,12 @@ namespace DCGO.CardEffects.BT20
             {
                 ActivateClass activateClass1 = new ActivateClass();
                 activateClass1.SetUpICardEffect("Piercing and Digivolve into Imperialdramon Dragon Mode", CanUseCondition1, card);
-                activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, true, EffectDiscription1());
+                activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDiscription1());
                 cardEffects.Add(activateClass1);
 
                 string EffectDiscription1()
                 {
-                    return "[On Play]For the turn, 1 of your Digimon gains ＜Piercing＞ (When this Digimon attacks and deletes an opponent's Digimon and survives the battle, it performs any security checks it normally would) and gets +4000 DP. Then, this Digimon may attack. [All Turns] When any of your [Paildramon]/[Dinobeemon] would be deleted, 2 of your Digimon may DNA digivolve into [Imperialdramon: Dragon Mode] in the hand.";
+                    return "[On Play]For the turn, 1 of your Digimon gains ＜Piercing＞ (When this Digimon attacks and deletes an opponent's Digimon and survives the battle, it performs any security checks it normally would) and gets +4000 DP. Then, this Digimon may attack.";
                 }
 
                 bool CanSelectPermanentCondition1(Permanent permanent)
@@ -272,6 +245,7 @@ namespace DCGO.CardEffects.BT20
                             targetPermanent: permanent,
                             effectDuration: EffectDuration.UntilEachTurnEnd,
                             activateClass: activateClass));
+                            
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
                                 targetPermanent: permanent,
                                 changeValue: 4000,
@@ -281,53 +255,25 @@ namespace DCGO.CardEffects.BT20
 
                     }
                 }
+                if (card.PermanentOfThisCard().CanAttack(activateClass))
+                {
+                        SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
+
+                        selectAttackEffect.SetUp(
+                            attacker: card.PermanentOfThisCard(),
+                            canAttackPlayerCondition: () => true,
+                            defenderCondition: _ => true,
+                            cardEffect: activateClass1);
+
+                        yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
+                }
             }
-            ActivateClass activateAttackClass1 = new ActivateClass();
-                activateAttackClass1.SetUpICardEffect("This Digimon may attack", CanUseConditionA1, card);
-                activateAttackClass1.SetUpActivateClass(CanActivateConditionA1, ActivateCoroutineA1, 1, true, EffectDiscriptionA1());
-                cardEffects.Add(activateAttackClass1);
-
-                string EffectDiscriptionA1()
-                {
-                    return "This Digimon may attack";
-                }
-
-                bool CanUseConditionA1(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.IsOwnerTurn(card))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
-                bool CanActivateConditionA1(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           card.PermanentOfThisCard().CanAttack(activateAttackClass1);
-                }
-
-                IEnumerator ActivateCoroutineA1(Hashtable hashtable)
-                {
-                    SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
-
-                    selectAttackEffect.SetUp(
-                        attacker: card.PermanentOfThisCard(),
-                        canAttackPlayerCondition: () => true,
-                        defenderCondition: (permanent) => false,
-                        cardEffect: activateAttackClass1);
-
-                    yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
-                }
+           
             }            
             #endregion
 
              #region All Turns
-            if(timing == EffectTiming.None){
+            if(timing == EffectTiming.WhenPermanentWouldBeDeleted){
                 ActivateClass activateClass1 = new ActivateClass();
                 activateClass1.SetUpICardEffect("If would be deleted, DNA Digivolve", CanUseCondition1, card);
                 activateClass1.SetUpActivateClass(CanActivateCondition2, ActivateCoroutine1, -1, true, EffectDiscription1());

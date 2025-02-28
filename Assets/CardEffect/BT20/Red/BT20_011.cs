@@ -23,7 +23,7 @@ namespace DCGO.CardEffects.BT20
 
                 string EffectDiscription()
                 {
-                    return "[On Play] [When Digivolving] Delete 1 of your opponent's Digimon with 3000 DP or less. Then, if it's your turn, 2 of your Digimon may DNA digivolve into a Digimon card with [Imperialdramon] in its name or the [Free] trait in the hand.";
+                    return "[When Digivolving] Delete 1 of your opponent's Digimon with 3000 DP or less. Then, if it's your turn, 2 of your Digimon may DNA digivolve into a Digimon card with [Imperialdramon] in its name or the [Free] trait in the hand.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -111,8 +111,7 @@ namespace DCGO.CardEffects.BT20
                     }
 
                      
-                    if (CardEffectCommons.IsOwnerTurn(card))                
-                    {
+                    
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(card.PermanentOfThisCard(), card))
                     {
                         if (card.Owner.HandCards.Count >= 1)
@@ -234,7 +233,7 @@ namespace DCGO.CardEffects.BT20
                             }
                         }
                     }
-                }
+                
             
                 }
             }
@@ -250,7 +249,7 @@ namespace DCGO.CardEffects.BT20
 
                 string EffectDiscription()
                 {
-                    return "[On Play] [When Digivolving] Delete 1 of your opponent's Digimon with 3000 DP or less. Then, if it's your turn, 2 of your Digimon may DNA digivolve into a Digimon card with [Imperialdramon] in its name or the [Free] trait in the hand.";
+                    return "[When Digivolving] Delete 1 of your opponent's Digimon with 3000 DP or less. Then, if it's your turn, 2 of your Digimon may DNA digivolve into a Digimon card with [Imperialdramon] in its name or the [Free] trait in the hand.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -338,8 +337,7 @@ namespace DCGO.CardEffects.BT20
                     }
 
                      
-                    if (CardEffectCommons.IsOwnerTurn(card))                
-                    {
+                    
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(card.PermanentOfThisCard(), card))
                     {
                         if (card.Owner.HandCards.Count >= 1)
@@ -461,7 +459,7 @@ namespace DCGO.CardEffects.BT20
                             }
                         }
                     }
-                }
+                
             
                 }
             }
