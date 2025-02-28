@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.BT20
 {
     public class WormmonBT20_065 : CEntity_Effect
     {
@@ -15,7 +15,7 @@ namespace DCGO.CardEffects
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Give effects to your opponent's Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -98,8 +98,8 @@ namespace DCGO.CardEffects
                                     cardEffect: activateClass);
 
                                 selectPermanentEffect.SetUpCustomMessage(
-                                    "Select 1 Digimon that will get [On Deletion] Lose 1 Memory.",
-                                    "The opponent is selecting 1 Digimon that will get [On Deletion] Lose 1 Memory.");
+                                    "Select 1 Digimon that will gain effect.",
+                                    "The opponent is selecting 1 Digimon that will gain effect.");
 
                                 yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
