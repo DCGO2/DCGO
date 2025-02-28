@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DCGO.CardEffects.BT20
 {
@@ -21,9 +22,16 @@ namespace DCGO.CardEffects.BT20
                     return "[End of Your Turn] [Once Per Turn] You may place 1 of your Tamers with [Pulsemon] in its text or the [SoC] or [SEEKERS] trait as the bottom digivolution card of this Digimon with no Tamer cards in its digivolution cards.";
                 }
 
+                bool CanSelectTamer(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card) &&
+                           permanent.IsTamer &&
+                           (permanent.TopCard.HasText("Pulsemon") || permanent.TopCard.HasSocTraits || permanent.TopCard.HasSeekersTraits);
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (CardEffectCommons.IsOwnerTurn(card))
                         {
@@ -34,22 +42,13 @@ namespace DCGO.CardEffects.BT20
                     return false;
                 }
 
-                bool CanBeSelected(CardSource card)
-                {
-                    if (card.IsTamer && (card.HasText("Pulsemon") || card.HasSocTraits || card.HasSeekersTraits))
-                    {
-                        return true;
-                    }
-                    return false;
-                }
-
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, permanent => permanent.cardSources.Filter(source => source.IsTamer).Count == 0))
+                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectTamer))
                         {
-                            if (card.Owner.GetBattleAreaPermanents().Exists(permanent => CanBeSelected(permanent.TopCard)))
+                            if (card.PermanentOfThisCard().DigivolutionCards.Count(source => source.IsTamer) == 0)
                             {
                                 return true;
                             }
@@ -61,39 +60,35 @@ namespace DCGO.CardEffects.BT20
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    List<CardSource> selectedCards = new List<CardSource>();
+                    Permanent selectedPermanent = null;
 
-                    IEnumerator SelectCardCoroutine(CardSource cardSource)
+                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
-                        selectedCards.Add(cardSource);
+                        selectedPermanent = permanent;
 
                         yield return null;
                     }
-                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
-                    selectCardEffect.SetUp(
-                        canTargetCondition: CanBeSelected,
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                    selectPermanentEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanSelectTamer,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
-                        canNoSelect: () => true,
-                        selectCardCoroutine: SelectCardCoroutine,
-                        afterSelectCardCoroutine: null,
-                        message: "Select a tamer to add to source",
                         maxCount: 1,
+                        canNoSelect: true,
                         canEndNotMax: false,
-                        isShowOpponent: true,
-                        mode: SelectCardEffect.Mode.Custom,
-                        root: SelectCardEffect.Root.Custom,
-                        customRootCardList: null,
-                        canLookReverseCard: false,
-                        selectPlayer: card.Owner,
-                        cardEffect: activateClass
-                        );
+                        selectPermanentCoroutine: SelectPermanentCoroutine,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Custom,
+                        cardEffect: activateClass);
 
-                    selectCardEffect.SetUpCustomMessage("Select 1 card to add to source", "The opponent is selecting 1 card to add to source.");
-                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 card to add to source", "The opponent is selecting 1 card to add to source.");
 
-                    // effect to add Card underneath
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                    yield return ContinuousController.instance.StartCoroutine(new IPlacePermanentToDigivolutionCards(new List<Permanent[]>() { new Permanent[] { selectedPermanent, card.PermanentOfThisCard() } }, false, activateClass).PlacePermanentToDigivolutionCards());
                 }
             }
 
