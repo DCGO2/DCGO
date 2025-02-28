@@ -15,7 +15,7 @@ namespace DCGO.CardEffects.BT20
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Give effects to your opponent's Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -98,8 +98,8 @@ namespace DCGO.CardEffects.BT20
                                     cardEffect: activateClass);
 
                                 selectPermanentEffect.SetUpCustomMessage(
-                                    "Select 1 Digimon that will get [On Deletion] Lose 1 Memory.",
-                                    "The opponent is selecting 1 Digimon that will get [On Deletion] Lose 1 Memory.");
+                                    "Select 1 Digimon that will gain effect.",
+                                    "The opponent is selecting 1 Digimon that will gain effect.");
 
                                 yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 

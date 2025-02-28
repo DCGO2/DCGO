@@ -10,25 +10,10 @@ namespace DCGO.CardEffects.BT20
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             if (timing == EffectTiming.None)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("+2000 DP", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
-                cardEffects.Add(activateClass);
-
-                string EffectDiscription()
+            {                
+                bool CanActivateCondition()
                 {
-                    return "[Your Turn] This Digimon with 4 or more digivolution cards gets +2000 DP.";
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return true;
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                        if (CardEffectCommons.IsExistOnBattleArea(card))
+                        if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (card.Owner.LibraryCards.Count >= 1)
                         {
@@ -41,11 +26,9 @@ namespace DCGO.CardEffects.BT20
                     return false;
                 }
 
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: card.PermanentOfThisCard(), changeValue: 2000, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
+                cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect(changeValue: 2000, isInheritedEffect: true, card: card, condition: CanActivateCondition));
 
-                }
+                
             }
 
             return cardEffects;

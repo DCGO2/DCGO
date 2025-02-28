@@ -18,7 +18,7 @@ namespace DCGO.CardEffects.BT20
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete digimon and digivolve into ImperialDramon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -68,20 +68,12 @@ namespace DCGO.CardEffects.BT20
                         if (cardSource.Owner == card.Owner)
                         {
                             if(cardSource.CardTraits.Contains("Free") || cardSource.ContainsCardName("Imperialdramon"))
-                            {        
-                                                
+                            {                                                        
                                 if (cardSource.CanPlayJogress(true))
-                                {
-                                    if (isExistOnField(card))
-                                    {
-                                        if (cardSource.CanJogressFromTargetPermanent(card.PermanentOfThisCard(), true))
-                                        {
-                                            return true;
-                                        }
-                                    }
+                                {   
+                                    return true;                                                                        
                                 }
-                            }
-                        
+                            }                        
                         }
                     }
                     }
@@ -251,7 +243,7 @@ namespace DCGO.CardEffects.BT20
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete digimon and digivolve into ImperialDramon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -304,14 +296,8 @@ namespace DCGO.CardEffects.BT20
                             {        
                                                 
                                 if (cardSource.CanPlayJogress(true))
-                                {
-                                    if (isExistOnField(card))
-                                    {
-                                        if (cardSource.CanJogressFromTargetPermanent(card.PermanentOfThisCard(), true))
-                                        {
-                                            return true;
-                                        }
-                                    }
+                                {       
+                                    return true;
                                 }
                             }
                         

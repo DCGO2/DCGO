@@ -30,7 +30,7 @@ namespace DCGO.CardEffects.BT20
                 bool isFreeTrait(CardSource cardSource)
                 {
                     if (cardSource.IsDigimon)
-                        return cardSource.ContainsTraits("Free");
+                        return cardSource.ContainsTraits("Free") && CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false,cardEffect: activateClass);
 
                     return false;
                 }
@@ -224,8 +224,7 @@ namespace DCGO.CardEffects.BT20
                     {
                         if (cardSource.ContainsCardName("Imperialdramon: Dragon Mode"))
                         {
-                            if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false,
-                                    cardEffect: activateClass))
+                            if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false,cardEffect: activateClass))
                             {
                                 return true;
                             }

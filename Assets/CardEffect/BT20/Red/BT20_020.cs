@@ -26,16 +26,20 @@ namespace DCGO.CardEffects.BT20
             }
             #endregion
 
-            if(timing == EffectTiming.OnDetermineDoSecurityCheck)
-            {
-                cardEffects.Add(CardEffectFactory.PierceSelfEffect(isInheritedEffect: false, card: card, condition: null));
-            }
+            #region Pierce
+                if(timing == EffectTiming.OnDetermineDoSecurityCheck)
+                {
+                    cardEffects.Add(CardEffectFactory.PierceSelfEffect(isInheritedEffect: false, card: card, condition: null));
+                }
+            #endregion
 
-            if(timing == EffectTiming.OnAllyAttack)
-            {
-                cardEffects.Add(CardEffectFactory.RaidSelfEffect(isInheritedEffect: false, card: card, condition: null));
+            #region
+                if(timing == EffectTiming.OnAllyAttack)
+                {
+                    cardEffects.Add(CardEffectFactory.RaidSelfEffect(isInheritedEffect: false, card: card, condition: null));
 
-            }
+                }
+            #endregion
 
             #region When Digievolving
             if (timing == EffectTiming.OnEnterFieldAnyone)
@@ -74,7 +78,7 @@ namespace DCGO.CardEffects.BT20
 
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Gains raid, piercing, trash security stack", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 bool CardEffectCondition(ICardEffect cardEffect)
@@ -84,7 +88,7 @@ namespace DCGO.CardEffects.BT20
                 
                 string EffectDiscription()
                 {
-                    return "＜Raid＞ (When this Digimon attacks, you may switch the target of attack to 1 of your opponent's unsuspended Digimon with the highest DP). ＜Piercing＞ (When this Digimon attacks and deletes an opponent's Digimon and survives the battle, it performs any security checks it normally would). [When Digivolving] Your opponent can't play Digimon or Tamers by effects until the end of their turn. Then, if [Imperialdramon: Dragon Mode] is in this Digimon's digivolution cards, trash your opponent's top security card. [All Turns] [Once Per Turn] When your opponent's security stack is removed from, delete 1 of their Digimon with as much or less DP as this Digimon.";
+                    return "[When Digivolving] Your opponent can't play Digimon or Tamers by effects until the end of their turn. Then, if [Imperialdramon: Dragon Mode] is in this Digimon's digivolution cards, trash your opponent's top security card.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -123,7 +127,7 @@ namespace DCGO.CardEffects.BT20
 
 
             #region All Turns
-            if(timing == EffectTiming.None)
+            if(timing == EffectTiming.OnLoseSecurity)
             {
                 ActivateClass activateClass1 = new ActivateClass();
                 activateClass1.SetUpICardEffect("Delete 1 Digimon with as much or less DP as this Digimon", CanUseCondition1, card);
