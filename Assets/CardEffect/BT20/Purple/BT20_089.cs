@@ -143,7 +143,7 @@ namespace DCGO.CardEffects.BT20
                 bool IsEijiCardCondition(CardSource cardSource)
                 {
                     return CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass) &&
-                           (cardSource.EqualsCardName("Eiji Nagasumi");
+                           cardSource.EqualsCardName("Eiji Nagasumi");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
