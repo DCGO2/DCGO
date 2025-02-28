@@ -1,14 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using System.Linq;
-using Photon;
-using System;
-using Photon.Pun;
 
 namespace DCGO.CardEffects.BT20
 {
-    public class Punkmon_BT20_069 : CEntity_Effect
+    public class BT20_075 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
@@ -17,12 +13,55 @@ namespace DCGO.CardEffects.BT20
             #region Digivolution Condition
             if (timing == EffectTiming.None)
             {
-                bool PermanentCondition(Permanent targetPermanent)
+                static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return (targetPermanent.TopCard.EqualsTraits("Evil") && targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 3);
+                    if (targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 4)
+                    {
+                        if (targetPermanent.TopCard.EqualsTraits("Dark Dragon") || targetPermanent.TopCard.EqualsTraits("Evil Dragon"))
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
                 }
 
-                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 2, ignoreDigivolutionRequirement: false, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
+            }
+            #endregion
+
+            #region Inherit
+            if (timing == EffectTiming.None)
+            {
+                bool PermanentCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                    {
+                        if (permanent.TopCard.EqualsTraits("Dark Dragon") || permanent.TopCard.EqualsTraits("Evil Dragon"))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                bool CanUseCondition()
+                {
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    {
+                        if (CardEffectCommons.IsOwnerTurn(card))
+                        {
+                            if (card.Owner.HandCards.Count <= 4)
+                            {
+                                return true;
+                            }
+                        }
+                    }
+
+                    return false;
+                }
+
+                cardEffects.Add(CardEffectFactory.ChangeSAttackStaticEffect(PermanentCondition, 1, true, card, CanUseCondition));
             }
             #endregion
 
@@ -30,13 +69,13 @@ namespace DCGO.CardEffects.BT20
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Trash 1 card then, activate effects.", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Trash 2 cards then, gain Raid, Piercing, and +4000 DP.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[On Play] Trash 1 card in your hand. Then, until the end of your opponent's turn, 1 of your Digimon gains <Blocker> and <Retaliation>.";
+                    return "[On Play] Trash 2 cards in your hand. Then, for the turn, 1 of your Digimon gains <Raid> and <Piercing> and +4000 DP.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -66,7 +105,7 @@ namespace DCGO.CardEffects.BT20
                 {
                     if (card.Owner.HandCards.Count >= 1)
                     {
-                        int discardCount = Math.Min(1, card.Owner.HandCards.Count);
+                        int discardCount = Math.Min(2, card.Owner.HandCards.Count);
 
                         SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
@@ -107,18 +146,19 @@ namespace DCGO.CardEffects.BT20
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will gain <Blocker> and <Retaliation>.", "The opponent is selecting 1 Digimon that will gain <Blocker> and <Retaliation>.");
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will gain <Raid> and <Piercing> and +4000 DP.", "The opponent is selecting 1 Digimon that will gain <Raid> and <Piercing> and +4000 DP.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBlocker(targetPermanent: permanent, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainRetaliation(targetPermanent: permanent, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainRaid(targetPermanent: permanent, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainPierce(targetPermanent: permanent, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: permanent, changeValue: 4000, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
                         }
                     }
-                        
-                    
+
+
                 }
             }
             #endregion
@@ -127,13 +167,13 @@ namespace DCGO.CardEffects.BT20
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Trash 1 card then, activate effects.", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Trash 2 cards then, gain Raid, Piercing, and +4000 DP.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] Trash 1 card in your hand. Then, until the end of your opponent's turn, 1 of your Digimon gains <Blocker> and <Retaliation>.";
+                    return "[On Play] Trash 2 cards in your hand. Then, for the turn, 1 of your Digimon gains <Raid> and <Piercing> and +4000 DP.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -163,7 +203,7 @@ namespace DCGO.CardEffects.BT20
                 {
                     if (card.Owner.HandCards.Count >= 1)
                     {
-                        int discardCount = Math.Min(1, card.Owner.HandCards.Count);
+                        int discardCount = Math.Min(2, card.Owner.HandCards.Count);
 
                         SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
@@ -204,43 +244,20 @@ namespace DCGO.CardEffects.BT20
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will gain <Blocker> and <Retaliation>.", "The opponent is selecting 1 Digimon that will gain <Blocker> and <Retaliation>.");
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will gain <Raid> and <Piercing> and +4000 DP.", "The opponent is selecting 1 Digimon that will gain <Raid> and <Piercing> and +4000 DP.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBlocker(targetPermanent: permanent, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainRetaliation(targetPermanent: permanent, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainRaid(targetPermanent: permanent, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainPierce(targetPermanent: permanent, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: permanent, changeValue: 4000, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
                         }
                     }
 
 
                 }
-            }
-            #endregion
-
-            #region Inherit
-            if (timing == EffectTiming.None)
-            {
-                bool Condition()
-                {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (CardEffectCommons.IsOwnerTurn(card))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
-                cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect(
-                    changeValue: 2000,
-                    isInheritedEffect: true,
-                    card: card,
-                    condition: Condition));
             }
             #endregion
 
