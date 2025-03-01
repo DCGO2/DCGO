@@ -51,7 +51,7 @@ public partial class CardEffectCommons
     #endregion
 
     #region Target 1 Digimon gains [Pierce]
-    public static IEnumerator GainPierce(Permanent targetPermanent, EffectDuration effectDuration, ICardEffect activateClass)
+    public static IEnumerator GainPierce(Permanent targetPermanent, EffectDuration effectDuration, ICardEffect activateClass, bool isInherited = false)
     {
         if (targetPermanent == null) yield break;
         if (!IsPermanentExistsOnBattleArea(targetPermanent)) yield break;
@@ -73,7 +73,7 @@ public partial class CardEffectCommons
             return false;
         }
 
-        ActivateClass pierce = CardEffectFactory.PierceEffect(targetPermanent: targetPermanent, isInheritedEffect: false, condition: CanUseCondition, rootCardEffect: activateClass, targetPermanent.TopCard);
+        ActivateClass pierce = CardEffectFactory.PierceEffect(targetPermanent: targetPermanent, isInheritedEffect: isInherited, condition: CanUseCondition, rootCardEffect: activateClass, targetPermanent.TopCard);
 
         AddEffectToPermanent(targetPermanent: targetPermanent, effectDuration: effectDuration, card: card, cardEffect: pierce, timing: EffectTiming.OnDetermineDoSecurityCheck);
 
