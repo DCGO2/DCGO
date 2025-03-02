@@ -1,0 +1,105 @@
+using System.Collections;
+using System.Collections.Generic;
+
+//ST20-003 Garudamon
+namespace DCGO.CardEffects.ST20
+{
+    public class ST20_003 : CEntity_Effect
+    {
+        public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
+        {
+            List<ICardEffect> cardEffects = new List<ICardEffect>();
+
+            #region Alternate Digivolution Requirement
+            if (timing == EffectTiming.None)
+            {
+                static bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.EqualsTraits("ADVENTURE") && targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 3;
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 2, ignoreDigivolutionRequirement: false, card: card, condition: null));
+            }
+            #endregion
+
+            if (timing == EffectTiming.None)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("If your Tamers with the [ADVENTURE] trait have 3 or more total colors, this Digimon may digivolve into a Digimon card with the [ADVENTURE] trait in the hand without paying the cost.", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[When Digivolving] If your Tamers with the [ADVENTURE] trait have 3 or more total colors, this Digimon may digivolve into a Digimon card with the [ADVENTURE] trait in the hand without paying the cost.";
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+
+                        List<CardSource> tamerCards = new List<CardSource>();
+
+                        foreach (Permanent permanent in card.Owner.GetBattleAreaPermanents())
+                        {
+                            if (permanent.IsTamer && permanent.TopCard.EqualsTraits("ADVENTURE"))
+                            {
+                                tamerCards.Add(permanent.TopCard);
+                            }
+                        }
+
+                        return Combinations.GetDifferenetColorCardCount(tamerCards) >= 3;
+                    }
+                }
+
+                bool CanDigivolveIntoCardCondition(CardSource cardSource)
+                {
+                    return cardSource.IsDigimon && cardSource.EqualsTraits("ADVENTURE");
+                }
+
+
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(
+                        CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                            targetPermanent: card.PermanentOfThisCard(),
+                            cardCondition: CanDigivolveIntoCardCondition,
+                            payCost: false,
+                            reduceCostTuple: null,
+                            fixedCostTuple: null,
+                            ignoreDigivolutionRequirementFixedCost: -1,
+                            isHand: true,
+                            activateClass: activateClass,
+                            successProcess: null));
+                }
+            }
+
+            #region Your Turn - ESS
+
+            if (timing == EffectTiming.None)
+            {
+                bool Condition()
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.IsOwnerTurn(card);
+                }
+
+                cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect(
+                    changeValue: 2000,
+                    isInheritedEffect: true,
+                    card: card,
+                    condition: Condition));
+            }
+
+            #endregion
+
+            return cardEffects;
+        }
+    }
+}
