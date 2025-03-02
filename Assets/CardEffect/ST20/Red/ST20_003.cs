@@ -21,8 +21,69 @@ namespace DCGO.CardEffects.ST20
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 2, ignoreDigivolutionRequirement: false, card: card, condition: null));
             }
             #endregion
+            #region On-Play/When-Digivolving Shared
+            bool CanActivateCondition(Hashtable hashtable)
+            {
+                if (CardEffectCommons.IsExistOnBattleArea(card))
+                {
+                    List<CardSource> tamerCards = new List<CardSource>();
 
-            if (timing == EffectTiming.None)
+                    foreach (Permanent permanent in card.Owner.GetBattleAreaPermanents())
+                    {
+                        if (permanent.IsTamer && permanent.TopCard.EqualsTraits("ADVENTURE"))
+                        {
+                            tamerCards.Add(permanent.TopCard);
+                        }
+                    }
+
+                    return Combinations.GetDifferenetColorCardCount(tamerCards) >= 3;
+                }
+            }
+            #endregion
+            #region On Play
+            if (timing == EffectTiming.OnEnterFieldAnyone)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("If your Tamers with the [ADVENTURE] trait have 3 or more total colors, this Digimon may digivolve into a Digimon card with the [ADVENTURE] trait in the hand without paying the cost.", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[On Play] If your Tamers with the [ADVENTURE] trait have 3 or more total colors, this Digimon may digivolve into a Digimon card with the [ADVENTURE] trait in the hand without paying the cost.";
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                }
+                
+
+                bool CanDigivolveIntoCardCondition(CardSource cardSource)
+                {
+                    return cardSource.IsDigimon && cardSource.EqualsTraits("ADVENTURE");
+                }
+
+
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(
+                        CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                            targetPermanent: card.PermanentOfThisCard(),
+                            cardCondition: CanDigivolveIntoCardCondition,
+                            payCost: false,
+                            reduceCostTuple: null,
+                            fixedCostTuple: null,
+                            ignoreDigivolutionRequirementFixedCost: -1,
+                            isHand: true,
+                            activateClass: activateClass,
+                            successProcess: null));
+                }
+            }
+            #endregion
+
+            #region When Digivolving
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("If your Tamers with the [ADVENTURE] trait have 3 or more total colors, this Digimon may digivolve into a Digimon card with the [ADVENTURE] trait in the hand without paying the cost.", CanUseCondition, card);
@@ -37,25 +98,6 @@ namespace DCGO.CardEffects.ST20
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-
-                        List<CardSource> tamerCards = new List<CardSource>();
-
-                        foreach (Permanent permanent in card.Owner.GetBattleAreaPermanents())
-                        {
-                            if (permanent.IsTamer && permanent.TopCard.EqualsTraits("ADVENTURE"))
-                            {
-                                tamerCards.Add(permanent.TopCard);
-                            }
-                        }
-
-                        return Combinations.GetDifferenetColorCardCount(tamerCards) >= 3;
-                    }
                 }
 
                 bool CanDigivolveIntoCardCondition(CardSource cardSource)
@@ -79,6 +121,7 @@ namespace DCGO.CardEffects.ST20
                             successProcess: null));
                 }
             }
+            #endregion
 
             #region Your Turn - ESS
 
