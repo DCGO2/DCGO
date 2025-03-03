@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 //ST20-004 garudamon
 namespace DCGO.CardEffects.ST20
 {
@@ -30,16 +31,16 @@ namespace DCGO.CardEffects.ST20
 
             int TamerTwoColourCount()
             {
-                List<CardColor> cardColors = new List<CardColor>();
+                List<CardSource> tamerCards = new List<CardSource>();
 
-                foreach (Permanent permanent in card.Owner.GetBattleAreaPermanents()
-                             .Where(permanent => permanent.IsTamer))
+                foreach (Permanent permanent in card.Owner.GetBattleAreaPermanents())
                 {
-                    cardColors.AddRange(permanent.TopCard.CardColors);
+                    if (permanent.IsTamer && permanent.TopCard.EqualsTraits("ADVENTURE"))
+                    {
+                        tamerCards.Add(permanent.TopCard);
+                    }
                 }
-
-                cardColors = cardColors.Distinct().ToList();
-                return cardColors.Count / 2;
+                return Combinations.GetDifferenetColorCardCount(tamerCards)/2;
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
@@ -52,7 +53,7 @@ namespace DCGO.CardEffects.ST20
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("For the turn, 1 of your Digimon gains<Security A. +1>, and for every 2 colors your Tamers have, gets +2000 DP. (This Digimon checks 1 additional security card.)", CanUseCondition, card);
+                activateClass.SetUpICardEffect("For the turn, 1 of your Digimon gains <Security A. +1>, and for every 2 colors your Tamers have, gets +2000 DP. (This Digimon checks 1 additional security card.)", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -190,6 +191,7 @@ namespace DCGO.CardEffects.ST20
                     {
                         return permanent.TopCard.EqualsTraits("ADVENTURE");
                     }
+                    return false;
                 }
 
                 bool MyDigimonAlliance(Permanent permanent)
@@ -266,7 +268,7 @@ namespace DCGO.CardEffects.ST20
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: IsYourAttackingDigimon,
+                            canTargetCondition: MyDigimonAttacking,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: 1,

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-
+using System;
+//ST20-005 Gatomon
 namespace DCGO.CardEffects.ST20
 {
     public class ST20_005 : CEntity_Effect
@@ -56,7 +57,7 @@ namespace DCGO.CardEffects.ST20
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectsCommons.CanTriggerOnPlay(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -110,7 +111,7 @@ namespace DCGO.CardEffects.ST20
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectsCommons.CanTriggerWhenDigivolving(hashtable, card);
+                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
