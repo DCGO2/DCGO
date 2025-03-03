@@ -185,6 +185,7 @@ namespace DCGO.CardEffects.BT20
                 activateClass.SetUpICardEffect("Gain 1 memory", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetHashString("Gain1_BT20-029");
+                activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

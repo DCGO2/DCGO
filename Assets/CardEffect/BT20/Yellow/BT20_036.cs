@@ -34,7 +34,7 @@ namespace DCGO.CardEffects.BT20
                 {
                     if (permanent.IsDigimon)
                     {
-                        if (permanent.TopCard.EqualsTraits("Accel"))
+                        if (permanent.TopCard.EqualsTraits("ACCEL"))
                         {
                             return true;
                         }

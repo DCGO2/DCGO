@@ -95,13 +95,13 @@ namespace DCGO.CardEffects.BT20
             if (timing == EffectTiming.OptionSkill)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Trash 1, Delete 1 opponent Level 4 Digimon.", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Trash 1, Delete 1 opponent Level 4< Digimon.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[Main] Trash 1 card in your hand. Then, delete 1 of your opponent's level 4 Digimon.";
+                    return "[Main] Trash 1 card in your hand. Then, delete 1 of your opponent's level 4 or lower Digimon.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -110,7 +110,7 @@ namespace DCGO.CardEffects.BT20
                     {
                         if (permanent.TopCard.HasLevel)
                         {
-                            if (permanent.Level == 4)
+                            if (permanent.Level <= 4)
                             {
                                 return true;
                             }

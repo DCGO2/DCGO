@@ -6,7 +6,7 @@ using Photon;
 using System;
 using Photon.Pun;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.BT20
 {
     public class BT20_074 : CEntity_Effect
     {

@@ -266,17 +266,14 @@ namespace DCGO.CardEffects.BT20
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);                    
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);                    
                 }
 
                 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                {
-                    return true;
-                }
-                return false;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
                 
                 bool CanSelectCardCondition(CardSource cardSource)
@@ -464,7 +461,6 @@ namespace DCGO.CardEffects.BT20
                 }
             }
             #endregion
-            
 
             #region Inherited Effect
             if (timing == EffectTiming.None)
@@ -481,6 +477,7 @@ namespace DCGO.CardEffects.BT20
                     condition: InheritedEffectCondition));
             }
             #endregion
+
             return cardEffects;
 
         }

@@ -13,7 +13,7 @@ namespace DCGO.CardEffects.BT20
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("DNA Digivolve.", CanUseCondition, card);
+                activateClass.SetUpICardEffect("<Draw 1> and gain 1 memory", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -11, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
@@ -77,7 +77,7 @@ namespace DCGO.CardEffects.BT20
             if (timing == EffectTiming.WhenRemoveField)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Play 1 [Omekamon] from your hand", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("PlayCard_BT20-091");
                 cardEffects.Add(activateClass);
@@ -93,16 +93,29 @@ namespace DCGO.CardEffects.BT20
                            CardEffectCommons.CanPlayAsNewPermanent(source, false, activateClass);
                 }
 
+                bool PermanentCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                    {
+                        if (permanent != card.PermanentOfThisCard())
+                        {
+                            if (permanent.TopCard.EqualsTraits("Royal Knight"))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+
+                    return false;
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card))
+                        if (CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, PermanentCondition))
                         {
-                            if (!CardEffectCommons.GetPermanentsFromHashtable(hashtable).Some(permanent => permanent.TopCard.EqualsTraits("Royal Knight")))
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
 

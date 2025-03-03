@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.BT20
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsCardName("Kaprurimon");
+                    return targetPermanent.TopCard.EqualsCardName("Kapurimon");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 0, ignoreDigivolutionRequirement: false, card: card, condition: null));

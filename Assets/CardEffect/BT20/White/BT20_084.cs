@@ -49,7 +49,7 @@ namespace DCGO.CardEffects.BT20
                     return "[Trash] [All Turns] When any of your Digimon are played, 1 of your [Sistermon Ciel] may digivolve into this card without paying the cost.";
                 }
 
-                #region Opponent Digimon/Tamer Played/card is in trash condition
+                #region Digimon/Tamer Played/card is in trash condition
 
                 bool PermanentCondition(Permanent permanent)
                 {

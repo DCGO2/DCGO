@@ -33,7 +33,7 @@ namespace DCGO.CardEffects.BT20
                 }
             #endregion
 
-            #region
+            #region Raid
                 if(timing == EffectTiming.OnAllyAttack)
                 {
                     cardEffects.Add(CardEffectFactory.RaidSelfEffect(isInheritedEffect: false, card: card, condition: null));
@@ -41,59 +41,45 @@ namespace DCGO.CardEffects.BT20
                 }
             #endregion
 
-            #region When Digievolving
+            #region When Digivolving
             if (timing == EffectTiming.OnEnterFieldAnyone)
-            {              
-              
-                    ActivateClass activateClass = new ActivateClass();
-                    activateClass.SetUpICardEffect("Gains raid, piercing, trash security stack", CanUseCondition, card);
-                    activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-                    cardEffects.Add(activateClass);
-                    
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Gains raid, piercing, trash security stack", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                cardEffects.Add(activateClass);
 
-                    bool CardEffectCondition(ICardEffect cardEffect)
-                    {
-                        return cardEffect != null;
-                    }
-                    
-                    string EffectDiscription()
-                    {
-                        return "[When Digivolving] Your opponent can't play Digimon or Tamers by effects until the end of their turn. Then, if [Imperialdramon: Dragon Mode] is in this Digimon's digivolution cards, trash your opponent's top security card.";
-                    }
+                string EffectDiscription()
+                {
+                    return "[When Digivolving] Your opponent can't play Digimon or Tamers by effects until the end of their turn. Then, if [Imperialdramon: Dragon Mode] is in this Digimon's digivolution cards, trash your opponent's top security card.";
+                }
 
-                    bool CanUseCondition(Hashtable hashtable)
-                    {
-                        if (CardEffectCommons.IsExistOnBattleArea(card))
-                        {
-                            if (CardEffectCommons.IsOwnerTurn(card))                                                    
-                                {
-                                    return true;
-                                }
-                            return false;                        
-                        }                
-                        return false;          
-                    }
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                }
 
-                    bool CanActivateCondition(Hashtable hashtable)
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                {
+                    CanNotPutFieldClass canNotPutFieldClass = new CanNotPutFieldClass();
+                    canNotPutFieldClass.SetUpICardEffect("Can't play Digimon or Tamers by effect", CanUseCondition1, card);
+                    canNotPutFieldClass.SetUpCanNotPutFieldClass(cardCondition: CardCondition, cardEffectCondition: CardEffectCondition);
+                    card.Owner.Enemy.UntilOwnerTurnEndEffects.Add((_timing) => canNotPutFieldClass);
+                    ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().DebuffSE);
+
+                    bool CanUseCondition1(Hashtable hashtable)
                     {
                         return true;
                     }
 
-                    IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                    bool CardCondition(CardSource cardSource)
                     {
-                        CanNotPutFieldClass canNotPutFieldClass = new CanNotPutFieldClass();
-                        canNotPutFieldClass.SetUpICardEffect("Can't play Digimon or Tamers by effect", CanUseCondition1, card);
-                        canNotPutFieldClass.SetUpCanNotPutFieldClass(cardCondition: CardCondition, cardEffectCondition: CardEffectCondition1);
-                        card.Owner.Enemy.UntilOwnerTurnEndEffects.Add((_timing) => canNotPutFieldClass);
-                        ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().DebuffSE);
-
-                        bool CanUseCondition1(Hashtable hashtable)
-                        {
-                            return true;
-                        }
-
-                        bool CardCondition(CardSource cardSource)
-                        {
                         if (cardSource.Owner == card.Owner.Enemy)
                         {
                             if (cardSource.IsDigimon || cardSource.IsTamer)
@@ -101,24 +87,23 @@ namespace DCGO.CardEffects.BT20
                                 return true;
                             }
                         }
-                            return false;
-                        }
-
-                        bool CardEffectCondition1(ICardEffect cardEffect)
-                        {
-                            return true;
-                        }
-                        if(card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardNames.Contains("Imperialdramon: Imperialdramon: Dragon Mode")) >= 1)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
-                                    player: card.Owner.Enemy,
-                                    destroySecurityCount: 1,
-                                    cardEffect: activateClass,
-                                    fromTop: true).DestroySecurity());
-                        }
+                        return false;
                     }
 
-                
+                    bool CardEffectCondition(ICardEffect cardEffect)
+                    {
+                        return cardEffect != null;
+                    }
+
+                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardNames.Contains("Imperialdramon: Dragon Mode")) >= 1)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
+                                player: card.Owner.Enemy,
+                                destroySecurityCount: 1,
+                                cardEffect: activateClass,
+                                fromTop: true).DestroySecurity());
+                    }
+                }
             }
             #endregion
 
@@ -126,18 +111,18 @@ namespace DCGO.CardEffects.BT20
             #region All Turns
             if(timing == EffectTiming.OnLoseSecurity)
             {
-                ActivateClass activateClass1 = new ActivateClass();
-                activateClass1.SetUpICardEffect("Delete 1 Digimon with as much or less DP as this Digimon", CanUseCondition1, card);
-                activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, 1, false, EffectDiscription1());
-                activateClass1.SetHashString("ImperialDramon_BT20_020");
-                cardEffects.Add(activateClass1);
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Delete 1 Digimon with as much or less DP as this Digimon", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetHashString("ImperialDramon_BT20_020");
+                cardEffects.Add(activateClass);
 
-                string EffectDiscription1()
+                string EffectDiscription()
                 {
                     return "[All Turns] [Once Per Turn] When your opponent's security stack is removed from, delete 1 of their Digimon with as much or less DP as this Digimon.";
                 }
 
-                bool CanUseCondition1(Hashtable hashtable)
+                bool CanUseCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {                        
@@ -149,20 +134,17 @@ namespace DCGO.CardEffects.BT20
 
                     return false;
                 }
-                bool CanActivateCondition1(Hashtable hashtable)
+                bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        return true;
-                    }
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
                 }
                 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                     {   
-                        if (permanent.DP <= card.Owner.MaxDP_DeleteEffect(13000,activateClass1))
+                        if (permanent.DP <= card.Owner.MaxDP_DeleteEffect(card.PermanentOfThisCard().DP,activateClass))
                         {
                             return true;
                         }
@@ -171,7 +153,7 @@ namespace DCGO.CardEffects.BT20
                     return false;
                 }
 
-                IEnumerator ActivateCoroutine1(Hashtable hashtable)
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                         {
@@ -190,13 +172,14 @@ namespace DCGO.CardEffects.BT20
                                 selectPermanentCoroutine: null,
                                 afterSelectPermanentCoroutine: null,
                                 mode: SelectPermanentEffect.Mode.Destroy,
-                                cardEffect: activateClass1);
+                                cardEffect: activateClass);
 
                             yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                         }
                 }
             }
             #endregion
+
             return cardEffects;
         }
     }

@@ -44,8 +44,15 @@ namespace DCGO.CardEffects.BT20
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, IsOpponentDigimon) &&
-                           CardEffectCommons.IsByEffect(hashtable, null);
+                    if (CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, IsOpponentDigimon))
+                    {
+                        if (CardEffectCommons.IsByEffect(hashtable, null))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
                 }
 
                 bool IsOpponentDigimon(Permanent permanent)

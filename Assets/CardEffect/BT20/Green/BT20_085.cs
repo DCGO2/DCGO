@@ -8,6 +8,7 @@ namespace DCGO.CardEffects.BT20
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
+
             #region Start of Main
             if (timing == EffectTiming.OnStartMainPhase)
             {

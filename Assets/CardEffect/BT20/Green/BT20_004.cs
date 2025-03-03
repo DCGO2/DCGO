@@ -26,7 +26,7 @@ namespace DCGO.CardEffects.BT20
 
                 bool IsYourAccelDigimon(Permanent permanent)
                 {
-                    return CardEffectCommons.IsOwnerPermanent(permanent, card) &&
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
                            permanent.TopCard.EqualsTraits("ACCEL");
                 }
 

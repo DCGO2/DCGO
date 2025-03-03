@@ -5,6 +5,7 @@ using System.Linq;
 using Photon;
 using System;
 using Photon.Pun;
+
 namespace DCGO.CardEffects.BT20
 {
     public class BT20_066 : CEntity_Effect
@@ -23,7 +24,7 @@ namespace DCGO.CardEffects.BT20
 
                 string EffectDiscription()
                 {
-                    return "[On Play][When Digivolving] Delete 1 of your opponent's level 3 Digimon. Then, if it's your turn, 2 of your Digimon may DNA digivolve into a Digimon card with [Imperialdramon] in its name or the [Free] trait in the hand.";
+                    return "[On Play] Delete 1 of your opponent's level 3 Digimon. Then, if it's your turn, 2 of your Digimon may DNA digivolve into a Digimon card with [Imperialdramon] in its name or the [Free] trait in the hand.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -248,7 +249,7 @@ namespace DCGO.CardEffects.BT20
 
                 string EffectDiscription()
                 {
-                    return "[On Play][When Digivolving] Delete 1 of your opponent's level 3 Digimon. Then, if it's your turn, 2 of your Digimon may DNA digivolve into a Digimon card with [Imperialdramon] in its name or the [Free] trait in the hand.";
+                    return "[When Digivolving] Delete 1 of your opponent's level 3 Digimon. Then, if it's your turn, 2 of your Digimon may DNA digivolve into a Digimon card with [Imperialdramon] in its name or the [Free] trait in the hand.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -271,7 +272,7 @@ namespace DCGO.CardEffects.BT20
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);                    
+                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);                    
                 }
 
                 
@@ -465,14 +466,14 @@ namespace DCGO.CardEffects.BT20
                 }
             }
             #endregion
-            
 
             #region InheritedEffects
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
-            cardEffects.Add(CardEffectFactory.RetaliationSelfEffect(isInheritedEffect: true, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.RetaliationSelfEffect(isInheritedEffect: true, card: card, condition: null));
             }
             #endregion
+
             return cardEffects;
         }
 
