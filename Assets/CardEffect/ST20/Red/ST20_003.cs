@@ -21,6 +21,7 @@ namespace DCGO.CardEffects.ST20
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 2, ignoreDigivolutionRequirement: false, card: card, condition: null));
             }
             #endregion
+
             #region On-Play/When-Digivolving Shared
             bool CanActivateCondition(Hashtable hashtable)
             {
@@ -38,8 +39,11 @@ namespace DCGO.CardEffects.ST20
 
                     return Combinations.GetDifferenetColorCardCount(tamerCards) >= 3;
                 }
+                return false;
             }
+
             #endregion
+
             #region On Play
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {

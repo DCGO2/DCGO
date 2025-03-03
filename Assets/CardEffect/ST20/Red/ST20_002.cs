@@ -48,9 +48,14 @@ namespace DCGO.CardEffects.ST20
                     return false;
                 }
 
-                bool selectAdventureTrait(CardSource source)
+                bool selectAdventureDigimon(CardSource source)
                 {
-                    return source.equalsTraits("ADVENTURE");
+                    return source.EqualsTraits("ADVENTURE") && source.IsDigimon;
+                }
+
+                bool selectAdventureTorO(CardSource source)
+                {
+                    return source.EqualsTraits("ADVENTURE") && (source.IsOption || source.IsTamer);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -61,13 +66,13 @@ namespace DCGO.CardEffects.ST20
                         new SimplifiedSelectCardConditionClass[]
                         {
                         new SimplifiedSelectCardConditionClass(
-                            canTargetCondition:HasUnitentifiedTrait,
+                            canTargetCondition:selectAdventureDigimon,
                             message: "Select 1 Digimon with the [ADVENTURE] trait.",
                             mode: SelectCardEffect.Mode.AddHand,
                             maxCount: 1,
                             selectCardCoroutine: null),
                         new SimplifiedSelectCardConditionClass(
-                            canTargetCondition:IsTamerorOption,
+                            canTargetCondition:selectAdventureTorO,
                             message: "Select 1 Option or Tamer with the [ADVENTURE] trait",
                             mode: SelectCardEffect.Mode.AddHand,
                             maxCount: 1,
