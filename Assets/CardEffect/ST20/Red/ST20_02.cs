@@ -1,10 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 
-// ST20-002 biyomon
+// ST20-02 biyomon
 namespace DCGO.CardEffects.ST20
 {
-    public class ST20 : CEntity_Effect
+    public class ST20_02 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {

@@ -1,10 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 
-//ST20-003 Garudamon
+//ST20-03 Garudamon
 namespace DCGO.CardEffects.ST20
 {
-    public class ST20_003 : CEntity_Effect
+    public class ST20_03 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
