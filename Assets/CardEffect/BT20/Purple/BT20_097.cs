@@ -114,6 +114,8 @@ namespace DCGO.CardEffects.BT20
                                 successProcess: null));
                         }
                     }
+
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlaceDelayOptionCards(card: card, cardEffect: activateClass));
                 }
             }
             #endregion

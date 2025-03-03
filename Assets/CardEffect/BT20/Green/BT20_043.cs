@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 using Photon.Pun;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.BT20
 {
     public class BT20_043 : CEntity_Effect
     {

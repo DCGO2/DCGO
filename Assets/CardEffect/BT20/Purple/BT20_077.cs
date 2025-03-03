@@ -91,7 +91,7 @@ namespace DCGO.CardEffects.BT20
 
                     if (card.Owner.HandCards.Count > 4)
                     {
-                        int maxCount = card.Owner.Enemy.HandCards.Count - 4;
+                        int maxCount = card.Owner.HandCards.Count - 4;
 
                         SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
@@ -230,7 +230,7 @@ namespace DCGO.CardEffects.BT20
 
                     if (card.Owner.HandCards.Count > 4)
                     {
-                        int maxCount = card.Owner.Enemy.HandCards.Count - 4;
+                        int maxCount = card.Owner.HandCards.Count - 4;
 
                         SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 

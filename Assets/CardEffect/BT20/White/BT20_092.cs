@@ -195,14 +195,14 @@ namespace DCGO.CardEffects.BT20
 
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedDigivolutionCards, activateClass: activateClass, payCost: false, isTapped: true, root: SelectCardEffect.Root.DigivolutionCards, activateETB: true));
 
-                    if (CardEffectCommons.IsExistOnBattleArea(selectedDigivolutionCards[0]))
+                    if (selectedDigivolutionCards.Count > 0)
                     {
                         Hashtable _hashtable = new Hashtable();
-                        hashtable.Add("CardEffect", activateClass);
+                        _hashtable.Add("CardEffect", activateClass);
 
                         yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(
                             new List<Permanent>() { card.PermanentOfThisCard() },
-                            CardEffectCommons.CardEffectHashtable(activateClass)).Destroy());
+                            _hashtable).Destroy());
                     }
                 }
             }

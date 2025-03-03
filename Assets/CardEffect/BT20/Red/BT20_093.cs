@@ -25,7 +25,7 @@ namespace DCGO.CardEffects.BT20
                 string EffectDescription()
                 {
                     return
-                        "[Main] You may play 1 Digimon card with [Dracomon]/[Examon] in its text from your hand with the play cost reduced by 3. Then, place this card in the battle area.\n";
+                        "[Main] You may play 1 Digimon card with [Dracomon]/[Examon] in its text from your hand with the play cost reduced by 3. Then, place this card in the battle area.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -154,7 +154,7 @@ namespace DCGO.CardEffects.BT20
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
                             cardSources: selectedCards,
                             activateClass: activateClass,
-                            payCost: false,
+                            payCost: true,
                             isTapped: false,
                             root: SelectCardEffect.Root.Hand,
                             activateETB: true));
@@ -343,7 +343,7 @@ namespace DCGO.CardEffects.BT20
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
                     return cardSource.IsDigimon &&
-                           (cardSource.HasText("Dracomon") || cardSource.HasText("Examon")) &&
+                           cardSource.ContainsCardName("Dracomon") &&
                            CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
                 }
 

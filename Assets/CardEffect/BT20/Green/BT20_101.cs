@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.BT20
 {
     public class BT20_101 : CEntity_Effect
     {

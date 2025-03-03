@@ -25,10 +25,7 @@ namespace DCGO.CardEffects.BT20
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                        return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-
-                    return false;
+                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -76,6 +73,8 @@ namespace DCGO.CardEffects.BT20
                         }
                         if (discarded)
                         {
+                            Permanent selectedPermanent = null;
+
                             if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                             {
                                 int maxCount = Math.Min(1,
@@ -105,76 +104,103 @@ namespace DCGO.CardEffects.BT20
 
                                 IEnumerator SelectPermanentCoroutine(Permanent permanent)
                                 {
-                                    if (permanent != null)
+                                    selectedPermanent = permanent;
+                                    yield return null;
+                                }
+
+                                if(selectedPermanent != null)
+                                {
+                                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(selectedPermanent));
+
+                                    bool PermanentCondition(Permanent permanent)
                                     {
-                                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(permanent));
+                                        return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+                                    }
 
-                                        ActivateClass activateClass1 = new ActivateClass();
-                                        activateClass1.SetUpICardEffect("Lose 1 Memory.", GivenEffectCanUseCondition,permanent.TopCard);
-                                        activateClass1.SetUpActivateClass(GivenEffectCanActivateCondition,GivenEffectActivateCoroutine,-1,false, GivenEffectDescription());
-                                        activateClass1.SetEffectSourcePermanent(permanent);
-                                        permanent.UntilOwnerTurnEndEffects.Add(GetCardEffect);
+                                    AddSkillClass addSkillClass = new AddSkillClass();
+                                    addSkillClass.SetUpICardEffect("Memory -1", CanUseCondition1, card);
+                                    addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
+                                    selectedPermanent.UntilOpponentTurnEndEffects.Add((_timing) => addSkillClass);
 
-                                        if (!permanent.TopCard.CanNotBeAffected(activateClass))
+                                    bool CanUseCondition1(Hashtable hashtable)
+                                    {
+                                        return true;
+                                    }
+
+                                    bool CardSourceCondition(CardSource cardSource)
+                                    {
+                                        if (PermanentCondition(cardSource.PermanentOfThisCard()))
                                         {
-                                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(permanent));
-                                        }
-
-                                        string GivenEffectDescription()
-                                        {
-                                            return "[On Deletion] Lose 1 Memory.";
-                                        }
-
-                                        bool GivenEffectCanUseCondition(Hashtable hashtable)
-                                        {
-                                            return CardEffectCommons.CanTriggerOnDeletion(hashtable, permanent.TopCard);
-                                        }
-
-                                        bool GivenEffectCanActivateCondition(Hashtable hashtable1)
-                                        {
-                                            if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
+                                            if (cardSource == cardSource.PermanentOfThisCard().TopCard)
                                             {
-                                                if (!permanent.TopCard.CanNotBeAffected(activateClass))
+                                                return true;
+                                            }
+                                        }
+
+                                        return false;
+                                    }
+
+                                    List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming _timing)
+                                    {
+                                        if (_timing == EffectTiming.OnDestroyedAnyone)
+                                        {
+                                            ActivateClass activateClass1 = new ActivateClass();
+                                            activateClass1.SetUpICardEffect("Memory -1", CanUseCondition2, cardSource);
+                                            activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDiscription1());
+                                            cardEffects.Add(activateClass1);
+
+                                            if (cardSource.PermanentOfThisCard() != null)
+                                            {
+                                                activateClass1.SetEffectSourcePermanent(cardSource.PermanentOfThisCard());
+                                            }
+
+                                            string EffectDiscription1()
+                                            {
+                                                return "[On Deletion] Lose 1 memory.";
+                                            }
+
+                                            bool CanUseCondition2(Hashtable hashtable)
+                                            {
+                                                if (CardSourceCondition(cardSource))
+                                                {
+                                                    if (CardEffectCommons.CanTriggerOnDeletion(hashtable, cardSource))
+                                                    {
+                                                        return true;
+                                                    }
+                                                }
+
+                                                return false;
+                                            }
+
+                                            bool CanActivateCondition1(Hashtable hashtable)
+                                            {
+                                                if (CardEffectCommons.CanActivateOnDeletion(cardSource))
                                                 {
                                                     return true;
                                                 }
+
+                                                return false;
                                             }
 
-                                            return false;
-                                        }
-                                        
-                                        IEnumerator GivenEffectActivateCoroutine(Hashtable _hashtable)
-                                        {
-                                            yield return ContinuousController.instance.StartCoroutine(permanent.TopCard.Owner.AddMemory(-1, activateClass));
-
-                                            
-                                        }
-
-                                        ICardEffect GetCardEffect(EffectTiming _timing)
-                                        {
-                                            if (_timing == EffectTiming.OnDestroyedAnyone)
+                                            IEnumerator ActivateCoroutine1(Hashtable _hashtable)
                                             {
-                                                return activateClass1;
+                                                yield return ContinuousController.instance.StartCoroutine(cardSource.Owner.AddMemory(-1, activateClass1));
                                             }
-
-                                            return null;
                                         }
 
+                                        return cardEffects;
                                     }
                                 }
                             }
                         }
                     }
-                    
-                    
-
                 }
             }
             #endregion
 
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
-            cardEffects.Add(CardEffectFactory.RetaliationSelfEffect(isInheritedEffect: true, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.RetaliationSelfEffect(isInheritedEffect: true, card: card, condition: null));
             }
 
             return cardEffects;

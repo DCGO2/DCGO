@@ -356,7 +356,7 @@ namespace DCGO.CardEffects.BT20
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
                            CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card) &&
-                           CardEffectCommons.IsByEffect(hashtable, cardEffect => CardEffectCommons.IsOpponentEffect(cardEffect, card));
+                           !CardEffectCommons.IsByEffect(hashtable, cardEffect => CardEffectCommons.IsOwnerEffect(cardEffect, card));
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

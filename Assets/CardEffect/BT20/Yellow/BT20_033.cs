@@ -15,7 +15,7 @@ namespace DCGO.CardEffects.BT20
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 3 && targetPermanent.TopCard.EqualsTraits("ACCEL");
+                    return targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 4 && targetPermanent.TopCard.EqualsTraits("ACCEL");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 2, ignoreDigivolutionRequirement: false, card: card, condition: null));
@@ -27,13 +27,13 @@ namespace DCGO.CardEffects.BT20
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("<De-Digivolve 2> 1 of your opponent's Digimon, then 1 gets -5000 DP", CanUseCondition, card);
+                activateClass.SetUpICardEffect("1 Opponent's Digimon gets can't activate [When Digivolving] and -3000 DP", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[On Play] [When Digivolving] <De-Digivolve 2> 1 of your opponent's Digimon. Then, 1 of their Digimon gets -5000 DP until the end of their turn.";
+                    return "[On Play] Until the end of your opponent's turn, 1 of their Digimon can't activate [When Digivolving] effects and gets -3000 DP.";
                 }
 
                 bool IsOpponentsDigimon(Permanent permanent)
@@ -66,35 +66,12 @@ namespace DCGO.CardEffects.BT20
                         maxCount: 1,
                         canNoSelect: false,
                         canEndNotMax: false,
-                        selectPermanentCoroutine: SelectedDedigivolvePermanent,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Custom,
-                        cardEffect: activateClass);
-
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will gain effect and DP -3000.", "The opponent is selecting 1 Digimon that will gain effect and DP -3000.");
-
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                    IEnumerator SelectedDedigivolvePermanent(Permanent target)
-                    {
-                        selectedPermanent = target;
-                        yield return null;
-                    }
-
-                    selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: IsOpponentsDigimon,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: 1,
-                        canNoSelect: false,
-                        canEndNotMax: false,
                         selectPermanentCoroutine: SelectedPermanent,
                         afterSelectPermanentCoroutine: null,
                         mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will gain effect and DP -5000.", "The opponent is selecting 1 Digimon that will gain effect and DP -5000.");
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will gain effect and DP -3000.", "The opponent is selecting 1 Digimon that will gain effect and DP -3000.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
@@ -104,7 +81,7 @@ namespace DCGO.CardEffects.BT20
                         yield return null;
                     }
 
-                    if(selectedPermanent != null)
+                    if (selectedPermanent != null)
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: selectedPermanent, changeValue: -3000, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
 

@@ -9,6 +9,31 @@ namespace DCGO.CardEffects.BT20
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region Treated As
+            if (timing == EffectTiming.None)
+            {
+                ChangeCardNamesClass changeCardNamesClass = new ChangeCardNamesClass();
+                changeCardNamesClass.SetUpICardEffect("Also treated as [X Antibody]", CanUseCondition, card);
+                changeCardNamesClass.SetUpChangeCardNamesClass(changeCardNames: changeCardNames);
+                cardEffects.Add(changeCardNamesClass);
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return true;
+                }
+
+                List<string> changeCardNames(CardSource cardSource, List<string> CardNames)
+                {
+                    if (cardSource == card)
+                    {
+                        CardNames.Add("X Antibody");
+                    }
+
+                    return CardNames;
+                }
+            }
+            #endregion
+
             #region Blocker
             if (timing == EffectTiming.None)
             {
@@ -24,7 +49,7 @@ namespace DCGO.CardEffects.BT20
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Digivolve this Digimon into [Omnimon (X Antibody)]", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -66,9 +91,10 @@ namespace DCGO.CardEffects.BT20
                         payCost: false,
                         reduceCostTuple: null,
                         fixedCostTuple: null,
-                        ignoreDigivolutionRequirementFixedCost: -1,
+                        ignoreDigivolutionRequirementFixedCost: 0,
                         isHand: true,
                         activateClass: activateClass,
+                        ignoreRequirements:CardEffectCommons.IgnoreRequirement.All,
                         successProcess: null));
                 }
             }
@@ -91,6 +117,7 @@ namespace DCGO.CardEffects.BT20
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBreedingArea(permanent, card) &&
                            permanent.TopCard.EqualsCardName("King Drasil_7D6");
+                                                             
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

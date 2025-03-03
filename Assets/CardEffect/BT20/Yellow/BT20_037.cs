@@ -29,9 +29,9 @@ namespace DCGO.CardEffects.BT20
                 {
                     if (cardSource == card)
                     {
-                        bool PermanentCondition1(Permanent permanent) => permanent.TopCard.CardColors.Contains(CardColor.Yellow) && permanent.Levels_ForJogress(card).Contains(4);
+                        bool PermanentCondition1(Permanent permanent) => permanent.TopCard.CardColors.Contains(CardColor.Yellow) && permanent.Levels_ForJogress(card).Contains(6);
 
-                        bool PermanentCondition2(Permanent permanent) => (permanent.TopCard.CardColors.Contains(CardColor.Green) || permanent.TopCard.CardColors.Contains(CardColor.Black)) && permanent.Levels_ForJogress(card).Contains(4);
+                        bool PermanentCondition2(Permanent permanent) => (permanent.TopCard.CardColors.Contains(CardColor.Green) || permanent.TopCard.CardColors.Contains(CardColor.Black)) && permanent.Levels_ForJogress(card).Contains(6);
 
                         JogressConditionElement[] elements = new JogressConditionElement[]
                         {
@@ -76,7 +76,7 @@ namespace DCGO.CardEffects.BT20
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("", CanUseCondition, card);
+                activateClass.SetUpICardEffect("For each level 6 in sources, suspend 1 Digimon, Then Opponent's Digimon/Tamers can activate [On Play] or unsuspend", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 

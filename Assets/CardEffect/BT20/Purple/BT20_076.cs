@@ -5,7 +5,7 @@ using System;
 
 namespace DCGO.CardEffects.BT20
 {
-    public class BT12_076 : CEntity_Effect{
+    public class BT20_076 : CEntity_Effect{
     
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
@@ -125,7 +125,8 @@ namespace DCGO.CardEffects.BT20
             }
             
             #endregion
-        #region On Play 
+        
+            #region On Play 
         if (timing == EffectTiming.OnEnterFieldAnyone){                
 
             ActivateClass activateClass = new ActivateClass();
@@ -199,6 +200,7 @@ namespace DCGO.CardEffects.BT20
 
         }
             #endregion
+        
         #region When Digivolving
         if (timing == EffectTiming.OnEnterFieldAnyone){       
             ActivateClass activateClass = new ActivateClass();
@@ -280,6 +282,7 @@ namespace DCGO.CardEffects.BT20
             }
         }
         #endregion
+
         return cardEffects;
                 
     }

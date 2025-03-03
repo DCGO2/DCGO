@@ -9,6 +9,7 @@ namespace DCGO.CardEffects.BT20
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
+
             #region On Your Turn
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
@@ -22,31 +23,21 @@ namespace DCGO.CardEffects.BT20
                     return "[Your Turn] When any of your purple Digimon are played, this Digimon may digivolve into a Digimon card with the [Free] trait in the hand with the digivolution cost reduced by 1.";
                 }
 
-                
-
                 bool PermanentCondition(Permanent permanent)
                 {                 
-                    if(permanent != card.PermanentOfThisCard())
+                    if(CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
                         if(permanent.TopCard.CardColors.Contains(CardColor.Purple))
                         {
-                            if(permanent.IsDigimon)
-                            {
-                                if(CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent,card))
-                                {
-                                    return true;
-                                }
-                            }
+                            return true;
                         }                    
                     }
                     return false;
                 }
                 
-                bool canEvolveIntoFree(CardSource cardSource){
-                    if (cardSource.CardTraits.Contains("Free")){
-                        return true;
-                    }
-                    return false;
+                bool canEvolveIntoFree(CardSource cardSource)
+                {
+                    return cardSource.EqualsTraits("Free");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

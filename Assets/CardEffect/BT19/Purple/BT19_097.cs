@@ -84,7 +84,7 @@ namespace DCGO.CardEffects.BT19
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play an [Impmon] from trash.", CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -115,8 +115,12 @@ namespace DCGO.CardEffects.BT19
                 {
                     return CardEffectCommons.IsOwnerTurn(card) &&
                            CardEffectCommons.IsExistOnBattleArea(card) &&
-                           card.Owner.GetBattleAreaDigimons().Count == 0 &&
                            CardEffectCommons.CanDeclareOptionDelayEffect(card);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return card.Owner.GetBattleAreaDigimons().Count == 0;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

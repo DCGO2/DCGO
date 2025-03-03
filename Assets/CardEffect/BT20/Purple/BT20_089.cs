@@ -71,11 +71,14 @@ namespace DCGO.CardEffects.BT20
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, MyPlayedDigimonCondition))
-                        return true;
+                    if (isExistOnField(card))
+                    {
+                        if (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, MyPlayedDigimonCondition))
+                            return true;
 
-                    if (CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, MyPlayedDigimonCondition))
-                        return true;
+                        if (CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, MyPlayedDigimonCondition))
+                            return true;
+                    }
 
                     return false;
                 }

@@ -10,6 +10,32 @@ namespace DCGO.CardEffects.BT20
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region Treated As
+            if (timing == EffectTiming.None)
+            {
+                ChangeCardNamesClass changeCardNamesClass = new ChangeCardNamesClass();
+                changeCardNamesClass.SetUpICardEffect("[Rule] Name: Also treated as [Kota Domoto]/[Yuji Musya].", CanUseCondition, card);
+                changeCardNamesClass.SetUpChangeCardNamesClass(changeCardNames: changeCardNames);
+                cardEffects.Add(changeCardNamesClass);
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return true;
+                }
+
+                List<string> changeCardNames(CardSource cardSource, List<string> CardNames)
+                {
+                    if (cardSource == card)
+                    {
+                        CardNames.Add("Kota Domoto");
+                        CardNames.Add("Yuji Musya");
+                    }
+
+                    return CardNames;
+                }
+            }
+            #endregion
+
             #region Start of Your Turn
 
             if (timing == EffectTiming.OnStartTurn)
@@ -24,7 +50,7 @@ namespace DCGO.CardEffects.BT20
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Digivolve 1 of your attacking [Chronicle] trait Digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Digivolve 1 of your Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 

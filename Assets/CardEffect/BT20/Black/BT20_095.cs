@@ -66,7 +66,7 @@ namespace DCGO.CardEffects.BT20
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play 1 Digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Move 1 Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 

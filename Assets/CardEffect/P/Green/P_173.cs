@@ -15,7 +15,7 @@ namespace DCGO.CardEffects.P
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.EqualsTraits("Tyrannomon") && targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 5;
+                    return targetPermanent.TopCard.ContainsCardName("Tyrannomon") && targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 5;
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 4, ignoreDigivolutionRequirement: false, card: card, condition: null));
