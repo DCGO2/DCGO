@@ -31,7 +31,7 @@ namespace DCGO.CardEffects.ST21
 
                 string EffectDescription()
                 {
-                    return "[On Play] By trashing 1 card with the [ADVENTURE] trait in your hand, <Draw 2>.";
+                    return "[On Play] By trashing 1 card with the [ADVENTURE] trait in your hand, <Draw 2>. (Draw 2 cards from your deck.)";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
