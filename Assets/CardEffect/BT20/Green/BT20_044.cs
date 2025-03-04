@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace DCGO.CardEffects.BT20
 {
@@ -278,7 +279,7 @@ namespace DCGO.CardEffects.BT20
 
                 bool PermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                    return permanent.TopCard.Owner == card.Owner &&
                            (permanent.TopCard.HasText("Dracomon") || permanent.TopCard.HasText("Examon"));
                 }
 
@@ -291,6 +292,7 @@ namespace DCGO.CardEffects.BT20
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
+                    UnityEngine.Debug.Log($"CanActivateCondtion: {CardEffectCommons.IsExistOnBattleAreaDigimon(card)}, {CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentPermanentCondition)}");
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
                            CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentPermanentCondition);
                 }
@@ -350,7 +352,7 @@ namespace DCGO.CardEffects.BT20
 
                 bool PermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                    return permanent.TopCard.Owner == card.Owner &&
                            (permanent.TopCard.HasText("Dracomon") || permanent.TopCard.HasText("Examon"));
                 }
 

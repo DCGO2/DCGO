@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace DCGO.CardEffects.P
@@ -161,7 +162,7 @@ namespace DCGO.CardEffects.P
                 {
                     if (CardEffectCommons.IsExistOnHand(card))
                     {
-                        if (CardEffectCommons.HasMatchConditionOwnersSecurity(card, HasNightmareSoldiersCondition))
+                        if (CardEffectCommons.HasMatchConditionOwnersSecurity(card, HasNightmareSoldiersCondition, false))
                         {
                             return true;
                         }
@@ -178,7 +179,7 @@ namespace DCGO.CardEffects.P
                     }
 
                     ChangeCostClass changeCostClass = new ChangeCostClass();
-                    changeCostClass.SetUpICardEffect("Play Cost -1", CanUseCondition1, card);
+                    changeCostClass.SetUpICardEffect("Play Cost -4", CanUseCondition1, card);
                     changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
                     card.Owner.UntilCalculateFixedCostEffect.Add((_timing) => changeCostClass);
 
@@ -197,7 +198,7 @@ namespace DCGO.CardEffects.P
                                 {
                                     int targetCost = 0;
 
-                                    if (CardEffectCommons.HasMatchConditionOwnersSecurity(card, HasNightmareSoldiersCondition))
+                                    if (CardEffectCommons.HasMatchConditionOwnersSecurity(card, HasNightmareSoldiersCondition, false))
                                         targetCost += 4;
 
                                     Cost -= targetCost;
@@ -251,7 +252,7 @@ namespace DCGO.CardEffects.P
             if (timing == EffectTiming.None)
             {
                 ChangeCostClass changeCostClass = new ChangeCostClass();
-                changeCostClass.SetUpICardEffect("Play Cost -1", CanUseCondition, card);
+                changeCostClass.SetUpICardEffect("Play Cost -4", CanUseCondition, card);
                 changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => true, isChangePayingCost: () => true);
                 changeCostClass.SetNotShowUI(true);
                 cardEffects.Add(changeCostClass);
@@ -264,7 +265,7 @@ namespace DCGO.CardEffects.P
 
                         if (activateClass != null)
                         {
-                            if (CardEffectCommons.HasMatchConditionOwnersSecurity(card, HasNightmareSoldiersCondition))
+                            if (CardEffectCommons.HasMatchConditionOwnersSecurity(card, HasNightmareSoldiersCondition, false))
                             {
                                 return true;
                             }
@@ -284,7 +285,7 @@ namespace DCGO.CardEffects.P
                             {
                                 int targetCount = 0;
 
-                                if (CardEffectCommons.HasMatchConditionOwnersSecurity(card, HasNightmareSoldiersCondition))
+                                if (CardEffectCommons.HasMatchConditionOwnersSecurity(card, HasNightmareSoldiersCondition, false))
                                     targetCount += 4;
 
                                 Cost -= targetCount;
@@ -337,6 +338,7 @@ namespace DCGO.CardEffects.P
             }
 
             #endregion
+
             #endregion
 
             #region Blocker

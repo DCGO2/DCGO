@@ -1533,6 +1533,10 @@ public class Permanent
             return false;
         }
 
+        //Can not attack during another attack
+        if (GManager.instance.attackProcess.IsAttacking)
+            return false;
+
         // can not attack to player
         if (!CanAttackTargetDigimon(null, cardEffect, withoutTap, isVortex))
         {

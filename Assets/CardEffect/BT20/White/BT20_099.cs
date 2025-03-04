@@ -113,7 +113,7 @@ namespace DCGO.CardEffects.BT20
                             {
                                 if (PermanentsCondition(targetPermanents))
                                 {
-                                    Cost -= 8;
+                                    Cost -= 4;
                                 }
                             }
                         }
@@ -146,12 +146,7 @@ namespace DCGO.CardEffects.BT20
                             {
                                 if (cardSource.IsDigimon)
                                 {
-                                    if (cardSource.CardTraits.Contains("Insectoid"))
-                                    {
-                                        return true;
-                                    }
-
-                                    if (cardSource.CardTraits.Contains("Larva"))
+                                    if (cardSource.EqualsTraits("ACCEL"))
                                     {
                                         return true;
                                     }

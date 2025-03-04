@@ -14,7 +14,7 @@ namespace DCGO.CardEffects.BT20
             if (timing == EffectTiming.OptionSkill)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("", CanUseCondition, card);
+                activateClass.SetUpICardEffect("May Digivolve into level 6 or lower, then place in battle area", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -27,7 +27,7 @@ namespace DCGO.CardEffects.BT20
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        foreach (CardSource cardSource in card.Owner.HandCards)
+                        foreach (CardSource cardSource in card.Owner.TrashCards)
                         {
                             if (CanSelectCardCondition(cardSource))
                             {

@@ -394,7 +394,7 @@ namespace DCGO.CardEffects.BT20
                                 selectAttackEffect.SetUp(
                                     attacker: selectedPermanent,
                                     canAttackPlayerCondition: () => true,
-                                    defenderCondition: _ => true,
+                                    defenderCondition: (permanent) => true,
                                     cardEffect: activateClass);
 
                                 selectAttackEffect.SetCanNotSelectNotAttack();

@@ -34,11 +34,6 @@ namespace DCGO.CardEffects.BT20
                     }
                     return false;
                 }
-                
-                bool canEvolveIntoFree(CardSource cardSource)
-                {
-                    return cardSource.EqualsTraits("Free");
-                }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
@@ -61,35 +56,26 @@ namespace DCGO.CardEffects.BT20
                     return false;
                 }
 
-                bool CanSelectPermanentCondition(Permanent permanent)
-                { 
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                bool CanSelectCardCondition(CardSource source)
+                {
+                    if (source.EqualsTraits("Free"))
                     {
-                        if (permanent != card.PermanentOfThisCard())
+                        if (source.CanPlayCardTargetFrame(card.PermanentOfThisCard().PermanentFrame, false, activateClass))
                         {
-                            foreach (CardSource cardSource in card.Owner.HandCards)
-                            {
-                                if (canEvolveIntoFree(cardSource))
-                                {
-                                    if (cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass))
-                                    {
-                                        return true;
-                                    }
-                                }
-                            }
+                            return true;
                         }
                     }
-                   
+
                     return false;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                    if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
                     {                        
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
                                 targetPermanent: card.PermanentOfThisCard(),
-                                cardCondition: canEvolveIntoFree,
+                                cardCondition: CanSelectCardCondition,
                                 payCost: true,
                                 reduceCostTuple: (reduceCost: 1, reduceCostCardCondition: null),
                                 fixedCostTuple: null,
