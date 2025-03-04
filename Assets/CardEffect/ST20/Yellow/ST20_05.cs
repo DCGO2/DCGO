@@ -52,7 +52,7 @@ namespace DCGO.CardEffects.ST20
 
                 string EffectDiscription()
                 {
-                    return "[On Play] Give 2 of your opponent's Digimon <Security A. -1> until their turn ends.";
+                    return "[On Play] Give 2 of your opponent's Digimon <Security A. -1> until their turn ends. (This Digimon checks 1 fewer security card.)";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -106,7 +106,7 @@ namespace DCGO.CardEffects.ST20
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] Give 2 of your opponent's Digimon <Security A. -1> until their turn ends.";
+                    return "[When Digivolving] Give 2 of your opponent's Digimon <Security A. -1> until their turn ends. (This Digimon checks 1 fewer security card.)";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
