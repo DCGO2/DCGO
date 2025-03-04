@@ -37,7 +37,8 @@ namespace DCGO.Tools.Repair
 
                 foreach(AlternateArt aa in data.AAs)
                 {
-                    SetSpriteName(aa.id.Replace("-Errata",""), data);
+                    //if(aa.id.Contains("_P"))
+                        SetSpriteName(aa.id.Replace("-Errata",""), data);
                 }
                 
             }
@@ -69,7 +70,7 @@ namespace DCGO.Tools.Repair
 
             if (!errataName.Equals(card.CardSpriteName))
             {
-                debugText += $"{errataName}\n";
+                debugText += $"{fileName}: {errataName}\n";
                 matchedCount++;
                 //card.CardSpriteName = errataName;
                 //EditorUtility.SetDirty(card);
@@ -84,6 +85,8 @@ namespace DCGO.Tools.Repair
             if (!ID.Contains("Errata") && !ID.Contains("_") && AA.Count > 0)
             {
                 AlternateArt errata = AA.Where(x => x.id.StartsWith(ID) && x.id.Contains("Errata")).FirstOrDefault();
+
+                if(ID.Contains("BT16-077"))
 
                 if (errata != null)
                     ID = errata.id;
