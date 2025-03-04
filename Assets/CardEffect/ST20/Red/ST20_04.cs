@@ -59,7 +59,7 @@ namespace DCGO.CardEffects.ST20
 
                 string EffectDiscription()
                 {
-                    return "[On Play]For the turn, 1 of your Digimon gains <Security A. +1>, and for every 2 colors your Tamers have, gets +2000 DP. (This Digimon checks 1 additional security card.)";
+                    return "[On Play] For the turn, 1 of your Digimon gains <Security A. +1>, and for every 2 colors your Tamers have, gets +2000 DP. (This Digimon checks 1 additional security card.)";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
