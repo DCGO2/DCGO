@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-//ST20-03 Garudamon
+//ST20-03 Birdramon
 namespace DCGO.CardEffects.ST20
 {
     public class ST20_03 : CEntity_Effect
