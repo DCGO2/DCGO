@@ -49,11 +49,7 @@ namespace DCGO.CardEffects.BT20
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    List<CardSource> cardSources = new List<CardSource>() { card };
-
-                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources));
-
-                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(cardSources, "", true, true));
+                    yield return ContinuousController.instance.StartCoroutine(new DeckBottomBounceClass(new List<Permanent> { card.PermanentOfThisCard() }, hashtable).DeckBounce());
 
                     if(CardEffectCommons.HasMatchConditionOwnersHand(card, IsShotoKazama))
                     {

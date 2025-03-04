@@ -122,7 +122,7 @@ namespace DCGO.CardEffects.P
             bool HasDeepSaversCondition(CardSource cardSource)
             {
                 return CardEffectCommons.IsExistInSecurity(cardSource) &&
-                        cardSource.EqualsCardName("Deep Savers");
+                       cardSource.EqualsCardName("Deep Savers");
             }
 
             #region Before Pay Cost - Condition Effect
@@ -175,7 +175,7 @@ namespace DCGO.CardEffects.P
                 {
                     if (CardEffectCommons.IsExistOnHand(card))
                     {
-                        if (CardEffectCommons.HasMatchConditionOwnersSecurity(card, HasDeepSaversCondition))
+                        if (CardEffectCommons.HasMatchConditionOwnersSecurity(card, HasDeepSaversCondition, false))
                         {
                             return true;
                         }
@@ -211,7 +211,7 @@ namespace DCGO.CardEffects.P
                                 {
                                     int targetCost = 0;
 
-                                    if (CardEffectCommons.HasMatchConditionOwnersSecurity(card, HasDeepSaversCondition))
+                                    if (CardEffectCommons.HasMatchConditionOwnersSecurity(card, HasDeepSaversCondition, false))
                                         targetCost += 4;
 
                                     Cost -= targetCost;
@@ -278,7 +278,7 @@ namespace DCGO.CardEffects.P
 
                         if (activateClass != null)
                         {
-                            if (CardEffectCommons.HasMatchConditionOwnersSecurity(card, HasDeepSaversCondition))
+                            if (CardEffectCommons.HasMatchConditionOwnersSecurity(card, HasDeepSaversCondition, false))
                             {
                                 return true;
                             }
@@ -298,7 +298,7 @@ namespace DCGO.CardEffects.P
                             {
                                 int targetCount = 0;
 
-                                if (CardEffectCommons.HasMatchConditionOwnersSecurity(card, HasDeepSaversCondition))
+                                if (CardEffectCommons.HasMatchConditionOwnersSecurity(card, HasDeepSaversCondition, false))
                                     targetCount += 4;
 
                                 Cost -= targetCount;
@@ -351,6 +351,7 @@ namespace DCGO.CardEffects.P
             }
 
             #endregion
+
             #endregion
 
             #region Blocker

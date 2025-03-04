@@ -93,7 +93,7 @@ namespace DCGO.CardEffects.BT20
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(cardSource))
                     {
-                        if (cardSource.CardNames.Contains("Sistermon Ciel"))
+                        if (cardSource.EqualsCardName("Sistermon Ciel"))
                         {
                             return true;
                         }
