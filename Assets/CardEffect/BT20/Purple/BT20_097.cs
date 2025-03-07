@@ -134,13 +134,6 @@ namespace DCGO.CardEffects.BT20
                     return "[All Turns] When any of your [DexDorugoramon] would leave the battle area, <Delay>.\r\n• By return 1 [Dorumon] from those Digimon's digivolution cards to the hand, you may play 1 [DeathXmon] from your trash without paying the cost.";
                 }
 
-                bool PermanentCondition(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
-                           permanent.TopCard.EqualsCardName("DexDorugoramon") &&
-                           permanent.willBeRemoveField;
-                }
-
                 bool DexDorugoraWithSource(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
@@ -162,7 +155,7 @@ namespace DCGO.CardEffects.BT20
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, PermanentCondition) &&
+                    return CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, DexDorugoraWithSource) &&
                            CardEffectCommons.CanDeclareOptionDelayEffect(card);
                 }
 
@@ -182,7 +175,7 @@ namespace DCGO.CardEffects.BT20
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: PermanentCondition,
+                            canTargetCondition: DexDorugoraWithSource,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: 1,
@@ -234,7 +227,7 @@ namespace DCGO.CardEffects.BT20
 
                         yield return StartCoroutine(selectCardEffect.Activate());
 
-                        if(selectedCards.Any(source => !card.Owner.HandCards.Contains(source)))
+                        if(selectedCards.Any(source => card.Owner.HandCards.Contains(source)))
                         {
                             List<CardSource> selectedPlayedCards = new List<CardSource>();
 

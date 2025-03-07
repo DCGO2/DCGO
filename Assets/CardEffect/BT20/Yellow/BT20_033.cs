@@ -18,7 +18,7 @@ namespace DCGO.CardEffects.BT20
                     return targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 4 && targetPermanent.TopCard.EqualsTraits("ACCEL");
                 }
 
-                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 2, ignoreDigivolutionRequirement: false, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
             }
 
             #endregion

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace DCGO.CardEffects.BT20
 {
-    public class WormmonBT20_065 : CEntity_Effect
+    public class BT20_065 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {

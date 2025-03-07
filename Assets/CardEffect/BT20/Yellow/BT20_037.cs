@@ -111,7 +111,7 @@ namespace DCGO.CardEffects.BT20
                 {
                     if(card.PermanentOfThisCard().DigivolutionCards.Count(IsLevel6) > 0)
                     {
-                        int maxCount = Math.Min(1, card.PermanentOfThisCard().DigivolutionCards.Count(IsLevel6));
+                        int maxCount = card.PermanentOfThisCard().DigivolutionCards.Count(IsLevel6);
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
@@ -127,7 +127,7 @@ namespace DCGO.CardEffects.BT20
                             mode: SelectPermanentEffect.Mode.Tap,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to get +3000DP.", "The opponent is selecting 1 Digimon to get +3000DP.");
+                        selectPermanentEffect.SetUpCustomMessage($"Select {maxCount} Digimon to suspend.", $"The opponent is selecting {maxCount} Digimon to suspend.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
@@ -139,11 +139,11 @@ namespace DCGO.CardEffects.BT20
                         permanentCondition: OpponentsDigimonOrTamer,
                         effectDuration: EffectDuration.UntilOpponentTurnEnd,
                         activateClass: activateClass,
-                        isOnlyActivePhase: true,
+                        isOnlyActivePhase: false,
                         effectName: "Your card can't unsuspend"));
 
                     DisableEffectClass invalidationClass = new DisableEffectClass();
-                    invalidationClass.SetUpICardEffect("Ignore [On Play] Effect of opponent's Tamers", CanUseCondition, card);
+                    invalidationClass.SetUpICardEffect("Ignore [On Play] Effect of opponent's Digimon/Tamers", CanUseCondition, card);
                     invalidationClass.SetUpDisableEffectClass(DisableCondition: InvalidateCondition);
                     card.Owner.Enemy.UntilOpponentTurnEndEffects.Add((_timing) => invalidationClass);
 
@@ -162,13 +162,13 @@ namespace DCGO.CardEffects.BT20
                                 {
                                     if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(cardEffect.EffectSourceCard.PermanentOfThisCard(), card))
                                     {
-                                        if (!cardEffect.EffectSourceCard.PermanentOfThisCard().IsOption)
+                                        if (cardEffect.EffectSourceCard.PermanentOfThisCard().IsTamer || cardEffect.EffectSourceCard.PermanentOfThisCard().IsDigimon)
                                         {
                                             if (!cardEffect.EffectSourceCard.PermanentOfThisCard().TopCard.CanNotBeAffected(invalidationClass))
                                             {
                                                 if (cardEffect.IsOnPlay)
                                                 {
-                                                        return true;
+                                                    return true;
                                                 }
                                             }
                                         }

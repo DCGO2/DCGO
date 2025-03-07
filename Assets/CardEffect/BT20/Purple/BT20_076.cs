@@ -5,30 +5,13 @@ using System;
 
 namespace DCGO.CardEffects.BT20
 {
-    public class BT20_076 : CEntity_Effect{
-    
+    public class BT20_076 : CEntity_Effect
+    {    
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
-        List<ICardEffect> cardEffects = new List<ICardEffect>();
+            List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-
-        #region Ace - Blast DNA Digivolve
-            
-            if (timing == EffectTiming.OnCounterTiming)
-            {
-                List<BlastDNACondition> blastDNAConditions = new List<BlastDNACondition>
-                {
-                    new("DinoBeemon"),
-                    new("Paildramon")
-                };
-                cardEffects.Add(CardEffectFactory.BlastDNADigivolveEffect(card: card,
-                    blastDNAConditions: blastDNAConditions, condition: null));
-            }
-            
-        #endregion
-
-        #region DNA Digivolution
-            
+            #region DNA Digivolution
             if (timing == EffectTiming.None)
             {
                 AddJogressConditionClass addJogressConditionClass = new AddJogressConditionClass();
@@ -36,17 +19,12 @@ namespace DCGO.CardEffects.BT20
                 addJogressConditionClass.SetUpAddJogressConditionClass(getJogressCondition: GetJogress);
                 addJogressConditionClass.SetNotShowUI(true);
                 cardEffects.Add(addJogressConditionClass);
-                 bool CanUseCondition(Hashtable hashtable)
+
+                bool CanUseCondition(Hashtable hashtable)
                 {
-                if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-                    }
-                return false;
+                    return true;
                 }
-                
-                //NoCanUseConditionHere
-                
+
                 JogressCondition GetJogress(CardSource cardSource)
                 {
                     if (cardSource == card)
@@ -61,8 +39,7 @@ namespace DCGO.CardEffects.BT20
                                     {
                                         if (permanent.IsDigimon)
                                         {
-                                            if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent,
-                                                    card))
+                                            if (permanent.TopCard.Owner.GetBattleAreaPermanents().Contains(permanent))
                                             {
                                                 if (permanent.TopCard.CardColors.Contains(CardColor.Purple))
                                                 {
@@ -76,10 +53,10 @@ namespace DCGO.CardEffects.BT20
                                     }
                                 }
                             }
-                            
+
                             return false;
                         }
-                        
+
                         bool PermanentCondition2(Permanent permanent)
                         {
                             if (permanent != null)
@@ -90,8 +67,7 @@ namespace DCGO.CardEffects.BT20
                                     {
                                         if (permanent.IsDigimon)
                                         {
-                                            if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent,
-                                                    card))
+                                            if (permanent.TopCard.Owner.GetBattleAreaPermanents().Contains(permanent))
                                             {
                                                 if (permanent.TopCard.CardColors.Contains(CardColor.Red))
                                                 {
@@ -105,186 +81,201 @@ namespace DCGO.CardEffects.BT20
                                     }
                                 }
                             }
-                            
+
                             return false;
                         }
-                        
-                        JogressConditionElement[] elements =
+
+                        JogressConditionElement[] elements = new JogressConditionElement[]
                         {
-                            new(PermanentCondition1, "a level 5 Purple Digimon"),
-                            new(PermanentCondition2, "a level 5 Red Digimon")
+                        new JogressConditionElement(PermanentCondition1, "a level 5 purple Digimon"),
+
+                        new JogressConditionElement(PermanentCondition2, "a level 5 red Digimon"),
                         };
-                        
+
                         JogressCondition jogressCondition = new JogressCondition(elements, 0);
-                        
+
                         return jogressCondition;
                     }
-                    
+
                     return null;
                 }
             }
-            
+
             #endregion
-        
+
+            #region Ace - Blast DNA Digivolve
+
+            if (timing == EffectTiming.OnCounterTiming)
+                {
+                    List<BlastDNACondition> blastDNAConditions = new List<BlastDNACondition>
+                    {
+                        new("Dinobeemon"),
+                        new("Paildramon")
+                    };
+                    cardEffects.Add(CardEffectFactory.BlastDNADigivolveEffect(card: card,
+                        blastDNAConditions: blastDNAConditions, condition: null));
+                }
+
+            #endregion
+
             #region On Play 
-        if (timing == EffectTiming.OnEnterFieldAnyone){                
+            if (timing == EffectTiming.OnEnterFieldAnyone)
+            {                
 
-            ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Delete 1 Digimon", CanUseCondition, card);
-            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-            cardEffects.Add(activateClass);
-            string EffectDiscription()
-            {
-                return "[When Digivolving] Delete 1 of your opponent's Digimon with 11000 DP or less. Then, if DNA digivolving, this Digimon may digivolve into [Imperialdramon: Fighter Mode] in the hand or trash without paying the cost.";
-            }
-            bool CanSelectPermanentCondition(Permanent permanent)
-            {
-                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Delete 1 Digimon", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
                 {
-                    if (permanent.DP <= card.Owner.MaxDP_DeleteEffect(11000, activateClass))
-                    {
-                        return true;
-                    }
+                    return "[On Play] Delete 1 of your opponent's Digimon with 11000 DP or less. Then, if DNA digivolving, this Digimon may digivolve into [Imperialdramon: Fighter Mode] in the hand or trash without paying the cost.";
                 }
 
-                return false;
-            }
-            bool CanUseCondition(Hashtable hashtable)
-            {
-                return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-            }
-            bool CanActivateCondition(Hashtable hashtable)
-            {
-                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                    {
-                        return true;
-                    }
-                return false;
-            }
-            IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                     {
-                        int maxCount = Math.Min(1, card.Owner.Enemy.GetBattleAreaPermanents().Count(CanSelectPermanentCondition));
-
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectPermanentCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: false,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: null,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Destroy,
-                            cardEffect: activateClass);
-
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                        if (permanent.DP <= card.Owner.MaxDP_DeleteEffect(11000, activateClass))
+                        {
+                            return true;
+                        }
                     }
-                    activateClass.SetUpICardEffect("Digivolve into Imperialdramon: Fightermode", CanUseCondition, card);
-                    activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-                    cardEffects.Add(activateClass);      
+
+                    return false;
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                    {
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                        {
+                            int maxCount = Math.Min(1, card.Owner.Enemy.GetBattleAreaPermanents().Count(CanSelectPermanentCondition));
+
+                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                            selectPermanentEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: CanSelectPermanentCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: maxCount,
+                                canNoSelect: false,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: null,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Destroy,
+                                cardEffect: activateClass);
+
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                        }
+                        activateClass.SetUpICardEffect("Digivolve into Imperialdramon: Fightermode", CanUseCondition, card);
+                        activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                        cardEffects.Add(activateClass);      
                 
-                    bool CanSelectCardCondition (CardSource cardSource){
-                    return cardSource.EqualsCardName("Imperialdramon: Fighter Mode");
-                    }
+                        bool CanSelectCardCondition (CardSource cardSource){
+                        return cardSource.EqualsCardName("Imperialdramon: Fighter Mode");
+                        }
             
-                }
+                    }
             
                         
             
                 
 
-        }
-            #endregion
+            }
+                #endregion
         
-        #region When Digivolving
-        if (timing == EffectTiming.OnEnterFieldAnyone){       
-            ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Delete 1 Digimon", CanUseCondition, card);
-            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-            cardEffects.Add(activateClass);
-            string EffectDiscription()
-            {
-                return "[When Digivolving] Delete 1 of your opponent's Digimon with 11000 DP or less. Then, if DNA digivolving, this Digimon may digivolve into [Imperialdramon: Fighter Mode] in the hand or trash without paying the cost.";
-            }
-            bool CanSelectPermanentCondition(Permanent permanent)
-            {
-                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+            #region When Digivolving
+            if (timing == EffectTiming.OnEnterFieldAnyone)
+            {       
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Delete 1 Digimon", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
                 {
-                    if (permanent.DP <= card.Owner.MaxDP_DeleteEffect(11000, activateClass))
-                    {
-                        return true;
-                    }
+                    return "[When Digivolving] Delete 1 of your opponent's Digimon with 11000 DP or less. Then, if DNA digivolving, this Digimon may digivolve into [Imperialdramon: Fighter Mode] in the hand or trash without paying the cost.";
                 }
 
-                return false;
-            }
-            bool CanUseCondition(Hashtable hashtable)
-            {
-                if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-                    }
-                return false;
-            }
-            bool CanActivateCondition(Hashtable hashtable)
-            {
-                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                    {
-                        return true;
-                    }
-                return false;
-            }         
-
-            
-            
-            IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                     {
-                        int maxCount = Math.Min(1, card.Owner.Enemy.GetBattleAreaPermanents().Count(CanSelectPermanentCondition));
-
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectPermanentCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: false,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: null,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Destroy,
-                            cardEffect: activateClass);
-
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                        if (permanent.DP <= card.Owner.MaxDP_DeleteEffect(11000, activateClass))
+                        {
+                            return true;
+                        }
                     }
-                    activateClass.SetUpICardEffect("Digivolve into Imperialdramon: Fightermode", CanUseCondition, card);
-                    activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-                    cardEffects.Add(activateClass);      
+
+                    return false;
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                    {
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                        {
+                            int maxCount = Math.Min(1, card.Owner.Enemy.GetBattleAreaPermanents().Count(CanSelectPermanentCondition));
+
+                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                            selectPermanentEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: CanSelectPermanentCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: maxCount,
+                                canNoSelect: false,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: null,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Destroy,
+                                cardEffect: activateClass);
+
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                        }
+                        activateClass.SetUpICardEffect("Digivolve into Imperialdramon: Fightermode", CanUseCondition, card);
+                        activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                        cardEffects.Add(activateClass);      
                 
-                    bool CanSelectCardCondition (CardSource cardSource){
-                    return cardSource.EqualsCardName("Imperialdramon: Fighter Mode");
-                    }
+                        bool CanSelectCardCondition (CardSource cardSource){
+                        return cardSource.EqualsCardName("Imperialdramon: Fighter Mode");
+                        }
             
-                }
+                    }
             
                         
-            if (timing == EffectTiming.OnEnterFieldAnyone){                
+                if (timing == EffectTiming.OnEnterFieldAnyone){                
                 
 
+                }
             }
-        }
-        #endregion
+            #endregion
 
-        return cardEffects;
+            return cardEffects;
                 
-    }
+        }
     }
 }
