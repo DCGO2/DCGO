@@ -20,7 +20,7 @@ namespace DCGO.CardEffects.BT20
 
                 string EffectDiscription()
                 {
-                    return "[Start of Your Main Phase] By trashing 1 card with [Huckmon] or [Sistermon] in its name or the [Royal Knight] trait";
+                    return "[Start of Your Main Phase] By trashing 1 card with [Huckmon] or [Sistermon] in its name or the [Royal Knight] trait in your hand, <Draw 1> and gain 1 memory.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -78,6 +78,8 @@ namespace DCGO.CardEffects.BT20
 
                         selectHandEffect.SetUpCustomMessage("Select 1 card to discard.", "The opponent is selecting 1 card to discard.");
                         selectHandEffect.SetUpCustomMessage_ShowCard("Discarded Card");
+
+                        yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
                     }
 
                     if (discarded)

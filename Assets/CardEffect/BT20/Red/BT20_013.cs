@@ -144,7 +144,7 @@ namespace DCGO.CardEffects.BT20
 
                         #endregion
 
-                        if (card.Owner.TrashCards.Count(CanSelectCardCondition) >= 1)
+                        if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
                         {
                             List<CardSource> selectedCards = new List<CardSource>();
 
@@ -165,7 +165,7 @@ namespace DCGO.CardEffects.BT20
                                 selectCardCoroutine: SelectCardCoroutine,
                                 afterSelectCardCoroutine: null,
                                 mode: SelectCardEffect.Mode.Custom,
-                                root: SelectCardEffect.Root.Trash,
+                                root: SelectCardEffect.Root.Hand,
                                 customRootCardList: null,
                                 canLookReverseCard: false,
                                 cardEffect: activateClass);
@@ -187,7 +187,7 @@ namespace DCGO.CardEffects.BT20
                                 activateClass: activateClass,
                                 payCost: true,
                                 isTapped: false,
-                                root: SelectCardEffect.Root.Trash,
+                                root: SelectCardEffect.Root.Hand,
                                 activateETB: true));
                         }
 
