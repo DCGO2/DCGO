@@ -146,12 +146,12 @@ namespace DCGO.CardEntities
             cardEntity.CardID = card.id;
             cardEntity.MaxCountInDeck = GetMaxCount(card.restrictions.japanese);
 
-            cardEntity.name = cardEntity.CardEffectClassName;
+            cardEntity.name = cardEntity.CardSpriteName.Replace("-Errata","").Replace("-","_");
 
 
             if (!debugMode)
             {
-                Debug.Log($"created: {cardEntity.name}");
+                Debug.Log($"created: {cardEntity.name}: {cardEntity.CardSpriteName}, {cardEntity.CardEffectClassName}");
                 SaveScriptableObject(cardEntity);
             }
             else
