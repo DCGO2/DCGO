@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DCGO.CardEffects.BT21
 {
@@ -12,25 +13,15 @@ namespace DCGO.CardEffects.BT21
             #region Inherit
             if (timing == EffectTiming.None)
             {
+                bool VemmonCondition(CardSource source)
+                {
+                    return source.EqualsCardName("Vemmon");
+                }
+
                 bool Condition()
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        int vemmon_in_source = 0;
-
-                        foreach (CardSource card_in_source in card.PermanentOfThisCard().cardSources)
-                        {
-                            if (card_in_source.PermanentOfThisCard().TopCard.ContainsCardName("Vemmon"))
-                            {
-                                vemmon_in_source += 1;
-                            }
-                        }
-
-                        if (vemmon_in_source >= 4)
-                        {
-                            return true;
-                        }
-                    }
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                        return card.PermanentOfThisCard().DigivolutionCards.Count(VemmonCondition) >= 4;
 
                     return false;
                 }
