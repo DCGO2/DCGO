@@ -14,13 +14,13 @@ namespace DCGO.CardEffects.BT20
             if (timing == EffectTiming.OptionSkill)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Reveal the top 3 cards, add 1 [Cool Boy] and 1 [Royal Knight] trait", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Reveal the top 3 cards, add 1 [Cool Boy] and 1 [Royal Knight]/[X Antibody] trait", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[Main] Reveal the top 3 cards of your deck. Add 1 [Cool Boy] and 1 card with the [Royal Knight] trait among them to the hand. Return the rest to the bottom of the deck. Then, place this card in the battle area.";
+                    return "[Main] Reveal the top 3 cards of your deck. Add 1 [Cool Boy] and 1 card with the [Royal Knight] or [X Antibody] trait among them to the hand. Return the rest to the bottom of the deck. Then, place this card in the battle area.";
                 }
 
                 bool IsCoolBoy(CardSource cardSource)
@@ -28,9 +28,9 @@ namespace DCGO.CardEffects.BT20
                     return cardSource.EqualsCardName("Cool Boy");
                 }
 
-                bool IsRoyalKnight(CardSource cardSource)
+                bool IsRoyalKnightXAntibody(CardSource cardSource)
                 {
-                    return cardSource.EqualsTraits("Royal Knight");
+                    return cardSource.EqualsTraits("Royal Knight") || cardSource.EqualsTraits("X Antibody");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -52,8 +52,8 @@ namespace DCGO.CardEffects.BT20
                             maxCount: 1,
                             selectCardCoroutine: null),
                          new SimplifiedSelectCardConditionClass(
-                            canTargetCondition:IsRoyalKnight,
-                            message: "Select 1 card with [Royal Knight] trait.",
+                            canTargetCondition:IsRoyalKnightXAntibody,
+                            message: "Select 1 card with [Royal Knight]/[X Antibody] trait.",
                             mode: SelectCardEffect.Mode.AddHand,
                             maxCount: 1,
                             selectCardCoroutine: null),
@@ -73,8 +73,10 @@ namespace DCGO.CardEffects.BT20
 
             if (timing == EffectTiming.WhenRemoveField)
             {
+                List<Permanent> deletablePermanents = new List<Permanent>();
+
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play 1 Digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Prevent Removal", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
@@ -90,6 +92,13 @@ namespace DCGO.CardEffects.BT20
                            permanent.willBeRemoveField;
                 }
 
+                bool SelectableOmni(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                           permanent.TopCard.ContainsCardName("Omnimon") &&
+                           deletablePermanents.Contains(permanent);
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, PermanentCondition) &&
@@ -98,44 +107,46 @@ namespace DCGO.CardEffects.BT20
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    deletablePermanents = CardEffectCommons.GetPermanentsFromHashtable(hashtable);
+
                     yield return ContinuousController.instance.StartCoroutine(
                         CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
                             targetPermanents: new List<Permanent>() { card.PermanentOfThisCard() },
                             activateClass: activateClass, successProcess: _ => SuccessProcess(),
                             failureProcess: null));
-                }
 
-                IEnumerator SuccessProcess()
-                {
-                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                    selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: PermanentCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: 1,
-                        canNoSelect: true,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: SelectPermanentCoroutine,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Custom,
-                        cardEffect: activateClass);
-
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to prevent removal.", "The opponent is selecting 1 Digimon to prevent removal.");
-
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                    IEnumerator SuccessProcess()
                     {
-                        permanent.willBeRemoveField = false;
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                        permanent.HideDeleteEffect();
-                        permanent.HideHandBounceEffect();
-                        permanent.HideDeckBounceEffect();
-                        permanent.HideWillRemoveFieldEffect();
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: SelectableOmni,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
 
-                        yield return null;
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to prevent removal.", "The opponent is selecting 1 Digimon to prevent removal.");
+
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                        {
+                            permanent.willBeRemoveField = false;
+
+                            permanent.HideDeleteEffect();
+                            permanent.HideHandBounceEffect();
+                            permanent.HideDeckBounceEffect();
+                            permanent.HideWillRemoveFieldEffect();
+
+                            yield return null;
+                        }
                     }
                 }
             }

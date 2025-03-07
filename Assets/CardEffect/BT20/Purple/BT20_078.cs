@@ -34,12 +34,13 @@ namespace DCGO.CardEffects.BT20
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("<De-Digivolve 1> 1 your opponent's Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetHashString("AllTurn_BT20-078");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
                 {
                     return
-                        "[All Turns] When effects digivolve your opponent's Digimon, <De-Digivolve 1> 1 of your opponent's Digimon ";
+                        "[All Turns] [Once Per Turn] When effects digivolve your opponent's Digimon, <De-Digivolve 1> 1 of your opponent's Digimon.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

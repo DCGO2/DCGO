@@ -44,7 +44,7 @@ namespace DCGO.CardEffects.BT20
                     {
                         List<CardSource> selectedCardsToReturn = new();
 
-                        int maxCount = Math.Min(1,
+                        int maxCount = Math.Min(3,
                             CardEffectCommons.MatchConditionOpponentsCardCountInTrash(card, CanSelectReturnCardCondition));
 
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();

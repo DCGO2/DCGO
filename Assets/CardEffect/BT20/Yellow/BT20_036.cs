@@ -30,14 +30,11 @@ namespace DCGO.CardEffects.BT20
             #region Reduce Play Cost
             bool HasAccelTraitInPlay(Permanent permanent)
             {
-                if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
+                if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                 {
-                    if (permanent.IsDigimon)
+                    if (permanent.TopCard.EqualsTraits("ACCEL"))
                     {
-                        if (permanent.TopCard.EqualsTraits("ACCEL"))
-                        {
-                            return true;
-                        }
+                        return true;
                     }
                 }
 
