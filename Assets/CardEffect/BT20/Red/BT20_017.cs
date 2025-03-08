@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DCGO.CardEffects.BT20
+namespace DCGO.CardEffects
 {
     //Regular Jesmon
     public class BT20_017 : CEntity_Effect
@@ -15,125 +15,64 @@ namespace DCGO.CardEffects.BT20
             #region OnPlay WhenDigivovling
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
-                #region <OnPlay>
-                {
-                    ActivateClass activateClass = new ActivateClass();
-                    activateClass.SetUpICardEffect("Play a token", CanUseCondition, card);
-                    activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
-                    cardEffects.Add(activateClass);
-
-                    string EffectDiscription()
-                    {
-                        return "[On Play] Play 1 [Atho, René & Por] Token. (Digimon/White/6000 DP/<Reboot>/<Blocker>/<Decoy Red/Black>)";
-                    }
-
-                    bool CanUseCondition(Hashtable hashtable)
-                    {
-                        return (CardEffectCommons.CanTriggerOnPlay(hashtable, card));
-                    }
-
-                    bool CanActivateCondition(Hashtable hashtable)
-                    {
-                        if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                        {
-                            if (card.Owner.fieldCardFrames.Count((frame) => frame.IsEmptyFrame() && frame.IsBattleAreaFrame()) >= 1)
-                            {
-                                return true;
-                            }
-                        }
-
-                        return false;
-                    }
-
-                    //#TODO Implement token effect script
-                    IEnumerator ActivateCoroutine(Hashtable hashtable)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayAthoRenePorToken(activateClass));
-                    }
-                }
-                #endregion
-
-                #region <WhenDigivovling>
-                {
-                    ActivateClass activateClass = new ActivateClass();
-                    activateClass.SetUpICardEffect("Play token", CanUseCondition, card);
-                    activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
-                    cardEffects.Add(activateClass);
-
-                    string EffectDiscription()
-                    {
-                        return "[When Digivolving] Play 1 [Atho, René & Por] Token. (Digimon/White/6000 DP/<Reboot> <Blocker> <Decoy Red/Black>)";
-                    }
-
-                    bool CanUseCondition(Hashtable hashtable)
-                    {
-                        return (CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card));
-                    }
-
-                    bool CanActivateCondition(Hashtable hashtable)
-                    {
-                        if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                        {
-                            if (card.Owner.fieldCardFrames.Count((frame) => frame.IsEmptyFrame() && frame.IsBattleAreaFrame()) >= 1)
-                            {
-                                return true;
-                            }
-                        }
-
-                        return false;
-                    }
-
-                    //#TODO Implement token effect script
-                    IEnumerator ActivateCoroutine(Hashtable hashtable)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayAthoRenePorToken(activateClass));
-                    }
-                }
-                #endregion
-            }
-            #endregion
-
-            #region Your Turn
-
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play token", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
-                activateClass.SetHashString("PlayLevel6_BT20_017");
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription ()
+                string EffectDiscription()
                 {
-                    return "[Your Turn] [Once Per Turn] When any of your other Digimon are played, delete 1 of your opponent's Digimon with 8000 SP or less. Then, 1 of you Digimon may attack.";
+                    return "Play 1 [Atho, Ren� & Por] Token. (Digimon/White/6000 DP/<Reboot> <Blocker> <Decoy Red/Black>)";
                 }
 
-                bool PermanentCondition (Permanent permanent)
+                bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
+                    return (CardEffectCommons.CanTriggerOnPlay(hashtable, card) || CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card));
                 }
 
-                bool CanUseCondition (Hashtable hashtable)
+                bool CanActivateCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (CardEffectCommons.IsOwnerTurn(card))
+                        if (card.Owner.fieldCardFrames.Count((frame) => frame.IsEmptyFrame() && frame.IsBattleAreaFrame()) >= 1)
                         {
-                            if (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PermanentCondition))
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
 
                     return false;
                 }
 
-                bool CanActivateCondition (Hashtable hashtable)
+//#TODO Implement token effect script
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayAthoRenePorToken(activateClass));
+                }
+            }
+            #endregion
+
+            #region AllTurns
+
+            if (timing == EffectTiming.OnEnterFieldAnyone)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Play token", CanUseCondition, card);
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, EffectDiscription());
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription ()
+                {
+                    return "When this Digimon would digivolve or leave the battle area, delete"
+                }
+
+                bool CanUseCondition (Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        return true;
+                        if (!CardEffectCommons.IsOpponentTurn(card))
+                        {
+                            return true;
+                        }
                     }
 
                     return false;
@@ -143,7 +82,7 @@ namespace DCGO.CardEffects.BT20
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent.DP <= card.Owner.MaxDP_DeleteEffect(8000, activateClass))
+                        if (permanent.CanBeRemoved() && permanent.DP <= 8000)
                         {
                             return true;
                         }
@@ -158,7 +97,10 @@ namespace DCGO.CardEffects.BT20
                     {
                         if (permanent.CanAttack(activateClass))
                         {
-                            return true;
+                            if (card.Owner.Enemy.GetBattleAreaDigimons().Count((enemyDigimon) => permanent.CanAttackTargetDigimon(enemyDigimon, activateClass)) >= 1)
+                            {
+                                return true;
+                            }
                         }
                     }
 
@@ -181,7 +123,7 @@ namespace DCGO.CardEffects.BT20
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,
-                            canNoSelect: false,
+                            canNoSelect: true,
                             canEndNotMax: false,
                             selectPermanentCoroutine: null,
                             afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
@@ -244,7 +186,7 @@ namespace DCGO.CardEffects.BT20
 
                                     selectAttackEffect.SetUp(
                                         attacker: selectedPermanent,
-                                        canAttackPlayerCondition: () => true,
+                                        canAttackPlayerCondition: () => false,
                                         defenderCondition: (permanent) => true,
                                         cardEffect: activateClass);
 
