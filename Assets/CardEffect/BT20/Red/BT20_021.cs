@@ -73,6 +73,7 @@ namespace DCGO.CardEffects.BT20
                 ActivateClass activate_class = new ActivateClass();
                 activate_class.SetUpICardEffect("Select 1 card, delete 1 card", CanUseCondition, card);
                 activate_class.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activate_class.SetHashString("Delete_BT20_021");
                 cardEffects.Add(activate_class);
 
                 string EffectDescription()
@@ -281,6 +282,7 @@ namespace DCGO.CardEffects.BT20
                 ActivateClass activate_class = new ActivateClass();
                 activate_class.SetUpICardEffect("Select 1 card, delete 1 card", CanUseCondition, card);
                 activate_class.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activate_class.SetHashString("Delete_BT20_021");
                 cardEffects.Add(activate_class);
 
                 string EffectDescription()
@@ -489,11 +491,12 @@ namespace DCGO.CardEffects.BT20
                 ActivateClass activate_class = new ActivateClass();
                 activate_class.SetUpICardEffect("Select 1 card, delete 1 card", CanUseCondition, card);
                 activate_class.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activate_class.SetHashString("Delete_BT20_021");
                 cardEffects.Add(activate_class);
 
                 string EffectDescription()
                 {
-                    return "[When Attacking] [Once Per Turn] Place 1 [Royal Knight] trait card from your hand or trash as this Digimon's bottom digivolution card, delete 1 of your opponent's Digimon with as much or less DP as this digimon.";
+                    return "[When Attacking] [Once Per Turn] By placing 1 [Royal Knight] trait card from your hand or trash as this Digimon's bottom digivolution card, delete 1 of your opponent's Digimon with as much or less DP as this digimon.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -693,14 +696,16 @@ namespace DCGO.CardEffects.BT20
 
             if (timing == EffectTiming.OnAllyAttack)
             {
+                #region when attacking 2
                 ActivateClass activate_class = new ActivateClass();
                 activate_class.SetUpICardEffect("Select 1 card, delete 1 card", CanUseCondition, card);
                 activate_class.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
+                activate_class.SetHashString("Unsuspend_BT20_021");
                 cardEffects.Add(activate_class);
 
                 string EffectDescription()
                 {
-                    return "[When Attacking] [Once per Turn] This Digimon unsuspends. Then, for every 2 [Royal Knigght] trait cards in this Digimon'd digivolution cards, trash your opponent's top security card";
+                    return "[When Attacking] [Once per Turn] This Digimon unsuspends. Then, for every 2 [Royal Knight] trait cards in this Digimon'd digivolution cards, trash your opponent's top security card";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -734,6 +739,7 @@ namespace DCGO.CardEffects.BT20
                             fromTop: true).DestroySecurity());
                     }
                 }
+                #endregion
             }
 
                 return cardEffects;

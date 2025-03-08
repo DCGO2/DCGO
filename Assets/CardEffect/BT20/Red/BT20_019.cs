@@ -22,7 +22,7 @@ namespace DCGO.CardEffects.BT20
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] if [Jesmon]/[X Antibody] is in this Digimon's digivoulution cards, for the turn, 1 of your Digimon isn't affected by your opponent's effects. THne, 1 of your Digimon may attack.";
+                    return "[When Digivolving] if [Jesmon]/[X Antibody] is in this Digimon's digivoulution cards, for the turn, 1 of your Digimon isn't affected by your opponent's effects. Then, 1 of your Digimon may attack.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -142,10 +142,7 @@ namespace DCGO.CardEffects.BT20
                                     {
                                         if (permanent.CanAttack(activateClass))
                                         {
-                                            if (card.Owner.Enemy.GetBattleAreaDigimons().Count((enemyDigimon) => permanent.CanAttackTargetDigimon(enemyDigimon, activateClass)) >= 1)
-                                            {
-                                                return true;
-                                            }
+                                            return true;
                                         }
                                     }
                                     return false;
@@ -234,19 +231,43 @@ namespace DCGO.CardEffects.BT20
             {
                 #region Your Turn
                 {
-                    ActivateClass activateClass = new ActivateClass();
-                    activateClass.SetUpICardEffect("Select digimon to gain piercing and can attack unsuspended digimon", CanUseCondition, card);
-                    activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
-                    cardEffects.Add(activateClass);
+                    AddSkillClass addSkillClass = new AddSkillClass();
+                    addSkillClass.SetUpICardEffect("[Your Turn] All of your Digimon with [Sistermon] or the [Royal Knight] trait gain <Piercing> and can attack your opponent's unsuspended Digimon.", CanUseCondition, card);
+                    addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
+                    cardEffects.Add(addSkillClass);
 
-                    String EffectDiscription ()
+
+                    CanAttackTargetDefendingPermanentClass canAttackTargetDefendingPermanentClass = new CanAttackTargetDefendingPermanentClass();
+                    canAttackTargetDefendingPermanentClass.SetUpICardEffect($"Can attack to unsuspended Digimon", CanUseCondition1, card);
+                    canAttackTargetDefendingPermanentClass.SetUpCanAttackTargetDefendingPermanentClass(attackerCondition: PermanentCondition, defenderCondition: DefenderCondition, cardEffectCondition: CardEffectCondition);
+                    card.Owner.UntilOpponentTurnEndEffects.Add((_timing) => canAttackTargetDefendingPermanentClass);
+
+                    bool CanUseCondition1(Hashtable hashtable)
                     {
-                        return "[Your Turn] All of your Digimon with [Sistermon] in their names or the [Royal Knight] trait gain <Piercing> and can also attack your opponent's unsuspended Digimon."
+                        return true;
+                    }
+
+                    bool DefenderCondition(Permanent permanent)
+                    {
+                        if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                        {
+                            if (!permanent.IsSuspended)
+                            {
+                                return true;
+                            }
+                        }
+
+                        return false;
+                    }
+
+                    bool CardEffectCondition(ICardEffect cardEffect)
+                    {
+                        return true;
                     }
 
                     bool CanUseCondition(Hashtable hashtable)
                     {
-                        if (CardEffectCommons.IsExistOnBattleArea(card))
+                        if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                         {
                             if (CardEffectCommons.IsOpponentTurn(card))
                             {
@@ -261,7 +282,18 @@ namespace DCGO.CardEffects.BT20
                     {
                         if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                         {
-                            if (permanent.DigivolutionCards.Count((card) => card.ContainsCardName("Sistermon") || card.HasRoyalKnightTraits) >= 1)
+                            if (permanent.TopCard.ContainsCardName("Sistermon") || permanent.TopCard.HasRoyalKnightTraits)
+                                return true;
+                        }
+
+                        return false;
+                    }
+
+                    bool CardSourceCondition(CardSource cardSource)
+                    {
+                        if (PermanentCondition(cardSource.PermanentOfThisCard()))
+                        {
+                            if (cardSource == cardSource.PermanentOfThisCard().TopCard)
                             {
                                 return true;
                             }
@@ -270,67 +302,64 @@ namespace DCGO.CardEffects.BT20
                         return false;
                     }
 
-                    IEnumerator ActivateCoroutine (Hashtable hashtable)
+                    List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming _timing)
                     {
-
-                        List<Permanent> permanents = card.Owner.GetBattleAreaDigimons();
-
-                        if (permanents.Count >= 1)
+                        if (_timing == EffectTiming.None)
                         {
-                            foreach (Permanent permanent in permanents)
+                            bool Condition()
                             {
-                                yield return CardEffectCommons.GainPierce(targetPermanent: permanent, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass, true);
-                            }
-                        }
-
-                        CanAttackTargetDefendingPermanentClass canAttackTargetDefendingPermanentClass = new CanAttackTargetDefendingPermanentClass();
-                        canAttackTargetDefendingPermanentClass.SetUpICardEffect($"Can attack to unsuspended Digimon", CanUseCondition1, card);
-                        canAttackTargetDefendingPermanentClass.SetUpCanAttackTargetDefendingPermanentClass(attackerCondition: PermanentCondition, defenderCondition: DefenderCondition, cardEffectCondition: CardEffectCondition);
-                        card.Owner.UntilOpponentTurnEndEffects.Add((_timing) => canAttackTargetDefendingPermanentClass);
-
-                        bool CanUseCondition1(Hashtable hashtable)
-                        {
-                            return true;
-                        }
-
-                        bool DefenderCondition(Permanent permanent)
-                        {
-                            if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                            {
-                                if (!permanent.IsSuspended)
-                                {
-                                    return true;
-                                }
+                                return CardSourceCondition(cardSource);
                             }
 
-                            return false;
+                            cardEffects.Add(CardEffectFactory.PierceSelfEffect(isInheritedEffect: false, card: card, condition: Condition));
+
                         }
 
-                        bool CardEffectCondition(ICardEffect cardEffect)
-                        {
-                            return true;
-                        }
+                        return cardEffects;
                     }
-
-                    
                 }
                 #endregion
+
 
                 #region Inherit
                 {
-                    ActivateClass activateClass = new ActivateClass();
-                    activateClass.SetUpICardEffect("Select digimon to gain piercing and can attack unsuspended digimon", CanUseCondition, card);
-                    activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
-                    cardEffects.Add(activateClass);
+                    AddSkillClass addSkillClass = new AddSkillClass();
+                    addSkillClass.SetUpICardEffect("While this Digimon is [JesmonGX], all of you Digimon gain <Piercing> and can also attack your opponent's unsuspended Digimon.", CanUseCondition, card);
+                    addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
+                    cardEffects.Add(addSkillClass);
 
-                    String EffectDiscription()
+                    CanAttackTargetDefendingPermanentClass canAttackTargetDefendingPermanentClass = new CanAttackTargetDefendingPermanentClass();
+                    canAttackTargetDefendingPermanentClass.SetUpICardEffect($"Can attack to unsuspended Digimon", CanUseCondition1, card);
+                    canAttackTargetDefendingPermanentClass.SetUpCanAttackTargetDefendingPermanentClass(attackerCondition: PermanentCondition, defenderCondition: DefenderCondition, cardEffectCondition: CardEffectCondition);
+                    canAttackTargetDefendingPermanentClass.SetIsInheritedEffect(true);
+                    card.Owner.UntilOpponentTurnEndEffects.Add((_timing) => canAttackTargetDefendingPermanentClass);
+
+                    bool CanUseCondition1(Hashtable hashtable)
                     {
-                        return "[Your Turn] While this Digimon is [Jesmon GX], all of your Digimon gain <Piercing> and can also attack your opponent's unsuspended Digimon.";
+                        return true;
+                    }
+
+                    bool DefenderCondition(Permanent permanent)
+                    {
+                        if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                        {
+                            if (!permanent.IsSuspended)
+                            {
+                                return true;
+                            }
+                        }
+
+                        return false;
+                    }
+
+                    bool CardEffectCondition(ICardEffect cardEffect)
+                    {
+                        return true;
                     }
 
                     bool CanUseCondition(Hashtable hashtable)
                     {
-                        if (CardEffectCommons.IsExistOnBattleArea(card))
+                        if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                         {
                             if (CardEffectCommons.IsOpponentTurn(card))
                             {
@@ -345,7 +374,7 @@ namespace DCGO.CardEffects.BT20
                     {
                         if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                         {
-                            if (permanent.TopCard.CardNames.Contains("Jesmon GX"))
+                            if (permanent.TopCard.EqualsCardName("Jesmon GX"))
                             {
                                 return true;
                             }
@@ -354,52 +383,36 @@ namespace DCGO.CardEffects.BT20
                         return false;
                     }
 
-                    IEnumerator ActivateCoroutine(Hashtable hashtable)
+                    bool CardSourceCondition(CardSource cardSource)
                     {
-
-                        List<Permanent> permanents = card.Owner.GetBattleAreaDigimons();
-
-                        if (permanents.Count >= 1)
+                        if (PermanentCondition(cardSource.PermanentOfThisCard()))
                         {
-                            foreach (Permanent permanent in permanents)
+                            if (cardSource == cardSource.PermanentOfThisCard().TopCard)
                             {
-                                yield return CardEffectCommons.GainPierce(targetPermanent: permanent, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass, true);
+                                return true;
                             }
                         }
 
-                        CanAttackTargetDefendingPermanentClass canAttackTargetDefendingPermanentClass = new CanAttackTargetDefendingPermanentClass();
-                        canAttackTargetDefendingPermanentClass.SetUpICardEffect($"Can attack to unsuspended Digimon", CanUseCondition1, card);
-                        canAttackTargetDefendingPermanentClass.SetUpCanAttackTargetDefendingPermanentClass(attackerCondition: PermanentCondition, defenderCondition: DefenderCondition, cardEffectCondition: CardEffectCondition);
-                        card.Owner.UntilOpponentTurnEndEffects.Add((_timing) => canAttackTargetDefendingPermanentClass);
+                        return false;
+                    }
 
-                        bool CanUseCondition1(Hashtable hashtable)
+                    List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming _timing)
+                    {
+                        if (_timing == EffectTiming.None)
                         {
-                            return true;
-                        }
-
-                        bool DefenderCondition(Permanent permanent)
-                        {
-                            if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                            bool Condition()
                             {
-                                if (!permanent.IsSuspended)
-                                {
-                                    return true;
-                                }
+                                return CardSourceCondition(cardSource);
                             }
 
-                            return false;
+                            cardEffects.Add(CardEffectFactory.PierceSelfEffect(isInheritedEffect: true, card: card, condition: Condition));
                         }
 
-                        bool CardEffectCondition(ICardEffect cardEffect)
-                        {
-                            return true;
-                        }
+                        return cardEffects;
                     }
                 }
                 #endregion
-                
             }
-
             return cardEffects;
         }
     }

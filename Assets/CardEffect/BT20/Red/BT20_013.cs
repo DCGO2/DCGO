@@ -19,6 +19,7 @@ namespace DCGO.CardEffects.BT20
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play a Digimon with the cost reduced by 2", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetHashString("PlayCost_BT20_013");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription ()
@@ -28,9 +29,9 @@ namespace DCGO.CardEffects.BT20
 
                 bool CanUseCondition (Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (CardEffectCommons.CanActivateSuspendCostEffect(card))
+                        if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
                         {
                             return true;
                         }
@@ -40,9 +41,12 @@ namespace DCGO.CardEffects.BT20
 
                 bool CanSelectCardCondition (CardSource cardSource)
                 {
-                    if (cardSource.ContainsCardName ("Sistermon") || cardSource.ContainsCardName ("Gankoomon"))
+                    if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: true, cardEffect: activateClass))
                     {
-                        return true;
+                        if (cardSource.ContainsCardName("Sistermon") || cardSource.ContainsCardName("Gankoomon"))
+                        {
+                            return true;
+                        }
                     }
                     return false;
                 }
@@ -150,30 +154,26 @@ namespace DCGO.CardEffects.BT20
 
                             int maxCount = 1;
 
-                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+                            SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
-                            selectCardEffect.SetUp(
+                            selectHandEffect.SetUp(
                                 selectPlayer: card.Owner,
                                 canTargetCondition: CanSelectCardCondition,
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
                                 maxCount: maxCount,
-                                message: "Select 1 card to play.",
-                                canNoSelect: () => true,
+                                canNoSelect: true,
                                 canEndNotMax: false,
                                 isShowOpponent: true,
                                 selectCardCoroutine: SelectCardCoroutine,
                                 afterSelectCardCoroutine: null,
-                                mode: SelectCardEffect.Mode.Custom,
-                                root: SelectCardEffect.Root.Hand,
-                                customRootCardList: null,
-                                canLookReverseCard: false,
+                                mode: SelectHandEffect.Mode.Custom,
                                 cardEffect: activateClass);
 
-                            selectCardEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
-                            selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
+                            selectHandEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
+                            selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
 
-                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                            yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
 
                             IEnumerator SelectCardCoroutine(CardSource cardSource)
                             {
@@ -204,18 +204,7 @@ namespace DCGO.CardEffects.BT20
             if (timing == EffectTiming.None)
             {
                 #region Inherited
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("All Digimon gain DP", CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
-                activateClass.SetIsInheritedEffect(true);
-                cardEffects.Add(activateClass);
-
-                string EffectDiscription()
-                {
-                    return "[Your Turn] All of your Digimon get +1000 DP.";
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
+                bool Condition()
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
@@ -224,24 +213,29 @@ namespace DCGO.CardEffects.BT20
                             return true;
                         }
                     }
+
                     return false;
                 }
 
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                bool PermanentCondition(Permanent permanent)
                 {
-                    List<Permanent> permanents = card.Owner.GetBattleAreaDigimons();
-
-                    if (permanents.Count >= 1)
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        foreach (Permanent permanent in permanents)
-                        {
-                            yield return CardEffectCommons.ChangeDigimonDP(targetPermanent: permanent, changeValue: 1000, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass);
-                        }
+                        return true;
                     }
+
+                    return false;
                 }
+
+                cardEffects.Add(CardEffectFactory.ChangeDPStaticEffect(
+                    permanentCondition: PermanentCondition,
+                    changeValue: 1000,
+                    isInheritedEffect: true,
+                    card: card,
+                    condition: Condition,
+                    effectName: () => "Your Digimons gain DP +1000"));
                 #endregion
             }
-
             return cardEffects;
         }
     }

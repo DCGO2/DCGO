@@ -12,14 +12,14 @@ namespace DCGO.CardEffects.BT20
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region OnPlay WhenDigivovling
+            
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 #region <OnPlay>
                 {
                     ActivateClass activateClass = new ActivateClass();
                     activateClass.SetUpICardEffect("Play a token", CanUseCondition, card);
-                    activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                    activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                     cardEffects.Add(activateClass);
 
                     string EffectDiscription()
@@ -57,7 +57,7 @@ namespace DCGO.CardEffects.BT20
                 {
                     ActivateClass activateClass = new ActivateClass();
                     activateClass.SetUpICardEffect("Play token", CanUseCondition, card);
-                    activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                    activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                     cardEffects.Add(activateClass);
 
                     string EffectDiscription()
@@ -83,7 +83,6 @@ namespace DCGO.CardEffects.BT20
                         return false;
                     }
 
-                    //#TODO Implement token effect script
                     IEnumerator ActivateCoroutine(Hashtable hashtable)
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayAthoRenePorToken(activateClass));
@@ -91,15 +90,14 @@ namespace DCGO.CardEffects.BT20
                 }
                 #endregion
             }
-            #endregion
 
-            #region Your Turn
 
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
+                #region Your Turn
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play token", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetHashString("PlayLevel6_BT20_017");
                 cardEffects.Add(activateClass);
 
@@ -184,23 +182,12 @@ namespace DCGO.CardEffects.BT20
                             canNoSelect: false,
                             canEndNotMax: false,
                             selectPermanentCoroutine: null,
-                            afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
-                            mode: SelectPermanentEffect.Mode.Custom,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Destroy,
                             cardEffect: activateClass);
 
                         selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to delete.", "Opponent is selecting one Digimon to delete.");
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                        IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
-                        {
-                            selectedPermanents = permanents;
-                            yield return null;
-                        }
-
-
-                        yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(
-                            selectedPermanents,
-                            CardEffectCommons.CardEffectHashtable(activateClass)).Destroy());
 
                     }
 
@@ -255,9 +242,8 @@ namespace DCGO.CardEffects.BT20
 
                     }
                 }
+                #endregion
             }
-
-            #endregion
 
             return cardEffects;
         }

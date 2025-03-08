@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace DCGO.CardEffects.BT20
+namespace DCGO.CardEffects.Token
 {
     public class BT20_17_token : CEntity_Effect
     {
@@ -51,7 +51,7 @@ namespace DCGO.CardEffects.BT20
                     return false;
                 }
 
-                cardEffects.Add(CardEffectFactory.DecoySelfEffect(isInheritedEffect: false, card: card, condition: null, permanentCondition: CanSelectDecoyPermanentCondition, effectName: "Decoy ([Black])", effectDiscription: DecoyDiscription()));
+                cardEffects.Add(CardEffectFactory.DecoySelfEffect(isInheritedEffect: false, card: card, condition: null, permanentCondition: CanSelectDecoyPermanentCondition, effectName: "Decoy (Red/Black)", effectDiscription: DecoyDiscription()));
             }
 
             #endregion
