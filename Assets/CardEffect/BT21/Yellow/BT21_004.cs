@@ -21,12 +21,23 @@ namespace DCGO.CardEffects.BT21
 
                 string EffectDiscription()
                 {
-                    return "[Your Turn][Once Per Turn] When any of your yellow or red Tamers suspend, <Draw 1>.";
+                    return "[Your Turn][Once Per Turn] When any of your yellow or red Tamers suspend, <Draw 1>";
                 }
 
                 bool PermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
+                    {
+                        if (permanent.IsTamer)
+                        {
+                            if (permanent.TopCard.CardColors.Contains(CardColor.Red) || permanent.TopCard.CardColors.Contains(CardColor.Yellow))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+
+                    return false;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
