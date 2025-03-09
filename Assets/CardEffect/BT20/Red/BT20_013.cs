@@ -154,7 +154,7 @@ namespace DCGO.CardEffects.BT20
 
                             int maxCount = 1;
 
-                            SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectCardEffect>();
+                            SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
                             selectHandEffect.SetUp(
                                 selectPlayer: card.Owner,
