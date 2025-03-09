@@ -1,9 +1,13 @@
 using DCGO.CardEntities;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
+using System.Security.Policy;
 using Unity.EditorCoroutines.Editor;
 using UnityEditor;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -12,7 +16,7 @@ namespace DCGO.Tools
     public class FindMissingAAs : MonoBehaviour
     {
         static FindMissingAAs instance;
-        string baseURL = "https://raw.githubusercontent.com/TakaOtaku/Digimon-Card-App/main/src/";
+        string baseURL = "https://raw.githubusercontent.com/TakaOtaku/Digimon-Card-App/main/src/assets/";
         public List<CardData> _cardData;
 
         string debugText = "";
@@ -35,15 +39,21 @@ namespace DCGO.Tools
             {
                 foreach(AlternateArt AA in card.AAs)
                 {
-                    FindFile(AA.id.Replace("-Errata",""), card);
-                }                    
+                    string ID = AA.id.Replace("-Errata", "");
+
+                    if (FindFile(ID, card))
+                    {
+                        debugText += $"{ID}\n";
+                        matchedCount++;
+                    }
+                }
             }
 
             Debug.Log(debugText);
             Debug.Log($"COMPLETED: {matchedCount}");
         }
 
-        void FindFile(string ID, CardData data)
+        bool FindFile(string ID, CardData data)
         {
             string fileName = $"{FixCharactersInClassName($"{ID}")}.asset";
 
@@ -54,25 +64,40 @@ namespace DCGO.Tools
             string folderName_CardKind = $"{DataBase.CardKindENNameDictionary[DictionaryUtility.GetCardKind(data.cardType.Replace("-", ""), DataBase.CardKindENNameDictionary)]}";
             string folderPath = $"Assets/CardBaseEntity/{folderName_SetID}/{folderName_CardColor}/{folderName_CardKind}";
 
-            if (!Directory.Exists(folderPath))
-                return;
-
-            string filePath = $"{folderPath}/{fileName}".Trim().Replace("\t", "").Replace("\n", "").Replace("\r", "").Replace(" ", "");
-
-            CEntity_Base card = GetAsset.Load<CEntity_Base>(filePath);
-
-            if (card == null)
+            if (Directory.Exists(folderPath))
             {
-                Debug.Log($"NO ASSET FOUND: {filePath}");
-                debugText += $"{ID}\n";
-                matchedCount++;
-                return;
+                string filePath = $"{folderPath}/{fileName}".Trim().Replace("\t", "").Replace("\n", "").Replace("\r", "").Replace(" ", "");
+
+                CEntity_Base card = GetAsset.Load<CEntity_Base>(filePath);
+
+                if (card == null)
+                {
+                    return GetImage(ID);
+                }
+            }
+
+            return false;
+        }
+        bool GetImage(string ID)
+        {
+            string imgURL = $"{baseURL}images/cards/{ID}.webp";
+
+            Debug.Log(imgURL);
+            try
+            {
+                WebClient wc = new WebClient();
+                string HTMLSource = wc.DownloadString(imgURL);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
             }
         }
 
         IEnumerator GetJsonData()
         {
-            string url = baseURL + "assets/cardlists/DigimonCards.json";
+            string url = baseURL + "cardlists/DigimonCards.json";
             UnityWebRequest jsonWebRequest = UnityWebRequest.Get(url);
 
             yield return jsonWebRequest.SendWebRequest();
