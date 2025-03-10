@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace DCGO.CardEffects.Token
+namespace DCGO.CardEffects.Tokens
 {
     public class BT20_17_token : CEntity_Effect
     {

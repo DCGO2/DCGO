@@ -111,15 +111,9 @@ namespace DCGO.CardEffects.BT20
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, PermanentCondition))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleArea(card) &&
+                           CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, PermanentCondition) &&
+                           CardEffectCommons.IsOpponentTurn(card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

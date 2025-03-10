@@ -436,7 +436,7 @@ namespace DCGO.CardEffects.P
                         {
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
                                 targetPermanent: selectedPermanent, 
-                                changeValue: 5000, 
+                                changeValue: -5000, 
                                 effectDuration: EffectDuration.UntilEachTurnEnd, 
                                 activateClass: activateClass));
                         }
@@ -542,7 +542,7 @@ namespace DCGO.CardEffects.P
                         {
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
                                 targetPermanent: selectedPermanent,
-                                changeValue: 5000,
+                                changeValue: -5000,
                                 effectDuration: EffectDuration.UntilEachTurnEnd,
                                 activateClass: activateClass));
                         }

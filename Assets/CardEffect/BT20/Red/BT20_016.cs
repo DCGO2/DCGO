@@ -43,7 +43,7 @@ namespace DCGO.CardEffects.BT20
                                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
 
                                     {
-                                        if (permanent.TopCard.CardColors.Contains(CardColor.Purple))
+                                        if (permanent.TopCard.CardColors.Contains(CardColor.Red))
                                         {
                                             if (permanent.Levels_ForJogress(card).Contains(4))
                                             {
@@ -65,7 +65,7 @@ namespace DCGO.CardEffects.BT20
                                 {
                                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                                     {
-                                        if (permanent.TopCard.CardColors.Contains(CardColor.Red))
+                                        if (permanent.TopCard.CardColors.Contains(CardColor.Purple))
                                         {
                                             if (permanent.Levels_ForJogress(card).Contains(4))
                                             {

@@ -96,14 +96,14 @@ namespace DCGO.CardEffects.BT20
             {
                 #region Your Turn
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play token", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Delete 8k DP or less, Then 1 Digimon may attack.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetHashString("PlayLevel6_BT20_017");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription ()
                 {
-                    return "[Your Turn] [Once Per Turn] When any of your other Digimon are played, delete 1 of your opponent's Digimon with 8000 SP or less. Then, 1 of you Digimon may attack.";
+                    return "[Your Turn] [Once Per Turn] When any of your other Digimon are played, delete 1 of your opponent's Digimon with 8000 DP or less. Then, 1 of you Digimon may attack.";
                 }
 
                 bool PermanentCondition (Permanent permanent)

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace DCGO.CardEffects.BT20
 {
@@ -698,14 +699,14 @@ namespace DCGO.CardEffects.BT20
             {
                 #region when attacking 2
                 ActivateClass activate_class = new ActivateClass();
-                activate_class.SetUpICardEffect("Select 1 card, delete 1 card", CanUseCondition, card);
+                activate_class.SetUpICardEffect("Unsuspend, Then for every 2 [Royal Knight] traits in sources, trash opponent's top security", CanUseCondition, card);
                 activate_class.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activate_class.SetHashString("Unsuspend_BT20_021");
                 cardEffects.Add(activate_class);
 
                 string EffectDescription()
                 {
-                    return "[When Attacking] [Once per Turn] This Digimon unsuspends. Then, for every 2 [Royal Knight] trait cards in this Digimon'd digivolution cards, trash your opponent's top security card";
+                    return "[When Attacking] [Once per Turn] This Digimon unsuspends. Then, for every 2 [Royal Knight] trait cards in this Digimon's digivolution cards, trash your opponent's top security card";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -715,11 +716,7 @@ namespace DCGO.CardEffects.BT20
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        return true;
-                    }
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -728,13 +725,13 @@ namespace DCGO.CardEffects.BT20
 
                     yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { selectedPermanent }, activate_class).Unsuspend());
 
-                    int num_security_deletes = selectedPermanent.DigivolutionCards.Count((card)=>(card.HasRoyalKnightTraits)) % 2;
+                    int num_security_deletes = Mathf.FloorToInt(selectedPermanent.DigivolutionCards.Count((card)=>(card.HasRoyalKnightTraits))/2);
 
                     if (num_security_deletes > 0)
                     {
                         yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
                             player: card.Owner.Enemy,
-                            destroySecurityCount: 1,
+                            destroySecurityCount: num_security_deletes,
                             cardEffect: activate_class,
                             fromTop: true).DestroySecurity());
                     }

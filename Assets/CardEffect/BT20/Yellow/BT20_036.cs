@@ -62,7 +62,7 @@ namespace DCGO.CardEffects.BT20
                     {
                         if (CardEffectCommons.IsExistOnHand(cardSource))
                         {
-                            return true;
+                            return CardEffectCommons.HasMatchConditionPermanent(HasAccelTraitInPlay);
                         }
                     }
 
@@ -174,7 +174,7 @@ namespace DCGO.CardEffects.BT20
                 {
                     if (card.Owner.HandCards.Contains(card))
                     {
-                        ICardEffect activateClass = card.EffectList(EffectTiming.BeforePayCost).Find(cardEffect => cardEffect.EffectName == "Play Cost -5");
+                        ICardEffect activateClass = card.EffectList(EffectTiming.BeforePayCost).Find(cardEffect => cardEffect.EffectName == "Reduce the play cost by 5");
 
                         if (activateClass != null)
                         {

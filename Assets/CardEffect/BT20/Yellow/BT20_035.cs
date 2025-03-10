@@ -307,6 +307,7 @@ namespace DCGO.CardEffects.BT20
                 activateClass.SetUpICardEffect("<Recovery +1(Deck)>", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetHashString("Recover_BT20-035");
+                activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

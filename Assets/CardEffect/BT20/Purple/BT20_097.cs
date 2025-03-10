@@ -134,6 +134,13 @@ namespace DCGO.CardEffects.BT20
                     return "[All Turns] When any of your [DexDorugoramon] would leave the battle area, <Delay>.\r\n• By return 1 [Dorumon] from those Digimon's digivolution cards to the hand, you may play 1 [DeathXmon] from your trash without paying the cost.";
                 }
 
+                bool DexDorugora(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                           permanent.TopCard.EqualsCardName("DexDorugoramon") &&
+                           permanent.willBeRemoveField;
+                }
+
                 bool DexDorugoraWithSource(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
@@ -155,7 +162,7 @@ namespace DCGO.CardEffects.BT20
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, DexDorugoraWithSource) &&
+                    return CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, DexDorugora) &&
                            CardEffectCommons.CanDeclareOptionDelayEffect(card);
                 }
 
@@ -209,7 +216,7 @@ namespace DCGO.CardEffects.BT20
                                     canTargetCondition_ByPreSelecetedList: null,
                                     canEndSelectCondition: null,
                                     canNoSelect: () => false,
-                                    selectCardCoroutine: null,
+                                    selectCardCoroutine: SelectDorumonCoroutine,
                                     afterSelectCardCoroutine: null,
                                     message: "Select 1 digivolution card.",
                                     maxCount: 1,
@@ -227,7 +234,14 @@ namespace DCGO.CardEffects.BT20
 
                         yield return StartCoroutine(selectCardEffect.Activate());
 
-                        if(selectedCards.Any(source => card.Owner.HandCards.Contains(source)))
+                        IEnumerator SelectDorumonCoroutine(CardSource cardSource)
+                        {
+                            selectedCards.Add(cardSource);
+
+                            yield return null;
+                        }
+
+                        if (selectedCards.Any(source => card.Owner.HandCards.Contains(source)))
                         {
                             List<CardSource> selectedPlayedCards = new List<CardSource>();
 

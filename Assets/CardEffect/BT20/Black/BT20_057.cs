@@ -98,7 +98,7 @@ namespace DCGO.CardEffects.BT20
                                     int targetCost = 0;
 
                                     if (CardEffectCommons.HasMatchConditionPermanent(HasProperTraitInPlay))
-                                        targetCost += 5;
+                                        targetCost += 4;
 
                                     Cost -= targetCost;
                                 }
@@ -151,7 +151,7 @@ namespace DCGO.CardEffects.BT20
             if (timing == EffectTiming.None)
             {
                 ChangeCostClass changeCostClass = new ChangeCostClass();
-                changeCostClass.SetUpICardEffect("Play Cost -5", CanUseCondition, card);
+                changeCostClass.SetUpICardEffect("Play Cost -4", CanUseCondition, card);
                 changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => true, isChangePayingCost: () => true);
                 changeCostClass.SetNotShowUI(true);
                 cardEffects.Add(changeCostClass);

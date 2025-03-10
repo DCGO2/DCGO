@@ -10,146 +10,141 @@ namespace DCGO.CardEffects.BT20
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region On Play
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Delete a Digimon with 5000DP or less", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
                 {
-                    #region On Play
-                    ActivateClass activateClass = new ActivateClass();
-                    activateClass.SetUpICardEffect("Delete a Digimon with 5000DP or less", CanUseCondition, card);
-                    activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-                    cardEffects.Add(activateClass);
-
-                    string EffectDiscription()
-                    {
-                        return "[On Play] Delete 1 of your opponent's Digimon with 5000DP or less.";
-                    }
-
-                    bool CanUseCondition(Hashtable hashtable)
-                    {
-                        return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-                    }
-
-                    bool CanActivateCondition(Hashtable hashtable)
-                    {
-                        if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                        {
-                            if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermanent))
-                            {
-                                return true;
-                            }
-                        }
-                        return false;
-                    }
-
-                    bool CanSelectPermanent(Permanent permanent)
-                    {
-                        return permanent.DP <= 5000;
-                    }
-
-                    IEnumerator ActivateCoroutine(Hashtable hashtable)
-                    {
-                        List<Permanent> selectedPermanents = new List<Permanent>();
-
-                        int maxCount = 1;
-
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner.Enemy,
-                            canTargetCondition: CanSelectPermanent,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: false,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: null,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Destroy,
-                            cardEffect: activateClass
-                            );
-
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 card to delete.", "The opponent is selecting 1 card to delete.");
-
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                    }
-                    #endregion
+                    return "[On Play] Delete 1 of your opponent's Digimon with 5000DP or less.";
                 }
+
+                bool CanUseCondition(Hashtable hashtable)
                 {
-                    #region On Digivolve
-                    ActivateClass activateClass = new ActivateClass();
-                    activateClass.SetUpICardEffect("Delete a Digimon with 5000DP or less", CanUseCondition, card);
-                    activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-                    cardEffects.Add(activateClass);
+                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                }
 
-                    string EffectDiscription()
-                    {
-                        return "[On Digivolve] Delete 1 of your opponent's Digimon with 5000DP or less.";
-                    }
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanent);
+                }
 
-                    bool CanUseCondition(Hashtable hashtable)
-                    {
-                        return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
-                    }
+                bool CanSelectPermanent(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
+                           permanent.DP <= card.Owner.MaxDP_DeleteEffect(5000, activateClass);
+                }
 
-                    bool CanActivateCondition(Hashtable hashtable)
-                    {
-                        if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                        {
-                            if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermanent))
-                            {
-                                return true;
-                            }
-                        }
-                        return false;
-                    }
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                    bool CanSelectPermanent(Permanent permanent)
-                    {
-                        return permanent.DP <= 5000;
-                    }
+                    selectPermanentEffect.SetUp(
+                        selectPlayer: card.Owner.Enemy,
+                        canTargetCondition: CanSelectPermanent,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: false,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: null,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Destroy,
+                        cardEffect: activateClass
+                        );
 
-                    IEnumerator ActivateCoroutine(Hashtable hashtable)
-                    {
-                        List<Permanent> selectedPermanents = new List<Permanent>();
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 card to delete.", "The opponent is selecting 1 card to delete.");
 
-                        int maxCount = 1;
-
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner.Enemy,
-                            canTargetCondition: CanSelectPermanent,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: false,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: null,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Destroy,
-                            cardEffect: activateClass
-                            );
-
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 card to delete.", "The opponent is selecting 1 card to delete.");
-
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                    }
-
-                    #endregion
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                 }
             }
+            #endregion
 
+            #region When Digivolving
+            if (timing == EffectTiming.OnEnterFieldAnyone)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Delete a Digimon with 5000DP or less", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[When Digivolving] Delete 1 of your opponent's Digimon with 5000DP or less.";
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanent);
+                }
+
+                bool CanSelectPermanent(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
+                           permanent.DP <= card.Owner.MaxDP_DeleteEffect(5000, activateClass);
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                    selectPermanentEffect.SetUp(
+                        selectPlayer: card.Owner.Enemy,
+                        canTargetCondition: CanSelectPermanent,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: false,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: null,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Destroy,
+                        cardEffect: activateClass
+                        );
+
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 card to delete.", "The opponent is selecting 1 card to delete.");
+
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                }
+            }
+            #endregion
+
+            #region End of Turn
             if (timing == EffectTiming.OnEndTurn)
             {
-                #region End of Turn
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Suspend a Digimon, then Digivolve this Digimon into a Digimon card with [Jesmon] in its name", CanUseCondition, card);
+                activateClass.SetUpICardEffect("By suspending a Digimon, this Digimon may digivolve into a Digimon card with [Jesmon] in its name", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
                     return "[End of Your Turn] By suspending 1 of your other Digimon, this Digiomon may digivolve into a Digimon card with [Jesmon] in its name in the hand without paying the cost.";
+                }
+
+                bool CanSelectPermanentToSuspend(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                           CardEffectCommons.CanActivateSuspendCostEffect(permanent.TopCard) &&
+                           (permanent != card.PermanentOfThisCard());
+                }
+
+                bool CanSelectCardToDigivolveInto(CardSource cardSource)
+                {
+                    return cardSource.ContainsCardName("Jesmon") &&
+                           cardSource.CanPlayCardTargetFrame(card.PermanentOfThisCard().PermanentFrame, false, activateClass);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -174,27 +169,6 @@ namespace DCGO.CardEffects.BT20
                             {
                                 return true;
                             }
-                        }
-                    }
-                    return false;
-                }
-
-                bool CanSelectCardToDigivolveInto(CardSource cardSource)
-                {
-                    if (cardSource.ContainsCardName("Jesmon"))
-                    {
-                        return true;
-                    }
-                    return false;
-                }
-
-                bool CanSelectPermanentToSuspend (Permanent permanent)
-                {
-                    if (permanent.CanSuspend)
-                    {
-                        if (permanent != card.PermanentOfThisCard())
-                        {
-                            return true;
                         }
                     }
                     return false;
@@ -248,18 +222,19 @@ namespace DCGO.CardEffects.BT20
                             successProcess: null));
                     }
                 }
-                #endregion
             }
+            #endregion
 
+            #region Your Turn - ESS
             if (timing == EffectTiming.None)
             {
-                #region inherited
                 bool CanUseCondition()
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card) && CardEffectCommons.IsOwnerTurn(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && 
+                           CardEffectCommons.IsOwnerTurn(card);
                 }
 
-                bool PermanentCondition (Permanent permanent)
+                bool PermanentCondition(Permanent permanent)
                 {
                     if (permanent == card.PermanentOfThisCard())
                     {
@@ -272,9 +247,9 @@ namespace DCGO.CardEffects.BT20
                     return false;
                 }
 
-                cardEffects.Add(CardEffectFactory.RebootStaticEffect(permanentCondition: PermanentCondition, isInheritedEffect: true, card: card, condition: CanUseCondition));
-                #endregion
+                cardEffects.Add(CardEffectFactory.AllianceStaticEffect(permanentCondition: PermanentCondition, isInheritedEffect: true, card: card, condition: CanUseCondition));
             }
+            #endregion
 
             return cardEffects;
         }

@@ -293,6 +293,7 @@ namespace DCGO.CardEffects.BT20
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                           CardEffectCommons.CanActivateSuspendCostEffect(card) &&
                            (permanent.TopCard.HasText("Dracomon") || permanent.TopCard.HasText("Examon"));
                 }
 

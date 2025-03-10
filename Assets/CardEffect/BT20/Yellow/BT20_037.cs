@@ -76,7 +76,7 @@ namespace DCGO.CardEffects.BT20
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("For each level 6 in sources, suspend 1 Digimon, Then Opponent's Digimon/Tamers can activate [On Play] or unsuspend", CanUseCondition, card);
+                activateClass.SetUpICardEffect("For each level 6 in sources, suspend 1 Digimon and memory +1, Then Opponent's Digimon/Tamers can activate [On Play] or unsuspend", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -145,7 +145,7 @@ namespace DCGO.CardEffects.BT20
                     DisableEffectClass invalidationClass = new DisableEffectClass();
                     invalidationClass.SetUpICardEffect("Ignore [On Play] Effect of opponent's Digimon/Tamers", CanUseCondition, card);
                     invalidationClass.SetUpDisableEffectClass(DisableCondition: InvalidateCondition);
-                    card.Owner.Enemy.UntilOpponentTurnEndEffects.Add((_timing) => invalidationClass);
+                    card.Owner.UntilOpponentTurnEndEffects.Add((_timing) => invalidationClass);
 
                     bool CanUseCondition(Hashtable hashtable)
                     {
