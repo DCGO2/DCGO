@@ -15,13 +15,13 @@ namespace DCGO.CardEffects.BT21
             #region Alt digivolution cost
             if (timing == EffectTiming.None)
             {
-                bool permanentCondition(Permanent permanent)
+                bool PermanentCondition(Permanent permanent)
                 {
                     return permanent.TopCard.EqualsCardName("Gammamon");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
-                    permanentCondition: permanentCondition, 
+                    permanentCondition: PermanentCondition, 
                     digivolutionCost: 2, 
                     ignoreDigivolutionRequirement: false, 
                     card: card, 
@@ -37,17 +37,17 @@ namespace DCGO.CardEffects.BT21
             #endregion
 
             #region On-play/When-digivolving shared
-            bool hasGammamonNameDigimon(CardSource card)
+            bool HasGammamonNameDigimon(CardSource card)
             {
                 return card.IsDigimon && card.ContainsCardName("Gammamon");
             }
 
-            bool canActivateShared(Hashtable hashtable)
+            bool CanActivateShared(Hashtable hashtable)
             {
                 if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                 {
-                    return CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, hasGammamonNameDigimon)
-                        || CardEffectCommons.HasMatchConditionOwnersHand(card, hasGammamonNameDigimon);
+                    return CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, HasGammamonNameDigimon)
+                        || CardEffectCommons.HasMatchConditionOwnersHand(card, HasGammamonNameDigimon);
                 }
                 return false;
             }
@@ -57,14 +57,16 @@ namespace DCGO.CardEffects.BT21
             if(timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Tuck gammamon to delete", canUseEffect, card);
-                activateClass.SetUpActivateClass(canActivateShared, ActivateCoroutine, -1, true, effectDescription());
-                string effectDescription()
+                activateClass.SetUpICardEffect("Tuck gammamon to delete", CanUseEffect, card);
+                activateClass.SetUpActivateClass(CanActivateShared, ActivateCoroutine, -1, true, EffectDescription());
+                cardEffects.Add(activateClass);
+
+                string EffectDescription()
                 {
                     return "[On Play] By placing 1 Digimon card with [Gammamon] in its name from your hand or trash as this Digimon's bottom digivolution card, delete 1 of your opponent's level 4 or lower Digimon.";
                 }
 
-                bool canUseEffect(Hashtable hashtable)
+                bool CanUseEffect(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
@@ -84,8 +86,8 @@ namespace DCGO.CardEffects.BT21
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    bool canSelectHand = card.Owner.HandCards.Count(hasGammamonNameDigimon) >= 1;
-                    bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, hasGammamonNameDigimon);
+                    bool canSelectHand = card.Owner.HandCards.Count(HasGammamonNameDigimon) >= 1;
+                    bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, HasGammamonNameDigimon);
 
                     if (canSelectHand || canSelectTrash)
                     {
@@ -129,7 +131,7 @@ namespace DCGO.CardEffects.BT21
 
                             selectHandEffect.SetUp(
                                 selectPlayer: card.Owner,
-                                canTargetCondition: hasGammamonNameDigimon,
+                                canTargetCondition: HasGammamonNameDigimon,
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
                                 maxCount: maxCount,
@@ -154,7 +156,7 @@ namespace DCGO.CardEffects.BT21
                             SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                             selectCardEffect.SetUp(
-                                canTargetCondition: hasGammamonNameDigimon,
+                                canTargetCondition: HasGammamonNameDigimon,
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
                                 canNoSelect: () => true,
@@ -212,14 +214,16 @@ namespace DCGO.CardEffects.BT21
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Tuck gammamon to delete", canUseEffect, card);
-                activateClass.SetUpActivateClass(canActivateShared, ActivateCoroutine, -1, true, effectDescription());
-                string effectDescription()
+                activateClass.SetUpICardEffect("Tuck gammamon to delete", CanUseEffect, card);
+                activateClass.SetUpActivateClass(CanActivateShared, ActivateCoroutine, -1, true, EffectDescription());
+                cardEffects.Add(activateClass);
+
+                string EffectDescription()
                 {
                     return "[When Digivolving] By placing 1 Digimon card with [Gammamon] in its name from your hand or trash as this Digimon's bottom digivolution card, delete 1 of your opponent's level 4 or lower Digimon.";
                 }
 
-                bool canUseEffect(Hashtable hashtable)
+                bool CanUseEffect(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
@@ -239,8 +243,8 @@ namespace DCGO.CardEffects.BT21
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    bool canSelectHand = card.Owner.HandCards.Count(hasGammamonNameDigimon) >= 1;
-                    bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, hasGammamonNameDigimon);
+                    bool canSelectHand = card.Owner.HandCards.Count(HasGammamonNameDigimon) >= 1;
+                    bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, HasGammamonNameDigimon);
 
                     if (canSelectHand || canSelectTrash)
                     {
@@ -284,7 +288,7 @@ namespace DCGO.CardEffects.BT21
 
                             selectHandEffect.SetUp(
                                 selectPlayer: card.Owner,
-                                canTargetCondition: hasGammamonNameDigimon,
+                                canTargetCondition: HasGammamonNameDigimon,
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
                                 maxCount: maxCount,
@@ -309,7 +313,7 @@ namespace DCGO.CardEffects.BT21
                             SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                             selectCardEffect.SetUp(
-                                canTargetCondition: hasGammamonNameDigimon,
+                                canTargetCondition: HasGammamonNameDigimon,
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
                                 canNoSelect: () => true,

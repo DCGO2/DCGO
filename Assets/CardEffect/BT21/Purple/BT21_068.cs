@@ -14,13 +14,13 @@ namespace DCGO.CardEffects.BT21
             #region alternative digivolution requirement
             if (timing == EffectTiming.None)
             {
-                bool permanentCondition(Permanent permanent)
+                bool PermanentCondition(Permanent permanent)
                 {
                     return permanent.Level == 3 && permanent.TopCard.ContainsCardName("Guilmon");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
-                    permanentCondition: permanentCondition, 
+                    permanentCondition: PermanentCondition, 
                     digivolutionCost: 2, 
                     ignoreDigivolutionRequirement: false, 
                     card: card, 
@@ -39,20 +39,21 @@ namespace DCGO.CardEffects.BT21
             if(timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Delete 3k or mill 2", canUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateConditionShared, activateCoroutine, -1, false, effectDescription());
+                activateClass.SetUpICardEffect("Delete 3k or mill 2", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, false, EffectDescription());
+                cardEffects.Add(activateClass);
 
-                string effectDescription()
+                string EffectDescription()
                 {
                     return "[On Play] Delete 1 of your opponent's Digimon with 4000 DP or less. If this effect didn't delete, trash the top 2 cards of your deck.";
                 }
 
-                bool canUseCondition(Hashtable hashtable)
+                bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
 
-                bool canTarget(Permanent permanent)
+                bool CanTarget(Permanent permanent)
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                     {
@@ -61,20 +62,20 @@ namespace DCGO.CardEffects.BT21
                     return false;
                 }
 
-                IEnumerator activateCoroutine(Hashtable _hashtable)
+                IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
                     List<Permanent> deleteTargetPermanents = new List<Permanent>();
 
-                    if (CardEffectCommons.HasMatchConditionPermanent(canTarget))
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanTarget))
                     {
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(canTarget));
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanTarget));
 
                         SelectPermanentEffect selectPermanentEffect =
                             GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: canTarget,
+                            canTargetCondition: CanTarget,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,
@@ -113,20 +114,21 @@ namespace DCGO.CardEffects.BT21
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Delete 3k or mill 2", canUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateConditionShared, activateCoroutine, -1, false, effectDescription());
+                activateClass.SetUpICardEffect("Delete 3k or mill 2", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, false, EffectDescription());
+                cardEffects.Add(activateClass);
 
-                string effectDescription()
+                string EffectDescription()
                 {
                     return "[On Play] Delete 1 of your opponent's Digimon with 4000 DP or less. If this effect didn't delete, trash the top 2 cards of your deck.";
                 }
 
-                bool canUseCondition(Hashtable hashtable)
+                bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
 
-                bool canTarget(Permanent permanent)
+                bool CanTarget(Permanent permanent)
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                     {
@@ -135,20 +137,20 @@ namespace DCGO.CardEffects.BT21
                     return false;
                 }
 
-                IEnumerator activateCoroutine(Hashtable _hashtable)
+                IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
                     List<Permanent> deleteTargetPermanents = new List<Permanent>();
 
-                    if (CardEffectCommons.HasMatchConditionPermanent(canTarget))
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanTarget))
                     {
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(canTarget));
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanTarget));
 
                         SelectPermanentEffect selectPermanentEffect =
                             GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: canTarget,
+                            canTargetCondition: CanTarget,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,
