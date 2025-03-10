@@ -143,6 +143,7 @@ namespace DCGO.CardEffects.BT21
                     }
                 }
             }
+            #endregion
 
 
             #region Your Turn
