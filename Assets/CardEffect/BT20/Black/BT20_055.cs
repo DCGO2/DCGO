@@ -261,12 +261,14 @@ namespace DCGO.CardEffects.BT20
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanTriggerOnAttack(hashtable, card))
+                    if (CardEffectCommons.IsOwnerTurn(card))
                     {
-                        if (CardEffectCommons.IsOwnerTurn(card))
+                        if(CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(CardEffectCommons.GetAttackerFromHashtable(hashtable), card))
                         {
                             if (!CardEffectCommons.GetCardFromHashtable(hashtable).IsFlipped)
-                                return true;
+                            {
+                                return card.PermanentOfThisCard().DigivolutionCards.Count > 0;
+                            }
                         }
                     }
 

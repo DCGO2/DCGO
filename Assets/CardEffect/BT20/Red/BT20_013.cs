@@ -13,9 +13,10 @@ namespace DCGO.CardEffects.BT20
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region Main Once Per Turn
             if (timing == EffectTiming.OnDeclaration)
             {
-                #region Main Once Per Turn
+                
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play a Digimon with the cost reduced by 2", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, 1, false, EffectDiscription());
@@ -128,7 +129,7 @@ namespace DCGO.CardEffects.BT20
 
                         bool CardSourceCondition(CardSource cardSource)
                         {
-                            if (cardSource.HasPlayCost)
+                            if (CanSelectCardCondition(cardSource))
                             {
                                 return true;
                             }
@@ -198,12 +199,12 @@ namespace DCGO.CardEffects.BT20
                         #endregion
                     }
                 }
-                #endregion
             }
+            #endregion
 
+            #region ESS
             if (timing == EffectTiming.None)
             {
-                #region Inherited
                 bool Condition()
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
@@ -234,8 +235,9 @@ namespace DCGO.CardEffects.BT20
                     card: card,
                     condition: Condition,
                     effectName: () => "Your Digimons gain DP +1000"));
-                #endregion
             }
+            #endregion
+
             return cardEffects;
         }
     }

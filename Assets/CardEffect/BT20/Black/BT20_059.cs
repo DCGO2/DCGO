@@ -178,15 +178,7 @@ namespace DCGO.CardEffects.BT20
 
                 bool CardSourceCondition(CardSource cardSource)
                 {
-                    if (PermanentCondition(cardSource.PermanentOfThisCard()))
-                    {
-                        if (cardSource == cardSource.PermanentOfThisCard().TopCard)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return PermanentCondition(cardSource.PermanentOfThisCard());
                 }
 
                 List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming _timing)

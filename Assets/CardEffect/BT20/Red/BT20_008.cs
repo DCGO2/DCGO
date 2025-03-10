@@ -10,9 +10,9 @@ namespace DCGO.CardEffects.BT20
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region start of main phase
             if (timing == EffectTiming.OnStartMainPhase)
             {
-                #region start of main phase
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash a card, draw a card, gain 1 memory", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
@@ -88,49 +88,45 @@ namespace DCGO.CardEffects.BT20
                         yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
                     }
                 }
-                #endregion
             }
-            
+            #endregion
+
+            #region ESS
             if (timing == EffectTiming.None)
             {
-                #region inherited
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("All Digimon gain DP", CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
-                activateClass.SetIsInheritedEffect(true);
-                cardEffects.Add(activateClass);
-
-                string EffectDiscription ()
+                bool Condition()
                 {
-                    return "[Your Turn] All of your Digimon get +1000 DP.";
-                }
-
-                bool CanUseCondition (Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea (card))
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
                         if (CardEffectCommons.IsOwnerTurn(card))
                         {
                             return true;
                         }
                     }
+
                     return false;
                 }
 
-                IEnumerator ActivateCoroutine (Hashtable hashtable)
+                bool PermanentCondition(Permanent permanent)
                 {
-                    List<Permanent> permanents = card.Owner.GetBattleAreaDigimons();
-
-                    if (permanents.Count >= 1)
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        foreach (Permanent permanent in permanents)
-                        {
-                            yield return CardEffectCommons.ChangeDigimonDP(targetPermanent: permanent, changeValue: 1000, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass);
-                        }
+                        return true;
                     }
+
+                    return false;
                 }
-                #endregion
+
+                cardEffects.Add(CardEffectFactory.ChangeDPStaticEffect(
+                    permanentCondition: PermanentCondition,
+                    changeValue: 1000,
+                    isInheritedEffect: false,
+                    card: card,
+                    condition: Condition,
+                    effectName: () => "Your Digimons gain DP +1000"));
             }
+            #endregion
+
             return cardEffects;
         }
     }

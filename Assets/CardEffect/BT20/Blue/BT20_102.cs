@@ -387,7 +387,7 @@ namespace DCGO.CardEffects.BT20
                                 effectDuration: EffectDuration.UntilEachTurnEnd,
                                 activateClass: activateClass));
 
-                            if (selectedPermanent.CanAttack(activateClass))
+                            if (selectedPermanent.CanAttack(activateClass, true))
                             {
                                 SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
 

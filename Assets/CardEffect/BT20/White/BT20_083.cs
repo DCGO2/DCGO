@@ -187,7 +187,7 @@ namespace DCGO.CardEffects.BT20
                 {
                     if (CardEffectCommons.IsExistOnBreedingArea(card))
                     {
-                        if (CardEffectCommons.CanActivateSuspendCostEffect(card))
+                        if (CardEffectCommons.CanActivateSuspendCostEffect(card, true))
                         {
                             return true;
                         }

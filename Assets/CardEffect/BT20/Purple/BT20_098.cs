@@ -86,7 +86,7 @@ namespace DCGO.CardEffects.BT20
 
                             int sumLevel = cardSources.Sum(source => source.Level);
 
-                            if (sumLevel >= maxLevel)
+                            if (sumLevel != maxLevel)
                             {
                                 return false;
                             }
@@ -100,7 +100,7 @@ namespace DCGO.CardEffects.BT20
 
                             sumLevel += cardSource.Level;
 
-                            if (sumLevel >= maxLevel)
+                            if (sumLevel > maxLevel)
                             {
                                 return false;
                             }

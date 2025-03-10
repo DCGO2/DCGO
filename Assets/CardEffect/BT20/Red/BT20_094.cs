@@ -182,7 +182,7 @@ namespace DCGO.CardEffects.BT20
 
             #region Delay Effect
             
-            if (timing == EffectTiming.OnDeclaration)
+            if (timing == EffectTiming.OnLoseSecurity)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect(
@@ -194,9 +194,7 @@ namespace DCGO.CardEffects.BT20
                 
                 string EffectDescription()
                 {
-                    return
-                        "You may play 1 [Imperialdramon: Dragon Mode] from any of your [Imperialdramon: Fighter Mode]'s digivolution cards without paying the cost.";
-                        
+                    return"[All Turns] When your opponent's security stack is removed from, <Delay>.\r\n• You may play 1 [Imperialdramon: Dragon Mode] from any of your [Imperialdramon: Fighter Mode]'s digivolution cards without paying the cost.";
                 }
                 
                 bool IsOwnerPermanentCondition(Permanent permanent)
