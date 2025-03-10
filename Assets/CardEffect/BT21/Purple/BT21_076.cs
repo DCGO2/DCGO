@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
+//BT21-076 Wargrowlmon
 namespace DCGO.CardEffects.BT21
 {
     public class BT21_076 : CEntity_Effect
@@ -140,11 +141,11 @@ namespace DCGO.CardEffects.BT21
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash the top card of your opponent's security stack.", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[On Deletion] Trash the top card of your opponent's security stack.";
                 }
