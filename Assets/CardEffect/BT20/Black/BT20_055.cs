@@ -261,16 +261,22 @@ namespace DCGO.CardEffects.BT20
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsOwnerTurn(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if(CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(CardEffectCommons.GetAttackerFromHashtable(hashtable), card))
+                        if (CardEffectCommons.IsOwnerTurn(card))
                         {
-                            if (!CardEffectCommons.GetCardFromHashtable(hashtable).IsFlipped)
+                            if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(CardEffectCommons.GetAttackerFromHashtable(hashtable), card))
                             {
-                                return card.PermanentOfThisCard().DigivolutionCards.Count > 0;
+                                if (!CardEffectCommons.GetCardFromHashtable(hashtable).IsFlipped)
+                                {
+                                    UnityEngine.Debug.Log(card);
+                                    UnityEngine.Debug.Log(card.PermanentOfThisCard());
+                                    UnityEngine.Debug.Log(card.PermanentOfThisCard().DigivolutionCards);
+                                    return card.PermanentOfThisCard().DigivolutionCards.Count > 0;
+                                }
                             }
                         }
-                    }
+                    }                    
 
                     return false;
                 }

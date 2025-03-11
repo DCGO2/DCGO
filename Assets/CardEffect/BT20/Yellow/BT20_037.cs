@@ -76,8 +76,8 @@ namespace DCGO.CardEffects.BT20
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("For each level 6 in sources, suspend 1 Digimon and memory +1, Then Opponent's Digimon/Tamers can activate [On Play] or unsuspend", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpICardEffect("For each level 6 in sources, suspend 1 Digimon and memory +1, Then Opponent's Digimon/Tamers can't activate [On Play] or unsuspend", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

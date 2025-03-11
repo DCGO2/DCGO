@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http.Headers;
 
 namespace DCGO.CardEffects.BT20
 {
@@ -11,6 +10,30 @@ namespace DCGO.CardEffects.BT20
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
+
+            #region Alternate Digivolution Requirement
+
+            if (timing == EffectTiming.None)
+            {
+                bool PermanentCondition(Permanent targetPermanent)
+                {
+
+                    return targetPermanent.TopCard.EqualsCardName("Jesmon");
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 1, ignoreDigivolutionRequirement: false, card: card, condition: null));
+            }
+
+            #endregion
+
+            #region Alliance
+
+            if (timing == EffectTiming.OnAllyAttack)
+            {
+                cardEffects.Add(CardEffectFactory.AllianceSelfEffect(isInheritedEffect: false, card: card, condition: null));
+            }
+
+            #endregion
 
             #region When Digivolving
             if (timing == EffectTiming.OnEnterFieldAnyone)
@@ -23,7 +46,7 @@ namespace DCGO.CardEffects.BT20
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] if [Jesmon]/[X Antibody] is in this Digimon's digivoulution cards, for the turn, 1 of your Digimon isn't affected by your opponent's effects. Then, 1 of your Digimon may attack.";
+                    return "[When Digivolving] If [Jesmon] or [X Antibody] is in this Digimon's digivolution cards, for the turn, 1 of your Digimon isn't affected by your opponent's effects. Then, 1 of your Digimon may attack.";
                 }
 
                 bool SourceCondition(CardSource source)
@@ -178,7 +201,7 @@ namespace DCGO.CardEffects.BT20
                                 mode: SelectPermanentEffect.Mode.Custom,
                                 cardEffect: activateClass);
 
-                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that be immune from your opponent's effects.", "Opponent is selecting on Digimon that will be immune from your effects.");
+                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will attack.", "Opponent is selecting 1 Digimon that will attack.");
                             yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                         }
                         #endregion
@@ -269,7 +292,7 @@ namespace DCGO.CardEffects.BT20
             }
             #endregion
 
-            #region Inherit
+            #region Your Turn - ESS
             if(timing == EffectTiming.None)
             {
                 AddSkillClass addSkillClass = new AddSkillClass();

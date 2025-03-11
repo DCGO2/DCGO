@@ -10,7 +10,7 @@ namespace DCGO.CardEffects.BT20
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region start of main phase
+            #region Start of Your Main Phase
             if (timing == EffectTiming.OnStartMainPhase)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -25,12 +25,13 @@ namespace DCGO.CardEffects.BT20
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return true;
+                    return CardEffectCommons.IsOwnerTurn(card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelect);
                 }
 
                 bool CanSelect(CardSource cardSource)
@@ -49,15 +50,13 @@ namespace DCGO.CardEffects.BT20
                 {
                     SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
                     bool discarded = false;
-                    if (card.Owner.HandCards.Count(CanSelect) >= 1)
-                    {
-                        int maxCount = 1;
-                        selectHandEffect.SetUp(
+
+                    selectHandEffect.SetUp(
                             selectPlayer: card.Owner,
                             canTargetCondition: CanSelect,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: maxCount,
+                            maxCount: 1,
                             canNoSelect: true,
                             canEndNotMax: false,
                             isShowOpponent: true,
@@ -67,20 +66,19 @@ namespace DCGO.CardEffects.BT20
                             cardEffect: activateClass);
 
 
-                        IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
+                    IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
+                    {
+                        if (cardSources.Count == 1)
                         {
-                            if (cardSources.Count == 1)
-                            {
-                                discarded = true;
-                                yield return null;
-                            }
+                            discarded = true;
+                            yield return null;
                         }
-
-                        selectHandEffect.SetUpCustomMessage("Select 1 card to discard.", "The opponent is selecting 1 card to discard.");
-                        selectHandEffect.SetUpCustomMessage_ShowCard("Discarded Card");
-
-                        yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
                     }
+
+                    selectHandEffect.SetUpCustomMessage("Select 1 card to discard.", "The opponent is selecting 1 card to discard.");
+                    selectHandEffect.SetUpCustomMessage_ShowCard("Discarded Card");
+
+                    yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
 
                     if (discarded)
                     {
@@ -120,7 +118,7 @@ namespace DCGO.CardEffects.BT20
                 cardEffects.Add(CardEffectFactory.ChangeDPStaticEffect(
                     permanentCondition: PermanentCondition,
                     changeValue: 1000,
-                    isInheritedEffect: false,
+                    isInheritedEffect: true,
                     card: card,
                     condition: Condition,
                     effectName: () => "Your Digimons gain DP +1000"));

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DCGO.CardEffects.Tokens
 {
-    public class BT20_17_token : CEntity_Effect
+    public class BT20_017_token : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
