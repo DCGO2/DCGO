@@ -1530,7 +1530,7 @@ public class CardSource : MonoBehaviour
     {
         get
         {
-            return CardTraits.Equals("Royal Knight");
+            return EqualsTraits("Royal Knight");
         }
     }
     #endregion

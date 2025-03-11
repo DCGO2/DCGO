@@ -241,7 +241,7 @@ namespace DCGO.CardEffects.BT20
                             yield return null;
                         }
 
-                        if (selectedCards.Any(source => card.Owner.HandCards.Contains(source)))
+                        if (selectedCards.Count > 0)
                         {
                             List<CardSource> selectedPlayedCards = new List<CardSource>();
 
@@ -264,7 +264,6 @@ namespace DCGO.CardEffects.BT20
                                         cardEffect: activateClass);
 
                             selectCardEffect.SetUpCustomMessage("Select 1 [DeathXmon] to play.", "The opponent is selecting 1 [DeathXmon] to play.");
-                            selectCardEffect.SetUpCustomMessage_ShowCard("Digivolution Card");
 
                             yield return StartCoroutine(selectCardEffect.Activate());
 

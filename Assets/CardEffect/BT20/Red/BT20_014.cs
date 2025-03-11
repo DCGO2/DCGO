@@ -226,7 +226,7 @@ namespace DCGO.CardEffects.BT20
             #endregion
 
             #region Your Turn - ESS
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnAllyAttack)
             {
                 bool CanUseCondition()
                 {

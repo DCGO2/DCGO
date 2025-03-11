@@ -1340,6 +1340,10 @@ public static class RandomUtility
 
             // Swap elements at indices i and k
             CardSource temp = CardDatas[n];
+
+            if (!temp.IsFlipped)
+                temp.SetReverse();
+
             CardDatas[n] = CardDatas[k];
             CardDatas[k] = temp;
         }

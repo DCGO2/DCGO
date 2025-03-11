@@ -145,6 +145,12 @@ namespace DCGO.CardEffects.BT20
                     return false;
                 }
 
+                bool CanSelectDigivolveCondition(CardSource cardSource)
+                {
+                    return cardSource.EqualsCardName("Imperialdramon: Fighter Mode") &&
+                           cardSource.CanPlayCardTargetFrame(card.PermanentOfThisCard().PermanentFrame, false, activateClass);
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
@@ -157,44 +163,89 @@ namespace DCGO.CardEffects.BT20
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                {
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                        {
-                            int maxCount = Math.Min(1, card.Owner.Enemy.GetBattleAreaPermanents().Count(CanSelectPermanentCondition));
+                        int maxCount = Math.Min(1, card.Owner.Enemy.GetBattleAreaPermanents().Count(CanSelectPermanentCondition));
 
-                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: CanSelectPermanentCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: maxCount,
-                                canNoSelect: false,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: null,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Destroy,
-                                cardEffect: activateClass);
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectPermanentCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: maxCount,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: null,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Destroy,
+                            cardEffect: activateClass);
 
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                        }
-                        activateClass.SetUpICardEffect("Digivolve into Imperialdramon: Fightermode", CanUseCondition, card);
-                        activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-                        cardEffects.Add(activateClass);      
-                
-                        bool CanSelectCardCondition (CardSource cardSource){
-                        return cardSource.EqualsCardName("Imperialdramon: Fighter Mode");
-                        }
-            
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
-            
-                        
-            
-                
 
+                    if (CardEffectCommons.IsJogress(_hashtable))
+                    {
+                        bool canSelectHand = card.Owner.HandCards.Count(CanSelectDigivolveCondition) >= 1;
+                        bool canSelectTrash = card.Owner.TrashCards.Count(CanSelectDigivolveCondition) >= 1;
+
+                        if (canSelectHand || canSelectTrash)
+                        {
+                            if (canSelectHand && canSelectTrash)
+                            {
+                                List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
+                        {
+                            new SelectionElement<bool>(message: $"From hand", value : true, spriteIndex: 0),
+                            new SelectionElement<bool>(message: $"From trash", value : false, spriteIndex: 1),
+                        };
+
+                                string selectPlayerMessage = "From which area do you want to digivolve from?";
+                                string notSelectPlayerMessage = "The opponent is choosing where to digivolve from.";
+
+                                GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+                            }
+                            else
+                            {
+                                GManager.instance.userSelectionManager.SetBool(canSelectHand);
+                            }
+
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                            bool fromHand = GManager.instance.userSelectionManager.SelectedBoolValue;
+
+                            if (fromHand)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                                targetPermanent: card.PermanentOfThisCard(),
+                                cardCondition: CanSelectDigivolveCondition,
+                                payCost: true,
+                                reduceCostTuple: null,
+                                fixedCostTuple: null,
+                                ignoreDigivolutionRequirementFixedCost: -1,
+                                isHand: true,
+                                activateClass: activateClass,
+                                successProcess: null));
+                            }
+                            else
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                                targetPermanent: card.PermanentOfThisCard(),
+                                cardCondition: CanSelectDigivolveCondition,
+                                payCost: true,
+                                reduceCostTuple: null,
+                                fixedCostTuple: null,
+                                ignoreDigivolutionRequirementFixedCost: -1,
+                                isHand: false,
+                                activateClass: activateClass,
+                                successProcess: null));
+                            }
+                        }
+                    }
+                }
             }
-                #endregion
+            #endregion
         
             #region When Digivolving
             if (timing == EffectTiming.OnEnterFieldAnyone)
@@ -222,6 +273,12 @@ namespace DCGO.CardEffects.BT20
                     return false;
                 }
 
+                bool CanSelectDigivolveCondition(CardSource cardSource)
+                {
+                    return cardSource.EqualsCardName("Imperialdramon: Fighter Mode") &&
+                           cardSource.CanPlayCardTargetFrame(card.PermanentOfThisCard().PermanentFrame,false,activateClass);
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
@@ -235,48 +292,91 @@ namespace DCGO.CardEffects.BT20
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                {
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                        {
-                            int maxCount = Math.Min(1, card.Owner.Enemy.GetBattleAreaPermanents().Count(CanSelectPermanentCondition));
+                        int maxCount = Math.Min(1, card.Owner.Enemy.GetBattleAreaPermanents().Count(CanSelectPermanentCondition));
 
-                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: CanSelectPermanentCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: maxCount,
-                                canNoSelect: false,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: null,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Destroy,
-                                cardEffect: activateClass);
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectPermanentCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: maxCount,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: null,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Destroy,
+                            cardEffect: activateClass);
 
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                        }
-                        activateClass.SetUpICardEffect("Digivolve into Imperialdramon: Fightermode", CanUseCondition, card);
-                        activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-                        cardEffects.Add(activateClass);      
-                
-                        bool CanSelectCardCondition (CardSource cardSource){
-                        return cardSource.EqualsCardName("Imperialdramon: Fighter Mode");
-                        }
-            
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
-            
-                        
-                if (timing == EffectTiming.OnEnterFieldAnyone){                
-                
 
+                    if (CardEffectCommons.IsJogress(_hashtable))
+                    {
+                        bool canSelectHand = card.Owner.HandCards.Count(CanSelectDigivolveCondition) >= 1;
+                        bool canSelectTrash = card.Owner.TrashCards.Count(CanSelectDigivolveCondition) >= 1;
+
+                        if (canSelectHand || canSelectTrash)
+                        {
+                            if (canSelectHand && canSelectTrash)
+                            {
+                                List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
+                        {
+                            new SelectionElement<bool>(message: $"From hand", value : true, spriteIndex: 0),
+                            new SelectionElement<bool>(message: $"From trash", value : false, spriteIndex: 1),
+                        };
+
+                                string selectPlayerMessage = "From which area do you want to digivolve from?";
+                                string notSelectPlayerMessage = "The opponent is choosing where to digivolve from.";
+
+                                GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+                            }
+                            else
+                            {
+                                GManager.instance.userSelectionManager.SetBool(canSelectHand);
+                            }
+
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                            bool fromHand = GManager.instance.userSelectionManager.SelectedBoolValue;
+
+                            if (fromHand)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                                targetPermanent: card.PermanentOfThisCard(),
+                                cardCondition: CanSelectDigivolveCondition,
+                                payCost: true,
+                                reduceCostTuple: null,
+                                fixedCostTuple: null,
+                                ignoreDigivolutionRequirementFixedCost: -1,
+                                isHand: true,
+                                activateClass: activateClass,
+                                successProcess: null));
+                            }
+                            else
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                                targetPermanent: card.PermanentOfThisCard(),
+                                cardCondition: CanSelectDigivolveCondition,
+                                payCost: true,
+                                reduceCostTuple: null,
+                                fixedCostTuple: null,
+                                ignoreDigivolutionRequirementFixedCost: -1,
+                                isHand: false,
+                                activateClass: activateClass,
+                                successProcess: null));
+                            }
+                        }
+                    }
                 }
             }
             #endregion
 
             return cardEffects;
-                
         }
     }
 }

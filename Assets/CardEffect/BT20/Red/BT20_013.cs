@@ -42,7 +42,7 @@ namespace DCGO.CardEffects.BT20
 
                 bool CanSelectCardCondition (CardSource cardSource)
                 {
-                    if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: true, cardEffect: activateClass))
+                    if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                     {
                         if (cardSource.ContainsCardName("Sistermon") || cardSource.ContainsCardName("Gankoomon"))
                         {
