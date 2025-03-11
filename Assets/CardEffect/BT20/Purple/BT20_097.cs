@@ -157,7 +157,7 @@ namespace DCGO.CardEffects.BT20
                 bool IsDeathXmon(CardSource source)
                 {
                     return source.EqualsCardName("DeathXmon") &&
-                           CardEffectCommons.CanPlayAsNewPermanent(source, false, activateClass);
+                           CardEffectCommons.CanPlayAsNewPermanent(source, false, activateClass, SelectCardEffect.Root.Trash);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -252,7 +252,7 @@ namespace DCGO.CardEffects.BT20
                                         canNoSelect: () => false,
                                         selectCardCoroutine: SelectCardCoroutine,
                                         afterSelectCardCoroutine: null,
-                                        message: "Select 1 digivolution card.",
+                                        message: "Select 1 [DeathXmon] to play.",
                                         maxCount: 1,
                                         canEndNotMax: false,
                                         isShowOpponent: true,

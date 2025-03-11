@@ -92,7 +92,7 @@ namespace DCGO.CardEffects.BT20
                                     canTargetCondition_ByPreSelecetedList: null,
                                     canEndSelectCondition: null,
                                     maxCount: maxCount,
-                                    canNoSelect: true,
+                                    canNoSelect: false,
                                     canEndNotMax: false,
                                     selectPermanentCoroutine: SelectPermanentCoroutine,
                                     afterSelectPermanentCoroutine: null,
@@ -113,7 +113,7 @@ namespace DCGO.CardEffects.BT20
                                     CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
                                     canNotAffectedClass.SetUpICardEffect("Isn't affected by opponent's effects.", CanUseConditionImmunity, card);
                                     canNotAffectedClass.SetUpCanNotAffectedClass(CardCondition: CardCondition, SkillCondition: SkillCondition);
-                                    card.Owner.UntilEachTurnEndEffects.Add(GetCardEffect);
+                                    immunityPermanent.UntilEachTurnEndEffects.Add(GetCardEffect);
 
                                     bool CanUseConditionImmunity(Hashtable hashtable)
                                     {
@@ -214,7 +214,7 @@ namespace DCGO.CardEffects.BT20
             if (timing == EffectTiming.None)
             {
                 AddSkillClass addSkillClass = new AddSkillClass();
-                addSkillClass.SetUpICardEffect("[Your Turn] All of your Digimon with [Sistermon] or the [Royal Knight] trait gain <Piercing> and can attack your opponent's unsuspended Digimon.", CanUseCondition, card);
+                addSkillClass.SetUpICardEffect("Your Digimon with [Sistermon] in their names or the [Royal Knight] trait gain Pierce", CanUseCondition, card);
                 addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
                 cardEffects.Add(addSkillClass);
 
@@ -244,7 +244,15 @@ namespace DCGO.CardEffects.BT20
 
                 bool CardSourceCondition(CardSource cardSource)
                 {
-                    return PermanentCondition(cardSource.PermanentOfThisCard());
+                    if (PermanentCondition(cardSource.PermanentOfThisCard()))
+                    {
+                        if (cardSource == cardSource.PermanentOfThisCard().TopCard)
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
                 }
 
                 List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming _timing)
@@ -256,20 +264,46 @@ namespace DCGO.CardEffects.BT20
                             return CardSourceCondition(cardSource);
                         }
 
-                        cardEffects.Add(CardEffectFactory.PierceSelfEffect(isInheritedEffect: false, card: card, condition: Condition));
+                        cardEffects.Add(CardEffectFactory.PierceSelfEffect(
+                            isInheritedEffect: false,
+                            card: cardSource,
+                            condition: Condition));
                     }
 
                     return cardEffects;
                 }
+            }
+
+            if (timing == EffectTiming.None)
+            {
 
                 CanAttackTargetDefendingPermanentClass canAttackTargetDefendingPermanentClass = new CanAttackTargetDefendingPermanentClass();
-                canAttackTargetDefendingPermanentClass.SetUpICardEffect($"Can attack to unsuspended Digimon", CanUseCondition1, card);
+                canAttackTargetDefendingPermanentClass.SetUpICardEffect($"Can attack to unsuspended Digimon", CanUseCondition, card);
                 canAttackTargetDefendingPermanentClass.SetUpCanAttackTargetDefendingPermanentClass(attackerCondition: PermanentCondition, defenderCondition: DefenderCondition, cardEffectCondition: CardEffectCondition);
                 cardEffects.Add(canAttackTargetDefendingPermanentClass);
 
-                bool CanUseCondition1(Hashtable hashtable)
+                bool PermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                    {
+                        if (permanent.TopCard.ContainsCardName("Sistermon") || permanent.TopCard.HasRoyalKnightTraits)
+                            return true;
+                    }
+
+                    return false;
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    {
+                        if (CardEffectCommons.IsOwnerTurn(card))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
                 }
 
                 bool DefenderCondition(Permanent permanent)
@@ -293,7 +327,7 @@ namespace DCGO.CardEffects.BT20
             #endregion
 
             #region Your Turn - ESS
-            if(timing == EffectTiming.None)
+            if (timing == EffectTiming.None)
             {
                 AddSkillClass addSkillClass = new AddSkillClass();
                 addSkillClass.SetUpICardEffect("[Your Turn] While this Digimon is [Jesmon GX], all of your Digimon gain <Piercing> and can also attack your opponent's unsuspended Digimon.", CanUseCondition, card);
@@ -307,7 +341,7 @@ namespace DCGO.CardEffects.BT20
                     {
                         if (CardEffectCommons.IsOwnerTurn(card))
                         {
-                            return card.PermanentOfThisCard().TopCard.EqualsCardName("Jesmon GX");
+                            return true;
                         }
                     }
 
@@ -316,7 +350,8 @@ namespace DCGO.CardEffects.BT20
 
                 bool PermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
+                    return card.PermanentOfThisCard().TopCard.EqualsCardName("Jesmon GX") &&
+                           CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
                 }
 
                 bool CardSourceCondition(CardSource cardSource)

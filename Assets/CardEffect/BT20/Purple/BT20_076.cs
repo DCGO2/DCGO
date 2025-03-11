@@ -158,8 +158,7 @@ namespace DCGO.CardEffects.BT20
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -220,7 +219,7 @@ namespace DCGO.CardEffects.BT20
                                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
                                 targetPermanent: card.PermanentOfThisCard(),
                                 cardCondition: CanSelectDigivolveCondition,
-                                payCost: true,
+                                payCost: false,
                                 reduceCostTuple: null,
                                 fixedCostTuple: null,
                                 ignoreDigivolutionRequirementFixedCost: -1,
@@ -233,7 +232,7 @@ namespace DCGO.CardEffects.BT20
                                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
                                 targetPermanent: card.PermanentOfThisCard(),
                                 cardCondition: CanSelectDigivolveCondition,
-                                payCost: true,
+                                payCost: false,
                                 reduceCostTuple: null,
                                 fixedCostTuple: null,
                                 ignoreDigivolutionRequirementFixedCost: -1,
@@ -287,8 +286,7 @@ namespace DCGO.CardEffects.BT20
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card); ;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -349,7 +347,7 @@ namespace DCGO.CardEffects.BT20
                                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
                                 targetPermanent: card.PermanentOfThisCard(),
                                 cardCondition: CanSelectDigivolveCondition,
-                                payCost: true,
+                                payCost: false,
                                 reduceCostTuple: null,
                                 fixedCostTuple: null,
                                 ignoreDigivolutionRequirementFixedCost: -1,
@@ -362,7 +360,7 @@ namespace DCGO.CardEffects.BT20
                                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
                                 targetPermanent: card.PermanentOfThisCard(),
                                 cardCondition: CanSelectDigivolveCondition,
-                                payCost: true,
+                                payCost: false,
                                 reduceCostTuple: null,
                                 fixedCostTuple: null,
                                 ignoreDigivolutionRequirementFixedCost: -1,

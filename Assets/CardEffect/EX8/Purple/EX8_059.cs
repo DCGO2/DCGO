@@ -186,8 +186,6 @@ namespace DCGO.CardEffects.EX8
 
                                     IEnumerator ActivateCoroutine1(Hashtable _hashtable1)
                                     {
-                                        yield return ContinuousController.instance.StartCoroutine(_topCard.Owner.AddMemory(-1, activateClass1));
-
                                         SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
                                         selectHandEffect.SetUp(
@@ -363,8 +361,6 @@ namespace DCGO.CardEffects.EX8
 
                                     IEnumerator ActivateCoroutine1(Hashtable _hashtable1)
                                     {
-                                        yield return ContinuousController.instance.StartCoroutine(_topCard.Owner.AddMemory(-1, activateClass1));
-
                                         SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
                                         selectHandEffect.SetUp(
