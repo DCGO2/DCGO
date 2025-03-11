@@ -45,7 +45,7 @@ namespace DCGO.CardEffects.BT20
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner.Enemy,
+                        selectPlayer: card.Owner,
                         canTargetCondition: CanSelectPermanent,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
@@ -101,7 +101,7 @@ namespace DCGO.CardEffects.BT20
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner.Enemy,
+                        selectPlayer: card.Owner,
                         canTargetCondition: CanSelectPermanent,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,

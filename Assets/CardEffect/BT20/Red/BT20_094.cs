@@ -195,7 +195,7 @@ namespace DCGO.CardEffects.BT20
                 }
                 
                 bool isImperialdramonFighterMode(Permanent permanent)
-                {                    
+                {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
                            permanent.TopCard.EqualsCardName("Imperialdramon: Fighter Mode") &&
                            (permanent.DigivolutionCards.Count(isImperialdramonDragonMode) >= 1);
@@ -210,12 +210,12 @@ namespace DCGO.CardEffects.BT20
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanDeclareOptionDelayEffect(card) &&
-                           CardEffectCommons.CanTriggerWhenLoseSecurity(hashtable, player => player == card.Owner.Enemy) &&
-                           CardEffectCommons.HasMatchConditionPermanent(isImperialdramonFighterMode);
+                           CardEffectCommons.CanTriggerWhenLoseSecurity(hashtable, player => player == card.Owner.Enemy);
                 }
                 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    bool destoryed = false;
                     yield return ContinuousController.instance.StartCoroutine(
                         CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
                             targetPermanents: new List<Permanent>() { card.PermanentOfThisCard() },
@@ -223,6 +223,12 @@ namespace DCGO.CardEffects.BT20
                             failureProcess: null));
 
                     IEnumerator SuccessProcess()
+                    {
+                        destoryed = true;
+                        yield return null;
+                    }
+
+                    if (destoryed)
                     {
                         if (CardEffectCommons.HasMatchConditionPermanent(isImperialdramonFighterMode))
                         {
@@ -251,60 +257,57 @@ namespace DCGO.CardEffects.BT20
 
                             IEnumerator SelectPermanentCoroutine(Permanent permanent)
                             {
-                                Permanent selectedPermanent = permanent;
+                                selectedPermanent = permanent;
 
                                 yield return null;
                             }
 
                             if (selectedPermanent != null)
                             {
-                                if (selectedPermanent.DigivolutionCards.Count(isImperialdramonDragonMode) >= 1)
+                                List<CardSource> selectedCards = new List<CardSource>();
+
+                                SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                                selectCardEffect.SetUp(
+                                    canTargetCondition: isImperialdramonDragonMode,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    canNoSelect: () => true,
+                                    selectCardCoroutine: SelectCardCoroutine,
+                                    afterSelectCardCoroutine: null,
+                                    message: "Select 1 digivolution card to play.",
+                                    maxCount: 1,
+                                    canEndNotMax: false,
+                                    isShowOpponent: true,
+                                    mode: SelectCardEffect.Mode.Custom,
+                                    root: SelectCardEffect.Root.Custom,
+                                    customRootCardList: selectedPermanent.DigivolutionCards,
+                                    canLookReverseCard: true,
+                                    selectPlayer: card.Owner,
+                                    cardEffect: activateClass);
+
+                                selectCardEffect.SetUpCustomMessage(
+                                    "Select 1 digivolution card to play.",
+                                    "The opponent is selecting 1 digivolution card to play.");
+                                selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
+
+                                yield return StartCoroutine(selectCardEffect.Activate());
+
+                                IEnumerator SelectCardCoroutine(CardSource cardSource)
                                 {
-                                    List<CardSource> selectedCards = new List<CardSource>();
+                                    selectedCards.Add(cardSource);
 
-                                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                                    selectCardEffect.SetUp(
-                                        canTargetCondition: isImperialdramonDragonMode,
-                                        canTargetCondition_ByPreSelecetedList: null,
-                                        canEndSelectCondition: null,
-                                        canNoSelect: () => true,
-                                        selectCardCoroutine: SelectCardCoroutine,
-                                        afterSelectCardCoroutine: null,
-                                        message: "Select 1 digivolution card to play.",
-                                        maxCount: 1,
-                                        canEndNotMax: false,
-                                        isShowOpponent: true,
-                                        mode: SelectCardEffect.Mode.Custom,
-                                        root: SelectCardEffect.Root.Custom,
-                                        customRootCardList: selectedPermanent.DigivolutionCards,
-                                        canLookReverseCard: true,
-                                        selectPlayer: card.Owner,
-                                        cardEffect: activateClass);
-
-                                    selectCardEffect.SetUpCustomMessage(
-                                        "Select 1 digivolution card to play.",
-                                        "The opponent is selecting 1 digivolution card to play.");
-                                    selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
-
-                                    yield return StartCoroutine(selectCardEffect.Activate());
-
-                                    IEnumerator SelectCardCoroutine(CardSource cardSource)
-                                    {
-                                        selectedCards.Add(cardSource);
-
-                                        yield return null;
-                                    }
-
-                                    yield return ContinuousController.instance.StartCoroutine(
-                                        CardEffectCommons.PlayPermanentCards(
-                                            cardSources: selectedCards,
-                                            activateClass: activateClass,
-                                            payCost: false,
-                                            isTapped: false,
-                                            root: SelectCardEffect.Root.DigivolutionCards,
-                                            activateETB: true));
+                                    yield return null;
                                 }
+
+                                yield return ContinuousController.instance.StartCoroutine(
+                                    CardEffectCommons.PlayPermanentCards(
+                                        cardSources: selectedCards,
+                                        activateClass: activateClass,
+                                        payCost: false,
+                                        isTapped: false,
+                                        root: SelectCardEffect.Root.DigivolutionCards,
+                                        activateETB: true));
                             }
                         }
                     }
