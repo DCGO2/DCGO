@@ -231,23 +231,11 @@ namespace DCGO.CardEffects.BT20
                 bool CanUseCondition()
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && 
-                           CardEffectCommons.IsOwnerTurn(card);
+                           CardEffectCommons.IsOwnerTurn(card) &&
+                           card.PermanentOfThisCard().TopCard.HasRoyalKnightTraits;
                 }
 
-                bool PermanentCondition(Permanent permanent)
-                {
-                    if (permanent == card.PermanentOfThisCard())
-                    {
-                        if (permanent.TopCard.HasRoyalKnightTraits)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
-                cardEffects.Add(CardEffectFactory.AllianceStaticEffect(permanentCondition: PermanentCondition, isInheritedEffect: true, card: card, condition: CanUseCondition));
+                cardEffects.Add(CardEffectFactory.AllianceSelfEffect(isInheritedEffect: true, card: card, condition: CanUseCondition));
             }
             #endregion
 

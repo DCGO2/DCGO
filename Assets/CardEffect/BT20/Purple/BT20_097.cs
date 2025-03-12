@@ -207,7 +207,7 @@ namespace DCGO.CardEffects.BT20
 
                     if(selectedPermanent != null)
                     {
-                        List<CardSource> selectedCards = new List<CardSource>();
+                        bool cardAdded = false;
 
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
@@ -216,8 +216,8 @@ namespace DCGO.CardEffects.BT20
                                     canTargetCondition_ByPreSelecetedList: null,
                                     canEndSelectCondition: null,
                                     canNoSelect: () => false,
-                                    selectCardCoroutine: SelectDorumonCoroutine,
-                                    afterSelectCardCoroutine: null,
+                                    selectCardCoroutine: null,
+                                    afterSelectCardCoroutine: SelectDorumonCoroutine,
                                     message: "Select 1 digivolution card.",
                                     maxCount: 1,
                                     canEndNotMax: false,
@@ -234,14 +234,14 @@ namespace DCGO.CardEffects.BT20
 
                         yield return StartCoroutine(selectCardEffect.Activate());
 
-                        IEnumerator SelectDorumonCoroutine(CardSource cardSource)
+                        IEnumerator SelectDorumonCoroutine(List<CardSource> cardSources)
                         {
-                            selectedCards.Add(cardSource);
+                            cardAdded = true;
 
                             yield return null;
                         }
 
-                        if (selectedCards.Count > 0)
+                        if (cardAdded)
                         {
                             List<CardSource> selectedPlayedCards = new List<CardSource>();
 
@@ -274,7 +274,7 @@ namespace DCGO.CardEffects.BT20
                                 yield return null;
                             }
 
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedPlayedCards, activateClass: activateClass, payCost: false, isTapped: true, root: SelectCardEffect.Root.Trash, activateETB: true));
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedPlayedCards, activateClass: activateClass, payCost: false, isTapped: false, root: SelectCardEffect.Root.Trash, activateETB: true));
                         }
                     }
                 }

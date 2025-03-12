@@ -108,7 +108,8 @@ namespace DCGO.CardEffects.BT20
 
                 bool PermanentCondition (Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                           permanent != card.PermanentOfThisCard();
                 }
 
                 bool CanUseCondition (Hashtable hashtable)
