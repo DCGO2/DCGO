@@ -115,7 +115,7 @@ namespace DCGO.CardEffects.BT20
 
                         if (canSelectHand || canSelectTrash)
                         {
-                            if (canSelectHand && canSelectHand)
+                            if (canSelectHand && canSelectTrash)
                             {
                                 List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
                                 {
@@ -324,7 +324,7 @@ namespace DCGO.CardEffects.BT20
 
                         if (canSelectHand || canSelectTrash)
                         {
-                            if (canSelectHand && canSelectHand)
+                            if (canSelectHand && canSelectTrash)
                             {
                                 List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
                                 {
@@ -533,7 +533,7 @@ namespace DCGO.CardEffects.BT20
 
                         if (canSelectHand || canSelectTrash)
                         {
-                            if (canSelectHand && canSelectHand)
+                            if (canSelectHand && canSelectTrash)
                             {
                                 List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
                                 {
