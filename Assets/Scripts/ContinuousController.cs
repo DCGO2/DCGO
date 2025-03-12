@@ -1342,12 +1342,17 @@ public static class RandomUtility
             CardSource temp = CardDatas[n];
 
             if (!temp.IsFlipped)
+            {
                 temp.SetReverse();
+
+                if(temp.Owner.SecurityCards.Contains(temp))
+                    GManager.OnSecurityStackChanged?.Invoke(temp.Owner);
+            }
+                
 
             CardDatas[n] = CardDatas[k];
             CardDatas[k] = temp;
         }
-
 
         return CardDatas;
     }
