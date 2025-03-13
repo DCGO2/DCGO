@@ -1,10 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-//ST20-04 garudamon
+
+//ST20 Megakabuterimon
 namespace DCGO.CardEffects.ST20
 {
-    public class ST20_04 : CEntity_Effect
+    public class ST20_09 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
@@ -22,6 +22,7 @@ namespace DCGO.CardEffects.ST20
             }
             #endregion
 
+
             #region On Play/When Digivolving shared
 
             bool CanActivateConditionShared(Hashtable hashtable)
@@ -35,12 +36,12 @@ namespace DCGO.CardEffects.ST20
 
                 foreach (Permanent permanent in card.Owner.GetBattleAreaPermanents())
                 {
-                    if (permanent.IsTamer)
+                    if (permanent.IsTamer && permanent.TopCard.EqualsTraits("ADVENTURE"))
                     {
                         tamerCards.Add(permanent.TopCard);
                     }
                 }
-                return Combinations.GetDifferenetColorCardCount(tamerCards)/2;
+                return Combinations.GetDifferenetColorCardCount(tamerCards) / 2;
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
@@ -53,13 +54,13 @@ namespace DCGO.CardEffects.ST20
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("For the turn, 1 of your Digimon gains <Security A. +1>, and for every 2 colors your Tamers have, gets +2000 DP. (This Digimon checks 1 additional security card.)", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Unsuspend, then for every 2 colours in adventure tamers, suspend opposing digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[On Play] For the turn, 1 of your Digimon gains <Security A. +1>, and for every 2 colors your Tamers have, gets +2000 DP. (This Digimon checks 1 additional security card.)";
+                    return "[On Play] 1 of your Digimon unsuspends. Then, for every 2 colors your Tamers with the [ADVENTURE] trait have, suspend 1 of your opponent's Digimon.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -69,6 +70,9 @@ namespace DCGO.CardEffects.ST20
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    yield return ContinuousController.instance.StartCoroutine(
+                        new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() }, activateClass).Unsuspend());
+
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
@@ -78,33 +82,19 @@ namespace DCGO.CardEffects.ST20
                             canTargetCondition: CanSelectPermanentCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: 1,
+                            maxCount: TamerTwoColourCount(),
                             canNoSelect: false,
                             canEndNotMax: false,
-                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            selectPermanentCoroutine: null,
                             afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
+                            mode: SelectPermanentEffect.Mode.Tap,
                             cardEffect: activateClass);
 
                         selectPermanentEffect.SetUpCustomMessage(
-                            "Select 1 Digimon that will gain <Security A. +1>, and +2000DP per 2 colours of tamers you have.",
-                            "The opponent is selecting 1 Digimon that will gain <Security A. +1>, and +2000DP per 2 colours of tamers they have.");
+                            "Select 1 Digimon to suspend per 2 colours of ADVENTURE Tamers you have",
+                            "The opponent is selecting 1 Digimon to suspend per 2 colours of ADVENTURE Tamers they have.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonSAttack(
-                                targetPermanent: permanent,
-                                changeValue: 1,
-                                effectDuration: EffectDuration.UntilEachTurnEnd,
-                                activateClass: activateClass));
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
-                                targetPermanent: permanent,
-                                changeValue: 2000 * TamerTwoColourCount(),
-                                effectDuration: EffectDuration.UntilEachTurnEnd,
-                                activateClass: activateClass));
-                        }
                     }
                 }
             }
@@ -114,22 +104,25 @@ namespace DCGO.CardEffects.ST20
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("For the turn, 1 of your Digimon gains<Security A. +1>, and for every 2 colors your Tamers have, gets +2000 DP. (This Digimon checks 1 additional security card.)", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Unsuspend, then for every 2 colours in adventure tamers, suspend opposing digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving]For the turn, 1 of your Digimon gains <Security A. +1>, and for every 2 colors your Tamers have, gets +2000 DP. (This Digimon checks 1 additional security card.)";
+                    return "[When Digivolving] 1 of your Digimon unsuspends. Then, for every 2 colors your Tamers with the [ADVENTURE] trait have, suspend 1 of your opponent's Digimon.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    yield return ContinuousController.instance.StartCoroutine(
+                        new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() }, activateClass).Unsuspend());
+
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
@@ -139,33 +132,19 @@ namespace DCGO.CardEffects.ST20
                             canTargetCondition: CanSelectPermanentCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: 1,
+                            maxCount: TamerTwoColourCount(),
                             canNoSelect: false,
                             canEndNotMax: false,
-                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            selectPermanentCoroutine: null,
                             afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
+                            mode: SelectPermanentEffect.Mode.Tap,
                             cardEffect: activateClass);
 
                         selectPermanentEffect.SetUpCustomMessage(
-                            "Select 1 Digimon that will gain <Security A. +1>, and +2000DP per 2 colours of tamers you have.",
-                            "The opponent is selecting 1 Digimon that will gain <Security A. +1>, and +2000DP per 2 colours of tamers they have.");
+                            "Select 1 Digimon to suspend per 2 colours of ADVENTURE Tamers you have",
+                            "The opponent is selecting 1 Digimon to suspend per 2 colours of ADVENTURE Tamers they have.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonSAttack(
-                                targetPermanent: permanent,
-                                changeValue: 1,
-                                effectDuration: EffectDuration.UntilEachTurnEnd,
-                                activateClass: activateClass));
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
-                                targetPermanent: permanent,
-                                changeValue: 2000 * TamerTwoColourCount(),
-                                effectDuration: EffectDuration.UntilEachTurnEnd,
-                                activateClass: activateClass));
-                        }
                     }
                 }
             }
@@ -318,6 +297,7 @@ namespace DCGO.CardEffects.ST20
                 cardEffects.Add(CardEffectFactory.AllianceSelfEffect(isInheritedEffect: true, card: card, condition: Condition));
             }
             #endregion
+
 
             return cardEffects;
         }
