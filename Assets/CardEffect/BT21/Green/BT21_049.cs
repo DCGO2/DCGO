@@ -154,15 +154,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card))
-                    {
-                        if (permanent.IsDigimon)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
