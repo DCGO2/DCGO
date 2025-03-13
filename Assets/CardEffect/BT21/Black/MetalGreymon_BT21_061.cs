@@ -141,7 +141,7 @@ namespace DCGO.CardEffects.BT21
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Gain alliance then attack", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetHashString("alliance-attack-BT21-061");
                 cardEffects.Add(activateClass);
 
@@ -255,7 +255,7 @@ namespace DCGO.CardEffects.BT21
                             yield return null;
                         }
 
-                        if (selectedPermanent != null)
+                        if (selectedPermanent.CanAttack(activateClass))
                         {
                             SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
 
