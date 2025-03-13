@@ -156,7 +156,7 @@ namespace DCGO.CardEffects.ST20
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Gain alliance then attack", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
-                activateClass.SetHashString("alliance-attack-ST20-004");
+                activateClass.SetHashString("alliance-attack-ST20-009");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
