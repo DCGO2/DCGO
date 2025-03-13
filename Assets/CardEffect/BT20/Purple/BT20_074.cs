@@ -101,7 +101,7 @@ namespace DCGO.CardEffects.BT20
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Return a card, DNA Digivolve into Imperialdramon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Return a card from your trash to the hand", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -163,7 +163,7 @@ namespace DCGO.CardEffects.BT20
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Return a card, DNA Digivolve into Imperialdramon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Return a card from your trash to the hand", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
