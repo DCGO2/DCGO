@@ -266,11 +266,6 @@ namespace DCGO.CardEffects.ST20
                                     {
                                         return true;
                                     }
-
-                                    if (cardEffect.IsDigimonEffect && cardEffect.IsSecurityEffect)
-                                    {
-                                        return true;
-                                    }
                                 }
 
                                 return false;
