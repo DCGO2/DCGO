@@ -136,11 +136,16 @@ namespace DCGO.CardEffects.BT20
                                                cardEffect: activateClass);
                                 }
 
+                                bool CanNoSelect()
+                                {
+                                    return selectedCardsToPlay.Count == 0;
+                                }
+
                                 selectCardEffect.SetUp(
                                     canTargetCondition: CanSelectPlayCardCondition,
                                     canTargetCondition_ByPreSelecetedList: null,
                                     canEndSelectCondition: null,
-                                    canNoSelect: () => true,
+                                    canNoSelect: CanNoSelect,
                                     selectCardCoroutine: SelectCardCoroutine2,
                                     afterSelectCardCoroutine: null,
                                     message: "Select 1 card to play.",
