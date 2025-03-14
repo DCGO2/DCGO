@@ -136,7 +136,7 @@ namespace DCGO.CardEffects.ST21
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
+                    if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
                     {
                         List<CardSource> selectedCards = new List<CardSource>();
 
