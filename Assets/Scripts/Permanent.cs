@@ -593,7 +593,7 @@ public class Permanent
     }
     #endregion
 
-    #region 退化を受けないか
+    #region Immune From De-Digivolve
     public bool ImmuneFromDeDigivolve()
     {
         foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players)
@@ -620,15 +620,19 @@ public class Permanent
     }
     #endregion
 
-    #region このパーマネントの持つカードリスト
+    #region Card Sources
     public List<CardSource> cardSources = new List<CardSource>();
     #endregion
 
-    #region 一番上以外のカード
+    #region Digivolution Cards
     public List<CardSource> DigivolutionCards => cardSources.Filter(cardSource => cardSource != TopCard);
     #endregion
 
-    #region パーマネントのカードリストにカードを追加
+    #region Linked Card
+    public CardSource LinkedCard = null;
+    #endregion
+
+    #region Add Card Source
     public void AddCardSource(CardSource cardSource)
     {
         cardSources.Insert(0, cardSource);
@@ -797,7 +801,19 @@ public class Permanent
     }
     #endregion
 
-    #region パーマネントのカードリストからカードを除く
+    #region Add Card Source
+    public IEnumerator AddLinkedCard(CardSource cardSource, ICardEffect cardEffect)
+    {
+        yield return null;
+
+        if (LinkedCard != null)
+            RemoveLinkedCard(null);
+
+        LinkedCard = cardSource;
+    }
+    #endregion
+
+    #region RemoveCardSource
     public IEnumerator RemoveCardSource(CardSource cardSource)
     {
         yield return null;
@@ -806,7 +822,17 @@ public class Permanent
     }
     #endregion
 
-    #region このパーマネントの一番上のカード
+    #region Remove Linked Card
+    public IEnumerator RemoveLinkedCard(ICardEffect cardEffect)
+    {
+        //TODO: Add event call if something was removed
+        yield return null;
+
+        LinkedCard = null;
+    }
+    #endregion
+
+    #region Top Card
     public CardSource TopCard
     {
         get
