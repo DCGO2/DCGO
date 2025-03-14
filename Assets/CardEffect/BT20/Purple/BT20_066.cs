@@ -111,7 +111,7 @@ namespace DCGO.CardEffects.BT20
                     {
                         if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(card.PermanentOfThisCard(), card))
                         {
-                            if (card.Owner.HandCards.Count >= 1)
+                            if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
                             {
                                 List<CardSource> selectedCards = new List<CardSource>();
 
@@ -165,7 +165,7 @@ namespace DCGO.CardEffects.BT20
                                                     endSelectCoroutine_SelectDigivolutionRoots: EndSelectCoroutine_SelectDigivolutionRoots,
                                                     noSelectCoroutine: null);
 
-                                                GManager.instance.selectJogressEffect.SetUpCustomPermanentConditions(new Func<Permanent, bool>[] { (permanent) => permanent == card.PermanentOfThisCard() });
+                                                GManager.instance.selectJogressEffect.SetUpCustomPermanentConditions(new Func<Permanent, bool>[] { (permanent) => permanent.TopCard.Owner == card.Owner });
 
                                                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.selectJogressEffect.SelectDigivolutionRoots());
 
@@ -336,7 +336,7 @@ namespace DCGO.CardEffects.BT20
                     {
                         if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(card.PermanentOfThisCard(), card))
                         {
-                            if (card.Owner.HandCards.Count >= 1)
+                            if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
                             {
                                 List<CardSource> selectedCards = new List<CardSource>();
 
@@ -390,7 +390,7 @@ namespace DCGO.CardEffects.BT20
                                                     endSelectCoroutine_SelectDigivolutionRoots: EndSelectCoroutine_SelectDigivolutionRoots,
                                                     noSelectCoroutine: null);
 
-                                                GManager.instance.selectJogressEffect.SetUpCustomPermanentConditions(new Func<Permanent, bool>[] { (permanent) => permanent == card.PermanentOfThisCard() });
+                                                GManager.instance.selectJogressEffect.SetUpCustomPermanentConditions(new Func<Permanent, bool>[] { (permanent) => permanent.TopCard.Owner == card.Owner });
 
                                                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.selectJogressEffect.SelectDigivolutionRoots());
 

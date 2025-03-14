@@ -69,8 +69,6 @@ public class AttackProcess : MonoBehaviourPunCallbacks
             goto EndAttack;
         }
 
-        UnityEngine.Debug.Log($"ATTACK PROCESS: {AttackingPermanent}");
-        UnityEngine.Debug.Log($"ATTACK PROCESS: {CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(AttackingPermanent)}");
         #region Attack Process
         if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(AttackingPermanent))
         {
@@ -213,9 +211,6 @@ public class AttackProcess : MonoBehaviourPunCallbacks
 
             // check timing
             yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
-
-            //End Turn Check
-            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.EndTurnCheck());
 
             GManager.instance.turnStateMachine.IsSelecting = true;
 
@@ -402,7 +397,7 @@ public class AttackProcess : MonoBehaviourPunCallbacks
             #region there is Defending Permanent
             else
             {
-                if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(DefendingPermanent) || CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(AttackingPermanent))
+                if (!CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(DefendingPermanent) || !CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(AttackingPermanent))
                 {
                     goto EndAttack;
                 }

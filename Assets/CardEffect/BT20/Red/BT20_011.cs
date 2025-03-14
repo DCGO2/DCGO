@@ -52,43 +52,33 @@ namespace DCGO.CardEffects.BT20
                 }
                 return false;
                 }
-                
+
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
                     if (cardSource != null)
                     {
-                    if (cardSource.IsDigimon)
-                    {
-                        if (cardSource.Owner == card.Owner)
+                        if (cardSource.IsDigimon)
                         {
-                            if(cardSource.CardTraits.Contains("Free") || cardSource.ContainsCardName("Imperialdramon"))
-                            {        
-                                                
-                                if (cardSource.CanPlayJogress(true))
+                            if (cardSource.Owner == card.Owner)
+                            {
+                                if (cardSource.CardTraits.Contains("Free") || cardSource.ContainsCardName("Imperialdramon"))
                                 {
-                                    if (isExistOnField(card))
+                                    if (cardSource.CanPlayJogress(true))
                                     {
-                                        if (cardSource.CanJogressFromTargetPermanent(card.PermanentOfThisCard(), true))
-                                        {
-                                            return true;
-                                        }
+                                        return true;
                                     }
                                 }
                             }
-                        
                         }
                     }
-                    }
 
-                    return false;                
+                    return false;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {                   
-                        
-
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
                         int maxCount = 1;
 
@@ -114,7 +104,7 @@ namespace DCGO.CardEffects.BT20
                     {
                         if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(card.PermanentOfThisCard(), card))
                         {
-                            if (card.Owner.HandCards.Count >= 1)
+                            if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
                             {
                                 List<CardSource> selectedCards = new List<CardSource>();
 
@@ -168,7 +158,7 @@ namespace DCGO.CardEffects.BT20
                                                     endSelectCoroutine_SelectDigivolutionRoots: EndSelectCoroutine_SelectDigivolutionRoots,
                                                     noSelectCoroutine: null);
 
-                                                GManager.instance.selectJogressEffect.SetUpCustomPermanentConditions(new Func<Permanent, bool>[] { (permanent) => permanent == card.PermanentOfThisCard() });
+                                                GManager.instance.selectJogressEffect.SetUpCustomPermanentConditions(new Func<Permanent, bool>[] { (permanent) => permanent.TopCard.Owner == card.Owner });
 
                                                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.selectJogressEffect.SelectDigivolutionRoots());
 
@@ -336,7 +326,7 @@ namespace DCGO.CardEffects.BT20
                     {
                         if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(card.PermanentOfThisCard(), card))
                         {
-                            if (card.Owner.HandCards.Count >= 1)
+                            if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
                             {
                                 List<CardSource> selectedCards = new List<CardSource>();
 
@@ -390,7 +380,7 @@ namespace DCGO.CardEffects.BT20
                                                     endSelectCoroutine_SelectDigivolutionRoots: EndSelectCoroutine_SelectDigivolutionRoots,
                                                     noSelectCoroutine: null);
 
-                                                GManager.instance.selectJogressEffect.SetUpCustomPermanentConditions(new Func<Permanent, bool>[] { (permanent) => permanent == card.PermanentOfThisCard() });
+                                                GManager.instance.selectJogressEffect.SetUpCustomPermanentConditions(new Func<Permanent, bool>[] { (permanent) => permanent.TopCard.Owner == card.Owner });
 
                                                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.selectJogressEffect.SelectDigivolutionRoots());
 
@@ -455,7 +445,7 @@ namespace DCGO.CardEffects.BT20
                                 }
                             }
                         }
-                    }                              
+                    }
                 }
             }
             #endregion
