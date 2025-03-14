@@ -32,6 +32,18 @@ namespace DCGO.CardEffects.BT21
             }
             #endregion
 
+            #region Alternative Digivolve Condition
+            if (timing == EffectTiming.None)
+            {
+                static bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 4 && (targetPermanent.TopCard.ContainsCardName("Greymon") || targetPermanent.TopCard.ContainsTraits("ADVENTURE"));
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
+            }
+            #endregion
+
             #region On Play
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
