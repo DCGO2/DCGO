@@ -809,6 +809,13 @@ public class Permanent
         if (LinkedCard != null)
             RemoveLinkedCard(null);
 
+        yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveFromAllArea(cardSource));
+
+        if (ShowingPermanentCard != null)
+        {
+            yield return ContinuousController.instance.StartCoroutine(ShowingPermanentCard.ShowAddDigivolutionCardEffect());
+        }
+
         LinkedCard = cardSource;
     }
     #endregion

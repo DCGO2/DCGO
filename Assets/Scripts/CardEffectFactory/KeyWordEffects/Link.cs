@@ -10,8 +10,7 @@ public partial class CardEffectFactory
     public static ActivateClass LinkEffect(CardSource card, Func<bool> condition, Func<Permanent, bool> digimonCondition)
     {
         if (card == null) return null;
-        if (!CardEffectCommons.IsExistOnHand(card) || !CardEffectCommons.IsExistOnBattleAreaDigimon(card)) return null;
-        if (CardEffectCommons.HasMatchConditionPermanent(digimonCondition)) return null;
+        if (!CardEffectCommons.IsExistOnHand(card) && !CardEffectCommons.IsExistOnBattleAreaDigimon(card)) return null;
 
         ActivateClass activateClass = new ActivateClass();
         activateClass.SetUpICardEffect("Link", CanUseCondition, card);
@@ -21,10 +20,9 @@ public partial class CardEffectFactory
         {
             if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
             {
-                if (card.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass))
+                if (digimonCondition == null || digimonCondition(permanent))
                 {
-                    if(!permanent.TopCard.CanNotBeAffected(activateClass))
-                        return true;
+                    return true;
                 }
             }
 
