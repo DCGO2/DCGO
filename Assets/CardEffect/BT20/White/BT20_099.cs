@@ -21,7 +21,7 @@ namespace DCGO.CardEffects.BT20
 
                 bool IgnoreColorConditions(Permanent permanent)
                 {
-                    return permanent.TopCard.ContainsCardName("Chaoson") || permanent.TopCard.EqualsTraits("ACCEL");
+                    return permanent.TopCard.ContainsCardName("Chaosmon") || permanent.TopCard.EqualsTraits("ACCEL");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
