@@ -73,7 +73,7 @@ namespace DCGO.CardEffects.ST20
                     yield return ContinuousController.instance.StartCoroutine(
                         new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() }, activateClass).Unsuspend());
 
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition) && TamerTwoColourCount() > 0)
                     {
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
@@ -123,7 +123,7 @@ namespace DCGO.CardEffects.ST20
                     yield return ContinuousController.instance.StartCoroutine(
                         new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() }, activateClass).Unsuspend());
 
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition) && TamerTwoColourCount() > 0)
                     {
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
@@ -161,7 +161,7 @@ namespace DCGO.CardEffects.ST20
 
                 string EffectDiscription()
                 {
-                    return "[Your Turn][Once Per Turn] When your other Digimon are played or digivolve, if any of them have the [ADVENTURE] trait, 1 of your Digimon gains<Alliance> for the turn. Then, 1 of your Digimon may attack.";
+                    return "[Your Turn][Once Per Turn] When your other Digimon are played or digivolve, if any of them have the [ADVENTURE] trait, 1 of your Digimon gains <Alliance> for the turn. Then, 1 of your Digimon may attack.";
                 }
 
                 bool MyDigimonPlayedDigid(Permanent permanent)
