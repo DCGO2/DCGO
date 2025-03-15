@@ -18,11 +18,6 @@ namespace DCGO.CardEffects.BT15
 
             #region On Deletion/On Play Shared
 
-            string EffectDiscription()
-            {
-                return "[On Play] [On Deletion] Trash the top 2 digivolution cards of all of your opponent's Digimon. Then, return 2 of your opponent's Digimon with no digivolution cards to the deck bottom";
-            }
-
             bool CanSelectPermanentCondition1(Permanent permanent)
             {
                 if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
@@ -44,8 +39,13 @@ namespace DCGO.CardEffects.BT15
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash digivolution cards and return 1 Digimon without digivolution cards to the deck bottom", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
+
+                string EffectDescription()
+                {
+                    return "[On Play] Trash the top 2 digivolution cards of all of your opponent's Digimon. Then, return 2 of your opponent's Digimon with no digivolution cards to the deck bottom";
+                }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
@@ -120,8 +120,13 @@ namespace DCGO.CardEffects.BT15
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash digivolution cards and return 1 Digimon without digivolution cards to the deck bottom", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
+
+                string EffectDescription()
+                {
+                    return "[On Deletion] Trash the top 2 digivolution cards of all of your opponent's Digimon. Then, return 2 of your opponent's Digimon with no digivolution cards to the deck bottom";
+                }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
