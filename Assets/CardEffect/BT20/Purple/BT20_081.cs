@@ -262,7 +262,7 @@ namespace DCGO.CardEffects.BT20
                         }
                     }
 
-                    if (card.PermanentOfThisCard().DigivolutionCards.Count(IsTamerCard) >= 0)
+                    if (card.PermanentOfThisCard().DigivolutionCards.Count(IsTamerCard) > 0)
                     {
                         if (CardEffectCommons.HasMatchConditionPermanent(Is10KOrLess))
                         {
