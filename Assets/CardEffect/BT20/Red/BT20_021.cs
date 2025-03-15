@@ -79,7 +79,7 @@ namespace DCGO.CardEffects.BT20
 
                 string EffectDescription()
                 {
-                    return "[OnPlay] [Once Per Turn] Place 1 [Royal Knight] trait card from your hand or trash as this Digimon's bottom digivolution card, delete 1 of your opponent's Digimon with as much or less DP as this digimon.";
+                    return "[On Play] [Once Per Turn] Place 1 [Royal Knight] trait card from your hand or trash as this Digimon's bottom digivolution card, delete 1 of your opponent's Digimon with as much or less DP as this digimon.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
