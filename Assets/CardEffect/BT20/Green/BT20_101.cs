@@ -113,9 +113,9 @@ namespace DCGO.CardEffects.BT20
                     return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent);
                 }
 
-                bool OpponentsDigimon(Permanent permanent)
+                bool SuspendedDigimon(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
+                    return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent) &&
                            permanent.IsSuspended;
                 }
 
@@ -153,15 +153,15 @@ namespace DCGO.CardEffects.BT20
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
 
-                    if (CardEffectCommons.MatchConditionPermanentCount(DigimonCondition) >= 2)
+                    if (CardEffectCommons.MatchConditionPermanentCount(SuspendedDigimon) >= 2)
                     {
-                        int maxCount = Math.Min(1, Mathf.FloorToInt(CardEffectCommons.MatchConditionPermanentCount(OpponentsDigimon)/2));
+                        int maxCount = Math.Max(0, Mathf.FloorToInt(CardEffectCommons.MatchConditionPermanentCount(SuspendedDigimon)/2));
 
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: OpponentsDigimon,
+                            canTargetCondition: SuspendedDigimon,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,
@@ -198,9 +198,9 @@ namespace DCGO.CardEffects.BT20
                     return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent);
                 }
 
-                bool OpponentsDigimon(Permanent permanent)
+                bool SuspendedDigimon(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
+                    return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent) &&
                            permanent.IsSuspended;
                 }
 
@@ -239,15 +239,15 @@ namespace DCGO.CardEffects.BT20
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
 
-                    if (CardEffectCommons.MatchConditionPermanentCount(DigimonCondition) >= 2)
+                    if (CardEffectCommons.MatchConditionPermanentCount(SuspendedDigimon) >= 2)
                     {
-                        int maxCount = Math.Min(1, Mathf.FloorToInt(CardEffectCommons.MatchConditionPermanentCount(OpponentsDigimon) / 2));
+                        int maxCount = Math.Max(0, Mathf.FloorToInt(CardEffectCommons.MatchConditionPermanentCount(SuspendedDigimon)/2));
 
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: OpponentsDigimon,
+                            canTargetCondition: SuspendedDigimon,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,
