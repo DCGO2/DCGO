@@ -182,7 +182,7 @@ namespace DCGO.CardEffects.ST20
 
                 string EffectDiscription()
                 {
-                    return "[Your Turn][Once Per Turn] When your other Digimon are played or digivolve, if any of them have the [ADVENTURE] trait, 1 of your Digimon gains<Alliance> for the turn. Then, 1 of your Digimon may attack.";
+                    return "[Your Turn][Once Per Turn] When your other Digimon are played or digivolve, if any of them have the [ADVENTURE] trait, 1 of your Digimon gains <Alliance> for the turn. Then, 1 of your Digimon may attack.";
                 }
 
                 bool MyDigimonPlayedDigid(Permanent permanent)
