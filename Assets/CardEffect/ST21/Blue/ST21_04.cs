@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-//ST21 Lillymon
+
+//ST21 Zudomon
 namespace DCGO.CardEffects.ST21
 {
-    public class ST21_09 : CEntity_Effect
+    public class ST21_04 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
@@ -44,9 +45,14 @@ namespace DCGO.CardEffects.ST21
                 return Combinations.GetDifferenetColorCardCount(tamerCards) / 2;
             }
 
-            bool CanSelectPermanentCondition(Permanent permanent)
+            bool CanSelectPermanentBounceCondition(Permanent permanent)
             {
-                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) && permanent.IsSuspended;
+                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) && permanent.DigivolutionCards.Count() <= 1;
+            }
+
+            bool CanSelectPermanentStripCondition(Permanent permanent)
+            {
+                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
             }
             #endregion
 
@@ -54,13 +60,13 @@ namespace DCGO.CardEffects.ST21
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Suspend all low-DP digimon and bottom-deck tamers/2", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpICardEffect("Trash sources and bounce", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
-                    return "[On Play] Suspend all of your opponent's 5000 DP or lower Digimon. Then, for every 2 colors your Tamers have, return 1 of their suspended Digimon to the bottom of the deck.";
+                    return "[On Play] From 1 of your opponent's Digimon, trash any 1 digivolution card for every 2 colors your Tamers have. Then, return 1 of their Digimon with 1 or fewer digivolution cards to the hand.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -68,92 +74,106 @@ namespace DCGO.CardEffects.ST21
                     return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
 
+                bool CanSelectCardCondition(CardSource cardSource)
+                {
+                    return !cardSource.CanNotTrashFromDigivolutionCards(activateClass);
+                }
+
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    List<Permanent> suspendTargetPermanents = card.Owner.Enemy.GetBattleAreaDigimons()
-                        .Where(permanent => permanent.HasDP && permanent.DP <= 5000).ToList();
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SelectTrashDigivolutionCards(
+                        permanentCondition: CanSelectPermanentStripCondition,
+                        cardCondition: CanSelectCardCondition,
+                        maxCount: TamerTwoColourCount(),
+                        canNoTrash: false,
+                        isFromOnly1Permanent: true,
+                        activateClass: activateClass
+                    ));
 
-                    yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(suspendTargetPermanents, CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
-
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition) && TamerTwoColourCount() > 0)
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentBounceCondition))
                     {
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                        selectPermanentEffect.SetUp(
+                        SelectPermanentEffect selectPermanentEffect1 = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectPermanentEffect1.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectPermanentCondition,
+                            canTargetCondition: CanSelectPermanentBounceCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: TamerTwoColourCount(),
+                            maxCount: 1,
                             canNoSelect: false,
                             canEndNotMax: false,
                             selectPermanentCoroutine: null,
                             afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.PutLibraryBottom,
+                            mode: SelectPermanentEffect.Mode.Bounce,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage(
-                            "Select suspended Digimon to return to the bottom of the deck.",
-                            "The opponent is selecting suspended digimon to return to the bottom of the deck");
-
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect1.Activate());
                     }
                 }
             }
             #endregion
 
-            #region When Digivolving
+            #region When Digivolgin
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Suspend all low-DP digimon and bottom-deck tamers/2", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpICardEffect("Trash sources and bounce", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
-                    return "[When Digivolving] Suspend all of your opponent's 5000 DP or lower Digimon. Then, for every 2 colors your Tamers have, return 1 of their suspended Digimon to the bottom of the deck.";
+                    return "[When Digivolving] From 1 of your opponent's Digimon, trash any 1 digivolution card for every 2 colors your Tamers have. Then, return 1 of their Digimon with 1 or fewer digivolution cards to the hand.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                }
+
+                bool CanSelectCardCondition(CardSource cardSource)
+                {
+                    return !cardSource.CanNotTrashFromDigivolutionCards(activateClass);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    List<Permanent> suspendTargetPermanents = card.Owner.Enemy.GetBattleAreaDigimons()
-                        .Where(permanent => permanent.HasDP && permanent.DP <= 5000).ToList();
-
-                    yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(suspendTargetPermanents, CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
-
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition) && TamerTwoColourCount() > 0)
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentStripCondition) && TamerTwoColourCount() > 0) 
                     {
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SelectTrashDigivolutionCards(
+                        permanentCondition: CanSelectPermanentStripCondition,
+                        cardCondition: CanSelectCardCondition,
+                        maxCount: TamerTwoColourCount(),
+                        canNoTrash: false,
+                        isFromOnly1Permanent: true,
+                        activateClass: activateClass
+                    ));
+                    }
 
-                        selectPermanentEffect.SetUp(
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentBounceCondition))
+                    {
+
+                        SelectPermanentEffect selectPermanentEffect1 = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectPermanentEffect1.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectPermanentCondition,
+                            canTargetCondition: CanSelectPermanentBounceCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: TamerTwoColourCount(),
+                            maxCount: 1,
                             canNoSelect: false,
                             canEndNotMax: false,
                             selectPermanentCoroutine: null,
                             afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.PutLibraryBottom,
+                            mode: SelectPermanentEffect.Mode.Bounce,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage(
-                            "Select suspended Digimon to return to the bottom of the deck.",
-                            "The opponent is selecting suspended digimon to return to the bottom of the deck");
-
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect1.Activate());
                     }
                 }
             }
             #endregion
-
 
             #region Your Turn
             if (timing == EffectTiming.OnEnterFieldAnyone)
@@ -302,7 +322,6 @@ namespace DCGO.CardEffects.ST21
                 cardEffects.Add(CardEffectFactory.AllianceSelfEffect(isInheritedEffect: true, card: card, condition: Condition));
             }
             #endregion
-
             return cardEffects;
         }
     }
