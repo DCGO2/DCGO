@@ -317,7 +317,7 @@ public class Permanent
             {
                 DP = BaseDP;
 
-                #region DPを変更する効果
+                #region DP By Effect
 
                 List<ICardEffect> cardEffects_ChangeDP = new List<ICardEffect>();
 
@@ -459,6 +459,8 @@ public class Permanent
                 }
                 #endregion
 
+                DP += LinkedDP;
+
                 if (DP < 0)
                 {
                     DP = 0;
@@ -468,6 +470,10 @@ public class Permanent
             return DP;
         }
     }
+
+    public int LinkedDP { get; set; }
+
+    public int DPBoost { get; set; }
     #endregion
 
     #region Will it not receive negative DP effect?
@@ -802,7 +808,7 @@ public class Permanent
     #endregion
 
     #region Add Card Source
-    public IEnumerator AddLinkedCard(CardSource cardSource, ICardEffect cardEffect)
+    public IEnumerator AddLinkedCard(CardSource cardSource, int DP, ICardEffect cardEffect)
     {
         yield return null;
 
@@ -817,6 +823,7 @@ public class Permanent
         }
 
         LinkedCard = cardSource;
+        LinkedDP = DP;
     }
     #endregion
 
@@ -826,6 +833,7 @@ public class Permanent
         yield return null;
 
         cardSources.Remove(cardSource);
+        LinkedDP = 0;
     }
     #endregion
 

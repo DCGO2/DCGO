@@ -11,7 +11,7 @@ namespace DCGO.CardEffects.BT1
 
             if (timing == EffectTiming.OnDeclaration)
             {
-                cardEffects.Add(CardEffectFactory.LinkEffect(card, null, null));
+                cardEffects.Add(CardEffectFactory.LinkEffect(card, 1, 2000));
             }
 
             return cardEffects;

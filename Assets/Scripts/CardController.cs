@@ -2529,6 +2529,7 @@ public class ILinkPermanentToPermanent
 {
     public ILinkPermanentToPermanent(
         List<Permanent[]> permanentArrays,
+        int DP,
         ICardEffect cardEffect)
     {
         permanentArrays.Clone().ForEach(permanentArray => _permanentArrays.Add(permanentArray.CloneArray()));
@@ -2541,6 +2542,7 @@ public class ILinkPermanentToPermanent
     }
 
     List<Permanent[]> _permanentArrays = new List<Permanent[]>();
+    int _DP = 0;
     ICardEffect _cardEffect = null;
     bool _notShowCards = false;
     public bool Linked { get; private set; } = false;
@@ -2743,7 +2745,7 @@ public class ILinkPermanentToPermanent
                         LinkPermanent,
                         ignoreOverflow: true));
 
-                    yield return ContinuousController.instance.StartCoroutine(LinkedPermanent.AddLinkedCard(cardSource, _cardEffect));
+                    yield return ContinuousController.instance.StartCoroutine(LinkedPermanent.AddLinkedCard(cardSource, _DP, _cardEffect));
 
                     cardSource.cEntity_EffectController.InitUseCountThisTurn();
 
