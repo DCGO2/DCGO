@@ -7,10 +7,21 @@ using UnityEngine;
 public partial class CardEffectFactory
 {
     #region Trigger effect of Link
-    public static ActivateClass LinkEffect(CardSource card, Func<bool> condition, Func<Permanent, bool> digimonCondition)
+    /// <summary>
+    /// Linking 1 digimon in hand/field to another digimon
+    /// </summary>
+    /// <param name="CardSource">card being linked</param>
+    /// <param name="int">cost for link</param>
+    /// <param name="int">DP buff</param>
+    /// <param name="Func(bool)">condition for you to be able to link</param>
+    /// <param name="Func(Permanent,bool)">Any permaent condtion for you to link to</param>
+    /// <author>Mike Bunch</author>
+    public static ActivateClass LinkEffect(CardSource card, int cost, int dp, Func<bool> condition = null, Func<Permanent, bool> digimonCondition = null)
     {
         if (card == null) return null;
+        if (!CardEffectCommons.IsOwnerTurn(card)) return null;
         if (!CardEffectCommons.IsExistOnHand(card) && !CardEffectCommons.IsExistOnBattleAreaDigimon(card)) return null;
+        if (!CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition)) return null;
 
         ActivateClass activateClass = new ActivateClass();
         activateClass.SetUpICardEffect("Link", CanUseCondition, card);
@@ -47,6 +58,9 @@ public partial class CardEffectFactory
 
         IEnumerator ActivateCoroutine(Hashtable _hashtable)
         {
+
+            yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(-cost, activateClass));
+
             Permanent selectedPermanent = null;
 
             int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
@@ -80,9 +94,9 @@ public partial class CardEffectFactory
             if (selectedPermanent != null)
             {
                 if (CardEffectCommons.IsExistOnHand(card))
-                    yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddLinkedCard(card, activateClass));
+                    yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddLinkedCard(card, dp, activateClass));
                 else
-                    yield return ContinuousController.instance.StartCoroutine(new ILinkPermanentToPermanent(new List<Permanent[]>() { new Permanent[] { card.PermanentOfThisCard(), selectedPermanent } }, activateClass).LinkPermanent());
+                    yield return ContinuousController.instance.StartCoroutine(new ILinkPermanentToPermanent(new List<Permanent[]>() { new Permanent[] { card.PermanentOfThisCard(), selectedPermanent } }, dp, activateClass).LinkPermanent());
             }
         }
 
