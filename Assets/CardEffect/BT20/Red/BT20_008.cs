@@ -36,14 +36,7 @@ namespace DCGO.CardEffects.BT20
 
                 bool CanSelect(CardSource cardSource)
                 {
-                    if (cardSource.IsDigimon)
-                    {
-                        if (cardSource.ContainsCardName("Sistermon") || cardSource.ContainsCardName("Huckmon") || cardSource.HasRoyalKnightTraits)
-                        {
-                            return true;
-                        }
-                    }
-                    return false;
+                    return cardSource.ContainsCardName("Sistermon") || cardSource.ContainsCardName("Huckmon") || cardSource.HasRoyalKnightTraits;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
