@@ -43,11 +43,6 @@ namespace DCGO.CardEffects.BT15
 
             #region On Play/When Attacking Shared
 
-            string EffectSharedDescription()
-            {
-                return "[On Play] [When Attacking] Return 1 of your opponent's suspended Digimon to the bottom of the deck.";
-            }
-
             bool CanSelectPermanentCondition(Permanent permanent)
             {
                 if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
@@ -79,8 +74,13 @@ namespace DCGO.CardEffects.BT15
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Return 1 suspended Digimon to the bottom of deck", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, false, EffectSharedDescription());
+                activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
+
+                string EffectDescription()
+                {
+                    return "[On Play] Return 1 of your opponent's suspended Digimon to the bottom of the deck.";
+                }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
@@ -121,8 +121,13 @@ namespace DCGO.CardEffects.BT15
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Return 1 suspended Digimon to the bottom of deck", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, false, EffectSharedDescription());
+                activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
+
+                string EffectDescription()
+                {
+                    return "[When Attacking] Return 1 of your opponent's suspended Digimon to the bottom of the deck.";
+                }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {

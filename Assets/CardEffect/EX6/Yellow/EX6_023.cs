@@ -69,12 +69,6 @@ namespace DCGO.CardEffects.EX6
             
             #region On Play/ When Attacking/ ESS Shared
             
-            string EffectSharedDescription()
-            {
-                return
-                    "[On Play] [When Attacking] [Once Per Turn] 1 Digimon may gain [Security Attack -1] until the end of your opponent's turn. Then, if DigiXrosing, delete 1 of your opponent's Digimon with 6000 DP or less.";
-            }
-            
             bool CanSelectSecMinusPermanentSharedCondition(Permanent permanent)
             {
                 if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
@@ -99,9 +93,15 @@ namespace DCGO.CardEffects.EX6
                     "1 Digimon may gain [Security Attack -1] until the end of your opponent's turn. Then, if DigiXrosing, delete 1 of your opponent's Digimon with 6000 DP or less.",
                     CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false,
-                    EffectSharedDescription());
+                    EffectDescription());
                 activateClass.SetHashString("SecurityAttack-1Delete_EX6-023");
                 cardEffects.Add(activateClass);
+            
+                string EffectDescription()
+                {
+                    return
+                        "[On Play] [Once Per Turn] 1 Digimon may gain [Security Attack -1] until the end of your opponent's turn. Then, if DigiXrosing, delete 1 of your opponent's Digimon with 6000 DP or less.";
+                }
                 
                 bool CanUseCondition(Hashtable hashtable)
                 {
@@ -218,9 +218,15 @@ namespace DCGO.CardEffects.EX6
                     "1 Digimon may gain [Security Attack -1] until the end of your opponent's turn",
                     CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false,
-                    EffectSharedDescription());
+                    EffectDescription());
                 activateClass.SetHashString("SecurityAttack-1_EX6-023");
                 cardEffects.Add(activateClass);
+            
+                string EffectDescription()
+                {
+                    return
+                        "[When Attacking] [Once Per Turn] 1 Digimon may gain [Security Attack -1] until the end of your opponent's turn. Then, if DigiXrosing, delete 1 of your opponent's Digimon with 6000 DP or less.";
+                }
                 
                 bool CanUseCondition(Hashtable hashtable)
                 {
