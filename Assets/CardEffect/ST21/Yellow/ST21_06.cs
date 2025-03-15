@@ -178,7 +178,7 @@ namespace DCGO.CardEffects.ST21
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Gain adventure then attack", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
-                activateClass.SetHashString("alliance-attack-ST20-004");
+                activateClass.SetHashString("alliance-attack-ST21-006");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

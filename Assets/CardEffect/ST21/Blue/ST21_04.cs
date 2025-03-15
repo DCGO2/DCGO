@@ -81,14 +81,18 @@ namespace DCGO.CardEffects.ST21
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SelectTrashDigivolutionCards(
-                        permanentCondition: CanSelectPermanentStripCondition,
-                        cardCondition: CanSelectCardCondition,
-                        maxCount: TamerTwoColourCount(),
-                        canNoTrash: false,
-                        isFromOnly1Permanent: true,
-                        activateClass: activateClass
-                    ));
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentStripCondition) && TamerTwoColourCount() > 0) 
+                    { 
+                    
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SelectTrashDigivolutionCards(
+                            permanentCondition: CanSelectPermanentStripCondition,
+                            cardCondition: CanSelectCardCondition,
+                            maxCount: TamerTwoColourCount(),
+                            canNoTrash: false,
+                            isFromOnly1Permanent: true,
+                            activateClass: activateClass
+                        )); 
+                    }
 
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentBounceCondition))
                     {
