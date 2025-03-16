@@ -142,7 +142,7 @@ namespace DCGO.CardEffects.BT20
                                 {
                                     foreach (CardSource selectedCard in selectedCards)
                                     {
-                                        if (selectedCard.CanPlayJogress(true) && selectedCard.CanJogressFromTargetPermanent(card.PermanentOfThisCard(), true))
+                                        if (selectedCard.CanPlayJogress(true))
                                         {
                                             JogressEvoRootsFrameIDs = new int[0];
 
@@ -177,11 +177,6 @@ namespace DCGO.CardEffects.BT20
                                                                 JogressEvoRootsFrameIDs[i] = permanents[i].PermanentFrame.FrameID;
                                                             }
                                                         }
-                                                    }
-
-                                                    if (!permanents.Contains(card.PermanentOfThisCard()))
-                                                    {
-                                                        JogressEvoRootsFrameIDs = new int[0];
                                                     }
 
                                                     yield return null;
@@ -364,7 +359,7 @@ namespace DCGO.CardEffects.BT20
                                 {
                                     foreach (CardSource selectedCard in selectedCards)
                                     {
-                                        if (selectedCard.CanPlayJogress(true) && selectedCard.CanJogressFromTargetPermanent(card.PermanentOfThisCard(), true))
+                                        if (selectedCard.CanPlayJogress(true))
                                         {
                                             JogressEvoRootsFrameIDs = new int[0];
 
@@ -399,11 +394,6 @@ namespace DCGO.CardEffects.BT20
                                                                 JogressEvoRootsFrameIDs[i] = permanents[i].PermanentFrame.FrameID;
                                                             }
                                                         }
-                                                    }
-
-                                                    if (!permanents.Contains(card.PermanentOfThisCard()))
-                                                    {
-                                                        JogressEvoRootsFrameIDs = new int[0];
                                                     }
 
                                                     yield return null;

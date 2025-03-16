@@ -141,9 +141,14 @@ namespace DCGO.CardEffects.BT20
                                     return selectedCardsToPlay.Count == 0;
                                 }
 
+                                bool RemoveOptionsAlreadySelected(List<CardSource> cardSources, CardSource cardSource)
+                                {
+                                    return !cardSources.Contains(cardSource);
+                                }
+
                                 selectCardEffect.SetUp(
                                     canTargetCondition: CanSelectPlayCardCondition,
-                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canTargetCondition_ByPreSelecetedList: RemoveOptionsAlreadySelected,
                                     canEndSelectCondition: null,
                                     canNoSelect: CanNoSelect,
                                     selectCardCoroutine: SelectCardCoroutine2,
