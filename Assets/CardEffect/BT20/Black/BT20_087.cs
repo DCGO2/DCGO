@@ -78,7 +78,8 @@ namespace DCGO.CardEffects.BT20
                     return (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) ||
                             CardEffectCommons.IsPermanentExistsOnOwnerBreedingArea(permanent, card)) &&
                            card.Owner.HandCards.Where(DigivolveToCardCondition).Any(cardSource =>
-                               cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass));
+                               cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass) ||
+                                cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass, isBreedingArea:true));
                 }
 
                 bool DigivolveToCardCondition(CardSource cardSource)

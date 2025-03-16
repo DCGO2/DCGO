@@ -406,7 +406,7 @@ namespace DCGO.CardEffects.P
                     IEnumerator SelectDigimonCoroutine(Permanent permanent)
                     {
                         if (permanent != null)
-                            yield return ContinuousController.instance.StartCoroutine(new IDegeneration(permanent, 4, activateClass).Degeneration());
+                            yield return ContinuousController.instance.StartCoroutine(new IDegeneration(permanent, 1, activateClass).Degeneration());
                     }
 
                     selectPermanentEffect.SetUp(
@@ -484,7 +484,7 @@ namespace DCGO.CardEffects.P
                     IEnumerator SelectDigimonCoroutine(Permanent permanent)
                     {
                         if (permanent != null)
-                            yield return ContinuousController.instance.StartCoroutine(new IDegeneration(permanent, 4, activateClass).Degeneration());
+                            yield return ContinuousController.instance.StartCoroutine(new IDegeneration(permanent, 1, activateClass).Degeneration());
                     }
 
                     selectPermanentEffect.SetUp(

@@ -52,9 +52,9 @@ public class P_078 : CEntity_Effect
                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(new List<CardSource>() { topCard }, "Security Top card", true, true));
 
                     if (topCard.IsDigimon)
-                    {
                         yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
-                    }
+
+                    topCard.SetReverse();
                 }
             }
         }

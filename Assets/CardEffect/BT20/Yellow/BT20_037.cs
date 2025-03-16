@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using UnityEngine;
 
 namespace DCGO.CardEffects.BT20
 {
@@ -111,7 +112,7 @@ namespace DCGO.CardEffects.BT20
                 {
                     if(card.PermanentOfThisCard().DigivolutionCards.Count(IsLevel6) > 0)
                     {
-                        int maxCount = card.PermanentOfThisCard().DigivolutionCards.Count(IsLevel6);
+                        int maxCount = Mathf.Min(CardEffectCommons.MatchConditionPermanentCount(OpponentsDigimonOrTamer), card.PermanentOfThisCard().DigivolutionCards.Count(IsLevel6));
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
@@ -127,7 +128,7 @@ namespace DCGO.CardEffects.BT20
                             mode: SelectPermanentEffect.Mode.Tap,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage($"Select {maxCount} Digimon to suspend.", $"The opponent is selecting {maxCount} Digimon to suspend.");
+                        selectPermanentEffect.SetUpCustomMessage($"Select {maxCount} Digimon/Tamers to suspend.", $"The opponent is selecting {maxCount} Digimon/Tamers to suspend.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
