@@ -18,7 +18,7 @@ namespace DCGO.CardEffects.ST20
                     return permanent.Level == 2 && permanent.TopCard.EqualsTraits("ADVENTURE");
                 }
 
-                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(PermanentCondition, 2, false, card, null));
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(PermanentCondition, 0, false, card, null));
             }
             #endregion
 

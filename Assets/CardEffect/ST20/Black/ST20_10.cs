@@ -61,7 +61,7 @@ namespace DCGO.CardEffects.ST20
                 {
                     if (cardSource != null)
                     {
-                        //compared to the code I was copying from, removed a check that owner matched between cardsource and card, as that should be handled by whose hand the card is in. If this breaks, try putting it back.
+                        //compared to the code I was copying from (ST8-04), removed a check that owner matched between cardsource and card, as that should be handled by whose hand the card is in. If this breaks, try putting it back.
                         if (card.Owner.HandCards.Contains(cardSource))
                         {
                             return cardSource.EqualsCardName("WarGreymon");
