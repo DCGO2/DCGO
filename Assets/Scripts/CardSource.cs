@@ -51,6 +51,7 @@ public class CardSource : MonoBehaviour
         IsFlipped = false;
 
         GManager.OnCardFlippedChanged?.Invoke();
+        GManager.OnSecurityStackChanged?.Invoke(Owner);
     }
     #endregion
 
@@ -60,6 +61,7 @@ public class CardSource : MonoBehaviour
         IsFlipped = true;
 
         GManager.OnCardFlippedChanged?.Invoke();
+        GManager.OnSecurityStackChanged?.Invoke(Owner);
     }
     #endregion
 

@@ -132,6 +132,7 @@ namespace DCGO.CardEffects.BT20
                                 {
                                     return cardSource.IsDigimon && cardSource.EqualsTraits("Ghost") &&
                                            cardSource.HasLevel && cardSource.Level == returnedCard.Level &&
+                                           !selectedCardsToPlay.Contains(cardSource) &&
                                            CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false,
                                                cardEffect: activateClass);
                                 }
@@ -143,7 +144,10 @@ namespace DCGO.CardEffects.BT20
 
                                 bool RemoveOptionsAlreadySelected(List<CardSource> cardSources, CardSource cardSource)
                                 {
-                                    return !cardSources.Contains(cardSource);
+                                    if (cardSources.Contains(cardSource))
+                                        return false;
+
+                                    return true;
                                 }
 
                                 selectCardEffect.SetUp(

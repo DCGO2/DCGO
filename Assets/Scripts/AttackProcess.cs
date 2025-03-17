@@ -146,23 +146,22 @@ public class AttackProcess : MonoBehaviourPunCallbacks
             // target arrow
             if (DefendingPermanent == null)
             {
-                if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(DefendingPermanent))
-                {
-                    yield return GManager.instance.OnTargetArrow(
+                yield return GManager.instance.OnTargetArrow(
                         AttackingPermanent.PermanentFrame.GetLocalCanvasPosition() + AttackingPermanent.TopCard.Owner.playerUIObjectParent.localPosition,
                         GManager.instance.turnStateMachine.gameContext.NonTurnPlayer.SecurityAttackLocalCanvasPosition + GManager.instance.turnStateMachine.gameContext.NonTurnPlayer.playerUIObjectParent.localPosition,
                         null,
                         null);
-                }
             }
-
             else
             {
-                yield return GManager.instance.OnTargetArrow(
-                    AttackingPermanent.PermanentFrame.GetLocalCanvasPosition() + AttackingPermanent.TopCard.Owner.playerUIObjectParent.localPosition,
-                    DefendingPermanent.PermanentFrame.GetLocalCanvasPosition() + DefendingPermanent.TopCard.Owner.playerUIObjectParent.localPosition,
-                    null,
-                    null);
+                if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(DefendingPermanent))
+                {
+                    yield return GManager.instance.OnTargetArrow(
+                        AttackingPermanent.PermanentFrame.GetLocalCanvasPosition() + AttackingPermanent.TopCard.Owner.playerUIObjectParent.localPosition,
+                        DefendingPermanent.PermanentFrame.GetLocalCanvasPosition() + DefendingPermanent.TopCard.Owner.playerUIObjectParent.localPosition,
+                        null,
+                        null);
+                }
             }
 
             // activate cutin effects

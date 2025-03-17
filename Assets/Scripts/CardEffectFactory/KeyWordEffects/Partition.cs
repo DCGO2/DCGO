@@ -71,15 +71,15 @@ public partial class CardEffectFactory
 
         if (partitionConditions[0].hasTwoColor)
         {
-            sourceOneCard = targetPermanent.cardSources
+            sourceOneCard = targetPermanent.DigivolutionCards
                 .Clone()
                 .Filter(source =>
-                    source.CardColors.Contains(partitionConditions[0].Color) || source.CardColors.Contains(partitionConditions[0].Color2)
+                    (source.CardColors.Contains(partitionConditions[0].Color) || source.CardColors.Contains(partitionConditions[0].Color2))
                     && (source.HasLevel && source.Level == partitionConditions[0].Level));
         }
         else
         {
-            sourceOneCard = targetPermanent.cardSources
+            sourceOneCard = targetPermanent.DigivolutionCards
                 .Clone()
                 .Filter(source =>
                     source.CardColors.Contains(partitionConditions[0].Color)
@@ -88,19 +88,19 @@ public partial class CardEffectFactory
 
         if (partitionConditions[1].hasTwoColor)
         {
-            sourceTwoCard = targetPermanent.cardSources
+            sourceTwoCard = targetPermanent.DigivolutionCards
                 .Clone()
                 .Filter(source =>
-                    source.CardColors.Contains(partitionConditions[1].Color) || source.CardColors.Contains(partitionConditions[1].Color2)
+                    (source.CardColors.Contains(partitionConditions[1].Color) || source.CardColors.Contains(partitionConditions[1].Color2))
                     && (source.HasLevel && source.Level == partitionConditions[1].Level));
         }
         else
         {
-            sourceTwoCard = targetPermanent.cardSources
+            sourceTwoCard = targetPermanent.DigivolutionCards
                 .Clone()
                 .Filter(source =>
-                    source.CardColors.Contains(partitionConditions[1].Color)
-                    && (source.HasLevel && source.Level == partitionConditions[1].Level));
+                    source.CardColors.Contains(partitionConditions[1].Color) && 
+                    (source.HasLevel && source.Level == partitionConditions[1].Level));
         }
 
         ActivateClass activateClass = new ActivateClass();
@@ -151,7 +151,7 @@ public partial class CardEffectFactory
             if (sourceTwoCard.Count == 1)
                 sourceOneCard = sourceOneCard.Except(sourceTwoCard).ToList();
 
-            return CardEffectCommons.PartitionProcess(activateClass, targetPermanent, sourceOneCard, sourceTwoCard);
+            return CardEffectCommons.PartitionProcess(activateClass, targetPermanent, sourceOneCard, sourceTwoCard, partitionConditions);
         }
 
         return activateClass;

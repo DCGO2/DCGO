@@ -75,11 +75,19 @@ namespace DCGO.CardEffects.BT20
 
                 bool DigivolveFromPermanentCondition(Permanent permanent)
                 {
-                    return (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) ||
-                            CardEffectCommons.IsPermanentExistsOnOwnerBreedingArea(permanent, card)) &&
-                           card.Owner.HandCards.Where(DigivolveToCardCondition).Any(cardSource =>
-                               cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass) ||
-                                cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass, isBreedingArea:true));
+                    if(CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                    {
+                        return card.Owner.HandCards.Where(DigivolveToCardCondition).Any(cardSource =>
+                               cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass));
+                    }
+
+                    if(CardEffectCommons.IsPermanentExistsOnOwnerBreedingArea(permanent, card))
+                    {
+                        return card.Owner.HandCards.Where(DigivolveToCardCondition).Any(cardSource =>
+                               cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass, isBreedingArea: true));
+                    }
+
+                    return false;
                 }
 
                 bool DigivolveToCardCondition(CardSource cardSource)
@@ -92,7 +100,7 @@ namespace DCGO.CardEffects.BT20
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card) &&
                            CardEffectCommons.CanActivateSuspendCostEffect(card) &&
-                           CardEffectCommons.HasMatchConditionPermanent(DigivolveFromPermanentCondition);
+                           CardEffectCommons.HasMatchConditionPermanent(DigivolveFromPermanentCondition,true);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

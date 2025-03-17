@@ -113,7 +113,9 @@ namespace DCGO.CardEffects.BT20
                                     CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
                                     canNotAffectedClass.SetUpICardEffect("Isn't affected by opponent's effects.", CanUseConditionImmunity, card);
                                     canNotAffectedClass.SetUpCanNotAffectedClass(CardCondition: CardCondition, SkillCondition: SkillCondition);
-                                    immunityPermanent.UntilEachTurnEndEffects.Add(GetCardEffect);
+                                    immunityPermanent.UntilEachTurnEndEffects.Add((_timing) => canNotAffectedClass);
+
+                                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateBuffEffect(immunityPermanent));
 
                                     bool CanUseConditionImmunity(Hashtable hashtable)
                                     {
@@ -124,7 +126,7 @@ namespace DCGO.CardEffects.BT20
                                     {
                                         if (CardEffectCommons.IsExistOnBattleAreaDigimon(cardSource))
                                         {
-                                            if (card.Owner == cardSource.Owner)
+                                            if (cardSource == immunityPermanent.TopCard)
                                             {
                                                 return true;
                                             }
@@ -142,16 +144,6 @@ namespace DCGO.CardEffects.BT20
 
                                         return false;
                                     }
-
-                                    ICardEffect GetCardEffect(EffectTiming _timing)
-                                    {
-                                        if (_timing == EffectTiming.None)
-                                        {
-                                            return canNotAffectedClass;
-                                        }
-                                        return null;
-                                    }
-
                                 }
                             }
                             #endregion
