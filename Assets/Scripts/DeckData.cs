@@ -785,7 +785,6 @@ public class DeckData
         }
 
         DeckData deckData1 = DeckBuildingRule.ModifiedDeckData(deckData);
-
         return deckData1;
     }
     #endregion
