@@ -631,11 +631,24 @@ public class Permanent
     #endregion
 
     #region Digivolution Cards
-    public List<CardSource> DigivolutionCards => cardSources.Filter(cardSource => cardSource != TopCard);
+    public List<CardSource> DigivolutionCards => cardSources.Filter(cardSource => cardSource != TopCard || LinkedCards.Any(linked => linked.Source == cardSource));
     #endregion
 
-    #region Linked Card
-    public CardSource LinkedCard = null;
+    #region Linked Cards
+    public int LinkedMax { get; set; } = 1;
+    public struct LinkCard
+    {
+        public LinkCard(int dp, CardSource source)
+        {
+            DP = dp;
+            Source = source;
+        }
+
+        public int DP { get; }
+        public CardSource Source { get; }
+    }
+
+    public List<LinkCard> LinkedCards = new List<LinkCard>();
     #endregion
 
     #region Add Card Source
@@ -812,7 +825,7 @@ public class Permanent
     {
         yield return null;
 
-        if (LinkedCard != null)
+        if(LinkedCards.Count >= LinkedMax)
             RemoveLinkedCard(null);
 
         yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveFromAllArea(cardSource));
@@ -822,8 +835,11 @@ public class Permanent
             yield return ContinuousController.instance.StartCoroutine(ShowingPermanentCard.ShowAddDigivolutionCardEffect());
         }
 
-        LinkedCard = cardSource;
-        LinkedDP = DP;
+        LinkedCards.Insert(0, new LinkCard(0,cardSource));
+        LinkedDP += DP;
+
+        cardSources.Insert(1, cardSource);
+        cardSource.SetFace();
     }
     #endregion
 
@@ -833,7 +849,6 @@ public class Permanent
         yield return null;
 
         cardSources.Remove(cardSource);
-        LinkedDP = 0;
     }
     #endregion
 
@@ -843,7 +858,9 @@ public class Permanent
         //TODO: Add event call if something was removed
         yield return null;
 
-        LinkedCard = null;
+        LinkedDP -= LinkedCards[0].DP;
+        RemoveCardSource(LinkedCards[0].Source);
+        LinkedCards.RemoveAt(0);
     }
     #endregion
 
