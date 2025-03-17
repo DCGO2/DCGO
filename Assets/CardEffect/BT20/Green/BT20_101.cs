@@ -100,7 +100,7 @@ namespace DCGO.CardEffects.BT20
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Suspend 1 Digimon, Then return 1 to bottom of deck for every 2 suspended", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -116,6 +116,12 @@ namespace DCGO.CardEffects.BT20
                 bool SuspendedDigimon(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent) &&
+                           permanent.IsSuspended;
+                }
+
+                bool OpponentsSuspendedDigimon(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
                            permanent.IsSuspended;
                 }
 
@@ -155,17 +161,17 @@ namespace DCGO.CardEffects.BT20
 
                     if (CardEffectCommons.MatchConditionPermanentCount(SuspendedDigimon) >= 2)
                     {
-                        int maxCount = Math.Max(0, Mathf.FloorToInt(CardEffectCommons.MatchConditionPermanentCount(SuspendedDigimon)/2));
+                        int maxCount = Math.Min(CardEffectCommons.MatchConditionPermanentCount(OpponentsSuspendedDigimon), Mathf.FloorToInt(CardEffectCommons.MatchConditionPermanentCount(SuspendedDigimon) / 2));
 
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: SuspendedDigimon,
+                            canTargetCondition: OpponentsSuspendedDigimon,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,
-                            canNoSelect: false,
+                            canNoSelect: true,
                             canEndNotMax: false,
                             selectPermanentCoroutine: null,
                             afterSelectPermanentCoroutine: null,
@@ -185,7 +191,7 @@ namespace DCGO.CardEffects.BT20
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Suspend 1 Digimon, Then return 1 to bottom of deck for every 2 suspended", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -201,6 +207,12 @@ namespace DCGO.CardEffects.BT20
                 bool SuspendedDigimon(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent) &&
+                           permanent.IsSuspended;
+                }
+
+                bool OpponentsSuspendedDigimon(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
                            permanent.IsSuspended;
                 }
 
@@ -241,17 +253,17 @@ namespace DCGO.CardEffects.BT20
 
                     if (CardEffectCommons.MatchConditionPermanentCount(SuspendedDigimon) >= 2)
                     {
-                        int maxCount = Math.Max(0, Mathf.FloorToInt(CardEffectCommons.MatchConditionPermanentCount(SuspendedDigimon)/2));
+                        int maxCount = Math.Min(CardEffectCommons.MatchConditionPermanentCount(OpponentsSuspendedDigimon), Mathf.FloorToInt(CardEffectCommons.MatchConditionPermanentCount(SuspendedDigimon)/2));
 
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: SuspendedDigimon,
+                            canTargetCondition: OpponentsSuspendedDigimon,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,
-                            canNoSelect: false,
+                            canNoSelect: true,
                             canEndNotMax: false,
                             selectPermanentCoroutine: null,
                             afterSelectPermanentCoroutine: null,
