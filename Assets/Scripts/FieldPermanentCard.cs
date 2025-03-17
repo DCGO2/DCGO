@@ -523,12 +523,12 @@ public class FieldPermanentCard : MonoBehaviour
 
             if (LinkedDPText != null)
             {
-                if (ThisPermanent.LinkedCard != null)
+                if (ThisPermanent.LinkedCards.Count > 0)
                 {
                     LinkedDPText.transform.parent.gameObject.SetActive(true);
 
-                    if (LinkedDPText.text != $"+{2000}")
-                        LinkedDPText.text = $"+{2000}";
+                    if (LinkedDPText.text != $"+{ThisPermanent.LinkedDP}")
+                        LinkedDPText.text = $"+{ThisPermanent.LinkedDP}";
                 }
 
                 else

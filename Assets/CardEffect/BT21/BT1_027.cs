@@ -14,6 +14,16 @@ namespace DCGO.CardEffects.BT1
                 cardEffects.Add(CardEffectFactory.LinkEffect(card, 1, 2000));
             }
 
+            if(timing == EffectTiming.None)
+            {
+                bool CanUseCondition()
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                }
+
+                cardEffects.Add(CardEffectFactory.BlockerStaticEffect(permanentCondition: null, isInheritedEffect: true, card: card, condition: CanUseCondition));
+            }
+
             return cardEffects;
         }
     }
