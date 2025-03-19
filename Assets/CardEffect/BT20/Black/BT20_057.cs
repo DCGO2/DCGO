@@ -14,7 +14,7 @@ namespace DCGO.CardEffects.BT20
             #region Reduce Play Cost
             bool HasProperTraitInPlay(Permanent permanent)
             {
-                if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
+                if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
                 {
                     if (permanent.IsDigimon)
                     {

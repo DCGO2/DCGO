@@ -177,7 +177,8 @@ namespace DCGO.CardEffects.BT19
 
                     if (selectedPermanent != null)
                     {
-                        int selectedLevel = selectedPermanent.Level;
+                        // If selected digimon has no level, set reference level to 0.
+                        int selectedLevel = selectedPermanent.TopCard.HasLevel ? selectedPermanent.Level : 0;
 
                         yield return ContinuousController.instance.StartCoroutine(
                             new DeckBottomBounceClass(new List<Permanent> { selectedPermanent }, hashtable).DeckBounce());

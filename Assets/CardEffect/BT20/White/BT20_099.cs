@@ -64,15 +64,7 @@ namespace DCGO.CardEffects.BT20
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
-                    {
-                        if (permanent.DigivolutionCards.Count((cardSource) => cardSource.CardNames.Contains("X Antibody") || cardSource.CardNames.Contains("XAntibody")) == 0)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
