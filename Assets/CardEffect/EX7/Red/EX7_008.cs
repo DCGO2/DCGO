@@ -10,6 +10,7 @@ namespace DCGO.CardEffects.EX7
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Digivolution Condition
+
             if (timing == EffectTiming.None)
             {
                 bool PermanentCondition(Permanent targetPermanent)
@@ -19,9 +20,11 @@ namespace DCGO.CardEffects.EX7
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 0, ignoreDigivolutionRequirement: false, card: card, condition: null));
             }
+
             #endregion
 
             #region On Play
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -79,7 +82,7 @@ namespace DCGO.CardEffects.EX7
                         {
                         new SimplifiedSelectCardConditionClass(
                             canTargetCondition:CanSelectCardCondition,
-                            message: "Select 1 Digimon card with [Three Musketeers] in its traits.",
+                            message: "Select 1 Digimon card with [Three Musketeers] in its Texr.",
                             mode: SelectCardEffect.Mode.AddHand,
                             maxCount: 1,
                             selectCardCoroutine: null),
@@ -95,9 +98,11 @@ namespace DCGO.CardEffects.EX7
                     ));
                 }
             }
+
             #endregion
 
             #region Inherit
+
             if (timing == EffectTiming.None)
             {
                 bool Condition()
@@ -116,6 +121,7 @@ namespace DCGO.CardEffects.EX7
                     card: card,
                     condition: Condition));
             }
+
             #endregion
 
             return cardEffects;
