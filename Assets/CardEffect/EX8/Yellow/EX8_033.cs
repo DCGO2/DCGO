@@ -280,6 +280,15 @@ namespace DCGO.CardEffects.EX8
                     {
                         if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
                         {
+                            CardSource selectedCard = null;
+
+                            IEnumerator SelectCardCoroutine(CardSource cardSource)
+                            {
+                                selectedCard = cardSource;
+
+                                yield return null;
+                            }
+
                             int maxCount = Math.Min(1, card.Owner.TrashCards.Count(CanSelectCardCondition));
 
                             SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
@@ -290,19 +299,37 @@ namespace DCGO.CardEffects.EX8
                                 canEndSelectCondition: null,
                                 canNoSelect: () => false,
                                 selectCardCoroutine: null,
-                                afterSelectCardCoroutine: null,
+                                afterSelectCardCoroutine: AfterSelectCardCoroutine,
                                 message: "Select 1 card to add to your hand.",
                                 maxCount: maxCount,
                                 canEndNotMax: false,
                                 isShowOpponent: true,
-                                mode: SelectCardEffect.Mode.AddHand,
-                                root: SelectCardEffect.Root.Trash,
-                                customRootCardList: null,
+                                mode: SelectCardEffect.Mode.Custom,
+                                root: SelectCardEffect.Root.Custom,
+                                customRootCardList: card.Owner.TrashCards,
                                 canLookReverseCard: true,
                                 selectPlayer: card.Owner,
                                 cardEffect: activateClass);
 
                             yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+
+                            IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
+                            {
+                                if (cardSources.Count == 1)
+                                {
+                                    var card = cardSources[0];
+                                    var message = card.IsDigiEgg ? "Sent Digi-Egg to egg deck" : "Sent Card to Hand";
+                                    if (card.IsDigiEgg)
+                                    {
+                                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources));
+                                    }
+                                    else
+                                    {
+                                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.AddThisCardToHand(selectedCard, activateClass));
+                                    }
+                                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(cardSources, message, true, true));
+                                }
+                            }
                         }
                     }
                 }
