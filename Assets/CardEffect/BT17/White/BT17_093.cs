@@ -12,6 +12,7 @@ namespace DCGO.CardEffects.BT17
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region All Turns - When you Hatch
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -26,7 +27,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool IsDigiEggHatch(Permanent permanent)
                 {
-                    if(CardEffectCommons.IsPermanentExistsOnOwnerBreedingArea(permanent, card))
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBreedingArea(permanent, card))
                     {
                         return permanent.TopCard.IsDigiEgg;
                     }
@@ -63,9 +64,11 @@ namespace DCGO.CardEffects.BT17
                     yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
                 }
             }
+
             #endregion
 
             #region End of Your Turn
+
             if (timing == EffectTiming.OnEndTurn)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -82,7 +85,7 @@ namespace DCGO.CardEffects.BT17
                 {
                     if (source.IsTamer)
                     {
-                        if(source.ContainsCardName("Tai Kamiya") || source.ContainsCardName("Kari Kamiya"))
+                        if (source.ContainsCardName("Tai Kamiya") || source.ContainsCardName("Kari Kamiya"))
                         {
                             return CardEffectCommons.CanPlayAsNewPermanent(source, false, activateClass);
                         }
@@ -91,10 +94,9 @@ namespace DCGO.CardEffects.BT17
                     return false;
                 }
 
-
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if(CardEffectCommons.IsOwnerTurn(card))
+                    if (CardEffectCommons.IsOwnerTurn(card))
                         return isExistOnField(card);
 
                     return false;
@@ -114,7 +116,7 @@ namespace DCGO.CardEffects.BT17
                         };
 
                     string selectPlayerMessage = "Will you return this tamer to bottom of deck?";
-                    string notSelectPlayerMessage = "The opponent is choosing wether or not to return tamer to bottom of deck.";
+                    string notSelectPlayerMessage = "The opponent is choosing whether or not to return tamer to bottom of the deck.";
 
                     GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
 
@@ -169,13 +171,16 @@ namespace DCGO.CardEffects.BT17
                     }
                 }
             }
+
             #endregion
 
             #region Security Effect
+
             if (timing == EffectTiming.SecuritySkill)
             {
                 cardEffects.Add(CardEffectFactory.PlaySelfTamerSecurityEffect(card));
             }
+
             #endregion
 
             return cardEffects;
