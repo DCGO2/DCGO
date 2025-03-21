@@ -93,6 +93,7 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
     {
         _skillInfos = skillInfos.Clone();
     }
+
     public void SetUpCustomMessage(string CustomMessage, string CustomMessage_Enemy)
     {
         _customMessage = CustomMessage;
@@ -123,7 +124,6 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
 
     Func<CardSource, IEnumerator> _selectCardCoroutine = null;
 
-
     Func<List<CardSource>, IEnumerator> _afterSelectCardCoroutine = null;
 
     string _message = "";
@@ -150,6 +150,7 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
     {
         AddHand,
         Discard,
+
         // PutLibraryTop,
         // PutLibraryBottom,
         Custom,
@@ -246,7 +247,6 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
                     return true;
                 }
             }
-
             else
             {
                 return true;
@@ -316,7 +316,6 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
                 {
                     AutoSelect();
                 }
-
                 else
                 {
                     List<int> targetCardIDs = new List<int>();
@@ -324,11 +323,11 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
                     GManager.instance.turnStateMachine.IsSelecting = true;
 
                     #region Message Display
+
                     if (!string.IsNullOrEmpty(_customMessage))
                     {
                         GManager.instance.commandText.OpenCommandText(_customMessage, _isDigiXros);
                     }
-
                     else
                     {
                         string message = "";
@@ -364,6 +363,7 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
                     }
 
                     #region 並び替え
+
                     if (_root == Root.Library || _root == Root.Trash)
                     {
                         RootCards = DeckData.SortedCardsList(RootCards);
@@ -379,7 +379,6 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
                                 {
                                     matchConditionCards.Add(cardSource);
                                 }
-
                                 else
                                 {
                                     notMatchConditionCards.Add(cardSource);
@@ -399,9 +398,11 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
                             RootCards.Add(cardSource);
                         }
                     }
+
                     #endregion
 
                     #region 効果発動中・発動待機中表示
+
                     if (_cardEffect != null)
                     {
                         if (_cardEffect.EffectSourceCard != null)
@@ -423,7 +424,6 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
 
                                                 skillInfoArray[i] = new SkillInfo(cardEffect, null, EffectTiming.None);
                                             }
-
                                             else
                                             {
                                                 if (GManager.instance.autoProcessing.executingMultipleSkills != null)
@@ -464,6 +464,7 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
                             }
                         }
                     }
+
                     #endregion
 
                     GManager.instance.selectCardPanel._customCountText = _customCountText;
@@ -494,24 +495,24 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
                     photonView.RPC("SetTargetCard", RpcTarget.All, targetCardIDs.ToArray());
                 }
             }
-
             else
             {
                 if (!string.IsNullOrEmpty(_customMessage_Enemy))
                 {
                     GManager.instance.commandText.OpenCommandText(_customMessage_Enemy, _isDigiXros);
                 }
-
                 else
                 {
                     GManager.instance.commandText.OpenCommandText("The opponent is selecting cards.", _isDigiXros);
                 }
 
                 #region AI
+
                 if (GManager.instance.IsAI)
                 {
                     AutoSelect();
                 }
+
                 #endregion
             }
 
@@ -561,7 +562,6 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
                         {
                             SetTargetCard(CardIDs.ToArray());
                         }
-
                         else
                         {
                             photonView.RPC("SetTargetCard", RpcTarget.All, CardIDs.ToArray());
@@ -584,13 +584,13 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
             yield return new WaitWhile(() => GManager.instance.commandText.gameObject.activeSelf);
 
             #region 選択されたカードを表示
+
             if (_targetCards.Count > 0 && _showCard)
             {
                 if (_targetCards.Count((cardSource) => cardSource.IsFlipped) > 0 && !_showReverseCard)
                 {
                     //表示しない
                 }
-
                 else
                 {
                     if (_isShowOpponent || (_selectPlayer.isYou && _targetCards.Count((cardSource) => cardSource.Owner == _selectPlayer) > 0))
@@ -599,7 +599,6 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
                         {
                             yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(_targetCards, _customMessage_ShowCard, true, true));
                         }
-
                         else
                         {
                             switch (_mode)
@@ -620,6 +619,7 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
                     }
                 }
             }
+
             #endregion
 
             Hashtable hashtable = CardEffectCommons.CardEffectHashtable(_cardEffect);
@@ -630,12 +630,10 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
             {
                 log += $"\nCard{Utils.PluralFormSuffix(_targetCards.Count)} added to hand:";
             }
-
             else if (_mode == Mode.AddHand)
             {
                 log += $"\nTrash Card{Utils.PluralFormSuffix(_targetCards.Count)}:";
             }
-
             else
             {
                 log += $"\nSelected Card{Utils.PluralFormSuffix(_targetCards.Count)}:";
@@ -659,15 +657,18 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
                         cardSource.SetFace();
 
                         if (cardSource.IsDigiEgg) yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(new List<CardSource> { cardSource }));
-                        if (cardSource.PermanentOfThisCard() != null)
+                        else
                         {
-                            if (cardSource.PermanentOfThisCard().DigivolutionCards.Contains(cardSource))
+                            if (cardSource.PermanentOfThisCard() != null)
                             {
-                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().RemoveDigivolveRootEffect(cardSource, cardSource.PermanentOfThisCard()));
+                                if (cardSource.PermanentOfThisCard().DigivolutionCards.Contains(cardSource))
+                                {
+                                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().RemoveDigivolveRootEffect(cardSource, cardSource.PermanentOfThisCard()));
+                                }
                             }
-                        }
 
-                        handCards.Add(cardSource);
+                            handCards.Add(cardSource);
+                        }
                     }
                     break;
 
@@ -679,7 +680,7 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
                             List<IDiscardHand> discardHands = _targetCards.Map(cardSource => new IDiscardHand(cardSource, hashtable));
                             yield return ContinuousController.instance.StartCoroutine(new IDiscardHands(discardHands, _cardEffect).DiscardHands());
                         }
-                        else                        
+                        else
                             yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddTrashCard(cardSource));
                     }
                     break;
@@ -701,6 +702,7 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
             }
 
             #region ログ追加
+
             if (!_notAddLog)
             {
                 if (_isShowOpponent || _selectPlayer.isYou)
@@ -713,6 +715,7 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
                     }
                 }
             }
+
             #endregion
         }
 
