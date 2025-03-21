@@ -658,6 +658,7 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
                     {
                         cardSource.SetFace();
 
+                        if (cardSource.IsDigiEgg) yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(new List<CardSource> { cardSource }));
                         if (cardSource.PermanentOfThisCard() != null)
                         {
                             if (cardSource.PermanentOfThisCard().DigivolutionCards.Contains(cardSource))
