@@ -192,8 +192,7 @@ namespace DCGO.CardEffects.EX8
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.HasMatchConditionPermanent(OpponentsDigimon) &&
-                           CardEffectCommons.HasMatchConditionPermanent(IsOptionCard);
+                    return CardEffectCommons.HasMatchConditionPermanent(IsOptionCard);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -236,27 +235,30 @@ namespace DCGO.CardEffects.EX8
 
                         IEnumerator SuccessProcess()
                         {
-                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: OpponentsDigimon,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: 1,
-                                canNoSelect: false,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: SelectPermanentCoroutine,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Custom,
-                                cardEffect: activateClass);
-
-                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to De-Digivolve.", "The opponent is selecting 1 Digimon to De-Digivolve.");
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                            IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                            if (CardEffectCommons.HasMatchConditionPermanent(OpponentsDigimon))
                             {
-                                yield return ContinuousController.instance.StartCoroutine(new IDegeneration(permanent, 2, activateClass).Degeneration());
+                                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                                selectPermanentEffect.SetUp(
+                                    selectPlayer: card.Owner,
+                                    canTargetCondition: OpponentsDigimon,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    maxCount: 1,
+                                    canNoSelect: false,
+                                    canEndNotMax: false,
+                                    selectPermanentCoroutine: SelectPermanentCoroutine,
+                                    afterSelectPermanentCoroutine: null,
+                                    mode: SelectPermanentEffect.Mode.Custom,
+                                    cardEffect: activateClass);
+
+                                selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to De-Digivolve.", "The opponent is selecting 1 Digimon to De-Digivolve.");
+                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                                IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                                {
+                                    yield return ContinuousController.instance.StartCoroutine(new IDegeneration(permanent, 2, activateClass).Degeneration());
+                                }
                             }
                         }
                     }

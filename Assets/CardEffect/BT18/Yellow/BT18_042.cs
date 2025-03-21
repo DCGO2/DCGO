@@ -97,6 +97,7 @@ namespace DCGO.CardEffects.BT18
 
                     IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
+                        if (cardSource.IsACE) yield return ContinuousController.instance.StartCoroutine(new AceOverflowClass(new List<CardSource> { cardSource }).Overflow());
                         yield return ContinuousController.instance.StartCoroutine(
                             CardObjectController.AddSecurityCard(cardSource, toTop: false));
 
@@ -178,6 +179,7 @@ namespace DCGO.CardEffects.BT18
 
                     IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
+                        if (cardSource.IsACE) yield return ContinuousController.instance.StartCoroutine(new AceOverflowClass(new List<CardSource> { cardSource }).Overflow());
                         yield return ContinuousController.instance.StartCoroutine(
                             CardObjectController.AddSecurityCard(cardSource, toTop: false));
 

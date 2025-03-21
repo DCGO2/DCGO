@@ -140,7 +140,7 @@ namespace DCGO.CardEffects.BT18
 
                     IEnumerator DeDigivolvePermanent(Permanent permanent)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(new IDegeneration(permanent, maxCount, activateClass).Degeneration());
+                        yield return ContinuousController.instance.StartCoroutine(new IDegeneration(permanent, maxCount, activateClass, true).Degeneration());
                     }
                 }
             }
