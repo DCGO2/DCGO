@@ -175,7 +175,7 @@ namespace DCGO.CardEffects.BT19
                         yield return null;
                     }
 
-                    if (selectedPermanent != null)
+                    if (selectedPermanent != null && selectedPermanent.TopCard.HasLevel)
                     {
                         int selectedLevel = selectedPermanent.Level;
 
