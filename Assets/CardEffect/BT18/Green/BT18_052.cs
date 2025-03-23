@@ -28,20 +28,56 @@ namespace DCGO.CardEffects.BT18
             #endregion
 
             #region On Play/When Digivolving Shared
+
             bool IsOpponenetsDigimon(Permanent permanent)
             {
                 return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
             }
 
-            
+            bool SharedCanActivateCondition(Hashtable hashtable)
+            {
+                if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    return card.Owner.SecurityCards.Count(cardSource => !cardSource.IsFlipped) > 0;
+
+                return false;
+            }
+
+            IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
+            {
+                int maxCount = card.Owner.SecurityCards.Count(cardSource => !cardSource.IsFlipped);
+
+                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                selectPermanentEffect.SetUp(
+                    selectPlayer: card.Owner,
+                    canTargetCondition: IsOpponenetsDigimon,
+                    canTargetCondition_ByPreSelecetedList: null,
+                    canEndSelectCondition: null,
+                    maxCount: 1,
+                    canNoSelect: false,
+                    canEndNotMax: false,
+                    selectPermanentCoroutine: DeDigivolvePermanent,
+                    afterSelectPermanentCoroutine: null,
+                    mode: SelectPermanentEffect.Mode.Custom,
+                    cardEffect: activateClass);
+
+                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                IEnumerator DeDigivolvePermanent(Permanent permanent)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(new IDegeneration(permanent, maxCount, activateClass, true).Degeneration());
+                }
+            }
+
             #endregion
 
             #region On Play
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("For each of your face up security cards, <De-Digivolve 1> 1 of your opponent's Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(SharedCanActivateCondition, (hashTable) => SharedActivateCoroutine(hashTable, activateClass), -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -53,50 +89,17 @@ namespace DCGO.CardEffects.BT18
                 {
                     return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                        return card.Owner.SecurityCards.Count(cardSource => !cardSource.IsFlipped) > 0;
-
-                    return false;
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    int maxCount = card.Owner.SecurityCards.Count(cardSource => !cardSource.IsFlipped);
-
-                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                    selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: IsOpponenetsDigimon,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: 1,
-                        canNoSelect: false,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: DeDigivolvePermanent,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Custom,
-                        cardEffect: activateClass);
-
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                    IEnumerator DeDigivolvePermanent(Permanent permanent)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(new IDegeneration(permanent, maxCount, activateClass).Degeneration());
-                    }                    
-                }
             }
+
             #endregion
 
             #region When Digivolving
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("For each of your face up security cards, <De-Digivolve 1> 1 of your opponent's Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(SharedCanActivateCondition, (hashTable) => SharedActivateCoroutine(hashTable, activateClass), -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -108,45 +111,12 @@ namespace DCGO.CardEffects.BT18
                 {
                     return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                        return card.Owner.SecurityCards.Count(cardSource => !cardSource.IsFlipped) > 0;
-
-                    return false;
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    int maxCount = card.Owner.SecurityCards.Count(cardSource => !cardSource.IsFlipped);
-
-                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                    selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: IsOpponenetsDigimon,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: 1,
-                        canNoSelect: false,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: DeDigivolvePermanent,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Custom,
-                        cardEffect: activateClass);
-
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                    IEnumerator DeDigivolvePermanent(Permanent permanent)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(new IDegeneration(permanent, maxCount, activateClass, true).Degeneration());
-                    }
-                }
             }
+
             #endregion
 
             #region All Turns - ESS
+
             if (timing == EffectTiming.OnEndBattle)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -196,9 +166,11 @@ namespace DCGO.CardEffects.BT18
                         fromTop: true).DestroySecurity());
                 }
             }
+
             #endregion
 
             #region All Turns - Security
+
             if (timing == EffectTiming.None)
             {
                 bool CanUseCondition()
@@ -233,6 +205,7 @@ namespace DCGO.CardEffects.BT18
                     card: card,
                     condition: CanUseCondition));
             }
+
             #endregion
 
             return cardEffects;
