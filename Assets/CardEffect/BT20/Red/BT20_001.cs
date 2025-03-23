@@ -13,16 +13,20 @@ namespace DCGO.CardEffects.BT20
             {                
                 bool CanActivateCondition()
                 {
-                        if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    if (CardEffectCommons.IsOwnerTurn(card))
                     {
-                        if (card.Owner.LibraryCards.Count >= 1)
+                        if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                         {
-                            if (card.PermanentOfThisCard().DigivolutionCards.Count >= 4)
+                            if (card.Owner.LibraryCards.Count >= 1)
                             {
-                                return true;
+                                if (card.PermanentOfThisCard().DigivolutionCards.Count >= 4)
+                                {
+                                    return true;
+                                }
                             }
                         }
                     }
+                    
                     return false;
                 }
 
