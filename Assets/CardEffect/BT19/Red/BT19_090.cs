@@ -47,16 +47,16 @@ namespace DCGO.CardEffects.BT19
                 {
                     return CardEffectCommons.IsOwnerPermanent(permanent, card) &&
                            permanent.TopCard.EqualsCardName("Shoutmon EX6") &&
-                           CardEffectCommons.CanUnsuspend(permanent) &&
-                           permanent.IsSuspended;
+                           permanent.IsSuspended &&
+                    CardEffectCommons.CanUnsuspend(permanent);
                 }
 
                 bool IsUnsuspendedStarmonCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsOwnerPermanent(permanent, card) &&
                            permanent.TopCard.EqualsCardName("ShootingStarmon") &&
-                           CardEffectCommons.CanUnsuspend(permanent) &&
-                           permanent.IsSuspended;
+                           permanent.IsSuspended &&
+                           CardEffectCommons.CanUnsuspend(permanent);
                 }
 
                 bool IsYourDigimon(Permanent permanent)
@@ -163,7 +163,7 @@ namespace DCGO.CardEffects.BT19
                     {
                         // if only 0-1 of targets is on the field, effect ends here & we dont unsuspend anything
                         var digimonPresent = card.Owner.GetBattleAreaDigimons().Filter(x => (IsUnsuspendedStarmonCondition(x) || IsUnsuspendedShoutmonCondition(x))).ToList();
-                        if (digimonPresent.Count <= 1) yield return null;
+                        if (digimonPresent.Count <= 1) yield break;
 
                         List<Permanent> selectedPermanents = new();
 
@@ -182,7 +182,7 @@ namespace DCGO.CardEffects.BT19
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: 1,
-                            canNoSelect: true,
+                            canNoSelect: false,
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine1,
                             afterSelectPermanentCoroutine: null,
@@ -197,7 +197,7 @@ namespace DCGO.CardEffects.BT19
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: 1,
-                            canNoSelect: true,
+                            canNoSelect: false,
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine1,
                             afterSelectPermanentCoroutine: null,
