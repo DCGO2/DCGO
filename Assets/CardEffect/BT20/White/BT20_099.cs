@@ -204,6 +204,8 @@ namespace DCGO.CardEffects.BT20
 
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
+                        Permanent selectedPermanent = null;
+
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
 
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
@@ -227,14 +229,16 @@ namespace DCGO.CardEffects.BT20
 
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
-                            Permanent selectedPermanent = permanent;
+                            selectedPermanent = permanent;
 
-                            if (selectedPermanent != null)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(card.Owner.brainStormObject.CloseBrainstrorm(card));
+                            yield return null;
+                        }
 
-                                yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(new List<CardSource>() { card }, activateClass));
-                            }
+                        if (selectedPermanent != null && !selectedPermanent.IsToken)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(card.Owner.brainStormObject.CloseBrainstrorm(card));
+
+                            yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(new List<CardSource>() { card }, activateClass));
                         }
                     }
                 }
