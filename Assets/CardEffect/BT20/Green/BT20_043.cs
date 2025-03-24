@@ -30,14 +30,11 @@ namespace DCGO.CardEffects.BT20
             #region Reduce Play Cost
             bool HasAccelTraitInPlay(Permanent permanent)
             {
-                if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
+                if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                 {
-                    if (permanent.IsDigimon)
+                    if (permanent.TopCard.EqualsTraits("ACCEL"))
                     {
-                        if (permanent.TopCard.EqualsTraits("Accel"))
-                        {
-                            return true;
-                        }
+                        return true;
                     }
                 }
 
@@ -51,7 +48,7 @@ namespace DCGO.CardEffects.BT20
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Reduce the play cost by 5", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-                activateClass.SetHashString("PlayCost-5_BT20_036");
+                activateClass.SetHashString("PlayCost-5_BT20_043");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -177,7 +174,7 @@ namespace DCGO.CardEffects.BT20
                 {
                     if (card.Owner.HandCards.Contains(card))
                     {
-                        ICardEffect activateClass = card.EffectList(EffectTiming.BeforePayCost).Find(cardEffect => cardEffect.EffectName == "Return 6 [D-Brigade] to get Play Cost -6");
+                        ICardEffect activateClass = card.EffectList(EffectTiming.BeforePayCost).Find(cardEffect => cardEffect.EffectName == "Reduce the play cost by 5");
 
                         if (activateClass != null)
                         {
@@ -290,7 +287,7 @@ namespace DCGO.CardEffects.BT20
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    List<Permanent> suspendTargetPermanents = card.Owner.Enemy.GetBattleAreaPermanents();
+                    List<Permanent> suspendTargetPermanents = card.Owner.Enemy.GetBattleAreaPermanents().Filter(permanent => permanent.IsDigimon);
 
                     yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(suspendTargetPermanents, CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
 
@@ -405,7 +402,7 @@ namespace DCGO.CardEffects.BT20
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    List<Permanent> suspendTargetPermanents = card.Owner.Enemy.GetBattleAreaPermanents();
+                    List<Permanent> suspendTargetPermanents = card.Owner.Enemy.GetBattleAreaPermanents().Filter(permanent => permanent.IsDigimon);
 
                     yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(suspendTargetPermanents, CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
 

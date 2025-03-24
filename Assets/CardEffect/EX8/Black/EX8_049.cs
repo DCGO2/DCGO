@@ -26,7 +26,7 @@ namespace DCGO.CardEffects.EX8
 
                 string EffectDiscription()
                 {
-                    return "[On Play] [On Deletion] <De-Digivolve 1> 1 of your opponent's Digimon.";
+                    return "[On Play] <De-Digivolve 1> 1 of your opponent's Digimon.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

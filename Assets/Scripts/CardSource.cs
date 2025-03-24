@@ -51,6 +51,7 @@ public class CardSource : MonoBehaviour
         IsFlipped = false;
 
         GManager.OnCardFlippedChanged?.Invoke();
+        GManager.OnSecurityStackChanged?.Invoke(Owner);
     }
     #endregion
 
@@ -60,6 +61,7 @@ public class CardSource : MonoBehaviour
         IsFlipped = true;
 
         GManager.OnCardFlippedChanged?.Invoke();
+        GManager.OnSecurityStackChanged?.Invoke(Owner);
     }
     #endregion
 
@@ -1530,12 +1532,7 @@ public class CardSource : MonoBehaviour
     {
         get
         {
-            if (CardTraits.Contains("Royal Knight") || CardTraits.Contains("RoyalKnight"))
-            {
-                return true;
-            }
-
-            return false;
+            return EqualsTraits("Royal Knight");
         }
     }
     #endregion

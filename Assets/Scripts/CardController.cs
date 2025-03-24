@@ -3928,16 +3928,25 @@ public class IBattle
 #region De-digivolve
 public class IDegeneration
 {
-    public IDegeneration(Permanent permanent, int DegenerationCount, ICardEffect cardEffect)
+    /// <summary>
+    /// De-Digivolve Class
+    /// </summary>
+    /// <param name="permanent">Target Permanent</param>
+    /// <param name="DegenerationCount">De-Digivolve Amount</param>
+    /// <param name="cardEffect">Card Effect</param>
+    /// <param name="DegenerationCountRuling">Should we enforce rule to select De-digivolve amount before digimon, disabled by default</param>
+    public IDegeneration(Permanent permanent, int DegenerationCount, ICardEffect cardEffect, bool? DegenerationCountRuling = null)
     {
         _permanent = permanent;
         _degenerationCount = DegenerationCount;
         _cardEffect = cardEffect;
+        _degenerationCountRuling = DegenerationCountRuling;
     }
 
     Permanent _permanent = null;
-    int _degenerationCount = 0;
+    int _degenerationCount;
     ICardEffect _cardEffect = null;
+    bool? _degenerationCountRuling;
 
     public IEnumerator Degeneration()
     {
@@ -3952,7 +3961,7 @@ public class IDegeneration
 
         SelectCountEffect selectCountEffect = GManager.instance.GetComponent<SelectCountEffect>();
 
-        if (selectCountEffect != null)
+        if (selectCountEffect != null && _degenerationCountRuling == null)
         {
             Player selectPlayer = _cardEffect.EffectSourceCard.Owner;
 

@@ -175,36 +175,39 @@ namespace DCGO.CardEffects.BT19
                         yield return null;
                     }
 
-                    if (selectedPermanent != null)
+                    if(selectedPermanent != null)
                     {
                         int selectedLevel = selectedPermanent.Level;
 
                         yield return ContinuousController.instance.StartCoroutine(
                             new DeckBottomBounceClass(new List<Permanent> { selectedPermanent }, hashtable).DeckBounce());
 
-                        if (CardEffectCommons.HasMatchConditionPermanent(permanent =>
-                                CanSelectOpponentPermanentLevelCondition(permanent, selectedLevel)))
+                        if (selectedPermanent.TopCard.HasLevel)
                         {
-                            selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                            if (CardEffectCommons.HasMatchConditionPermanent(permanent =>
+                                    CanSelectOpponentPermanentLevelCondition(permanent, selectedLevel)))
+                            {
+                                selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canTargetCondition: permanent =>
-                                    CanSelectOpponentPermanentLevelCondition(permanent, selectedLevel),
-                                canEndSelectCondition: null,
-                                maxCount: 1,
-                                canNoSelect: false,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: null,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.PutLibraryBottom,
-                                cardEffect: activateClass);
+                                selectPermanentEffect.SetUp(
+                                    selectPlayer: card.Owner,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canTargetCondition: permanent =>
+                                        CanSelectOpponentPermanentLevelCondition(permanent, selectedLevel),
+                                    canEndSelectCondition: null,
+                                    maxCount: 1,
+                                    canNoSelect: false,
+                                    canEndNotMax: false,
+                                    selectPermanentCoroutine: null,
+                                    afterSelectPermanentCoroutine: null,
+                                    mode: SelectPermanentEffect.Mode.PutLibraryBottom,
+                                    cardEffect: activateClass);
 
-                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to bottom deck.",
-                                "The opponent is selecting 1 Digimon to bottom deck.");
+                                selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to bottom deck.",
+                                    "The opponent is selecting 1 Digimon to bottom deck.");
 
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                            }
                         }
                     }
                 }

@@ -12,12 +12,6 @@ namespace DCGO.CardEffects.EX6
             
             #region Start of Your Main Phase/ On Play Shared
             
-            string EffectSharedDescription()
-            {
-                return
-                    "[Start Of Your Main Phase] [On Play] 1 of your yellow Digimon gains [Barrier] until the end of your opponent's turn.";
-            }
-            
             bool IsOwnerYellowDigimonSharedCondition(Permanent permanent)
             {
                 if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
@@ -52,8 +46,14 @@ namespace DCGO.CardEffects.EX6
                     "1 of your yellow Digimon gains [Barrier] until the end of your opponent's turn.", CanUseCondition,
                     card);
                 activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, false,
-                    EffectSharedDescription());
+                    EffectDescription());
                 cardEffects.Add(activateClass);
+            
+                string EffectDescription()
+                {
+                    return
+                        "[On Play] 1 of your yellow Digimon gains [Barrier] until the end of your opponent's turn.";
+                }
                 
                 bool CanUseCondition(Hashtable hashtable)
                 {
@@ -111,8 +111,14 @@ namespace DCGO.CardEffects.EX6
                     "1 of your yellow Digimon gains [Barrier] until the end of your opponent's turn.", CanUseCondition,
                     card);
                 activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, false,
-                    EffectSharedDescription());
+                    EffectDescription());
                 cardEffects.Add(activateClass);
+            
+                string EffectDescription()
+                {
+                    return
+                        "[Start Of Your Main Phase] 1 of your yellow Digimon gains [Barrier] until the end of your opponent's turn.";
+                }
                 
                 bool CanUseCondition(Hashtable hashtable)
                 {

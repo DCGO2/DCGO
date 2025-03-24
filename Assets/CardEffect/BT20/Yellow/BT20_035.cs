@@ -41,23 +41,18 @@ namespace DCGO.CardEffects.BT20
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Suspend 1 Digimon or Tamer", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
-                    return "[When Digivolving] Suspend 1 of your opponent's Digimon or Tamers. Then, 1 of their Digimon can't unsuspend until the end of their turn.";
+                    return "[When Digivolving] Suspend 1 of your opponent's Digimon or Tamers. Then, 1 of their Digimon or Tamers can't unsuspend until the end of their turn.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card) &&
                            (permanent.IsDigimon || permanent.IsTamer);
-                }
-
-                bool IsOpponentsDigimon(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -75,9 +70,9 @@ namespace DCGO.CardEffects.BT20
                 {
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                        SelectPermanentEffect selectPermanentToSuspend = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                        selectPermanentEffect.SetUp(
+                        selectPermanentToSuspend.SetUp(
                             selectPlayer: card.Owner,
                             canTargetCondition: CanSelectPermanentCondition,
                             canTargetCondition_ByPreSelecetedList: null,
@@ -90,16 +85,13 @@ namespace DCGO.CardEffects.BT20
                             mode: SelectPermanentEffect.Mode.Tap,
                             cardEffect: activateClass);
 
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                    }
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentToSuspend.Activate());
+                        
+                        SelectPermanentEffect selectPermanentToNotUnsuspend = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                    if (CardEffectCommons.HasMatchConditionPermanent(IsOpponentsDigimon))
-                    {
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                        selectPermanentEffect.SetUp(
+                        selectPermanentToNotUnsuspend.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: IsOpponentsDigimon,
+                            canTargetCondition: CanSelectPermanentCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: 1,
@@ -110,9 +102,9 @@ namespace DCGO.CardEffects.BT20
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will get unable to unsuspend.", "The opponent is selecting 1 Digimon that will get unable to unsuspend.");
+                        selectPermanentToNotUnsuspend.SetUpCustomMessage("Select 1 Digimon or Tamer that will be unable to unsuspend.", "The opponent is selecting 1 Digimon or Tamer that will be unable to unsuspend.");
 
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentToNotUnsuspend.Activate());
 
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
@@ -307,6 +299,7 @@ namespace DCGO.CardEffects.BT20
                 activateClass.SetUpICardEffect("<Recovery +1(Deck)>", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetHashString("Recover_BT20-035");
+                activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

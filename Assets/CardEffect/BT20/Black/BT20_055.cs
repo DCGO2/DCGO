@@ -251,7 +251,7 @@ namespace DCGO.CardEffects.BT20
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Place top card face up as bottom security", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -261,14 +261,22 @@ namespace DCGO.CardEffects.BT20
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanTriggerOnAttack(hashtable, card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (CardEffectCommons.IsOwnerTurn(card))
                         {
-                            if (!CardEffectCommons.GetCardFromHashtable(hashtable).IsFlipped)
-                                return true;
+                            if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(CardEffectCommons.GetAttackerFromHashtable(hashtable), card))
+                            {
+                                if (!CardEffectCommons.GetCardFromHashtable(hashtable).IsFlipped)
+                                {
+                                    UnityEngine.Debug.Log(card);
+                                    UnityEngine.Debug.Log(card.PermanentOfThisCard());
+                                    UnityEngine.Debug.Log(card.PermanentOfThisCard().DigivolutionCards);
+                                    return card.PermanentOfThisCard().DigivolutionCards.Count > 0;
+                                }
+                            }
                         }
-                    }
+                    }                    
 
                     return false;
                 }

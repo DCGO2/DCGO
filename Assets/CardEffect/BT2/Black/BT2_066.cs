@@ -68,6 +68,30 @@ public class BT2_066 : CEntity_Effect
                     {
                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                         {
+                            int degenrationMaxCount = 2;
+                            int degenrationCount = 0;
+
+                            SelectCountEffect selectCountEffect = GManager.instance.GetComponent<SelectCountEffect>();
+                            if (selectCountEffect != null)
+                            {
+                                selectCountEffect.SetUp(
+                                    SelectPlayer: card.Owner,
+                                    targetPermanent: null,
+                                    MaxCount: degenrationMaxCount,
+                                    CanNoSelect: false,
+                                    Message: "How much will you De-Digivolve?",
+                                    Message_Enemy: "The opponent is choosing how much to De-Digivolve.",
+                                    SelectCountCoroutine: SelectCountCoroutine);
+
+                                yield return ContinuousController.instance.StartCoroutine(selectCountEffect.Activate());
+
+                                IEnumerator SelectCountCoroutine(int count)
+                                {
+                                    degenrationCount = count;
+                                    yield return null;
+                                }
+                            }
+
                             int maxCount = Math.Min(2, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
 
                             SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
@@ -106,7 +130,7 @@ public class BT2_066 : CEntity_Effect
 
                                 if (selectedPermanent != null)
                                 {
-                                    yield return ContinuousController.instance.StartCoroutine(new IDegeneration(selectedPermanent, 2, activateClass).Degeneration());
+                                    yield return ContinuousController.instance.StartCoroutine(new IDegeneration(selectedPermanent, degenrationCount, activateClass).Degeneration());
                                 }
 
                                 yield return null;
