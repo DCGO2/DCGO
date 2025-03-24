@@ -182,7 +182,7 @@ namespace DCGO.CardEffects.BT19
                         yield return ContinuousController.instance.StartCoroutine(
                             new DeckBottomBounceClass(new List<Permanent> { selectedPermanent }, hashtable).DeckBounce());
 
-                        if (selectedPermanent.TopCard.HasLevel)
+                        if (selectedLevel > 0)
                         {
                             if (CardEffectCommons.HasMatchConditionPermanent(permanent =>
                                     CanSelectOpponentPermanentLevelCondition(permanent, selectedLevel)))
