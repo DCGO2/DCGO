@@ -82,7 +82,7 @@ namespace DCGO.CardEffects.EX7
                         {
                         new SimplifiedSelectCardConditionClass(
                             canTargetCondition:CanSelectCardCondition,
-                            message: "Select 1 Digimon card with [Three Musketeers] in its Texr.",
+                            message: "Select 1 Digimon card with [Three Musketeers] in its Text.",
                             mode: SelectCardEffect.Mode.AddHand,
                             maxCount: 1,
                             selectCardCoroutine: null),
