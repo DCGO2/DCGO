@@ -154,11 +154,11 @@ namespace DCGO.CardEntities
 
             if (!debugMode)
             {
-                if (withoutImages && !GetImage(cardEntity.CardSpriteName))
-                    return;
-
-                Debug.Log($"created: {cardEntity.name}: {cardEntity.CardSpriteName}, {cardEntity.CardEffectClassName}");
-                SaveScriptableObject(cardEntity);
+                if(withoutImages || GetImage(cardEntity.CardSpriteName))
+                {
+                    Debug.Log($"created: {cardEntity.name}: {cardEntity.CardSpriteName}, {cardEntity.CardEffectClassName}");
+                    SaveScriptableObject(cardEntity);
+                }
             }
             else
                 Debug.Log($"DATA {cardEntity.name}: {cardEntity.CardSpriteName}, {cardEntity.CardEffectClassName}, {GetCardIndex(cardEntity)}");
