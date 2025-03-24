@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace DCGO.CardEffects.BT20
 {
@@ -59,7 +60,7 @@ namespace DCGO.CardEffects.BT20
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.IsDigimon && !cardSource.EqualsCardName("Omnimon (X Antibody)");
+                    return cardSource.IsDigimon && cardSource.EqualsCardName("Omnimon (X Antibody)");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -128,19 +129,16 @@ namespace DCGO.CardEffects.BT20
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanActivateOnDeletion(card) &&
-                           CardEffectCommons.HasMatchConditionPermanent(isKingDrasil);
+                           CardEffectCommons.HasMatchConditionPermanent(isKingDrasil, true);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     Permanent breedingPermanent = card.Owner.GetBreedingAreaPermanents()[0];
 
-                    if (isKingDrasil(breedingPermanent))
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(card.Owner.brainStormObject.CloseBrainstrorm(card));
+                    yield return ContinuousController.instance.StartCoroutine(card.Owner.brainStormObject.CloseBrainstrorm(card));
 
-                        yield return ContinuousController.instance.StartCoroutine(breedingPermanent.AddDigivolutionCardsBottom(new List<CardSource>() { card }, activateClass));
-                    }
+                    yield return ContinuousController.instance.StartCoroutine(breedingPermanent.AddDigivolutionCardsBottom(new List<CardSource>() { card }, activateClass));
                 }
             }
             #endregion
@@ -149,8 +147,9 @@ namespace DCGO.CardEffects.BT20
             if (timing == EffectTiming.OnLoseSecurity)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("", CanUseCondition, card);
+                activateClass.SetUpICardEffect("play 1 [Omekamon]", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -188,7 +187,7 @@ namespace DCGO.CardEffects.BT20
                 {
                     if (CardEffectCommons.IsExistOnBreedingArea(card))
                     {
-                        if (CardEffectCommons.CanActivateSuspendCostEffect(card))
+                        if (CardEffectCommons.CanActivateSuspendCostEffect(card, true))
                         {
                             return true;
                         }

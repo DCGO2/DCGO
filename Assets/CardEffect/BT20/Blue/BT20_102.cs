@@ -283,7 +283,7 @@ namespace DCGO.CardEffects.BT20
                             List<Permanent> destroyTargetPermanents = GManager.instance.turnStateMachine.gameContext.Players
                                                                     .Map(player => player.GetBattleAreaDigimons())
                                                                     .Flat()
-                                                                    .Filter(permanent => savedDigimon.Contains(permanent));
+                                                                    .Filter(permanent => !savedDigimon.Contains(permanent));
 
                             yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(destroyTargetPermanents, CardEffectCommons.CardEffectHashtable(activateClass)).Destroy());
                         }
@@ -387,7 +387,7 @@ namespace DCGO.CardEffects.BT20
                                 effectDuration: EffectDuration.UntilEachTurnEnd,
                                 activateClass: activateClass));
 
-                            if (selectedPermanent.CanAttack(activateClass))
+                            if (selectedPermanent.CanAttack(activateClass, true))
                             {
                                 SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
 

@@ -21,7 +21,7 @@ namespace DCGO.CardEffects.BT20
 
                 bool IgnoreColorConditions(Permanent permanent)
                 {
-                    return permanent.TopCard.ContainsCardName("Chaoson") || permanent.TopCard.EqualsTraits("ACCEL");
+                    return permanent.TopCard.ContainsCardName("Chaosmon") || permanent.TopCard.EqualsTraits("ACCEL");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -64,15 +64,7 @@ namespace DCGO.CardEffects.BT20
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
-                    {
-                        if (permanent.DigivolutionCards.Count((cardSource) => cardSource.CardNames.Contains("X Antibody") || cardSource.CardNames.Contains("XAntibody")) == 0)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -212,6 +204,8 @@ namespace DCGO.CardEffects.BT20
 
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
+                        Permanent selectedPermanent = null;
+
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
 
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
@@ -235,14 +229,16 @@ namespace DCGO.CardEffects.BT20
 
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
-                            Permanent selectedPermanent = permanent;
+                            selectedPermanent = permanent;
 
-                            if (selectedPermanent != null)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(card.Owner.brainStormObject.CloseBrainstrorm(card));
+                            yield return null;
+                        }
 
-                                yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(new List<CardSource>() { card }, activateClass));
-                            }
+                        if (selectedPermanent != null && !selectedPermanent.IsToken)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(card.Owner.brainStormObject.CloseBrainstrorm(card));
+
+                            yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(new List<CardSource>() { card }, activateClass));
                         }
                     }
                 }
