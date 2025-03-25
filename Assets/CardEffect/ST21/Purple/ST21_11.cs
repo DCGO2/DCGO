@@ -43,12 +43,16 @@ namespace DCGO.CardEffects.ST21
 
                 foreach (Permanent permanent in card.Owner.GetBattleAreaPermanents())
                 {
-                    if (permanent.IsTamer && permanent.TopCard.EqualsTraits("ADVENTURE"))
+                    if (permanent.IsTamer && permanent.TopCard.EqualsTraits("ADVENTURE") && permanent.TopCard.CardColors.Count == 2)
                     {
                         tamerCards.Add(permanent.TopCard);
                     }
                 }
-                return Combinations.GetDifferenetColorCardCount(tamerCards) / 2;
+                var distinctColorCombos = tamerCards
+    .Select(tc => string.Join(",", tc.CardColors.OrderBy(c => c)))
+    .Distinct()
+    .ToList();
+                return distinctColorCombos.Count / 2;
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
