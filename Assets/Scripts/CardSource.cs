@@ -2591,6 +2591,23 @@ public class CardSource : MonoBehaviour
     }
 
     #endregion
+
+    #region whether this card has "ADVENTURE" trait
+
+    public bool HasAdventureTraits
+    {
+        get
+        {
+            if (CardTraits.Contains("ADVENTURE"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    #endregion
 }
 
 public class JogressCondition
