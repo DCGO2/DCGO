@@ -182,7 +182,7 @@ namespace DCGO.CardEffects.BT19
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: 1,
-                            canNoSelect: false,
+                            canNoSelect: true,
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine1,
                             afterSelectPermanentCoroutine: null,
@@ -190,7 +190,7 @@ namespace DCGO.CardEffects.BT19
                             cardEffect: activateClass);
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
+                        if (selectedPermanents.Count < 1) yield break;
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
                             canTargetCondition: IsUnsuspendedStarmonCondition,
