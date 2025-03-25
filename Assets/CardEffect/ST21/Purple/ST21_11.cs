@@ -49,9 +49,9 @@ namespace DCGO.CardEffects.ST21
                     }
                 }
                 var distinctColorCombos = tamerCards
-    .Select(tc => string.Join(",", tc.CardColors.OrderBy(c => c)))
-    .Distinct()
-    .ToList();
+                    .Select(tc => string.Join(",", tc.CardColors.OrderBy(c => c)))
+                    .Distinct()
+                    .ToList();
                 return distinctColorCombos.Count / 2;
             }
 
