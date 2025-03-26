@@ -10,9 +10,8 @@ public static class Combinations
     public static void Sample()
     {
         List<string[]> sourceList = new List<string[]>(3);
-        sourceList.Add(new string[] { "a", "b" });
-        sourceList.Add(new string[] { "c", "d", "e" });
-        sourceList.Add(new string[] { "f", "g", "h", "i" });
+        sourceList.Add(new string[] { "black", "green" });
+        sourceList.Add(new string[] { "red", "yellow"});
         List<string[]> resultList = GetCombinations(sourceList);
 
         foreach (string[] item in resultList)
@@ -50,7 +49,7 @@ public static class Combinations
         }
     }
 
-    //カードリストの内、異なる色を持つカードの枚数
+    //GetDifferenetColorCardCount
     public static int GetDifferenetColorCardCount(List<CardSource> cardSources)
     {
         List<CardColor[]> cardColors = new List<CardColor[]>();
@@ -64,23 +63,23 @@ public static class Combinations
 
         int maxColorCount = 0;
 
+        //赤～白に対応するカード1枚を各色毎に格納する配列
+        CardSource[] cardsCorrespondingToColor = new CardSource[System.Enum.GetValues(typeof(CardColor)).Length - 1];
+
+        for (int i = 0; i < cardsCorrespondingToColor.Length; i++)
+        {
+            cardsCorrespondingToColor[i] = null;
+        }
+
         foreach (CardColor[] cardColorArray in colorCombinations)
         {
-            //赤～白に対応するカード1枚を各色毎に格納する配列
-            CardSource[] cardsCorrespondingToColor = new CardSource[System.Enum.GetValues(typeof(CardColor)).Length - 1];
-
-            for (int i = 0; i < cardsCorrespondingToColor.Length; i++)
-            {
-                cardsCorrespondingToColor[i] = null;
-            }
-
             if (cardColorArray.Length == cardSources.Count)
             {
                 for (int i = 0; i < cardColorArray.Length; i++)
                 {
                     CardSource cardSource = cardSources[i];
 
-                    bool skip = false;
+                    /*bool skip = false;
 
                     for (int j = 0; j < cardsCorrespondingToColor.Length; j++)
                     {
@@ -89,6 +88,7 @@ public static class Combinations
                             //既に同じ組み合わせの色のカードが配列に格納されている場合
                             if (Enumerable.SequenceEqual(cardSource.CardColors.OrderBy(e => e), cardsCorrespondingToColor[j].CardColors.OrderBy(e => e)))
                             {
+                                UnityEngine.Debug.Log($"SKIPPING: {cardSource.BaseENGCardNameFromEntity}");
                                 skip = true;
                                 break;
                             }
@@ -98,7 +98,7 @@ public static class Combinations
                     if (skip)
                     {
                         continue;
-                    }
+                    }*/
 
                     CardColor cardColor = cardColorArray[i];
 
@@ -113,13 +113,13 @@ public static class Combinations
                     }
                 }
             }
+        }
 
-            int colorCount = cardsCorrespondingToColor.ToList().Count((cardSource) => cardSource != null);
-
-            if (colorCount >= maxColorCount)
-            {
-                maxColorCount = colorCount;
-            }
+        int colorCount = cardsCorrespondingToColor.ToList().Count((cardSource) => cardSource != null);
+        UnityEngine.Debug.Log($"COUNTS: {colorCount} >= {maxColorCount}");
+        if (colorCount >= maxColorCount)
+        {
+            maxColorCount = colorCount;
         }
 
         return maxColorCount;
