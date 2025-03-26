@@ -176,7 +176,7 @@ namespace DCGO.CardEffects.ST21
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Gain adventure then attack", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Gain Alliance then attack", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("alliance-attack-ST21-006");
                 cardEffects.Add(activateClass);
@@ -319,6 +319,7 @@ namespace DCGO.CardEffects.ST21
                 cardEffects.Add(CardEffectFactory.AllianceSelfEffect(isInheritedEffect: true, card: card, condition: Condition));
             }
             #endregion
+
             return cardEffects;
         }
     }

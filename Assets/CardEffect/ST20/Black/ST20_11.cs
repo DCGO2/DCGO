@@ -292,6 +292,7 @@ namespace DCGO.CardEffects.ST20
             {
                 return CardEffectCommons.IsMinDP(permanent, card.Owner.Enemy);
             }
+
             bool CanActivateAtkDigivolveCondition(Hashtable hashtable)
             {
                 if (CardEffectCommons.IsExistOnBattleArea(card))
@@ -328,7 +329,7 @@ namespace DCGO.CardEffects.ST20
                 {
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectTargetCondition))
                     {
-                        SelectPermanentEffect selectPermanentEffect = new SelectPermanentEffect();
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
@@ -342,6 +343,7 @@ namespace DCGO.CardEffects.ST20
                             afterSelectPermanentCoroutine: null,
                             mode: SelectPermanentEffect.Mode.Destroy,
                             cardEffect: activateClass);
+
                         selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to delete.", "The opponent is selecting 1 Digimon to delete.");
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
@@ -371,7 +373,7 @@ namespace DCGO.CardEffects.ST20
                 {
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectTargetCondition))
                     {
-                        SelectPermanentEffect selectPermanentEffect = new SelectPermanentEffect();
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
@@ -385,6 +387,7 @@ namespace DCGO.CardEffects.ST20
                             afterSelectPermanentCoroutine: null,
                             mode: SelectPermanentEffect.Mode.Destroy,
                             cardEffect: activateClass);
+
                         selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to delete.", "The opponent is selecting 1 Digimon to delete.");
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }

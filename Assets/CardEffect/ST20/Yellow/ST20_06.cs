@@ -49,13 +49,16 @@ namespace DCGO.CardEffects.ST20
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
                     {
-                        foreach (CardSource cardSource in card.Owner.HandCards)
+                        if(permanent != card.PermanentOfThisCard())
                         {
-                            if (cardSource.EqualsTraits("ADVENTURE"))
+                            foreach (CardSource cardSource in card.Owner.HandCards)
                             {
-                                if (cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass))
+                                if (cardSource.EqualsTraits("ADVENTURE"))
                                 {
-                                    return true;
+                                    if (cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass))
+                                    {
+                                        return true;
+                                    }
                                 }
                             }
                         }
@@ -151,13 +154,16 @@ namespace DCGO.CardEffects.ST20
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
                     {
-                        foreach (CardSource cardSource in card.Owner.HandCards)
+                        if (permanent != card.PermanentOfThisCard())
                         {
-                            if (cardSource.EqualsTraits("ADVENTURE"))
+                            foreach (CardSource cardSource in card.Owner.HandCards)
                             {
-                                if (cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass))
+                                if (cardSource.EqualsTraits("ADVENTURE"))
                                 {
-                                    return true;
+                                    if (cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass))
+                                    {
+                                        return true;
+                                    }
                                 }
                             }
                         }
@@ -175,7 +181,8 @@ namespace DCGO.CardEffects.ST20
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && 
+                           CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

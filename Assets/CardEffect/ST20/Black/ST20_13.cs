@@ -22,14 +22,11 @@ namespace DCGO.CardEffects.ST20
                 {
                     return "[Your Turn] When any Digimon cards with the [ADVENTURE] trait would be played from your hand, by suspending this Tamer, reduce the play cost by 1.";
                 }
+
                 bool PlayCardCondition(CardSource cardSource)
                 {
-                    if (CardEffectCommons.IsExistOnHand(cardSource))
-                    {
-                        return cardSource.EqualsTraits("ADVENTURE");
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnHand(cardSource) &&
+                           cardSource.IsDigimon && cardSource.EqualsTraits("ADVENTURE");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
