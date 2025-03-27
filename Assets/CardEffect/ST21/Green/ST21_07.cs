@@ -40,9 +40,7 @@ namespace DCGO.CardEffects.ST21
                 }
 
                 bool HasAdventureTrait(CardSource cardSource)
-                {
-                    return cardSource.ContainsTraits("ADVENTURE");
-                }
+                   => cardSource.HasAdventureTraits;
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
