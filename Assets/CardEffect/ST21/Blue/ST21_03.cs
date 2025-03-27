@@ -36,7 +36,7 @@ namespace DCGO.CardEffects.ST21
 
             bool CanActivateConditonShared(Hashtable hashtable)
             {
-                return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                return CardEffectCommons.HasMatchConditionPermanent(CanTargetStrip);
             }
 
             bool CanTargetStrip(Permanent permanent)
@@ -143,7 +143,7 @@ namespace DCGO.CardEffects.ST21
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
             }
 
@@ -164,7 +164,7 @@ namespace DCGO.CardEffects.ST21
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
             }
 
