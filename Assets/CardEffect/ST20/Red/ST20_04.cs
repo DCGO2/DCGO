@@ -189,7 +189,7 @@ namespace DCGO.CardEffects.ST20
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) && permanent != card.PermanentOfThisCard())
                     {
-                        return permanent.TopCard..HasAdventureTraits;
+                        return permanent.TopCard.HasAdventureTraits;
                     }
                     return false;
                 }
