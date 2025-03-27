@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.ST21
             {
                 bool PermanentCondition(Permanent permanent)
                 {
-                    return permanent.Level == 3 && permanent.TopCard.EqualsTraits("ADVENTURE");
+                    return permanent.Level == 3 && permanent.TopCard.HasAdventureTraits;
                 }
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(PermanentCondition, 2, false, card, null));
             }
@@ -36,7 +36,7 @@ namespace DCGO.CardEffects.ST21
 
             bool CanActivateConditonShared(Hashtable hashtable)
             {
-                return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                return CardEffectCommons.HasMatchConditionPermanent(CanTargetStrip);
             }
 
             bool CanTargetStrip(Permanent permanent)
@@ -143,7 +143,7 @@ namespace DCGO.CardEffects.ST21
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
             }
 
@@ -164,7 +164,7 @@ namespace DCGO.CardEffects.ST21
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
             }
 

@@ -15,7 +15,7 @@ namespace DCGO.CardEffects.ST20
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.EqualsTraits("ADVENTURE") && targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 2;
+                    return targetPermanent.TopCard.HasAdventureTraits && targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 2;
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 0, ignoreDigivolutionRequirement: false, card: card, condition: null));
@@ -50,12 +50,12 @@ namespace DCGO.CardEffects.ST20
 
                 bool selectAdventureDigimon(CardSource source)
                 {
-                    return source.EqualsTraits("ADVENTURE") && source.IsDigimon;
+                    return source.HasAdventureTraits && source.IsDigimon;
                 }
 
                 bool selectAdventureTorO(CardSource source)
                 {
-                    return source.EqualsTraits("ADVENTURE") && (source.IsOption || source.IsTamer);
+                    return source.HasAdventureTraits && (source.IsOption || source.IsTamer);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

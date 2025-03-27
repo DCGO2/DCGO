@@ -15,7 +15,7 @@ namespace DCGO.CardEffects.ST20
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return (targetPermanent.TopCard.EqualsTraits("ADVENTURE") || targetPermanent.TopCard.EqualsTraits("HERO")) && targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 2;
+                    return (targetPermanent.TopCard.HasAdventureTraits || targetPermanent.TopCard.EqualsTraits("HERO")) && targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 2;
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 0, ignoreDigivolutionRequirement: false, card: card, condition: null));
