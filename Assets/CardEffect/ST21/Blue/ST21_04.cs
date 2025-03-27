@@ -133,7 +133,8 @@ namespace DCGO.CardEffects.ST21
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
@@ -184,7 +185,7 @@ namespace DCGO.CardEffects.ST21
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Gain alliance then attack", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetHashString("alliance-attack-ST21-09");
                 cardEffects.Add(activateClass);
 
@@ -280,7 +281,7 @@ namespace DCGO.CardEffects.ST21
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: 1,
-                            canNoSelect: false,
+                            canNoSelect: true,
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine,
                             afterSelectPermanentCoroutine: null,
@@ -307,6 +308,8 @@ namespace DCGO.CardEffects.ST21
                                 canAttackPlayerCondition: () => true,
                                 defenderCondition: _ => true,
                                 cardEffect: activateClass);
+
+                            selectAttackEffect.SetCanNotSelectNotAttack();
 
                             yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
                         }
