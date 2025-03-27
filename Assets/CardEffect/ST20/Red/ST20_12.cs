@@ -11,6 +11,7 @@ namespace DCGO.CardEffects.ST20
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Start of main mem gain
+
             if (timing == EffectTiming.OnStartMainPhase)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -32,7 +33,7 @@ namespace DCGO.CardEffects.ST20
                             return true;
                         }
                     }
-                        
+
                     return false;
                 }
 
@@ -44,10 +45,8 @@ namespace DCGO.CardEffects.ST20
                         {
                             if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, permanent => permanent.IsDigimon && permanent.TopCard.HasAdventureTraits))
                                 return true;
-                            }
                         }
                     }
-
                     return false;
                 }
 
@@ -56,14 +55,18 @@ namespace DCGO.CardEffects.ST20
                     yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
                 }
             }
+
             #endregion
 
             #region Cost reduction
+
             if (timing == EffectTiming.BeforePayCost)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Reduce Play Cost", CanUseCondition, card);
+
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -169,6 +172,7 @@ namespace DCGO.CardEffects.ST20
                     }
                 }
             }
+
             #endregion
 
             if (timing == EffectTiming.SecuritySkill)
