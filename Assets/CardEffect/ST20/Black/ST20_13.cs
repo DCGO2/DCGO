@@ -24,10 +24,7 @@ namespace DCGO.CardEffects.ST20
                 }
 
                 bool PlayCardCondition(CardSource cardSource)
-                {
-                    return CardEffectCommons.IsExistOnHand(cardSource) &&
-                           cardSource.IsDigimon && cardSource.EqualsTraits("ADVENTURE");
-                }
+                    => CardEffectCommons.IsExistOnHand(cardSource) && cardSource.IsDigimon && cardSource.HasAdventureTraits && cardSource.Owner == card.Owner;
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
