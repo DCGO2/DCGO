@@ -56,6 +56,7 @@ namespace DCGO.CardEffects.ST20
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    if (card.Owner.LibraryCards.Count <= 1) yield break;
                     yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 2, activateClass).Draw());
 
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlaceDelayOptionCards(card: card, cardEffect: activateClass));
@@ -64,11 +65,12 @@ namespace DCGO.CardEffects.ST20
             #endregion
 
             #region delay
-            if (timing == EffectTiming.OnDeclaration)
+
+            if (timing == EffectTiming.WhenRemoveField)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Draw 2", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
+                activateClass.SetUpICardEffect("Play level 5 ADVENTURE digimon", CanUseCondition, card);
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -78,41 +80,15 @@ namespace DCGO.CardEffects.ST20
 
                 bool PermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsOwnerPermanent(permanent, card))
-                    {
-                        return permanent.TopCard.Level >= 5;
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                           && permanent.TopCard.Level >= 5
+                           && permanent.willBeRemoveField;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, PermanentCondition))
-                        {
-                            if (CardEffectCommons.CanDeclareOptionDelayEffect(card))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return false;
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (card.PermanentOfThisCard().CanBeDestroyedBySkill(activateClass))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, PermanentCondition) &&
+                           CardEffectCommons.CanDeclareOptionDelayEffect(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
