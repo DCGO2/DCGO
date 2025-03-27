@@ -15,7 +15,7 @@ namespace DCGO.CardEffects.ST20
             {
                 bool condition()
                 {
-                    return card.PermanentOfThisCard().TopCard.EqualsTraits("ADVENTURE");
+                    return card.PermanentOfThisCard().TopCard.HasAdventureTraits;
                 }
 
                 cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect(

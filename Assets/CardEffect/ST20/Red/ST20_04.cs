@@ -15,7 +15,7 @@ namespace DCGO.CardEffects.ST20
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.EqualsTraits("ADVENTURE") && targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 4;
+                    return targetPermanent.TopCard.HasAdventureTraits && targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 4;
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
@@ -189,7 +189,7 @@ namespace DCGO.CardEffects.ST20
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) && permanent != card.PermanentOfThisCard())
                     {
-                        return permanent.TopCard.EqualsTraits("ADVENTURE");
+                        return permanent.TopCard..HasAdventureTraits;
                     }
                     return false;
                 }

@@ -20,7 +20,7 @@ namespace DCGO.CardEffects.ST21
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.HasMatchConditionPermanent((permanent) => (permanent.IsTamer || permanent.IsDigimon) && permanent.TopCard.EqualsTraits("ADVENTURE"), true);
+                    return CardEffectCommons.HasMatchConditionPermanent((permanent) => (permanent.IsTamer || permanent.IsDigimon) && permanent.TopCard.HasAdventureTraits, true);
                 }
 
                 bool CardCondition(CardSource cardSource)
@@ -50,7 +50,7 @@ namespace DCGO.CardEffects.ST21
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.EqualsTraits("ADVENTURE");
+                    return cardSource.HasAdventureTraits;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

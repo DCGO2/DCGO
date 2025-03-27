@@ -47,7 +47,7 @@ namespace DCGO.CardEffects.ST21
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.EqualsTraits("ADVENTURE"))
+                        if (cardSource.HasAdventureTraits)
                         {
                             return true;
                         }

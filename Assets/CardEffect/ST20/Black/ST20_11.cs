@@ -17,7 +17,7 @@ namespace DCGO.CardEffects.ST20
             {
                 bool PermanentCondition(Permanent permanent)
                 {
-                    return (permanent.TopCard.EqualsTraits("ADVENTURE") || permanent.TopCard.EqualsTraits("Hero")) 
+                    return (permanent.TopCard.HasAdventureTraits || permanent.TopCard.EqualsTraits("Hero"))
                         && permanent.Level == 5;
                 }
 

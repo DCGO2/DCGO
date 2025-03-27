@@ -42,7 +42,7 @@ namespace DCGO.CardEffects.ST20
                     {
                         if (card.Owner.CanAddMemory(activateClass))
                         {
-                            if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, permanent => permanent.IsDigimon && permanent.TopCard.EqualsTraits("ADVENTURE"))){
+                            if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, permanent => permanent.IsDigimon && permanent.TopCard.HasAdventureTraits))
                                 return true;
                             }
                         }

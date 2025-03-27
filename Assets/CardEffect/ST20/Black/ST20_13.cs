@@ -135,7 +135,7 @@ namespace DCGO.CardEffects.ST20
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent.TopCard.EqualsTraits("ADVENTURE"))
+                        if (permanent.TopCard.HasAdventureTraits)
                         {
                             return true;
                         }

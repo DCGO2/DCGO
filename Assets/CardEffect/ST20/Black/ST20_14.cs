@@ -25,7 +25,7 @@ namespace DCGO.CardEffects.ST20
                 {
                     return CardEffectCommons.HasMatchConditionPermanent(permanent => 
                         CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)
-                        && permanent.TopCard.EqualsTraits("ADVENTURE")
+                        && permanent.TopCard.HasAdventureTraits
                         && (permanent.IsTamer || permanent.IsDigimon), true);
                 }
 
@@ -118,7 +118,7 @@ namespace DCGO.CardEffects.ST20
                             if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                             {
                                 return cardSource.IsDigimon &&
-                                        cardSource.EqualsTraits("ADVENTURE") &&
+                                        cardSource.HasAdventureTraits &&
                                         cardSource.Level <= 5;
                             }
 
