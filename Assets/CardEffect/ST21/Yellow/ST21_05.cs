@@ -39,14 +39,12 @@ namespace DCGO.CardEffects.ST21
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
 
                 bool IsAdventureTamerCondition(CardSource cardSource)
                 {
-                    return cardSource.IsTamer &&
-                           cardSource.EqualsTraits("ADVENTURE") &&
-                           CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
+                    return cardSource.IsTamer && cardSource.HasAdventureTraits && CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -86,11 +84,10 @@ namespace DCGO.CardEffects.ST21
                         IEnumerator SelectCardCoroutine(CardSource cardSource)
                         {
                             selectedCards.Add(cardSource);
-
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                                cardSources: selectedCards, activateClass: activateClass, payCost: false, isTapped: false,
-                                root: SelectCardEffect.Root.Hand, activateETB: true));
+                            yield return null;
                         }
+
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedCards, activateClass: activateClass, payCost: false, isTapped: false, root: SelectCardEffect.Root.Hand, activateETB: true));
                     }
                 }
             }

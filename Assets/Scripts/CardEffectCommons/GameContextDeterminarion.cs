@@ -499,5 +499,27 @@ public partial class CardEffectCommons
 
         return false;
     }
+
+    #endregion
+
+    #region Get unique colour count from permanents in owners battle area
+
+    public static int GetUniqueColourCountOnOwnerBattleArea(CardSource card, Func<Permanent, bool> canGetCardColour)
+    {
+        var permanents = card.Owner.GetBattleAreaPermanents().Filter(x => canGetCardColour(x)).Select(x => x.TopCard).ToList();
+        var distinctColorCombos = permanents
+            .Select(tc => string.Join(",", tc.CardColors.OrderBy(c => c)))
+            .Distinct()
+            .ToList();
+        return distinctColorCombos.Count;
+    }
+
+    #endregion
+
+    #region Get multi colour count from permanents in owners battle area
+
+    public static int GetColourCountOnOwnerBattleArea(CardSource card, Func<Permanent, bool> canGetCardColour) =>
+        card.Owner.GetBattleAreaPermanents().Filter(x => canGetCardColour(x)).ToList().Count;
+
     #endregion
 }

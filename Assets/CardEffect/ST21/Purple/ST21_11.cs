@@ -37,23 +37,11 @@ namespace DCGO.CardEffects.ST21
                         && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermanentCondition);
             }
 
-            int TamerTwoColourCount()
-            {
-                List<CardSource> tamerCards = new List<CardSource>();
-
-                foreach (Permanent permanent in card.Owner.GetBattleAreaPermanents())
-                {
-                    if (permanent.IsTamer && permanent.TopCard.EqualsTraits("ADVENTURE"))
-                    {
-                        tamerCards.Add(permanent.TopCard);
-                    }
-                }
-                return Combinations.GetDifferenetColorCardCount(tamerCards) / 2;
-            }
+            bool CanGetCardColour(Permanent permanent) => permanent.IsTamer && permanent.TopCard.EqualsTraits("ADVENTURE");
 
             bool CanSelectPermanentCondition(Permanent permanent)
             {
-                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) && permanent.Level <= 4 + TamerTwoColourCount();
+                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) && permanent.Level <= 4 + (CardEffectCommons.GetUniqueColourCountOnOwnerBattleArea(card, CanGetCardColour) / 2);
             }
             #endregion
 

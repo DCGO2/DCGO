@@ -26,7 +26,7 @@ namespace DCGO.CardEffects.ST21
                 {
                     if (CardEffectCommons.IsExistOnHand(cardSource))
                     {
-                        return cardSource.EqualsTraits("ADVENTURE");
+                        return cardSource.IsDigimon && cardSource.HasAdventureTraits;
                     }
 
                     return false;
