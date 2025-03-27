@@ -42,7 +42,7 @@ namespace DCGO.CardEffects.ST20
                     {
                         if (card.Owner.CanAddMemory(activateClass))
                         {
-                            if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, permanent => permanent.IsDigimon && permanent.TopCard.EqualsTraits("ADVENTURE"))){
+                            if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, permanent => permanent.IsDigimon && permanent.TopCard.HasAdventureTraits))
                                 return true;
                             }
                         }
@@ -72,10 +72,7 @@ namespace DCGO.CardEffects.ST20
                 }
 
                 bool PlayCardCondition(CardSource cardSource)
-                {
-                    return CardEffectCommons.IsExistOnHand(cardSource) &&
-                           cardSource.IsDigimon && cardSource.EqualsTraits("ADVENTURE");
-                }
+                    => CardEffectCommons.IsExistOnHand(cardSource) && cardSource.IsDigimon && cardSource.HasAdventureTraits && cardSource.Owner == card.Owner;
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
