@@ -37,7 +37,7 @@ namespace DCGO.CardEffects.ST21
                         && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermanentCondition);
             }
 
-            bool CanGetCardColour(Permanent permanent) => permanent.IsTamer && permanent.TopCard.EqualsTraits("ADVENTURE");
+            bool CanGetCardColour(Permanent permanent) => permanent.IsTamer && permanent.TopCard.EqualsTraits("ADVENTURE") && permanent.TopCard.Owner == card.Owner;
 
             bool CanSelectPermanentCondition(Permanent permanent)
             {
