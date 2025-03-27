@@ -506,12 +506,13 @@ public partial class CardEffectCommons
 
     public static int GetUniqueColourCountOnOwnerBattleArea(CardSource card, Func<Permanent, bool> canGetCardColour)
     {
-        var permanents = card.Owner.GetBattleAreaPermanents().Filter(x => canGetCardColour(x)).Select(x => x.TopCard).ToList();
-        var distinctColorCombos = permanents
-            .Select(tc => string.Join(",", tc.CardColors.OrderBy(c => c)))
-            .Distinct()
-            .ToList();
-        return distinctColorCombos.Count;
+        var uniqueColors = card.Owner.GetBattleAreaPermanents()
+        .Filter(x => canGetCardColour(x))
+        .Select(x => x.TopCard)
+        .SelectMany(x => x.CardColors)
+        .Distinct()
+        .ToHashSet();
+        return uniqueColors.Count;
     }
 
     #endregion
