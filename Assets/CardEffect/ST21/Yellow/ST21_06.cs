@@ -44,6 +44,7 @@ namespace DCGO.CardEffects.ST21
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Place into security", canUseCondition, card);
                 activateClass.SetUpActivateClass(canActivateCondition, activateCoroutine, -1, false, effectDescription());
+                cardEffects.Add(activateClass);
 
                 string effectDescription()
                 {
@@ -52,9 +53,8 @@ namespace DCGO.CardEffects.ST21
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) 
-                        && permanent.TopCard.Owner.CanAddSecurity(activateClass)
-                        && permanent.HasDP && permanent.DP <= 6000 + 2000 * TamerTwoColourCount();
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) && 
+                           permanent.HasDP && permanent.DP <= 6000 + (2000 * TamerTwoColourCount());
                 }
 
                 bool canActivateCondition(Hashtable hashtable)
@@ -111,6 +111,7 @@ namespace DCGO.CardEffects.ST21
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Place into security", canUseCondition, card);
                 activateClass.SetUpActivateClass(canActivateCondition, activateCoroutine, -1, false, effectDescription());
+                cardEffects.Add(activateClass);
 
                 string effectDescription()
                 {
@@ -177,7 +178,7 @@ namespace DCGO.CardEffects.ST21
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Gain Alliance then attack", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetHashString("alliance-attack-ST21-006");
                 cardEffects.Add(activateClass);
 
@@ -273,7 +274,7 @@ namespace DCGO.CardEffects.ST21
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: 1,
-                            canNoSelect: false,
+                            canNoSelect: true,
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine,
                             afterSelectPermanentCoroutine: null,
@@ -300,6 +301,8 @@ namespace DCGO.CardEffects.ST21
                                 canAttackPlayerCondition: () => true,
                                 defenderCondition: _ => true,
                                 cardEffect: activateClass);
+
+                            selectAttackEffect.SetCanNotSelectNotAttack();
 
                             yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
                         }

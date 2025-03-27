@@ -85,8 +85,7 @@ namespace DCGO.CardEffects.ST20
                     List<Permanent> selectedPermanents = new List<Permanent>();
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectProtectCondition))
                     {
-                        //Probably could get away with just 1 min and don't check against min 1, but I'm not going to change what I don't understand for no reason
-                        int maxCount = Math.Min(Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectProtectCondition)), TamerTwoColourCount());
+                        int maxCount = Math.Min(Math.Max(1, TamerTwoColourCount()), CardEffectCommons.MatchConditionPermanentCount(CanSelectProtectCondition));
 
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
@@ -201,8 +200,7 @@ namespace DCGO.CardEffects.ST20
                     List<Permanent> selectedPermanents = new List<Permanent>();
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectProtectCondition) && TamerTwoColourCount() > 0)
                     {
-                        //Probably could get away with just 1 min and don't check against min 1, but I'm not going to change what I don't understand for no reason
-                        int maxCount = Math.Min(Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectProtectCondition)), TamerTwoColourCount());
+                        int maxCount = Math.Min(Math.Max(1, TamerTwoColourCount()), CardEffectCommons.MatchConditionPermanentCount(CanSelectProtectCondition));
 
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
