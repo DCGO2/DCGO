@@ -134,7 +134,7 @@ namespace DCGO.CardEffects.ST21
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent.TopCard.EqualsTraits("ADVENTURE") && permanent.Level >= 5)
+                        if (permanent.TopCard.HasAdventureTraits && permanent.Level >= 5)
                         {
                             return true;
                         }

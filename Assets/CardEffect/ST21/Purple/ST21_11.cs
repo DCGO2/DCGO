@@ -15,7 +15,7 @@ namespace DCGO.CardEffects.ST21
             {
                 bool PermanentCondition(Permanent permanent)
                 {
-                    return permanent.Level == 5 && permanent.TopCard.EqualsTraits("ADVENTURE");
+                    return permanent.Level == 5 && permanent.TopCard.HasAdventureTraits;
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(PermanentCondition, 3, false, card, null));
@@ -37,7 +37,7 @@ namespace DCGO.CardEffects.ST21
                         && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermanentCondition);
             }
 
-            bool CanGetCardColour(Permanent permanent) => permanent.IsTamer && permanent.TopCard.EqualsTraits("ADVENTURE") && permanent.TopCard.Owner == card.Owner;
+            bool CanGetCardColour(Permanent permanent) => permanent.IsTamer && permanent.TopCard.HasAdventureTraits && permanent.TopCard.Owner == card.Owner;
 
             bool CanSelectPermanentCondition(Permanent permanent)
             {
