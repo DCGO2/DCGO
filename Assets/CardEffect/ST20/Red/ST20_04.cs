@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+
 //ST20-04 garudamon
 namespace DCGO.CardEffects.ST20
 {
@@ -11,6 +12,7 @@ namespace DCGO.CardEffects.ST20
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Alternate Digivolution Requirement
+
             if (timing == EffectTiming.None)
             {
                 static bool PermanentCondition(Permanent targetPermanent)
@@ -20,6 +22,7 @@ namespace DCGO.CardEffects.ST20
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
             }
+
             #endregion
 
             #region On Play/When Digivolving shared
@@ -40,16 +43,19 @@ namespace DCGO.CardEffects.ST20
                         tamerCards.Add(permanent.TopCard);
                     }
                 }
-                return Combinations.GetDifferenetColorCardCount(tamerCards)/2;
+                return Combinations.GetDifferenetColorCardCount(tamerCards) / 2;
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
             {
                 return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
             }
-            #endregion 
+            #endregion
+
+
 
             #region On Play
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -108,9 +114,11 @@ namespace DCGO.CardEffects.ST20
                     }
                 }
             }
+
             #endregion
 
             #region When Digivolving
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -169,9 +177,11 @@ namespace DCGO.CardEffects.ST20
                     }
                 }
             }
+
             #endregion
 
             #region Your Turn
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -305,9 +315,11 @@ namespace DCGO.CardEffects.ST20
                     }
                 }
             }
+
             #endregion
 
             #region Alliance Inherit
+
             if (timing == EffectTiming.OnAllyAttack)
             {
                 bool Condition()
@@ -317,6 +329,7 @@ namespace DCGO.CardEffects.ST20
 
                 cardEffects.Add(CardEffectFactory.AllianceSelfEffect(isInheritedEffect: true, card: card, condition: Condition));
             }
+
             #endregion
 
             return cardEffects;
