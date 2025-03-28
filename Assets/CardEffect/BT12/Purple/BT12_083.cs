@@ -50,7 +50,7 @@ namespace DCGO.CardEffects.BT12
                         }
                     }
 
-                    int tamersCount = Combinations.GetDifferenetColorCardCount(tamerCards);
+                    int tamersCount = Combinations.GetDifferenetColorCardCount(tamerCards, true);
 
                     return maxLevel + tamersCount;
                 }
