@@ -50,7 +50,7 @@ public static class Combinations
     }
 
     //GetDifferenetColorCardCount
-    public static int GetDifferenetColorCardCount(List<CardSource> cardSources)
+    public static int GetDifferenetColorCardCount(List<CardSource> cardSources, bool allowSkip = false)
     {
         List<CardColor[]> cardColors = new List<CardColor[]>();
 
@@ -79,26 +79,29 @@ public static class Combinations
                 {
                     CardSource cardSource = cardSources[i];
 
-                    /*bool skip = false;
-
-                    for (int j = 0; j < cardsCorrespondingToColor.Length; j++)
+                    if (allowSkip)
                     {
-                        if (cardsCorrespondingToColor[j] != null)
+                        bool skip = false;
+
+                        for (int j = 0; j < cardsCorrespondingToColor.Length; j++)
                         {
-                            //既に同じ組み合わせの色のカードが配列に格納されている場合
-                            if (Enumerable.SequenceEqual(cardSource.CardColors.OrderBy(e => e), cardsCorrespondingToColor[j].CardColors.OrderBy(e => e)))
+                            if (cardsCorrespondingToColor[j] != null)
                             {
-                                UnityEngine.Debug.Log($"SKIPPING: {cardSource.BaseENGCardNameFromEntity}");
-                                skip = true;
-                                break;
+                                //既に同じ組み合わせの色のカードが配列に格納されている場合
+                                if (Enumerable.SequenceEqual(cardSource.CardColors.OrderBy(e => e), cardsCorrespondingToColor[j].CardColors.OrderBy(e => e)))
+                                {
+                                    UnityEngine.Debug.Log($"SKIPPING: {cardSource.BaseENGCardNameFromEntity}");
+                                    skip = true;
+                                    break;
+                                }
                             }
                         }
-                    }
 
-                    if (skip)
-                    {
-                        continue;
-                    }*/
+                        if (skip)
+                        {
+                            continue;
+                        }
+                    }                    
 
                     CardColor cardColor = cardColorArray[i];
 
