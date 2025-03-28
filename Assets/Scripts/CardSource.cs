@@ -2608,6 +2608,23 @@ public class CardSource : MonoBehaviour
     }
 
     #endregion
+
+    #region whether this card has "Hero" trait
+
+    public bool HasHeroTraits
+    {
+        get
+        {
+            if (CardTraits.Contains("Hero"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    #endregion
 }
 
 public class JogressCondition
