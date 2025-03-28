@@ -116,16 +116,14 @@ namespace DCGO.CardEffects.ST21
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Strip top 2, then freeze", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateConditonShared, (hashtable) => SharedActivateCoroutine(hashtable, activateClass), -1, false, EffectDescription());
+                cardEffects.Add(activateClass);
 
                 string EffectDescription()
-                {
-                    return "[On Play] Trash the top 2 digivolution cards of 1 of your opponent's Digimon. Then, 1 of their Digimon with no digivolution cards can't attack or block until their turn ends.";
-                }
+                    => "[On Play] Trash the top 2 digivolution cards of 1 of your opponent's Digimon. Then, 1 of their Digimon with no digivolution cards can't attack or block until their turn ends.";
 
                 bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-                }
+                => CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                && CardEffectCommons.CanTriggerOnPlay(hashtable, card);
             }
 
             #endregion
@@ -137,16 +135,14 @@ namespace DCGO.CardEffects.ST21
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Strip top 2, then freeze", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateConditonShared, (hashtable) => SharedActivateCoroutine(hashtable, activateClass), -1, false, EffectDescription());
+                cardEffects.Add(activateClass);
 
                 string EffectDescription()
-                {
-                    return "[When Digivolving] Trash the top 2 digivolution cards of 1 of your opponent's Digimon. Then, 1 of their Digimon with no digivolution cards can't attack or block until their turn ends.";
-                }
+                    => "[When Digivolving] Trash the top 2 digivolution cards of 1 of your opponent's Digimon. Then, 1 of their Digimon with no digivolution cards can't attack or block until their turn ends.";
 
                 bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
-                }
+                => CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                && CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
             }
 
             #endregion
