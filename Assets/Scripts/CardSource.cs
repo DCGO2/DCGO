@@ -2642,6 +2642,23 @@ public class CardSource : MonoBehaviour
     }
 
     #endregion
+
+    #region whether this card has "Three Musketeers" trait
+
+    public bool HasThreeMusketeersTraits
+    {
+        get
+        {
+            if (CardTraits.Contains("Three Musketeers"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    #endregion
 }
 
 public class JogressCondition
