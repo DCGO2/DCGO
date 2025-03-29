@@ -2659,6 +2659,23 @@ public class CardSource : MonoBehaviour
     }
 
     #endregion
+
+    #region whether this card has "Royal Base" trait
+
+    public bool HasRoyalBaseTraits
+    {
+        get
+        {
+            if (CardTraits.Contains("Royal Base"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    #endregion
 }
 
 public class JogressCondition
