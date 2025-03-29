@@ -2608,6 +2608,23 @@ public class CardSource : MonoBehaviour
     }
 
     #endregion
+
+    #region whether this card has "Chronicle" trait
+
+    public bool HasChronicleTraits
+    {
+        get
+        {
+            if (CardTraits.Contains("Chronicle"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    #endregion
 }
 
 public class JogressCondition
