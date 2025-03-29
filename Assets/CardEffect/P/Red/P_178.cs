@@ -17,7 +17,7 @@ namespace DCGO.CardEffects.P
 
             #endregion
 
-            #region Digivolution Condition
+            #region Reduce Digivolution Cost
 
             if (timing == EffectTiming.None)
             {
