@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
+// Justimon: Critical Arm
 namespace DCGO.CardEffects
 {
     public class P_179 : CEntity_Effect
