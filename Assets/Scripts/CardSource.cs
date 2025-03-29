@@ -2625,6 +2625,23 @@ public class CardSource : MonoBehaviour
     }
 
     #endregion
+
+    #region whether this card has "Device" trait
+
+    public bool HasDeviceTraits
+    {
+        get
+        {
+            if (CardTraits.Contains("Device"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    #endregion
 }
 
 public class JogressCondition
