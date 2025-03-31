@@ -2608,6 +2608,74 @@ public class CardSource : MonoBehaviour
     }
 
     #endregion
+
+    #region whether this card has "Chronicle" trait
+
+    public bool HasChronicleTraits
+    {
+        get
+        {
+            if (CardTraits.Contains("Chronicle"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    #endregion
+
+    #region whether this card has "Device" trait
+
+    public bool HasDeviceTraits
+    {
+        get
+        {
+            if (CardTraits.Contains("Device"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    #endregion
+
+    #region whether this card has "Three Musketeers" trait
+
+    public bool HasThreeMusketeersTraits
+    {
+        get
+        {
+            if (CardTraits.Contains("Three Musketeers"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    #endregion
+
+    #region whether this card has "Royal Base" trait
+
+    public bool HasRoyalBaseTraits
+    {
+        get
+        {
+            if (CardTraits.Contains("Royal Base"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    #endregion
 }
 
 public class JogressCondition
