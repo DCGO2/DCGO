@@ -31,9 +31,12 @@ public partial class CardEffectFactory
         {
             if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
             {
-                if (digimonCondition == null || digimonCondition(permanent))
+                if(permanent != card.PermanentOfThisCard())
                 {
-                    return true;
+                    if (digimonCondition == null || digimonCondition(permanent))
+                    {
+                        return true;
+                    }
                 }
             }
 
@@ -93,10 +96,9 @@ public partial class CardEffectFactory
 
             if (selectedPermanent != null)
             {
-                if (CardEffectCommons.IsExistOnHand(card))
-                    yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddLinkedCard(card, dp, activateClass));
-                else
-                    yield return ContinuousController.instance.StartCoroutine(new ILinkPermanentToPermanent(new List<Permanent[]>() { new Permanent[] { card.PermanentOfThisCard(), selectedPermanent } }, dp, activateClass).LinkPermanent());
+
+                yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddLinkCard(card, dp, activateClass));
+                    //yield return ContinuousController.instance.StartCoroutine(new ILinkPermanentToPermanent(new List<Permanent[]>() { new Permanent[] { card.PermanentOfThisCard(), selectedPermanent } }, dp, activateClass).LinkPermanent());
             }
         }
 
