@@ -3,32 +3,11 @@ using System.Collections.Generic;
 
 namespace DCGO.CardEffects.BT21
 {
-    public class BT21_32 : CEntity_Effect
+    public class BT21_031 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
-
-            #region Alternate Digivolution
-
-            if (timing == EffectTiming.None)
-            {
-                bool PermanentCondition(Permanent targetPermanent)
-                {
-                    return targetPermanent.TopCard.EqualsCardName("DemiVeemon") ||
-                           (targetPermanent.TopCard.IsLevel2 &&
-                            targetPermanent.TopCard.EqualsTraits("Hero"));
-                }
-
-                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
-                    permanentCondition: PermanentCondition,
-                    digivolutionCost: 0,
-                    ignoreDigivolutionRequirement: false,
-                    card: card,
-                    condition: null));
-            }
-
-            #endregion
 
             #region Your Turn
 
@@ -47,8 +26,8 @@ namespace DCGO.CardEffects.BT21
                 bool CardSourceCondition(CardSource cardSource)
                 {
                     return cardSource.IsDigimon &&
-                           (cardSource.EqualsTraits("Armor Form") ||
-                            cardSource.EqualsTraits("Hero"));
+                           (cardSource.EqualsTraits("Mollusk") ||
+                            cardSource.EqualsTraits("Aquatic"));
                 }
 
                 bool RootCondition(SelectCardEffect.Root root)
@@ -68,22 +47,37 @@ namespace DCGO.CardEffects.BT21
             }
 
             #endregion
+            
+            #region End of Attack - ESS
 
-            #region Your Turn - ESS
-
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnEndAttack)
             {
-                bool Condition()
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Memory +1", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetIsInheritedEffect(true);
+                activateClass.SetHashString("Memory+1_BT21_031");
+                cardEffects.Add(activateClass);
+
+                string EffectDescription()
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           CardEffectCommons.IsOwnerTurn(card);
+                    return "[End of Attack] (Once Per Turn) Gain 1 memory.";
                 }
 
-                cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect(
-                    changeValue: 2000,
-                    isInheritedEffect: true,
-                    card: card,
-                    condition: Condition));
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanTriggerOnEndAttack(hashtable, card);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
+                }
             }
 
             #endregion
