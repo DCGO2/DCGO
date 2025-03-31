@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DCGO.CardEffects.BT21
 {
@@ -9,74 +10,244 @@ namespace DCGO.CardEffects.BT21
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Your Turn
+            #region Alternate Digivolution
 
             if (timing == EffectTiming.None)
             {
-                bool Condition()
-                {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && CardEffectCommons.IsOwnerTurn(card);
-                }
-
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent == card.PermanentOfThisCard();
+                    return targetPermanent.TopCard.IsLevel5 && targetPermanent.TopCard.EqualsTraits("WG");
                 }
 
-                bool CardSourceCondition(CardSource cardSource)
-                {
-                    return cardSource.IsDigimon &&
-                           (cardSource.EqualsTraits("Mollusk") ||
-                            cardSource.EqualsTraits("Aquatic"));
-                }
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
+                    permanentCondition: PermanentCondition,
+                    digivolutionCost: 3,
+                    ignoreDigivolutionRequirement: false,
+                    card: card,
+                    condition: null));
+            }
 
-                bool RootCondition(SelectCardEffect.Root root)
+            #endregion
+
+            #region DNA Digivolution
+
+            if (timing == EffectTiming.None)
+            {
+                AddJogressConditionClass addJogressConditionClass = new AddJogressConditionClass();
+                addJogressConditionClass.SetUpICardEffect($"DNA Digivolution", CanUseCondition, card);
+                addJogressConditionClass.SetUpAddJogressConditionClass(getJogressCondition: GetJogress);
+                addJogressConditionClass.SetNotShowUI(true);
+                cardEffects.Add(addJogressConditionClass);
+
+                bool CanUseCondition(Hashtable hashtable)
                 {
                     return true;
                 }
 
-                cardEffects.Add(CardEffectFactory.ChangeDigivolutionCostStaticEffect(
-                    changeValue: -1,
-                    permanentCondition: PermanentCondition,
-                    cardCondition: CardSourceCondition,
-                    rootCondition: RootCondition,
-                    isInheritedEffect: false,
-                    card: card,
-                    condition: Condition,
-                    setFixedCost: false));
+                JogressCondition GetJogress(CardSource cardSource)
+                {
+                    if (cardSource == card)
+                    {
+                        bool PermanentConditionA(Permanent permanent)
+                        {
+                            return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                                   (permanent.TopCard.CardColors.Contains(CardColor.Blue) ||
+                                    permanent.TopCard.CardColors.Contains(CardColor.Yellow)) &&
+                                   permanent.Levels_ForJogress(card).Contains(5);
+                        }
+
+                        bool PermanentConditionB(Permanent permanent)
+                        {
+                            return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                                   (permanent.TopCard.CardColors.Contains(CardColor.Green) ||
+                                    permanent.TopCard.CardColors.Contains(CardColor.Red)) &&
+                                   permanent.Levels_ForJogress(card).Contains(5);
+                        }
+
+                        JogressConditionElement[] elements =
+                        {
+                            new(PermanentConditionA, "a level 5 Blue or Yellow Digimon"),
+                            new(PermanentConditionB, "a level 5 Green or Red Digimon")
+                        };
+
+                        JogressCondition jogressCondition = new JogressCondition(elements, 0);
+
+                        return jogressCondition;
+                    }
+
+                    return null;
+                }
             }
 
             #endregion
-            
-            #region End of Attack - ESS
 
-            if (timing == EffectTiming.OnEndAttack)
+            #region Alliance
+
+            if (timing == EffectTiming.OnAllyAttack)
+            {
+                cardEffects.Add(CardEffectFactory.AllianceSelfEffect(
+                    isInheritedEffect: false,
+                    card: card,
+                    condition: null));
+            }
+
+            #endregion
+
+            #region When Digivolving
+
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Memory +1", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
-                activateClass.SetIsInheritedEffect(true);
-                activateClass.SetHashString("Memory+1_BT21_031");
+                activateClass.SetUpICardEffect("You may play 1 level 4 or lower Digimon card from your hand.", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
                 {
-                    return "[End of Attack] (Once Per Turn) Gain 1 memory.";
+                    return
+                        "[When Digivolving] You may play 1 level 4 or lower Digimon card with the [WG] trait from your hand without paying the cost.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnEndAttack(hashtable, card);
+                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                }
+
+                bool CanSelectDigimonCardCondition(CardSource source)
+                {
+                    return source.IsDigimon &&
+                           source.HasLevel && source.Level <= 4 &&
+                           source.EqualsTraits("WG") &&
+                           CardEffectCommons.CanPlayAsNewPermanent(source, false, activateClass);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectDigimonCardCondition);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
+                    List<CardSource> selectedCards = new List<CardSource>();
+
+                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                    selectHandEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanSelectDigimonCardCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: true,
+                        canEndNotMax: false,
+                        isShowOpponent: true,
+                        selectCardCoroutine: SelectCardCoroutine,
+                        afterSelectCardCoroutine: null,
+                        mode: SelectHandEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    selectHandEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
+                    selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
+
+                    yield return StartCoroutine(selectHandEffect.Activate());
+
+                    IEnumerator SelectCardCoroutine(CardSource cardSource)
+                    {
+                        selectedCards.Add(cardSource);
+
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
+                            cardSources: selectedCards, activateClass: activateClass, payCost: false, isTapped: false,
+                            root: SelectCardEffect.Root.Hand, activateETB: true));
+                    }
+                }
+            }
+
+            #endregion
+
+            #region When Attacking
+
+            if (timing == EffectTiming.OnAllyAttack)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("1 of your other Digimon digivolves without paying the cost", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                cardEffects.Add(activateClass);
+
+                string EffectDescription()
+                {
+                    return
+                        "[When Attacking] (Once Per Turn) 1 of your other Digimon may digivolve into a Digimon card with the [WG] trait in the hand without paying the cost.";
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
+                }
+
+                bool DigivolveFromPermanentCondition(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card) &&
+                           permanent.IsDigimon &&
+                           card.Owner.HandCards.Where(DigivolveToCardCondition).Any(cardSource =>
+                               cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass));
+                }
+
+                bool DigivolveToCardCondition(CardSource cardSource)
+                {
+                    return cardSource.IsDigimon && cardSource.EqualsTraits("WG");
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.HasMatchConditionPermanent(DigivolveFromPermanentCondition);
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    Permanent selectedPermanent = null;
+
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                    selectPermanentEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: DigivolveFromPermanentCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: true,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: SelectPermanentCoroutine,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will digivolve.",
+                        "The opponent is selecting 1 Digimon that will digivolve.");
+
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                    {
+                        selectedPermanent = permanent;
+
+                        yield return null;
+                    }
+
+                    if (selectedPermanent != null)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                            targetPermanent: selectedPermanent,
+                            cardCondition: DigivolveToCardCondition,
+                            payCost: false,
+                            reduceCostTuple: null,
+                            fixedCostTuple: null,
+                            ignoreDigivolutionRequirementFixedCost: -1,
+                            isHand: true,
+                            activateClass: activateClass,
+                            successProcess: null));
+                    }
                 }
             }
 
