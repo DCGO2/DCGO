@@ -46,7 +46,7 @@ namespace DCGO.CardEffects.P
 
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnTrash(card)
-                    && CardEffectCommons.CanTriggerOnTrashDigivolutionCard(hashtable, PermanentCondition, cardEffect => true, cardSource => true);
+                    && CardEffectCommons.CanTriggerOnTrashDigivolutionCard(hashtable, PermanentCondition, cardEffect => true, cardSource => card);
 
                 bool CanActivateCondition(Hashtable hashtable)
                 => CardEffectCommons.IsExistOnTrash(card);
