@@ -29,22 +29,71 @@ namespace DCGO.Tools.Repair
         {
             yield return EditorCoroutineUtility.StartCoroutine(instance.GetJsonData(), instance);
 
-            List<CardData> cards = _cardData.Where(x => x.AAs.Any(aa => aa.id.Contains("Errata"))).ToList();            
+            List<CEntity_Base> Entities = GetAsset.LoadAll<CEntity_Base>("Assets/CardBaseEntity/");
 
-            foreach (CardData data in cards)
+            foreach (CEntity_Base card in Entities)
             {
-                SetSpriteName(data.id, data);
+                CardData data = _cardData.Where(x => x.id == card.CardID).First();
 
-                foreach(AlternateArt aa in data.AAs)
+                if (card.CardSpriteName.Contains("-Errata"))
                 {
-                    //if(aa.id.Contains("_P"))
-                        SetSpriteName(aa.id.Replace("-Errata",""), data);
+                    Debug.Log($"Already is an Errata: {card.CardID}");
+                    continue;
                 }
+
+                string errataName = FindMatchingErrata(card.CardSpriteName, data);
                 
+                if(card.CardSpriteName != errataName)
+                {
+                    card.CardSpriteName = errataName;
+                    EditorUtility.SetDirty(card);
+                }
             }
 
             Debug.Log(debugText);
             Debug.Log($"COMPLETED: {matchedCount}");
+        }
+
+        string FindMatchingErrata(string imageName, CardData data)
+        {
+            string name = imageName;
+
+            foreach(AlternateArt AA in data.AAs)
+            {
+                if (AA.id.Replace("-Errata","") != imageName)
+                    continue;
+
+                name = AA.id;
+            }
+
+            if(name != imageName)
+            {
+                debugText += $"{imageName}\n";
+                matchedCount++;
+            }               
+
+            return name;
+        }
+
+        IEnumerator GetJsonData()
+        {
+            string url = baseURL + "assets/cardlists/DigimonCards.json";
+            UnityWebRequest jsonWebRequest = UnityWebRequest.Get(url);
+
+            yield return jsonWebRequest.SendWebRequest();
+
+            if (jsonWebRequest.result != UnityWebRequest.Result.Success)
+            {
+                Debug.Log(jsonWebRequest.error);
+            }
+            else
+            {
+
+                RootObject root = JsonUtility.FromJson<RootObject>("{\"cards\":" + jsonWebRequest.downloadHandler.text + "}");
+                _cardData = root.cards;
+            }
+
+            yield return null;
         }
 
         void SetSpriteName(string ID, CardData data)
@@ -52,6 +101,7 @@ namespace DCGO.Tools.Repair
             string fileName = $"{FixCharactersInClassName($"{ID}")}.asset";
 
             string folderName_SetID = $"{GetParseByHyphen(data.id)[0]}";
+
             string folderName_CardColor = $"{DataBase.CardColorNameDictionary[GetCardColors(data.color)[0]]}";
             folderName_CardColor = char.ToUpper(folderName_CardColor[0]) + folderName_CardColor.Substring(1);
 
@@ -93,27 +143,6 @@ namespace DCGO.Tools.Repair
             }
 
             return $"{ID}";
-        }
-
-        IEnumerator GetJsonData()
-        {
-            string url = baseURL + "assets/cardlists/DigimonCards.json";
-            UnityWebRequest jsonWebRequest = UnityWebRequest.Get(url);
-
-            yield return jsonWebRequest.SendWebRequest();
-
-            if (jsonWebRequest.result != UnityWebRequest.Result.Success)
-            {
-                Debug.Log(jsonWebRequest.error);
-            }
-            else
-            {
-
-                RootObject root = JsonUtility.FromJson<RootObject>("{\"cards\":" + jsonWebRequest.downloadHandler.text + "}");
-                _cardData = root.cards;
-            }
-
-            yield return null;
         }
 
         //Parse ScriptableObject Name

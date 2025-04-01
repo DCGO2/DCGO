@@ -1,9 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using System;
 using System.Linq;
-using UnityEngine;
-using System.Security;
 
 public partial class CardEffectCommons
 {
@@ -17,24 +13,21 @@ public partial class CardEffectCommons
         if (condition != null && !condition(permanent)) return false;
         if (!permanent.TopCard.HasPlayCost) return false;
 
-        List<Permanent> permanents = permanent.TopCard.Owner.GetBattleAreaPermanents();
-        List<int> costs = new List<int>();
-
         if (IsDigimonOnly)
         {
-            costs = permanents
-                .Filter(permanent1 => condition == null || (condition != null && condition(permanent1)))
-                .Filter(permanent1 => permanent1.IsDigimon && permanent1.TopCard.HasPlayCost)
-                .Map(permanent1 => permanent1.TopCard.GetCostItself);
+            if (!permanent.IsDigimon) return false;
+            var costs = permanent.TopCard.Owner.GetBattleAreaDigimons()
+                .Filter(x => x.TopCard.HasPlayCost)
+                .Select(x => x.TopCard.GetCostItself).ToList();
+
+            return costs.Count >= 1 && permanent.TopCard.GetCostItself == costs.Min();
         }
         else
         {
-            costs = permanents
-                .Filter(permanent1 => condition == null || (condition != null && condition(permanent1)))
-                .Filter(permanent1 => (permanent1.IsDigimon || permanent1.IsTamer) && permanent1.TopCard.HasPlayCost)
-                .Map(permanent1 => permanent1.TopCard.GetCostItself);
+            var costs = permanent.TopCard.Owner.GetBattleAreaPermanents()
+                 .Filter(x => (x.IsDigimon || x.IsTamer) && x.TopCard.HasPlayCost)
+                 .Select(x => x.TopCard.GetCostItself).ToList();
+            return costs.Count >= 1 && permanent.TopCard.GetCostItself == costs.Min();
         }
-
-        return costs.Count >= 1 && permanent.TopCard.GetCostItself == costs.Min();
     }
 }

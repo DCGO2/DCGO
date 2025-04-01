@@ -361,7 +361,7 @@ namespace DCGO.CardEffects.EX8
             if (timing == EffectTiming.None)
             {
                 DisableEffectClass invalidationClass = new DisableEffectClass();
-                invalidationClass.SetUpICardEffect("Ignore [When Digivolving] Effect", CanUseCondition, card);
+                invalidationClass.SetUpICardEffect("[On Plays] can't activate", CanUseCondition, card);
                 invalidationClass.SetUpDisableEffectClass(DisableCondition: InvalidateCondition);
                 cardEffects.Add(invalidationClass);
 

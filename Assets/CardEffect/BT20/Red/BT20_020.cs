@@ -95,7 +95,7 @@ namespace DCGO.CardEffects.BT20
                         return cardEffect != null;
                     }
 
-                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.CardNames.Contains("Imperialdramon: Dragon Mode")) >= 1)
+                    if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.EqualsCardName("Imperialdramon: Dragon Mode")) >= 1)
                     {
                         yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
                                 player: card.Owner.Enemy,
@@ -106,7 +106,6 @@ namespace DCGO.CardEffects.BT20
                 }
             }
             #endregion
-
 
             #region All Turns
             if(timing == EffectTiming.OnLoseSecurity)
