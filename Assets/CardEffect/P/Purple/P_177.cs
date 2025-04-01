@@ -12,7 +12,7 @@ namespace DCGO.CardEffects.P
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Return 1 card from trash to hand", CanUseCondition, card);

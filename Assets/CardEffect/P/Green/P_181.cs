@@ -10,7 +10,7 @@ namespace DCGO.CardEffects.P
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region All Turns Security
+            #region Your Turn Face Up Security
 
             if (timing == EffectTiming.BeforePayCost)
             {
@@ -24,11 +24,11 @@ namespace DCGO.CardEffects.P
                     => "[Security] [Your Turn] [Once Per Turn] When any of your Digimon would digivolve into a Digimon card with the [Royal Base] trait, reduce the digivolution cost by 1.";
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistInSecurity(card, false)
+                    && CardEffectCommons.IsOwnerTurn(card)
                     && CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, DigivolveCondition);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistInSecurity(card, false)
-                    && CardEffectCommons.IsOwnerTurn(card);
+                    => CardEffectCommons.IsExistInSecurity(card, false);
 
                 bool DigivolveCondition(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)

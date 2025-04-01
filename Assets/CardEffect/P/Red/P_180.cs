@@ -41,9 +41,12 @@ namespace DCGO.CardEffects.P
                 string EffectDiscription()
                     => "When effects trash this card from digivolution cards, delete 1 of your opponent's 7000 DP or lower Digimon.";
 
+                bool PermanentCondition(Permanent permanent)
+                    => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
+
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnTrash(card)
-                    && CardEffectCommons.CanTriggerOnTrashSelfDigivolutionCard(hashtable, cardEffect => cardEffect != null, card);
+                    && CardEffectCommons.CanTriggerOnTrashDigivolutionCard(hashtable, PermanentCondition, cardEffect => true, cardSource => true);
 
                 bool CanActivateCondition(Hashtable hashtable)
                 => CardEffectCommons.IsExistOnTrash(card);
@@ -107,7 +110,7 @@ namespace DCGO.CardEffects.P
                         cardEffect: activateClass,
                         fromTop: true).DestroySecurity());
 
-                    if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectDigimon))
+                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectDigimon))
                     {
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectDigimon));
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
