@@ -253,7 +253,8 @@ public class CardSource : MonoBehaviour
     #region Permanent in the field containing this card
     public Permanent PermanentOfThisCard()
     {
-        return Owner.GetFieldPermanents().Find(permanent => permanent.cardSources.Contains(this) && !IsFlipped);
+        return Owner.GetFieldPermanents().Find(permanent =>
+            (permanent.cardSources.Contains(this) || permanent.LinkedCards.Any(linked => linked.Source == this)) && !IsFlipped);
     }
     #endregion
 
@@ -401,7 +402,7 @@ public class CardSource : MonoBehaviour
                     .Map<EvoCost, Func<Permanent, int>>(evoCost =>
                     (targetPermanent) =>
                     {
-                        if(ignore.Equals(CardEffectCommons.IgnoreRequirement.All) && Owner.CanIgnoreDigivolutionRequirement(targetPermanent, this))
+                        if (ignore.Equals(CardEffectCommons.IgnoreRequirement.All) && Owner.CanIgnoreDigivolutionRequirement(targetPermanent, this))
                             return evoCost.MemoryCost;
 
                         if ((ignore.Equals(CardEffectCommons.IgnoreRequirement.Color) && Owner.CanIgnoreDigivolutionRequirement(targetPermanent, this))
@@ -427,7 +428,7 @@ public class CardSource : MonoBehaviour
     {
         CardEffectCommons.IgnoreRequirement ignore = CardEffectCommons.IgnoreRequirement.None;
 
-        if(ignoreLevel)
+        if (ignoreLevel)
             ignore = CardEffectCommons.IgnoreRequirement.Level;
 
         return EvoCosts(ignore, checkAvailability)
@@ -523,7 +524,7 @@ public class CardSource : MonoBehaviour
     #endregion
 
     #region get card cost of itself (refered by card effects)
-    public int GetCostItself => Math.Max(0, GetChangedCostItselef(BasePlayCostFromEntity, SelectCardEffect.Root.None, new List<Permanent>() { PermanentOfThisCard()}));
+    public int GetCostItself => Math.Max(0, GetChangedCostItselef(BasePlayCostFromEntity, SelectCardEffect.Root.None, new List<Permanent>() { PermanentOfThisCard() }));
     #endregion
 
     #region get card cost of itself taking into account card effects
@@ -606,7 +607,7 @@ public class CardSource : MonoBehaviour
     }
     #endregion
 
-        #region get card cost to pay of itself taking into account card effects
+    #region get card cost to pay of itself taking into account card effects
     public int GetChangedPayingCost(int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents, bool checkAvailability = false)
     {
         #region card effects that changes card cost to pay
@@ -1402,7 +1403,7 @@ public class CardSource : MonoBehaviour
                 return true;
             }
 
-            if(ContainsTraits("SeaAnimal"))
+            if (ContainsTraits("SeaAnimal"))
             {
                 return true;
             }
@@ -1411,7 +1412,7 @@ public class CardSource : MonoBehaviour
         }
     }
     #endregion
-    
+
     #region whether this card has at least 1 trait that contains "Angel"
     public bool HasAngelTraits
     {
@@ -1421,37 +1422,37 @@ public class CardSource : MonoBehaviour
             {
                 return true;
             }
-            
+
             if (ContainsTraits("Cherub"))
             {
                 return true;
             }
-            
+
             if (ContainsTraits("Throne"))
             {
                 return true;
             }
-            
+
             if (ContainsTraits("Authority"))
             {
                 return true;
             }
-            
+
             if (ContainsTraits("Seraph"))
             {
                 return true;
             }
-            
+
             if (ContainsTraits("Virtue"))
             {
                 return true;
             }
-            
+
             return false;
         }
     }
     #endregion
-    
+
     #region whether this card has 1 of the "Angel", "Archangel" or "Three Great Angels" trait
     public bool HasAngelTraitRestrictive
     {
@@ -1461,13 +1462,13 @@ public class CardSource : MonoBehaviour
             {
                 return true;
             }
-            
+
             if (ContainsTraits("Archangel"))
             {
                 return true;
             }
-            
-            if (CardTraits.Count(trait => 
+
+            if (CardTraits.Count(trait =>
                     (trait.Contains("Angel") || trait.Contains("angel"))
                     && trait != "Archangel"
                     && trait != "Fallen Angel" && trait != "FallenAngel"
@@ -1475,7 +1476,7 @@ public class CardSource : MonoBehaviour
             {
                 return true;
             }
-            
+
             return false;
         }
     }
@@ -1582,7 +1583,7 @@ public class CardSource : MonoBehaviour
                 return true;
             }
 
-            if(ContainsTraits("Beast Dragon"))
+            if (ContainsTraits("Beast Dragon"))
             {
                 return true;
             }
@@ -1591,7 +1592,7 @@ public class CardSource : MonoBehaviour
         }
     }
     #endregion
-    
+
     #region whether this card has at least 1 trait that contains "DigiPolice"
     public bool HasDigiPoliceTraits
     {
@@ -1601,15 +1602,15 @@ public class CardSource : MonoBehaviour
             {
                 return true;
             }
-            
+
             return false;
         }
     }
     #endregion
-    
+
     #region whether this card has at least 1 trait that contains "Light Fang" or "Night Claw"
     public bool HasLightFangNightClawTraits => ContainsTraits("Light Fang") || ContainsTraits("Night Claw");
-    
+
     #endregion
 
     #region whether this card has at least 1 trait that contains "Light Fang/Night Claw"
@@ -1655,11 +1656,12 @@ public class CardSource : MonoBehaviour
         foreach (string attribute in _cEntity_Base.Type_ENG)
             checkStrings.Add(DataBase.ReplaceToASCII(attribute));
 
-        if(jogressCondition != null){
+        if (jogressCondition != null)
+        {
             foreach (JogressConditionElement element in jogressCondition.elements)
                 checkStrings.Add(element.SelectMessage);
         }
-        
+
 
         foreach (string checkString in checkStrings)
         {
@@ -1685,11 +1687,11 @@ public class CardSource : MonoBehaviour
         return false;
     }
     #endregion
-    
+
     #region whether this card has <Save> in text
     public bool HasSaveText => HasText("<Save>");
     #endregion
-    
+
     #region whether this card has "Pulsemon" in text
     public bool HasPulsemonText => HasText("Pulsemon");
     #endregion
@@ -1970,7 +1972,7 @@ public class CardSource : MonoBehaviour
     #region whether this card has [Blocker]
     public bool HasBlocker =>
         EffectList(EffectTiming.None)
-            .Some(cardEffect => cardEffect is BlockerClass 
+            .Some(cardEffect => cardEffect is BlockerClass
                 && !cardEffect.IsInheritedEffect && !cardEffect.IsSecurityEffect);
     #endregion
 
@@ -2267,35 +2269,35 @@ public class CardSource : MonoBehaviour
     #region whether this card has level
     public bool HasLevel => _cEntity_Base == null || _cEntity_Base.HasLevel;
     #endregion
-    
+
     #region whether this card is level 2
-    
+
     public bool IsLevel2 => (_cEntity_Base == null || _cEntity_Base.HasLevel) && _cEntity_Base.Level == 2;
-    
+
     #endregion
-    
+
     #region whether this card is level 3
-    
+
     public bool IsLevel3 => (_cEntity_Base == null || _cEntity_Base.HasLevel) && _cEntity_Base.Level == 3;
-    
+
     #endregion
-    
+
     #region whether this card is level 4
-    
+
     public bool IsLevel4 => (_cEntity_Base == null || _cEntity_Base.HasLevel) && _cEntity_Base.Level == 4;
-    
+
     #endregion
-    
+
     #region whether this card is level 5
-    
+
     public bool IsLevel5 => (_cEntity_Base == null || _cEntity_Base.HasLevel) && _cEntity_Base.Level == 5;
-    
+
     #endregion
-    
+
     #region whether this card is level 6
-    
+
     public bool IsLevel6 => (_cEntity_Base == null || _cEntity_Base.HasLevel) && _cEntity_Base.Level == 6;
-    
+
     #endregion
 
     #region DigiXros requirement
@@ -2616,6 +2618,73 @@ public class CardSource : MonoBehaviour
         get
         {
             if (CardTraits.Contains("Hero"))
+            {
+                return true
+            }
+            return float
+        }
+    }
+
+    #endregion
+
+    #region whether this card has "Chronicle" trait
+
+    public bool HasChronicleTraits
+    {
+        get
+        {
+            if (CardTraits.Contains("Chronicle"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    #endregion
+
+    #region whether this card has "Device" trait
+
+    public bool HasDeviceTraits
+    {
+        get
+        {
+            if (CardTraits.Contains("Device"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    #endregion
+
+    #region whether this card has "Three Musketeers" trait
+
+    public bool HasThreeMusketeersTraits
+    {
+        get
+        {
+            if (CardTraits.Contains("Three Musketeers"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    #endregion
+
+    #region whether this card has "Royal Base" trait
+
+    public bool HasRoyalBaseTraits
+    {
+        get
+        {
+            if (CardTraits.Contains("Royal Base"))
             {
                 return true;
             }
