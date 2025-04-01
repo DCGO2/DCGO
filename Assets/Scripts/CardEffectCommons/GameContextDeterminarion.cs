@@ -96,6 +96,16 @@ public partial class CardEffectCommons
     }
     #endregion
 
+    #region Whether the card is Linked
+    public static bool IsExistLinked(CardSource card)
+    {
+        if (IsExistOnField(card))
+            return card.PermanentOfThisCard().LinkedCards.Any(source => source.Source == card);
+
+        return false;
+    }
+    #endregion
+
     #region Whether the card is in trash
     public static bool IsExistOnTrash(CardSource card)
     {

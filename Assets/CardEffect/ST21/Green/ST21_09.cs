@@ -284,8 +284,6 @@ namespace DCGO.CardEffects.ST21
                                 defenderCondition: _ => true,
                                 cardEffect: activateClass);
 
-                            selectAttackEffect.SetCanNotSelectNotAttack();
-
                             yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
                         }
                     }
