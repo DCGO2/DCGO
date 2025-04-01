@@ -96,9 +96,7 @@ public partial class CardEffectFactory
 
             if (selectedPermanent != null)
             {
-
                 yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddLinkCard(card, dp, activateClass));
-                    //yield return ContinuousController.instance.StartCoroutine(new ILinkPermanentToPermanent(new List<Permanent[]>() { new Permanent[] { card.PermanentOfThisCard(), selectedPermanent } }, dp, activateClass).LinkPermanent());
             }
         }
 

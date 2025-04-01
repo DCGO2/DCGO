@@ -961,7 +961,7 @@ public class Permanent
         }
         Debug.Log($"LINK CARDS: {LinkedCards.Count} >= {LinkedMax}");
         if (LinkedCards.Count >= LinkedMax)
-            yield return ContinuousController.instance.StartCoroutine(RemoveCardSource(LinkedCards[0].Source));
+            yield return ContinuousController.instance.StartCoroutine(RemoveLinkedCard(LinkedCards[0].Source));
 
         yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveFromAllArea(addedLinkCard));
 
@@ -3373,6 +3373,10 @@ public class Permanent
 
     #region 進化元を持たないか
     public bool HasNoDigivolutionCards => DigivolutionCards.Count == 0;
+    #endregion
+
+    #region Has No Link Cards
+    public bool HasNoLinkCards => LinkedCards.Count == 0;
     #endregion
 
     #region Digivolution cards' colors
