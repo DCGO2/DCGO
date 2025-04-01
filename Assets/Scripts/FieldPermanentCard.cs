@@ -50,6 +50,9 @@ public class FieldPermanentCard : MonoBehaviour
     [Header("レベルテキスト")]
     public TextMeshProUGUI LevelText;
 
+    [Header("Linked Text")]
+    public Text LinkedDPText;
+
     [Header("表示親")]
     public GameObject Parent;
 
@@ -117,6 +120,11 @@ public class FieldPermanentCard : MonoBehaviour
         if (EvoRootCountText != null)
         {
             EvoRootCountText.transform.parent.gameObject.SetActive(false);
+        }
+
+        if (LinkedDPText != null)
+        {
+            LinkedDPText.transform.parent.gameObject.SetActive(false);
         }
 
         if (DirectStrikeText != null)
@@ -510,6 +518,22 @@ public class FieldPermanentCard : MonoBehaviour
                 else
                 {
                     EvoRootCountText.transform.parent.gameObject.SetActive(false);
+                }
+            }
+
+            if (LinkedDPText != null)
+            {
+                if (ThisPermanent.LinkedCards.Count > 0)
+                {
+                    LinkedDPText.transform.parent.gameObject.SetActive(true);
+
+                    if (LinkedDPText.text != $"+{ThisPermanent.LinkedDP}")
+                        LinkedDPText.text = $"+{ThisPermanent.LinkedDP}";
+                }
+
+                else
+                {
+                    LinkedDPText.transform.parent.gameObject.SetActive(false);
                 }
             }
 
