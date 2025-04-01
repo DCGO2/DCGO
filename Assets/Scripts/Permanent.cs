@@ -317,7 +317,7 @@ public class Permanent
             {
                 DP = BaseDP;
 
-                #region DPを変更する効果
+                #region DP By Effect
 
                 List<ICardEffect> cardEffects_ChangeDP = new List<ICardEffect>();
 
@@ -459,6 +459,8 @@ public class Permanent
                 }
                 #endregion
 
+                DP += LinkedDP;
+
                 if (DP < 0)
                 {
                     DP = 0;
@@ -468,6 +470,10 @@ public class Permanent
             return DP;
         }
     }
+
+    public int LinkedDP { get; set; }
+
+    public int DPBoost { get; set; }
     #endregion
 
     #region Will it not receive negative DP effect?
@@ -625,11 +631,142 @@ public class Permanent
     #endregion
 
     #region Digivolution Cards
-    public List<CardSource> DigivolutionCards => cardSources.Filter(cardSource => cardSource != TopCard);
+    public List<CardSource> DigivolutionCards => cardSources.Filter(cardSource => cardSource != TopCard || LinkedCards.Any(linked => linked.Source == cardSource));
     #endregion
 
-    #region Linked Card
-    public CardSource LinkedCard = null;
+    #region Linked Cards
+    public int LinkedMax
+    {
+        get
+        {
+            int Max = 1;
+
+            #region Effect of changing the number of sheets to undergo security check
+
+            List<ICardEffect> cardEffects_ChangeLinkedMax = new List<ICardEffect>();
+
+            foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
+            {
+                foreach (Permanent permanent in player.GetFieldPermanents())
+                {
+                    #region Effects of permanents in play
+                    foreach (ICardEffect cardEffect in permanent.EffectList(EffectTiming.None))
+                    {
+                        if (cardEffect is IChangeLinkMaxEffect)
+                        {
+                            if (((IChangeLinkMaxEffect)cardEffect).PermanentCondition(this))
+                            {
+                                if (cardEffect.CanUse(null))
+                                {
+                                    if (!TopCard.CanNotBeAffected(cardEffect))
+                                    {
+                                        cardEffects_ChangeLinkedMax.Add(cardEffect);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    #endregion
+                }
+
+                #region player effect
+                foreach (ICardEffect cardEffect in player.EffectList(EffectTiming.None))
+                {
+                    if (cardEffect is IChangeLinkMaxEffect)
+                    {
+                        if (((IChangeLinkMaxEffect)cardEffect).PermanentCondition(this))
+                        {
+                            if (cardEffect.CanUse(null))
+                            {
+                                if (!TopCard.CanNotBeAffected(cardEffect))
+                                {
+                                    cardEffects_ChangeLinkedMax.Add(cardEffect);
+                                }
+                            }
+                        }
+                    }
+                }
+                #endregion
+            }
+
+            List<ICardEffect> cardEffects_ChangeLinkedMax_UpToConstant = new List<ICardEffect>();
+            List<ICardEffect> cardEffects_ChangeLinkedMax_UpDownValue = new List<ICardEffect>();
+            List<ICardEffect> cardEffects_ChangeLinkedMax_DownToConstant = new List<ICardEffect>();
+
+            foreach (ICardEffect cardEffect in cardEffects_ChangeLinkedMax)
+            {
+                if (cardEffect is IChangeLinkMaxEffect)
+                {
+                    if (cardEffect.CanUse(null))
+                    {
+                        switch (((IChangeLinkMaxEffect)cardEffect).isUpDown())
+                        {
+                            case CalculateOrder.UpToConstant:
+                                cardEffects_ChangeLinkedMax_UpToConstant.Add(cardEffect);
+                                break;
+
+                            case CalculateOrder.UpDownValue:
+                                cardEffects_ChangeLinkedMax_UpDownValue.Add(cardEffect);
+                                break;
+
+                            case CalculateOrder.DownToConstant:
+                                cardEffects_ChangeLinkedMax_DownToConstant.Add(cardEffect);
+                                break;
+                        }
+                    }
+                }
+            }
+
+            foreach (ICardEffect cardEffect in cardEffects_ChangeLinkedMax_UpToConstant)
+            {
+                if (cardEffect is IChangeLinkMaxEffect)
+                {
+                    if (cardEffect.CanUse(null))
+                    {
+                        Max = ((IChangeLinkMaxEffect)cardEffect).GetLinkMax(Max, this, InvertSecutiryValue);
+                    }
+                }
+            }
+
+            foreach (ICardEffect cardEffect in cardEffects_ChangeLinkedMax_UpDownValue)
+            {
+                if (cardEffect is IChangeLinkMaxEffect)
+                {
+                    if (cardEffect.CanUse(null))
+                    {
+                        Max = ((IChangeLinkMaxEffect)cardEffect).GetLinkMax(Max, this, InvertSecutiryValue);
+                    }
+                }
+            }
+
+            foreach (ICardEffect cardEffect in cardEffects_ChangeLinkedMax_DownToConstant)
+            {
+                if (cardEffect is IChangeLinkMaxEffect)
+                {
+                    if (cardEffect.CanUse(null))
+                    {
+                        Max = ((IChangeLinkMaxEffect)cardEffect).GetLinkMax(Max, this, InvertSecutiryValue);
+                    }
+                }
+            }
+            #endregion
+
+            return Max;
+        }
+    }
+    public struct LinkCard
+    {
+        public LinkCard(int dp, CardSource source)
+        {
+            DP = dp;
+            Source = source;
+        }
+
+        public int DP { get; }
+        public CardSource Source { get; }
+    }
+
+    public List<LinkCard> LinkedCards = new List<LinkCard>();
     #endregion
 
     #region Add Card Source
@@ -801,15 +938,65 @@ public class Permanent
     }
     #endregion
 
-    #region Add Card Source
-    public IEnumerator AddLinkedCard(CardSource cardSource, ICardEffect cardEffect)
+    #region Add Link cards
+    /// <summary>
+    /// IEnumerator to add a list of CardSource to a permanents top sources, CAN NOT be used to put a field permanent under must use IPlacePermanentToDigivolutionCards
+    /// </summary>
+    /// <param name="addedLinkCards"></param>
+    /// <param name="cardEffect"></param>
+    /// <param name="skipEffectAndActivateSkill"></param>
+    /// <returns></returns>
+    public IEnumerator AddLinkCard(CardSource addedLinkCard, int DP, ICardEffect cardEffect)
     {
-        yield return null;
+        bool addedCard = false;
 
-        if (LinkedCard != null)
-            RemoveLinkedCard(null);
+        bool isFromDigimon = false;
 
-        LinkedCard = cardSource;
+        if (CardEffectCommons.IsExistOnBattleArea(addedLinkCard))
+        {
+            if (addedLinkCard.PermanentOfThisCard().DigivolutionCards.Count >= 1)
+            {
+                isFromDigimon = true;
+            }
+        }
+        Debug.Log($"LINK CARDS: {LinkedCards.Count} >= {LinkedMax}");
+        if (LinkedCards.Count >= LinkedMax)
+            yield return ContinuousController.instance.StartCoroutine(RemoveLinkedCard(LinkedCards[0].Source));
+
+        yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveFromAllArea(addedLinkCard));
+
+        if (!this.IsToken && !addedLinkCard.IsToken)
+        {
+            LinkedCards.Insert(0, new LinkCard(0, addedLinkCard));
+            LinkedDP += DP;
+
+            this.cardSources.Insert(1, addedLinkCard);
+            addedLinkCard.SetFace();
+            addedCard = true;
+        }
+
+        if (addedCard)
+        {
+            if (ShowingPermanentCard != null)
+            {
+                yield return ContinuousController.instance.StartCoroutine(ShowingPermanentCard.ShowAddDigivolutionCardEffect());
+            }
+
+            #region Add Linked Card
+
+            #region Hashtable Setting
+            Hashtable hashtable = new Hashtable()
+                {
+                    {"Permanent", this},
+                    {"CardEffect", cardEffect},
+                    {"Card", addedLinkCard},
+                    {"isFromDigimon", isFromDigimon},
+                };
+            #endregion
+
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(hashtable, EffectTiming.WhenLinked));
+            #endregion
+        }
     }
     #endregion
 
@@ -823,12 +1010,23 @@ public class Permanent
     #endregion
 
     #region Remove Linked Card
-    public IEnumerator RemoveLinkedCard(ICardEffect cardEffect)
+    public IEnumerator RemoveLinkedCard(CardSource cardSource)
     {
-        //TODO: Add event call if something was removed
-        yield return null;
+        LinkCard linked = LinkedCards.Where(linked => linked.Source == cardSource).FirstOrDefault();
 
-        LinkedCard = null;
+        Debug.Log($"REMOVE LINK CARD: {LinkedCards.Count} >= {linked.Source}");
+        if (linked.Source != null)
+        {
+
+            LinkedDP -= linked.DP;
+            yield return ContinuousController.instance.StartCoroutine(RemoveCardSource(linked.Source));
+            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddTrashCard(linked.Source));
+            LinkedCards.Remove(linked);
+            Debug.Log($"REMOVE LINK CARD: {linked.Source}");
+            
+        }
+
+        //TODO: Add event call if something was removed
     }
     #endregion
 
@@ -982,6 +1180,7 @@ public class Permanent
         {
             foreach (CardSource cardSource in cardSources)
             {
+                
                 if (cardSource != null)
                 {
                     if (!cardSource.IsFlipped)
@@ -1000,7 +1199,7 @@ public class Permanent
                         {
                             if (cardEffect != null)
                             {
-                                if (isTopCard == cardEffect.IsInheritedEffect)
+                                if (isTopCard == cardEffect.IsInheritedEffect && isTopCard == cardEffect.IsLinkedEffect)
                                 {
                                     continue;
                                 }
@@ -3174,6 +3373,10 @@ public class Permanent
 
     #region 進化元を持たないか
     public bool HasNoDigivolutionCards => DigivolutionCards.Count == 0;
+    #endregion
+
+    #region Has No Link Cards
+    public bool HasNoLinkCards => LinkedCards.Count == 0;
     #endregion
 
     #region Digivolution cards' colors

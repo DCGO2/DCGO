@@ -253,7 +253,8 @@ public class CardSource : MonoBehaviour
     #region Permanent in the field containing this card
     public Permanent PermanentOfThisCard()
     {
-        return Owner.GetFieldPermanents().Find(permanent => permanent.cardSources.Contains(this) && !IsFlipped);
+        return Owner.GetFieldPermanents().Find(permanent => 
+            (permanent.cardSources.Contains(this) || permanent.LinkedCards.Any(linked => linked.Source == this)) && !IsFlipped);
     }
     #endregion
 
