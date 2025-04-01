@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -479,7 +480,7 @@ public class GManager : MonoBehaviourPun
         if (turnStateMachine == null)
             return;
         
-        if (!Application.version.Contains("a"))
+        if (Application.version.Split(".").Count() < 4)
             return;
 
         //Draw a card

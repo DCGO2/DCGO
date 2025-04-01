@@ -129,7 +129,7 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
                     }
                 }
 
-                if(skillInfo.CardEffect.ChainActivations > 0)
+                if (skillInfo.CardEffect.ChainActivations > 0)
                 {
                     if (GManager.instance.autoProcessing.IsCutInEffectUsedMaxCount(skillInfo.CardEffect))
                     {
@@ -157,7 +157,7 @@ public class MultipleSkills : MonoBehaviourPunCallbacks
 
             skillInfos_active = skillInfos_active.Filter(skillInfo => skillInfo != null && skillInfo.CardEffect != null
                 && skillInfo.CardEffect.CanActivate(skillInfo.Hashtable) && skillInfo.CardEffect.EffectSourceCard != null);
-
+            
             if (skillInfos_active.Count > 0)
             {
                 bool oldIsSecurityGlassBlue = player.securityObject.securityBreakGlass.IsBlueGlass && IsOnlyHandEffectStacked && IsOnlyOptionalEffectStacked && IsEachStackedEffectHasDistinctSourceCard;

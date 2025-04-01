@@ -95,8 +95,8 @@ namespace DCGO.CardEffects.BT20
                         cardEffect: activateClass);
 
                     selectPermanentEffect.SetUpCustomMessage(
-                        "Select 1 Digimon that will be unable to activate [When Digivolving] effects or unsuspend.",
-                        "The opponent is selecting 1 Digimon that will be unable to activate [When Digivolving] effects or unsuspend.");
+                        "Select 1 Digimon or Tamer that will be unable to unsuspend.",
+                        "The opponent is selecting 1 Digimon or Tamer that will be unable to unsuspend.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
@@ -177,8 +177,8 @@ namespace DCGO.CardEffects.BT20
                         cardEffect: activateClass);
 
                     selectPermanentEffect.SetUpCustomMessage(
-                        "Select 1 Digimon that will be unable to activate [When Digivolving] effects or unsuspend.",
-                        "The opponent is selecting 1 Digimon that will be unable to activate [When Digivolving] effects or unsuspend.");
+                        "Select 1 Digimon or Tamer that will be unable to unsuspend.",
+                        "The opponent is selecting 1 Digimon or Tamer that will be unable to unsuspend.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 

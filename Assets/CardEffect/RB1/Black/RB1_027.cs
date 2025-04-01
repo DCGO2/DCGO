@@ -83,6 +83,8 @@ public class RB1_027 : CEntity_Effect
                         topCard.Owner.SecurityCards.Remove(topCard);
                         topCard.Owner.SecurityCards.Add(topCard);
                     }
+
+                    topCard.SetReverse();
                 }
             }
         }
@@ -162,6 +164,8 @@ public class RB1_027 : CEntity_Effect
                         topCard.Owner.SecurityCards.Remove(topCard);
                         topCard.Owner.SecurityCards.Add(topCard);
                     }
+
+                    topCard.SetReverse();
                 }
             }
         }

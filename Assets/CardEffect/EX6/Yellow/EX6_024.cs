@@ -69,12 +69,6 @@ namespace DCGO.CardEffects.EX6
             
             #region On Play/ When Attacking/ ESS Shared
             
-            string EffectSharedDescription()
-            {
-                return
-                    "[On Play] [When Attacking] [Once Per Turn] 1 Digimon may gain [Security Attack -1] until the end of your opponent's turn. Then, if DigiXrosing, 1 of your opponent's Digimon or Tamers can't suspend until the end of their turn.";
-            }
-            
             bool CanSelectSecMinusPermanentSharedCondition(Permanent permanent)
             {
                 if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
@@ -99,9 +93,15 @@ namespace DCGO.CardEffects.EX6
                     "1 Digimon may gain [Security Attack -1] until the end of your opponent's turn. Then, if DigiXrosing, 1 of your opponent's Digimon or Tamers can't suspend until the end of their turn.",
                     CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false,
-                    EffectSharedDescription());
+                    EffectDescription());
                 activateClass.SetHashString("SecurityAttack-1CantSuspend_EX6-024");
                 cardEffects.Add(activateClass);
+            
+                string EffectDescription()
+                {
+                    return
+                        "[On Play] [Once Per Turn] 1 Digimon may gain [Security Attack -1] until the end of your opponent's turn. Then, if DigiXrosing, 1 of your opponent's Digimon or Tamers can't suspend until the end of their turn.";
+                }
                 
                 bool CanUseCondition(Hashtable hashtable)
                 {
@@ -259,9 +259,15 @@ namespace DCGO.CardEffects.EX6
                     "1 Digimon may gain [Security Attack -1] until the end of your opponent's turn",
                     CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false,
-                    EffectSharedDescription());
+                    EffectDescription());
                 activateClass.SetHashString("SecurityAttack-1_EX6-024");
                 cardEffects.Add(activateClass);
+            
+                string EffectDescription()
+                {
+                    return
+                        "[When Attacking] [Once Per Turn] 1 Digimon may gain [Security Attack -1] until the end of your opponent's turn. Then, if DigiXrosing, 1 of your opponent's Digimon or Tamers can't suspend until the end of their turn.";
+                }
                 
                 bool CanUseCondition(Hashtable hashtable)
                 {

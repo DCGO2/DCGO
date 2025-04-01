@@ -368,7 +368,7 @@ namespace DCGO.CardEffects.BT20
             if (timing == EffectTiming.OnEndTurn)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Place top card face up as bottom security", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Place top card as top security", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -393,7 +393,7 @@ namespace DCGO.CardEffects.BT20
                 {
                     // Place this card face up as the bottom security card
                     yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(
-                        card, toTop: false, faceUp: true));
+                        card, toTop: true, faceUp: false));
 
                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>()
                         .CreateRecoveryEffect(card.Owner));

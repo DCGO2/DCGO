@@ -262,6 +262,7 @@ namespace DCGO.CardEffects.BT10
 
                                         if (selectedEffect.CanUse(effectHashtable))
                                         {
+                                            selectedEffect.SetIsDigimonEffect(true);
                                             yield return ContinuousController.instance.StartCoroutine(
                                                 ((ActivateICardEffect)selectedEffect).Activate_Optional_Effect_Execute(effectHashtable));
                                         }

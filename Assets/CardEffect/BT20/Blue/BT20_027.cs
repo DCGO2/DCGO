@@ -301,7 +301,7 @@ namespace DCGO.CardEffects.BT20
                     removedPermanents = CardEffectCommons.GetPermanentsFromHashtable(hashtable).Filter(CanSelectPermanentCondition);
 
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           card.PermanentOfThisCard().CanSuspend;
+                           CardEffectCommons.CanActivateSuspendCostEffect(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

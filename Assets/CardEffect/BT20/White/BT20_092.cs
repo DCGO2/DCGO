@@ -193,7 +193,7 @@ namespace DCGO.CardEffects.BT20
                         yield return null;
                     }
 
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedDigivolutionCards, activateClass: activateClass, payCost: false, isTapped: true, root: SelectCardEffect.Root.DigivolutionCards, activateETB: true));
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedDigivolutionCards, activateClass: activateClass, payCost: false, isTapped: false, root: SelectCardEffect.Root.DigivolutionCards, activateETB: true));
 
                     if (selectedDigivolutionCards.Count > 0)
                     {

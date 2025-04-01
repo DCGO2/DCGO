@@ -15,9 +15,8 @@ namespace DCGO.CardEffects.BT20
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.EqualsCardName("Ginryumon") ||
-                           targetPermanent.TopCard.IsLevel4 &&
-                           targetPermanent.TopCard.HasXAntibodyTraits;
+                    return (targetPermanent.TopCard.EqualsCardName("Ginryumon")) ||
+                           (targetPermanent.TopCard.IsLevel4 && targetPermanent.TopCard.EqualsTraits("Chronicle"));
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
