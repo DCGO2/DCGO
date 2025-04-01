@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 // Justimon: Critical Arm
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.P
 {
     public class P_179 : CEntity_Effect
     {
@@ -16,15 +16,15 @@ namespace DCGO.CardEffects
             if (timing == EffectTiming.None)
             {
                 bool PermanentCondition(Permanent targetPermanent)
-                    => targetPermanent.TopCard.EqualsCardName("Justimon: Blitz Arm") || targetPermanent.TopCard.EqualsCardName("Justimon: Accel Arm");
-                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 1, ignoreDigivolutionRequirement: false, card: card, condition: null));
+                    => (targetPermanent.TopCard.EqualsCardName("Justimon: Blitz Arm") || targetPermanent.TopCard.EqualsCardName("Justimon: Accel Arm"));
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(PermanentCondition, 1, false, card, null));
             }
 
             #endregion
 
             #region When Digivolving
 
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play [Device] option from hand or trash", CanUseCondition, card);
