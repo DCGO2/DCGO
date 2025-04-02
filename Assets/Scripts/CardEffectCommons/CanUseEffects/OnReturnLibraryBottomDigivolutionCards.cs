@@ -7,7 +7,7 @@ using UnityEngine;
 public partial class CardEffectCommons
 {
     #region Can trigger "When card is returned to library bottom from this permanent due to effect" effect
-    public static bool CanTriggerOnReturnRoLibraryBottomDigivolutionCard(Hashtable hashtable, Func<CardSource, bool> cardCondition, CardSource card)
+    public static bool CanTriggerOnReturnToLibraryBottomDigivolutionCard(Hashtable hashtable, Func<CardSource, bool> cardCondition, CardSource card)
     {
         if (IsExistOnBattleArea(card))
         {

@@ -178,7 +178,7 @@ namespace DCGO.CardEffects.EX8
                                     {
                                         if (CardEffectCommons.IsTopCardInTrashOnDeletion(hashtable1))
                                         {
-                                            return true;
+                                            return _topCard.Owner.HandCards.Count > 0;
                                         }
 
                                         return false;
@@ -186,28 +186,23 @@ namespace DCGO.CardEffects.EX8
 
                                     IEnumerator ActivateCoroutine1(Hashtable _hashtable1)
                                     {
-                                        if (selectedPermanent.TopCard.Owner.HandCards.Count >= 1)
-                                        {
-                                            int discardCount = 1;
+                                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
-                                            SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                                        selectHandEffect.SetUp(
+                                            selectPlayer: _topCard.Owner,
+                                            canTargetCondition: (cardSource) => true,
+                                            canTargetCondition_ByPreSelecetedList: null,
+                                            canEndSelectCondition: null,
+                                            maxCount: 1,
+                                            canNoSelect: false,
+                                            canEndNotMax: false,
+                                            isShowOpponent: true,
+                                            selectCardCoroutine: null,
+                                            afterSelectCardCoroutine: null,
+                                            mode: SelectHandEffect.Mode.Discard,
+                                            cardEffect: activateClass);
 
-                                            selectHandEffect.SetUp(
-                                                selectPlayer: selectedPermanent.TopCard.Owner,
-                                                canTargetCondition: (cardSource) => true,
-                                                canTargetCondition_ByPreSelecetedList: null,
-                                                canEndSelectCondition: null,
-                                                maxCount: discardCount,
-                                                canNoSelect: false,
-                                                canEndNotMax: false,
-                                                isShowOpponent: true,
-                                                selectCardCoroutine: null,
-                                                afterSelectCardCoroutine: null,
-                                                mode: SelectHandEffect.Mode.Discard,
-                                                cardEffect: activateClass);
-
-                                            yield return StartCoroutine(selectHandEffect.Activate());
-                                        }
+                                        yield return StartCoroutine(selectHandEffect.Activate());
                                     }
                                 }
                             }
@@ -358,7 +353,7 @@ namespace DCGO.CardEffects.EX8
                                     {
                                         if (CardEffectCommons.IsTopCardInTrashOnDeletion(hashtable1))
                                         {
-                                            return true;
+                                            return _topCard.Owner.HandCards.Count > 0;
                                         }
 
                                         return false;
@@ -366,28 +361,23 @@ namespace DCGO.CardEffects.EX8
 
                                     IEnumerator ActivateCoroutine1(Hashtable _hashtable1)
                                     {
-                                        if (selectedPermanent.TopCard.Owner.HandCards.Count >= 1)
-                                        {
-                                            int discardCount = 1;
+                                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
-                                            SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                                        selectHandEffect.SetUp(
+                                            selectPlayer: _topCard.Owner,
+                                            canTargetCondition: (cardSource) => true,
+                                            canTargetCondition_ByPreSelecetedList: null,
+                                            canEndSelectCondition: null,
+                                            maxCount: 1,
+                                            canNoSelect: false,
+                                            canEndNotMax: false,
+                                            isShowOpponent: true,
+                                            selectCardCoroutine: null,
+                                            afterSelectCardCoroutine: null,
+                                            mode: SelectHandEffect.Mode.Discard,
+                                            cardEffect: activateClass);
 
-                                            selectHandEffect.SetUp(
-                                                selectPlayer: selectedPermanent.TopCard.Owner,
-                                                canTargetCondition: (cardSource) => true,
-                                                canTargetCondition_ByPreSelecetedList: null,
-                                                canEndSelectCondition: null,
-                                                maxCount: discardCount,
-                                                canNoSelect: false,
-                                                canEndNotMax: false,
-                                                isShowOpponent: true,
-                                                selectCardCoroutine: null,
-                                                afterSelectCardCoroutine: null,
-                                                mode: SelectHandEffect.Mode.Discard,
-                                                cardEffect: activateClass);
-
-                                            yield return StartCoroutine(selectHandEffect.Activate());
-                                        }
+                                        yield return StartCoroutine(selectHandEffect.Activate());
                                     }
                                 }
                             }

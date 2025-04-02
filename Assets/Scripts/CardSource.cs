@@ -51,6 +51,7 @@ public class CardSource : MonoBehaviour
         IsFlipped = false;
 
         GManager.OnCardFlippedChanged?.Invoke();
+        GManager.OnSecurityStackChanged?.Invoke(Owner);
     }
     #endregion
 
@@ -60,6 +61,7 @@ public class CardSource : MonoBehaviour
         IsFlipped = true;
 
         GManager.OnCardFlippedChanged?.Invoke();
+        GManager.OnSecurityStackChanged?.Invoke(Owner);
     }
     #endregion
 
@@ -251,7 +253,8 @@ public class CardSource : MonoBehaviour
     #region Permanent in the field containing this card
     public Permanent PermanentOfThisCard()
     {
-        return Owner.GetFieldPermanents().Find(permanent => permanent.cardSources.Contains(this) && !IsFlipped);
+        return Owner.GetFieldPermanents().Find(permanent => 
+            (permanent.cardSources.Contains(this) || permanent.LinkedCards.Any(linked => linked.Source == this)) && !IsFlipped);
     }
     #endregion
 
@@ -1530,12 +1533,7 @@ public class CardSource : MonoBehaviour
     {
         get
         {
-            if (CardTraits.Contains("Royal Knight") || CardTraits.Contains("RoyalKnight"))
-            {
-                return true;
-            }
-
-            return false;
+            return EqualsTraits("Royal Knight");
         }
     }
     #endregion
@@ -2585,6 +2583,91 @@ public class CardSource : MonoBehaviour
         get
         {
             if (CardTraits.Contains("SEEKERS"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    #endregion
+
+    #region whether this card has "ADVENTURE" trait
+
+    public bool HasAdventureTraits
+    {
+        get
+        {
+            if (CardTraits.Contains("ADVENTURE"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    #endregion
+
+    #region whether this card has "Chronicle" trait
+
+    public bool HasChronicleTraits
+    {
+        get
+        {
+            if (CardTraits.Contains("Chronicle"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    #endregion
+
+    #region whether this card has "Device" trait
+
+    public bool HasDeviceTraits
+    {
+        get
+        {
+            if (CardTraits.Contains("Device"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    #endregion
+
+    #region whether this card has "Three Musketeers" trait
+
+    public bool HasThreeMusketeersTraits
+    {
+        get
+        {
+            if (CardTraits.Contains("Three Musketeers"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    #endregion
+
+    #region whether this card has "Royal Base" trait
+
+    public bool HasRoyalBaseTraits
+    {
+        get
+        {
+            if (CardTraits.Contains("Royal Base"))
             {
                 return true;
             }

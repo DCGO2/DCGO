@@ -8,6 +8,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
 using System.Drawing.Text;
+using System.Net;
 
 namespace DCGO.CardEntities
 {
@@ -23,6 +24,7 @@ namespace DCGO.CardEntities
         bool onlyAA = false;
         bool updateExisting = false;
         bool debugMode = false;
+        bool withoutImages = false;
 
         public override void OnInspectorGUI()
         {
@@ -37,6 +39,7 @@ namespace DCGO.CardEntities
                 updateExisting = GUILayout.Toggle(updateExisting, "Update Existing Assets");
                 onlyAA = GUILayout.Toggle(onlyAA, "AA Only");
                 debugMode = GUILayout.Toggle(debugMode, "Run in Debug Mode");
+                withoutImages = GUILayout.Toggle(withoutImages, "Create Assets Without Images");
 
                 GUILayout.Label("Card ID: ");
                 cardIDString = GUILayout.TextField(cardIDString, 500).ToUpper();
@@ -146,13 +149,16 @@ namespace DCGO.CardEntities
             cardEntity.CardID = card.id;
             cardEntity.MaxCountInDeck = GetMaxCount(card.restrictions.japanese);
 
-            cardEntity.name = cardEntity.CardEffectClassName;
+            cardEntity.name = cardEntity.CardSpriteName.Replace("-Errata","").Replace("-","_");
 
 
             if (!debugMode)
             {
-                Debug.Log($"created: {cardEntity.name}");
-                SaveScriptableObject(cardEntity);
+                if(withoutImages || GetImage(cardEntity.CardSpriteName))
+                {
+                    Debug.Log($"created: {cardEntity.name}: {cardEntity.CardSpriteName}, {cardEntity.CardEffectClassName}");
+                    SaveScriptableObject(cardEntity);
+                }
             }
             else
                 Debug.Log($"DATA {cardEntity.name}: {cardEntity.CardSpriteName}, {cardEntity.CardEffectClassName}, {GetCardIndex(cardEntity)}");
@@ -461,6 +467,25 @@ namespace DCGO.CardEntities
                 return value;
 
             return value;
+        }
+        #endregion
+
+        #region Attempt to load Image
+        bool GetImage(string ID)
+        {
+            string imgURL = $"{baseURL}assets/images/cards/{ID}.webp";
+
+            Debug.Log(imgURL);
+            try
+            {
+                WebClient wc = new WebClient();
+                string HTMLSource = wc.DownloadString(imgURL);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
         #endregion
     }

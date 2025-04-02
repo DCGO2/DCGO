@@ -61,9 +61,9 @@ namespace DCGO.CardEffects.BT19
                         mode: SelectHandEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                    selectHandEffect.SetUpCustomMessage("Select 1 card to place on bottom of digivolution cards.",
-                        "The opponent is selecting 1 card to place on bottom of digivolution cards.");
-                    selectHandEffect.SetUpCustomMessage_ShowCard("Digivolution Card");
+                    selectHandEffect.SetUpCustomMessage("Select 1 card to place in the battle area.",
+                        "The opponent is selecting 1 card to place in the battle area.");
+                    selectHandEffect.SetUpCustomMessage_ShowCard("Battle Area");
 
                     IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
