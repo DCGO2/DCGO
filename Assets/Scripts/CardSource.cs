@@ -1150,6 +1150,7 @@ public class CardSource : MonoBehaviour
         return CardNames.Some((cardName) =>
         cardName.Equals(name)
         || cardName.Equals(replaced)
+        || cardName.Replace(" ", "").Equals(replaced)
         || cardName.Equals(lower)
         || cardName.ToLower().Equals(lower));
     }
