@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.BT21
 {
     public class BT21_044 : CEntity_Effect
     {
@@ -27,7 +27,7 @@ namespace DCGO.CardEffects
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Your 1 [Marcus Damon] becomes a Digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("[Marcus Damon] becomes a Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -156,7 +156,7 @@ namespace DCGO.CardEffects
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Your 1 [Marcus Damon] becomes a Digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("[Marcus Damon] becomes a Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
