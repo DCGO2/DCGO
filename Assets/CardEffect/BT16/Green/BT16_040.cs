@@ -109,7 +109,7 @@ namespace DCGO.CardEffects.BT16
 
                 string EffectDiscription()
                 {
-                    return "[Start of Main Phase] If it's your turn, 1 of your Digimomn may digivolve into a level 4 Digimon card with the [Insectiod] or [Free] trait from your trash with the digivolution cost reduced by 1.";
+                    return "[Start of Main Phase] If it's your turn, 1 of your Digimon may digivolve into a level 4 Digimon card with the [Insectiod] or [Free] trait from your trash with the digivolution cost reduced by 1.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)

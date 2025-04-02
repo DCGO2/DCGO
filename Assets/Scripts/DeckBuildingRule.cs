@@ -23,24 +23,23 @@ public class DeckBuildingRule : MonoBehaviour
     #region インポートしたデッキデータを修正
     public static DeckData ModifiedDeckData(DeckData deckData)
     {
-        List<CEntity_Base> deckCards = new List<CEntity_Base>();
-        List<CEntity_Base> digitamaDeckCards = new List<CEntity_Base>();
+        List<CEntity_Base> modifiedDeck = modifiedList(deckData.AllDeckCards());
+        List<CEntity_Base> modifiedDeckCards = new List<CEntity_Base>();
+        List<CEntity_Base> modifiedDigitamaDeckCards = new List<CEntity_Base>();
+        
 
-        foreach (CEntity_Base cEntity_Base in deckData.AllDeckCards())
+        foreach (CEntity_Base cEntity_Base in modifiedDeck)
         {
             if (cEntity_Base.cardKind != CardKind.DigiEgg)
             {
-                deckCards.Add(cEntity_Base);
+                modifiedDeckCards.Add(cEntity_Base);
             }
 
             else
             {
-                digitamaDeckCards.Add(cEntity_Base);
+                modifiedDigitamaDeckCards.Add(cEntity_Base);
             }
         }
-
-        List<CEntity_Base> modifiedDeckCards = modifiedList(deckCards);
-        List<CEntity_Base> modifiedDigitamaDeckCards = modifiedList(digitamaDeckCards);
 
         List<CEntity_Base> modifiedList(List<CEntity_Base> cEntity_Bases)
         {
@@ -86,10 +85,24 @@ public class DeckBuildingRule : MonoBehaviour
                 {
                     if (cEntity_Base.CardID == bannedPair.CardID_A)
                     {
+                        UnityEngine.Debug.Log($"Banned Pair Found: {deckCards.Some(cEntity_Base1 => bannedPair.CardIDs_B.Contains(cEntity_Base1.CardID))}");
                         while (deckCards.Some(cEntity_Base1 => bannedPair.CardIDs_B.Contains(cEntity_Base1.CardID)))
                         {
                             CEntity_Base removeCard = deckCards.Find(cEntity_Base1 => bannedPair.CardIDs_B.Contains(cEntity_Base1.CardID));
+                            UnityEngine.Debug.Log($"Banned Pair: {removeCard.CardID}");
+                            if (removeCard != null)
+                            {
+                                deckCards.Remove(removeCard);
+                            }
+                        }
+                    }
 
+                    if (bannedPair.CardIDs_B.Contains(cEntity_Base.CardID))
+                    {
+                        while (deckCards.Some(cEntity_Base1 => cEntity_Base1.CardID == bannedPair.CardID_A))
+                        {
+                            CEntity_Base removeCard = deckCards.Find(cEntity_Base1 => bannedPair.CardID_A.Contains(cEntity_Base1.CardID));
+                            UnityEngine.Debug.Log($"Banned Pair: {removeCard.CardID}");
                             if (removeCard != null)
                             {
                                 deckCards.Remove(removeCard);
@@ -99,6 +112,7 @@ public class DeckBuildingRule : MonoBehaviour
                 }
             }
 
+            UnityEngine.Debug.Log($"Modified: {deckCards.Count}");
             return deckCards;
         }
 

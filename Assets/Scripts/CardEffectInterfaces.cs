@@ -116,6 +116,15 @@ public interface IChangeSAttackEffect
 }
 #endregion
 
+#region "Change target permanent's Link Max" effect
+public interface IChangeLinkMaxEffect
+{
+    int GetLinkMax(int linkMax, Permanent permanent, int invertValue);
+    CalculateOrder isUpDown();
+    bool PermanentCondition(Permanent permanent);
+}
+#endregion
+
 #region "Invert target permanent's Security Attack" effect
 public interface IInvertSAttackEffect
 {

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace DCGO.CardEffects.BT20
 {
@@ -31,8 +32,8 @@ namespace DCGO.CardEffects.BT20
                 bool IsProperLevel3(CardSource source)
                 {
                     return source.HasLevel && source.IsLevel3 &&
-                           (source.EqualsTraits("Avian") && source.EqualsTraits("Bird")) &&
-                           CardEffectCommons.CanPlayAsNewPermanent(source, false, activateClass);
+                           (source.ContainsTraits("Avian") || source.ContainsTraits("Bird")) &&
+                           CardEffectCommons.CanPlayAsNewPermanent(source, false, activateClass,SelectCardEffect.Root.Trash);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -55,30 +56,26 @@ namespace DCGO.CardEffects.BT20
                     {
                         List<CardSource> selectedTamerCards = new List<CardSource>();
 
-                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
-                        selectCardEffect.SetUp(
-                                    canTargetCondition: IsShotoKazama,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    canNoSelect: () => false,
-                                    selectCardCoroutine: SelectCardCoroutine,
-                                    afterSelectCardCoroutine: null,
-                                    message: "Select 1 digivolution card.",
-                                    maxCount: 1,
-                                    canEndNotMax: false,
-                                    isShowOpponent: true,
-                                    mode: SelectCardEffect.Mode.Custom,
-                                    root: SelectCardEffect.Root.Hand,
-                                    customRootCardList: null,
-                                    canLookReverseCard: true,
-                                    selectPlayer: card.Owner,
-                                    cardEffect: activateClass);
+                        selectHandEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: IsShotoKazama,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: true,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            selectCardCoroutine: SelectCardCoroutine,
+                            afterSelectCardCoroutine: null,
+                            mode: SelectHandEffect.Mode.Custom,
+                            cardEffect: activateClass);
 
-                        selectCardEffect.SetUpCustomMessage("Select 1 [Shoto Kazama] to play.", "The opponent is selecting 1 [Shoto Kazama] to play.");
-                        selectCardEffect.SetUpCustomMessage_ShowCard("Digivolution Card");
+                        selectHandEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
+                        selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
 
-                        yield return StartCoroutine(selectCardEffect.Activate());
+                        yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
 
                         IEnumerator SelectCardCoroutine(CardSource cardSource)
                         {
@@ -87,12 +84,12 @@ namespace DCGO.CardEffects.BT20
                             yield return null;
                         }
 
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedTamerCards, activateClass: activateClass, payCost: false, isTapped: true, root: SelectCardEffect.Root.DigivolutionCards, activateETB: true));
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedTamerCards, activateClass: activateClass, payCost: false, isTapped: false, root: SelectCardEffect.Root.DigivolutionCards, activateETB: true));
                     }
 
-                    if(card.Owner.GetBattleAreaDigimons().Count == 0)
+                    if (card.Owner.GetBattleAreaDigimons().Count == 0)
                     {
-                        if (CardEffectCommons.HasMatchConditionOwnersHand(card, IsProperLevel3))
+                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, IsProperLevel3))
                         {
                             List<CardSource> selectedDigimonCards = new List<CardSource>();
 
@@ -118,7 +115,7 @@ namespace DCGO.CardEffects.BT20
 
                             selectCardEffect.SetUpCustomMessage("Select 1 Digimon to play.", "The opponent is selecting 1 Digimon to play.");
 
-                            yield return StartCoroutine(selectCardEffect.Activate());
+                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 
                             IEnumerator SelectCardCoroutine(CardSource cardSource)
                             {
@@ -127,7 +124,7 @@ namespace DCGO.CardEffects.BT20
                                 yield return null;
                             }
 
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedDigimonCards, activateClass: activateClass, payCost: false, isTapped: true, root: SelectCardEffect.Root.DigivolutionCards, activateETB: true));
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedDigimonCards, activateClass: activateClass, payCost: false, isTapped: false, root: SelectCardEffect.Root.DigivolutionCards, activateETB: true));
                         }
                     }
                 }
@@ -144,7 +141,7 @@ namespace DCGO.CardEffects.BT20
 
                 string EffectDiscription()
                 {
-                    return "[End of Your Turn] By suspending this Tamer, suspend 1 of your opponent's Digimon and, until the end of their turn, 1 of your Digimon with the [Vortex Warrior] trait gets +2000 DP.";
+                    return "[End of Your Turn] By suspending this Tamer, suspend 1 of your opponent's Digimon and, until the end of their turn, 1 of your Digimon with the [Vortex Warriors] trait gets +2000 DP.";
                 }
 
                 bool IsOpponentsDigimon(Permanent permanent)
@@ -155,7 +152,7 @@ namespace DCGO.CardEffects.BT20
                 bool IsYourDigimon(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
-                           permanent.TopCard.EqualsTraits("Vortex Warrior");
+                           permanent.TopCard.EqualsTraits("Vortex Warriors");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -214,8 +211,8 @@ namespace DCGO.CardEffects.BT20
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select Digimon or Tamer that will get unable to suspend.",
-                        "The opponent is selecting Digimon or Tamer that will get unable to suspend.");
+                        selectPermanentEffect.SetUpCustomMessage("Select Digimon that gets +2000 DP",
+                        "The opponent is selecting Digimon that gets +2000 DP.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 

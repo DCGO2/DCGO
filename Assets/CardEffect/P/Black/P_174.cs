@@ -102,7 +102,7 @@ namespace DCGO.CardEffects.P
 
                         JogressConditionElement[] elements = new JogressConditionElement[]
                         {
-                        new JogressConditionElement(PermanentCondition1, "a level 5 Blue/Black Digimon"),
+                        new JogressConditionElement(PermanentCondition1, "a level 5 Black/Yellow Digimon"),
 
                         new JogressConditionElement(PermanentCondition2, "a level 5 Purple/Red Digimon"),
                         };
@@ -406,7 +406,7 @@ namespace DCGO.CardEffects.P
                     IEnumerator SelectDigimonCoroutine(Permanent permanent)
                     {
                         if (permanent != null)
-                            yield return ContinuousController.instance.StartCoroutine(new IDegeneration(permanent, 4, activateClass).Degeneration());
+                            yield return ContinuousController.instance.StartCoroutine(new IDegeneration(permanent, 1, activateClass).Degeneration());
                     }
 
                     selectPermanentEffect.SetUp(
@@ -484,7 +484,7 @@ namespace DCGO.CardEffects.P
                     IEnumerator SelectDigimonCoroutine(Permanent permanent)
                     {
                         if (permanent != null)
-                            yield return ContinuousController.instance.StartCoroutine(new IDegeneration(permanent, 4, activateClass).Degeneration());
+                            yield return ContinuousController.instance.StartCoroutine(new IDegeneration(permanent, 1, activateClass).Degeneration());
                     }
 
                     selectPermanentEffect.SetUp(
