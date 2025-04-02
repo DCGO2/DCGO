@@ -3363,6 +3363,10 @@ public class Permanent
     public bool IsReturnedToHandByBurstDigivolution { get; set; } = false;
     #endregion
 
+    #region Is Linked Card Added as Source By App Fusion
+    public bool IsAddedAsSourceByAppFusion { get; set; } = false;
+    #endregion
+
     #region バースト進化したか
     public bool IsBurstDigivolved { get; set; } = false;
     #endregion
