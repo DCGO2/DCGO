@@ -2351,6 +2351,32 @@ public class CardSource : MonoBehaviour
     }
     #endregion
 
+    #region App Fusion requirement
+    public AppFusionCondition appFusionCondition
+    {
+        get
+        {
+            foreach (ICardEffect cardEffect in this.EffectList(EffectTiming.None))
+            {
+                if (cardEffect is IAddAppFusionConditionEffect)
+                {
+                    if (cardEffect.CanUse(null))
+                    {
+                        AppFusionCondition appFusionCondition = ((IAddAppFusionConditionEffect)cardEffect).GetAppFusionCondition(this);
+
+                        if (appFusionCondition != null)
+                        {
+                            return appFusionCondition;
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+    }
+    #endregion
+
     #region whether this card can Burst digivolve
     public bool CanPlayBurst(bool PayCost)
     {
@@ -2760,6 +2786,24 @@ public class DigiXrosConditionElement
 public class BurstDigivolutionCondition
 {
     public BurstDigivolutionCondition(Func<Permanent, bool> tamerCondition, string selectTamerMessage, Func<Permanent, bool> digimonCondition, string selectDigimonMessage, int cost)
+    {
+        this.tamerCondition = tamerCondition;
+        this.selectTamerMessage = selectTamerMessage;
+        this.digimonCondition = digimonCondition;
+        this.selectDigimonMessage = selectDigimonMessage;
+        this.cost = cost;
+    }
+    public Func<Permanent, bool> tamerCondition { get; private set; } = null;
+    public string selectTamerMessage { get; private set; } = null;
+    public Func<Permanent, bool> digimonCondition { get; private set; } = null;
+    public string selectDigimonMessage { get; private set; } = null;
+
+    public int cost { get; private set; } = 0;
+}
+
+public class AppFusionCondition
+{
+    public AppFusionCondition(Func<Permanent, bool> tamerCondition, string selectTamerMessage, Func<Permanent, bool> digimonCondition, string selectDigimonMessage, int cost)
     {
         this.tamerCondition = tamerCondition;
         this.selectTamerMessage = selectTamerMessage;
