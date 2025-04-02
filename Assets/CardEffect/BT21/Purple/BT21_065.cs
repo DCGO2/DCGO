@@ -11,7 +11,6 @@ namespace DCGO.CardEffects.BT21
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-
             #region Your Turn
             if (timing == EffectTiming.BeforePayCost)
             {

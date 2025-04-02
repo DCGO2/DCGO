@@ -92,7 +92,6 @@ namespace DCGO.CardEffects.BT21
             }
             #endregion
 
-
             #region inherit your turn +2k
             if (timing == EffectTiming.None)
             {
