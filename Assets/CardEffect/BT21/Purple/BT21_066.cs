@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
+//BT21_066 Arresterdramon
 namespace DCGO.CardEffects.BT21
 {
     public class BT21_066 : CEntity_Effect
