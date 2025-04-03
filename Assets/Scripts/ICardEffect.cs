@@ -285,15 +285,14 @@ public abstract class ICardEffect
                     if (IsInheritedEffect || IsLinkedEffect)
                     {
                         if (EffectSourceCard == EffectSourceCard.PermanentOfThisCard().TopCard)
-                        {
                             return false;
-                        }
-                        if (!EffectSourceCard.PermanentOfThisCard().IsDigimon)
-                        {
-                            return false;
-                        }
-                    }
 
+                        if (!EffectSourceCard.PermanentOfThisCard().IsDigimon)
+                            return false;
+
+                        if (IsLinkedEffect && !EffectSourceCard.PermanentOfThisCard().LinkedCards.Exists(link => link.Source == EffectSourceCard))
+                            return false;
+                    }
                     else
                     {
                         if (EffectSourceCard != EffectSourceCard.PermanentOfThisCard().TopCard)
