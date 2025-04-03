@@ -44,7 +44,7 @@ namespace DCGO.CardEffects.BT20
                     {
                         List<CardSource> selectedCardsToReturn = new();
 
-                        int maxCount = Math.Min(1,
+                        int maxCount = Math.Min(3,
                             CardEffectCommons.MatchConditionOpponentsCardCountInTrash(card, CanSelectReturnCardCondition));
 
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
@@ -86,7 +86,7 @@ namespace DCGO.CardEffects.BT20
 
                             int sumLevel = cardSources.Sum(source => source.Level);
 
-                            if (sumLevel >= maxLevel)
+                            if (sumLevel != maxLevel)
                             {
                                 return false;
                             }
@@ -100,7 +100,7 @@ namespace DCGO.CardEffects.BT20
 
                             sumLevel += cardSource.Level;
 
-                            if (sumLevel >= maxLevel)
+                            if (sumLevel > maxLevel)
                             {
                                 return false;
                             }
@@ -132,15 +132,29 @@ namespace DCGO.CardEffects.BT20
                                 {
                                     return cardSource.IsDigimon && cardSource.EqualsTraits("Ghost") &&
                                            cardSource.HasLevel && cardSource.Level == returnedCard.Level &&
+                                           !selectedCardsToPlay.Contains(cardSource) &&
                                            CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false,
                                                cardEffect: activateClass);
                                 }
 
+                                bool CanNoSelect()
+                                {
+                                    return selectedCardsToPlay.Count == 0;
+                                }
+
+                                bool RemoveOptionsAlreadySelected(List<CardSource> cardSources, CardSource cardSource)
+                                {
+                                    if (cardSources.Contains(cardSource))
+                                        return false;
+
+                                    return true;
+                                }
+
                                 selectCardEffect.SetUp(
                                     canTargetCondition: CanSelectPlayCardCondition,
-                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canTargetCondition_ByPreSelecetedList: RemoveOptionsAlreadySelected,
                                     canEndSelectCondition: null,
-                                    canNoSelect: () => true,
+                                    canNoSelect: CanNoSelect,
                                     selectCardCoroutine: SelectCardCoroutine2,
                                     afterSelectCardCoroutine: null,
                                     message: "Select 1 card to play.",

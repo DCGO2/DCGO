@@ -28,8 +28,9 @@ namespace DCGO.CardEffects.BT20
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpICardEffect("<De-Digivolve 2>, then your Digimon or unaffected by Digimon effects", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetIsDigimonEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -144,24 +145,6 @@ namespace DCGO.CardEffects.BT20
             #region Opponents Turn
             if (timing == EffectTiming.None)
             {
-                AddSkillClass addSkillClass = new AddSkillClass();
-                addSkillClass.SetUpICardEffect("[Opponent's Turn] All of your Digimon with [Sistermon] or [Huckmon] in their names or the [Royal Knight] trait gain <Reboot> and <Blocker>.", CanUseCondition, card);
-                addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
-                cardEffects.Add(addSkillClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (CardEffectCommons.IsOpponentTurn(card))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
                 bool PermanentCondition(Permanent permanent)
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
@@ -169,18 +152,18 @@ namespace DCGO.CardEffects.BT20
                         if (permanent.TopCard.ContainsCardName("Sistermon") || permanent.TopCard.ContainsCardName("Huckmon"))
                             return true;
 
-                        if (permanent.TopCard.EqualsTraits("Royal Knight"))
+                        if (permanent.TopCard.HasRoyalKnightTraits)
                             return true;
                     }
 
                     return false;
                 }
 
-                bool CardSourceCondition(CardSource cardSource)
+                bool Condition()
                 {
-                    if (PermanentCondition(cardSource.PermanentOfThisCard()))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (cardSource == cardSource.PermanentOfThisCard().TopCard)
+                        if (CardEffectCommons.IsOpponentTurn(card))
                         {
                             return true;
                         }
@@ -189,39 +172,25 @@ namespace DCGO.CardEffects.BT20
                     return false;
                 }
 
-                List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming _timing)
-                {
-                    if (_timing == EffectTiming.None)
-                    {
-                        bool Condition()
-                        {
-                            return CardSourceCondition(cardSource);
-                        }
-
-                        cardEffects.Add(CardEffectFactory.RebootSelfStaticEffect(isInheritedEffect: false, card: card, condition: Condition));
-                        cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(isInheritedEffect: false, card: card, condition: Condition));
-                    }
-
-                    return cardEffects;
-                }
+                cardEffects.Add(CardEffectFactory.RebootStaticEffect(permanentCondition: PermanentCondition, isInheritedEffect: false, card: card, Condition));
+                cardEffects.Add(CardEffectFactory.BlockerStaticEffect(permanentCondition: PermanentCondition, isInheritedEffect: false, card: card, Condition));
             }
             #endregion
 
             #region Opponents Turn - ESS
             if (timing == EffectTiming.None)
             {
-                AddSkillClass addSkillClass = new AddSkillClass();
-                addSkillClass.SetUpICardEffect("[Opponent's Turn] While this Digimon is [Jesmon GX], all of your Digimon gain <Reboot> and <Blocker>.", CanUseCondition, card);
-                addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
-                addSkillClass.SetIsInheritedEffect(true);
-                cardEffects.Add(addSkillClass);
+                bool PermanentCondition(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
+                }
 
-                bool CanUseCondition(Hashtable hashtable)
+                bool Condition()
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (CardEffectCommons.IsOpponentTurn(card))
-                        { 
+                        {
                             return card.PermanentOfThisCard().TopCard.EqualsCardName("Jesmon GX");
                         }
                     }
@@ -229,26 +198,8 @@ namespace DCGO.CardEffects.BT20
                     return false;
                 }
 
-                bool CardSourceCondition(CardSource cardSource)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(cardSource.PermanentOfThisCard(), card);
-                }
-
-                List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming _timing)
-                {
-                    if (_timing == EffectTiming.None)
-                    {
-                        bool Condition()
-                        {
-                            return true;
-                        }
-
-                        cardEffects.Add(CardEffectFactory.RebootSelfStaticEffect(isInheritedEffect: false, card: card, condition: Condition));
-                        cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(isInheritedEffect: false, card: card, condition: Condition));
-                    }
-
-                    return cardEffects;
-                }
+                cardEffects.Add(CardEffectFactory.RebootStaticEffect(permanentCondition: PermanentCondition, isInheritedEffect: true, card: card, Condition));
+                cardEffects.Add(CardEffectFactory.BlockerStaticEffect(permanentCondition: PermanentCondition, isInheritedEffect: true, card: card, Condition));
             }
             #endregion
 

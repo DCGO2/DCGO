@@ -38,7 +38,7 @@ namespace DCGO.CardEffects.BT20
             if (timing == EffectTiming.OnAddDigivolutionCards)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("", CanUseCondition, card);
+                activateClass.SetUpICardEffect("1 of your opponet's Digimon can't activate [When Digivolving] effects", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -165,6 +165,7 @@ namespace DCGO.CardEffects.BT20
                 activateClass.SetUpICardEffect("Trash top security", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetHashString("TrashSecurity_BT20-034");
+                activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

@@ -93,27 +93,26 @@ namespace DCGO.CardEffects.BT20
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
                             selectedPermanent = permanent;
-
-                            if (selectedPermanent != null)
-                            {
-                                if (selectedPermanent.CanAttack(activateClass))
-                                {
-                                    SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
-
-                                    selectAttackEffect.SetUp(
-                                        attacker: selectedPermanent,
-                                        canAttackPlayerCondition: () => true,
-                                        defenderCondition: _ => false,
-                                        cardEffect: activateClass);
-
-                                    selectAttackEffect.SetCanNotSelectNotAttack();
-
-                                    yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
-                                }
-                            }
+                            yield return null;
                         }
 
-                        
+                        if (selectedPermanent != null)
+                        {
+                            if (selectedPermanent.CanAttack(activateClass))
+                            {
+                                SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
+
+                                selectAttackEffect.SetUp(
+                                    attacker: selectedPermanent,
+                                    canAttackPlayerCondition: () => true,
+                                    defenderCondition: _ => false,
+                                    cardEffect: activateClass);
+
+                                selectAttackEffect.SetCanNotSelectNotAttack();
+
+                                yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
+                            }
+                        }
                     }
                 }
             }

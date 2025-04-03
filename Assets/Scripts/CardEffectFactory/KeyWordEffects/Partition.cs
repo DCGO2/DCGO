@@ -66,141 +66,95 @@ public partial class CardEffectFactory
         if (targetPermanent.TopCard == null) return null;
         if (card == null) return null;
 
+        List<CardSource> sourceOneCard = new List<CardSource>();
+        List<CardSource> sourceTwoCard = new List<CardSource>();
 
-        if (partitionConditions[0].hasTwoColor == false || partitionConditions[1].hasTwoColor == false)
+        if (partitionConditions[0].hasTwoColor)
         {
-            List<CardSource> sourceOneCard = targetPermanent.cardSources
+            sourceOneCard = targetPermanent.DigivolutionCards
+                .Clone()
+                .Filter(source =>
+                    (source.CardColors.Contains(partitionConditions[0].Color) || source.CardColors.Contains(partitionConditions[0].Color2))
+                    && (source.HasLevel && source.Level == partitionConditions[0].Level));
+        }
+        else
+        {
+            sourceOneCard = targetPermanent.DigivolutionCards
                 .Clone()
                 .Filter(source =>
                     source.CardColors.Contains(partitionConditions[0].Color)
                     && (source.HasLevel && source.Level == partitionConditions[0].Level));
+        }
 
-            List<CardSource> sourceTwoCard = targetPermanent.cardSources
+        if (partitionConditions[1].hasTwoColor)
+        {
+            sourceTwoCard = targetPermanent.DigivolutionCards
                 .Clone()
                 .Filter(source =>
-                    source.CardColors.Contains(partitionConditions[1].Color)
+                    (source.CardColors.Contains(partitionConditions[1].Color) || source.CardColors.Contains(partitionConditions[1].Color2))
                     && (source.HasLevel && source.Level == partitionConditions[1].Level));
-
-
-            ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Partition", CanUseCondition, card);
-            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
-            activateClass.SetHashString($"Partition_{card.CardID}" + (isInheritedEffect ? "_inherited" : ""));
-            activateClass.SetIsInheritedEffect(isInheritedEffect);
-
-            string EffectDiscription()
-            {
-                return DataBase.PartitionEffectDiscription();
-            }
-
-            bool CanUseCondition(Hashtable hashtable)
-            {
-                if (CardEffectCommons.CanTriggerPartition(hashtable, card))
-                {
-                    if (condition == null || condition())
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
-            }
-
-            bool CanActivateCondition(Hashtable hashtable)
-            {
-                if (CardEffectCommons.CanActivatePartition(targetPermanent))
-                {
-                    if (sourceOneCard == null || sourceOneCard.Count > 0)
-                    {
-                        if (sourceTwoCard == null || sourceTwoCard.Count > 0)
-                        {
-                            return true;
-                        }
-                    }
-                }
-
-                return false;
-            }
-
-            IEnumerator ActivateCoroutine(Hashtable _hashtable)
-            {
-                if (sourceOneCard.Count == 1)
-                    sourceTwoCard = sourceTwoCard.Except(sourceOneCard).ToList();
-
-                if (sourceTwoCard.Count == 1)
-                    sourceOneCard = sourceOneCard.Except(sourceTwoCard).ToList();
-
-                return CardEffectCommons.PartitionProcess(activateClass, targetPermanent, sourceOneCard, sourceTwoCard);
-            }
-
-            return activateClass;
         }
         else
         {
-            List<CardSource> sourceOneCard = targetPermanent.cardSources
+            sourceTwoCard = targetPermanent.DigivolutionCards
                 .Clone()
                 .Filter(source =>
-                    source.CardColors.Contains(partitionConditions[0].Color) || source.CardColors.Contains(partitionConditions[0].Color2)
-                    && (source.HasLevel && source.Level == partitionConditions[0].Level));
+                    source.CardColors.Contains(partitionConditions[1].Color) && 
+                    (source.HasLevel && source.Level == partitionConditions[1].Level));
+        }
 
-            List<CardSource> sourceTwoCard = targetPermanent.cardSources
-                .Clone()
-                .Filter(source =>
-                    source.CardColors.Contains(partitionConditions[1].Color) || source.CardColors.Contains(partitionConditions[1].Color2)
-                    && (source.HasLevel && source.Level == partitionConditions[1].Level));
+        ActivateClass activateClass = new ActivateClass();
+        activateClass.SetUpICardEffect("Partition", CanUseCondition, card);
+        activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+        activateClass.SetHashString($"Partition_{card.CardID}" + (isInheritedEffect ? "_inherited" : ""));
+        activateClass.SetIsInheritedEffect(isInheritedEffect);
 
-            ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Partition", CanUseCondition, card);
-            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
-            activateClass.SetHashString($"Partition_{card.CardID}" + (isInheritedEffect ? "_inherited" : ""));
-            activateClass.SetIsInheritedEffect(isInheritedEffect);
+        string EffectDiscription()
+        {
+            return DataBase.PartitionEffectDiscription();
+        }
 
-            string EffectDiscription()
+        bool CanUseCondition(Hashtable hashtable)
+        {
+            if (CardEffectCommons.CanTriggerPartition(hashtable, card))
             {
-                return DataBase.PartitionEffectDiscription();
+                if (condition == null || condition())
+                {
+                    return true;
+                }
             }
 
-            bool CanUseCondition(Hashtable hashtable)
+            return false;
+        }
+
+        bool CanActivateCondition(Hashtable hashtable)
+        {
+            if (CardEffectCommons.CanActivatePartition(targetPermanent))
             {
-                if (CardEffectCommons.CanTriggerPartition(hashtable, card))
+                if (sourceOneCard == null || sourceOneCard.Count > 0)
                 {
-                    if (condition == null || condition())
+                    if (sourceTwoCard == null || sourceTwoCard.Count > 0)
                     {
                         return true;
                     }
                 }
-
-                return false;
             }
 
-            bool CanActivateCondition(Hashtable hashtable)
-            {
-                if (CardEffectCommons.CanActivatePartition(targetPermanent))
-                {
-                    if (sourceOneCard == null || sourceOneCard.Count > 0)
-                    {
-                        if (sourceTwoCard == null || sourceTwoCard.Count > 0)
-                        {
-                            return true;
-                        }
-                    }
-                }
-
-                return false;
-            }
-
-            IEnumerator ActivateCoroutine(Hashtable _hashtable)
-            {
-                if (sourceOneCard.Count == 1)
-                    sourceTwoCard = sourceTwoCard.Except(sourceOneCard).ToList();
-
-                if (sourceTwoCard.Count == 1)
-                    sourceOneCard = sourceOneCard.Except(sourceTwoCard).ToList();
-
-                return CardEffectCommons.PartitionProcess(activateClass, targetPermanent, sourceOneCard, sourceTwoCard);
-            }
-            return activateClass;
+            return false;
         }
+
+        IEnumerator ActivateCoroutine(Hashtable _hashtable)
+        {
+            if (sourceOneCard.Count == 1)
+                sourceTwoCard = sourceTwoCard.Except(sourceOneCard).ToList();
+
+            if (sourceTwoCard.Count == 1)
+                sourceOneCard = sourceOneCard.Except(sourceTwoCard).ToList();
+
+            return CardEffectCommons.PartitionProcess(activateClass, targetPermanent, sourceOneCard, sourceTwoCard, partitionConditions);
+        }
+
+        return activateClass;
     }
     #endregion
 }

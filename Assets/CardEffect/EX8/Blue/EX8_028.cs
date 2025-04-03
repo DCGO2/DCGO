@@ -226,12 +226,15 @@ namespace DCGO.CardEffects.EX8
                     {
                         if (!selectedCard.TopCard.CanNotBeAffected(activateClass))
                         {
+                            CardSource _topCard = selectedCard.TopCard;
+
                             yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(
                                     selectedCard,
                                     CardEffectCommons.CardEffectHashtable(activateClass),
                                     false).PutSecurity());
 
-                            yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() }, activateClass).Unsuspend());
+                            if(CardEffectCommons.IsExistInSecurity(_topCard, true))
+                                yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() }, activateClass).Unsuspend());
                         }
                     }
                 }
@@ -320,12 +323,15 @@ namespace DCGO.CardEffects.EX8
                     {
                         if (!selectedCard.TopCard.CanNotBeAffected(activateClass))
                         {
+                            CardSource _topCard = selectedCard.TopCard;
+
                             yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(
                                     selectedCard,
                                     CardEffectCommons.CardEffectHashtable(activateClass),
                                     false).PutSecurity());
 
-                            yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() }, activateClass).Unsuspend());
+                            if (CardEffectCommons.IsExistInSecurity(_topCard, true))
+                                yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() }, activateClass).Unsuspend());
                         }
                     }
                 }
