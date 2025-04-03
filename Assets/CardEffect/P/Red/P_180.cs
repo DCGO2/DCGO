@@ -29,27 +29,24 @@ namespace DCGO.CardEffects.P
 
             #endregion
 
-            #region When Source Stripped
-
+            #region When Trashed from digivolutions cards
             if (timing == EffectTiming.OnDigivolutionCardDiscarded)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete 1 digimon with 7k DP or lower", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                     => "When effects trash this card from digivolution cards, delete 1 of your opponent's 7000 DP or lower Digimon.";
 
-                bool PermanentCondition(Permanent permanent)
-                    => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
-
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnTrash(card)
-                    && CardEffectCommons.CanTriggerOnTrashDigivolutionCard(hashtable, PermanentCondition, cardEffect => true, cardSource => card);
+                    => CardEffectCommons.CanTriggerOnTrashSelfDigivolutionCard(hashtable, cardEffect => cardEffect != null, card);
 
                 bool CanActivateCondition(Hashtable hashtable)
-                => CardEffectCommons.IsExistOnTrash(card);
+                => CardEffectCommons.IsExistOnTrash(card) &&
+                   CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentsDigimon);
 
                 bool CanSelectOpponentsDigimon(Permanent permanent)
                 => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
@@ -57,27 +54,23 @@ namespace DCGO.CardEffects.P
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectOpponentsDigimon))
-                    {
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectOpponentsDigimon));
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectOpponentsDigimon,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: false,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: null,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Destroy,
-                            cardEffect: activateClass);
+                    selectPermanentEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanSelectOpponentsDigimon,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: false,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: null,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Destroy,
+                        cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 digimon to delete", "The opponent is selecting 1 digimon to delete");
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                    }
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 digimon to delete", "The opponent is selecting 1 digimon to delete");
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                 }
             }
 
