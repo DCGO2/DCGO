@@ -127,7 +127,8 @@ namespace DCGO.CardEffects.BT19
 
                     if (card.Owner.CanAddMemory(activateClass))
                     {
-                        yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(destroyTargetPermanents.Count, activateClass));
+                        var memoryGain = destroyTargetPermanents.Count - destroyTargetPermanents.Filter(x => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(x, card)).Count;
+                        if (memoryGain > 0) yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(memoryGain, activateClass));
                     }
                 }
             }
@@ -250,7 +251,8 @@ namespace DCGO.CardEffects.BT19
 
                     if (card.Owner.CanAddMemory(activateClass))
                     {
-                        yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(destroyTargetPermanents.Count, activateClass));
+                        var memoryGain = destroyTargetPermanents.Count - destroyTargetPermanents.Filter(x => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(x, card)).Count;
+                        if (memoryGain > 0) yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(memoryGain, activateClass));
                     }
                 }
             }

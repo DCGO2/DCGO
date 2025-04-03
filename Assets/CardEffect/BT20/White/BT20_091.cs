@@ -111,21 +111,16 @@ namespace DCGO.CardEffects.BT20
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, PermanentCondition))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleArea(card) &&
+                           CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, PermanentCondition) &&
+                           CardEffectCommons.IsOpponentTurn(card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card) &&
-                           CardEffectCommons.HasMatchConditionOwnersHand(card, IsOmekamon);
+                           CardEffectCommons.HasMatchConditionOwnersHand(card, IsOmekamon) &&
+                           CardEffectCommons.IsOpponentTurn(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -162,7 +157,8 @@ namespace DCGO.CardEffects.BT20
                         yield return null;
                     }
 
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedCards, activateClass: activateClass, payCost: false, isTapped: false, root: SelectCardEffect.Root.Hand, activateETB: true));
+                    if(selectedCards.Count > 0)
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedCards, activateClass: activateClass, payCost: false, isTapped: false, root: SelectCardEffect.Root.Hand, activateETB: true));
                 }
             }
             #endregion

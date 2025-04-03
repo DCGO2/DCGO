@@ -182,7 +182,7 @@ namespace DCGO.CardEffects.BT17
                         {
                             if (permanent.TopCard.EqualsCardName("Rhythm"))
                             {
-                                if (!permanent.IsSuspended)
+                                if (CardEffectCommons.CanActivateSuspendCostEffect(permanent.TopCard))
                                 {
                                     return true;
                                 }
@@ -195,20 +195,13 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if(CardEffectCommons.CanTriggerOnAttack(hashtable, card))
-                    {
-                        if(CardEffectCommons.HasMatchConditionOwnersPermanent(card, HasUnsuspendedRhythm))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.HasMatchConditionOwnersPermanent(card, HasUnsuspendedRhythm);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

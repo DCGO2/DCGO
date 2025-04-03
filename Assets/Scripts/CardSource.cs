@@ -51,6 +51,7 @@ public class CardSource : MonoBehaviour
         IsFlipped = false;
 
         GManager.OnCardFlippedChanged?.Invoke();
+        GManager.OnSecurityStackChanged?.Invoke(Owner);
     }
     #endregion
 
@@ -60,6 +61,7 @@ public class CardSource : MonoBehaviour
         IsFlipped = true;
 
         GManager.OnCardFlippedChanged?.Invoke();
+        GManager.OnSecurityStackChanged?.Invoke(Owner);
     }
     #endregion
 
@@ -251,7 +253,8 @@ public class CardSource : MonoBehaviour
     #region Permanent in the field containing this card
     public Permanent PermanentOfThisCard()
     {
-        return Owner.GetFieldPermanents().Find(permanent => permanent.cardSources.Contains(this) && !IsFlipped);
+        return Owner.GetFieldPermanents().Find(permanent => 
+            (permanent.cardSources.Contains(this) || permanent.LinkedCards.Any(linked => linked.Source == this)) && !IsFlipped);
     }
     #endregion
 
@@ -1147,6 +1150,7 @@ public class CardSource : MonoBehaviour
         return CardNames.Some((cardName) =>
         cardName.Equals(name)
         || cardName.Equals(replaced)
+        || cardName.Replace(" ", "").Equals(replaced)
         || cardName.Equals(lower)
         || cardName.ToLower().Equals(lower));
     }
@@ -1530,12 +1534,7 @@ public class CardSource : MonoBehaviour
     {
         get
         {
-            if (CardTraits.Contains("Royal Knight") || CardTraits.Contains("RoyalKnight"))
-            {
-                return true;
-            }
-
-            return false;
+            return EqualsTraits("Royal Knight");
         }
     }
     #endregion
@@ -2353,6 +2352,32 @@ public class CardSource : MonoBehaviour
     }
     #endregion
 
+    #region App Fusion requirement
+    public AppFusionCondition appFusionCondition
+    {
+        get
+        {
+            foreach (ICardEffect cardEffect in this.EffectList(EffectTiming.None))
+            {
+                if (cardEffect is IAddAppFusionConditionEffect)
+                {
+                    if (cardEffect.CanUse(null))
+                    {
+                        AppFusionCondition appFusionCondition = ((IAddAppFusionConditionEffect)cardEffect).GetAppFusionCondition(this);
+
+                        if (appFusionCondition != null)
+                        {
+                            return appFusionCondition;
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+    }
+    #endregion
+
     #region whether this card can Burst digivolve
     public bool CanPlayBurst(bool PayCost)
     {
@@ -2416,6 +2441,61 @@ public class CardSource : MonoBehaviour
     }
     #endregion
 
+    #region whether this card can App Fusion
+    public bool CanPlayAppFusion(bool PayCost)
+    {
+        if (appFusionCondition != null)
+        {
+            if (PayCost)
+            {
+                int cost = appFusionCondition.cost;
+
+                cost = GetChangedCostItselef(cost, SelectCardEffect.Root.Hand, new List<Permanent>() { new Permanent(new List<CardSource>()) }, checkAvailability: true);
+
+                if (Owner.MaxMemoryCost < cost)
+                {
+                    return false;
+                }
+            }
+
+            if (Owner.GetBattleAreaDigimons().Count >= 1)
+            {
+                foreach (Permanent digimon in Owner.GetFieldPermanents())
+                {
+                    if (digimon != null)
+                    {
+                        if (!this.CanNotEvolve(digimon))
+                        {
+                            if (appFusionCondition.digimonCondition(digimon))
+                            {
+                                foreach(CardSource linkedCard in digimon.LinkedCards.Map(linked => linked.Source))
+                                {
+                                    if (appFusionCondition.linkedCondition(linkedCard))
+                                    {
+                                        if (PayCost)
+                                        {
+                                            int cost = appFusionCondition.cost;
+
+                                            cost = GetChangedCostItselef(cost, SelectCardEffect.Root.Hand, new List<Permanent>() { digimon }, checkAvailability: true);
+
+                                            if (Owner.MaxMemoryCost < cost)
+                                            {
+                                                return false;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+    #endregion
+
     #region whether target permanent can Burst digivolve into this card
     public bool CanBurstDigivolutionFromTargetPermanent(Permanent targetPermanent, bool PayCost)
     {
@@ -2454,6 +2534,52 @@ public class CardSource : MonoBehaviour
                                                     }
 
                                                     return true;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+    #endregion
+
+    #region whether target permanent can App Fusion into this card
+    public bool CanAppFusionFromTargetPermanent(Permanent targetPermanent, bool PayCost)
+    {
+        if (targetPermanent != null)
+        {
+            if (targetPermanent.TopCard != null)
+            {
+                if (targetPermanent.TopCard.Owner.GetFieldPermanents().Contains(targetPermanent))
+                {
+                    if (this.CanPlayAppFusion(PayCost))
+                    {
+                        if (appFusionCondition != null)
+                        {
+                            if (!this.CanNotEvolve(targetPermanent))
+                            {
+                                if (appFusionCondition.digimonCondition(targetPermanent))
+                                {
+                                    foreach (CardSource linkedCard in targetPermanent.LinkedCards.Map(linked => linked.Source))
+                                    {
+                                        if (appFusionCondition.linkedCondition(linkedCard))
+                                        {
+                                            if (PayCost)
+                                            {
+                                                int cost = appFusionCondition.cost;
+
+                                                cost = GetChangedCostItselef(cost, SelectCardEffect.Root.Hand, new List<Permanent>() { targetPermanent }, checkAvailability: true);
+
+                                                if (Owner.MaxMemoryCost < cost)
+                                                {
+                                                    return false;
                                                 }
                                             }
                                         }
@@ -2594,6 +2720,91 @@ public class CardSource : MonoBehaviour
     }
 
     #endregion
+
+    #region whether this card has "ADVENTURE" trait
+
+    public bool HasAdventureTraits
+    {
+        get
+        {
+            if (CardTraits.Contains("ADVENTURE"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    #endregion
+
+    #region whether this card has "Chronicle" trait
+
+    public bool HasChronicleTraits
+    {
+        get
+        {
+            if (CardTraits.Contains("Chronicle"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    #endregion
+
+    #region whether this card has "Device" trait
+
+    public bool HasDeviceTraits
+    {
+        get
+        {
+            if (CardTraits.Contains("Device"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    #endregion
+
+    #region whether this card has "Three Musketeers" trait
+
+    public bool HasThreeMusketeersTraits
+    {
+        get
+        {
+            if (CardTraits.Contains("Three Musketeers"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    #endregion
+
+    #region whether this card has "Royal Base" trait
+
+    public bool HasRoyalBaseTraits
+    {
+        get
+        {
+            if (CardTraits.Contains("Royal Base"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    #endregion
 }
 
 public class JogressCondition
@@ -2686,6 +2897,24 @@ public class BurstDigivolutionCondition
     }
     public Func<Permanent, bool> tamerCondition { get; private set; } = null;
     public string selectTamerMessage { get; private set; } = null;
+    public Func<Permanent, bool> digimonCondition { get; private set; } = null;
+    public string selectDigimonMessage { get; private set; } = null;
+
+    public int cost { get; private set; } = 0;
+}
+
+public class AppFusionCondition
+{
+    public AppFusionCondition(Func<CardSource, bool> linkedCondition, string selectLinkMessage, Func<Permanent, bool> digimonCondition, string selectDigimonMessage, int cost)
+    {
+        this.linkedCondition = linkedCondition;
+        this.selectLinkMessage = selectLinkMessage;
+        this.digimonCondition = digimonCondition;
+        this.selectDigimonMessage = selectDigimonMessage;
+        this.cost = cost;
+    }
+    public Func<CardSource, bool> linkedCondition { get; private set; } = null;
+    public string selectLinkMessage { get; private set; } = null;
     public Func<Permanent, bool> digimonCondition { get; private set; } = null;
     public string selectDigimonMessage { get; private set; } = null;
 

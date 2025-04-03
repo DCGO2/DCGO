@@ -89,7 +89,9 @@ namespace DCGO.CardEffects.BT16
 
                     if (selectedPermanent != null)
                     {
-                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.ContainsCardName("Magnamon (X Antibody)") || cardSource.ContainsTraits("Armor Form")) >= 1)
+                        if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) =>
+                                cardSource.EqualsCardName("Magnamon (X Antibody)") ||
+                                cardSource.ContainsTraits("Armor Form")) >= 1)
                         {
                             CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
                             canNotAffectedClass.SetUpICardEffect("Isn't affected by opponent's effects", CanUseCondition1, card);

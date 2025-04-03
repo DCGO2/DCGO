@@ -13,11 +13,6 @@ namespace DCGO.CardEffects.BT15
 
             #region On Play/When Attacking Shared
 
-            string EffectSharedDiscription()
-            {
-                return "[On Play] [When Attacking] Delete 1 of your opponent's unsuspended Digimon.";
-            }
-
             bool CanSelectPermanentCondition(Permanent permanent)
             {
                 if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
@@ -51,8 +46,13 @@ namespace DCGO.CardEffects.BT15
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete 1 unsuspened Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, false, EffectSharedDiscription());
+                activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
+
+                string EffectDescription()
+                {
+                    return "[On Play] Delete 1 of your opponent's unsuspended Digimon.";
+                }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
@@ -93,8 +93,13 @@ namespace DCGO.CardEffects.BT15
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete 1 unsuspened Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, false, EffectSharedDiscription());
+                activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
+
+                string EffectDescription()
+                {
+                    return "[When Attacking] Delete 1 of your opponent's unsuspended Digimon.";
+                }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
