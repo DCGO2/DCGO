@@ -12,7 +12,48 @@ namespace DCGO.CardEffects.BT21
 
             #region App Fusion
 
-            //TODO
+            if (timing == EffectTiming.None)
+            {
+                AddAppFusionConditionClass addAppFusionConditionClass = new AddAppFusionConditionClass();
+                addAppFusionConditionClass.SetUpICardEffect($"App Fusion", true, card);
+                addAppFusionConditionClass.SetUpAddAppFusionConditionClass(getAppFusionCondition: GetAppFusion);
+                addAppFusionConditionClass.SetNotShowUI(true);
+                cardEffects.Add(addAppFusionConditionClass);
+
+                AppFusionCondition GetAppFusion(CardSource cardSource)
+                {
+                    if (cardSource == card)
+                    {
+                        bool linkCondition(CardSource source)
+                        {
+                            return source != null;
+                        }
+
+                        bool digimonCondition(Permanent permanent)
+                        {
+                            return permanent != null &&
+                                permanent.TopCard != null &&
+                                permanent.TopCard.Owner == card.Owner &&
+                                permanent.TopCard.Owner.GetFieldPermanents().Contains(permanent) &&
+                                !card.CanNotEvolve(permanent) &&
+                                (permanent.TopCard.EqualsCardName("Watchmon") ||
+                                permanent.TopCard.EqualsCardName("Savemon") ||
+                                permanent.TopCard.EqualsCardName("Calendamon"));
+                        }
+
+                        AppFusionCondition AppFusionCondition = new AppFusionCondition(
+                            linkedCondition: linkCondition,
+                            selectLinkMessage: "1 Linked card",
+                            digimonCondition: digimonCondition,
+                            selectDigimonMessage: "1 of [Watchmon], [Savemon] and [Calendamon]",
+                            cost: 0);
+
+                        return AppFusionCondition;
+                    }
+
+                    return null;
+                }
+            }
 
             #endregion
 
