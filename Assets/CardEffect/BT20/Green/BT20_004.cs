@@ -38,8 +38,13 @@ namespace DCGO.CardEffects.BT20
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, IsYourAccelDigimon);
+                    if (CardEffectCommons.IsOwnerTurn(card))
+                    {
+                        return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                               CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, IsYourAccelDigimon);
+                    }
+
+                    return false;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

@@ -113,12 +113,6 @@ namespace DCGO.CardEffects.EX6
             
             #region On Play/ Start of Your Main Phase Shared
             
-            string EffectSharedDescription()
-            {
-                return
-                    "[On Play] [Start of Your Main Phase] Reveal the top 3 cards of your deck. Add 1 card with the [Angel]/[Archangel]/[Three Great Angels]/[Seven Great Demon Lords] trait among them to your hand. Trash the rest.";
-            }
-            
             bool CanSelectCardSharedCondition(CardSource cardSource)
             {
                 if (cardSource.CardTraits.Contains("Angel") ||
@@ -156,8 +150,14 @@ namespace DCGO.CardEffects.EX6
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Reveal the top 3 cards of deck", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, false,
-                    EffectSharedDescription());
+                    EffectDescription());
                 cardEffects.Add(activateClass);
+            
+                string EffectDescription()
+                {
+                    return
+                        "[On Play] Reveal the top 3 cards of your deck. Add 1 card with the [Angel]/[Archangel]/[Three Great Angels]/[Seven Great Demon Lords] trait among them to your hand. Trash the rest.";
+                }
                 
                 bool CanUseCondition(Hashtable hashtable)
                 {
@@ -195,8 +195,14 @@ namespace DCGO.CardEffects.EX6
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Reveal the top 3 cards of deck", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, false,
-                    EffectSharedDescription());
+                    EffectDescription());
                 cardEffects.Add(activateClass);
+            
+                string EffectDescription()
+                {
+                    return
+                        "[Start of Your Main Phase] Reveal the top 3 cards of your deck. Add 1 card with the [Angel]/[Archangel]/[Three Great Angels]/[Seven Great Demon Lords] trait among them to your hand. Trash the rest.";
+                }
                 
                 bool CanUseCondition(Hashtable hashtable)
                 {

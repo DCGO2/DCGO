@@ -182,170 +182,132 @@ namespace DCGO.CardEffects.BT20
 
             #region Delay Effect
             
-            if (timing == EffectTiming.OnDeclaration)
+            if (timing == EffectTiming.OnLoseSecurity)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect(
-                    "You may play 1 [Imperialdramon: Dragon Mode] from any of your [Imperialdramon: Fighter Mode]'s digivolution cards without paying the cost.",
-                    CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
-                activateClass.SetHashString("BT20_094");
+                activateClass.SetUpICardEffect("You may play 1 [Imperialdramon: Dragon Mode] from any of your [Imperialdramon: Fighter Mode]'s digivolution cards without paying the cost.", CanUseCondition, card);
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
                 
                 string EffectDescription()
                 {
-                    return
-                        "You may play 1 [Imperialdramon: Dragon Mode] from any of your [Imperialdramon: Fighter Mode]'s digivolution cards without paying the cost.";
-                        
+                    return "[All Turns] When your opponent's security stack is removed from, <Delay>.\r\n• You may play 1 [Imperialdramon: Dragon Mode] from any of your [Imperialdramon: Fighter Mode]'s digivolution cards without paying the cost.";
                 }
                 
-                bool IsOwnerPermanentCondition(Permanent permanent)
+                bool isImperialdramonFighterMode(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
-                    {
-                        if (permanent.DigivolutionCards.Count(isImperialDramonFighterMode) >= 1)
-                        {
-                            return true;
-                        }
-                    }
-                    
-                    return false;
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                           permanent.TopCard.EqualsCardName("Imperialdramon: Fighter Mode") &&
+                           (permanent.DigivolutionCards.Count(isImperialdramonDragonMode) >= 1);
                 }
                 
-                bool IsOwnerPermanentToBeDeletedCondition(Permanent permanent)
+                bool isImperialdramonDragonMode(CardSource cardSource)
                 {
-                    return IsOwnerPermanentCondition(permanent) && permanent.willBeRemoveField;
-                    
-                }
-                
-                bool isImperialDramonFighterMode(CardSource cardSource)
-                {
-                    if (cardSource.IsDigimon)
-                    {
-                        if (cardSource.ContainsCardName("Imperialdramon: Dragon Mode"))
-                        {
-                            if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false,cardEffect: activateClass))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-                    
-                    return false;
+                    return cardSource.EqualsCardName("Imperialdramon: Dragon Mode") &&
+                           CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass, SelectCardEffect.Root.DigivolutionCards);
                 }
                 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanDeclareOptionDelayEffect(card))
-                    {
-                        if (CardEffectCommons.CanTriggerWhenLoseSecurity(hashtable, player => player == card.Owner.Enemy))
-                        {
-                            if (!CardEffectCommons.IsByEffect(hashtable,
-                                    cardEffect => CardEffectCommons.IsOwnerEffect(cardEffect, card)))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-                    
-                    return false;
+                    return CardEffectCommons.CanDeclareOptionDelayEffect(card) &&
+                           CardEffectCommons.CanTriggerWhenLoseSecurity(hashtable, player => player == card.Owner.Enemy);
                 }
                 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    bool destoryed = false;
                     yield return ContinuousController.instance.StartCoroutine(
                         CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
                             targetPermanents: new List<Permanent>() { card.PermanentOfThisCard() },
                             activateClass: activateClass, successProcess: permanents => SuccessProcess(),
                             failureProcess: null));
-                }
-                
-                IEnumerator SuccessProcess()
-                {
-                    if (CardEffectCommons.HasMatchConditionPermanent(IsOwnerPermanentToBeDeletedCondition))
+
+                    IEnumerator SuccessProcess()
                     {
-                        int maxCount = Math.Min(1,
-                            CardEffectCommons.MatchConditionPermanentCount(IsOwnerPermanentToBeDeletedCondition));
-                        
-                        SelectPermanentEffect selectPermanentEffect =
-                            GManager.instance.GetComponent<SelectPermanentEffect>();
-                        
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: IsOwnerPermanentToBeDeletedCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: true,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: SelectPermanentCoroutine,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
-                            cardEffect: activateClass);
-                        
-                        selectPermanentEffect.SetUpCustomMessage(
-                            "Select 1 Digimon which has digivolution cards.",
-                            "The opponent is selecting 1 Digimon which has digivolution cards.");
-                        
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                        
-                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                        destoryed = true;
+                        yield return null;
+                    }
+
+                    if (destoryed)
+                    {
+                        if (CardEffectCommons.HasMatchConditionPermanent(isImperialdramonFighterMode))
                         {
-                            Permanent selectedPermanent = permanent;
-                            
+                            Permanent selectedPermanent = null;
+
+                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                            selectPermanentEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: isImperialdramonFighterMode,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: 1,
+                                canNoSelect: true,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: SelectPermanentCoroutine,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Custom,
+                                cardEffect: activateClass);
+
+                            selectPermanentEffect.SetUpCustomMessage(
+                                "Select 1 Digimon to play source from.",
+                                "The opponent is selecting 1 Digimon to play source from.");
+
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                            IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                            {
+                                selectedPermanent = permanent;
+
+                                yield return null;
+                            }
+
                             if (selectedPermanent != null)
                             {
-                                if (selectedPermanent.DigivolutionCards.Count(isImperialDramonFighterMode) >= 1)
+                                List<CardSource> selectedCards = new List<CardSource>();
+
+                                SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                                selectCardEffect.SetUp(
+                                    canTargetCondition: isImperialdramonDragonMode,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    canNoSelect: () => true,
+                                    selectCardCoroutine: SelectCardCoroutine,
+                                    afterSelectCardCoroutine: null,
+                                    message: "Select 1 digivolution card to play.",
+                                    maxCount: 1,
+                                    canEndNotMax: false,
+                                    isShowOpponent: true,
+                                    mode: SelectCardEffect.Mode.Custom,
+                                    root: SelectCardEffect.Root.Custom,
+                                    customRootCardList: selectedPermanent.DigivolutionCards,
+                                    canLookReverseCard: true,
+                                    selectPlayer: card.Owner,
+                                    cardEffect: activateClass);
+
+                                selectCardEffect.SetUpCustomMessage(
+                                    "Select 1 digivolution card to play.",
+                                    "The opponent is selecting 1 digivolution card to play.");
+                                selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
+
+                                yield return StartCoroutine(selectCardEffect.Activate());
+
+                                IEnumerator SelectCardCoroutine(CardSource cardSource)
                                 {
-                                    maxCount = Math.Min(1,
-                                        selectedPermanent.DigivolutionCards.Count(isImperialDramonFighterMode));
-                                    
-                                    List<CardSource> selectedCards = new List<CardSource>();
-                                    
-                                    SelectCardEffect selectCardEffect =
-                                        GManager.instance.GetComponent<SelectCardEffect>();
-                                    
-                                    selectCardEffect.SetUp(
-                                        canTargetCondition: isImperialDramonFighterMode,
-                                        canTargetCondition_ByPreSelecetedList: null,
-                                        canEndSelectCondition: null,
-                                        canNoSelect: () => true,
-                                        selectCardCoroutine: SelectCardCoroutine,
-                                        afterSelectCardCoroutine: null,
-                                        message: "Select 1 digivolution card to play.",
-                                        maxCount: maxCount,
-                                        canEndNotMax: false,
-                                        isShowOpponent: true,
-                                        mode: SelectCardEffect.Mode.Custom,
-                                        root: SelectCardEffect.Root.Custom,
-                                        customRootCardList: selectedPermanent.DigivolutionCards,
-                                        canLookReverseCard: true,
-                                        selectPlayer: card.Owner,
-                                        cardEffect: activateClass);
-                                    
-                                    selectCardEffect.SetUpCustomMessage(
-                                        "Select 1 digivolution card to play.",
-                                        "The opponent is selecting 1 digivolution card to play.");
-                                    selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
-                                    
-                                    yield return StartCoroutine(selectCardEffect.Activate());
-                                    
-                                    IEnumerator SelectCardCoroutine(CardSource cardSource)
-                                    {
-                                        selectedCards.Add(cardSource);
-                                        
-                                        yield return null;
-                                    }
-                                    
-                                    yield return ContinuousController.instance.StartCoroutine(
-                                        CardEffectCommons.PlayPermanentCards(
-                                            cardSources: selectedCards,
-                                            activateClass: activateClass,
-                                            payCost: false,
-                                            isTapped: false,
-                                            root: SelectCardEffect.Root.DigivolutionCards,
-                                            activateETB: true));
+                                    selectedCards.Add(cardSource);
+
+                                    yield return null;
                                 }
+
+                                yield return ContinuousController.instance.StartCoroutine(
+                                    CardEffectCommons.PlayPermanentCards(
+                                        cardSources: selectedCards,
+                                        activateClass: activateClass,
+                                        payCost: false,
+                                        isTapped: false,
+                                        root: SelectCardEffect.Root.DigivolutionCards,
+                                        activateETB: true));
                             }
                         }
                     }

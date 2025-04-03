@@ -101,7 +101,7 @@ public partial class CardEffectCommons
     }
     #endregion
 
-        #region Whether TopCard is in trash when check [On Deletion] effect
+    #region Whether TopCard is in trash when check [On Deletion] effect
     public static bool IsTopCardInTrashOnDeletion(Hashtable hashtable)
     {
         List<Hashtable> hashtables = GetHashtablesFromHashtable(hashtable);
