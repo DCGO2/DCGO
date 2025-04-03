@@ -32,77 +32,158 @@ namespace DCGO.CardEffects.BT21
 
             #region On Play
 
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
-                if (timing == EffectTiming.OnEnterFieldAnyone)
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("1 of your opponent's Digimon can't attack players until their turn ends", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
                 {
-                    ActivateClass activateClass = new ActivateClass();
-                    activateClass.SetUpICardEffect("1 of your opponent's Digimon can't attack players until their turn ends", CanUseCondition, card);
-                    activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-                    cardEffects.Add(activateClass);
+                    return "[On Play] Until your opponent's turn ends, 1 of their Digimon can't attack players.";
+                }
 
-                    string EffectDiscription()
+                bool IsOpponentsDigimon(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                        CardEffectCommons.CanTriggerOnPlay(hashtable, card) &&
+                        CardEffectCommons.HasMatchConditionOpponentsPermanent(card, IsOpponentsDigimon);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.HasMatchConditionPermanent(IsOpponentsDigimon))
                     {
-                        return "[On Play] Until your opponent's turn ends, 1 of their Digimon can't attack players.";
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(IsOpponentsDigimon));
+
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: IsOpponentsDigimon,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: maxCount,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectCantAttackPermanent,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
 
-                    bool IsOpponentsDigimon(Permanent permanent)
+                    IEnumerator SelectCantAttackPermanent(Permanent permanent)
                     {
-                        return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
-                    }
-
-                    bool CanUseCondition(Hashtable hashtable)
-                    {
-                        return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                            CardEffectCommons.CanTriggerOnPlay(hashtable, card) &&
-                            CardEffectCommons.HasMatchConditionOpponentsPermanent(card, IsOpponentsDigimon);
-                    }
-
-                    bool CanActivateCondition(Hashtable hashtable)
-                    {
-                        return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
-                    }
-
-                    IEnumerator ActivateCoroutine(Hashtable hashtable)
-                    {
-                        if (CardEffectCommons.HasMatchConditionPermanent(IsOpponentsDigimon))
+                        bool DefenderCondition(Permanent Defender)
                         {
-                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(IsOpponentsDigimon));
-
-                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: IsOpponentsDigimon,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: maxCount,
-                                canNoSelect: false,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: SelectCantAttackPermanent,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Custom,
-                                cardEffect: activateClass);
-
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                            return Defender == null;
                         }
 
-                        IEnumerator SelectCantAttackPermanent(Permanent permanent)
+                        if (permanent != null)
                         {
-                            bool DefenderCondition(Permanent Defender)
-                            {
-                                return Defender == null;
-                            }
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotAttack(
+                                targetPermanent: permanent,
+                                defenderCondition: DefenderCondition,
+                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                                activateClass: activateClass,
+                                effectName: "Can't Attack Player"));
+                        }
+                    }
+                }
+            }
+            #endregion
 
-                            if (permanent != null)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotAttack(
-                                    targetPermanent: permanent,
-                                    defenderCondition: DefenderCondition,
-                                    effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                                    activateClass: activateClass,
-                                    effectName: "Can't Attack Player"));
-                            }
+            #region Link
+            if (timing == EffectTiming.OnDeclaration)
+            {
+                cardEffects.Add(CardEffectFactory.LinkEffect(card, 1, 2000));
+            }
+            #endregion
+
+            #region When Linking
+
+            if (timing == EffectTiming.WhenLinked)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("1 of your opponent's Digimon can't attack players until their turn ends", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetIsLinkedEffect(true);
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[When Linking] Until your opponent's turn ends, 1 of their Digimon can't attack players.";
+                }
+
+                bool IsOpponentsDigimon(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                        CardEffectCommons.CanTriggerWhenLinking(hashtable, null, card) &&
+                        CardEffectCommons.HasMatchConditionOpponentsPermanent(card, IsOpponentsDigimon);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.HasMatchConditionPermanent(IsOpponentsDigimon))
+                    {
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(IsOpponentsDigimon));
+
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: IsOpponentsDigimon,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: maxCount,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectCantAttackPermanent,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                    }
+
+                    IEnumerator SelectCantAttackPermanent(Permanent permanent)
+                    {
+                        bool DefenderCondition(Permanent Defender)
+                        {
+                            return Defender == null;
+                        }
+
+                        if (permanent != null)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotAttack(
+                                targetPermanent: permanent,
+                                defenderCondition: DefenderCondition,
+                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                                activateClass: activateClass,
+                                effectName: "Can't Attack Player"));
                         }
                     }
                 }
