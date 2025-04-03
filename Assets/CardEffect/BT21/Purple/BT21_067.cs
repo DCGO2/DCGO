@@ -130,7 +130,6 @@ namespace DCGO.CardEffects.BT21
             }
             #endregion
 
-
             #region Inherit - When Attacking
 
             if (timing == EffectTiming.OnAllyAttack)
