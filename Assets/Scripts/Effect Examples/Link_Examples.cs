@@ -177,9 +177,77 @@ namespace DCGO.CardEffects.Examples
                     card: card,
                     condition: Condition));
             }
+            #endregion
+
+            #region App Fusion
+            if (timing == EffectTiming.None)
+            {
+                AddAppFusionConditionClass addAppFusionConditionClass = new AddAppFusionConditionClass();
+                addAppFusionConditionClass.SetUpICardEffect($"App Fusion", CanUseCondition, card);
+                addAppFusionConditionClass.SetUpAddAppFusionConditionClass(getAppFusionCondition: GetAppFusion);
+                addAppFusionConditionClass.SetNotShowUI(true);
+                cardEffects.Add(addAppFusionConditionClass);
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return true;
+                }
+
+                AppFusionCondition GetAppFusion(CardSource cardSource)
+                {
+                    if (cardSource == card)
+                    {
+                        bool linkCondition(CardSource source)
+                        {
+                            if (source != null)
+                            {
+                                return true;
+                            }
+
+                            return false;
+                        }
+
+                        bool digimonCondition(Permanent permanent)
+                        {
+                            if (permanent != null)
+                            {
+                                if (permanent.TopCard != null)
+                                {
+                                    if (permanent.TopCard.Owner == card.Owner)
+                                    {
+                                        if (permanent.TopCard.Owner.GetFieldPermanents().Contains(permanent))
+                                        {
+                                            if (!card.CanNotEvolve(permanent))
+                                            {
+                                                if (permanent.TopCard.EqualsCardName("Timemon"))
+                                                {
+                                                    return true;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            return false;
+                        }
+
+                        AppFusionCondition AppFusionCondition = new AppFusionCondition(
+                            linkedCondition: linkCondition,
+                            selectLinkMessage: "1 Linked card",
+                            digimonCondition: digimonCondition,
+                            selectDigimonMessage: "1 [Timemon]",
+                            cost: 0);
+
+                        return AppFusionCondition;
+                    }
+
+                    return null;
+                }
+            }
+            #endregion
 
             return cardEffects;
         }
-        #endregion
     }
 }

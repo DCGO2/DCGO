@@ -22,19 +22,19 @@ public class SelectAppFusionEffect : MonoBehaviour
         _noSelectCoroutine = noSelectCoroutine;
     }
 
-    public void SetUp_SelectTamer
+    public void SetUp_SelectLink
         (CardSource card,
         bool isLocal,
         bool isPayCost,
         bool canNoSelect,
-        Func<Permanent, IEnumerator> endSelectCoroutine_SelectTamer,
+        Func<CardSource, IEnumerator> endSelectCoroutine_SelectLink,
         Func<IEnumerator> noSelectCoroutine)
     {
         _card = card;
         _isLocal = isLocal;
         _isPayCost = isPayCost;
         _canNoSelect = canNoSelect;
-        _endSelectCoroutine_SelectTamer = endSelectCoroutine_SelectTamer;
+        _endSelectCoroutine_SelectLink = endSelectCoroutine_SelectLink;
         _noSelectCoroutine = noSelectCoroutine;
     }
 
@@ -46,7 +46,7 @@ public class SelectAppFusionEffect : MonoBehaviour
     bool _canNoSelect = false;
     Func<IEnumerator> _endSelectCoroutine_Digivolve = null;
     Func<IEnumerator> _endSelectCoroutine_AppFusion = null;
-    Func<Permanent, IEnumerator> _endSelectCoroutine_SelectTamer = null;
+    Func<CardSource, IEnumerator> _endSelectCoroutine_SelectLink = null;
     Func<IEnumerator> _noSelectCoroutine = null;
     public bool TamerBounced { get; private set; } = false;
 
@@ -105,16 +105,16 @@ public class SelectAppFusionEffect : MonoBehaviour
         }
     }
 
-    public IEnumerator SelectTamer()
+    public IEnumerator SelectLink(Permanent targetPermanent)
     {
         bool active = false;
-        SelectPermanentEffect selectPermanentEffect = null;
+        SelectCardEffect selectCardEffect = null;
 
-        if (_card != null)
+        if (_card != null && targetPermanent != null)
         {
             if (_card.CanPlayBurst(_isPayCost))
             {
-                if (_card.burstDigivolutionCondition != null)
+                if (_card.appFusionCondition != null)
                 {
                     if (GManager.instance != null)
                     {
@@ -124,9 +124,9 @@ public class SelectAppFusionEffect : MonoBehaviour
                             {
                                 if (GManager.instance.turnStateMachine.gameContext.ActiveCardList.Count >= 1)
                                 {
-                                    selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                                    selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
-                                    if (selectPermanentEffect != null)
+                                    if (selectCardEffect != null)
                                     {
                                         active = true;
                                     }
@@ -140,68 +140,49 @@ public class SelectAppFusionEffect : MonoBehaviour
 
         if (active)
         {
-            Permanent selectedTamer = null;
+            CardSource selectedLink = null;
 
-            AppFusionCondition burstDigivolutionCondition = _card.appFusionCondition;
+            AppFusionCondition appFusionCondition = _card.appFusionCondition;
 
-            bool CanSelectPermanentCondition(Permanent permanent)
+            bool CanSelectSourceCondition(CardSource link)
             {
-                if (permanent != null)
-                {
-                    if (permanent.TopCard.Owner.GetBattleAreaPermanents().Contains(permanent))
-                    {
-                        if (burstDigivolutionCondition.tamerCondition != null)
-                        {
-                            if (burstDigivolutionCondition.tamerCondition(permanent))
-                            {
-                                if (!permanent.CannotReturnToHand(null))
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                return false;
+                return (link != null);
             }
 
-            int maxCount = Math.Min(1, _card.Owner.GetBattleAreaPermanents().Count(CanSelectPermanentCondition));
+            int maxCount = Math.Min(1, targetPermanent.LinkedCards.Count(link => CanSelectSourceCondition(link.Source)));
 
             if (maxCount >= 1)
             {
-                selectPermanentEffect.SetUp(
-                selectPlayer: _card.Owner,
-                canTargetCondition: CanSelectPermanentCondition,
+                selectCardEffect.SetUp(
+                canTargetCondition: CanSelectSourceCondition,
                 canTargetCondition_ByPreSelecetedList: null,
                 canEndSelectCondition: null,
+                canNoSelect: () => _canNoSelect,
+                selectCardCoroutine: SelectCardCoroutine,
+                afterSelectCardCoroutine: null,
+                message: $"Select {appFusionCondition.selectLinkMessage}.",
                 maxCount: maxCount,
-                canNoSelect: _canNoSelect,
                 canEndNotMax: false,
-                selectPermanentCoroutine: SelectPermanentCoroutine,
-                afterSelectPermanentCoroutine: null,
-                mode: SelectPermanentEffect.Mode.Custom,
+                isShowOpponent: true,
+                mode: SelectCardEffect.Mode.Custom,
+                root: SelectCardEffect.Root.Custom,
+                customRootCardList: targetPermanent.LinkedCards.Map(link => link.Source),
+                canLookReverseCard: false,
+                selectPlayer: _card.Owner,
                 cardEffect: null);
 
-                selectPermanentEffect.SetUpCustomMessage($"Select {burstDigivolutionCondition.selectTamerMessage}.", $"The opponent is selecting {burstDigivolutionCondition.selectTamerMessage}.");
+                yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 
-                if (this._isLocal)
+                IEnumerator SelectCardCoroutine(CardSource source)
                 {
-                    selectPermanentEffect.SetIsLocal();
-                }
-
-                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                {
-                    selectedTamer = permanent;
+                    selectedLink = source;
 
                     yield return null;
                 }
             }
 
             //バースト進化しない
-            if (selectedTamer == null)
+            if (selectedLink == null)
             {
                 if (_noSelectCoroutine != null)
                 {
@@ -214,7 +195,7 @@ public class SelectAppFusionEffect : MonoBehaviour
             {
                 if (_endSelectCoroutine_AppFusion != null)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(_endSelectCoroutine_SelectTamer(selectedTamer));
+                    yield return ContinuousController.instance.StartCoroutine(_endSelectCoroutine_SelectLink(selectedLink));
                 }
             }
         }
