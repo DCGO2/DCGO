@@ -96,11 +96,12 @@ namespace DCGO.CardEffects.BT20
             }
             
             #endregion
+
             #region On Play
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Return a card, DNA Digivolve into Imperialdramon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Return a card from your trash to the hand", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -162,7 +163,7 @@ namespace DCGO.CardEffects.BT20
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Return a card, DNA Digivolve into Imperialdramon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Return a card from your trash to the hand", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -180,7 +181,7 @@ namespace DCGO.CardEffects.BT20
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable,card);
+                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable,card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -219,14 +220,12 @@ namespace DCGO.CardEffects.BT20
                 }
             }
             #endregion
-               
 
             #region All Turns
             if(timing == EffectTiming.WhenReturntoLibraryAnyone || timing == EffectTiming.WhenReturntoHandAnyone ){
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("If returned, DNA Digivolve", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine, -1, true, EffectDiscription());
-                activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("Dna Digivolve into Imperialdramon");
                 cardEffects.Add(activateClass);
 
@@ -416,6 +415,7 @@ namespace DCGO.CardEffects.BT20
             }
 
             #endregion    
+
         return cardEffects;
 
         }

@@ -27,6 +27,7 @@ public abstract class ICardEffect
         SetUseOptional(false);
         SetIsDeclarative(false);
         SetIsInheritedEffect(false);
+        SetIsLinkedEffect(false);
         SetIsSecurityEffect(false);
         SetIsCounterEffect(false);
         SetIsDigimonEffect(false);
@@ -273,26 +274,25 @@ public abstract class ICardEffect
             return false;
         }
         #endregion
-
-        #region Determination of availability for Inheritated Effect
+       
+        #region Determination of availability for Inheritated/Linked Effect
         if (this is ActivateICardEffect)
         {
             if (EffectSourceCard != null)
             {
                 if (EffectSourceCard.PermanentOfThisCard() != null)
                 {
-                    if (IsInheritedEffect)
+                    if (IsInheritedEffect || IsLinkedEffect)
                     {
                         if (EffectSourceCard == EffectSourceCard.PermanentOfThisCard().TopCard)
-                        {
                             return false;
-                        }
-                        if (!EffectSourceCard.PermanentOfThisCard().IsDigimon)
-                        {
-                            return false;
-                        }
-                    }
 
+                        if (!EffectSourceCard.PermanentOfThisCard().IsDigimon)
+                            return false;
+
+                        if (IsLinkedEffect && !EffectSourceCard.PermanentOfThisCard().LinkedCards.Exists(link => link.Source == EffectSourceCard))
+                            return false;
+                    }
                     else
                     {
                         if (EffectSourceCard != EffectSourceCard.PermanentOfThisCard().TopCard)
@@ -313,7 +313,7 @@ public abstract class ICardEffect
         #endregion
 
         #region Determination whether the permanent is same as when triggered
-        if (IsInheritedEffect)
+        if (IsInheritedEffect || IsLinkedEffect)
         {
             if (this is ActivateICardEffect)
             {
@@ -407,6 +407,19 @@ public abstract class ICardEffect
     public void SetIsInheritedEffect(bool isInheritatedEffect)
     {
         IsInheritedEffect = isInheritatedEffect;
+    }
+    #endregion
+
+    #region Whether this effect is an Linked Effect
+    bool _isLinkededEffect = false;
+    public bool IsLinkedEffect
+    {
+        get { return _isLinkededEffect; }
+        private set { _isLinkededEffect = value; }
+    }
+    public void SetIsLinkedEffect(bool isLinkededEffect)
+    {
+        IsLinkedEffect = isLinkededEffect;
     }
     #endregion
 
@@ -783,6 +796,7 @@ public enum EffectTiming
     OnReturnCardsToHandFromTrash,
     AfterEffectsActivate,
     WhenWouldDigivolutionCardDiscarded,
+    WhenLinked
 }
 #endregion
 

@@ -134,7 +134,7 @@ namespace DCGO.CardEffects.BT20
                     return "[All Turns] When any of your [DexDorugoramon] would leave the battle area, <Delay>.\r\n• By return 1 [Dorumon] from those Digimon's digivolution cards to the hand, you may play 1 [DeathXmon] from your trash without paying the cost.";
                 }
 
-                bool PermanentCondition(Permanent permanent)
+                bool DexDorugora(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
                            permanent.TopCard.EqualsCardName("DexDorugoramon") &&
@@ -157,12 +157,12 @@ namespace DCGO.CardEffects.BT20
                 bool IsDeathXmon(CardSource source)
                 {
                     return source.EqualsCardName("DeathXmon") &&
-                           CardEffectCommons.CanPlayAsNewPermanent(source, false, activateClass);
+                           CardEffectCommons.CanPlayAsNewPermanent(source, false, activateClass, SelectCardEffect.Root.Trash);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, PermanentCondition) &&
+                    return CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, DexDorugora) &&
                            CardEffectCommons.CanDeclareOptionDelayEffect(card);
                 }
 
@@ -182,7 +182,7 @@ namespace DCGO.CardEffects.BT20
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: PermanentCondition,
+                            canTargetCondition: DexDorugoraWithSource,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: 1,
@@ -207,7 +207,7 @@ namespace DCGO.CardEffects.BT20
 
                     if(selectedPermanent != null)
                     {
-                        List<CardSource> selectedCards = new List<CardSource>();
+                        bool cardAdded = false;
 
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
@@ -217,7 +217,7 @@ namespace DCGO.CardEffects.BT20
                                     canEndSelectCondition: null,
                                     canNoSelect: () => false,
                                     selectCardCoroutine: null,
-                                    afterSelectCardCoroutine: null,
+                                    afterSelectCardCoroutine: SelectDorumonCoroutine,
                                     message: "Select 1 digivolution card.",
                                     maxCount: 1,
                                     canEndNotMax: false,
@@ -234,7 +234,14 @@ namespace DCGO.CardEffects.BT20
 
                         yield return StartCoroutine(selectCardEffect.Activate());
 
-                        if(selectedCards.Any(source => !card.Owner.HandCards.Contains(source)))
+                        IEnumerator SelectDorumonCoroutine(List<CardSource> cardSources)
+                        {
+                            cardAdded = true;
+
+                            yield return null;
+                        }
+
+                        if (cardAdded)
                         {
                             List<CardSource> selectedPlayedCards = new List<CardSource>();
 
@@ -245,7 +252,7 @@ namespace DCGO.CardEffects.BT20
                                         canNoSelect: () => false,
                                         selectCardCoroutine: SelectCardCoroutine,
                                         afterSelectCardCoroutine: null,
-                                        message: "Select 1 digivolution card.",
+                                        message: "Select 1 [DeathXmon] to play.",
                                         maxCount: 1,
                                         canEndNotMax: false,
                                         isShowOpponent: true,
@@ -257,7 +264,6 @@ namespace DCGO.CardEffects.BT20
                                         cardEffect: activateClass);
 
                             selectCardEffect.SetUpCustomMessage("Select 1 [DeathXmon] to play.", "The opponent is selecting 1 [DeathXmon] to play.");
-                            selectCardEffect.SetUpCustomMessage_ShowCard("Digivolution Card");
 
                             yield return StartCoroutine(selectCardEffect.Activate());
 
@@ -268,7 +274,7 @@ namespace DCGO.CardEffects.BT20
                                 yield return null;
                             }
 
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedPlayedCards, activateClass: activateClass, payCost: false, isTapped: true, root: SelectCardEffect.Root.Trash, activateETB: true));
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedPlayedCards, activateClass: activateClass, payCost: false, isTapped: false, root: SelectCardEffect.Root.Trash, activateETB: true));
                         }
                     }
                 }

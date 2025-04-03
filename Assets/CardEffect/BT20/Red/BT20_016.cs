@@ -43,7 +43,7 @@ namespace DCGO.CardEffects.BT20
                                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
 
                                     {
-                                        if (permanent.TopCard.CardColors.Contains(CardColor.Purple))
+                                        if (permanent.TopCard.CardColors.Contains(CardColor.Red))
                                         {
                                             if (permanent.Levels_ForJogress(card).Contains(4))
                                             {
@@ -65,7 +65,7 @@ namespace DCGO.CardEffects.BT20
                                 {
                                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                                     {
-                                        if (permanent.TopCard.CardColors.Contains(CardColor.Red))
+                                        if (permanent.TopCard.CardColors.Contains(CardColor.Purple))
                                         {
                                             if (permanent.Levels_ForJogress(card).Contains(4))
                                             {
@@ -108,7 +108,7 @@ namespace DCGO.CardEffects.BT20
 
                 string EffectDiscription()
                 {
-                    return "[On Play]For the turn, 1 of your Digimon gains ＜Piercing＞ (When this Digimon attacks and deletes an opponent's Digimon and survives the battle, it performs any security checks it normally would) and gets +4000 DP. Then, this Digimon may attack.";
+                    return "[On Play] For the turn, 1 of your Digimon gains ＜Piercing＞ (When this Digimon attacks and deletes an opponent's Digimon and survives the battle, it performs any security checks it normally would) and gets +4000 DP. Then, this Digimon may attack.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -123,7 +123,7 @@ namespace DCGO.CardEffects.BT20
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -185,7 +185,7 @@ namespace DCGO.CardEffects.BT20
             }
             #endregion
 
-            #region On Digivolving
+            #region When Digivolving
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();

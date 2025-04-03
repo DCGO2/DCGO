@@ -46,11 +46,6 @@ namespace DCGO.CardEffects.BT15
 
             #region On Play/When Attacking Shared
 
-            string EffectSharedDiscription()
-            {
-                return "[On Play] [When Attacking] Return 1 of your opponent's level 5 or lower Digimon to the bottom of their deck.";
-            }
-
             bool CanSelectPermanentCondition(Permanent permanent)
             {
                 if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
@@ -87,8 +82,13 @@ namespace DCGO.CardEffects.BT15
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Return 1 level 5 or lower Digimon to hand", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, false, EffectSharedDiscription());
+                activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
+
+                string EffectDescription()
+                {
+                    return "[On Play] Return 1 of your opponent's level 5 or lower Digimon to the bottom of their deck.";
+                }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
@@ -129,8 +129,13 @@ namespace DCGO.CardEffects.BT15
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Return 1 level 5 or lower Digimon to hand", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, false, EffectSharedDiscription());
+                activateClass.SetUpActivateClass(CanActivateSharedCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
+
+                string EffectDescription()
+                {
+                    return "[When Attacking] Return 1 of your opponent's level 5 or lower Digimon to the bottom of their deck.";
+                }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {

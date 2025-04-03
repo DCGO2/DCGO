@@ -30,14 +30,11 @@ namespace DCGO.CardEffects.BT20
             #region Reduce Play Cost
             bool HasAccelTraitInPlay(Permanent permanent)
             {
-                if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
+                if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                 {
-                    if (permanent.IsDigimon)
+                    if (permanent.TopCard.EqualsTraits("ACCEL"))
                     {
-                        if (permanent.TopCard.EqualsTraits("ACCEL"))
-                        {
-                            return true;
-                        }
+                        return true;
                     }
                 }
 
@@ -65,7 +62,7 @@ namespace DCGO.CardEffects.BT20
                     {
                         if (CardEffectCommons.IsExistOnHand(cardSource))
                         {
-                            return true;
+                            return CardEffectCommons.HasMatchConditionPermanent(HasAccelTraitInPlay);
                         }
                     }
 
@@ -177,7 +174,7 @@ namespace DCGO.CardEffects.BT20
                 {
                     if (card.Owner.HandCards.Contains(card))
                     {
-                        ICardEffect activateClass = card.EffectList(EffectTiming.BeforePayCost).Find(cardEffect => cardEffect.EffectName == "Play Cost -5");
+                        ICardEffect activateClass = card.EffectList(EffectTiming.BeforePayCost).Find(cardEffect => cardEffect.EffectName == "Reduce the play cost by 5");
 
                         if (activateClass != null)
                         {

@@ -248,7 +248,10 @@ namespace DCGO.CardEffects.BT17
                     {
                         if (card.Owner.HandCards.Count >= 1)
                         {
-                            return true;
+                            if (card.PermanentOfThisCard().TopCard.ContainsCardName("Sakuyamon"))
+                            {
+                                return true;
+                            }
                         }
                     }
 
