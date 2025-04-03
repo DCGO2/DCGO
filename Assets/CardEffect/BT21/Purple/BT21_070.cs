@@ -141,7 +141,7 @@ namespace DCGO.CardEffects.BT21
 
                 string EffectDiscription()
                 {
-                    return "[When Linking] You may return 1 Digimon card with the[Appmon] trait from your trash to the hand.";
+                    return "[When Linking] You may return 1 Digimon card with the [Appmon] trait from your trash to the hand.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
