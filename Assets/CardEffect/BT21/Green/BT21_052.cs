@@ -15,7 +15,7 @@ namespace DCGO.CardEffects.BT21
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.CardNames.Contains("Examon");
+                    return targetPermanent.TopCard.EqualsCardName("Examon");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 2, ignoreDigivolutionRequirement: false, card: card, condition: null));
