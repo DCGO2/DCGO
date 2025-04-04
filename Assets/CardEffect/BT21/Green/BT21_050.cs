@@ -28,8 +28,7 @@ namespace DCGO.CardEffects.BT21
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Switch attack target", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
-                activateClass.SetHashString("SwitchTarget_BT21-050");
-                activateClass.SetIsInheritedEffect(true);
+                activateClass.SetHashString("SwitchTarget_BT21_050");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

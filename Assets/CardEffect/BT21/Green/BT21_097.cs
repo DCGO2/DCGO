@@ -20,7 +20,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool HasAppmonTrait(Permanent permanent)
                 {
-                    if (permanent.TopCard.ContainsTraits("Appmon"))
+                    if (permanent.TopCard.EqualsTraits("Appmon"))
                     {
                         if (permanent.IsDigimon || permanent.IsTamer)
                         {
@@ -58,7 +58,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.ContainsTraits("Appmon") || cardSource.ContainsTraits("App Driver");
+                    return cardSource.EqualsTraits("Appmon") || cardSource.EqualsTraits("App Driver");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
