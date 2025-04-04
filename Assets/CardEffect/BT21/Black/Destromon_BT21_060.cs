@@ -231,6 +231,7 @@ namespace DCGO.CardEffects.BT21
                 activateClass.SetUpICardEffect("Return 2 [Vemmon] from source to bottom of deck to end the attack", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
+                activateClass.SetHashString("end-attack-BT21-060");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

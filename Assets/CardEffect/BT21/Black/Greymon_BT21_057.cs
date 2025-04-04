@@ -15,7 +15,7 @@ namespace DCGO.CardEffects.BT21
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 3 && (targetPermanent.TopCard.ContainsCardName("Agumon") || targetPermanent.TopCard.ContainsTraits("ADVENTURE"));
+                    return targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 3 && (targetPermanent.TopCard.ContainsCardName("Agumon") || targetPermanent.TopCard.EqualsTraits("ADVENTURE"));
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 2, ignoreDigivolutionRequirement: false, card: card, condition: null));
@@ -32,7 +32,7 @@ namespace DCGO.CardEffects.BT21
 
                 string EffectDiscription()
                 {
-                    return "[On Play] [When Digivolving] If you have [Tai Kamiya] or a Tamer with the [ADVENTURE] trait, give 1 of your opponent's Digimon \"[Start of Your Main Phase] This Digimon attacks.\" until their turn ends.";
+                    return "[On Play] If you have [Tai Kamiya] or a Tamer with the [ADVENTURE] trait, give 1 of your opponent's Digimon \"[Start of Your Main Phase] This Digimon attacks.\" until their turn ends.";
                 }
 
                 bool PermanentCondition(Permanent permanent)
@@ -43,7 +43,7 @@ namespace DCGO.CardEffects.BT21
                         {
                             return true;
                         }
-                        if (permanent.IsTamer & permanent.TopCard.CardTraits.Contains("ADVENTURE"))
+                        if (permanent.IsTamer & permanent.TopCard.EqualsTraits("ADVENTURE"))
                         {
                             return true;
                         }
@@ -210,7 +210,7 @@ namespace DCGO.CardEffects.BT21
 
                 string EffectDiscription()
                 {
-                    return "[On Play] [When Digivolving] If you have [Tai Kamiya] or a Tamer with the [ADVENTURE] trait, give 1 of your opponent's Digimon \"[Start of Your Main Phase] This Digimon attacks.\" until their turn ends.";
+                    return "[When Digivolving] If you have [Tai Kamiya] or a Tamer with the [ADVENTURE] trait, give 1 of your opponent's Digimon \"[Start of Your Main Phase] This Digimon attacks.\" until their turn ends.";
                 }
 
                 bool PermanentCondition(Permanent permanent)
@@ -221,7 +221,7 @@ namespace DCGO.CardEffects.BT21
                         {
                             return true;
                         }
-                        if (permanent.IsTamer & permanent.TopCard.CardTraits.Contains("ADVENTURE"))
+                        if (permanent.IsTamer & permanent.TopCard.EqualsTraits("ADVENTURE"))
                         {
                             return true;
                         }

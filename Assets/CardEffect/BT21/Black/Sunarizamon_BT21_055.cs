@@ -24,7 +24,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CardSourceCondition(CardSource cardSource)
                 {
-                    if (cardSource.ContainsTraits("Mineral") | cardSource.ContainsTraits("Rock"))
+                    if (cardSource.EqualsTraits("Mineral") | cardSource.EqualsTraits("Rock"))
                     {
                         return true;
                     }
@@ -74,7 +74,7 @@ namespace DCGO.CardEffects.BT21
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     Permanent trashedPermanent = CardEffectCommons.GetPermanentFromHashtable(hashtable);
-                    return (trashedPermanent.TopCard.ContainsTraits("Mineral") || trashedPermanent.TopCard.ContainsTraits("Rock")) &&
+                    return (trashedPermanent.TopCard.EqualsTraits("Mineral") || trashedPermanent.TopCard.EqualsTraits("Rock")) &&
                            CardEffectCommons.CanTriggerOnTrashSelfDigivolutionCard(hashtable, cardEffect => cardEffect != null, card);
                 }
 

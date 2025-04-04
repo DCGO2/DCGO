@@ -12,6 +12,7 @@ namespace DCGO.CardEffects.BT21
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region On Play
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -132,145 +133,114 @@ namespace DCGO.CardEffects.BT21
                     }
                 }
             }
+
             #endregion
 
-            #region Inherit
-            ActivateClass activateClassInherit = new ActivateClass();
-            activateClassInherit.SetUpICardEffect("Digivolution Cost -1", CanUseConditionInherit, card);
-            activateClassInherit.SetUpActivateClass(CanActivateConditionInherit, ActivateCoroutineInherit, 1, false, EffectDiscriptionInherit());
-            activateClassInherit.SetIsInheritedEffect(true);
-            activateClassInherit.SetNotShowUI(true);
-            activateClassInherit.SetIsBackgroundProcess(true);
-            activateClassInherit.SetHashString("DigivolutionCost-1_BT21_056");
+            #region Your Turn Inherited
 
-            string EffectDiscriptionInherit()
+            if (timing == EffectTiming.BeforePayCost)
             {
-                return "[Your Turn] [Once Per Turn] When this Digimon would digivolve into a Digimon card with [Vemmon] in its text, reduce the digivolution cost by 1.";
-            }
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Digivolution Cost -1", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetIsInheritedEffect(true);
+                activateClass.SetHashString("DigivolutionCost-1_BT21_056");
+                cardEffects.Add(activateClass);
 
-            bool CanUseConditionInherit(Hashtable hashtable)
-            {
-                if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                string EffectDiscription()
                 {
-                    if (CardEffectCommons.IsOwnerTurn(card))
-                    {
-                        if (CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card))
-                        {
-                            List<CardSource> evoRootTops = CardEffectCommons.GetEvoRootTopsFromEnterFieldHashtable(
-                                hashtable,
-                                permanent => permanent.cardSources.Contains(card));
-
-                            if (evoRootTops != null)
-                            {
-                                if (!evoRootTops.Contains(card))
-                                {
-                                    if (card.PermanentOfThisCard().TopCard.HasText("Vemmon"))
-                                    {
-                                        return true;
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    return "[Your Turn] [Once Per Turn] When this Digimon would digivolve into a Digimon card with [Vemmon] in its text, reduce the digivolution cost by 1.";
                 }
 
-                return false;
-            }
-
-            bool CanActivateConditionInherit(Hashtable hashtable)
-            {
-                return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
-            }
-
-            IEnumerator ActivateCoroutineInherit(Hashtable _hashtable)
-            {
-                yield return null;
-            }
-
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                cardEffects.Add(activateClassInherit);
-            }
-
-            if (timing == EffectTiming.None)
-            {
-                ChangeCostClass changeCostClass = new ChangeCostClass();
-                changeCostClass.SetUpICardEffect($"Digivolution Cost -1", CanUseConditionChangeCost, card);
-                changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
-
-                changeCostClass.SetIsInheritedEffect(true);
-                cardEffects.Add(changeCostClass);
-
-                bool CanUseConditionChangeCost(Hashtable hashtable)
+                bool PermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (CardEffectCommons.IsOwnerTurn(card))
-                        {
-                            if (!card.cEntity_EffectController.isOverMaxCountPerTurn(activateClassInherit, activateClassInherit.MaxCountPerTurn))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                        permanent == card.PermanentOfThisCard();
                 }
 
-                int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
+                bool CardCondition(CardSource cardSource)
                 {
-                    if (CardSourceCondition(cardSource))
-                    {
-                        if (RootCondition(root))
-                        {
-                            if (PermanentsCondition(targetPermanents))
-                            {
-                                Cost -= 1;
-                            }
-                        }
-                    }
-
-                    return Cost;
+                    return cardSource.IsDigimon &&
+                        cardSource.HasText("Vemmon");
                 }
 
-                bool PermanentsCondition(List<Permanent> targetPermanents)
+                bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (targetPermanents != null)
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                        CardEffectCommons.IsOwnerTurn(card) &&
+                        CardEffectCommons.CanTriggerWhenPermanentWouldDigivolve(hashtable, PermanentCondition, CardCondition);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                {
+                    if (isExistOnField(card))
                     {
-                        if (targetPermanents.Count(PermanentCondition) >= 1)
+                        Hashtable hashtable = new Hashtable();
+                        hashtable.Add("CardEffect", activateClass);
+
+                        ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().BuffSE);
+
+                        ChangeCostClass changeCostClass = new ChangeCostClass();
+                        changeCostClass.SetUpICardEffect("Digivolution Cost -1", CanUseCondition1, card);
+                        changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
+                        card.Owner.UntilCalculateFixedCostEffect.Add((_timing) => changeCostClass);
+
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ShowReducedCost(_hashtable));
+
+                        bool CanUseCondition1(Hashtable hashtable)
                         {
                             return true;
                         }
+
+                        int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
+                        {
+                            if (CardSourceCondition(cardSource) && RootCondition(root) && PermanentsCondition(targetPermanents))
+                            {
+                                Cost -= 1;
+                            }
+
+                            return Cost;
+                        }
+
+                        bool PermanentsCondition(List<Permanent> targetPermanents)
+                        {
+                            return targetPermanents != null &&
+                                targetPermanents.Count(PermanentCondition) >= 1;
+                        }
+
+                        bool PermanentCondition(Permanent targetPermanent)
+                        {
+                            return targetPermanent.TopCard != null &&
+                                targetPermanent.TopCard.Owner == card.Owner &&
+                                targetPermanent.TopCard.Owner.GetBattleAreaPermanents().Contains(targetPermanent);
+                        }
+
+                        bool CardSourceCondition(CardSource cardSource)
+                        {
+                            return cardSource != null &&
+                                cardSource.Owner == card.Owner &&
+                                cardSource.HasText("Vemmon");
+                        }
+
+                        bool RootCondition(SelectCardEffect.Root root)
+                        {
+                            return true;
+                        }
+
+                        bool isUpDown()
+                        {
+                            return true;
+                        }
+
                     }
-
-                    return false;
-                }
-
-                bool PermanentCondition(Permanent targetPermanent)
-                {
-                    return targetPermanent == card.PermanentOfThisCard();
-                }
-
-                bool CardSourceCondition(CardSource cardSource)
-                {
-                    if (cardSource.HasText("Vemmon"))
-                    {
-                        return true;
-                    }
-
-                    return false;
-                }
-
-                bool RootCondition(SelectCardEffect.Root root)
-                {
-                    return true;
-                }
-
-                bool isUpDown()
-                {
-                    return true;
                 }
             }
+
             #endregion
 
             return cardEffects;

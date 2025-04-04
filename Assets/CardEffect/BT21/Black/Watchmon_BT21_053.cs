@@ -109,7 +109,12 @@ namespace DCGO.CardEffects.BT21
             #region Link
             if (timing == EffectTiming.OnDeclaration)
             {
-                cardEffects.Add(CardEffectFactory.LinkEffect(card, 1, 2000));
+                bool DigimonCondition(Permanent permanent)
+                {
+                    return permanent.TopCard.EqualsTraits("Appmon");
+                }
+
+                cardEffects.Add(CardEffectFactory.LinkEffect(card, 1, 2000, null, DigimonCondition));
             }
             #endregion
 

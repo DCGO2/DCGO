@@ -37,7 +37,7 @@ namespace DCGO.CardEffects.BT21
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 4 && (targetPermanent.TopCard.ContainsCardName("Greymon") || targetPermanent.TopCard.ContainsTraits("ADVENTURE"));
+                    return targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 4 && (targetPermanent.TopCard.ContainsCardName("Greymon") || targetPermanent.TopCard.EqualsTraits("ADVENTURE"));
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
@@ -54,7 +54,7 @@ namespace DCGO.CardEffects.BT21
 
                 string EffectDiscription()
                 {
-                    return "[On Play][When Digivolving] To 1 of your opponent's Digimon, <De-Digivolve 1> for every 2 of your Tamers' colors.";
+                    return "[On Play] To 1 of your opponent's Digimon, <De-Digivolve 1> for every 2 of your Tamers' colors.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -106,7 +106,7 @@ namespace DCGO.CardEffects.BT21
 
                 string EffectDiscription()
                 {
-                    return "[On Play][When Digivolving] To 1 of your opponent's Digimon, <De-Digivolve 1> for every 2 of your Tamers' colors.";
+                    return "[When Digivolving] To 1 of your opponent's Digimon, <De-Digivolve 1> for every 2 of your Tamers' colors.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
