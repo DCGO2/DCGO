@@ -526,11 +526,4 @@ public partial class CardEffectCommons
     }
 
     #endregion
-
-    #region Get multi colour count from permanents in owners battle area
-
-    public static int GetColourCountOnOwnerBattleArea(CardSource card, Func<Permanent, bool> canGetCardColour) =>
-        card.Owner.GetBattleAreaPermanents().Filter(x => canGetCardColour(x)).ToList().Count;
-
-    #endregion
 }
