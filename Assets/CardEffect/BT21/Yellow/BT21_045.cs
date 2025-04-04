@@ -15,7 +15,7 @@ namespace DCGO.CardEffects.BT21
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsCardName("RizeGreymon") || targetPermanent.TopCard.ContainsTraits("Hero");
+                    return (targetPermanent.TopCard.EqualsCardName("RizeGreymon") || targetPermanent.TopCard.EqualsTraits("Hero")) && targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 5;
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
