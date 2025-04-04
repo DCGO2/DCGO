@@ -1,3 +1,4 @@
+using Mono.Cecil;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -23,16 +24,25 @@ namespace DCGO.CardEffects.P
                 string EffectDiscription()
                     => "[Security] [Your Turn] [Once Per Turn] When any of your Digimon would digivolve into a Digimon card with the [Royal Base] trait, reduce the digivolution cost by 1.";
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistInSecurity(card, false)
-                    && CardEffectCommons.IsOwnerTurn(card)
-                    && CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, DigivolveCondition);
+                {
+                    UnityEngine.Debug.Log($"CAN USE: {CardEffectCommons.IsExistInSecurity(card, false)}, {CardEffectCommons.IsOwnerTurn(card)}, {CardEffectCommons.CanTriggerWhenPermanentWouldDigivolve(hashtable, DigivolveTargetCondition, DigivolveCondition)}");
+                    return CardEffectCommons.IsExistInSecurity(card, false) &&
+                           CardEffectCommons.IsOwnerTurn(card) &&
+                           CardEffectCommons.CanTriggerWhenPermanentWouldDigivolve(hashtable, DigivolveTargetCondition, DigivolveCondition);
+                }
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistInSecurity(card, false);
+                {
+                    UnityEngine.Debug.Log($"CAN ACTIVATE: {CardEffectCommons.IsExistInSecurity(card, false)}");
+                    return CardEffectCommons.IsExistInSecurity(card, false);
+                }
 
-                bool DigivolveCondition(Permanent permanent)
-                    => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                    && permanent.TopCard.HasRoyalBaseTraits;
+                bool DigivolveTargetCondition(Permanent permanent)
+                    => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
+
+                bool DigivolveCondition(CardSource source)
+                    => source.IsDigimon
+                    && source.HasRoyalBaseTraits;
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
@@ -65,7 +75,8 @@ namespace DCGO.CardEffects.P
                     {
                         if (cardSource != null)
                         {
-                            return cardSource.Owner == card.Owner;
+                            return cardSource.Owner == card.Owner &&
+                                   cardSource.HasRoyalBaseTraits; 
                         }
 
                         return false;

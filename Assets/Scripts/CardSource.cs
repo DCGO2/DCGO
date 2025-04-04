@@ -254,7 +254,7 @@ public class CardSource : MonoBehaviour
     public Permanent PermanentOfThisCard()
     {
         return Owner.GetFieldPermanents().Find(permanent => 
-            (permanent.cardSources.Contains(this) || permanent.LinkedCards.Any(linked => linked.Source == this)) && !IsFlipped);
+            (permanent.cardSources.Contains(this)) && !IsFlipped);
     }
     #endregion
 
@@ -346,6 +346,10 @@ public class CardSource : MonoBehaviour
 
     #region evoCosts from entity
     public List<EvoCost> BaseEvoCostsFromEntity => _cEntity_Base.EvoCosts;
+    #endregion
+
+    #region Link Cost
+    public int LinkCost => _cEntity_Base.LinkCost;
     #endregion
 
     #region evoCosts
@@ -1911,6 +1915,10 @@ public class CardSource : MonoBehaviour
     }
     #endregion
 
+    #region Link DP
+    public int LinkDP => _cEntity_Base.LinkDP;
+    #endregion
+
     #region whether this card is token
     public bool IsToken { get; private set; } = false;
     public void SetIsToken(bool isToken) => IsToken = isToken;
@@ -2468,7 +2476,7 @@ public class CardSource : MonoBehaviour
                         {
                             if (appFusionCondition.digimonCondition(digimon))
                             {
-                                foreach(CardSource linkedCard in digimon.LinkedCards.Map(linked => linked.Source))
+                                foreach(CardSource linkedCard in digimon.LinkedCards)
                                 {
                                     if (appFusionCondition.linkedCondition(linkedCard))
                                     {
@@ -2567,7 +2575,7 @@ public class CardSource : MonoBehaviour
                             {
                                 if (appFusionCondition.digimonCondition(targetPermanent))
                                 {
-                                    foreach (CardSource linkedCard in targetPermanent.LinkedCards.Map(linked => linked.Source))
+                                    foreach (CardSource linkedCard in targetPermanent.LinkedCards)
                                     {
                                         if (appFusionCondition.linkedCondition(linkedCard))
                                         {

@@ -13,7 +13,27 @@ namespace DCGO.CardEffects.Examples
             #region Basic link effect keyword
             if (timing == EffectTiming.OnDeclaration)
             {
-                cardEffects.Add(CardEffectFactory.LinkEffect(card, 1, 2000));
+                //conditions for the permanent to link to
+                bool PermanentCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent))
+                    {
+                        if (permanent.TopCard.EqualsTraits("Appmon"))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                //any conditions for being able to link (currently there are none but situations could arise) - OPTIONAL
+                bool Condition()
+                {
+                    return true;
+                }
+
+                cardEffects.Add(CardEffectFactory.LinkEffect(card, PermanentCondition, Condition));
             }
             #endregion
 
@@ -107,7 +127,7 @@ namespace DCGO.CardEffects.Examples
                 {
                     if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent))
                     {
-                        if (permanent.LinkedCards.Map(link => link.Source).Count(CanSelectCardCondition) >= 1)
+                        if (permanent.LinkedCards.Count(CanSelectCardCondition) >= 1)
                         {
                             return true;
                         }
