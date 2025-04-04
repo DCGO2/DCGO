@@ -631,7 +631,7 @@ public class Permanent
     #endregion
 
     #region Digivolution Cards
-    public List<CardSource> DigivolutionCards => cardSources.Filter(cardSource => cardSource != TopCard || LinkedCards.Any(linked => linked.Source == cardSource));
+    public List<CardSource> DigivolutionCards => cardSources.Filter(cardSource => cardSource != TopCard || LinkedCards.Contains(cardSource));
     #endregion
 
     #region Linked Cards
@@ -754,19 +754,8 @@ public class Permanent
             return Max;
         }
     }
-    public struct LinkCard
-    {
-        public LinkCard(int dp, CardSource source)
-        {
-            DP = dp;
-            Source = source;
-        }
 
-        public int DP { get; }
-        public CardSource Source { get; }
-    }
-
-    public List<LinkCard> LinkedCards = new List<LinkCard>();
+    public List<CardSource> LinkedCards = new List<CardSource>();
     #endregion
 
     #region Add Card Source
@@ -946,7 +935,7 @@ public class Permanent
     /// <param name="cardEffect"></param>
     /// <param name="skipEffectAndActivateSkill"></param>
     /// <returns></returns>
-    public IEnumerator AddLinkCard(CardSource addedLinkCard, int DP, ICardEffect cardEffect)
+    public IEnumerator AddLinkCard(CardSource addedLinkCard, ICardEffect cardEffect)
     {
         bool addedCard = false;
 
@@ -961,14 +950,14 @@ public class Permanent
         }
         Debug.Log($"LINK CARDS: {LinkedCards.Count} >= {LinkedMax}");
         if (LinkedCards.Count >= LinkedMax)
-            yield return ContinuousController.instance.StartCoroutine(RemoveLinkedCard(LinkedCards[0].Source));
+            yield return ContinuousController.instance.StartCoroutine(RemoveLinkedCard(LinkedCards[0]));
 
         yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveFromAllArea(addedLinkCard));
 
         if (!this.IsToken && !addedLinkCard.IsToken)
         {
-            LinkedCards.Insert(0, new LinkCard(0, addedLinkCard));
-            LinkedDP += DP;
+            LinkedCards.Insert(0, addedLinkCard);
+            LinkedDP += addedLinkCard.LinkDP;
 
             this.cardSources.Insert(1, addedLinkCard);
             addedLinkCard.SetFace();
@@ -1012,17 +1001,15 @@ public class Permanent
     #region Remove Linked Card
     public IEnumerator RemoveLinkedCard(CardSource cardSource)
     {
-        LinkCard linked = LinkedCards.Where(linked => linked.Source == cardSource).FirstOrDefault();
-
-        Debug.Log($"REMOVE LINK CARD: {LinkedCards.Count} >= {linked.Source}");
-        if (linked.Source != null)
+        Debug.Log($"REMOVE LINK CARD: {LinkedCards.Count} >= {LinkedCards.Contains(cardSource)}");
+        if (LinkedCards.Contains(cardSource))
         {
 
-            LinkedDP -= linked.DP;
-            yield return ContinuousController.instance.StartCoroutine(RemoveCardSource(linked.Source));
-            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddTrashCard(linked.Source));
-            LinkedCards.Remove(linked);
-            Debug.Log($"REMOVE LINK CARD: {linked.Source}");
+            LinkedDP -= cardSource.LinkDP;
+            yield return ContinuousController.instance.StartCoroutine(RemoveCardSource(cardSource));
+            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddTrashCard(cardSource));
+            LinkedCards.Remove(cardSource);
+            Debug.Log($"REMOVE LINK CARD: {cardSource}");
             
         }
 
@@ -3361,6 +3348,10 @@ public class Permanent
 
     #region バースト進化で手札に戻ったか
     public bool IsReturnedToHandByBurstDigivolution { get; set; } = false;
+    #endregion
+
+    #region Is Linked Card Added as Source By App Fusion
+    public bool IsAddedAsSourceByAppFusion { get; set; } = false;
     #endregion
 
     #region バースト進化したか

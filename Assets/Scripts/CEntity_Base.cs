@@ -32,6 +32,11 @@ public class CEntity_Base : ScriptableObject
     public int DP = 0;
     public Rarity rarity;
     public int OverflowMemory = 0;
+    public int LinkDP = 0;
+    [TextArea] public string LinkEffect = "";
+    [TextArea] public string LinkRequirement = "";
+    public int LinkCost = 0;
+
     public bool HasInhetitedEffect => !string.IsNullOrEmpty(InheritedEffectDiscription_ENG) && !InheritedEffectDiscription_ENG.Equals("-");
     public bool HasSecutiryEffect => !string.IsNullOrEmpty(SecurityEffectDiscription_ENG) && !SecurityEffectDiscription_ENG.Equals("-");
     public string CardID = "";
