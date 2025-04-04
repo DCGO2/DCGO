@@ -100,7 +100,7 @@ public partial class CardEffectCommons
     public static bool IsExistLinked(CardSource card)
     {
         if (IsExistOnField(card))
-            return card.PermanentOfThisCard().LinkedCards.Any(source => source.Source == card);
+            return card.PermanentOfThisCard().LinkedCards.Contains(card);
 
         return false;
     }

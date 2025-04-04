@@ -101,8 +101,11 @@ public class GManager : MonoBehaviourPun
     [Header("ジョグレス選択")]
     public SelectJogressEffect selectJogressEffect;
 
-    [Header("バースト進化選択")]
+    [Header("burst evolution selection")]
     public SelectBurstDigivolutionEffect selectBurstDigivolutionEffect;
+
+    [Header("app fusion selection")]
+    public SelectAppFusionEffect selectAppFusionEffect;
 
     [Header("自動処理チェック(割り込み処理)")]
     public AutoProcessing autoProcessing_CutIn;

@@ -8,7 +8,7 @@ using UnityEngine;
 public partial class CardEffectFactory
 {
     #region Static effect that changes security Digimon card DP
-    public static ChangeCardDPClass ChangeSecurityDigimonCardDPStaticEffect<T>(Func<CardSource, bool> cardCondition, T changeValue, bool isInheritedEffect, CardSource card, Func<bool> condition, string effectName)
+    public static ChangeCardDPClass ChangeSecurityDigimonCardDPStaticEffect<T>(Func<CardSource, bool> cardCondition, T changeValue, bool isInheritedEffect, CardSource card, Func<bool> condition, string effectName, bool islinkedEffect = false)
     {
         bool isInt = typeof(T) == typeof(int);
         bool isIntFunc = typeof(T) == typeof(Func<int>);
@@ -25,6 +25,7 @@ public partial class CardEffectFactory
         changeCardDPClass.SetUpICardEffect("", CanUseCondition, card);
         changeCardDPClass.SetUpChangeCardDPClass(changeDPFunc: ChangeDP, cardSourceCondition: CardCondition, isUpDown: _isUpDown, isMinusDP: () => !isUpValue());
         changeCardDPClass.SetIsInheritedEffect(isInheritedEffect);
+        changeCardDPClass.SetIsLinkedEffect(islinkedEffect);
 
         bool CanUseCondition(Hashtable hashtable)
         {

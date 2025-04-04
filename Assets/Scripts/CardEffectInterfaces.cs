@@ -385,6 +385,13 @@ public interface IAddBurstDigivolutionConditionEffect
 }
 #endregion
 
+#region "Target card gains App Fusion digivolution conditions" effect
+public interface IAddAppFusionConditionEffect
+{
+    AppFusionCondition GetAppFusionCondition(CardSource cardSource);
+}
+#endregion
+
 #region "Add the maximum number of cards that can be selected from trash in DigiXros" effect
 public interface IAddMaxTrashCountDigiXrosEffect
 {

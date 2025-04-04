@@ -50,7 +50,7 @@ public partial class CardEffectCommons
                 GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer
                 .Map(player => player.GetBattleAreaPermanents().Filter(CanSelectPermanentCondition))
                 .Flat()
-                .Map(permanent => permanent.LinkedCards.Map(link => link.Source).Count(CanSelectCardCondition))
+                .Map(permanent => permanent.LinkedCards.Count(CanSelectCardCondition))
                 .Sum();
 
         int maxLinkDiscardCount = Math.Min(linkedCardsSum, maxCount);
@@ -131,7 +131,7 @@ public partial class CardEffectCommons
                                     isShowOpponent: true,
                                     mode: SelectCardEffect.Mode.Custom,
                                     root: SelectCardEffect.Root.Custom,
-                                    customRootCardList: selectedPermanent.LinkedCards.Map(linked => linked.Source),
+                                    customRootCardList: selectedPermanent.LinkedCards,
                                     canLookReverseCard: true,
                                     selectPlayer: card.Owner,
                                     cardEffect: activateClass);
