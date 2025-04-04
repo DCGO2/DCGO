@@ -57,12 +57,16 @@ namespace DCGO.CardEffects.P
                     => cardSource.IsOption && cardSource.HasDeviceTraits;
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                       CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                }
 
                 bool CanActivateCondition(Hashtable hashtable)
-                    => CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                    && (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectOption) || CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectOption));
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectOption) || CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectOption));
+                }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
@@ -94,24 +98,49 @@ namespace DCGO.CardEffects.P
                         root = optionInHand ? SelectCardEffect.Root.Hand : SelectCardEffect.Root.Trash;
                     }
 
-                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-                    selectCardEffect.SetUp(
-                        canTargetCondition: CanSelectOption,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        canNoSelect: () => true,
-                        selectCardCoroutine: SelectCardCoroutine,
-                        afterSelectCardCoroutine: null,
-                        message: "Select Device to play",
-                        maxCount: 1,
-                        canEndNotMax: true,
-                        isShowOpponent: true,
-                        mode: SelectCardEffect.Mode.Custom,
-                        root: root,
-                        customRootCardList: null,
-                        canLookReverseCard: true,
-                        selectPlayer: card.Owner,
-                        cardEffect: activateClass);
+                    if(root == SelectCardEffect.Root.Hand)
+                    {
+                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                        selectHandEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectOption,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            selectCardCoroutine: SelectCardCoroutine,
+                            afterSelectCardCoroutine: null,
+                            mode: SelectHandEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+                    }
+                    else
+                    {
+                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+                        selectCardEffect.SetUp(
+                            canTargetCondition: CanSelectOption,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            canNoSelect: () => false,
+                            selectCardCoroutine: SelectCardCoroutine,
+                            afterSelectCardCoroutine: null,
+                            message: "Select Device to play",
+                            maxCount: 1,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            mode: SelectCardEffect.Mode.Custom,
+                            root: SelectCardEffect.Root.Trash,
+                            customRootCardList: null,
+                            canLookReverseCard: true,
+                            selectPlayer: card.Owner,
+                            cardEffect: activateClass);
+
+                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                    }
 
                     IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
@@ -119,17 +148,9 @@ namespace DCGO.CardEffects.P
                         yield return null;
                     }
 
-                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-
                     if (selectedDevice != null)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                            cardSources: new List<CardSource> { selectedDevice },
-                            activateClass: activateClass,
-                            payCost: false,
-                            isTapped: false,
-                            root: SelectCardEffect.Root.Trash,
-                            activateETB: true));
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlaceDelayOptionCards(card: selectedDevice, cardEffect: activateClass));
 
                         ChangeBaseDPClass changeDPClass = new ChangeBaseDPClass();
                         changeDPClass.SetUpICardEffect("+3000 DP", (hashtable) => true, card);
@@ -153,7 +174,7 @@ namespace DCGO.CardEffects.P
                 => permanent.TopCard.IsOption && permanent.TopCard.HasDeviceTraits;
 
             bool CanSelectPermanentDigimonCondition(Permanent permanent)
-                => CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent)
+                => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
                 && permanent.TopCard.HasPlayCost
                 && permanent.TopCard.GetCostItself <= 9;
 

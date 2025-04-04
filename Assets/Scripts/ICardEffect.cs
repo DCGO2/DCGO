@@ -290,7 +290,7 @@ public abstract class ICardEffect
                         if (!EffectSourceCard.PermanentOfThisCard().IsDigimon)
                             return false;
 
-                        if (IsLinkedEffect && !EffectSourceCard.PermanentOfThisCard().LinkedCards.Exists(link => link.Source == EffectSourceCard))
+                        if (IsLinkedEffect && !EffectSourceCard.PermanentOfThisCard().LinkedCards.Contains(EffectSourceCard))
                             return false;
                     }
                     else
