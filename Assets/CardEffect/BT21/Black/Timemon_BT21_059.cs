@@ -15,10 +15,15 @@ namespace DCGO.CardEffects.BT21
             if (timing == EffectTiming.None)
             {
                 AddAppFusionConditionClass addAppFusionConditionClass = new AddAppFusionConditionClass();
-                addAppFusionConditionClass.SetUpICardEffect($"App Fusion", true, card);
+                addAppFusionConditionClass.SetUpICardEffect($"App Fusion", CanUseCondition, card);
                 addAppFusionConditionClass.SetUpAddAppFusionConditionClass(getAppFusionCondition: GetAppFusion);
                 addAppFusionConditionClass.SetNotShowUI(true);
                 cardEffects.Add(addAppFusionConditionClass);
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return true;
+                }
 
                 AppFusionCondition GetAppFusion(CardSource cardSource)
                 {
@@ -147,7 +152,12 @@ namespace DCGO.CardEffects.BT21
             #region Link
             if (timing == EffectTiming.OnDeclaration)
             {
-                cardEffects.Add(CardEffectFactory.LinkEffect(card, 2, 3000));
+                bool DigimonCondition(Permanent permanent)
+                {
+                    return permanent.TopCard.EqualsTraits("Appmon");
+                }
+
+                cardEffects.Add(CardEffectFactory.LinkEffect(card, 2, 3000, null, DigimonCondition));
             }
             #endregion
 

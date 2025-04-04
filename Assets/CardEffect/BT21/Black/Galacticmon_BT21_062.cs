@@ -63,12 +63,9 @@ namespace DCGO.CardEffects.BT21
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (!card.PermanentOfThisCard().IsToken)
+                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
                         {
-                            if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
 
