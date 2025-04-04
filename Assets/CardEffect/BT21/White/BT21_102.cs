@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 // Tai Kamiya
 namespace DCGO.CardEffects.BT21
@@ -76,15 +77,14 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanSelectDigimon(CardSource source)
                     => source.IsDigimon
-                    && source.BasePlayCostFromEntity <= AdjustedPlayCostMax()
+                    && source.BasePlayCostFromEntity <= AdjustedPlayCostMax(source)
                     && (source.HasAdventureTraits || source.HasHeroTraits);
 
-                bool IsTamerOnField(Permanent permanent)
-                    => CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)
-                    && permanent.IsTamer;
-
-                int AdjustedPlayCostMax()
-                    => 2 + CardEffectCommons.GetColourCountOnOwnerBattleArea(card, IsTamerOnField);
+                int AdjustedPlayCostMax(CardSource cardSource)
+                {
+                    var tamers = cardSource.Owner.GetBattleAreaPermanents().Filter(x => x.IsTamer).Select(x => x.TopCard).ToList();
+                    return 2 + Combinations.GetDifferenetColorCardCount(tamers);
+                }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
