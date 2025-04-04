@@ -10,30 +10,39 @@ namespace DCGO.CardEffects.Examples
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region Link Condition
+            if (timing == EffectTiming.None)
+            {
+                static bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.HasAppmonTraits;
+                }
+
+                /// <summary>
+                /// Used to add a link condition to itself
+                /// </summary>
+                /// <param name="permanentCondition">Function to check for target permanent conditions</param>
+                /// <param name="linkCost">Cost to perform link</param>
+                /// <param name="card">Reference to this card</param>
+                /// <param name="condition">OPTIONAL - Function to check for effect conditions</param>
+                /// <param name="cardCondition">OPTIONAL - Function to check for cards conditions</param>
+                /// <param name="effectName">OPTIONAL - name to show for effect (default "Link")</param>
+                /// <author>Mike Bunch</author>
+                cardEffects.Add(CardEffectFactory.AddSelfLinkConditionStaticEffect(permanentCondition: PermanentCondition, linkCost: 0, card: card));
+            }
+
+            #endregion
+
             #region Basic link effect keyword
             if (timing == EffectTiming.OnDeclaration)
             {
-                //conditions for the permanent to link to
-                bool PermanentCondition(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent))
-                    {
-                        if (permanent.TopCard.EqualsTraits("Appmon"))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
-                //any conditions for being able to link (currently there are none but situations could arise) - OPTIONAL
-                bool Condition()
-                {
-                    return true;
-                }
-
-                cardEffects.Add(CardEffectFactory.LinkEffect(card, PermanentCondition, Condition));
+                /// <summary>
+                /// Used to link a card
+                /// </summary>
+                /// <param name="card">Reference to this card</param>
+                /// <param name="condition">OPTIONAL - Function to check for effect conditions</param>
+                /// <author>Mike Bunch</author>
+                cardEffects.Add(CardEffectFactory.LinkEffect(card));
             }
             #endregion
 
