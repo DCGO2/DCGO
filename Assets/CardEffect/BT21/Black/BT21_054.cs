@@ -14,6 +14,20 @@ namespace DCGO.CardEffects.BT21
 
             int totalSourceCount = 0;
 
+            #region Link Condition
+
+            if (timing == EffectTiming.None)
+            {
+                static bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.HasAppmonTraits;
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfLinkConditionStaticEffect(permanentCondition: PermanentCondition, linkCost: 0, card: card));
+            }
+
+            #endregion
+
             #region Alternative Digivolution Condition
 
             if (timing == EffectTiming.None)
@@ -159,12 +173,7 @@ namespace DCGO.CardEffects.BT21
             #region Link
             if (timing == EffectTiming.OnDeclaration)
             {
-                bool DigimonCondition(Permanent permanent)
-                {
-                    return permanent.TopCard.EqualsTraits("Appmon");
-                }
-
-                cardEffects.Add(CardEffectFactory.LinkEffect(card, DigimonCondition));
+                cardEffects.Add(CardEffectFactory.LinkEffect(card));
             }
             #endregion
 
