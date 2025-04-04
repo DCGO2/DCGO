@@ -15,7 +15,7 @@ namespace DCGO.CardEffects.BT21
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsCardName("Koromon") || targetPermanent.TopCard.ContainsTraits("Hero") && targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 2;
+                    return (targetPermanent.TopCard.EqualsCardName("Koromon") || targetPermanent.TopCard.EqualsTraits("Hero")) && targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 2;
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 0, ignoreDigivolutionRequirement: false, card: card, condition: null));
@@ -55,7 +55,7 @@ namespace DCGO.CardEffects.BT21
                 {
                     if (cardSource.Owner.HandCards.Contains(cardSource))
                     {
-                        if (cardSource.CardNames.Contains("ShineGreymon"))
+                        if (cardSource.EqualsCardName("ShineGreymon"))
                         {
                             return true;
                         }

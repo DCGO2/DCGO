@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.BT21
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsCardName("GeoGreymon");
+                    return targetPermanent.TopCard.EqualsCardName("GeoGreymon");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
@@ -40,7 +40,7 @@ namespace DCGO.CardEffects.BT21
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
                     {
-                        if (permanent.TopCard.ContainsCardName("Marcus Damon"))
+                        if (permanent.TopCard.EqualsCardName("Marcus Damon"))
                         {
                             return true;
                         }
@@ -169,7 +169,7 @@ namespace DCGO.CardEffects.BT21
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
                     {
-                        if (permanent.TopCard.ContainsCardName("Marcus Damon"))
+                        if (permanent.TopCard.EqualsCardName("Marcus Damon"))
                         {
                             return true;
                         }
@@ -297,7 +297,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.ContainsCardName("Marcus Damon"))
+                    if (cardSource.EqualsCardName("Marcus Damon"))
                     {
                         return true;
                     }
@@ -417,7 +417,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.ContainsCardName("Marcus Damon"))
+                    if (cardSource.EqualsCardName("Marcus Damon"))
                     {
                         return true;
                     }
