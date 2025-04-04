@@ -2755,9 +2755,9 @@ public class CardSource : MonoBehaviour
         {
             if (CardTraits.Contains("Hero"))
             {
-                return true
+                return true;
             }
-            return float
+            return false;
         }
     }
 
@@ -2821,6 +2821,23 @@ public class CardSource : MonoBehaviour
         get
         {
             if (CardTraits.Contains("Royal Base"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    #endregion
+
+    #region whether this card has "Appmon" trait
+
+    public bool HasAppmonTraits
+    {
+        get
+        {
+            if (CardTraits.Find(x => x.Equals("Appmon")) != null)
             {
                 return true;
             }
