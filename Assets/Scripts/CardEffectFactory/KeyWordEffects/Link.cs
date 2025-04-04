@@ -16,7 +16,7 @@ public partial class CardEffectFactory
     /// <param name="Func(bool)">condition for you to be able to link</param>
     /// <param name="Func(Permanent,bool)">Any permaent condtion for you to link to</param>
     /// <author>Mike Bunch</author>
-    public static ActivateClass LinkEffect(CardSource card, int cost, int dp, Func<bool> condition = null, Func<Permanent, bool> digimonCondition = null)
+    public static ActivateClass LinkEffect(CardSource card, Func<Permanent, bool> digimonCondition, Func<bool> condition = null)
     {
         if (card == null) return null;
         if (!CardEffectCommons.IsOwnerTurn(card)) return null;
@@ -62,7 +62,7 @@ public partial class CardEffectFactory
         IEnumerator ActivateCoroutine(Hashtable _hashtable)
         {
 
-            yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(-cost, activateClass));
+            yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(card.LinkCost, activateClass));
 
             Permanent selectedPermanent = null;
 
@@ -96,7 +96,7 @@ public partial class CardEffectFactory
 
             if (selectedPermanent != null)
             {
-                yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddLinkCard(card, dp, activateClass));
+                yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddLinkCard(card, activateClass));
             }
         }
 

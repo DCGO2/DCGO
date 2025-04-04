@@ -149,7 +149,7 @@ public class SelectAppFusionEffect : MonoBehaviour
                 return (link != null);
             }
 
-            int maxCount = Math.Min(1, targetPermanent.LinkedCards.Count(link => CanSelectSourceCondition(link.Source)));
+            int maxCount = Math.Min(1, targetPermanent.LinkedCards.Count(CanSelectSourceCondition));
 
             if (maxCount >= 1)
             {
@@ -166,7 +166,7 @@ public class SelectAppFusionEffect : MonoBehaviour
                 isShowOpponent: true,
                 mode: SelectCardEffect.Mode.Custom,
                 root: SelectCardEffect.Root.Custom,
-                customRootCardList: targetPermanent.LinkedCards.Map(link => link.Source),
+                customRootCardList: targetPermanent.LinkedCards,
                 canLookReverseCard: false,
                 selectPlayer: _card.Owner,
                 cardEffect: null);
