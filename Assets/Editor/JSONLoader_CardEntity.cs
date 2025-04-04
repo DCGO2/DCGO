@@ -149,6 +149,11 @@ namespace DCGO.CardEntities
             cardEntity.CardID = card.id;
             cardEntity.MaxCountInDeck = GetMaxCount(card.restrictions.japanese);
 
+            cardEntity.LinkDP = dpParse(card.linkDP);
+            cardEntity.LinkEffect = card.linkEffect;
+            cardEntity.LinkRequirement = card.linkRequirement;
+            cardEntity.LinkCost = GetLinkCost(card.linkRequirement);
+
             cardEntity.name = cardEntity.CardSpriteName.Replace("-Errata","").Replace("-","_");
 
 
@@ -362,19 +367,22 @@ namespace DCGO.CardEntities
             {
                 if (digivolveCondition.color.ToLower() == "all")
                 {
-                    foreach (CardColor color in DataBase.cardColors)
+                    if (int.TryParse(digivolveCondition.level, out _))
                     {
-                        if (color == CardColor.White || color == CardColor.None)
-                            continue;
+                        foreach (CardColor color in DataBase.cardColors)
+                        {
+                            if (color == CardColor.White || color == CardColor.None)
+                                continue;
 
-                        EvoCost evoCost = new EvoCost();
+                            EvoCost evoCost = new EvoCost();
 
-                        evoCost.CardColor = color;
+                            evoCost.CardColor = color;
 
-                        evoCost.Level = int.Parse(digivolveCondition.level);
-                        evoCost.MemoryCost = int.Parse(digivolveCondition.cost);
+                            evoCost.Level = int.Parse(digivolveCondition.level);
+                            evoCost.MemoryCost = int.Parse(digivolveCondition.cost);
 
-                        evoCosts.Add(evoCost);
+                            evoCosts.Add(evoCost);
+                        }
                     }
                 }
                 else
@@ -449,12 +457,44 @@ namespace DCGO.CardEntities
             return value;
         }
 
+        //Parse Link Cost
+        int GetLinkCost(string requirement)
+        {
+            int value = 0;
+
+            if (requirement.Equals("-"))
+                return value;
+
+            string costString = requirement.Split("Cost")[1].Trim();
+
+            if (int.TryParse(costString, out value))
+                return value;
+
+            return value;
+        }
+
         int intParse(string str)
         {
             int value = 0;
 
             if (int.TryParse(str, out value))
                 return value;
+
+            return value;
+        }
+
+        int dpParse(string str)
+        {
+            int value = 0;
+
+            if (str.Equals("-"))
+                return value;
+
+            if (int.TryParse(str.Substring(1, str.Length - 4), out value))
+                return value;
+
+            if (str.StartsWith("-"))
+                value *= -1;
 
             return value;
         }
