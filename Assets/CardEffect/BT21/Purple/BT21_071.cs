@@ -341,7 +341,8 @@ namespace DCGO.CardEffects.BT21
                                 {
                                     yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(new List<CardSource>() { selectedCards[0] }, activateClass));
 
-                                    yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
+                                    yield return ContinuousController.instance.StartCoroutine(
+                                            card.Owner.AddMemory(1, activateClass));
                                 }
                             }
                         }
