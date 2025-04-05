@@ -93,13 +93,8 @@ namespace DCGO.CardEffects.ST21
 
                     IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
-                        if (!permanent.IsToken)
-                        {
-                            Player selectedOwner = permanent.TopCard.Owner;
-                            yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(permanent, CardEffectCommons.CardEffectHashtable(activateClass), toTop: true).PutSecurity());
-                        }
-
-                        yield return null;
+                        Player selectedOwner = permanent.TopCard.Owner;
+                        yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(permanent, CardEffectCommons.CardEffectHashtable(activateClass), toTop: true).PutSecurity());
                     }
                 }
             }
@@ -161,13 +156,8 @@ namespace DCGO.CardEffects.ST21
 
                     IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
-                        if (!permanent.IsToken)
-                        {
-                            Player selectedOwner = permanent.TopCard.Owner;
-                            yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(permanent, CardEffectCommons.CardEffectHashtable(activateClass), toTop: true).PutSecurity());
-                        }
-
-                        yield return null;
+                        Player selectedOwner = permanent.TopCard.Owner;
+                        yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(permanent, CardEffectCommons.CardEffectHashtable(activateClass), toTop: true).PutSecurity());
                     }
                 }
             }
