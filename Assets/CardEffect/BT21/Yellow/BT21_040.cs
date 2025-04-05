@@ -15,7 +15,7 @@ namespace DCGO.CardEffects.BT21
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return (targetPermanent.TopCard.EqualsCardName("Koromon") || targetPermanent.TopCard.EqualsTraits("Hero")) && targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 2;
+                    return (targetPermanent.TopCard.EqualsCardName("Koromon") || (targetPermanent.TopCard.HasHeroTraits) && targetPermanent.TopCard.IsLevel2);
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 0, ignoreDigivolutionRequirement: false, card: card, condition: null));
@@ -34,7 +34,7 @@ namespace DCGO.CardEffects.BT21
                             return true;
                         }
 
-                        if (card.Owner.GetBattleAreaPermanents().Count((permanent) => permanent.IsTamer && permanent.TopCard.ContainsTraits("Hero")) >= 3)
+                        if (card.Owner.GetBattleAreaPermanents().Count((permanent) => permanent.IsTamer && permanent.TopCard.HasHeroTraits) >= 3)
                         {
                             if (card.Owner.LibraryCards.Count >= 1)
                             {

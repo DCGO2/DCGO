@@ -9,10 +9,22 @@ namespace DCGO.CardEffects.BT21
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region Link Condition
+            if (timing == EffectTiming.None)
+            {
+                static bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.HasAppmonTraits;
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfLinkConditionStaticEffect(permanentCondition: PermanentCondition, linkCost: 1, card: card));
+            }
+            #endregion
+
             #region Link
             if (timing == EffectTiming.OnDeclaration)
             {
-                cardEffects.Add(CardEffectFactory.LinkEffect(card, 1, 2000));
+                cardEffects.Add(CardEffectFactory.LinkEffect(card));
             }
             #endregion
 
@@ -21,7 +33,7 @@ namespace DCGO.CardEffects.BT21
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return (targetPermanent.TopCard.ContainsTraits("Appmon")) && targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 2;
+                    return (targetPermanent.TopCard.HasAppmonTraits) && targetPermanent.TopCard.IsLevel2;
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 0, ignoreDigivolutionRequirement: false, card: card, condition: null));

@@ -10,10 +10,22 @@ namespace DCGO.CardEffects.BT21
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region Link Condition
+            if (timing == EffectTiming.None)
+            {
+                static bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.HasAppmonTraits;
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfLinkConditionStaticEffect(permanentCondition: PermanentCondition, linkCost: 2, card: card));
+            }
+            #endregion
+
             #region Link
             if (timing == EffectTiming.OnDeclaration)
             {
-                cardEffects.Add(CardEffectFactory.LinkEffect(card, 2, 3000));
+                cardEffects.Add(CardEffectFactory.LinkEffect(card));
             }
             #endregion
 
