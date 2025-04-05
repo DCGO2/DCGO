@@ -427,6 +427,7 @@ namespace DCGO.CardEffects.BT21
                 }
             }
             #endregion
+
             #region Security
             if (timing == EffectTiming.SecuritySkill)
             {
