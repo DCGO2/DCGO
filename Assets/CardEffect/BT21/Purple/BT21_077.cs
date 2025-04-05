@@ -352,7 +352,7 @@ namespace DCGO.CardEffects.BT21
             }
             #endregion
 
-            #region On Deletions Saved
+            #region On Deletions Shared
             bool CanUseConditionShared(Hashtable hashtable)
             {
                 return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
