@@ -20,7 +20,7 @@ namespace DCGO.CardEffects.BT21
                 addAppFusionConditionClass.SetNotShowUI(true);
                 cardEffects.Add(addAppFusionConditionClass);
 
-                string[] validCards = {"Sociamon", "Gossipmon"};
+                
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return true;
@@ -28,6 +28,7 @@ namespace DCGO.CardEffects.BT21
 
                 AppFusionCondition GetAppFusion(CardSource cardSource)
                 {
+                    string[] validCards = { "Sociamon", "Gossipmon" };
                     if (cardSource == card)
                     {
                         bool linkCondition(CardSource source)
@@ -572,7 +573,7 @@ namespace DCGO.CardEffects.BT21
             }
             #endregion
 
-            return cardEffects;
+            return cardEffects; 
         }
     }
 }
