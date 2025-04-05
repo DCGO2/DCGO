@@ -17,7 +17,7 @@ namespace DCGO.CardEffects.BT21
             {
                 bool Condition(Permanent permanent)
                 {
-                    return permanent.TopCard.HasThreeMusketeersTraits && permanent.Level == 3;
+                    return permanent.TopCard.HasText("Three Musketeers") && permanent.Level == 3;
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(Condition, 2, false, card, null));
@@ -187,7 +187,8 @@ namespace DCGO.CardEffects.BT21
                                 {
                                     yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(new List<CardSource>() { selectedCards[0] }, activateClass));
 
-                                    yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
+                                    yield return ContinuousController.instance.StartCoroutine(
+                                            card.Owner.AddMemory(1, activateClass));
                                 }
                             }
                         }
