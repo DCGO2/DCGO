@@ -126,7 +126,12 @@ namespace DCGO.CardEffects.BT21
             #region Basic link DP boost
             if (timing == EffectTiming.OnDeclaration)
             {
-                cardEffects.Add(CardEffectFactory.LinkEffect(card, 2, 3000));
+                bool PermanentCondition(Permanent permanent)
+                {
+                    return permanent.TopCard.HasAppmonTraits;
+                }
+                cardEffects.Add(CardEffectFactory.AddSelfLinkConditionStaticEffect(permanentCondition: PermanentCondition, linkCost: 2, card: card));
+
             }
             #endregion
 
