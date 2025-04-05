@@ -43,7 +43,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool PlayedPermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) && permanent.IsTamer && permanent.TopCard.ContainsCardName("Marcus Damon");
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) && permanent.IsTamer && permanent.TopCard.EqualsCardName("Marcus Damon");
                 }
 
                 bool CanSelectCardToDigivolveInto(CardSource cardSource)
