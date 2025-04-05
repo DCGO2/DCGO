@@ -152,7 +152,6 @@ namespace DCGO.CardEntities
             cardEntity.LinkDP = dpParse(card.linkDP);
             cardEntity.LinkEffect = card.linkEffect;
             cardEntity.LinkRequirement = card.linkRequirement;
-            cardEntity.LinkCost = GetLinkCost(card.linkRequirement);
 
             cardEntity.name = cardEntity.CardSpriteName.Replace("-Errata","").Replace("-","_");
 

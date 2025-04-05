@@ -385,6 +385,13 @@ public interface IAddBurstDigivolutionConditionEffect
 }
 #endregion
 
+#region "Target card gains Link conditions" effect
+public interface IAddLinkConditionEffect
+{
+    LinkCondition GetLinkCondition(CardSource cardSource);
+}
+#endregion
+
 #region "Target card gains App Fusion digivolution conditions" effect
 public interface IAddAppFusionConditionEffect
 {
