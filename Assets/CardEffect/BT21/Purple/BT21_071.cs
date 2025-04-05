@@ -350,10 +350,15 @@ namespace DCGO.CardEffects.BT21
             #endregion
 
             #region Generic link DP/capacity
-            if (timing == EffectTiming.OnDeclaration)
-            {
-                cardEffects.Add(CardEffectFactory.LinkEffect(card, 2, 3000));
-            }
+                if (timing == EffectTiming.OnDeclaration)
+                {
+                    bool PermanentCondition(Permanent permanent)
+                    {
+                        return permanent.TopCard.HasAppmonTraits;
+                    }
+                    cardEffects.Add(CardEffectFactory.AddSelfLinkConditionStaticEffect(permanentCondition: PermanentCondition, linkCost: 2, card: card));
+                
+                }
             #endregion
 
             #region When Linking
