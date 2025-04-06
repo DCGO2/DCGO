@@ -112,9 +112,9 @@ namespace DCGO.CardEffects.BT21
                     return false;
                 }
 
-                bool CanSelectPermanentCondition(Permanent permanent)
+                bool CanSelectLinkTarget(CardSource cardSoure)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
+                    return cardSoure.CanLink(false);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -127,13 +127,11 @@ namespace DCGO.CardEffects.BT21
 
                     IEnumerator SuccessProcess()
                     {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition) && card.Owner.HandCards.Count >= 1)
+                        Permanent selectedPermanent = null;
+                        CardSource cardForLinking = null;
+
+                        if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectLinkTarget))
                         {
-                            Permanent selectedPermanent = null;
-                            CardSource cardForLinking = null;
-
-                            int maxCount = 1;
-
                             SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
                             selectHandEffect.SetUp(
@@ -141,7 +139,7 @@ namespace DCGO.CardEffects.BT21
                                 canTargetCondition: (cardSource) => true,
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
-                                maxCount: maxCount,
+                                maxCount: 1,
                                 canNoSelect: false,
                                 canEndNotMax: false,
                                 isShowOpponent: true,
@@ -150,17 +148,20 @@ namespace DCGO.CardEffects.BT21
                                 mode: SelectHandEffect.Mode.Custom,
                                 cardEffect: activateClass);
 
-                            selectHandEffect.SetUpCustomMessage("Select 1 card to use for linking.", "The opponent is selecting 1 card to use for linking.");
+                            selectHandEffect.SetUpCustomMessage("Select 1 card to link.", "The opponent is selecting 1 card to link.");
 
                             yield return StartCoroutine(selectHandEffect.Activate());
+                        }
 
-                            IEnumerator SelectCardCoroutine(CardSource cardSource)
-                            {
-                                cardForLinking = cardSource;
+                        IEnumerator SelectCardCoroutine(CardSource cardSource)
+                        {
+                            cardForLinking = cardSource;
 
-                                yield return null;
-                            }
+                            yield return null;
+                        }
 
+                        if(cardForLinking != null)
+                        {
                             SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                             selectPermanentEffect.SetUp(
@@ -168,7 +169,7 @@ namespace DCGO.CardEffects.BT21
                                 canTargetCondition: CanSelectPermanentCondition,
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
-                                maxCount: maxCount,
+                                maxCount: 1,
                                 canNoSelect: false,
                                 canEndNotMax: false,
                                 selectPermanentCoroutine: SelectPermanentCoroutine,
@@ -180,6 +181,11 @@ namespace DCGO.CardEffects.BT21
 
                             yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
+                            bool CanSelectPermanentCondition(Permanent permanent)
+                            {
+                                return cardForLinking.CanLinkFromTargetPermanent(permanent, false);
+                            }
+
                             IEnumerator SelectPermanentCoroutine(Permanent permanent)
                             {
                                 selectedPermanent = permanent;
@@ -189,7 +195,7 @@ namespace DCGO.CardEffects.BT21
 
                             if (selectedPermanent != null)
                             {
-                                yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddLinkCard(cardForLinking, 2000, activateClass));
+                                yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddLinkCard(cardForLinking, activateClass));
                             }
                         }
                     }

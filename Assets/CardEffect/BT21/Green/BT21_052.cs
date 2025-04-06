@@ -135,7 +135,7 @@ namespace DCGO.CardEffects.BT21
 
                 string EffectDescription()
                 {
-                    return "[All Turns][Once Per Turn] Suspend all of your opponent's Digimon and Tamers. Then, delete 1 of their suspended Digimon or Tamers.";
+                    return "[All Turns] [Once Per Turn] When this Digimon suspends, it unsuspends. Then, if [Examon] or [X Antibody] is in this Digimon's digivolution cards, trash your opponent's top security card.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

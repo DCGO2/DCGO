@@ -9,11 +9,17 @@ namespace DCGO.CardEffects.BT21
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Link
-            if (timing == EffectTiming.OnDeclaration)
+            #region Link Condition
+            if (timing == EffectTiming.None)
             {
-                cardEffects.Add(CardEffectFactory.LinkEffect(card, 1, 2000));
+                static bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.HasAppmonTraits;
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfLinkConditionStaticEffect(permanentCondition: PermanentCondition, linkCost: 1, card: card));
             }
+
             #endregion
 
             #region Alternate Digivolution Condition
@@ -21,10 +27,17 @@ namespace DCGO.CardEffects.BT21
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.ContainsTraits("Appmon") && targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 2;
+                    return targetPermanent.TopCard.HasAppmonTraits && targetPermanent.TopCard.Level == 2;
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 0, ignoreDigivolutionRequirement: false, card: card, condition: null));
+            }
+            #endregion
+
+            #region Basic link effect keyword
+            if (timing == EffectTiming.OnDeclaration)
+            {
+                cardEffects.Add(CardEffectFactory.LinkEffect(card));
             }
             #endregion
 
@@ -43,12 +56,12 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.ContainsTraits("Appmon");
+                    return cardSource.HasAppmonTraits;
                 }
 
                 bool CanSelectCardCondition1(CardSource cardSource)
                 {
-                    return cardSource.ContainsTraits("App Driver");
+                    return cardSource.EqualsTraits("App Driver");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
