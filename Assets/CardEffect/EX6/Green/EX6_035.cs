@@ -133,7 +133,7 @@ namespace DCGO.CardEffects.EX6
                             mode: SelectHandEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectHandEffect.SetUpCustomMessage("Play 1 Digimon from hand, Then -6k DP for each digimon", "The opponent is selecting 1 card to play.");
+                        selectHandEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
                         selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
 
                         yield return StartCoroutine(selectHandEffect.Activate());

@@ -231,26 +231,26 @@ namespace DCGO.CardEffects.BT15
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SimplifiedRevealDeckTopCardsAndSelect(
-                                        revealCount: 3,
-                                        simplifiedSelectCardConditions:
-                                        new SimplifiedSelectCardConditionClass[]
-                                        {
-                        new SimplifiedSelectCardConditionClass(
-                            canTargetCondition:CanSelectCardCondition,
-                            message: "Select 1 [Machine],[Cyborg] or [SoC].",
-                            mode: SelectCardEffect.Mode.Custom,
-                            maxCount: 1,
-                            selectCardCoroutine: SelectCardCoroutine),
-                        new SimplifiedSelectCardConditionClass(
-                            canTargetCondition:CanSelectCardCondition1,
-                            message: "Select 1 [Machine],[Cyborg] or [SoC].",
-                            mode: SelectCardEffect.Mode.AddHand,
-                            maxCount: 1,
-                            selectCardCoroutine: null),
-                                        },
-                                        remainingCardsPlace: RemainingCardsPlace.Trash,
-                                        activateClass: activateClass
-                                    ));
+                        revealCount: 3,
+                        simplifiedSelectCardConditions:
+                            new SimplifiedSelectCardConditionClass[]
+                            {
+                                new SimplifiedSelectCardConditionClass(
+                                    canTargetCondition:CanSelectCardCondition,
+                                    message: "Select 1 [Machine], [Cyborg] or [SoC] to place in sources.",
+                                    mode: SelectCardEffect.Mode.Custom,
+                                    maxCount: 1,
+                                    selectCardCoroutine: SelectCardCoroutine),
+                                new SimplifiedSelectCardConditionClass(
+                                    canTargetCondition:CanSelectCardCondition1,
+                                    message: "Select 1 [Machine], [Cyborg] or [SoC] to add to hand.",
+                                    mode: SelectCardEffect.Mode.AddHand,
+                                    maxCount: 1,
+                                    selectCardCoroutine: null),
+                            },
+                        remainingCardsPlace: RemainingCardsPlace.Trash,
+                        activateClass: activateClass
+                    ));
 
                     IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
