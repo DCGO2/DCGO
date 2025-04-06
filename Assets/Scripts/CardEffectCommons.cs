@@ -322,7 +322,9 @@ public partial class CardEffectCommons
     }
     #endregion
 
-    public static IEnumerator PlayAthoRenePorToken (ICardEffect activateClass)
+    #region Play 1 [AthoRenePor] Token
+
+    public static IEnumerator PlayAthoRenePorToken(ICardEffect activateClass)
     {
         yield return ContinuousController.instance.StartCoroutine(PlayToken(
             tokenData: ContinuousController.instance.AthoRenePorToken,
@@ -331,6 +333,8 @@ public partial class CardEffectCommons
             isTapped: false
             ));
     }
+
+    #endregion
 
     #region Play 1 [Petrification] Token
 
