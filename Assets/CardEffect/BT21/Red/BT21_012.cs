@@ -117,7 +117,15 @@ namespace DCGO.CardEffects.BT21
 
             if (timing == EffectTiming.None)
             {
-                cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect(changeValue: 2000, isInheritedEffect: false, card: card, condition: null));
+                bool Condition()
+                {
+                    if (CardEffectCommons.IsOwnerTurn(card))
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+                cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect(changeValue: 2000, isInheritedEffect: true, card: card, condition: Condition));
             }
 
             #endregion
