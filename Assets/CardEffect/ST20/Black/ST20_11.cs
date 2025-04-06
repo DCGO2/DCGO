@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 //ST20 Wargreymon
 namespace DCGO.CardEffects.ST20
@@ -52,7 +53,7 @@ namespace DCGO.CardEffects.ST20
                         tamerCards.Add(permanent.TopCard);
                     }
                 }
-                return Combinations.GetDifferenetColorCardCount(tamerCards) / 2;
+                return Mathf.FloorToInt(Combinations.GetDifferenetColorCardCount(tamerCards) / 2);
             }
 
             bool CanSelectProtectCondition(Permanent permanent)
@@ -83,7 +84,7 @@ namespace DCGO.CardEffects.ST20
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     List<Permanent> selectedPermanents = new List<Permanent>();
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectProtectCondition))
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectProtectCondition) && TamerTwoColourCount() > 0)
                     {
                         int maxCount = Math.Min(Math.Max(1, TamerTwoColourCount()), CardEffectCommons.MatchConditionPermanentCount(CanSelectProtectCondition));
 
@@ -359,7 +360,7 @@ namespace DCGO.CardEffects.ST20
 
                 string EffectDescription()
                 {
-                    return "[When Digivolving] Delete 1 of your opponent's lowest DP Digimon.";
+                    return "[When Attacking] Delete 1 of your opponent's lowest DP Digimon.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

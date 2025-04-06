@@ -96,6 +96,16 @@ public partial class CardEffectCommons
     }
     #endregion
 
+    #region Whether the card is Linked
+    public static bool IsExistLinked(CardSource card)
+    {
+        if (IsExistOnField(card))
+            return card.PermanentOfThisCard().LinkedCards.Contains(card);
+
+        return false;
+    }
+    #endregion
+
     #region Whether the card is in trash
     public static bool IsExistOnTrash(CardSource card)
     {
@@ -514,13 +524,6 @@ public partial class CardEffectCommons
         .ToHashSet();
         return uniqueColors.Count;
     }
-
-    #endregion
-
-    #region Get multi colour count from permanents in owners battle area
-
-    public static int GetColourCountOnOwnerBattleArea(CardSource card, Func<Permanent, bool> canGetCardColour) =>
-        card.Owner.GetBattleAreaPermanents().Filter(x => canGetCardColour(x)).ToList().Count;
 
     #endregion
 }

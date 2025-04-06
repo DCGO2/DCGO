@@ -35,12 +35,11 @@ namespace DCGO.CardEffects.ST18
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    if(CardEffectCommons.IsOwnerPermanent(permanent, card))
+                    if(CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        return permanent.IsDigimon &&
-                            (permanent.TopCard.ContainsTraits("Avian") ||
-                             permanent.TopCard.ContainsTraits("Bird") ||
-                             permanent.TopCard.ContainsTraits("Vortex Warriors"));
+                        return permanent.TopCard.ContainsTraits("Avian") ||
+                               permanent.TopCard.ContainsTraits("Bird") ||
+                               permanent.TopCard.ContainsTraits("Vortex Warriors");
                     }
                     
                     return false;
