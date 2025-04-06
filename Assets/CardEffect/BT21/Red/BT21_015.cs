@@ -140,6 +140,23 @@ namespace DCGO.CardEffects.BT21
 
             #endregion
 
+            #region ESS
+
+            if (timing == EffectTiming.None)
+            {
+                bool Condition()
+                {
+                    if (CardEffectCommons.IsOwnerTurn(card))
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+                cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect(changeValue: 2000, isInheritedEffect: true, card: card, condition: Condition));
+            }
+
+            #endregion
+
             return cardEffects;
         }
     }
