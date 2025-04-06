@@ -35,31 +35,24 @@ namespace DCGO.CardEffects.ST21
             #region On Play/When Digivolving shared
 
             bool CanActivateConditonShared(Hashtable hashtable)
-            {
-                return CardEffectCommons.HasMatchConditionPermanent(CanTargetStrip);
-            }
-
-            bool CanTargetStrip(Permanent permanent)
-            {
-                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
-            }
-
-            bool OpponentsDigimonWithoutSources(Permanent permanent)
-            {
-                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
-                       permanent.DigivolutionCards.Count == 0;
-            }
+                => CardEffectCommons.IsExistOnBattleAreaDigimon(card);
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                Permanent selectedPermanent = null;
-                if (CardEffectCommons.HasMatchConditionPermanent(CanTargetStrip))
+                bool CanSelectPermanentCondition(Permanent permanent)
+                => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+
+                bool CanSelectPermanentCondition2(Permanent permanent)
+                    => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
+                    && permanent.HasNoDigivolutionCards;
+
+                if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, permanent => CanSelectPermanentCondition(permanent)))
                 {
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
                         selectPlayer: card.Owner,
-                        canTargetCondition: CanTargetStrip,
+                        canTargetCondition: (permanent) => CanSelectPermanentCondition(permanent),
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: 1,
@@ -70,59 +63,49 @@ namespace DCGO.CardEffects.ST21
                         mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                    {
-                        selectedPermanent = permanent;
-
-                        yield return null;
-                    }
-
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will trash digivolution cards.", "The opponent is selecting 1 Digimon that will trash digivolution cards.");
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                    if (selectedPermanent != null)
+                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(selectedPermanent, 2, true, activateClass));
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: permanent, trashCount: 2, isFromTop: true, activateClass: activateClass));
                     }
                 }
 
-                selectedPermanent = null;
-                SelectPermanentEffect selectPermanentEffect2 = GManager.instance.GetComponent<SelectPermanentEffect>();
-                selectPermanentEffect2.SetUp(
-                    selectPlayer: card.Owner,
-                    canTargetCondition: OpponentsDigimonWithoutSources,
-                    canTargetCondition_ByPreSelecetedList: null,
-                    canEndSelectCondition: null,
-                    maxCount: 1,
-                    canNoSelect: false,
-                    canEndNotMax: false,
-                    selectPermanentCoroutine: SelectPermanentCoroutine2,
-                    afterSelectPermanentCoroutine: null,
-                    mode: SelectPermanentEffect.Mode.Custom,
-                    cardEffect: activateClass);
-
-                IEnumerator SelectPermanentCoroutine2(Permanent permanent)
+                if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, permanent => CanSelectPermanentCondition2(permanent)))
                 {
-                    selectedPermanent = permanent;
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                    selectPermanentEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: (permanent) => CanSelectPermanentCondition2(permanent),
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: false,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: SelectPermanentCoroutine2,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Custom,
+                        cardEffect: activateClass);
 
-                    yield return null;
-                }
-                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect2.Activate());
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that cant attack or block.", "The opponent is selecting 1 Digimon that cant attack or block");
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                    IEnumerator SelectPermanentCoroutine2(Permanent permanent)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotAttack(
+                                targetPermanent: permanent,
+                                defenderCondition: null,
+                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                                activateClass: activateClass,
+                                effectName: "Can't Attack"));
 
-                if (selectedPermanent != null)
-                {
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotAttack(
-                            targetPermanent: selectedPermanent,
-                            defenderCondition: null,
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotBlock(
+                            targetPermanent: permanent,
+                            attackerCondition: null,
                             effectDuration: EffectDuration.UntilOpponentTurnEnd,
                             activateClass: activateClass,
-                            effectName: "Can't Attack"));
-
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotBlock(
-                        targetPermanent: selectedPermanent,
-                        attackerCondition: null,
-                        effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                        activateClass: activateClass,
-                        effectName: "Can't Block"));
+                            effectName: "Can't Block"));
+                    }
                 }
             }
 
@@ -135,16 +118,14 @@ namespace DCGO.CardEffects.ST21
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Strip top 2, then freeze", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateConditonShared, (hashtable) => SharedActivateCoroutine(hashtable, activateClass), -1, false, EffectDescription());
+                cardEffects.Add(activateClass);
 
                 string EffectDescription()
-                {
-                    return "[On Play] Trash the top 2 digivolution cards of 1 of your opponent's Digimon. Then, 1 of their Digimon with no digivolution cards can't attack or block until their turn ends.";
-                }
+                    => "[On Play] Trash the top 2 digivolution cards of 1 of your opponent's Digimon. Then, 1 of their Digimon with no digivolution cards can't attack or block until their turn ends.";
 
                 bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-                }
+                => CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                && CardEffectCommons.CanTriggerOnPlay(hashtable, card);
             }
 
             #endregion
@@ -156,16 +137,14 @@ namespace DCGO.CardEffects.ST21
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Strip top 2, then freeze", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateConditonShared, (hashtable) => SharedActivateCoroutine(hashtable, activateClass), -1, false, EffectDescription());
+                cardEffects.Add(activateClass);
 
                 string EffectDescription()
-                {
-                    return "[When Digivolving] Trash the top 2 digivolution cards of 1 of your opponent's Digimon. Then, 1 of their Digimon with no digivolution cards can't attack or block until their turn ends.";
-                }
+                    => "[When Digivolving] Trash the top 2 digivolution cards of 1 of your opponent's Digimon. Then, 1 of their Digimon with no digivolution cards can't attack or block until their turn ends.";
 
                 bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
-                }
+                => CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                && CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
             }
 
             #endregion

@@ -13,6 +13,7 @@ namespace DCGO.CardEffects.ST20
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region ignoring colours
+
             if (timing == EffectTiming.None)
             {
                 IgnoreColorConditionClass ignoreColorConditionClass = new IgnoreColorConditionClass();
@@ -22,21 +23,16 @@ namespace DCGO.CardEffects.ST20
                 cardEffects.Add(ignoreColorConditionClass);
 
                 bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.HasMatchConditionPermanent(permanent => 
-                        CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)
-                        && permanent.TopCard.HasAdventureTraits
-                        && (permanent.IsTamer || permanent.IsDigimon), true);
-                }
+                    => CardEffectCommons.HasMatchConditionPermanent((permanent) => (permanent.IsTamer || permanent.IsDigimon) && permanent.TopCard.HasAdventureTraits, true);
 
                 bool CardCondition(CardSource cardSource)
-                {
-                    return (cardSource == card);
-                }
+                    => cardSource == card;
             }
+
             #endregion
 
             #region Main effect
+
             if (timing == EffectTiming.OptionSkill)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -56,12 +52,11 @@ namespace DCGO.CardEffects.ST20
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (card.Owner.LibraryCards.Count <= 1) yield break;
                     yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 2, activateClass).Draw());
-
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlaceDelayOptionCards(card: card, cardEffect: activateClass));
                 }
             }
+
             #endregion
 
             #region delay
@@ -114,7 +109,6 @@ namespace DCGO.CardEffects.ST20
 
                         bool CanPlayAdventureCondition(CardSource cardSource)
                         {
-                            
                             if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                             {
                                 return cardSource.IsDigimon &&
@@ -172,13 +166,16 @@ namespace DCGO.CardEffects.ST20
                     }
                 }
             }
+
             #endregion
 
             #region Security
+
             if (timing == EffectTiming.SecuritySkill)
             {
                 cardEffects.Add(CardEffectFactory.PlaceSelfDelayOptionSecurityEffect(card));
             }
+
             #endregion
 
             return cardEffects;
