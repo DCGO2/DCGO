@@ -223,7 +223,7 @@ namespace DCGO.CardEffects
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, SharedPermanentCondition))
+                        if (CardEffectCommons.CanTriggerWhenLoseSecurity(hashtable, PlayerCondition))
                         {
                             return true;
                         }
@@ -234,6 +234,15 @@ namespace DCGO.CardEffects
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+
+                bool PlayerCondition(Player player)
+                {
+                    if (player == card.Owner.Enemy)
                     {
                         return true;
                     }
