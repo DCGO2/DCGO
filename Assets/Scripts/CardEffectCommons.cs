@@ -332,6 +332,20 @@ public partial class CardEffectCommons
             ));
     }
 
+    #region Play 1 [Petrification] Token
+
+    public static IEnumerator PlayPetrificationToken(ICardEffect activateClass)
+    {
+        yield return ContinuousController.instance.StartCoroutine(PlayToken(
+            tokenData: ContinuousController.instance.PetrificationToken,
+            activateClass: activateClass,
+            isOwnerPermanent: false,
+            isTapped: false
+            ));
+    }
+
+    #endregion
+
     #region Security effect of "add this card to hand"
     public static IEnumerator AddThisCardToHand(CardSource card1, ICardEffect activateClass)
     {
