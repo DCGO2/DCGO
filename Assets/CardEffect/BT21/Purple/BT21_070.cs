@@ -34,7 +34,7 @@ namespace DCGO.CardEffects.BT21
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Return Appmon trait", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -79,7 +79,7 @@ namespace DCGO.CardEffects.BT21
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Return Appmon trait", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -120,11 +120,14 @@ namespace DCGO.CardEffects.BT21
             #endregion
 
             #region Linking
-
+            if (timing == EffectTiming.OnDeclaration)
+            {
+                cardEffects.Add(CardEffectFactory.LinkEffect(card));
+            }
             #endregion
 
-            #region Basic link DP boost
-            if (timing == EffectTiming.OnDeclaration)
+            #region Link condition
+            if (timing == EffectTiming.None)
             {
                 bool PermanentCondition(Permanent permanent)
                 {

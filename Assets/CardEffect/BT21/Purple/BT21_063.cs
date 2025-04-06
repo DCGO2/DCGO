@@ -26,7 +26,7 @@ namespace DCGO.CardEffects.BT21
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash 1 [Hero] / Save, <Draw 2>", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -53,14 +53,14 @@ namespace DCGO.CardEffects.BT21
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
+                    bool trashed = false;
                     selectHandEffect.SetUp(
                         canTargetCondition: HasNameOrTrait,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         canNoSelect: true,
-                        selectCardCoroutine: null,
-                        afterSelectCardCoroutine: AfterSelectCardCoroutine,
+                        selectCardCoroutine: SelectCardCoroutine,
+                        afterSelectCardCoroutine: null,
                         maxCount: 1,
                         canEndNotMax: false,
                         isShowOpponent: true,
@@ -73,13 +73,16 @@ namespace DCGO.CardEffects.BT21
 
                     yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
 
-                    IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
+                    IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
-                        if (cardSources.Count > 0)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(
-                                new DrawClass(card.Owner, 2, activateClass).Draw());
-                        }
+                        trashed = true;
+                        yield return null;
+                    }
+
+                    if (trashed)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(
+                            new DrawClass(card.Owner, 2, activateClass).Draw());
                     }
                 }
             }

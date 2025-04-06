@@ -145,6 +145,15 @@ namespace DCGO.CardEffects.BT21
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    yield return ContinuousController.instance.StartCoroutine(
+                        CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
+                            targetPermanents: new List<Permanent>() { card.PermanentOfThisCard() },
+                            activateClass: activateClass, successProcess: _ => SuccessProcess(),
+                            failureProcess: null));
+                }
+
+                IEnumerator SuccessProcess()
+                {
 
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
