@@ -44,7 +44,7 @@ public partial class CardEffectFactory
         bool isInheritedEffect,
         CardSource card,
         Func<bool> condition,
-        bool isLinkedEffect = false
+        bool isLinkedEffect = false)
     {
         bool PermanentCondition(Permanent permanent)
         {
