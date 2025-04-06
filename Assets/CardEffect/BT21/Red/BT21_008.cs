@@ -49,18 +49,18 @@ namespace DCGO.CardEffects.BT21
                 {
                     if (searchOption == 1)
                     {
-                        if (cardSource.CardTraits.FirstOrDefault(x => x.Equals("Reptile")) != null)
+                        if (cardSource.EqualsTraits("Reptile"))
                         {
                             return true;
                         }
-                        if (cardSource.CardTraits.FirstOrDefault(x => x.Equals("Dragonkin")) != null)
+                        if (cardSource.EqualsTraits("Dragonkin"))
                         {
                             return true;
                         }
                     }
                     if (searchOption == 2)
                     {
-                        if (cardSource.CardTraits.FirstOrDefault(x => x.Equals("LIBERATOR")) != null)
+                        if (cardSource.EqualsTraits("LIBERATOR"))
                         {
                             return true;
                         }

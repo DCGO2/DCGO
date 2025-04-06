@@ -60,7 +60,7 @@ namespace DCGO.CardEffects.BT21
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent.TopCard.CardTraits.FirstOrDefault(x => x.Equals("Reptile")) != null || permanent.TopCard.CardTraits.FirstOrDefault(x => x.Equals("Dragonkin")) != null)
+                        if (permanent.TopCard.EqualsTraits("Reptile") || permanent.TopCard.EqualsTraits("Dragonkin"))
                         {
                             return true;
                         }
@@ -131,7 +131,7 @@ namespace DCGO.CardEffects.BT21
                 {
                     if (source.IsDigimon)
                     {
-                        if (source.CardTraits.FirstOrDefault(x => x.Equals("Reptile")) != null || source.CardTraits.FirstOrDefault(x => x.Equals("Dragonkin")) != null)
+                        if (source.EqualsTraits("Reptile") || source.EqualsTraits("Dragonkin"))
                         {
                             if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: source, payCost: false, cardEffect: activateClass))
                             {
@@ -147,6 +147,7 @@ namespace DCGO.CardEffects.BT21
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    CardSource selectedCard = null;
                     SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
                     selectHandEffect.SetUp(
                         selectPlayer: card.Owner,
@@ -168,14 +169,13 @@ namespace DCGO.CardEffects.BT21
 
                     IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
-                        if (cardSource != null)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: new List<CardSource>() { cardSource }, activateClass: activateClass, payCost: false, isTapped: false, root: SelectCardEffect.Root.Hand, activateETB: true));
-                        }
-                        else
-                        {
-                            yield return null;
-                        }
+                        selectedCard = cardSource;
+                        yield return null;
+                    }
+
+                    if (selectedCard != null)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: new List<CardSource>() { selectedCard }, activateClass: activateClass, payCost: false, isTapped: false, root: SelectCardEffect.Root.Hand, activateETB: true));
                     }
                 }
             }
