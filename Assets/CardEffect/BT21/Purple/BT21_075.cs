@@ -175,20 +175,20 @@ namespace DCGO.CardEffects.BT21
                 return
                     "[On Deletion] You may play 1 [ADVENTURE] trait card with a play cost of 4 or less form your trash without paying the cost.";
             }
-
-            bool CanUseConditionShared(Hashtable hashtable)
-            {
-                return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
-            }
             #endregion
 
             #region On Deletion non-inherit
             if(timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play ADVENTURE cost 4 or less", CanUseConditionShared, card);
+                activateClass.SetUpICardEffect("Play ADVENTURE cost 4 or less", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescriptionShared());
                 cardEffects.Add(activateClass);
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                }
 
                 bool CanPlay(CardSource cardSource)
                 {
@@ -254,10 +254,15 @@ namespace DCGO.CardEffects.BT21
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play ADVENTURE cost 4 or less", CanUseConditionShared, card);
+                activateClass.SetUpICardEffect("Play ADVENTURE cost 4 or less", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescriptionShared());
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card);
+                }
 
                 bool CanPlay(CardSource cardSource)
                 {

@@ -201,7 +201,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                    return CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

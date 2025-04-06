@@ -1,4 +1,4 @@
-using System.Collections;
+    using System.Collections;
 using System.Collections.Generic;
 
 //BT21-076 Wargrowlmon
@@ -121,17 +121,22 @@ namespace DCGO.CardEffects.BT21
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(
-                        CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                            targetPermanent: card.PermanentOfThisCard(),
-                            cardCondition: CanDigivolveIntoCardCondition,
-                            payCost: true,
-                            reduceCostTuple: (reduceCost: Count(), reduceCostCardCondition: null),
-                            fixedCostTuple: null,
-                            ignoreDigivolutionRequirementFixedCost: -1,
-                            isHand: true,
-                            activateClass: activateClass,
-                            successProcess: null));
+                    if(CardEffectCommons.HasMatchConditionOwnersHand(card, CanDigivolveIntoCardCondition))
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(
+                            CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                                targetPermanent: card.PermanentOfThisCard(),
+                                cardCondition: CanDigivolveIntoCardCondition,
+                                payCost: true,
+                                reduceCostTuple: (reduceCost: Count(), reduceCostCardCondition: null),
+                                fixedCostTuple: null,
+                                ignoreDigivolutionRequirementFixedCost: -1,
+                                isHand: true,
+                                activateClass: activateClass,
+                                successProcess: null));
+                    }
+
+                    
                 }
             }
             #endregion

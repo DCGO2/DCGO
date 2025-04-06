@@ -351,8 +351,13 @@ namespace DCGO.CardEffects.BT21
             }
             #endregion
 
-            #region Generic link DP/capacity
+            #region Generic link capacity/condition
             if (timing == EffectTiming.OnDeclaration)
+            {
+                cardEffects.Add(CardEffectFactory.LinkEffect(card));
+            }
+
+            if (timing == EffectTiming.None)
             {
                 bool PermanentCondition(Permanent permanent)
                 {

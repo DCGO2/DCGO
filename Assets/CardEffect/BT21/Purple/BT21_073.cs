@@ -372,14 +372,9 @@ namespace DCGO.CardEffects.BT21
                     return permanent == card.PermanentOfThisCard();
                 }
 
-                bool CardCondition(CardSource source)
-                {
-                    return true;
-                }
-
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenLinked(hashtable, LinkedPermanentCondition, CardCondition);
+                    return CardEffectCommons.CanTriggerWhenLinked(hashtable, LinkedPermanentCondition, null);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -485,14 +480,18 @@ namespace DCGO.CardEffects.BT21
             #endregion
 
             #region Linking
-            if (timing == EffectTiming.OnDeclaration)
+            if (timing == EffectTiming.None)
             {
                 bool PermanentCondition(Permanent permanent)
                 {
                     return permanent.TopCard.HasAppmonTraits;
                 }
                 cardEffects.Add(CardEffectFactory.AddSelfLinkConditionStaticEffect(permanentCondition: PermanentCondition, linkCost: 3, card: card));
+            }
 
+            if(timing == EffectTiming.OnDeclaration)
+            {
+                cardEffects.Add(CardEffectFactory.LinkEffect(card));
             }
             #endregion
 

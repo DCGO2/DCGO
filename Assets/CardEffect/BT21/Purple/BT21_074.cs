@@ -67,7 +67,7 @@ namespace DCGO.CardEffects.BT21
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Tuck to get protections", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateConditionSharedOP, ActivateCoroutine, -1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateConditionSharedOP, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -242,7 +242,7 @@ namespace DCGO.CardEffects.BT21
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Tuck to get protections", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateConditionSharedOP, ActivateCoroutine, -1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateConditionSharedOP, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -429,7 +429,7 @@ namespace DCGO.CardEffects.BT21
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash source to de-digivolve", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateConditionAtkShared, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateConditionAtkShared, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetHashString("BT21_074De-digivolve");
                 cardEffects.Add(activateClass);
                     
@@ -526,7 +526,7 @@ namespace DCGO.CardEffects.BT21
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash source to de-digivolve", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateConditionAtkShared, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateConditionAtkShared, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetHashString("BT21_074De-digivolve");
                 cardEffects.Add(activateClass);
 
@@ -619,7 +619,7 @@ namespace DCGO.CardEffects.BT21
             #endregion
 
             #region Ability to link
-            if (timing == EffectTiming.OnDeclaration)
+            if (timing == EffectTiming.None)
             {
                 bool PermanentCondition(Permanent permanent)
                 {
@@ -627,6 +627,11 @@ namespace DCGO.CardEffects.BT21
                 }
                 cardEffects.Add(CardEffectFactory.AddSelfLinkConditionStaticEffect(permanentCondition: PermanentCondition, linkCost: 3, card: card));
 
+            }
+
+            if(timing == EffectTiming.OnDeclaration)
+            {
+                cardEffects.Add(CardEffectFactory.LinkEffect(card));
             }
             #endregion
 

@@ -45,7 +45,7 @@ namespace DCGO.CardEffects.BT21
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Force attack and give collision", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -201,7 +201,7 @@ namespace DCGO.CardEffects.BT21
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Force attack and give collision", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -353,23 +353,25 @@ namespace DCGO.CardEffects.BT21
             #endregion
 
             #region On Deletions Shared
-            bool CanUseConditionShared(Hashtable hashtable)
-            {
-                return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
-            }
+            
             #endregion
 
             #region On deletion regular
             if(timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play Cannonweissmon or level 4 or lower gammamon in text digimon", CanUseConditionShared, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
+                activateClass.SetUpICardEffect("Play Cannonweissmon or level 4 or lower gammamon in text digimon", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
                 {
                     return "[On Deletion] You may play 1 [Canoweissmon] or 1 level 4 or lower Digimon card with [Gammamon] in its text from your trash without paying the cost.";
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
                 }
 
                 bool CanPlay(CardSource cardSource)
@@ -435,14 +437,19 @@ namespace DCGO.CardEffects.BT21
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play Cannonweissmon or level 4 or lower gammamon in text digimon", CanUseConditionShared, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
+                activateClass.SetUpICardEffect("Play Cannonweissmon or level 4 or lower gammamon in text digimon", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
                 {
                     return "[On Deletion] You may play 1 level 4 or lower Digimon card with [Gammamon] in its text from your trash without paying the cost.";
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card);
                 }
 
                 bool CanPlay(CardSource cardSource)
@@ -503,6 +510,7 @@ namespace DCGO.CardEffects.BT21
                 }
             }
             #endregion
+
             return cardEffects;
         }
     }
