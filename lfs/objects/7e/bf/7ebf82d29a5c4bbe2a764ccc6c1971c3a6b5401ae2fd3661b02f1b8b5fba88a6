@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac423894725fed64a9146a10d3878ce1, type: 3}
+  m_Name: BT20_019_P0
+  m_EditorClassIdentifier: 
+  CardIndex: 5201
+  cardColors: 00000000
+  PlayCost: 12
+  EvoCosts:
+  - CardColor: 0
+    Level: 5
+    MemoryCost: 4
+  Level: 6
+  CardName_JPN: 
+  CardName_ENG: Jesmon (X Antibody)
+  Form_JPN: []
+  Form_ENG:
+  - Mega
+  Attribute_JPN: []
+  Attribute_ENG:
+  - Data
+  Type_JPN: []
+  Type_ENG:
+  - Holy Warrior
+  - X Antibody
+  - Royal Knight
+  CardSpriteName: BT20-019_P0
+  cardKind: 0
+  EffectDiscription_JPN: 
+  EffectDiscription_ENG: "[Digivolve] [Jesmon]: Cost 1 \n\n\uFF1CAlliance\uFF1E \n[When
+    Digivolving] if [Jesmon]/[X Antibody] is in this Digimon's digivolution cards,
+    for the turn, 1 of your Digimon isn't affected by your opponent's effects. Then,
+    1 of your Digimon may attack.\n[Your Turn] All of your Digimon with [Sistermon]\_in
+    their names or the [Royal Knight]\_trait gain \uFF1CPiercing\uFF1E and can also
+    attack unsuspended Digimon."
+  InheritedEffectDiscription_JPN: 
+  InheritedEffectDiscription_ENG: "[Your Turn] While this Digimon is [Jesmon GX],
+    all of your Digimon gain \uFF1CPiercing\uFF1E and can also attack unsuspended
+    Digimon."
+  SecurityEffectDiscription_JPN: 
+  SecurityEffectDiscription_ENG: '-'
+  CardEffectClassName: BT20_019
+  DP: 12000
+  rarity: 2
+  OverflowMemory: 0
+  CardID: BT20-019
+  MaxCountInDeck: 4

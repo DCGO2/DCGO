@@ -2838,11 +2838,7 @@ public class CardSource : MonoBehaviour
     {
         get
         {
-            if (CardTraits.Contains("Hero"))
-            {
-                return true;
-            }
-            return false;
+            return EqualsTraits("Hero");
         }
     }
 
@@ -2922,12 +2918,7 @@ public class CardSource : MonoBehaviour
     {
         get
         {
-            if (CardTraits.Find(x => x.Equals("Appmon")) != null)
-            {
-                return true;
-            }
-
-            return false;
+            return EqualsTraits("Appmon");
         }
     }
 
