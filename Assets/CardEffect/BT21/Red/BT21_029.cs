@@ -150,14 +150,6 @@ namespace DCGO.CardEffects
 
             #region All Turns Shared
 
-            bool SharedPermanentCondition(Permanent permanent)
-            {
-                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                {
-                    return true;
-                }
-                return false;
-            }
             IEnumerator AllTurnsSharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPetrificationToken(activateClass));
@@ -184,7 +176,7 @@ namespace DCGO.CardEffects
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, SharedPermanentCondition))
+                        if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition))
                         {
                             return true;
                         }
@@ -195,6 +187,15 @@ namespace DCGO.CardEffects
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+
+                bool PermanentCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                     {
                         return true;
                     }
