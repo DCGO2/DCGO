@@ -2612,23 +2612,17 @@ public class CardSource : MonoBehaviour
                         {
                             if (!this.CanNotEvolve(targetPermanent))
                             {
-                                if (appFusionCondition.digimonCondition(targetPermanent))
+                                if (linkCondition.digimonCondition(targetPermanent))
                                 {
-                                    foreach (CardSource linkedCard in targetPermanent.LinkedCards)
+                                    if (PayCost)
                                     {
-                                        if (appFusionCondition.linkedCondition(linkedCard))
+                                        int cost = linkCondition.cost;
+
+                                        cost = GetChangedCostItselef(cost, SelectCardEffect.Root.Hand, new List<Permanent>() { targetPermanent }, checkAvailability: true);
+
+                                        if (Owner.MaxMemoryCost < cost)
                                         {
-                                            if (PayCost)
-                                            {
-                                                int cost = appFusionCondition.cost;
-
-                                                cost = GetChangedCostItselef(cost, SelectCardEffect.Root.Hand, new List<Permanent>() { targetPermanent }, checkAvailability: true);
-
-                                                if (Owner.MaxMemoryCost < cost)
-                                                {
-                                                    return false;
-                                                }
-                                            }
+                                            return false;
                                         }
                                     }
                                 }

@@ -46,7 +46,7 @@ namespace DCGO.CardEffects.P
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play [Device] option from hand or trash", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Place [Device] option from hand or trash", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -152,16 +152,11 @@ namespace DCGO.CardEffects.P
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlaceDelayOptionCards(card: selectedDevice, cardEffect: activateClass));
 
-                        ChangeBaseDPClass changeDPClass = new ChangeBaseDPClass();
-                        changeDPClass.SetUpICardEffect("+3000 DP", (hashtable) => true, card);
-                        changeDPClass.SetUpChangeBaseDPClass(changeDPFunc: ChangeDP, permanentCondition: permanentCondition, isUpDownFunc: () => false, isMinusDPFunc: () => false);
-                        selectedDevice.PermanentOfThisCard().UntilEachTurnEndEffects.Add((_timing) => changeDPClass);
-
-                        int ChangeDP(Permanent permanent, int DP)
-                            => DP + 3000;
-
-                        bool permanentCondition(Permanent permanent)
-                            => permanent != null && permanent.TopCard != null && permanent == selectedDevice.PermanentOfThisCard();
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
+                                        targetPermanent: card.PermanentOfThisCard(), 
+                                        changeValue: 3000, 
+                                        effectDuration: EffectDuration.UntilOpponentTurnEnd, 
+                                        activateClass: activateClass));
                     }
                 }
             }
