@@ -139,6 +139,7 @@ namespace DCGO.CardEffects.ST21
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play level 4", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetHashString("WA_ST21-11");
                 cardEffects.Add(activateClass);
                 
                 string EffectDescription()
@@ -211,6 +212,7 @@ namespace DCGO.CardEffects.ST21
                 }
             }
             #endregion
+
             return cardEffects;
         }
     }
