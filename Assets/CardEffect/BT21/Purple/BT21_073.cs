@@ -11,6 +11,18 @@ namespace DCGO.CardEffects.BT21
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region Alternative Digivolution Condition - Sup.
+            if (timing == EffectTiming.None)
+            {
+                bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.EqualsTraits("Sup.");
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 4, ignoreDigivolutionRequirement: false, card: card, condition: null));
+            }
+            #endregion
+
             #region  Appfusion
             if (timing == EffectTiming.None)
             {
@@ -20,7 +32,6 @@ namespace DCGO.CardEffects.BT21
                 addAppFusionConditionClass.SetNotShowUI(true);
                 cardEffects.Add(addAppFusionConditionClass);
 
-                
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return true;
@@ -95,7 +106,8 @@ namespace DCGO.CardEffects.BT21
 
             bool CanActivateConditionShared(Hashtable hashtable)
             {
-                return isExistOnField(card) && (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanLinkCondition) ||
+                return isExistOnField(card) && 
+                    (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanLinkCondition) ||
                     card.PermanentOfThisCard().DigivolutionCards.Exists(CanLinkCondition));
             }
             #endregion
@@ -515,7 +527,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                    return CardEffectCommons.IsExistLinked(card) &&
                            CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card);
                     
                 }
@@ -540,7 +552,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                    return CardEffectCommons.IsExistLinked(card) &&
                            !card.PermanentOfThisCard().HasNoLinkCards;
                 }
 

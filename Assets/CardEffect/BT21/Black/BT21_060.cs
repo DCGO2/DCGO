@@ -97,7 +97,7 @@ namespace DCGO.CardEffects.BT21
                         CanNotTrashFromDigivolutionCardsClass canNotTrashFromDigivolutionCardsClass = new CanNotTrashFromDigivolutionCardsClass();
                         canNotTrashFromDigivolutionCardsClass.SetUpICardEffect("[This Digimon's sources can't be trashed", CanUseCondition2, card);
                         canNotTrashFromDigivolutionCardsClass.SetUpCanNotTrashFromDigivolutionCardsClass(CardCondition: CardCondition, CardEffectCondition: CardEffectCondition);
-                        cardEffects.Add(canNotTrashFromDigivolutionCardsClass);
+                        selectedPermanent.UntilOpponentTurnEndEffects.Add((_timing) => canNotTrashFromDigivolutionCardsClass);
 
                         bool CanUseCondition2(Hashtable hashtable)
                         {

@@ -31,4 +31,22 @@ public partial class CardEffectCommons
         return false;
     }
     #endregion
+
+    #region Can trigger "When top card of a permanent is trashed" effects of 1 permanent
+
+    public static bool CanTriggerWhenTopCardTrashed(Hashtable hashtable, Func<CardSource, bool> cardCondition)
+    {
+        List<CardSource> cards = GetCardSourcesFromHashtable(hashtable);
+
+        if (cards != null && cardCondition != null)
+        {
+            if (cards.Count((card) => card != null && cardCondition(card)) >= 1)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    #endregion
 }
