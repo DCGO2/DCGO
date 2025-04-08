@@ -88,12 +88,12 @@ namespace DCGO.CardEffects.BT21
 
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainRaid(
                                 targetPermanent: selectedPermanent,
-                                effectDuration: EffectDuration.UntilEachTurnEnd,
+                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
                                 activateClass: activateClass));
 
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainRetaliation(
                                 targetPermanent: selectedPermanent,
-                                effectDuration: EffectDuration.UntilEachTurnEnd,
+                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
                                 activateClass: activateClass));
                         }
                     }

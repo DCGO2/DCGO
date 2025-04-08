@@ -23,7 +23,7 @@ namespace DCGO.CardEffects.BT21
                     return targetPermanent.TopCard.HasAppmonTraits;
                 }
 
-                cardEffects.Add(CardEffectFactory.AddSelfLinkConditionStaticEffect(permanentCondition: PermanentCondition, linkCost: 0, card: card));
+                cardEffects.Add(CardEffectFactory.AddSelfLinkConditionStaticEffect(permanentCondition: PermanentCondition, linkCost: 1, card: card));
             }
 
             #endregion
@@ -206,8 +206,8 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                        CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
+                    return CardEffectCommons.IsExistOnBattleArea(card) &&
+                           CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

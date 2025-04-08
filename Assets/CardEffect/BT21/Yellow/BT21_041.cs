@@ -63,7 +63,8 @@ namespace DCGO.CardEffects.BT21
                 cardEffects.Add(CardEffectFactory.ChangeSecurityDigimonCardDPStaticEffect(
                     cardCondition: CardCondition,
                     changeValue: -3000,
-                    isInheritedEffect: true,
+                    isInheritedEffect: false,
+                    islinkedEffect: true,
                     card: card,
                     condition: Condition,
                     effectName: "Opponent's Security Digimon gains DP -3000"));

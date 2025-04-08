@@ -11,6 +11,18 @@ namespace DCGO.CardEffects.BT21
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region Alternative Digivolution Condition
+            if (timing == EffectTiming.None)
+            {
+                bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.EqualsTraits("Stnd.");
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 2, ignoreDigivolutionRequirement: false, card: card, condition: null));
+            }
+            #endregion
+
             #region Link Condition
 
             if (timing == EffectTiming.None)
@@ -20,7 +32,7 @@ namespace DCGO.CardEffects.BT21
                     return targetPermanent.TopCard.HasAppmonTraits;
                 }
 
-                cardEffects.Add(CardEffectFactory.AddSelfLinkConditionStaticEffect(permanentCondition: PermanentCondition, linkCost: 0, card: card));
+                cardEffects.Add(CardEffectFactory.AddSelfLinkConditionStaticEffect(permanentCondition: PermanentCondition, linkCost: 2, card: card));
             }
 
             #endregion
@@ -193,14 +205,13 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                        CardEffectCommons.CanTriggerWhenLinking(hashtable, null, card) &&
-                        CardEffectCommons.HasMatchConditionOpponentsPermanent(card, IsOpponentsDigimon);
+                    return CardEffectCommons.CanTriggerWhenLinking(hashtable, null, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleArea(card) &&
+                           CardEffectCommons.HasMatchConditionOpponentsPermanent(card, IsOpponentsDigimon);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

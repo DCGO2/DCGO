@@ -286,7 +286,7 @@ namespace DCGO.CardEffects.BT21
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Place 1 [Marcus Damon] on the top of security from trash", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("AddSecurity_BT21_044");
                 cardEffects.Add(activateClass);
 
