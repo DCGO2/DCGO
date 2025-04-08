@@ -62,7 +62,7 @@ public partial class CardEffectFactory
         IEnumerator ActivateCoroutine(Hashtable _hashtable)
         {
 
-            yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(card.linkCondition.cost, activateClass));
+            yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(-card.linkCondition.cost, activateClass));
 
             Permanent selectedPermanent = null;
 

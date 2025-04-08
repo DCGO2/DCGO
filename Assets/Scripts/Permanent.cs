@@ -631,7 +631,7 @@ public class Permanent
     #endregion
 
     #region Digivolution Cards
-    public List<CardSource> DigivolutionCards => cardSources.Filter(cardSource => cardSource != TopCard || LinkedCards.Contains(cardSource));
+    public List<CardSource> DigivolutionCards => cardSources.Filter(cardSource => cardSource != TopCard && !LinkedCards.Contains(cardSource));
     #endregion
 
     #region Linked Cards
