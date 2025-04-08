@@ -2323,6 +2323,16 @@ public class CardSource : MonoBehaviour
 
     #endregion
 
+    #region whether this card is linked
+    public bool IsLinked
+    {
+        get
+        {
+            return PermanentOfThisCard().LinkedCards.Contains(this);
+        }
+    }
+    #endregion
+
     #region DigiXros requirement
     public DigiXrosCondition digiXrosCondition
     {
@@ -2752,6 +2762,10 @@ public class CardSource : MonoBehaviour
 
     #region Inherited Effects JPN discription
     public string InheritedEffectDiscription_JPN => DataBase.ReplaceToASCII(_cEntity_Base.InheritedEffectDiscription_JPN);
+    #endregion
+
+    #region Link Effects
+    public string LinkEffectDiscription => DataBase.ReplaceToASCII(_cEntity_Base.LinkEffect);
     #endregion
 
     #region Card Sprite

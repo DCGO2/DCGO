@@ -9,6 +9,7 @@ public class CardInfo : MonoBehaviour
 {
     [Header("BackGround")]
     public List<Image> BackGrounds = new List<Image>();
+    public GameObject LinkBackground;
 
     [Header("CardImage")]
     public Image CardImage;
@@ -61,7 +62,11 @@ public class CardInfo : MonoBehaviour
                     {
                         InheritedEffectText.font = InheritedEffectFont_ENG;
                         InheritedEffectText.fontSharedMaterial = InheritedEffectMaterial;
-                        InheritedEffectText.text = cardSource.InheritedEffectDiscription_ENG;
+
+                        if(!cardSource.IsLinked)
+                            InheritedEffectText.text = cardSource.InheritedEffectDiscription_ENG;
+                        else
+                            InheritedEffectText.text = cardSource.LinkEffectDiscription;
                     }
 
                     else
@@ -104,6 +109,9 @@ public class CardInfo : MonoBehaviour
                     BackGrounds[i].gameObject.SetActive(false);
                 }
             }
+
+            //Link
+            LinkBackground.SetActive(cardSource.IsLinked);
         }
 
         else
