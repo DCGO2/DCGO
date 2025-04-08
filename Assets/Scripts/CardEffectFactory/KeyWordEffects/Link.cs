@@ -25,7 +25,7 @@ public partial class CardEffectFactory
 
         ActivateClass activateClass = new ActivateClass();
         activateClass.SetUpICardEffect("Link", CanUseCondition, card);
-        activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, DataBase.BlastDigivolveEffectDiscription());
+        activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, DataBase.LinkEffectDiscription());
 
         bool CanSelectPermanentCondition(Permanent permanent)
         {
@@ -33,9 +33,12 @@ public partial class CardEffectFactory
             {
                 if(permanent != card.PermanentOfThisCard())
                 {
-                    if (card.linkCondition == null || card.linkCondition.digimonCondition(permanent))
+                    if (permanent.IsDigimon)
                     {
-                        return true;
+                        if (card.linkCondition == null || card.linkCondition.digimonCondition(permanent))
+                        {
+                            return true;
+                        }
                     }
                 }
             }
