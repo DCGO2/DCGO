@@ -557,6 +557,11 @@ public class DataBase : MonoBehaviour
         return "<Execute> (At the end of your turn, this Digimon may attack. At the end of that attack, delete this Digimon. Your opponent's unsuspended Digimon can also be attacked with this effect.)";
     }
 
+    public static string LinkEffectDiscription()
+    {
+        return "[Link] (Plug this card from the hand or battle area sideways into the specified Digimon in the battle area.)";
+    }
+
     public static string ReplaceToASCII(string text)
     {
         if (string.IsNullOrEmpty(text))
