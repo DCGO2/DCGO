@@ -3784,6 +3784,20 @@ public class IDegeneration
                 count++;
             }
 
+            #region "When Top Card is Trashed" effect
+            #region Hashtable Setting
+            System.Collections.Hashtable hashtable = new System.Collections.Hashtable()
+                        {
+                            {"Permanent", _permanent},
+                            {"CardSources", selectedCards}
+                        };
+            #endregion
+
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing
+                .StackSkillInfos(hashtable, EffectTiming.WhenTopCardTrashed));
+
+            #endregion
+
             #region add log
             if (selectedCards.Count >= 1)
             {

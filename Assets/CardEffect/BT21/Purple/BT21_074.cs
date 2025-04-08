@@ -12,13 +12,29 @@ namespace DCGO.CardEffects.BT21
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Digivolution condition
-            if(timing == EffectTiming.None)
+            #region Alternate Digivolution Requirement - Three Musketeers
+
+            if (timing == EffectTiming.None)
             {
-                bool Condition(Permanent permanent)
+                static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return permanent.Level == 4 && permanent.TopCard.HasText("Three Musketeers");
+                    return targetPermanent.Level == 4 && targetPermanent.TopCard.HasText("Three Musketeers");
                 }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
+            }
+
+            #endregion
+
+            #region Alternative Digivolution Condition - Sup.
+            if (timing == EffectTiming.None)
+            {
+                bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.EqualsTraits("Sup.");
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 4, ignoreDigivolutionRequirement: false, card: card, condition: null));
             }
             #endregion
 
@@ -58,7 +74,7 @@ namespace DCGO.CardEffects.BT21
             #region OnPlay/WhenDigivolving/WhenAttacking shared
             bool CanTuckOrTrash(CardSource cardSource)
             {
-                return card.EqualsTraits("Appmon") || card.HasThreeMusketeersTraits;
+                return cardSource.EqualsTraits("Appmon") || cardSource.HasThreeMusketeersTraits;
             }
             #endregion
 
@@ -415,7 +431,8 @@ namespace DCGO.CardEffects.BT21
             #region When Digivolving/When Attacking shared
             bool CanActivateConditionAtkShared(Hashtable hashtable)
             {
-                return isExistOnField(card) && card.PermanentOfThisCard().DigivolutionCards.Some(CanTuckOrTrash);
+                return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && 
+                       card.PermanentOfThisCard().DigivolutionCards.Some(CanTuckOrTrash);
             }
 
             bool DedigivolveTarget(Permanent permanent)
@@ -661,7 +678,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return isExistOnField(card) && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, DeletionTargetCondition);
+                    return isExistOnField(card) && CardEffectCommons.HasMatchConditionPermanent(DeletionTargetCondition);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
