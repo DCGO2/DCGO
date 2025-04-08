@@ -20,7 +20,7 @@ namespace DCGO.CardEffects.BT21
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
                     permanentCondition: PermanentCondition,
-                    digivolutionCost: 2,
+                    digivolutionCost: 3,
                     ignoreDigivolutionRequirement: false,
                     card: card,
                     condition: null));

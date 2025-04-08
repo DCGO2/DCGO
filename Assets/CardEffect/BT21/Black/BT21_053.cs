@@ -20,7 +20,7 @@ namespace DCGO.CardEffects.BT21
                     return targetPermanent.TopCard.HasAppmonTraits;
                 }
 
-                cardEffects.Add(CardEffectFactory.AddSelfLinkConditionStaticEffect(permanentCondition: PermanentCondition, linkCost: 0, card: card));
+                cardEffects.Add(CardEffectFactory.AddSelfLinkConditionStaticEffect(permanentCondition: PermanentCondition, linkCost: 1, card: card));
             }
 
             #endregion
@@ -150,14 +150,13 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                        CardEffectCommons.CanTriggerWhenLinking(hashtable, null, card) &&
-                        CardEffectCommons.HasMatchConditionOpponentsPermanent(card, IsOpponentsDigimon);
+                    return CardEffectCommons.CanTriggerWhenLinking(hashtable, null, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.HasMatchConditionOpponentsPermanent(card, IsOpponentsDigimon);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

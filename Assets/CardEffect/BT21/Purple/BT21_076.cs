@@ -70,7 +70,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -183,6 +183,7 @@ namespace DCGO.CardEffects.BT21
                 }
             }
             #endregion
+
             return cardEffects;
         }
     }

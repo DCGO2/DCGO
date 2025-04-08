@@ -104,7 +104,7 @@ namespace DCGO.CardEffects.BT21
 
             #region Link +1
 
-            if (timing == EffectTiming.None) cardEffects.Add(CardEffectFactory.ChangeSelfLinkMaxStaticEffect(card.PermanentOfThisCard().LinkedMax + 1, false, card, null));
+            if (timing == EffectTiming.None) cardEffects.Add(CardEffectFactory.ChangeSelfLinkMaxStaticEffect(1, false, card, null));
 
             #endregion
 
@@ -138,36 +138,19 @@ namespace DCGO.CardEffects.BT21
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    bool unsuspended = false;
-                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-                    selectPermanentEffect.SetUp
-                        (
-                        card.Owner,
-                        permanent => CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent) && permanent == card.PermanentOfThisCard(),
-                        null,
-                        null,
-                        1,
-                        true,
-                        false,
-                        SelectPermanentCoroutine,
-                        null,
-                        SelectPermanentEffect.Mode.UnTap,
-                        activateClass
-                        );
-                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                    {
-                        if (permanent.IsSuspended) unsuspended = true;
-                        yield return null;
-                    }
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                    Permanent thisPermanent = card.PermanentOfThisCard();
 
-                    if (unsuspended)
+                    if(thisPermanent.CanUnsuspend && thisPermanent.IsSuspended)
                     {
+                        yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(
+                            new List<Permanent>() { card.PermanentOfThisCard() }, 
+                            activateClass).Unsuspend());
+
                         yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
-                        player: card.Owner.Enemy,
-                        destroySecurityCount: 1,
-                        cardEffect: activateClass,
-                        fromTop: true).DestroySecurity());
+                            player: card.Owner.Enemy,
+                            destroySecurityCount: 1,
+                            cardEffect: activateClass,
+                            fromTop: true).DestroySecurity());
                     }
                 }
             }

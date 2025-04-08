@@ -43,13 +43,14 @@ namespace DCGO.CardEffects.BT21
 
                 bool PlayedPermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) && permanent.IsTamer && permanent.TopCard.EqualsCardName("Marcus Damon");
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card) && 
+                           permanent.TopCard.EqualsCardName("Marcus Damon");
                 }
 
                 bool CanSelectCardToDigivolveInto(CardSource cardSource)
                 {
                     return cardSource.CardColors.Contains(CardColor.Yellow) && 
-                           cardSource.EqualsCardName("RizeGreymon") &&
+                           cardSource.ContainsCardName("RizeGreymon") &&
                            cardSource.CanPlayCardTargetFrame(card.PermanentOfThisCard().PermanentFrame, false, activateClass);
                 }
 

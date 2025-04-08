@@ -22,6 +22,13 @@ namespace DCGO.CardEffects.BT21
             }
             #endregion
 
+            #region Raid
+            if (timing == EffectTiming.OnAllyAttack)
+            {
+                cardEffects.Add(CardEffectFactory.RaidSelfEffect(isInheritedEffect: false, card: card, condition: null));
+            }
+            #endregion
+
             #region When Digivolving
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
