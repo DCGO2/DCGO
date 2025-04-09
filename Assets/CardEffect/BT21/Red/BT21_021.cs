@@ -2,29 +2,62 @@
 using System.Collections;
 using System.Collections.Generic;
 
-// Shoutmon (King Version)
+//OmniShoutmon
 namespace DCGO.CardEffects.BT21
 {
-    public class BT21_016 : CEntity_Effect
+    public class BT21_021 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Raid
+            #region Alternate Digivolution Cost
 
-            if (timing == EffectTiming.OnAllyAttack)
+            if (timing == EffectTiming.None)
             {
-                cardEffects.Add(CardEffectFactory.RaidSelfEffect(isInheritedEffect: false, card: card, condition: null));
+                bool PermanentCondition(Permanent targetPermanent)
+                {
+                    if (targetPermanent.IsDigimon)
+                    {
+                        if (targetPermanent.TopCard.EqualsCardName("Shoutmon"))
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 4, ignoreDigivolutionRequirement: false, card: card, condition: null));
+            }
+
+            if (timing == EffectTiming.None)
+            {
+                bool PermanentCondition(Permanent targetPermanent)
+                {
+                    if (targetPermanent.IsDigimon)
+                    {
+                        if (targetPermanent.Level == 4)
+                        {
+                            if (targetPermanent.TopCard.EqualsTraits("Xros Heart") || targetPermanent.TopCard.EqualsTraits("Hero"))
+                            {
+                                return true;
+                            }
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
             }
 
             #endregion
 
-            #region Piercing
+            #region DigiXros Name
 
-            if (timing == EffectTiming.OnDetermineDoSecurityCheck)
+            if (timing == EffectTiming.None)
             {
-                cardEffects.Add(CardEffectFactory.PierceSelfEffect(isInheritedEffect: false, card: card, condition: null));
+                // To be implemented
             }
 
             #endregion
@@ -58,12 +91,7 @@ namespace DCGO.CardEffects.BT21
                                 {
                                     if (cardSource.IsDigimon)
                                     {
-                                        if (cardSource.CardTraits.Contains("Xros Heart"))
-                                        {
-                                            return true;
-                                        }
-
-                                        if (cardSource.CardTraits.Contains("XrosHeart"))
+                                        if (cardSource.EqualsCardName("Shoutmon"))
                                         {
                                             return true;
                                         }
@@ -76,7 +104,7 @@ namespace DCGO.CardEffects.BT21
 
                         List<DigiXrosConditionElement> elements = new List<DigiXrosConditionElement>() { element };
 
-                        DigiXrosCondition digiXrosCondition = new DigiXrosCondition(elements, null, 1);
+                        DigiXrosCondition digiXrosCondition = new DigiXrosCondition(elements, null, 2);
 
                         return digiXrosCondition;
                     }
@@ -92,12 +120,12 @@ namespace DCGO.CardEffects.BT21
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Place 1 [Xros]/[Blue Flare]/[Hero] digimon under tamer, then <Save>", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Place 1 [Xros]/[Blue Flare] digimon under tamer, then <Save>", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
-                    => "[On Deletion] You may place 1 Digimon card with the [Xros Heart]/[Blue Flare]/[Hero] trait from your hand or trash under any of your Tamers. Then,＜Save＞";
+                    => "[On Deletion] You may place 1 Digimon card with the [Xros Heart]/[Blue Flare] trait from your hand or trash under any of your Tamers. Then,＜Save＞";
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
@@ -126,7 +154,7 @@ namespace DCGO.CardEffects.BT21
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.EqualsTraits("Xros Heart") || cardSource.EqualsTraits("Blue Flare") || cardSource.EqualsTraits("Hero"))
+                        if (cardSource.EqualsTraits("Xros Heart") || cardSource.EqualsTraits("Blue Flare"))
                         {
                             return true;
                         }
@@ -243,15 +271,25 @@ namespace DCGO.CardEffects.BT21
 
             #endregion
 
-            #region ESS
+            #region End of Attack
 
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnEndAttack)
             {
-                bool Condition()
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Play 1 [Xros Heart]/[Blue Flare]/[Hero] Digimon", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[End of Attack] You may play 1 card with the [Xros Heart]/[Blue Flare]/[Hero] trait from your hand with the play cost reduced by 5. If you did, delete this Digimon.";
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (CardEffectCommons.IsOwnerTurn(card))
+                        if (CardEffectCommons.CanTriggerOnEndAttack(hashtable, card))
                         {
                             return true;
                         }
@@ -259,7 +297,99 @@ namespace DCGO.CardEffects.BT21
                     return false;
                 }
 
-                cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect(changeValue: 2000, isInheritedEffect: true, card: card, condition: Condition));
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    {
+                        if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+
+                bool CanSelectCardCondition(CardSource cardSource)
+                {
+                    if (cardSource.IsDigimon)
+                    {
+                        if (cardSource.EqualsTraits("Xros Heart") || cardSource.EqualsTraits("Blue Flare") || cardSource.EqualsTraits("Hero"))
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    CardSource selectedCard = null;
+                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInHand(card, CanSelectCardCondition));
+                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                    selectHandEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanSelectCardCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: maxCount,
+                        canNoSelect: true,
+                        canEndNotMax: false,
+                        isShowOpponent: true,
+                        selectCardCoroutine: SelectCardCoroutine,
+                        afterSelectCardCoroutine: null,
+                        mode: SelectHandEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    yield return StartCoroutine(selectHandEffect.Activate());
+
+                    IEnumerator SelectCardCoroutine(CardSource cardSource)
+                    {
+                        selectedCard = cardSource;
+                        yield return null;
+                    }
+
+                    if (selectedCard != null)
+                    {
+                        bool isPlayed = false;
+                        var reducdedCost = selectedCard.BasePlayCostFromEntity - 5;
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: new List<CardSource>() { selectedCard }, activateClass: activateClass, payCost: true, isTapped: false, root: SelectCardEffect.Root.Hand, activateETB: true, fixedCost: reducdedCost));
+                        if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedCard.PermanentOfThisCard())) isPlayed = true;
+                        if (isPlayed)
+                        {
+                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                            selectPermanentEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: permanent => permanent == card.PermanentOfThisCard(),
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: 1,
+                                canNoSelect: false,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: null,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Destroy,
+                                cardEffect: activateClass);
+
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                        }
+                    }
+                }
+            }
+
+            #endregion
+
+            #region ESS
+
+            if (timing == EffectTiming.None)
+            {
+                bool Condition()
+                {
+                    return card.PermanentOfThisCard().TopCard.EqualsTraits("Xros Heart");
+                }
+
+                cardEffects.Add(CardEffectFactory.RushSelfStaticEffect(isInheritedEffect: true, card: card, condition: Condition));
             }
 
             #endregion
