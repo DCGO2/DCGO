@@ -57,7 +57,25 @@ namespace DCGO.CardEffects.BT21
 
             if (timing == EffectTiming.None)
             {
-                // To be implemented
+                ChangeCardNamesForDigiXrosClass changeCardNamesForDigiXrosClass = new ChangeCardNamesForDigiXrosClass();
+                changeCardNamesForDigiXrosClass.SetUpICardEffect("Also treated as [Shoutmon] for a DigiXros", CanUseCondition, card);
+                changeCardNamesForDigiXrosClass.SetUpChangeCardNamesForDigiXrosClass(changeCardNames: ChangeCardNames);
+                cardEffects.Add(changeCardNamesForDigiXrosClass);
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return true;
+                }
+
+                List<string> ChangeCardNames(CardSource cardSource, List<string> cardNames)
+                {
+                    if (cardSource == card)
+                    {
+                        cardNames.Add("Shoutmon");
+                    }
+
+                    return cardNames;
+                }
             }
 
             #endregion
