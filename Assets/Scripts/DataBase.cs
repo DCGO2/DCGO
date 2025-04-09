@@ -557,6 +557,11 @@ public class DataBase : MonoBehaviour
         return "<Execute> (At the end of your turn, this Digimon may attack. At the end of that attack, delete this Digimon. Your opponent's unsuspended Digimon can also be attacked with this effect.)";
     }
 
+    public static string ProgressEffectDiscription()
+    {
+        return "<Progress> (While attacking, your opponent's effects don't affect this Digimon.)";
+    }
+
     public static string ReplaceToASCII(string text)
     {
         if (string.IsNullOrEmpty(text))
