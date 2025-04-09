@@ -172,6 +172,7 @@ namespace DCGO.CardEffects.BT21
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("1 of your other Digimon digivolves without paying the cost", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetHashString("WA_BT21-039");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
