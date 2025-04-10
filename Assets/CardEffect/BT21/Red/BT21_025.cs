@@ -13,9 +13,23 @@ namespace DCGO.CardEffects.BT21
 
             #region Progress
 
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnAllyAttack)
             {
-                // to be implemented
+                bool Condition()
+                {
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    {
+                        if (GManager.instance.attackProcess.AttackingPermanent == card.PermanentOfThisCard())
+                        {
+                            if (CardEffectCommons.CanActivateProgress(card))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                    return false;
+                }
+                cardEffects.Add(CardEffectFactory.ProgressSelfStaticEffect(false, card, Condition));
             }
 
             #endregion
