@@ -2,10 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 
-//The Strongest of Brothers
+// Spirit Evolution!
 namespace DCGO.CardEffects.BT21
 {
-    public class BT21_090 : CEntity_Effect
+    public class BT21_091 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
@@ -22,7 +22,7 @@ namespace DCGO.CardEffects.BT21
                 cardEffects.Add(ignoreColorConditionClass);
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.HasMatchConditionPermanent((permanent) => (permanent.IsTamer || permanent.IsDigimon) && permanent.TopCard.HasText("Gammamon"), true);
+                    => CardEffectCommons.HasMatchConditionPermanent((permanent) => permanent.TopCard.Owner == card.Owner && permanent.IsTamer || permanent.TopCard.HasInheritedEffect, true);
 
                 bool CardCondition(CardSource cardSource)
                     => cardSource == card;
@@ -35,13 +35,13 @@ namespace DCGO.CardEffects.BT21
             if (timing == EffectTiming.OptionSkill)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Reveal top 3, add 1 [Gammamon] then place in battle area", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Trash 1 [Hybrid] card, Draw 2", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[Main] Reveal the top 3 cards of your deck. Add 1 card with [Gammamon] in its text among them to the hand. Return the rest to the bottom of the deck. Then, place this card in the battle area.";
+                    return "[Main] By trashing 1 card with the [Hybrid] trait from your hand, ＜Draw 2＞ (Draw 2 cards from your deck). Then, place this card in the battle area.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -49,30 +49,57 @@ namespace DCGO.CardEffects.BT21
                     return CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card);
                 }
 
-                bool CanSelectCardCondition(CardSource cardSource)
+                bool CanSelectCardCondiition(CardSource cardSource)
                 {
-                    return cardSource.HasText("Gammamon");
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
-                {
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SimplifiedRevealDeckTopCardsAndSelect(
-                        revealCount: 3,
-                        simplifiedSelectCardConditions:
-                        new SimplifiedSelectCardConditionClass[]
+                    if (cardSource.Owner == card.Owner)
+                    {
+                        if (cardSource.EqualsTraits("Hybrid"))
                         {
-                        new SimplifiedSelectCardConditionClass(
-                            canTargetCondition:CanSelectCardCondition,
-                            message: "Select 1 card with [Gammamon] in its text",
-                            mode: SelectCardEffect.Mode.AddHand,
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondiition))
+                    {
+                        bool cardTrashed = false;
+                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                        selectHandEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectCardCondiition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
                             maxCount: 1,
-                            selectCardCoroutine: null),
-                        },
-                        remainingCardsPlace: RemainingCardsPlace.DeckBottom,
-                        activateClass: activateClass
-                    ));
+                            canNoSelect: true,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            selectCardCoroutine: null,
+                            afterSelectCardCoroutine: AfterSelectCardCoroutine,
+                            mode: SelectHandEffect.Mode.Discard,
+                            cardEffect: activateClass);
 
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlaceDelayOptionCards(card: card, cardEffect: activateClass));
+                        selectHandEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
+                        selectHandEffect.SetUpCustomMessage_ShowCard("Selected Card");
+                        yield return StartCoroutine(selectHandEffect.Activate());
+
+                        IEnumerator AfterSelectCardCoroutine(List<CardSource> cardsSource)
+                        {
+                            if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, trashedCard => cardsSource[0] == trashedCard))
+                            {
+                                cardTrashed = true;
+                            }
+                            yield return null;
+                        }
+
+                        if (cardTrashed)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 2, activateClass).Draw());
+                        }
+
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlaceDelayOptionCards(card: card, cardEffect: activateClass));
+                    }
                 }
             }
 
@@ -89,12 +116,12 @@ namespace DCGO.CardEffects.BT21
 
                 string EffectDiscription()
                 {
-                    return "[All Turns] When effects place digivolution cards under your Digimon, ＜Delay＞ (After this card is placed, by trashing it the next turn or later, activate the effect below).\r\n・1 of your Digimon may digivolve into a Digimon card with [Gammamon] in its text in the hand without paying the cost.";
+                    return "[All Turns] When any of your Tamers with inherited effects are played, ＜Delay＞ (After this card is placed, by trashing it the next turn or later, activate the effect below).\r\n・1 of your Tamers may digivolve into a Digimon card with the [Hybrid] trait in the hand without paying the cost";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanTriggerOnAddDigivolutionCard(hashtable, PermamentConndition, cardEffect => EffectCondition(hashtable, cardEffect), null))
+                    if (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PermamentConndition, null))
                     {
                         if (CardEffectCommons.CanDeclareOptionDelayEffect(card))
                         {
@@ -118,19 +145,21 @@ namespace DCGO.CardEffects.BT21
 
                 bool PermamentConndition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
-                }
-
-                bool EffectCondition(Hashtable hashtable, ICardEffect effect)
-                {
-                    return CardEffectCommons.IsByEffect(hashtable, null);
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
+                    {
+                        if (permanent.TopCard.IsTamer && permanent.TopCard.HasInheritedEffect)
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (cardSource.HasText("Gammamon"))
+                        if (cardSource.EqualsTraits("Hybrid"))
                         {
                             return true;
                         }
@@ -220,13 +249,13 @@ namespace DCGO.CardEffects.BT21
             if (timing == EffectTiming.SecuritySkill)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play a 4 play cost or less card with [Gammamon] in text", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpICardEffect("Play 1 Tamer with inherited effects", CanUseCondition, card);
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[Security] You may play 1 card with [Gammamon] in its text and a play cost of 4 or less from your hand or trash without paying the cost. Then, place this card in the battle area.";
+                    return "[Security] You may play 1 Tamer card with inherited effects from your hand or trash without paying the cost. Then, add this card to the hand.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -252,14 +281,11 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.HasPlayCost || cardSource.HasUseCost)
+                    if (cardSource.IsTamer)
                     {
-                        if (cardSource.BasePlayCostFromEntity <= 4)
+                        if (cardSource.HasInheritedEffect)
                         {
-                            if (cardSource.HasText("Gammamon"))
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
                     return false;
@@ -356,7 +382,7 @@ namespace DCGO.CardEffects.BT21
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: new List<CardSource>() { selectedCard }, activateClass: activateClass, payCost: false, isTapped: false, root: selectedRoot, activateETB: true));
                         }
 
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlaceDelayOptionCards(card: card, cardEffect: activateClass));
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.AddThisCardToHand(card, activateClass));
                     }
                 }
             }
