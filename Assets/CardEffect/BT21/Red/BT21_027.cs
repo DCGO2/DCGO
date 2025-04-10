@@ -2,7 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace DCGO.CardEffects
+//Shoutmon DX
+namespace DCGO.CardEffects.BT21
 {
     public class BT21_027 : CEntity_Effect
     {
