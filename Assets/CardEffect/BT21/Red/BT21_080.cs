@@ -83,7 +83,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return isExistOnField(card) && CardEffectCommons.CanActivatePermanentSuspendCostEffect(card.PermanentOfThisCard());
+                    return isExistOnField(card) && CardEffectCommons.CanActivateSuspendCostEffect(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
