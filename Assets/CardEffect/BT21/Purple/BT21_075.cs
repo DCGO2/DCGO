@@ -37,7 +37,7 @@ namespace DCGO.CardEffects.BT21
             if(timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Give raid and retal", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Give Raid and Retaliation", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
@@ -105,7 +105,7 @@ namespace DCGO.CardEffects.BT21
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Give raid and retal", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Give Raid and Retaliation", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
@@ -156,12 +156,12 @@ namespace DCGO.CardEffects.BT21
 
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainRaid(
                                 targetPermanent: selectedPermanent,
-                                effectDuration: EffectDuration.UntilEachTurnEnd,
+                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
                                 activateClass: activateClass));
 
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainRetaliation(
                                 targetPermanent: selectedPermanent,
-                                effectDuration: EffectDuration.UntilEachTurnEnd,
+                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
                                 activateClass: activateClass));
                         }
                     }

@@ -10,11 +10,16 @@ namespace DCGO.CardEffects.BT21
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region alternative digivolution method
-            if(timing == EffectTiming.None)
+            #region Alternate Digivolution Requirement
+            if (timing == EffectTiming.None)
             {
+                static bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.ContainsCardName("Growlmon") && 
+                           targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 5;
+                }
 
-                CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanent => permanent.Level == 4 && permanent.TopCard.ContainsCardName("Growlmon"), 3, false, card, null);
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
             }
             #endregion
 

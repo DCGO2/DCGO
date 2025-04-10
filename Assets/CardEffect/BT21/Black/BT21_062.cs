@@ -243,7 +243,12 @@ namespace DCGO.CardEffects.BT21
                                     root = SelectCardEffect.Root.Trash;
                                 }
 
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedCards, activateClass: activateClass, payCost: false, isTapped: false, root: root, activateETB: true));
+                                yield return ContinuousController.instance.StartCoroutine(
+                                    CardEffectCommons.PlayOptionCards(
+                                    cardSources: selectedCards,
+                                    activateClass: activateClass,
+                                    payCost: false,
+                                    root: root));
                             }
                         }
                     }
