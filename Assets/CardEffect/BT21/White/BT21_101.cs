@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 // Gaiamon
 namespace DCGO.CardEffects.BT21
@@ -10,6 +11,18 @@ namespace DCGO.CardEffects.BT21
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
+
+            #region Alternative Digivolution Condition - Ult.
+            if (timing == EffectTiming.None)
+            {
+                bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.EqualsTraits("Ult.");
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 5, ignoreDigivolutionRequirement: false, card: card, condition: null));
+            }
+            #endregion
 
             #region Static Effects
 
@@ -171,133 +184,138 @@ namespace DCGO.CardEffects.BT21
             bool CanSelectLinkCard(CardSource cardSource)
             {
                 if (cardSource.HasAppmonTraits)
-                {
-                    return true;
-                }
+                    return cardSource.CanLink(false);
+
                 return false;
             }
 
-            bool CanSelectDigimon(Permanent permanent)
-            {
-                if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
-                {
-                    return true;
-                }
-                return false;
-            }
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectDigimon))
+                bool hasInHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectLinkCard);
+                bool hasInSources = card.PermanentOfThisCard().DigivolutionCards.Count(CanSelectLinkCard) > 0;
+                bool selectedRoot = false;
+                CardSource selectedCard = null;
+
+                if (hasInHand && hasInSources)
                 {
-                    Permanent selectedPermanent = null;
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectDigimon));
-                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                    selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectDigimon,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: maxCount,
-                        canNoSelect: true,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: SelectPermanentCoroutine,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Custom,
-                        cardEffect: activateClass);
-
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 digimon to add link", "The opponent is selecting 1 digimon to add link");
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                    {
-                        selectedPermanent = permanent;
-                        yield return null;
-                    }
-
-                    if (selectedPermanent != null)
-                    {
-                        List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
+                    List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
                         {
                             new SelectionElement<bool>(message: $"From This Digimon", value: true, spriteIndex: 0),
                             new SelectionElement<bool>(message: $"From Hand", value: false, spriteIndex: 1),
                         };
 
-                        string selectPlayerMessage = "Choose where to get the digimon from";
-                        string notSelectPlayerMessage = "The opponent is choosing effects.";
+                    string selectPlayerMessage = "Choose where to get the digimon from";
+                    string notSelectPlayerMessage = "The opponent is choosing effects.";
 
-                        GManager.instance.userSelectionManager.SetBoolSelection(
-                            selectionElements: selectionElements, selectPlayer: card.Owner,
-                            selectPlayerMessage: selectPlayerMessage,
-                            notSelectPlayerMessage: notSelectPlayerMessage);
+                    GManager.instance.userSelectionManager.SetBoolSelection(
+                        selectionElements: selectionElements, selectPlayer: card.Owner,
+                        selectPlayerMessage: selectPlayerMessage,
+                        notSelectPlayerMessage: notSelectPlayerMessage);
 
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance
-                            .userSelectionManager.WaitForEndSelect());
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance
+                        .userSelectionManager.WaitForEndSelect());
 
-                        CardSource selectedCard = null;
-                        if (GManager.instance.userSelectionManager.SelectedBoolValue)
+                    selectedRoot = GManager.instance.userSelectionManager.SelectedBoolValue;
+                }
+                else if (hasInSources)
+                {
+                    selectedRoot = true;
+                }
+
+                if (selectedRoot)
+                {
+                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+                    selectCardEffect.SetUp(
+                                canTargetCondition: CanSelectLinkCard,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                canNoSelect: () => true,
+                                selectCardCoroutine: SelectCardCoroutine,
+                                afterSelectCardCoroutine: null,
+                                message: "Select 1 card to link.",
+                                maxCount: 1,
+                                canEndNotMax: false,
+                                isShowOpponent: true,
+                                mode: SelectCardEffect.Mode.Custom,
+                                root: SelectCardEffect.Root.Custom,
+                                customRootCardList: card.PermanentOfThisCard().LinkedCards,
+                                canLookReverseCard: true,
+                                selectPlayer: card.Owner,
+                                cardEffect: activateClass);
+
+                    selectCardEffect.SetUpCustomMessage("Select 1 card to link", "The opponent is selecting 1 card to link");
+
+                    yield return StartCoroutine(selectCardEffect.Activate());
+                }
+                else
+                {
+                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                    selectHandEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: CanSelectLinkCard,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: 1,
+                                canNoSelect: true,
+                                canEndNotMax: false,
+                                isShowOpponent: true,
+                                selectCardCoroutine: SelectCardCoroutine,
+                                afterSelectCardCoroutine: null,
+                                mode: SelectHandEffect.Mode.Custom,
+                                cardEffect: activateClass);
+                    selectHandEffect.SetUpCustomMessage("Select 1 card to link", "The opponent is selecting 1 card to link");
+                    
+                    yield return StartCoroutine(selectHandEffect.Activate());
+                }
+
+                IEnumerator SelectCardCoroutine(CardSource cardSource)
+                {
+                    selectedCard = cardSource;
+                    yield return null;
+                }
+
+                if(selectedCard != null)
+                {
+                    bool CanSelectDigimon(Permanent permanent)
+                    {
+                        UnityEngine.Debug.Log($"CAN SELECT DIGIMON: {CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)}, {selectedCard.CanLinkToTargetPermanent(permanent, false)}");
+                        if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                            return selectedCard.CanLinkToTargetPermanent(permanent, false);
+
+                        return false;
+                    }
+
+                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectDigimon))
+                    {
+                        Permanent selectedPermanent = null;
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectDigimon));
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectDigimon,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: maxCount,
+                            canNoSelect: true,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 digimon to add link", "The opponent is selecting 1 digimon to add link");
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
-                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-                            selectCardEffect.SetUp(
-                                        canTargetCondition: CanSelectLinkCard,
-                                        canTargetCondition_ByPreSelecetedList: null,
-                                        canEndSelectCondition: null,
-                                        canNoSelect: () => true,
-                                        selectCardCoroutine: SelectCardCoroutine,
-                                        afterSelectCardCoroutine: null,
-                                        message: "Select 1 linked card.",
-                                        maxCount: 1,
-                                        canEndNotMax: false,
-                                        isShowOpponent: true,
-                                        mode: SelectCardEffect.Mode.Custom,
-                                        root: SelectCardEffect.Root.Custom,
-                                        customRootCardList: card.PermanentOfThisCard().LinkedCards,
-                                        canLookReverseCard: true,
-                                        selectPlayer: card.Owner,
-                                        cardEffect: activateClass);
-
-                            selectCardEffect.SetUpCustomMessage("Select 1 linked card to remove", "The opponent is selecting 1 linked card to remove");
-
-                            yield return StartCoroutine(selectCardEffect.Activate());
-
-                            IEnumerator SelectCardCoroutine(CardSource cardSource)
-                            {
-                                selectedCard = cardSource;
-                                card.PermanentOfThisCard().LinkedCards.Remove(cardSource);
-                                yield return null;
-                            }
+                            selectedPermanent = permanent;
+                            yield return null;
                         }
-                        else
+
+                        if (selectedPermanent != null)
                         {
-                            SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-                            selectHandEffect.SetUp(
-                                        selectPlayer: card.Owner,
-                                        canTargetCondition: CanSelectLinkCard,
-                                        canTargetCondition_ByPreSelecetedList: null,
-                                        canEndSelectCondition: null,
-                                        maxCount: 1,
-                                        canNoSelect: true,
-                                        canEndNotMax: false,
-                                        isShowOpponent: true,
-                                        selectCardCoroutine: SelectCardCoroutine,
-                                        afterSelectCardCoroutine: null,
-                                        mode: SelectHandEffect.Mode.Custom,
-                                        cardEffect: activateClass);
-                            selectHandEffect.SetUpCustomMessage("Select 1 linked card to remove", "The opponent is selecting 1 linked card to remove");
-                            yield return StartCoroutine(selectHandEffect.Activate());
-                            IEnumerator SelectCardCoroutine(CardSource cardSource)
-                            {
-                                selectedCard = cardSource;
-                                yield return null;
-                            }
-                        }
-                        if (selectedCard != null)
-                        {
-                            // Might need to talk to mike about this, things possibly to add
-                            // if link condiiton for selectedCard is sucessful, ex: if it needs exact name or traits, does it meet them.
-                            // Perphaps may lead to link requirements being added to the card itself, instead of an effect.
-                            // if this method below (AddLinkCard), automatically handles if the link max is hit, and allows for owner to choose which link to discarded for new one.
-                            selectedPermanent.AddLinkCard(selectedCard, activateClass);
+                            yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddLinkCard(selectedCard, activateClass));
                         }
                     }
                 }

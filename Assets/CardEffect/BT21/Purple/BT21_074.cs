@@ -435,6 +435,14 @@ namespace DCGO.CardEffects.BT21
                        card.PermanentOfThisCard().DigivolutionCards.Some(CanTuckOrTrash);
             }
 
+            bool CanSelectPermanentCondition(Permanent permanent)
+            {
+                if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                    return permanent.DigivolutionCards.Count(CanTuckOrTrash) >= 1;
+
+                return false;
+            }
+
             bool DedigivolveTarget(Permanent permanent)
             {
                 return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
@@ -464,45 +472,22 @@ namespace DCGO.CardEffects.BT21
                 {
                     bool trashed = false;
 
-                    List<CardSource> selectedCards = new List<CardSource>();
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SelectTrashDigivolutionCards(
+                        permanentCondition: CanSelectPermanentCondition,
+                        cardCondition: CanTuckOrTrash,
+                        maxCount: 3,
+                        canNoTrash: false,
+                        isFromOnly1Permanent: false,
+                        activateClass: activateClass,
+                        afterSelectionCoroutine: AfterTrashedCards
+                    ));
 
-                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                    selectCardEffect.SetUp(
-                                canTargetCondition: CanTuckOrTrash,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                canNoSelect: () => true,
-                                selectCardCoroutine: SelectCardCoroutine,
-                                afterSelectCardCoroutine: null,
-                                message: "Select 1 [Three Musketeers] or [Appmon] card to trash.",
-                                maxCount: 1,
-                                canEndNotMax: false,
-                                isShowOpponent: true,
-                                mode: SelectCardEffect.Mode.Custom,
-                                root: SelectCardEffect.Root.Custom,
-                                customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
-                                canLookReverseCard: true,
-                                selectPlayer: card.Owner,
-                                cardEffect: null);
-
-                    selectCardEffect.SetUpCustomMessage("Select 1 [Three Musketeers] or [Appmon] card to trash.", "The opponent is selecting 1 [Three Musketeers] or [Appmon] card to trash.");
-
-                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-
-                    IEnumerator SelectCardCoroutine(CardSource cardSource)
+                    IEnumerator AfterTrashedCards(Permanent permanent, List<CardSource> cards)
                     {
-                        selectedCards.Add(cardSource);
+                        if(cards.Count > 0)
+                            trashed = true;
 
                         yield return null;
-                    }
-
-                    if (selectedCards.Count >= 1)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(new ITrashDigivolutionCards(card.PermanentOfThisCard(), selectedCards, activateClass).TrashDigivolutionCards());
-
-                        trashed = true;
-                        selectedCards.Clear();
                     }
 
                     if (trashed)
@@ -561,45 +546,22 @@ namespace DCGO.CardEffects.BT21
                 {
                     bool trashed = false;
 
-                    List<CardSource> selectedCards = new List<CardSource>();
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SelectTrashDigivolutionCards(
+                        permanentCondition: CanSelectPermanentCondition,
+                        cardCondition: CanTuckOrTrash,
+                        maxCount: 3,
+                        canNoTrash: false,
+                        isFromOnly1Permanent: false,
+                        activateClass: activateClass,
+                        afterSelectionCoroutine: AfterTrashedCards
+                    ));
 
-                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                    selectCardEffect.SetUp(
-                                canTargetCondition: CanTuckOrTrash,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                canNoSelect: () => true,
-                                selectCardCoroutine: SelectCardCoroutine,
-                                afterSelectCardCoroutine: null,
-                                message: "Select 1 [Three Musketeers] or [Appmon] card to trash.",
-                                maxCount: 1,
-                                canEndNotMax: false,
-                                isShowOpponent: true,
-                                mode: SelectCardEffect.Mode.Custom,
-                                root: SelectCardEffect.Root.Custom,
-                                customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
-                                canLookReverseCard: true,
-                                selectPlayer: card.Owner,
-                                cardEffect: null);
-
-                    selectCardEffect.SetUpCustomMessage("Select 1 [Three Musketeers] or [Appmon] card to trash.", "The opponent is selecting 1 [Three Musketeers] or [Appmon] card to trash.");
-
-                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-
-                    IEnumerator SelectCardCoroutine(CardSource cardSource)
+                    IEnumerator AfterTrashedCards(Permanent permanent, List<CardSource> cards)
                     {
-                        selectedCards.Add(cardSource);
+                        if (cards.Count > 0)
+                            trashed = true;
 
                         yield return null;
-                    }
-
-                    if (selectedCards.Count >= 1)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(new ITrashDigivolutionCards(card.PermanentOfThisCard(), selectedCards, activateClass).TrashDigivolutionCards());
-
-                        trashed = true;
-                        selectedCards.Clear();
                     }
 
                     if (trashed)

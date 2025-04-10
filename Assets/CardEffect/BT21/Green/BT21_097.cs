@@ -186,7 +186,7 @@ namespace DCGO.CardEffects.BT21
 
                             bool CanSelectPermanentCondition(Permanent permanent)
                             {
-                                return cardForLinking.CanLinkFromTargetPermanent(permanent, false);
+                                return cardForLinking.CanLinkToTargetPermanent(permanent, false);
                             }
 
                             IEnumerator SelectPermanentCoroutine(Permanent permanent)

@@ -48,7 +48,7 @@ public partial class CardEffectFactory
 
         bool CanUseCondition(Hashtable hashtable)
         {
-            if (CardEffectCommons.IsExistOnHand(card) || CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+            if (CardEffectCommons.IsExistOnHand(card) || (CardEffectCommons.IsExistOnBattleAreaDigimon(card) && !card.IsLinked))
             {
                 if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                 {
@@ -64,9 +64,6 @@ public partial class CardEffectFactory
 
         IEnumerator ActivateCoroutine(Hashtable _hashtable)
         {
-
-            yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(-card.linkCondition.cost, activateClass));
-
             Permanent selectedPermanent = null;
 
             int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
@@ -99,6 +96,8 @@ public partial class CardEffectFactory
 
             if (selectedPermanent != null)
             {
+                yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(-card.linkCondition.cost, activateClass));
+
                 yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddLinkCard(card, activateClass));
             }
         }

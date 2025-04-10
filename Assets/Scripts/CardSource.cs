@@ -2608,7 +2608,7 @@ public class CardSource : MonoBehaviour
     #endregion
 
     #region whether target permanent can Link into this card
-    public bool CanLinkFromTargetPermanent(Permanent targetPermanent, bool PayCost)
+    public bool CanLinkToTargetPermanent(Permanent targetPermanent, bool PayCost)
     {
         if (targetPermanent != null)
         {
@@ -2620,22 +2620,21 @@ public class CardSource : MonoBehaviour
                     {
                         if (linkCondition != null)
                         {
-                            if (!this.CanNotEvolve(targetPermanent))
+                            if (linkCondition.digimonCondition(targetPermanent))
                             {
-                                if (linkCondition.digimonCondition(targetPermanent))
+                                if (PayCost)
                                 {
-                                    if (PayCost)
+                                    int cost = linkCondition.cost;
+
+                                    cost = GetChangedCostItselef(cost, SelectCardEffect.Root.Hand, new List<Permanent>() { targetPermanent }, checkAvailability: true);
+
+                                    if (Owner.MaxMemoryCost < cost)
                                     {
-                                        int cost = linkCondition.cost;
-
-                                        cost = GetChangedCostItselef(cost, SelectCardEffect.Root.Hand, new List<Permanent>() { targetPermanent }, checkAvailability: true);
-
-                                        if (Owner.MaxMemoryCost < cost)
-                                        {
-                                            return false;
-                                        }
+                                        return false;
                                     }
                                 }
+
+                                return true;
                             }
                         }
                     }

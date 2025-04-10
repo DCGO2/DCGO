@@ -1186,10 +1186,15 @@ public class Permanent
                         {
                             if (cardEffect != null)
                             {
-                                if (isTopCard == cardEffect.IsInheritedEffect)
-                                {
+                                if (cardEffect.IsInheritedEffect && isTopCard)
                                     continue;
-                                }
+
+                                if (cardEffect.IsLinkedEffect && !cardSource.IsLinked)
+                                    continue;
+
+                                //if (isTopCard == cardEffect.IsInheritedEffect)
+                                //    continue;
+
 
                                 _EffectList.Add(cardEffect);
                             }

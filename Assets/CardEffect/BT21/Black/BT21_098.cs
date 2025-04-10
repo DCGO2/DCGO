@@ -185,7 +185,7 @@ namespace DCGO.CardEffects.BT21
                             failedToDelete = true;
                         }
 
-                        if (!failedToDelete)
+                        if (failedToDelete)
                         {
                             yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
                                     player: card.Owner.Enemy,

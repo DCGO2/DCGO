@@ -101,7 +101,7 @@ namespace DCGO.CardEffects.BT21
             #region On Play/When Digivolving shared
             bool CanLinkCondition(CardSource cardSource)
             {
-                return cardSource.HasLevel && cardSource.Level <= 4 && cardSource.CanLinkFromTargetPermanent(card.PermanentOfThisCard(), false);
+                return cardSource.HasLevel && cardSource.Level <= 4 && cardSource.CanLinkToTargetPermanent(card.PermanentOfThisCard(), false);
             }
 
             bool CanActivateConditionShared(Hashtable hashtable)
@@ -227,7 +227,7 @@ namespace DCGO.CardEffects.BT21
 
                         if (selectedCards.Count >= 1)
                         {
-                            yield return card.PermanentOfThisCard().AddLinkCard(selectedCards[0], activateClass);
+                            yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddLinkCard(selectedCards[0], activateClass));
                         }
                     }
                 
@@ -351,7 +351,7 @@ namespace DCGO.CardEffects.BT21
 
                         if (selectedCards.Count >= 1)
                         {
-                            yield return card.PermanentOfThisCard().AddLinkCard(selectedCards[0], activateClass);
+                            yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddLinkCard(selectedCards[0], activateClass));
                         }
                     }
 

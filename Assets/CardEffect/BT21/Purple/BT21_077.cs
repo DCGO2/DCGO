@@ -128,7 +128,7 @@ namespace DCGO.CardEffects.BT21
 
                                 if (selectedPermanent != null)
                                 {
-                                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBarrier(targetPermanent: selectedPermanent, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
+                                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCollision(targetPermanent: selectedPermanent, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
 
                                     ActivateClass activateClassDebuff = new ActivateClass();
                                     activateClassDebuff.SetUpICardEffect("Attack with this Digimon", CanUseConditionDebuff,
@@ -284,7 +284,7 @@ namespace DCGO.CardEffects.BT21
                                 if (selectedPermanent != null)
                                 {
 
-                                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBarrier(targetPermanent: selectedPermanent, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
+                                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCollision(targetPermanent: selectedPermanent, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
 
                                     ActivateClass activateClassDebuff = new ActivateClass();
                                     activateClassDebuff.SetUpICardEffect("Attack with this Digimon", CanUseConditionDebuff,
