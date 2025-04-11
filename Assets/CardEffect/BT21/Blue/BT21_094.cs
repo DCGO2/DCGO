@@ -74,8 +74,7 @@ namespace DCGO.CardEffects.BT21
 
             #region Delay Effect
 
-            // TODO Make on top stacked card trashed
-            if (timing == EffectTiming.WhenPermanentWouldBeDeleted)
+            if (timing == EffectTiming.WhenTopCardTrashed)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Digivolve into a Digimon card with [Armor Form] trait in your hand", CanUseCondition, card);
@@ -89,11 +88,15 @@ namespace DCGO.CardEffects.BT21
                         "[All Turns] When the top stacked card of any your [Armor Form] trait Digimon is trashed, [Delay] • 1 of your Digimon may digivolve into a Digimon card with the [Armor Form] in the hand without paying the cost.";
                 }
 
+                bool TrashedCardCondition(CardSource cardSource)
+                {
+                    return cardSource.EqualsTraits("Armor Form");
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    // TODO Make on top stacked card trashed
                     return CardEffectCommons.CanDeclareOptionDelayEffect(card) &&
-                           CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, CanSelectPermanentCondition);
+                           CardEffectCommons.CanTriggerWhenTopCardTrashed(hashtable, TrashedCardCondition);
                 }
 
                 bool CanSelectHandCardCondition(CardSource cardSource)
@@ -105,7 +108,6 @@ namespace DCGO.CardEffects.BT21
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
-                           permanent.TopCard.EqualsTraits("Armor Form") &&
                            card.Owner.HandCards.Where(CanSelectHandCardCondition).Any(cardSource =>
                                cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass));
                 }

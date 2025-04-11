@@ -87,29 +87,42 @@ namespace DCGO.CardEffects.BT21
                         {
                             if (selectedPermanent1.CanAttack(activateClass) && CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentPermanentCondition))
                             {
-                                bool DefenderCondition(Permanent permanent)
-                                {
-                                    if (permanent != null)
-                                    {
-                                        if (permanent.TopCard != null)
-                                        {
-                                            if (permanent.TopCard.Owner == card.Owner.Enemy)
-                                            {
-                                                if (permanent.IsDigimon)
-                                                {
-                                                    if (!permanent.IsSuspended)
-                                                    {
-                                                        if (permanent.TopCard.Owner.GetBattleAreaPermanents().Contains(permanent))
-                                                        {
-                                                            return true;
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
+                                #region Attack unsuspended Digimon
 
-                                    return false;
+                                CanAttackTargetDefendingPermanentClass canAttackTargetDefendingPermanentClass = new CanAttackTargetDefendingPermanentClass();
+                                canAttackTargetDefendingPermanentClass.SetUpICardEffect("Can attack unsuspended Digimon", CanUseCondition, selectedPermanent1.TopCard);
+                                canAttackTargetDefendingPermanentClass.SetUpCanAttackTargetDefendingPermanentClass(
+                                    attackerCondition: AttackerCondition,
+                                    defenderCondition: DefenderCondition,
+                                    cardEffectCondition: CardEffectCondition);
+                                selectedPermanent1.UntilEndAttackEffects.Add(_ => canAttackTargetDefendingPermanentClass);
+
+                                bool CanUseCondition(Hashtable hashtable)
+                                {
+                                    return true;
+                                }
+
+                                bool AttackerCondition(Permanent attacker)
+                                {
+                                    return attacker == selectedPermanent1;
+                                }
+
+                                bool DefenderCondition(Permanent defender)
+                                {
+                                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(defender, card) &&
+                                           !defender.IsSuspended;
+                                }
+
+                                bool CardEffectCondition(ICardEffect cardEffect)
+                                {
+                                    return true;
+                                }
+
+                                #endregion
+
+                                bool AttackDefenderCondition(Permanent permanent)
+                                {
+                                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
                                 }
 
                                 SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
@@ -117,7 +130,7 @@ namespace DCGO.CardEffects.BT21
                                 selectAttackEffect.SetUp(
                                     attacker: selectedPermanent1,
                                     canAttackPlayerCondition: () => false,
-                                    defenderCondition: DefenderCondition,
+                                    defenderCondition: AttackDefenderCondition,
                                     cardEffect: activateClass);
 
                                 yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
