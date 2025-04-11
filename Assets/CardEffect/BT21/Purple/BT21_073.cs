@@ -23,50 +23,34 @@ namespace DCGO.CardEffects.BT21
             }
             #endregion
 
-            #region  Appfusion
+            #region App Fusion (Globemon & Charismon)
+
             if (timing == EffectTiming.None)
             {
                 AddAppFusionConditionClass addAppFusionConditionClass = new AddAppFusionConditionClass();
-                addAppFusionConditionClass.SetUpICardEffect($"App Fusion", CanUseCondition, card);
+                addAppFusionConditionClass.SetUpICardEffect($"App Fusion", (hashtable) => true, card);
                 addAppFusionConditionClass.SetUpAddAppFusionConditionClass(getAppFusionCondition: GetAppFusion);
                 addAppFusionConditionClass.SetNotShowUI(true);
                 cardEffects.Add(addAppFusionConditionClass);
 
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return true;
-                }
-
                 AppFusionCondition GetAppFusion(CardSource cardSource)
                 {
-                    string[] validCards = { "Sociamon", "Gossipmon" };
-                    if (cardSource == card)
+                    bool linkCondition(Permanent permanent, CardSource source)
                     {
-                        bool linkCondition(CardSource source)
+                        if (source != null)
                         {
-                            foreach (string name in validCards)
+                            if (source != card)
                             {
-                                if (source.EqualsCardName(name))
+                                if (permanent.TopCard.EqualsCardName("Sociamon"))
                                 {
-                                    foreach(string otherName in validCards)
+                                    if (permanent.LinkedCards.Find(x => x.EqualsCardName("Gossipmon")))
                                     {
-                                        if(otherName != name && source.PermanentOfThisCard().TopCard.EqualsCardName(otherName))
-                                        {
-                                            return true;
-                                        }
+                                        return true;
                                     }
                                 }
-                            }
-                            return false;
-                        }
-
-                        bool digimonCondition(Permanent permanent)
-                        {
-                            if (!card.CanNotEvolve(permanent))
-                            {
-                                foreach(string name in validCards)
+                                if (permanent.TopCard.EqualsCardName("Gossipmon"))
                                 {
-                                    if (permanent.TopCard.EqualsCardName(name))
+                                    if (permanent.LinkedCards.Find(x => x.EqualsCardName("Sociamon")))
                                     {
                                         return true;
                                     }
@@ -76,11 +60,38 @@ namespace DCGO.CardEffects.BT21
                             return false;
                         }
 
+                        return false;
+                    }
+                    bool digimonCondition(Permanent permanent)
+                    {
+                        if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                        {
+                            if (permanent.TopCard.EqualsCardName("Sociamon"))
+                            {
+                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Gossipmon")))
+                                {
+                                    return true;
+                                }
+                            }
+                            if (permanent.TopCard.EqualsCardName("Gossipmon"))
+                            {
+                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Sociamon")))
+                                {
+                                    return true;
+                                }
+                            }
+
+                            return false;
+                        }
+
+                        return false;
+                    }
+
+                    if (cardSource == card)
+                    {
                         AppFusionCondition AppFusionCondition = new AppFusionCondition(
                             linkedCondition: linkCondition,
-                            selectLinkMessage: "1 [Sociamon] or [Gossipmon]",
                             digimonCondition: digimonCondition,
-                            selectDigimonMessage: "1 [Sociamon] or [Gossipmon]",
                             cost: 0);
 
                         return AppFusionCondition;
@@ -89,6 +100,7 @@ namespace DCGO.CardEffects.BT21
                     return null;
                 }
             }
+
             #endregion
 
             #region Blocker

@@ -1024,7 +1024,11 @@ public class Permanent
         {
             if (cardSources.Count >= 1)
             {
-                return cardSources.First(source => !LinkedCards.Contains(source));
+                if (LinkedCards.Count > 0)
+                    return cardSources.First(source => !LinkedCards.Contains(source));
+
+                else
+                    return cardSources[0];
             }
 
             return null;

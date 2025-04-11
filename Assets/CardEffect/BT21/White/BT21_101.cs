@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 // Gaiamon
@@ -38,28 +39,28 @@ namespace DCGO.CardEffects.BT21
 
                 AppFusionCondition GetAppFusion(CardSource cardSource)
                 {
-                    string selectLinkMessage = "";
-                    string selectDigimonMessage = "";
-                    bool linkCondition(CardSource source)
+                    bool linkCondition(Permanent permanent, CardSource source)
                     {
                         if (source != null)
                         {
-                            if (source.PermanentOfThisCard().TopCard.EqualsCardName("Globemon"))
+                            if(source != card)
                             {
-                                if (source.PermanentOfThisCard().LinkedCards.Find(x => x.EqualsCardName("Charismon")))
+                                if (permanent.TopCard.EqualsCardName("Globemon"))
                                 {
-                                    selectLinkMessage = "1 [Charismon]";
-                                    return true;
+                                    if (permanent.LinkedCards.Find(x => x.EqualsCardName("Charismon")))
+                                    {
+                                        return true;
+                                    }
+                                }
+                                if (permanent.TopCard.EqualsCardName("Charismon"))
+                                {
+                                    if (permanent.LinkedCards.Find(x => x.EqualsCardName("Globemon")))
+                                    {
+                                        return true;
+                                    }
                                 }
                             }
-                            if (source.PermanentOfThisCard().TopCard.EqualsCardName("Charismon"))
-                            {
-                                if (source.PermanentOfThisCard().LinkedCards.Find(x => x.EqualsCardName("Globemon")))
-                                {
-                                    selectLinkMessage = "1 [Globemon]";
-                                    return true;
-                                }
-                            }
+                            
                             return false;
                         }
 
@@ -73,7 +74,6 @@ namespace DCGO.CardEffects.BT21
                             {
                                 if (permanent.LinkedCards.Find(x => x.EqualsCardName("Charismon")))
                                 {
-                                    selectDigimonMessage = "1 [Charismon]";
                                     return true;
                                 }
                             }
@@ -81,7 +81,6 @@ namespace DCGO.CardEffects.BT21
                             {
                                 if (permanent.LinkedCards.Find(x => x.EqualsCardName("Globemon")))
                                 {
-                                    selectDigimonMessage = "1 [Globemon]";
                                     return true;
                                 }
                             }
@@ -95,9 +94,7 @@ namespace DCGO.CardEffects.BT21
                     {
                         AppFusionCondition AppFusionCondition = new AppFusionCondition(
                             linkedCondition: linkCondition,
-                            selectLinkMessage: selectLinkMessage,
                             digimonCondition: digimonCondition,
-                            selectDigimonMessage: selectDigimonMessage,
                             cost: 0);
 
                         return AppFusionCondition;
