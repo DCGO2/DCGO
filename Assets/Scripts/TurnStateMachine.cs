@@ -827,6 +827,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
     int TargetFrameID { get; set; } = 0;
     int[] JogressEvoRootsFrameIDs { get; set; } = new int[0];
     int BurstTamerFrameID { get; set; } = 0;
+    int AppFusionFrameID { get; set; } = 0;
     ICardEffect UseCardEffect { get; set; } = null;
     Permanent AttackingPermanent { get; set; } = null;
     Permanent DefendingPermanent { get; set; } = null;
@@ -1208,6 +1209,12 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                 {
                     playCard.SetBurst(BurstTamerFrameID, PlayCard);
                 }
+
+                if (0 >= AppFusionFrameID && AppFusionFrameID <= gameContext.TurnPlayer.fieldCardFrames.Count - 1)
+                {
+                    playCard.SetAppFusion(AppFusionFrameID, PlayCard);
+                }
+
 
                 yield return StartCoroutine(playCard.PlayCard());
 
@@ -2132,7 +2139,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                     #region Check if it is dropped in the frame
                                     foreach (FieldCardFrame fieldCardFrame in GManager.instance.You.fieldCardFrames)
                                     {
-                                        if (handCard.cardSource.CanPlayCardTargetFrame(fieldCardFrame, true, null) || handCard.cardSource.CanJogressFromTargetPermanent(fieldCardFrame.GetFramePermanent(), true) || handCard.cardSource.CanBurstDigivolutionFromTargetPermanent(fieldCardFrame.GetFramePermanent(), true))
+                                        if (handCard.cardSource.CanPlayCardTargetFrame(fieldCardFrame, true, null) || handCard.cardSource.CanJogressFromTargetPermanent(fieldCardFrame.GetFramePermanent(), true) || handCard.cardSource.CanBurstDigivolutionFromTargetPermanent(fieldCardFrame.GetFramePermanent(), true) || handCard.cardSource.CanAppFusionFromTargetPermanent(fieldCardFrame.GetFramePermanent(), true))
                                         {
                                             if (dropAreas.Count((dropArea) => dropArea.IsChildThisDropArea(fieldCardFrame.Frame)) > 0)
                                             {
@@ -2373,7 +2380,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                                             IEnumerator _EndSelectCoroutine_SelectDigivolutionRoots(List<Permanent> permanents)
                                                             {
                                                                 yield return null;
-                                                                photonView.RPC("SetPlayCard", RpcTarget.All, handCard.cardSource.CardIndex, fieldCardFrame.FrameID, new int[] { permanents[0].PermanentFrame.FrameID, permanents[1].PermanentFrame.FrameID }, -1);
+                                                                photonView.RPC("SetPlayCard", RpcTarget.All, handCard.cardSource.CardIndex, fieldCardFrame.FrameID, new int[] { permanents[0].PermanentFrame.FrameID, permanents[1].PermanentFrame.FrameID }, -1, -1);
                                                             }
 
                                                             IEnumerator _NoSelectCoroutine()
@@ -2423,7 +2430,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                                             IEnumerator EndSelectCoroutine_SelectTamer(Permanent permanent)
                                                             {
                                                                 yield return null;
-                                                                photonView.RPC("SetPlayCard", RpcTarget.All, handCard.cardSource.CardIndex, fieldCardFrame.FrameID, new int[0], permanent.PermanentFrame.FrameID);
+                                                                photonView.RPC("SetPlayCard", RpcTarget.All, handCard.cardSource.CardIndex, fieldCardFrame.FrameID, new int[0], permanent.PermanentFrame.FrameID, -1);
                                                             }
 
                                                             IEnumerator _NoSelectCoroutine()
@@ -2459,7 +2466,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                                             }
 
                                                             yield return ContinuousController.instance.StartCoroutine(handCard.cardSource.Owner.brainStormObject.BrainStormCoroutine(handCard.cardSource));
-
+                
                                                             GManager.instance.selectAppFusionEffect.SetUp_SelectLink
                                                                 (card: handCard.cardSource,
                                                                 isLocal: true,
@@ -2473,7 +2480,9 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                                             IEnumerator EndSelectCoroutine_SelectLink(CardSource cardSource)
                                                             {
                                                                 yield return null;
-                                                                //photonView.RPC("SetPlayCard", RpcTarget.All, handCard.cardSource.CardIndex, fieldCardFrame.FrameID, new int[0], permanent.PermanentFrame.FrameID);
+
+                                                                //int sourceIndex = fieldCardFrame.GetFramePermanent().LinkedCards.IndexOf(cardSource);
+                                                                photonView.RPC("SetPlayCard", RpcTarget.All, handCard.cardSource.CardIndex, fieldCardFrame.FrameID, new int[0], -1, fieldCardFrame.FrameID);
                                                             }
 
                                                             IEnumerator _NoSelectCoroutine()
@@ -2490,7 +2499,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                                     #region usually evolves
                                                     void Digivolution()
                                                     {
-                                                        photonView.RPC("SetPlayCard", RpcTarget.All, handCard.cardSource.CardIndex, fieldCardFrame.FrameID, new int[0], -1);
+                                                        photonView.RPC("SetPlayCard", RpcTarget.All, handCard.cardSource.CardIndex, fieldCardFrame.FrameID, new int[0], -1, -1);
                                                     }
                                                     #endregion
 
@@ -2517,7 +2526,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
                                     if (CanPlayEmptyFrame)
                                     {
-                                        #region プレイマットでドロップしているかチェック
+                                        #region Check for drops on the playmat
                                         if (dropAreas.Count((dropArea) => dropArea.IsChildThisDropArea(GManager.instance.You.playMatCardFrame.Frame)) > 0)
                                         {
                                             if (handCard.cardSource.Owner.HandTransform.GetComponent<HandContoller>() != null)
@@ -2540,7 +2549,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                             GManager.instance.You.playMatCardFrame.RemoveClickTarget();
                                             GManager.instance.You.playMatCardFrame.Frame.transform.parent.gameObject.SetActive(false);
 
-                                            photonView.RPC("SetPlayCard", RpcTarget.All, handCard.cardSource.CardIndex, handCard.cardSource.PreferredFrame().FrameID, new int[0], -1);
+                                            photonView.RPC("SetPlayCard", RpcTarget.All, handCard.cardSource.CardIndex, handCard.cardSource.PreferredFrame().FrameID, new int[0], -1, -1);
                                             selected = true;
 
                                             return;
@@ -2551,10 +2560,10 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                 }
                                 #endregion
 
-                                #region オプション
+                                #region option
                                 else if (handCard.cardSource.IsOption)
                                 {
-                                    #region プレイマットでドロップしているかチェック
+                                    #region Check for drops on the playmat
                                     if (dropAreas.Count((dropArea) => dropArea.IsChildThisDropArea(GManager.instance.You.playMatCardFrame.Frame)) > 0)
                                     {
                                         if (handCard.cardSource.Owner.HandTransform.GetComponent<HandContoller>() != null)
@@ -2577,7 +2586,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                         GManager.instance.You.playMatCardFrame.RemoveClickTarget();
                                         GManager.instance.You.playMatCardFrame.Frame.transform.parent.gameObject.SetActive(false);
 
-                                        photonView.RPC("SetPlayCard", RpcTarget.All, handCard.cardSource.CardIndex, 0, new int[0], -1);
+                                        photonView.RPC("SetPlayCard", RpcTarget.All, handCard.cardSource.CardIndex, 0, new int[0], -1, -1);
                                         selected = true;
 
                                         return;
@@ -3113,7 +3122,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
     #region Play card decision
     [PunRPC]
-    public void SetPlayCard(int cardIndex, int TargetFrameID, int[] JogressEvoRootsFrameIDs, int BurstTamerFrameID)
+    public void SetPlayCard(int cardIndex, int TargetFrameID, int[] JogressEvoRootsFrameIDs, int BurstTamerFrameID, int AppFusionFrameID)
     {
         PlayCard = gameContext.ActiveCardList[cardIndex];
         this.TargetFrameID = TargetFrameID;
@@ -3132,6 +3141,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         }
 
         this.BurstTamerFrameID = BurstTamerFrameID;
+        this.AppFusionFrameID = AppFusionFrameID;
     }
     #endregion
 

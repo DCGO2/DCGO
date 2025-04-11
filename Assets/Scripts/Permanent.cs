@@ -631,7 +631,7 @@ public class Permanent
     #endregion
 
     #region Digivolution Cards
-    public List<CardSource> DigivolutionCards => cardSources.Filter(cardSource => cardSource != TopCard || LinkedCards.Contains(cardSource));
+    public List<CardSource> DigivolutionCards => cardSources.Filter(cardSource => cardSource != TopCard && !LinkedCards.Contains(cardSource));
     #endregion
 
     #region Linked Cards
@@ -1024,7 +1024,11 @@ public class Permanent
         {
             if (cardSources.Count >= 1)
             {
-                return cardSources[0];
+                if (LinkedCards.Count > 0)
+                    return cardSources.First(source => !LinkedCards.Contains(source));
+
+                else
+                    return cardSources[0];
             }
 
             return null;
@@ -1186,10 +1190,15 @@ public class Permanent
                         {
                             if (cardEffect != null)
                             {
-                                if (isTopCard == cardEffect.IsInheritedEffect)
-                                {
+                                if (cardEffect.IsInheritedEffect && isTopCard)
                                     continue;
-                                }
+
+                                if (cardEffect.IsLinkedEffect && !cardSource.IsLinked)
+                                    continue;
+
+                                //if (isTopCard == cardEffect.IsInheritedEffect)
+                                //    continue;
+
 
                                 _EffectList.Add(cardEffect);
                             }

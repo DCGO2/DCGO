@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace DCGO.CardEffects.BT21
 {
@@ -103,7 +104,7 @@ namespace DCGO.CardEffects.BT21
 
                 int Count()
                 {
-                    return (card.Owner.TrashCards.Count + card.Owner.Enemy.TrashCards.Count) / 10;
+                    return Mathf.FloorToInt((card.Owner.TrashCards.Count + card.Owner.Enemy.TrashCards.Count) / 10);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -120,7 +121,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition);
+                    return CardEffectCommons.CanActivateOnDeletion(card) && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -174,6 +175,7 @@ namespace DCGO.CardEffects.BT21
                 }
             }
             #endregion
+
             return cardEffects;
         }
     }

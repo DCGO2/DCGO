@@ -64,7 +64,21 @@ public partial class CardEffectCommons
 
                         _permanent.HideDeleteEffect();
 
-                        #region ÉçÉOí«â¡
+                        #region "When Top Card is Trashed" effect
+                        #region Hashtable Setting
+                        System.Collections.Hashtable hashtable = new System.Collections.Hashtable()
+                        {
+                            {"Permanent", _permanent},
+                            {"CardSources", new List<CardSource> { topCard } }
+                        };
+                        #endregion
+
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing
+                            .StackSkillInfos(hashtable,EffectTiming.WhenTopCardTrashed));
+
+                        #endregion
+
+                        #region Log
                         string log = "";
 
                         log += $"\nArmor Purge :";

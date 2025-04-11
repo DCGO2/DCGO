@@ -796,7 +796,8 @@ public enum EffectTiming
     OnReturnCardsToHandFromTrash,
     AfterEffectsActivate,
     WhenWouldDigivolutionCardDiscarded,
-    WhenLinked
+    WhenLinked,
+    WhenTopCardTrashed
 }
 #endregion
 

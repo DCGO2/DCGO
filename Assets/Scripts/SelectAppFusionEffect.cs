@@ -15,7 +15,7 @@ public class SelectAppFusionEffect : MonoBehaviour
         Func<IEnumerator> noSelectCoroutine)
     {
         _card = card;
-        _evoRoot = evoRoot;
+        EvoRoot = evoRoot;
         _canNoSelect = canNoSelect;
         _endSelectCoroutine_Digivolve = endSelectCoroutine_Digivolve;
         _endSelectCoroutine_AppFusion = endSelectCoroutine_AppFusion;
@@ -39,7 +39,8 @@ public class SelectAppFusionEffect : MonoBehaviour
     }
 
     CardSource _card = null;
-    CardSource _evoRoot = null;
+    
+    public CardSource EvoRoot = null;
     bool _isLocal = false;
 
     bool _isPayCost = false;
@@ -48,13 +49,14 @@ public class SelectAppFusionEffect : MonoBehaviour
     Func<IEnumerator> _endSelectCoroutine_AppFusion = null;
     Func<CardSource, IEnumerator> _endSelectCoroutine_SelectLink = null;
     Func<IEnumerator> _noSelectCoroutine = null;
-    public bool TamerBounced { get; private set; } = false;
+    public bool LinkAdded { get; private set; } = false;
+    public CardSource selectedLink = null;
 
     public IEnumerator SelectWheterToAppFusion()
     {
         if (_card != null)
         {
-            if (_evoRoot != null)
+            if (EvoRoot != null)
             {
                 yield return StartCoroutine(GManager.instance.selectCardPanel.OpenSelectCardPanel(
                             Message: "With which method would you like to Digivolve?",
@@ -69,7 +71,7 @@ public class SelectAppFusionEffect : MonoBehaviour
                             skillInfos: null,
                             root: SelectCardEffect.Root.None,
                             isCenter: true,
-                            evoRootsArray: new CardSource[][] { new CardSource[] { _evoRoot }, new CardSource[] { _evoRoot } },
+                            evoRootsArray: new CardSource[][] { new CardSource[] { EvoRoot }, new CardSource[] { EvoRoot } },
                             titleStrings: new List<string>() { "Normal Digivolution", "<color=#FF633E>App Fusion</color>" }));
 
                 if (GManager.instance.selectCardPanel.SelectedIndex.Count > 0)
@@ -110,26 +112,23 @@ public class SelectAppFusionEffect : MonoBehaviour
         bool active = false;
         SelectCardEffect selectCardEffect = null;
 
-        if (_card != null && targetPermanent != null)
+        if (_card != null && EvoRoot != null)
         {
-            if (_card.CanPlayBurst(_isPayCost))
+            if (_card.appFusionCondition != null)
             {
-                if (_card.appFusionCondition != null)
+                if (GManager.instance != null)
                 {
-                    if (GManager.instance != null)
+                    if (GManager.instance.turnStateMachine != null)
                     {
-                        if (GManager.instance.turnStateMachine != null)
+                        if (GManager.instance.turnStateMachine.gameContext != null)
                         {
-                            if (GManager.instance.turnStateMachine.gameContext != null)
+                            if (GManager.instance.turnStateMachine.gameContext.ActiveCardList.Count >= 1)
                             {
-                                if (GManager.instance.turnStateMachine.gameContext.ActiveCardList.Count >= 1)
-                                {
-                                    selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+                                selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
-                                    if (selectCardEffect != null)
-                                    {
-                                        active = true;
-                                    }
+                                if (selectCardEffect != null)
+                                {
+                                    active = true;
                                 }
                             }
                         }
@@ -140,13 +139,26 @@ public class SelectAppFusionEffect : MonoBehaviour
 
         if (active)
         {
-            CardSource selectedLink = null;
-
             AppFusionCondition appFusionCondition = _card.appFusionCondition;
 
             bool CanSelectSourceCondition(CardSource link)
             {
-                return (link != null);
+                if(appFusionCondition != null)
+                {
+                    if (appFusionCondition.linkedCondition != null)
+                    {
+                        if (link != null)
+                        {
+                            if (appFusionCondition.linkedCondition(targetPermanent, link))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+                
+                
+                return false;
             }
 
             int maxCount = Math.Min(1, targetPermanent.LinkedCards.Count(CanSelectSourceCondition));
@@ -160,7 +172,7 @@ public class SelectAppFusionEffect : MonoBehaviour
                 canNoSelect: () => _canNoSelect,
                 selectCardCoroutine: SelectCardCoroutine,
                 afterSelectCardCoroutine: null,
-                message: $"Select {appFusionCondition.selectLinkMessage}.",
+                message: $"Select 1 card to add as source.",
                 maxCount: maxCount,
                 canEndNotMax: false,
                 isShowOpponent: true,
@@ -201,127 +213,17 @@ public class SelectAppFusionEffect : MonoBehaviour
         }
     }
 
-    public IEnumerator BounceTamer(Permanent tamer)
+    public IEnumerator AddToSources()
     {
-        TamerBounced = false;
+        LinkAdded = false;
 
-        if (tamer != null)
+        if (selectedLink != null)
         {
-            if (tamer.TopCard != null)
-            {
-                if (tamer.TopCard.Owner.GetBattleAreaPermanents().Contains(tamer))
-                {
-                    if (!tamer.CannotReturnToHand(null))
-                    {
-                        Hashtable hashtable = new Hashtable();
-                        hashtable.Add("IsBurst", true);
-
-                        yield return ContinuousController.instance.StartCoroutine(new HandBounceClaass(new List<Permanent>() { tamer }, hashtable).Bounce());
-
-                        if (tamer.TopCard == null && tamer.IsAddedAsSourceByAppFusion)
-                        {
-                            TamerBounced = true;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    public void AddTrashTopCardAtTurnEnd(Permanent permanent)
-    {
-        Permanent selectedPermanent = permanent;
-
-        if (selectedPermanent != null)
-        {
-            if (selectedPermanent.TopCard != null)
-            {
-                ActivateClass activateClass1 = new ActivateClass();
-
-                activateClass1.SetUpICardEffect("Trash this Digimon's top card\n(Burst Digivolution)", CanUseCondition2, selectedPermanent.TopCard);
-                activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, 1, false, EffectDiscription1());
-                activateClass1.SetEffectSourcePermanent(selectedPermanent);
-                activateClass1.SetHashString("TrashAppFusion");
-                selectedPermanent.UntilEachTurnEndEffects.Add(GetCardEffect);
-
-                string EffectDiscription1()
-                {
-                    return "At the end of the burst digivolution turn, trash this Digimon's top card";
-                }
-
-                ChangeDPClass rootEffect = new ChangeDPClass();
-                rootEffect.SetUpICardEffect("", null, selectedPermanent.TopCard);
-                activateClass1.SetRootCardEffect(rootEffect);
-
-                bool CanUseCondition2(Hashtable hashtable1)
-                {
-                    if (selectedPermanent.TopCard != null)
-                    {
-                        if (selectedPermanent.TopCard.Owner.GetFieldPermanents().Contains(selectedPermanent))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
-                bool CanActivateCondition1(Hashtable hashtable1)
-                {
-                    if (selectedPermanent.TopCard != null)
-                    {
-                        if (selectedPermanent.TopCard.Owner.GetFieldPermanents().Contains(selectedPermanent))
-                        {
-                            if (selectedPermanent.DigivolutionCards.Count >= 1)
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return false;
-                }
-
-                IEnumerator ActivateCoroutine1(Hashtable _hashtable1)
-                {
-                    if (selectedPermanent.TopCard != null)
-                    {
-                        if (selectedPermanent.TopCard.Owner.GetFieldPermanents().Contains(selectedPermanent))
-                        {
-                            if (selectedPermanent.DigivolutionCards.Count >= 1)
-                            {
-                                Permanent permanent = selectedPermanent;
-
-                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(permanent));
-
-                                CardSource cardSource = permanent.TopCard;
-
-                                yield return ContinuousController.instance.StartCoroutine(new AceOverflowClass(new List<CardSource>() { cardSource }).Overflow());
-
-                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveFromAllArea(cardSource));
-
-                                if (!cardSource.IsToken)
-                                {
-                                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddTrashCard(cardSource));
-                                }
-
-                                permanent.ShowingPermanentCard.ShowPermanentData(true);
-                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().RemoveDigivolveRootEffect(cardSource, permanent));
-                            }
-                        }
-                    }
-                }
-
-                ICardEffect GetCardEffect(EffectTiming _timing)
-                {
-                    if (_timing == EffectTiming.OnEndTurn)
-                    {
-                        return activateClass1;
-                    }
-
-                    return null;
-                }
-            }
+            yield return ContinuousController.instance.StartCoroutine(EvoRoot.PermanentOfThisCard().RemoveLinkedCard(selectedLink));
+            yield return ContinuousController.instance.StartCoroutine(EvoRoot.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource> { selectedLink }, null, true));
+            yield return ContinuousController.instance.StartCoroutine(EvoRoot.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource> { EvoRoot }, null, true));
+            
+            LinkAdded = true;
         }
     }
 }
