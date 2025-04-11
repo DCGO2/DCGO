@@ -140,6 +140,14 @@ public class PlayCardClass
         }
     }
 
+    public void SetAppFusion(int AppFusionFrameID, CardSource card)
+    {
+        if (0 >= AppFusionFrameID && AppFusionFrameID <= card.Owner.fieldCardFrames.Count - 1)
+        {
+            _appFusionFrameID = AppFusionFrameID;
+        }
+    }
+
     public void SetShowEffect()
     {
         _showEffect = true;
@@ -196,6 +204,7 @@ public class PlayCardClass
     int _reducedCost = 0;
     int[] _jogressEvoRootsFrameIDs = null;
     int _burstTamerFrameID = -1;
+    int _appFusionFrameID = -1;
     bool _addSecurityEndOption = false;
     bool _isBreedingArea = false;
 
@@ -237,9 +246,37 @@ public class PlayCardClass
         return null;
     }
 
+    bool IsAppFusion(CardSource card)
+    {
+        CardSource linkCard = GManager.instance.selectAppFusionEffect.selectedLink;
+
+        if (linkCard != null)
+        {
+            if (card.appFusionCondition != null)
+            {
+                if (card.appFusionCondition.linkedCondition != null)
+                {
+                    if (card.appFusionCondition.digimonCondition(GManager.instance.selectAppFusionEffect.EvoRoot.PermanentOfThisCard()))
+                    {
+                        if (card.appFusionCondition.linkedCondition != null)
+                        {
+                            if (card.appFusionCondition.linkedCondition(GManager.instance.selectAppFusionEffect.EvoRoot.PermanentOfThisCard(), linkCard))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
     public IEnumerator PlayCard()
     {
         bool burstDigivolved = false;
+        bool appFusion = false;
 
         List<CardSource> playedCards_fixed = new List<CardSource>();
 
@@ -330,7 +367,13 @@ public class PlayCardClass
                             isEvolution = true;
                         }
                     }
-
+                    else if (IsAppFusion(card))
+                    {
+                        if (card.CanAppFusionFromTargetPermanent(targetPermanents[0], PayCost))
+                        {
+                            isEvolution = true;
+                        }
+                    }
                     else
                     {
                         if (card.CanEvolve(targetPermanents[0], true) || GetIgnoreRequirement(CardEffectCommons.IgnoreRequirement.Level) || _ignoreLevel)
@@ -396,7 +439,18 @@ public class PlayCardClass
                             {
                                 List<int> CostList = new List<int>();
 
-                                if (!IsBurst(card))
+                                bool isBurst = IsBurst(card);
+                                bool isAppFusion = IsAppFusion(card);
+
+                                if(isBurst || isAppFusion)
+                                {
+                                    if(isBurst)
+                                        CostList.Add(card.burstDigivolutionCondition.cost);
+
+                                    if(isAppFusion)
+                                        CostList.Add(card.appFusionCondition.cost);
+                                }
+                                else
                                 {
                                     foreach (int cost in card.CostList(targetPermanent, ignoreLevel: GetIgnoreRequirement(CardEffectCommons.IgnoreRequirement.Level), checkAvailability: false))
                                     {
@@ -406,12 +460,7 @@ public class PlayCardClass
                                             evoCost -= _reducedCost;
 
                                         CostList.Add(evoCost);
-                                    } 
-                                }
-
-                                else
-                                {
-                                    CostList.Add(card.burstDigivolutionCondition.cost);
+                                    }
                                 }
 
                                 CostList = CostList.Distinct().ToList();
@@ -668,6 +717,27 @@ public class PlayCardClass
             }
             #endregion
 
+            #region Add Link Card of App Fusion
+
+            if (IsAppFusion(card))
+            {
+                UnityEngine.Debug.Log($"PLAYING: {card}");
+                yield return ContinuousController.instance.StartCoroutine(GManager.instance.selectAppFusionEffect.AddToSources());
+
+                if (!GManager.instance.selectAppFusionEffect.LinkAdded)
+                {
+                    _appFusionFrameID = -1;
+
+                    yield return ContinuousController.instance.StartCoroutine(SelectCost());
+                }
+
+                else
+                {
+                    appFusion = true;
+                }
+            }
+            #endregion
+
             #region fix cost to pay
             int Cost = 0;
 
@@ -723,7 +793,7 @@ public class PlayCardClass
 
                         if (!endPlayCard)
                         {
-                            if (!isJogress && !IsBurst(card))
+                            if (!isJogress && !IsBurst(card) && !IsAppFusion(card))
                             {
                                 if (!GetIgnoreRequirement(CardEffectCommons.IgnoreRequirement.Level) && !card.CanPlayCardTargetFrame(targetPermanents[0].PermanentFrame, PayCost, CardEffect, root: Root, fixedCost: -1))
                                 {
@@ -744,6 +814,14 @@ public class PlayCardClass
                             else if (IsBurst(card))
                             {
                                 if (!card.CanBurstDigivolutionFromTargetPermanent(targetPermanents[0], PayCost))
+                                {
+                                    endPlayCard = true;
+                                    playFailed = true;
+                                }
+                            }
+                            else if (IsAppFusion(card))
+                            {
+                                if (!card.CanAppFusionFromTargetPermanent(targetPermanents[0], PayCost))
                                 {
                                     endPlayCard = true;
                                     playFailed = true;

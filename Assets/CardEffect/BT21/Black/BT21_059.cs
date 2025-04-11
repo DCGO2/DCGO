@@ -37,9 +37,102 @@ namespace DCGO.CardEffects.BT21
 
             #endregion
 
-            #region App Fusion
+            #region App Fusion (Globemon & Charismon)
 
             if (timing == EffectTiming.None)
+            {
+                AddAppFusionConditionClass addAppFusionConditionClass = new AddAppFusionConditionClass();
+                addAppFusionConditionClass.SetUpICardEffect($"App Fusion", (hashtable) => true, card);
+                addAppFusionConditionClass.SetUpAddAppFusionConditionClass(getAppFusionCondition: GetAppFusion);
+                addAppFusionConditionClass.SetNotShowUI(true);
+                cardEffects.Add(addAppFusionConditionClass);
+
+                AppFusionCondition GetAppFusion(CardSource cardSource)
+                {
+                    bool linkCondition(Permanent permanent, CardSource source)
+                    {
+                        if (source != null)
+                        {
+                            if (source != card)
+                            {
+                                if (permanent.TopCard.EqualsCardName("Watchmon"))
+                                {
+                                    if (permanent.LinkedCards.Find(x => x.EqualsCardName("Savemon") || x.EqualsCardName("Calendamon")))
+                                    {
+                                        return true;
+                                    }
+                                }
+                                if (permanent.TopCard.EqualsCardName("Savemon"))
+                                {
+                                    if (permanent.LinkedCards.Find(x => x.EqualsCardName("Watchmon") || x.EqualsCardName("Calendamon")))
+                                    {
+                                        return true;
+                                    }
+                                }
+                                if (permanent.TopCard.EqualsCardName("Calendamon"))
+                                {
+                                    if (permanent.LinkedCards.Find(x => x.EqualsCardName("Watchmon") || x.EqualsCardName("Savemon")))
+                                    {
+                                        return true;
+                                    }
+                                }
+                            }
+
+                            return false;
+                        }
+
+                        return false;
+                    }
+                    bool digimonCondition(Permanent permanent)
+                    {
+                        if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                        {
+                            if (permanent.TopCard.EqualsCardName("Watchmon"))
+                            {
+                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Savemon") || x.EqualsCardName("Calendamon")))
+                                {
+                                    return true;
+                                }
+                            }
+                            if (permanent.TopCard.EqualsCardName("Savemon"))
+                            {
+                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Watchmon") || x.EqualsCardName("Calendamon")))
+                                {
+                                    return true;
+                                }
+                            }
+                            if (permanent.TopCard.EqualsCardName("Calendamon"))
+                            {
+                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Watchmon") || x.EqualsCardName("Savemon")))
+                                {
+                                    return true;
+                                }
+                            }
+                            return false;
+                        }
+
+                        return false;
+                    }
+
+                    if (cardSource == card)
+                    {
+                        AppFusionCondition AppFusionCondition = new AppFusionCondition(
+                            linkedCondition: linkCondition,
+                            digimonCondition: digimonCondition,
+                            cost: 0);
+
+                        return AppFusionCondition;
+                    }
+
+                    return null;
+                }
+            }
+
+            #endregion
+
+            #region App Fusion
+
+            /*if (timing == EffectTiming.None)
             {
                 AddAppFusionConditionClass addAppFusionConditionClass = new AddAppFusionConditionClass();
                 addAppFusionConditionClass.SetUpICardEffect($"App Fusion", CanUseCondition, card);
@@ -85,7 +178,7 @@ namespace DCGO.CardEffects.BT21
 
                     return null;
                 }
-            }
+            }*/
 
             #endregion
 
