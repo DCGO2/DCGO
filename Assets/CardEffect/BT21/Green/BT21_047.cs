@@ -109,11 +109,12 @@ namespace DCGO.CardEffects.BT21
             }
             #endregion
 
-            #region Inherit
+            #region Link Effect
             if (timing == EffectTiming.OnDetermineDoSecurityCheck)
             {
                 cardEffects.Add(CardEffectFactory.PierceSelfEffect(
-                    isInheritedEffect: true,
+                    isInheritedEffect: false,
+                    isLinkedEffect: true,
                     card: card,
                     condition: null));
             }

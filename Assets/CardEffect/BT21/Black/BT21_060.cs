@@ -95,9 +95,9 @@ namespace DCGO.CardEffects.BT21
                         }
 
                         CanNotTrashFromDigivolutionCardsClass canNotTrashFromDigivolutionCardsClass = new CanNotTrashFromDigivolutionCardsClass();
-                        canNotTrashFromDigivolutionCardsClass.SetUpICardEffect("[This Digimon's sources can't be trashed", CanUseCondition2, card);
+                        canNotTrashFromDigivolutionCardsClass.SetUpICardEffect("This Digimon's sources can't be trashed", CanUseCondition2, card);
                         canNotTrashFromDigivolutionCardsClass.SetUpCanNotTrashFromDigivolutionCardsClass(CardCondition: CardCondition, CardEffectCondition: CardEffectCondition);
-                        cardEffects.Add(canNotTrashFromDigivolutionCardsClass);
+                        selectedPermanent.UntilOpponentTurnEndEffects.Add((_timing) => canNotTrashFromDigivolutionCardsClass);
 
                         bool CanUseCondition2(Hashtable hashtable)
                         {
@@ -106,7 +106,8 @@ namespace DCGO.CardEffects.BT21
 
                         bool CardCondition(CardSource cardSource)
                         {
-                            return CardEffectCommons.IsExistOnBattleArea(card);
+                            return CardEffectCommons.IsExistOnBattleArea(card) &&
+                                   selectedPermanent.DigivolutionCards.Contains(cardSource);
                         }
 
                         bool CardEffectCondition(ICardEffect cardEffect)

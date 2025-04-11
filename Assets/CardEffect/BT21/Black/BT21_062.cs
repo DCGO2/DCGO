@@ -145,34 +145,34 @@ namespace DCGO.CardEffects.BT21
 
                         if (added)
                         {
-                            List<CardSource> selectedCards = new List<CardSource>();
+                            bool canSelectHand = card.Owner.HandCards.Count(CanSelectCardCondition1) >= 1;
+                            bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition1);
 
-                            if (card.Owner.HandCards.Count(CanSelectCardCondition1) >= 1)
+                            if (canSelectHand || canSelectTrash)
                             {
-                                int maxCount = 1;
+                                if (canSelectHand && canSelectTrash)
+                                {
+                                    List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
+                                    {
+                                        new SelectionElement<bool>(message: $"From hand", value : true, spriteIndex: 0),
+                                        new SelectionElement<bool>(message: $"From trash", value : false, spriteIndex: 1),
+                                    };
 
-                                SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                                    string selectPlayerMessage = "From which area do you play a card?";
+                                    string notSelectPlayerMessage = "The opponent is choosing from which area to play a card.";
 
-                                selectHandEffect.SetUp(
-                                    selectPlayer: card.Owner,
-                                    canTargetCondition: CanSelectCardCondition1,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    maxCount: maxCount,
-                                    canNoSelect: true,
-                                    canEndNotMax: false,
-                                    isShowOpponent: true,
-                                    selectCardCoroutine: SelectCardCoroutine,
-                                    afterSelectCardCoroutine: null,
-                                    mode: SelectHandEffect.Mode.Custom,
-                                    cardEffect: activateClass);
+                                    GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+                                }
+                                else
+                                {
+                                    GManager.instance.userSelectionManager.SetBool(canSelectHand);
+                                }
 
-                                selectHandEffect.SetUpCustomMessage(
-                                    "Select 1 option card to use.",
-                                    "The opponent is selecting 1 option card to use.");
-                                selectHandEffect.SetUpCustomMessage_ShowCard("Used Card");
+                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                                yield return StartCoroutine(selectHandEffect.Activate());
+                                bool fromHand = GManager.instance.userSelectionManager.SelectedBoolValue;
+
+                                List<CardSource> selectedCards = new List<CardSource>();
 
                                 IEnumerator SelectCardCoroutine(CardSource cardSource)
                                 {
@@ -180,18 +180,75 @@ namespace DCGO.CardEffects.BT21
 
                                     yield return null;
                                 }
-                            }
 
-                            if (selectedCards.Count >= 1)
-                            {
+                                if (fromHand)
+                                {
+                                    int maxCount = 1;
+
+                                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                                    selectHandEffect.SetUp(
+                                        selectPlayer: card.Owner,
+                                        canTargetCondition: CanSelectCardCondition1,
+                                        canTargetCondition_ByPreSelecetedList: null,
+                                        canEndSelectCondition: null,
+                                        maxCount: maxCount,
+                                        canNoSelect: true,
+                                        canEndNotMax: false,
+                                        isShowOpponent: true,
+                                        selectCardCoroutine: SelectCardCoroutine,
+                                        afterSelectCardCoroutine: null,
+                                        mode: SelectHandEffect.Mode.Custom,
+                                        cardEffect: activateClass);
+
+                                    selectHandEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
+                                    selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
+
+                                    yield return StartCoroutine(selectHandEffect.Activate());
+                                }
+                                else
+                                {
+                                    int maxCount = 1;
+
+                                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                                    selectCardEffect.SetUp(
+                                        canTargetCondition: CanSelectCardCondition1,
+                                        canTargetCondition_ByPreSelecetedList: null,
+                                        canEndSelectCondition: null,
+                                        canNoSelect: () => true,
+                                        selectCardCoroutine: SelectCardCoroutine,
+                                        afterSelectCardCoroutine: null,
+                                        message: "Select 1 card to play.",
+                                        maxCount: maxCount,
+                                        canEndNotMax: false,
+                                        isShowOpponent: true,
+                                        mode: SelectCardEffect.Mode.Custom,
+                                        root: SelectCardEffect.Root.Trash,
+                                        customRootCardList: null,
+                                        canLookReverseCard: true,
+                                        selectPlayer: card.Owner,
+                                        cardEffect: activateClass);
+
+                                    selectCardEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
+                                    selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
+
+                                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                                }
+
+                                SelectCardEffect.Root root = SelectCardEffect.Root.Hand;
+
+                                if (!fromHand)
+                                {
+                                    root = SelectCardEffect.Root.Trash;
+                                }
+
                                 yield return ContinuousController.instance.StartCoroutine(
                                     CardEffectCommons.PlayOptionCards(
-                                        cardSources: selectedCards,
-                                        activateClass: activateClass,
-                                        payCost: false,
-                                        root: SelectCardEffect.Root.Hand
-                                    )
-                                );
+                                    cardSources: selectedCards,
+                                    activateClass: activateClass,
+                                    payCost: false,
+                                    root: root));
                             }
                         }
                     }
@@ -331,7 +388,7 @@ namespace DCGO.CardEffects.BT21
                         selectCardCoroutine: null,
                         afterSelectCardCoroutine: AfterSelectCardCoroutine,
                         message: "Select 4 [Vemmon] to place at the bottom of the deck.",
-                        maxCount: 1,
+                        maxCount: 4,
                         canEndNotMax: false,
                         isShowOpponent: false,
                         mode: SelectCardEffect.Mode.Custom,

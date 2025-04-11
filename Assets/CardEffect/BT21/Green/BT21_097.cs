@@ -20,11 +20,14 @@ namespace DCGO.CardEffects.BT21
 
                 bool HasAppmonTrait(Permanent permanent)
                 {
-                    if (permanent.TopCard.EqualsTraits("Appmon"))
+                    if(CardEffectCommons.IsOwnerPermanent(permanent, card))
                     {
-                        if (permanent.IsDigimon || permanent.IsTamer)
+                        if (permanent.TopCard.EqualsTraits("Appmon"))
                         {
-                            return true;
+                            if (permanent.IsDigimon || permanent.IsTamer)
+                            {
+                                return true;
+                            }
                         }
                     }
 
@@ -33,7 +36,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.HasMatchConditionOwnersPermanent(card, HasAppmonTrait);
+                    return CardEffectCommons.HasMatchConditionPermanent(HasAppmonTrait, true);
                 }
 
                 bool CardCondition(CardSource cardSource)
@@ -136,7 +139,7 @@ namespace DCGO.CardEffects.BT21
 
                             selectHandEffect.SetUp(
                                 selectPlayer: card.Owner,
-                                canTargetCondition: (cardSource) => true,
+                                canTargetCondition: CanSelectLinkTarget,
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
                                 maxCount: 1,
@@ -183,7 +186,7 @@ namespace DCGO.CardEffects.BT21
 
                             bool CanSelectPermanentCondition(Permanent permanent)
                             {
-                                return cardForLinking.CanLinkFromTargetPermanent(permanent, false);
+                                return cardForLinking.CanLinkToTargetPermanent(permanent, false);
                             }
 
                             IEnumerator SelectPermanentCoroutine(Permanent permanent)

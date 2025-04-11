@@ -18181,6 +18181,7 @@ GameObject:
   - component: {fileID: 198236658}
   - component: {fileID: 198236659}
   - component: {fileID: 198236660}
+  - component: {fileID: 198236662}
   - component: {fileID: 198236661}
   m_Layer: 0
   m_Name: GManager
@@ -18326,6 +18327,7 @@ MonoBehaviour:
   attackProcess: {fileID: 198236652}
   selectJogressEffect: {fileID: 198236653}
   selectBurstDigivolutionEffect: {fileID: 198236660}
+  selectAppFusionEffect: {fileID: 198236662}
   autoProcessing_CutIn: {fileID: 380143110}
   userSelectionManager: {fileID: 198236661}
   hideCannotSelectObject: {fileID: 731749120}
@@ -18550,6 +18552,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 24794d03183abf148a08a33028a42b5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &198236662
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 198236640}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ed437182e0b5594f8bbbad4a80241be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &208123383
