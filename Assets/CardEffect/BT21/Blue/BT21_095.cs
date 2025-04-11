@@ -63,7 +63,7 @@ namespace DCGO.CardEffects.BT21
 
                 List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> effects, EffectTiming effectTiming)
                 {
-                    if (effectTiming == EffectTiming.OnAllyAttack)
+                    if (effectTiming == EffectTiming.OnEndTurn)
                     {
                         bool Condition()
                         {

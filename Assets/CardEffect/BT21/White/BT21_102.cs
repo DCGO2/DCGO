@@ -70,14 +70,13 @@ namespace DCGO.CardEffects.BT21
                 bool CanUseCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleArea(card)
                     && CardEffectCommons.IsOwnerTurn(card)
-                    && CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectDigimon);
+                    && CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCard);
 
                 bool CanActivateCondition(Hashtable hashtable)
                     => CardEffectCommons.IsExistOnBattleArea(card);
 
-                bool CanSelectDigimon(CardSource source)
-                    => source.IsDigimon
-                    && source.BasePlayCostFromEntity <= AdjustedPlayCostMax(source)
+                bool CanSelectCard(CardSource source)
+                    => source.BasePlayCostFromEntity <= AdjustedPlayCostMax(source)
                     && (source.HasAdventureTraits || source.HasHeroTraits);
 
                 int AdjustedPlayCostMax(CardSource cardSource)
@@ -91,7 +90,7 @@ namespace DCGO.CardEffects.BT21
                     SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
                     selectHandEffect.SetUp(
                         selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectDigimon,
+                        canTargetCondition: CanSelectCard,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: 1,
