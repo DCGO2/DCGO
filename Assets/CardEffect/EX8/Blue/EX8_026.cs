@@ -215,7 +215,7 @@ namespace DCGO.CardEffects.EX8
             if (timing == EffectTiming.None)
             {
                 CanNotSuspendClass canNotSuspendClass = new CanNotSuspendClass();
-                canNotSuspendClass.SetUpICardEffect("Can't Suspend", CanUseCondition, card);
+                canNotSuspendClass.SetUpICardEffect("Opponents Digimon Can't Suspend", CanUseCondition, card);
                 canNotSuspendClass.SetUpCanNotSuspendClass(PermanentCondition: CantSuspendCondition);
                 cardEffects.Add(canNotSuspendClass);
 
