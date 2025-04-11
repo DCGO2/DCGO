@@ -127,7 +127,7 @@ namespace DCGO.CardEffects.BT21
 
                     List<Permanent> deleteTargetPermanents = new List<Permanent>();
 
-                    bool failedToDelete = false;
+                    bool failedToDelete = true;
 
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
                                     targetPermanents: new List<Permanent>() { card.PermanentOfThisCard() }, 
@@ -157,7 +157,7 @@ namespace DCGO.CardEffects.BT21
                                 canEndNotMax: false,
                                 selectPermanentCoroutine: null,
                                 afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
-                                mode: SelectPermanentEffect.Mode.Destroy,
+                                mode: SelectPermanentEffect.Mode.Custom,
                                 cardEffect: activateClass);
 
                             yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
@@ -172,17 +172,15 @@ namespace DCGO.CardEffects.BT21
 
                         if (deleteTargetPermanents.Count > 0)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: deleteTargetPermanents, activateClass: activateClass, successProcess: null, failureProcess: FailureProcess));
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: deleteTargetPermanents, activateClass: activateClass, successProcess: SuccessDeleteProcess, failureProcess: null));
 
-                            IEnumerator FailureProcess()
+                            IEnumerator SuccessDeleteProcess(List<Permanent> permanents)
                             {
-                                failedToDelete = true;
+                                if(permanents.Count > 0)
+                                    failedToDelete = false;
+
                                 yield return null;
                             }
-                        }
-                        else
-                        {
-                            failedToDelete = true;
                         }
 
                         if (failedToDelete)
