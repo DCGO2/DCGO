@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 //ST20 Megakabuterimon
 namespace DCGO.CardEffects.ST20
@@ -94,6 +95,7 @@ namespace DCGO.CardEffects.ST20
 
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition) && TamerTwoColourCount() > 0)
                     {
+                        int maxCount = Mathf.Min(CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition), TamerTwoColourCount());
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
@@ -101,7 +103,7 @@ namespace DCGO.CardEffects.ST20
                             canTargetCondition: CanSelectPermanentCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: TamerTwoColourCount(),
+                            maxCount: maxCount,
                             canNoSelect: false,
                             canEndNotMax: false,
                             selectPermanentCoroutine: null,
@@ -159,6 +161,7 @@ namespace DCGO.CardEffects.ST20
 
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition) && TamerTwoColourCount() > 0)
                     {
+                        int maxCount = Mathf.Min(CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition), TamerTwoColourCount());
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
@@ -166,7 +169,7 @@ namespace DCGO.CardEffects.ST20
                             canTargetCondition: CanSelectPermanentCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: TamerTwoColourCount(),
+                            maxCount: maxCount,
                             canNoSelect: false,
                             canEndNotMax: false,
                             selectPermanentCoroutine: null,
