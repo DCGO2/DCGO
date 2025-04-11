@@ -58,7 +58,6 @@ namespace DCGO.CardEffects.BT21
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 [Haru Shinkai]", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
-                activateClass.SetIsLinkedEffect(true);
                 activateClass.SetHashString("WhenLinked_BT21_009");
                 cardEffects.Add(activateClass);
 
