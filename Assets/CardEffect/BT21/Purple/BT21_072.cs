@@ -22,6 +22,7 @@ namespace DCGO.CardEffects.BT21
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(validDigivolutionCondition, 3, false, card, null));
             }
             #endregion
+
             #region raid, piercing
             if (timing == EffectTiming.OnAllyAttack)
             {
@@ -33,6 +34,7 @@ namespace DCGO.CardEffects.BT21
                 cardEffects.Add(CardEffectFactory.PierceSelfEffect(isInheritedEffect: false, card: card, condition: null));
             }
             #endregion
+
             #region When Digivolving
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
@@ -88,7 +90,12 @@ namespace DCGO.CardEffects.BT21
             {
                 int count()
                 {
-                    return card.PermanentOfThisCard().DigivolutionCards.Count();
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        return card.PermanentOfThisCard().DigivolutionCards.Count();
+                    }
+
+                    return 0;
                 }
 
                 bool condition()
