@@ -55,51 +55,40 @@ namespace DCGO.CardEffects.BT21
 
                 AppFusionCondition GetAppFusion(CardSource cardSource)
                 {
-                    string selectLinkMessage = "";
-                    string selectDigimonMessage = "";
-                    bool linkCondition(CardSource source)
+                    bool linkCondition(Permanent permanent, CardSource source)
                     {
-                        if (source != null)
+                        if (source != null && source != card)
                         {
                             if (source.PermanentOfThisCard().TopCard.EqualsCardName("Gatchmon"))
                             {
-                                if (source.PermanentOfThisCard().LinkedCards.Find(x => x.EqualsCardName("Navimon")))
+                                if (source.PermanentOfThisCard().LinkedCards.Find(x => x.EqualsCardName("Navimon")) || source.PermanentOfThisCard().LinkedCards.Find(x => x.EqualsCardName("Tweetmon")))
                                 {
-                                    selectLinkMessage = "1 [Navimon]";
-                                    return true;
-                                }
-                                if (source.PermanentOfThisCard().LinkedCards.Find(x => x.EqualsCardName("Tweetmon")))
-                                {
-                                    selectLinkMessage = "1 [Tweetmon]";
-                                    return true;
+                                    if (source.CanAppFusionFromTargetPermanent(permanent, true))
+                                    {
+                                        return true;
+                                    }
                                 }
                             }
 
                             if (source.PermanentOfThisCard().TopCard.EqualsCardName("Navimon"))
                             {
-                                if (source.PermanentOfThisCard().LinkedCards.Find(x => x.EqualsCardName("Gatchmon")))
+                                if (source.PermanentOfThisCard().LinkedCards.Find(x => x.EqualsCardName("Gatchmon")) || source.PermanentOfThisCard().LinkedCards.Find(x => x.EqualsCardName("Tweetmon")))
                                 {
-                                    selectLinkMessage = "1 [Gatchmon]";
-                                    return true;
-                                }
-                                if (source.PermanentOfThisCard().LinkedCards.Find(x => x.EqualsCardName("Tweetmon")))
-                                {
-                                    selectLinkMessage = "1 [Tweetmon]";
-                                    return true;
+                                    if (source.CanAppFusionFromTargetPermanent(permanent, true))
+                                    {
+                                        return true;
+                                    }
                                 }
                             }
 
                             if (source.PermanentOfThisCard().TopCard.EqualsCardName("Tweetmon"))
                             {
-                                if (source.PermanentOfThisCard().LinkedCards.Find(x => x.EqualsCardName("Gatchmon")))
+                                if (source.PermanentOfThisCard().LinkedCards.Find(x => x.EqualsCardName("Gatchmon")) || source.PermanentOfThisCard().LinkedCards.Find(x => x.EqualsCardName("Navimon")))
                                 {
-                                    selectLinkMessage = "1 [Gatchmon]";
-                                    return true;
-                                }
-                                if (source.PermanentOfThisCard().LinkedCards.Find(x => x.EqualsCardName("Navimon")))
-                                {
-                                    selectLinkMessage = "1 [Navimon]";
-                                    return true;
+                                    if (source.CanAppFusionFromTargetPermanent(permanent, true))
+                                    {
+                                        return true;
+                                    }
                                 }
                             }
                         }
@@ -112,42 +101,24 @@ namespace DCGO.CardEffects.BT21
                         {
                             if (permanent.TopCard.EqualsCardName("Gatchmon"))
                             {
-                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Navimon")))
+                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Navimon")) || permanent.LinkedCards.Find(x => x.EqualsCardName("Tweetmon")))
                                 {
-                                    selectLinkMessage = "1 [Navimon]";
-                                    return true;
-                                }
-                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Tweetmon")))
-                                {
-                                    selectLinkMessage = "1 [Tweetmon]";
                                     return true;
                                 }
                             }
 
                             if (permanent.TopCard.EqualsCardName("Navimon"))
                             {
-                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Gatchmon")))
+                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Gatchmon")) || permanent.LinkedCards.Find(x => x.EqualsCardName("Tweetmon")))
                                 {
-                                    selectLinkMessage = "1 [Gatchmon]";
-                                    return true;
-                                }
-                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Tweetmon")))
-                                {
-                                    selectLinkMessage = "1 [Tweetmon]";
                                     return true;
                                 }
                             }
 
                             if (permanent.TopCard.EqualsCardName("Tweetmon"))
                             {
-                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Gatchmon")))
+                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Gatchmon")) || permanent.LinkedCards.Find(x => x.EqualsCardName("Navimon")))
                                 {
-                                    selectLinkMessage = "1 [Gatchmon]";
-                                    return true;
-                                }
-                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Navimon")))
-                                {
-                                    selectLinkMessage = "1 [Navimon]";
                                     return true;
                                 }
                             }
@@ -160,9 +131,7 @@ namespace DCGO.CardEffects.BT21
                     {
                         AppFusionCondition AppFusionCondition = new AppFusionCondition(
                             linkCondition,
-                            selectLinkMessage,
                             digimonCondition,
-                            selectDigimonMessage,
                             0);
 
                         return AppFusionCondition;

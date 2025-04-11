@@ -38,18 +38,18 @@ namespace DCGO.CardEffects.BT21
 
                 AppFusionCondition GetAppFusion(CardSource cardSource)
                 {
-                    string selectLinkMessage = "";
-                    string selectDigimonMessage = "";
-                    bool linkCondition(CardSource source)
+                    bool linkCondition(Permanent permanent, CardSource source)
                     {
-                        if (source != null)
+                        if (source != null && source != card)
                         {
                             if (source.PermanentOfThisCard().TopCard.EqualsCardName("DoGatchmon"))
                             {
                                 if (source.PermanentOfThisCard().LinkedCards.Find(x => x.EqualsCardName("Timemon")))
                                 {
-                                    selectLinkMessage = "1 [Timemon]";
-                                    return true;
+                                    if (source.CanAppFusionFromTargetPermanent(permanent, true))
+                                    {
+                                        return true;
+                                    }
                                 }
                             }
 
@@ -57,8 +57,10 @@ namespace DCGO.CardEffects.BT21
                             {
                                 if (source.PermanentOfThisCard().LinkedCards.Find(x => x.EqualsCardName("DoGatchmon")))
                                 {
-                                    selectLinkMessage = "1 [DoGatchmon]";
-                                    return true;
+                                    if (source.CanAppFusionFromTargetPermanent(permanent, true))
+                                    {
+                                        return true;
+                                    }
                                 }
                             }
                         }
@@ -73,7 +75,6 @@ namespace DCGO.CardEffects.BT21
                             {
                                 if (permanent.LinkedCards.Find(x => x.EqualsCardName("Timemon")))
                                 {
-                                    selectDigimonMessage = "1 [Timemon]";
                                     return true;
                                 }
                             }
@@ -82,7 +83,6 @@ namespace DCGO.CardEffects.BT21
                             {
                                 if (permanent.LinkedCards.Find(x => x.EqualsCardName("DoGatchmon")))
                                 {
-                                    selectDigimonMessage = "1 [DoGatchmon]";
                                     return true;
                                 }
                             }
@@ -95,9 +95,7 @@ namespace DCGO.CardEffects.BT21
                     {
                         AppFusionCondition AppFusionCondition = new AppFusionCondition(
                             linkCondition,
-                            selectLinkMessage,
                             digimonCondition,
-                            selectDigimonMessage,
                             0);
 
                         return AppFusionCondition;
@@ -132,7 +130,7 @@ namespace DCGO.CardEffects.BT21
                 {
                     if (source.HasLevel && source.Level <= 4)
                     {
-                        if (source.CanLinkFromTargetPermanent(card.PermanentOfThisCard(), false))
+                        if (source.CanLinkToTargetPermanent(card.PermanentOfThisCard(), false))
                         {
                             return true;
                         }
