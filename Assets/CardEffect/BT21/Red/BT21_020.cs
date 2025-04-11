@@ -12,7 +12,7 @@ namespace DCGO.CardEffects.BT21
 
             #region Static Effects
 
-            #region Reducded Digivolution Cost
+            #region Reduced Digivolution Cost
 
             if (timing == EffectTiming.BeforePayCost)
             {
@@ -191,7 +191,7 @@ namespace DCGO.CardEffects.BT21
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCard) || CardEffectCommons.HasMatchConditionOpponentsCardInTrash(card, CanSelectCard))
+                        if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCard) || CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCard))
                         {
                             return true;
                         }
