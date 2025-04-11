@@ -128,8 +128,7 @@ namespace DCGO.CardEffects.BT21
 
                                 if (selectedPermanent != null)
                                 {
-
-                                    CardEffectCommons.GainCollision(selectedPermanent, EffectDuration.UntilOpponentTurnEnd, activateClass);
+                                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCollision(targetPermanent: selectedPermanent, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
 
                                     ActivateClass activateClassDebuff = new ActivateClass();
                                     activateClassDebuff.SetUpICardEffect("Attack with this Digimon", CanUseConditionDebuff,
@@ -285,7 +284,7 @@ namespace DCGO.CardEffects.BT21
                                 if (selectedPermanent != null)
                                 {
 
-                                    CardEffectCommons.GainCollision(selectedPermanent, EffectDuration.UntilOpponentTurnEnd, activateClass);
+                                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCollision(targetPermanent: selectedPermanent, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
 
                                     ActivateClass activateClassDebuff = new ActivateClass();
                                     activateClassDebuff.SetUpICardEffect("Attack with this Digimon", CanUseConditionDebuff,
@@ -449,7 +448,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
                 }
 
                 bool CanPlay(CardSource cardSource)
@@ -460,7 +459,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card) && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanPlay);
+                    return CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card) && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanPlay);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

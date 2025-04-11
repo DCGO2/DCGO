@@ -25,7 +25,7 @@ public partial class CardEffectFactory
 
         ActivateClass activateClass = new ActivateClass();
         activateClass.SetUpICardEffect("Link", CanUseCondition, card);
-        activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, DataBase.BlastDigivolveEffectDiscription());
+        activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, DataBase.LinkEffectDiscription());
 
         bool CanSelectPermanentCondition(Permanent permanent)
         {
@@ -33,9 +33,12 @@ public partial class CardEffectFactory
             {
                 if(permanent != card.PermanentOfThisCard())
                 {
-                    if (card.linkCondition == null || card.linkCondition.digimonCondition(permanent))
+                    if (permanent.IsDigimon)
                     {
-                        return true;
+                        if (card.linkCondition == null || card.linkCondition.digimonCondition(permanent))
+                        {
+                            return true;
+                        }
                     }
                 }
             }
@@ -45,7 +48,7 @@ public partial class CardEffectFactory
 
         bool CanUseCondition(Hashtable hashtable)
         {
-            if (CardEffectCommons.IsExistOnHand(card) || CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+            if (CardEffectCommons.IsExistOnHand(card) || (CardEffectCommons.IsExistOnBattleAreaDigimon(card) && !card.IsLinked))
             {
                 if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                 {
@@ -61,9 +64,6 @@ public partial class CardEffectFactory
 
         IEnumerator ActivateCoroutine(Hashtable _hashtable)
         {
-
-            yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(card.linkCondition.cost, activateClass));
-
             Permanent selectedPermanent = null;
 
             int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
@@ -96,6 +96,8 @@ public partial class CardEffectFactory
 
             if (selectedPermanent != null)
             {
+                yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(-card.linkCondition.cost, activateClass));
+
                 yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddLinkCard(card, activateClass));
             }
         }

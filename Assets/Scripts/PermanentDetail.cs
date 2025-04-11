@@ -293,9 +293,19 @@ public class PermanentDetail : MonoBehaviour
             Destroy(pokemonScroll.content.GetChild(i).gameObject);
         }
 
-        List<CardSource> cardSources = permanent.cardSources.Clone();
+        //Adds Top card to stack
+        CardInfo topCardInfo = Instantiate(cardInfoPrefab, pokemonScroll.content);
+        topCardInfo.SetUpCardInfo(permanent.TopCard);
 
-        foreach (CardSource cardSource in cardSources)
+        //Adds Digivolution Cards
+        foreach (CardSource cardSource in permanent.DigivolutionCards.Clone())
+        {
+            CardInfo cardInfo = Instantiate(cardInfoPrefab, pokemonScroll.content);
+            cardInfo.SetUpCardInfo(cardSource);
+        }
+
+        //Adds Linked Cards
+        foreach (CardSource cardSource in permanent.LinkedCards.Clone())
         {
             CardInfo cardInfo = Instantiate(cardInfoPrefab, pokemonScroll.content);
             cardInfo.SetUpCardInfo(cardSource);
