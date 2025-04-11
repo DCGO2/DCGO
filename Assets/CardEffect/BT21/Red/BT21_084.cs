@@ -121,7 +121,7 @@ namespace DCGO.CardEffects
                             yield return null;
                         }
 
-                        if (selectedPermanent != null && selectedPermanent.TopCard.CanPlayAppFusion(true))
+                        if (selectedPermanent != null)
                         {
                             CardSource selectedCard = null;
                             int maxCount1 = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInHand(card, handCard => CanSelectCard(handCard, selectedPermanent)));
@@ -150,9 +150,12 @@ namespace DCGO.CardEffects
                                 yield return null;
                             }
 
-                            if (selectedCard != null)
+                            if (selectedCard != null && selectedCard.CanAppFusionFromTargetPermanent(selectedPermanent, true))
                             {
-                                //Implement App fuse via effect
+                                PlayCardClass playCardClass = new PlayCardClass(new List<CardSource> { selectedCard }, hashtable, true, selectedPermanent, false, SelectCardEffect.Root.Hand, true);
+                                playCardClass.SetAppFusion(selectedPermanent.PermanentFrame.FrameID, selectedCard);
+
+                                yield return ContinuousController.instance.StartCoroutine(playCardClass.PlayCard());
                             }
                         }
                     }
