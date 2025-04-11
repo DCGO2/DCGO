@@ -1190,17 +1190,20 @@ public class Permanent
                         {
                             if (cardEffect != null)
                             {
-                                if (cardEffect.IsInheritedEffect && isTopCard)
+                                if (cardEffect.IsInheritedEffect && !isTopCard)
+                                {
+                                    _EffectList.Add(cardEffect);
                                     continue;
+                                }
 
-                                if (cardEffect.IsLinkedEffect && !cardSource.IsLinked)
+                                if (cardEffect.IsLinkedEffect && cardSource.IsLinked)
+                                {
+                                    _EffectList.Add(cardEffect);
                                     continue;
+                                }
 
-                                //if (isTopCard == cardEffect.IsInheritedEffect)
-                                //    continue;
-
-
-                                _EffectList.Add(cardEffect);
+                                if(isTopCard && !cardSource.IsLinked)
+                                    _EffectList.Add(cardEffect);
                             }
                         }
                     }

@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.BT21
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
                     return targetPermanent.TopCard.ContainsCardName("Growlmon") && 
-                           targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 5;
+                           targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 4;
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));

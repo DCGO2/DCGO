@@ -235,7 +235,7 @@ namespace DCGO.CardEffects.BT21
                                 isShowOpponent: true,
                                 mode: SelectCardEffect.Mode.Custom,
                                 root: SelectCardEffect.Root.Custom,
-                                customRootCardList: card.PermanentOfThisCard().LinkedCards,
+                                customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
                                 canLookReverseCard: true,
                                 selectPlayer: card.Owner,
                                 cardEffect: activateClass);
@@ -275,7 +275,6 @@ namespace DCGO.CardEffects.BT21
                 {
                     bool CanSelectDigimon(Permanent permanent)
                     {
-                        UnityEngine.Debug.Log($"CAN SELECT DIGIMON: {CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)}, {selectedCard.CanLinkToTargetPermanent(permanent, false)}");
                         if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                             return selectedCard.CanLinkToTargetPermanent(permanent, false);
 
