@@ -79,40 +79,24 @@ namespace DCGO.CardEffects.BT21
 
                     if (selectedPermanent != null)
                     {
-                        ImmuneFromDeDigivolveClass immuneFromDeDigivolveClass = new ImmuneFromDeDigivolveClass();
-                        immuneFromDeDigivolveClass.SetUpICardEffect("Isn't affected by <De-Digivolve>", CanUseCondition1, selectedPermanent.TopCard);
-                        immuneFromDeDigivolveClass.SetUpImmuneFromDeDigivolveClass(PermanentCondition: PermanentCondition);
-                        selectedPermanent.UntilOpponentTurnEndEffects.Add((_timing) => immuneFromDeDigivolveClass);
+                        ImmuneStackTrashingClass immuneFromStackTrashingClass = new ImmuneStackTrashingClass();
+                        immuneFromStackTrashingClass.SetUpICardEffect("Isn't affected by trashing any stacked card", CanUseCondition1, selectedPermanent.TopCard);
+                        immuneFromStackTrashingClass.SetUpImmuneFromStackTrashingClass(PermanentCondition: PermanentCondition, EffectCondition: EffectCondition);
+                        selectedPermanent.UntilOpponentTurnEndEffects.Add((_timing) => immuneFromStackTrashingClass);
 
                         bool CanUseCondition1(Hashtable hashtable1)
                         {
                             return selectedPermanent.TopCard != null;
                         }
 
+                        bool EffectCondition(ICardEffect effect)
+                        {
+                            return CardEffectCommons.IsOpponentEffect(effect, card);
+                        }
+
                         bool PermanentCondition(Permanent permanent)
                         {
                             return permanent == selectedPermanent;
-                        }
-
-                        CanNotTrashFromDigivolutionCardsClass canNotTrashFromDigivolutionCardsClass = new CanNotTrashFromDigivolutionCardsClass();
-                        canNotTrashFromDigivolutionCardsClass.SetUpICardEffect("This Digimon's sources can't be trashed", CanUseCondition2, card);
-                        canNotTrashFromDigivolutionCardsClass.SetUpCanNotTrashFromDigivolutionCardsClass(CardCondition: CardCondition, CardEffectCondition: CardEffectCondition);
-                        selectedPermanent.UntilOpponentTurnEndEffects.Add((_timing) => canNotTrashFromDigivolutionCardsClass);
-
-                        bool CanUseCondition2(Hashtable hashtable)
-                        {
-                            return CardEffectCommons.IsExistOnBattleArea(card);
-                        }
-
-                        bool CardCondition(CardSource cardSource)
-                        {
-                            return CardEffectCommons.IsExistOnBattleArea(card) &&
-                                   selectedPermanent.DigivolutionCards.Contains(cardSource);
-                        }
-
-                        bool CardEffectCondition(ICardEffect cardEffect)
-                        {
-                            return CardEffectCommons.IsOpponentEffect(cardEffect, card);
                         }
                     }
 
