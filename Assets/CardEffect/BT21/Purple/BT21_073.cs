@@ -129,7 +129,7 @@ namespace DCGO.CardEffects.BT21
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Link from trash or sources", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -253,7 +253,7 @@ namespace DCGO.CardEffects.BT21
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Link from trash or sources", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -263,7 +263,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -570,27 +570,49 @@ namespace DCGO.CardEffects.BT21
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SelectTrashLinkedCards(CanSelectPermanentCondition, CanSelectCardCondition, 1, true, true, activateClass,afterSelectionCoroutine: AfterSelectCardCoroutine));
-
+                    Permanent thisPermanent = card.PermanentOfThisCard();
                     bool trashed = false;
 
-                    IEnumerator AfterSelectCardCoroutine(Permanent permanent, List<CardSource> cardSources)
+                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                    selectCardEffect.SetUp(
+                                canTargetCondition: CanSelectCardCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                canNoSelect: () => true,
+                                selectCardCoroutine: null,
+                                afterSelectCardCoroutine: SelectCardCoroutine,
+                                message: "Select 1 link card to trash.",
+                                maxCount: 1,
+                                canEndNotMax: false,
+                                isShowOpponent: true,
+                                mode: SelectCardEffect.Mode.Discard,
+                                root: SelectCardEffect.Root.Custom,
+                                customRootCardList: card.PermanentOfThisCard().LinkedCards,
+                                canLookReverseCard: true,
+                                selectPlayer: card.Owner,
+                                cardEffect: activateClass);
+
+                    selectCardEffect.SetUpCustomMessage("Select 1 link card to trash.", "The opponent is selecting 1 link card to trash.");
+
+                    yield return StartCoroutine(selectCardEffect.Activate());
+
+                    IEnumerator SelectCardCoroutine(List<CardSource> cardSources)
                     {
-                        if(cardSources.Count == 1)
-                        {
+                        if (cardSources.Count > 0)
                             trashed = true;
-                        }
+
                         yield return null;
                     }
 
                     if (trashed)
                     {
-                        card.PermanentOfThisCard().willBeRemoveField = false;
+                        thisPermanent.willBeRemoveField = false;
 
-                        card.PermanentOfThisCard().HideHandBounceEffect();
-                        card.PermanentOfThisCard().HideDeckBounceEffect();
-                        card.PermanentOfThisCard().HideWillRemoveFieldEffect();
-                        card.PermanentOfThisCard().HideDeleteEffect();
+                        thisPermanent.HideHandBounceEffect();
+                        thisPermanent.HideDeckBounceEffect();
+                        thisPermanent.HideWillRemoveFieldEffect();
+                        thisPermanent.HideDeleteEffect();
                     }
                 }
             }

@@ -680,6 +680,10 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
                             List<IDiscardHand> discardHands = _targetCards.Map(cardSource => new IDiscardHand(cardSource, hashtable));
                             yield return ContinuousController.instance.StartCoroutine(new IDiscardHands(discardHands, _cardEffect).DiscardHands());
                         }
+                        else if (CardEffectCommons.IsExistLinked(cardSource))
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(cardSource.PermanentOfThisCard().RemoveLinkedCard(cardSource));
+                        }
                         else
                             yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddTrashCard(cardSource));
                     }
