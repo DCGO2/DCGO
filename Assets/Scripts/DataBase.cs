@@ -231,9 +231,9 @@ public class DataBase : MonoBehaviour
                     cardListID.Add("522018");
                     break;
 
-                 case "EX5":
-                     cardListID.Add("522019");
-                     break;
+                case "EX5":
+                    cardListID.Add("522019");
+                    break;
 
                 case "BT15":
                     cardListID.Add("522020");
@@ -523,17 +523,17 @@ public class DataBase : MonoBehaviour
     {
         return "<Collision> (During this Digimon's attack, all of your opponent's Digimon gain <Blocker>, and your opponent blocks if possible.)";
     }
-    
+
     public static string VortexEffectDiscription()
     {
         return "<Vortex> (At the end of your turn, this Digimon may attack an opponent's Digimon. With this effect, it can attack the turn it was played.)";
     }
-    
+
     public static string OverclockEffectDiscription(string trait)
     {
         return $"<Overclock [{trait}]> (At the end of your turn, by deleting 1 of your Tokens or other [{trait}] trait Digimon, this Digimon attacks a player without suspending.)";
     }
-    
+
     public static string DecodeEffectDiscription(CardColor color, int level)
     {
         string colorString = color switch
@@ -547,16 +547,20 @@ public class DataBase : MonoBehaviour
             CardColor.White => "White",
             _ => ""
         };
-        
+
         return
             $"<Decode {colorString} ({level})> (When this Digimon would leave the battle area other than in battle, you may play 1 {colorString} Level {level} Digimon card from its digivolution cards without paying the cost.)";
     }
-    
+
     public static string ExecuteEffectDiscription()
     {
         return "<Execute> (At the end of your turn, this Digimon may attack. At the end of that attack, delete this Digimon. Your opponent's unsuspended Digimon can also be attacked with this effect.)";
     }
 
+    public static string ProgressEffectDiscription()
+    {
+        return "<Progress> (While attacking, your opponent's effects don't affect this Digimon.)";
+    }
     public static string LinkEffectDiscription()
     {
         return "[Link] (Plug this card from the hand or battle area sideways into the specified Digimon in the battle area.)";
