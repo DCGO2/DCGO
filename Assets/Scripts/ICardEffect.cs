@@ -737,6 +737,7 @@ public enum EffectDuration
     UntilOwnerActivePhase,
     UntilCalculateFixedCost,
     UntilNextUntap,
+    Continuous
 }
 #endregion
 
