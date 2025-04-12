@@ -1,5 +1,3 @@
-
-
 using System.Collections;
 using System.Collections.Generic;
 using System;
@@ -9,6 +7,7 @@ using UnityEngine;
 public partial class CardEffectCommons
 {
     #region Add effects to 1 target permanent
+
     public static void AddEffectToPermanent(Permanent targetPermanent, EffectDuration effectDuration, CardSource card, ICardEffect cardEffect, EffectTiming timing)
     {
         Func<EffectTiming, ICardEffect> getCardEffect = GetCardEffectByEffectTiming(timing: timing, cardEffect: cardEffect);
@@ -20,7 +19,6 @@ public partial class CardEffectCommons
                 {
                     targetPermanent.UntilOpponentTurnEndEffects.Add(getCardEffect);
                 }
-
                 else
                 {
                     targetPermanent.UntilOwnerTurnEndEffects.Add(getCardEffect);
@@ -32,7 +30,6 @@ public partial class CardEffectCommons
                 {
                     targetPermanent.UntilOwnerTurnEndEffects.Add(getCardEffect);
                 }
-
                 else
                 {
                     targetPermanent.UntilOpponentTurnEndEffects.Add(getCardEffect);
@@ -50,15 +47,13 @@ public partial class CardEffectCommons
             case EffectDuration.UntilNextUntap:
                 targetPermanent.UntilNextUntapEffects.Add(getCardEffect);
                 break;
-
-            case EffectDuration.Continuous:
-                targetPermanent.PermanentEffects.Add(getCardEffect);
-                break;
         }
     }
+
     #endregion
 
     #region Add effects to 1 target player
+
     public static void AddEffectToPlayer(EffectDuration effectDuration, CardSource card, ICardEffect cardEffect, EffectTiming timing, Func<EffectTiming, ICardEffect> getCardEffect = null)
     {
         Player player = card.Owner;
@@ -92,5 +87,6 @@ public partial class CardEffectCommons
                 break;
         }
     }
+
     #endregion
 }
