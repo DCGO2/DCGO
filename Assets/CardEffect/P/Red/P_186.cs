@@ -207,7 +207,10 @@ namespace DCGO.CardEffects.P
 
                 if (permanent == null || !permanentDeleted)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(new IRecovery(card.Owner, 1, activateClass).Recovery());
+                    if (card.Owner.CanAddSecurity(activateClass))
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(new IRecovery(card.Owner, 1, activateClass).Recovery());
+                    }
                 }
             }
 
