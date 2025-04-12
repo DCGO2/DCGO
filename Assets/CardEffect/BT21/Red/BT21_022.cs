@@ -149,7 +149,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (CardEffectCommons.CanTriggerOnPlay(hashtable, card))
                         {
@@ -176,7 +176,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card))
                         {
@@ -233,11 +233,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CardEffectCondition(ICardEffect effect)
                 {
-                    if (effect.EffectSourceCard.Owner == card.Owner.Enemy)
-                    {
-                        return true;
-                    }
-                    return false;
+                    return CardEffectCommons.IsOpponentEffect(effect, card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
