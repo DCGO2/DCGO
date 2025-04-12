@@ -128,7 +128,68 @@ namespace DCGO.CardEffects.BT21
 
                                 if (selectedPermanent != null)
                                 {
-                                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCollision(targetPermanent: selectedPermanent, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
+                                    #region Give Collision
+                                    AddSkillClass addSkillClass = new AddSkillClass();
+                                    addSkillClass.SetUpICardEffect("Gain Collision", CanUseCondition1, card);
+                                    addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
+
+                                    selectedPermanent.TopCard.Owner.UntilOpponentTurnEndEffects.Add((_timing) => addSkillClass);
+
+                                    bool CanUseCondition1(Hashtable hashtable)
+                                    {
+                                        return true;
+                                    }
+
+                                    bool CardSourceCondition(CardSource cardSource)
+                                    {
+                                        return PermanentCondition(selectedPermanent);
+                                    }
+
+                                    bool PermanentCondition(Permanent permanent)
+                                    {
+                                        if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent))
+                                        {
+                                            if (!permanent.TopCard.CanNotBeAffected(activateClass))
+                                            {
+                                                if (permanent == selectedPermanent)
+                                                    return true;
+                                            }
+                                        }
+
+                                        return false;
+                                    }
+
+                                    List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming _timing)
+                                    {
+                                        if (_timing == EffectTiming.OnCounterTiming)
+                                        {
+                                            bool CardSourceCondition(CardSource cardSource)
+                                            {
+                                                if (CardEffectCommons.IsExistOnBattleAreaDigimon(cardSource))
+                                                {
+                                                    if (cardSource == selectedPermanent.TopCard)
+                                                    {
+                                                        if (PermanentCondition(selectedPermanent))
+                                                        {
+                                                            return true;
+                                                        }
+                                                    }
+                                                }
+
+                                                return false;
+                                            }
+
+                                            bool Condition()
+                                            {
+                                                return CardSourceCondition(cardSource);
+                                            }
+
+                                            cardEffects.Add(CardEffectFactory.CollisionSelfStaticEffect(false, cardSource, Condition));
+                                        }
+
+                                        return cardEffects;
+                                    }
+                                    #endregion
 
                                     ActivateClass activateClassDebuff = new ActivateClass();
                                     activateClassDebuff.SetUpICardEffect("Attack with this Digimon", CanUseConditionDebuff,
@@ -283,8 +344,68 @@ namespace DCGO.CardEffects.BT21
 
                                 if (selectedPermanent != null)
                                 {
+                                    #region Give Collision
+                                    AddSkillClass addSkillClass = new AddSkillClass();
+                                    addSkillClass.SetUpICardEffect("Gain Collision", CanUseCondition1, card);
+                                    addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
 
-                                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCollision(targetPermanent: selectedPermanent, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
+                                    selectedPermanent.TopCard.Owner.UntilOpponentTurnEndEffects.Add((_timing) => addSkillClass);
+
+                                    bool CanUseCondition1(Hashtable hashtable)
+                                    {
+                                        return true;
+                                    }
+
+                                    bool CardSourceCondition(CardSource cardSource)
+                                    {
+                                        return PermanentCondition(selectedPermanent);
+                                    }
+
+                                    bool PermanentCondition(Permanent permanent)
+                                    {
+                                        if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent))
+                                        {
+                                            if (!permanent.TopCard.CanNotBeAffected(activateClass))
+                                            {
+                                                if (permanent == selectedPermanent)
+                                                    return true;
+                                            }
+                                        }
+
+                                        return false;
+                                    }
+
+                                    List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming _timing)
+                                    {
+                                        if (_timing == EffectTiming.OnCounterTiming)
+                                        {
+                                            bool CardSourceCondition(CardSource cardSource)
+                                            {
+                                                if (CardEffectCommons.IsExistOnBattleAreaDigimon(cardSource))
+                                                {
+                                                    if (cardSource == selectedPermanent.TopCard)
+                                                    {
+                                                        if (PermanentCondition(selectedPermanent))
+                                                        {
+                                                            return true;
+                                                        }
+                                                    }
+                                                }
+
+                                                return false;
+                                            }
+
+                                            bool Condition()
+                                            {
+                                                return CardSourceCondition(cardSource);
+                                            }
+
+                                            cardEffects.Add(CardEffectFactory.CollisionSelfStaticEffect(false, cardSource, Condition));
+                                        }
+
+                                        return cardEffects;
+                                    }
+                                    #endregion
 
                                     ActivateClass activateClassDebuff = new ActivateClass();
                                     activateClassDebuff.SetUpICardEffect("Attack with this Digimon", CanUseConditionDebuff,

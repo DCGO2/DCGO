@@ -122,6 +122,8 @@ namespace DCGO.CardEffects.BT21
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    bool delaySuccussful = false;
+
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
                     targetPermanents: new List<Permanent>() { card.PermanentOfThisCard() },
                     activateClass: activateClass,
@@ -129,6 +131,13 @@ namespace DCGO.CardEffects.BT21
                     failureProcess: null));
 
                     IEnumerator SuccessProcess()
+                    {
+                        delaySuccussful = true;
+
+                        yield return null;
+                    }
+
+                    if (delaySuccussful)
                     {
                         Permanent selectedPermanent = null;
                         CardSource cardForLinking = null;
@@ -163,7 +172,7 @@ namespace DCGO.CardEffects.BT21
                             yield return null;
                         }
 
-                        if(cardForLinking != null)
+                        if (cardForLinking != null)
                         {
                             SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
@@ -186,7 +195,8 @@ namespace DCGO.CardEffects.BT21
 
                             bool CanSelectPermanentCondition(Permanent permanent)
                             {
-                                return cardForLinking.CanLinkToTargetPermanent(permanent, false);
+                                return  CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                                        cardForLinking.CanLinkToTargetPermanent(permanent, false);
                             }
 
                             IEnumerator SelectPermanentCoroutine(Permanent permanent)

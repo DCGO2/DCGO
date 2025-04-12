@@ -1856,6 +1856,8 @@ public class IDigiBurst
         {
             if (_permanent.TopCard != null)
             {
+                if (_permanent.ImmuneFromStackTrashing()) return false;
+
                 if (_upToMaxCount)
                 {
                     if (_permanent.DigivolutionCards.Some((cardSource) => !cardSource.CanNotTrashFromDigivolutionCards(_cardEffect)))
@@ -3771,6 +3773,7 @@ public class IDegeneration
         if (_permanent == null) yield break;
         if (_permanent.TopCard == null) yield break;
         if (_permanent.ImmuneFromDeDigivolve()) yield break;
+        if (_permanent.ImmuneFromStackTrashing()) yield break;
         if (_permanent.TopCard.CanNotBeAffected(_cardEffect)) yield break;
 
         int maxCount = Math.Min(_permanent.DigivolutionCards.Count, _degenerationCount);
@@ -3923,6 +3926,7 @@ public class ITrashDigivolutionCards
         if (_cardEffect == null) yield break;
         if (_permanent == null) yield break;
         if (_permanent.TopCard == null) yield break;
+        if (_permanent.ImmuneFromStackTrashing()) yield break;
         if (_permanent.TopCard.CanNotBeAffected(_cardEffect)) yield break;
         if (_permanent.HasNoDigivolutionCards) yield break;
 

@@ -389,38 +389,42 @@ namespace DCGO.CardEffects.BT21
 
                             yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
+                            Permanent selectedPermanent = null;
+
                             IEnumerator SelectPermanentCoroutine(Permanent permanent)
                             {
-                                Permanent selectedPermanent = permanent;
+                                selectedPermanent = permanent;
 
-                                if (selectedPermanent != null)
+                                yield return null;
+                            }
+
+                            if (selectedPermanent != null)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(new List<CardSource>() { selectedCards[0] }, activateClass));
+
+                                #region Immunities
+
+                                bool CardEffectCondition(ICardEffect cardEffect)
                                 {
-                                    yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(new List<CardSource>() { selectedCards[0] }, activateClass));
-
-                                    #region Immunities
-
-                                    bool CardEffectCondition(ICardEffect cardEffect)
-                                    {
-                                        return CardEffectCommons.IsOpponentEffect(cardEffect, card);
-                                    }
-
-                                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotReturnToHand(
-                                        targetPermanent: card.PermanentOfThisCard(),
-                                        cardEffectCondition: CardEffectCondition,
-                                        effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                                        activateClass: activateClass,
-                                        effectName: "Can't return to hand by opponent's effects"));
-
-                                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotReturnToDeck(
-                                        targetPermanent: card.PermanentOfThisCard(),
-                                        cardEffectCondition: CardEffectCondition,
-                                        effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                                        activateClass: activateClass,
-                                        effectName: "Can't return to deck by opponent's effects"));
-
-                                    ActivateDeDigivolveProtection();
-                                    #endregion
+                                    return CardEffectCommons.IsOpponentEffect(cardEffect, card);
                                 }
+
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotReturnToHand(
+                                    targetPermanent: selectedPermanent,
+                                    cardEffectCondition: CardEffectCondition,
+                                    effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                                    activateClass: activateClass,
+                                    effectName: "Can't return to hand by opponent's effects"));
+
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotReturnToDeck(
+                                    targetPermanent: selectedPermanent,
+                                    cardEffectCondition: CardEffectCondition,
+                                    effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                                    activateClass: activateClass,
+                                    effectName: "Can't return to deck by opponent's effects"));
+
+                                ActivateDeDigivolveProtection();
+                                #endregion
                             }
                         }
                     }
@@ -475,7 +479,7 @@ namespace DCGO.CardEffects.BT21
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SelectTrashDigivolutionCards(
                         permanentCondition: CanSelectPermanentCondition,
                         cardCondition: CanTuckOrTrash,
-                        maxCount: 3,
+                        maxCount: 1,
                         canNoTrash: false,
                         isFromOnly1Permanent: false,
                         activateClass: activateClass,
@@ -549,7 +553,7 @@ namespace DCGO.CardEffects.BT21
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SelectTrashDigivolutionCards(
                         permanentCondition: CanSelectPermanentCondition,
                         cardCondition: CanTuckOrTrash,
-                        maxCount: 3,
+                        maxCount: 1,
                         canNoTrash: false,
                         isFromOnly1Permanent: false,
                         activateClass: activateClass,
