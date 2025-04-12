@@ -348,7 +348,7 @@ namespace DCGO.CardEffects.BT21
 
                     if (selectedPermanent != null)
                     {
-                        // TODO: Implement trash stack class here
+                        yield return ContinuousController.instance.StartCoroutine(new ITrashStack(selectedPermanent, 10, activateClass).TrashStack());
                     }
                 }
             }
