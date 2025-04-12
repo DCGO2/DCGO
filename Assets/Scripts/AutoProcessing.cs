@@ -183,6 +183,39 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
         return false;
     }
 
+    bool IsAttackerNotADigimon()
+    {
+        if (!GManager.instance.attackProcess.IsAttacking)
+            return false;
+
+        if (GManager.instance.attackProcess.AttackingPermanent != null)
+        {
+            if (!GManager.instance.attackProcess.AttackingPermanent.IsDigimon)
+                return true;
+
+            if (GManager.instance.attackProcess.DefendingPermanent == null && GManager.instance.attackProcess.HasDefender)
+                return true;
+        }
+
+        return false;
+    }
+
+    bool IsDigimonLackLinkCondition(Permanent permanent)
+    {
+        if (permanent != null)
+        {
+            if (permanent.TopCard != null)
+            {
+                if (!permanent.LinkedCards.Any(source => source.CanLinkToTargetPermanent(permanent, false)))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     public IEnumerator RuleProcess()
     {
         while (DoRuleProcess())
@@ -228,6 +261,20 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
 
         #region Is it necessary to deal with Digimon's DP shortage?
         if (CardEffectCommons.HasMatchConditionPermanent(IsDigimonLackDP))
+        {
+            return true;
+        }
+        #endregion
+
+        #region Is it necessary to deal with Battle Without Digimon?
+        if (IsAttackerNotADigimon())
+        {
+            return true;
+        }
+        #endregion
+
+        #region Is it necessary to deal with Digimon's Link Cards?
+        if (CardEffectCommons.HasMatchConditionPermanent(IsDigimonLackLinkCondition))
         {
             return true;
         }
@@ -322,6 +369,28 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
 
         if(GManager.instance.attackProcess.DefendingPermanent == null && GManager.instance.attackProcess.HasDefender)
             GManager.instance.attackProcess.IsEndAttack = true;
+    }
+    #endregion
+
+    #region Link Card Lacking conditions handling
+    IEnumerator DigimonLackLinkConditionProcess()
+    {
+        List<Permanent> LackLinkConditionPermanents = GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer
+            .Map(player => player.GetFieldPermanents()
+            .Filter(IsDigimonLackLinkCondition)).Flat();
+
+        if (LackLinkConditionPermanents.Count >= 1)
+        {
+            foreach(Permanent permanent in LackLinkConditionPermanents)
+            {
+                List<CardSource> selectedCards = permanent.LinkedCards.FindAll(source => source.CanLinkToTargetPermanent(permanent, false));
+
+                yield return ContinuousController.instance.StartCoroutine(new ITrashLinkCards(
+                               permanent,
+                               selectedCards,
+                               null).TrashLinkCards());
+            }
+        }
     }
     #endregion
 
