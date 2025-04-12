@@ -50,6 +50,10 @@ public partial class CardEffectCommons
             case EffectDuration.UntilNextUntap:
                 targetPermanent.UntilNextUntapEffects.Add(getCardEffect);
                 break;
+
+            case EffectDuration.Continuous:
+                targetPermanent.PermanentEffects.Add(getCardEffect);
+                break;
         }
     }
     #endregion
