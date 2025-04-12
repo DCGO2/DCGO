@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 //EmperorGreymon
 namespace DCGO.CardEffects.P
@@ -138,27 +139,38 @@ namespace DCGO.CardEffects.P
 
             if (timing == EffectTiming.None)
             {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Gain DP for each source colour", CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
-                cardEffects.Add(activateClass);
+                List<CardSource> cards = card.PermanentOfThisCard().cardSources;
+                var colourCount = Combinations.GetDifferenetColorCardCount(cards);
+                var newDP = colourCount * 1000;
 
+                bool Condition()
+                {
+                    return CardEffectCommons.IsExistOnBattleArea(card);
+                }
+
+                bool PermanentCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
+                    {
+                        if (permanent == card.PermanentOfThisCard())
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                cardEffects.Add(CardEffectFactory.ChangeDPStaticEffect(
+                permanentCondition: PermanentCondition,
+                changeValue: newDP,
+                isInheritedEffect: false,
+                card: card,
+                condition: Condition,
+                effectName: EffectDiscription));
                 string EffectDiscription()
                 {
                     return "[All Turns] This Digimon gets +1000 DP for each color in its digivolution cards.";
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    List<CardSource> cards = card.PermanentOfThisCard().cardSources;
-                    var colourCount = Combinations.GetDifferenetColorCardCount(cards);
-                    var newDP = colourCount * 1000;
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: card.PermanentOfThisCard(), changeValue: newDP, EffectDuration.Continuous, activateClass: activateClass));
                 }
             }
 
