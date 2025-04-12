@@ -4510,3 +4510,127 @@ public class AceOverflowClass
 }
 #endregion
 
+#region TrashStack
+public class ITrashStack
+{
+    /// <summary>
+    /// Trash Stack Class
+    /// </summary>
+    /// <param name="permanent">Target Permanent</param>
+    /// <param name="TrashCount">Amount of cards to trash</param>
+    /// <param name="cardEffect">Card Effect</param>
+    /// <param name="fromTop">Should trashing start from top, true by default</param>
+    public ITrashStack(Permanent permanent, int TrashCount, ICardEffect cardEffect, bool fromTop = true)
+    {
+        _permanent = permanent;
+        _trashCount = TrashCount;
+        _cardEffect = cardEffect;
+        _fromTop = fromTop;
+    }
+
+    Permanent _permanent = null;
+    int _trashCount;
+    ICardEffect _cardEffect = null;
+    bool _fromTop;
+
+    public IEnumerator TrashStack()
+    {
+        if (_cardEffect == null) yield break;
+        if (_cardEffect.EffectSourceCard == null) yield break;
+        if (_permanent == null) yield break;
+        if (_permanent.TopCard == null) yield break;
+        if (_permanent.ImmuneFromStackTrashing()) yield break;
+        if (_permanent.TopCard.CanNotBeAffected(_cardEffect)) yield break;
+
+        _trashCount = Math.Min(_permanent.StackCards.Count, _trashCount);
+
+        if (_trashCount >= 1)
+        {
+            int count = 0;
+
+            List<CardSource> selectedCards = new List<CardSource>();
+
+            while (true)
+            {
+                bool StopCondition()
+                {
+                    if (_permanent.HasNoDigivolutionCards)
+                    {
+                        return true;
+                    }
+
+                    if (count >= _trashCount)
+                    {
+                        return true;
+                    }
+
+                    return false;
+                }
+
+                if (StopCondition())
+                {
+                    break;
+                }
+
+                if (count == 0)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(_permanent));
+                }
+
+                CardSource cardSource = _permanent.TopCard;
+
+                selectedCards.Add(cardSource);
+
+                yield return ContinuousController.instance.StartCoroutine(new AceOverflowClass(new List<CardSource>() { cardSource }).Overflow());
+
+                yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveFromAllArea(cardSource));
+
+                if (!cardSource.IsToken)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddTrashCard(cardSource));
+                }
+
+                _permanent.ShowingPermanentCard.ShowPermanentData(true);
+                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().RemoveDigivolveRootEffect(cardSource, _permanent));
+
+                count++;
+            }
+
+            #region "When Top Card is Trashed" effect
+            #region Hashtable Setting
+            System.Collections.Hashtable hashtable = new System.Collections.Hashtable()
+                        {
+                            {"Permanent", _permanent},
+                            {"CardSources", selectedCards}
+                        };
+            #endregion
+
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing
+                .StackSkillInfos(hashtable, EffectTiming.WhenTopCardTrashed));
+
+            #endregion
+
+            #region add log
+            if (selectedCards.Count >= 1)
+            {
+                string log = "";
+
+                log += $"\nStack Trashed :";
+
+                foreach (CardSource cardSource in selectedCards)
+                {
+                    if (cardSource != null)
+                    {
+                        log += $"\n{cardSource.BaseENGCardNameFromEntity}({cardSource.CardID})";
+                    }
+                }
+
+                log += "\n";
+
+                PlayLog.OnAddLog?.Invoke(log);
+            }
+            #endregion
+        }
+    }
+}
+#endregion
