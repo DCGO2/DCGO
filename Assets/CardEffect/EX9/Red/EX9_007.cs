@@ -145,8 +145,8 @@ namespace DCGO.CardEffects
 
                         if (selectedPermanent != null)
                         {
-                            selectedCard.SetReverse();
                             yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddExecutingCard(selectedCard));
+                            selectedCard.SetReverse();
                             yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass));
                         }
                     }
