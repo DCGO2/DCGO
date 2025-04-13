@@ -147,10 +147,10 @@ public partial class CardEffectCommons
                             yield return null;
                         }
 
-                        yield return ContinuousController.instance.StartCoroutine(new ITrashDigivolutionCards(
+                        yield return ContinuousController.instance.StartCoroutine(new ITrashLinkCards(
                                 selectedPermanent,
                                 selectedCards,
-                                activateClass).TrashDigivolutionCards());
+                                activateClass).TrashLinkCards());
 
                        linkDiscardedCount += selectedCards.Count;
 

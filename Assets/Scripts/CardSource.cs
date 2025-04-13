@@ -2323,6 +2323,16 @@ public class CardSource : MonoBehaviour
 
     #endregion
 
+    #region whether this card is linked
+    public bool IsLinked
+    {
+        get
+        {
+            return PermanentOfThisCard().LinkedCards.Contains(this);
+        }
+    }
+    #endregion
+
     #region DigiXros requirement
     public DigiXrosCondition digiXrosCondition
     {
@@ -2498,51 +2508,6 @@ public class CardSource : MonoBehaviour
     }
     #endregion
 
-    #region whether this card can App Fusion
-    public bool CanPlayAppFusion(bool PayCost)
-    {
-        if (appFusionCondition != null)
-        {
-            if (PayCost)
-            {
-                int cost = appFusionCondition.cost;
-
-                cost = GetChangedCostItselef(cost, SelectCardEffect.Root.Hand, new List<Permanent>() { new Permanent(new List<CardSource>()) }, checkAvailability: true);
-
-                if (Owner.MaxMemoryCost < cost)
-                {
-                    return false;
-                }
-            }
-
-            if (Owner.GetBattleAreaDigimons().Count >= 1)
-            {
-                foreach (Permanent digimon in Owner.GetFieldPermanents())
-                {
-                    if (digimon != null)
-                    {
-                        if (!this.CanNotEvolve(digimon))
-                        {
-                            if (appFusionCondition.digimonCondition(digimon))
-                            {
-                                foreach (CardSource linkedCard in digimon.LinkedCards)
-                                {
-                                    if (appFusionCondition.linkedCondition(linkedCard))
-                                    {
-                                        return true;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        return false;
-    }
-    #endregion
-
     #region whether target permanent can Burst digivolve into this card
     public bool CanBurstDigivolutionFromTargetPermanent(Permanent targetPermanent, bool PayCost)
     {
@@ -2598,7 +2563,7 @@ public class CardSource : MonoBehaviour
     #endregion
 
     #region whether target permanent can Link into this card
-    public bool CanLinkFromTargetPermanent(Permanent targetPermanent, bool PayCost)
+    public bool CanLinkToTargetPermanent(Permanent targetPermanent, bool PayCost)
     {
         if (targetPermanent != null)
         {
@@ -2610,22 +2575,21 @@ public class CardSource : MonoBehaviour
                     {
                         if (linkCondition != null)
                         {
-                            if (!this.CanNotEvolve(targetPermanent))
+                            if (linkCondition.digimonCondition(targetPermanent))
                             {
-                                if (linkCondition.digimonCondition(targetPermanent))
+                                if (PayCost)
                                 {
-                                    if (PayCost)
+                                    int cost = linkCondition.cost;
+
+                                    cost = GetChangedCostItselef(cost, SelectCardEffect.Root.Hand, new List<Permanent>() { targetPermanent }, checkAvailability: true);
+
+                                    if (Owner.MaxMemoryCost < cost)
                                     {
-                                        int cost = linkCondition.cost;
-
-                                        cost = GetChangedCostItselef(cost, SelectCardEffect.Root.Hand, new List<Permanent>() { targetPermanent }, checkAvailability: true);
-
-                                        if (Owner.MaxMemoryCost < cost)
-                                        {
-                                            return false;
-                                        }
+                                        return false;
                                     }
                                 }
+
+                                return true;
                             }
                         }
                     }
@@ -2645,33 +2609,29 @@ public class CardSource : MonoBehaviour
         {
             if (targetPermanent.TopCard != null)
             {
-                if (targetPermanent.TopCard.Owner.GetFieldPermanents().Contains(targetPermanent))
+                if (appFusionCondition != null)
                 {
-                    if (this.CanPlayAppFusion(PayCost))
+                    if (!this.CanNotEvolve(targetPermanent))
                     {
-                        if (appFusionCondition != null)
-                        {
-                            if (!this.CanNotEvolve(targetPermanent))
+                        if (appFusionCondition.digimonCondition(targetPermanent))
+                        { 
+                            foreach (CardSource linkedCard in targetPermanent.LinkedCards)
                             {
-                                if (appFusionCondition.digimonCondition(targetPermanent))
+                                if (appFusionCondition.linkedCondition(targetPermanent, linkedCard))
                                 {
-                                    foreach (CardSource linkedCard in targetPermanent.LinkedCards)
+                                    if (PayCost)
                                     {
-                                        if (appFusionCondition.linkedCondition(linkedCard))
+                                        int cost = appFusionCondition.cost;
+
+                                        cost = GetChangedCostItselef(cost, SelectCardEffect.Root.Hand, new List<Permanent>() { targetPermanent }, checkAvailability: true);
+
+                                        if (Owner.MaxMemoryCost < cost)
                                         {
-                                            if (PayCost)
-                                            {
-                                                int cost = appFusionCondition.cost;
-
-                                                cost = GetChangedCostItselef(cost, SelectCardEffect.Root.Hand, new List<Permanent>() { targetPermanent }, checkAvailability: true);
-
-                                                if (Owner.MaxMemoryCost < cost)
-                                                {
-                                                    return false;
-                                                }
-                                            }
+                                            return false;
                                         }
                                     }
+
+                                    return true;
                                 }
                             }
                         }
@@ -2752,6 +2712,10 @@ public class CardSource : MonoBehaviour
 
     #region Inherited Effects JPN discription
     public string InheritedEffectDiscription_JPN => DataBase.ReplaceToASCII(_cEntity_Base.InheritedEffectDiscription_JPN);
+    #endregion
+
+    #region Link Effects
+    public string LinkEffectDiscription => DataBase.ReplaceToASCII(_cEntity_Base.LinkEffect);
     #endregion
 
     #region Card Sprite
@@ -3028,18 +2992,14 @@ public class LinkCondition
 
 public class AppFusionCondition
 {
-    public AppFusionCondition(Func<CardSource, bool> linkedCondition, string selectLinkMessage, Func<Permanent, bool> digimonCondition, string selectDigimonMessage, int cost)
+    public AppFusionCondition(Func<Permanent, CardSource, bool> linkedCondition, Func<Permanent, bool> digimonCondition, int cost)
     {
         this.linkedCondition = linkedCondition;
-        this.selectLinkMessage = selectLinkMessage;
         this.digimonCondition = digimonCondition;
-        this.selectDigimonMessage = selectDigimonMessage;
         this.cost = cost;
     }
-    public Func<CardSource, bool> linkedCondition { get; private set; } = null;
-    public string selectLinkMessage { get; private set; } = null;
+    public Func<Permanent, CardSource, bool> linkedCondition { get; private set; } = null;
     public Func<Permanent, bool> digimonCondition { get; private set; } = null;
-    public string selectDigimonMessage { get; private set; } = null;
 
     public int cost { get; private set; } = 0;
 }

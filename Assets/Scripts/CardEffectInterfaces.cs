@@ -203,6 +203,13 @@ public interface IImmuneFromDeDigivolveEffect
 }
 #endregion
 
+#region "Target permanent cannot have its stack cards trashed" effect
+public interface IImmuneFromStackTrashingEffect
+{
+    bool ImmuneStackTrashing(Permanent permanent, ICardEffect effect);
+}
+#endregion
+
 #region "Target permanent does not have DP" effect
 public interface IDontHaveDPEffect
 {

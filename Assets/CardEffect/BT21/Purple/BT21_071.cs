@@ -12,8 +12,20 @@ namespace DCGO.CardEffects.BT21
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Digivolution Condition
-            if(timing == EffectTiming.None)
+            #region Alternative Digivolution Condition - Stnd.
+            if (timing == EffectTiming.None)
+            {
+                bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.EqualsTraits("Stnd.");
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 2, ignoreDigivolutionRequirement: false, card: card, condition: null));
+            }
+            #endregion
+
+            #region Alternative Digivolution Condition - Three Musketeers
+            if (timing == EffectTiming.None)
             {
                 bool Condition(Permanent permanent)
                 {
@@ -389,7 +401,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return isExistOnField(card) && (card.Owner.HandCards.Count >= 1 || card.Owner.LibraryCards.Count >= 1);
+                    return isExistOnField(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

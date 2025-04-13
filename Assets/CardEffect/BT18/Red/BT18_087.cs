@@ -61,10 +61,7 @@ namespace DCGO.CardEffects.BT18
                     {
                         if (CardEffectCommons.CanTriggerWhenLoseSecurity(hashtable, player => player == card.Owner.Enemy))
                         {
-                            if (CardEffectCommons.IsOwnerTurn(card))
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
 

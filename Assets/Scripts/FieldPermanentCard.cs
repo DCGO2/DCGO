@@ -50,8 +50,9 @@ public class FieldPermanentCard : MonoBehaviour
     [Header("レベルテキスト")]
     public TextMeshProUGUI LevelText;
 
-    [Header("Linked Text")]
-    public Text LinkedDPText;
+    [Header("Link Elements")]
+    public GameObject LinkedObject;
+    public Image LinkIcon;
 
     [Header("表示親")]
     public GameObject Parent;
@@ -122,9 +123,9 @@ public class FieldPermanentCard : MonoBehaviour
             EvoRootCountText.transform.parent.gameObject.SetActive(false);
         }
 
-        if (LinkedDPText != null)
+        if (LinkedObject != null)
         {
-            LinkedDPText.transform.parent.gameObject.SetActive(false);
+            LinkedObject.SetActive(false);
         }
 
         if (DirectStrikeText != null)
@@ -502,6 +503,7 @@ public class FieldPermanentCard : MonoBehaviour
                 LevelText.transform.parent.gameObject.SetActive(false);
             }
 
+            //Digivolution Count
             if (EvoRootCountText != null)
             {
                 if (ThisPermanent.DigivolutionCards.Count >= 1)
@@ -521,22 +523,28 @@ public class FieldPermanentCard : MonoBehaviour
                 }
             }
 
-            if (LinkedDPText != null)
+            //Links
+            if (LinkedObject != null)
             {
                 if (ThisPermanent.LinkedCards.Count > 0)
                 {
-                    LinkedDPText.transform.parent.gameObject.SetActive(true);
+                    LinkedObject.SetActive(true);
 
-                    if (LinkedDPText.text != $"+{ThisPermanent.LinkedDP}")
-                        LinkedDPText.text = $"+{ThisPermanent.LinkedDP}";
+                    //if (LinkedDPText.text != $"+{ThisPermanent.LinkedDP}")
+                    //    LinkedDPText.text = $"+{ThisPermanent.LinkedDP}";
+
+                    if (LinkIcon.color != DataBase.CardColor_ColorLightDictionary[ThisPermanent.TopCard.CardColors[0]])
+                        LinkIcon.color = DataBase.CardColor_ColorLightDictionary[ThisPermanent.TopCard.CardColors[0]];
+                    
                 }
 
                 else
                 {
-                    LinkedDPText.transform.parent.gameObject.SetActive(false);
+                    LinkedObject.SetActive(false);
                 }
             }
 
+            //Summoning Sickness
             if (SummonSicknessObject != null)
             {
                 bool isActive = false;
@@ -559,6 +567,7 @@ public class FieldPermanentCard : MonoBehaviour
                 SummonSicknessObject.SetActive(isActive);
             }
 
+            //Blocker
             if (BlockerEffect != null)
             {
                 bool isActive = false;

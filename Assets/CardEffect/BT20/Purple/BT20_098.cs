@@ -137,11 +137,6 @@ namespace DCGO.CardEffects.BT20
                                                cardEffect: activateClass);
                                 }
 
-                                bool CanNoSelect()
-                                {
-                                    return selectedCardsToPlay.Count == 0;
-                                }
-
                                 bool RemoveOptionsAlreadySelected(List<CardSource> cardSources, CardSource cardSource)
                                 {
                                     if (cardSources.Contains(cardSource))
@@ -154,7 +149,7 @@ namespace DCGO.CardEffects.BT20
                                     canTargetCondition: CanSelectPlayCardCondition,
                                     canTargetCondition_ByPreSelecetedList: RemoveOptionsAlreadySelected,
                                     canEndSelectCondition: null,
-                                    canNoSelect: CanNoSelect,
+                                    canNoSelect: () => true,
                                     selectCardCoroutine: SelectCardCoroutine2,
                                     afterSelectCardCoroutine: null,
                                     message: "Select 1 card to play.",

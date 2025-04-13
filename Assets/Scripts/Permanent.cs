@@ -626,12 +626,43 @@ public class Permanent
     }
     #endregion
 
+    #region Immune From Trashing Stack
+    public bool ImmuneFromStackTrashing()
+    {
+        foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players)
+        {
+            foreach (Permanent permanent in player.GetFieldPermanents())
+            {
+                foreach (ICardEffect cardEffect1 in permanent.EffectList(EffectTiming.None))
+                {
+                    if (cardEffect1 is IImmuneFromStackTrashingEffect)
+                    {
+                        if (cardEffect1.CanUse(null))
+                        {
+                            if (((IImmuneFromStackTrashingEffect)cardEffect1).ImmuneStackTrashing(this, cardEffect1))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+    #endregion
+
     #region Card Sources
     public List<CardSource> cardSources = new List<CardSource>();
     #endregion
 
+    #region Stacked Cards
+    public List<CardSource> StackCards => cardSources.Filter(cardSource => !LinkedCards.Contains(cardSource));
+    #endregion
+
     #region Digivolution Cards
-    public List<CardSource> DigivolutionCards => cardSources.Filter(cardSource => cardSource != TopCard || LinkedCards.Contains(cardSource));
+    public List<CardSource> DigivolutionCards => cardSources.Filter(cardSource => cardSource != TopCard && !LinkedCards.Contains(cardSource));
     #endregion
 
     #region Linked Cards
@@ -1024,7 +1055,11 @@ public class Permanent
         {
             if (cardSources.Count >= 1)
             {
-                return cardSources[0];
+                if (LinkedCards.Count > 0)
+                    return cardSources.First(source => !LinkedCards.Contains(source));
+
+                else
+                    return cardSources[0];
             }
 
             return null;
@@ -1186,12 +1221,20 @@ public class Permanent
                         {
                             if (cardEffect != null)
                             {
-                                if (isTopCard == cardEffect.IsInheritedEffect)
+                                if (cardEffect.IsInheritedEffect && !isTopCard)
                                 {
+                                    _EffectList.Add(cardEffect);
                                     continue;
                                 }
 
-                                _EffectList.Add(cardEffect);
+                                if (cardEffect.IsLinkedEffect && cardSource.IsLinked)
+                                {
+                                    _EffectList.Add(cardEffect);
+                                    continue;
+                                }
+
+                                if(isTopCard && !cardSource.IsLinked)
+                                    _EffectList.Add(cardEffect);
                             }
                         }
                     }
