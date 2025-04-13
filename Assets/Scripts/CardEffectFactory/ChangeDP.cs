@@ -11,7 +11,8 @@ public partial class CardEffectFactory
         T changeValue,
         bool isInheritedEffect,
         CardSource card,
-        Func<bool> condition)
+        Func<bool> condition,
+        bool isLinkedEffect = false)
     {
         bool CanUseCondition()
         {
@@ -31,7 +32,8 @@ public partial class CardEffectFactory
             changeValue: changeValue,
             isInheritedEffect: isInheritedEffect,
             card: card,
-            condition: CanUseCondition);
+            condition: CanUseCondition,
+            isLinkedEffect: isLinkedEffect);
     }
     #endregion
 
@@ -41,7 +43,8 @@ public partial class CardEffectFactory
         T changeValue,
         bool isInheritedEffect,
         CardSource card,
-        Func<bool> condition)
+        Func<bool> condition,
+        bool isLinkedEffect = false)
     {
         bool PermanentCondition(Permanent permanent)
         {
@@ -54,7 +57,8 @@ public partial class CardEffectFactory
             isInheritedEffect: isInheritedEffect,
             card: card,
             condition: condition,
-            effectName: null
+            effectName: null,
+            isLinkedEffect: isLinkedEffect
         );
     }
 
@@ -64,7 +68,8 @@ public partial class CardEffectFactory
         bool isInheritedEffect,
         CardSource card,
         Func<bool> condition,
-        Func<string> effectName)
+        Func<string> effectName,
+        bool isLinkedEffect = false)
     {
         bool isInt = typeof(T) == typeof(int);
         bool isIntFunc = typeof(T) == typeof(Func<int>);
@@ -90,6 +95,7 @@ public partial class CardEffectFactory
         changeDPClass.SetUpICardEffect("", CanUseCondition, card);
         changeDPClass.SetUpChangeDPClass(ChangeDP: ChangeDP, permanentCondition: PermanentCondition, isUpDown: _isUpDown, isMinusDP: () => !isUpValue());
         changeDPClass.SetIsInheritedEffect(isInheritedEffect);
+        changeDPClass.SetIsLinkedEffect(isLinkedEffect);
 
         bool CanUseCondition(Hashtable hashtable)
         {

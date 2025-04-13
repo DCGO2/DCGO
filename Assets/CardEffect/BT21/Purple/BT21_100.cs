@@ -36,7 +36,6 @@ namespace DCGO.CardEffects.BT21
             }
             #endregion
 
-
             #region Main
             if (timing == EffectTiming.OptionSkill)
             {
@@ -108,7 +107,8 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanDeclareOptionDelayEffect(card) &&
+                    return CardEffectCommons.IsOwnerTurn(card) &&
+                           CardEffectCommons.CanDeclareOptionDelayEffect(card) &&
                            CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, TriggerPermanentCondition) &&
                            CardEffectCommons.IsByEffect(hashtable, null);
                 }

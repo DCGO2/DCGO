@@ -209,51 +209,35 @@ namespace DCGO.CardEffects.Examples
             #endregion
 
             #region App Fusion
+
             if (timing == EffectTiming.None)
             {
                 AddAppFusionConditionClass addAppFusionConditionClass = new AddAppFusionConditionClass();
-                addAppFusionConditionClass.SetUpICardEffect($"App Fusion", CanUseCondition, card);
+                addAppFusionConditionClass.SetUpICardEffect($"App Fusion", (hashtable) => true, card);
                 addAppFusionConditionClass.SetUpAddAppFusionConditionClass(getAppFusionCondition: GetAppFusion);
                 addAppFusionConditionClass.SetNotShowUI(true);
                 cardEffects.Add(addAppFusionConditionClass);
 
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return true;
-                }
-
                 AppFusionCondition GetAppFusion(CardSource cardSource)
                 {
-                    if (cardSource == card)
+                    bool linkCondition(Permanent permanent, CardSource source)
                     {
-                        bool linkCondition(CardSource source)
+                        if (source != null)
                         {
-                            if (source != null)
+                            if (source != card)
                             {
-                                return true;
-                            }
-
-                            return false;
-                        }
-
-                        bool digimonCondition(Permanent permanent)
-                        {
-                            if (permanent != null)
-                            {
-                                if (permanent.TopCard != null)
+                                if (permanent.TopCard.EqualsCardName("First Name"))
                                 {
-                                    if (permanent.TopCard.Owner == card.Owner)
+                                    if (permanent.LinkedCards.Find(x => x.EqualsCardName("Second Name")))
                                     {
-                                        if (permanent.TopCard.Owner.GetFieldPermanents().Contains(permanent))
-                                        {
-                                            if (!card.CanNotEvolve(permanent))
-                                            {
-                                                if (permanent.TopCard.EqualsCardName("Timemon"))
-                                                {
-                                                    return true;
-                                                }
-                                            }
-                                        }
+                                        return true;
+                                    }
+                                }
+                                if (permanent.TopCard.EqualsCardName("Second Name"))
+                                {
+                                    if (permanent.LinkedCards.Find(x => x.EqualsCardName("First Name")))
+                                    {
+                                        return true;
                                     }
                                 }
                             }
@@ -261,11 +245,37 @@ namespace DCGO.CardEffects.Examples
                             return false;
                         }
 
+                        return false;
+                    }
+                    bool digimonCondition(Permanent permanent)
+                    {
+                        if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                        {
+                            if (permanent.TopCard.EqualsCardName("First Name"))
+                            {
+                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Second Name")))
+                                {
+                                    return true;
+                                }
+                            }
+                            if (permanent.TopCard.EqualsCardName("Second Name"))
+                            {
+                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("First Name")))
+                                {
+                                    return true;
+                                }
+                            }
+                            return false;
+                        }
+
+                        return false;
+                    }
+
+                    if (cardSource == card)
+                    {
                         AppFusionCondition AppFusionCondition = new AppFusionCondition(
                             linkedCondition: linkCondition,
-                            selectLinkMessage: "1 Linked card",
                             digimonCondition: digimonCondition,
-                            selectDigimonMessage: "1 [Timemon]",
                             cost: 0);
 
                         return AppFusionCondition;
@@ -274,6 +284,7 @@ namespace DCGO.CardEffects.Examples
                     return null;
                 }
             }
+
             #endregion
 
             return cardEffects;

@@ -12,7 +12,6 @@ public partial class CardEffectCommons
         if (hashtable != null)
         {
             Permanent Permanent = GetPermanentFromHashtable(hashtable);
-
             if (Permanent != null)
             {
                 if (Permanent.TopCard != null)

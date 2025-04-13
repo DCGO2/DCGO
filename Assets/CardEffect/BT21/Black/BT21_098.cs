@@ -55,16 +55,16 @@ namespace DCGO.CardEffects.BT21
                             cardEffect: activateClass);
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlaceDelayOptionCards(card: card, cardEffect: activateClass));
                     }
+
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlaceDelayOptionCards(card: card, cardEffect: activateClass));
                 }
             }
 
             #endregion
 
             #region Your Turn Delay
-            if (timing == EffectTiming.OnDeclaration)
+            if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete 1 opponent's Digimon with lowest play cost, trash security until 1 left if didn't delete", CanUseCondition, card);
@@ -123,59 +123,74 @@ namespace DCGO.CardEffects.BT21
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    bool activateDelay = false;
+
                     List<Permanent> deleteTargetPermanents = new List<Permanent>();
 
-                    bool attemptedToDelete = false;
+                    bool failedToDelete = true;
 
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
+                                    targetPermanents: new List<Permanent>() { card.PermanentOfThisCard() }, 
+                                    activateClass: activateClass, 
+                                    successProcess: permanents => SuccessProcess(), 
+                                    failureProcess: null));
+
+                    IEnumerator SuccessProcess()
                     {
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectPermanentCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: 1,
-                            canNoSelect: false,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: null,
-                            afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
-                            mode: SelectPermanentEffect.Mode.Destroy,
-                            cardEffect: activateClass);
-
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                        IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
-                        {
-                            deleteTargetPermanents = permanents.Clone();
-
-                            attemptedToDelete = true;
-
-                            yield return null;
-                        }
+                        activateDelay = true;
+                        yield return null;
                     }
 
-                    if (attemptedToDelete)
+                    if (activateDelay)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: deleteTargetPermanents, activateClass: activateClass, successProcess: null, failureProcess: FailureProcess));
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                        {
+                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                        IEnumerator FailureProcess()
+                            selectPermanentEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: CanSelectPermanentCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: 1,
+                                canNoSelect: false,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: null,
+                                afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
+                                mode: SelectPermanentEffect.Mode.Custom,
+                                cardEffect: activateClass);
+
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                            IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
+                            {
+                                deleteTargetPermanents = permanents.Clone();
+
+                                yield return null;
+                            }
+                        }
+
+                        if (deleteTargetPermanents.Count > 0)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: deleteTargetPermanents, activateClass: activateClass, successProcess: SuccessDeleteProcess, failureProcess: null));
+
+                            IEnumerator SuccessDeleteProcess(List<Permanent> permanents)
+                            {
+                                if(permanents.Count > 0)
+                                    failedToDelete = false;
+
+                                yield return null;
+                            }
+                        }
+
+                        if (failedToDelete)
                         {
                             yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
-                                player: card.Owner.Enemy,
-                                destroySecurityCount: card.Owner.Enemy.SecurityCards.Count - 1,
-                                cardEffect: activateClass,
-                                fromTop: true).DestroySecurity());
+                                    player: card.Owner.Enemy,
+                                    destroySecurityCount: card.Owner.Enemy.SecurityCards.Count - 1,
+                                    cardEffect: activateClass,
+                                    fromTop: true).DestroySecurity());
                         }
-                    }
-                    else
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
-                            player: card.Owner.Enemy,
-                            destroySecurityCount: card.Owner.Enemy.SecurityCards.Count - 1,
-                            cardEffect: activateClass,
-                            fromTop: true).DestroySecurity());
                     }
                 }
             }
@@ -187,7 +202,7 @@ namespace DCGO.CardEffects.BT21
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect($"Play 1 card with [VEMMON] in text from hand or trash and add this card to hand", CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, EffectDescription());
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDescription());
                 activateClass.SetIsSecurityEffect(true);
                 cardEffects.Add(activateClass);
 

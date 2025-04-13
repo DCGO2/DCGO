@@ -11,7 +11,6 @@ namespace DCGO.CardEffects.BT21
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-
             #region Start of Main Phase
             if (timing == EffectTiming.OnStartMainPhase)
             {
@@ -71,7 +70,7 @@ namespace DCGO.CardEffects.BT21
 
                 string EffectDescription()
                 {
-                    return "[All Turns] When any of your Digimon are played or digivolve, by suspending this Tamer, until your opponent's turn ends, 1 of your Digimon with [Guilmon], [Growlmon], [Gallantmon], or [Megidramon] in its name or the [Hero] trait gains <Blocker> and, it here are 10 or more total cards in both players' trashes, gets + 2000 DP.";
+                    return "[All Turns] When any of your Digimon are played or digivolve, by suspending this Tamer, until your opponent's turn ends, 1 of your Digimon with [Guilmon], [Growlmon], [Gallantmon], or [Megidramon] in its name or the [Hero] trait gains <Blocker> and, it here are 10 or more total cards in both players' trashes, gets +2000 DP.";
                 }
 
                 bool MyDigimonPlayedDigid(Permanent permanent)
@@ -81,16 +80,13 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    if (isExistOnField(card))
                     {
-                        if (CardEffectCommons.IsOwnerTurn(card))
-                        {
-                            if (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, MyDigimonPlayedDigid))
-                                return true;
+                        if (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, MyDigimonPlayedDigid))
+                            return true;
 
-                            if (CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, MyDigimonPlayedDigid))
-                                return true;
-                        }
+                        if (CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, MyDigimonPlayedDigid))
+                            return true;
                     }
 
                     return false;

@@ -189,7 +189,7 @@ namespace DCGO.CardEffects.BT15
 
                             selectHandEffect.SetUpCustomMessage(
                                 "Select 1 card to place at the top or bottom of security.",
-                                "The opponent is selecting 1 card to place at the bottom of security.");
+                                "The opponent is selecting 1 card to place at the top or bottom of security.");
                             selectHandEffect.SetUpCustomMessage_ShowCard("Security Top/Bottom Card");
 
                             yield return StartCoroutine(selectHandEffect.Activate());
