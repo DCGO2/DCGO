@@ -1,9 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
-namespace DCGO.CardEffects
+//Agumon
+namespace DCGO.CardEffects.EX9
 {
     public class EX9_007 : CEntity_Effect
     {

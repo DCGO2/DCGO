@@ -2,7 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DCGO.CardEffects
+//Greymon
+namespace DCGO.CardEffects.EX9
 {
     public class EX9_009 : CEntity_Effect
     {
