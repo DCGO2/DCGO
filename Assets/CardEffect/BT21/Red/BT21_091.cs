@@ -96,9 +96,8 @@ namespace DCGO.CardEffects.BT21
                         if (cardTrashed)
                         {
                             yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 2, activateClass).Draw());
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlaceDelayOptionCards(card: card, cardEffect: activateClass));
                         }
-
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlaceDelayOptionCards(card: card, cardEffect: activateClass));
                     }
                 }
             }
@@ -107,7 +106,7 @@ namespace DCGO.CardEffects.BT21
 
             #region All Turns - Delay
 
-            if (timing == EffectTiming.OnAddDigivolutionCards)
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Your 1 Digimon digivolves", CanUseCondition, card);
