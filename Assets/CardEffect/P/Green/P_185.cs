@@ -139,18 +139,28 @@ namespace DCGO.CardEffects.P
 
             if (timing == EffectTiming.None)
             {
-                List<CardSource> cards = card.PermanentOfThisCard().cardSources;
-                var colourCount = Combinations.GetDifferenetColorCardCount(cards);
-                var newDP = colourCount * 1000;
+                int count()
+                {
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    {
+                        List<CardSource> cards = card.PermanentOfThisCard().cardSources;
+                        var colourCount = Combinations.GetDifferenetColorCardCount(cards);
+                        var newDP = colourCount * 1000;
+
+                        return newDP;
+                    }
+
+                    return 0;
+                }
 
                 bool Condition()
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 bool PermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
                         if (permanent == card.PermanentOfThisCard())
                         {
@@ -163,7 +173,7 @@ namespace DCGO.CardEffects.P
 
                 cardEffects.Add(CardEffectFactory.ChangeDPStaticEffect(
                 permanentCondition: PermanentCondition,
-                changeValue: newDP,
+                changeValue: count(),
                 isInheritedEffect: false,
                 card: card,
                 condition: Condition,

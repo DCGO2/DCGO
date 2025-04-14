@@ -62,7 +62,7 @@ namespace DCGO.CardEffects.BT21
             if (timing == EffectTiming.None)
             {
                 AddDigiXrosConditionClass addDigiXrosConditionClass = new AddDigiXrosConditionClass();
-                addDigiXrosConditionClass.SetUpICardEffect($"DigiXros", CanUseCondition, card);
+                addDigiXrosConditionClass.SetUpICardEffect($"DigiXros -3", CanUseCondition, card);
                 addDigiXrosConditionClass.SetUpAddDigiXrosConditionClass(getDigiXrosCondition: GetDigiXros);
                 addDigiXrosConditionClass.SetNotShowUI(true);
                 cardEffects.Add(addDigiXrosConditionClass);
@@ -76,9 +76,9 @@ namespace DCGO.CardEffects.BT21
                 {
                     if (cardSource == card)
                     {
-                        DigiXrosConditionElement element = new DigiXrosConditionElement(CanSelectCardCondition, "[OmniShoutmon]/[ZeigGreymon]");
+                        DigiXrosConditionElement element = new DigiXrosConditionElement(CanSelectCardCondition1, "[OmniShoutmon]");
 
-                        bool CanSelectCardCondition(CardSource cardSource)
+                        bool CanSelectCardCondition1(CardSource cardSource)
                         {
                             if (cardSource != null)
                             {
@@ -90,7 +90,23 @@ namespace DCGO.CardEffects.BT21
                                         {
                                             return true;
                                         }
+                                    }
+                                }
+                            }
 
+                            return false;
+                        }
+
+                        DigiXrosConditionElement element2 = new DigiXrosConditionElement(CanSelectCardCondition2, "[ZeigGreymon]");
+
+                        bool CanSelectCardCondition2(CardSource cardSource)
+                        {
+                            if (cardSource != null)
+                            {
+                                if (cardSource.Owner == card.Owner)
+                                {
+                                    if (cardSource.IsDigimon)
+                                    {
                                         if (cardSource.EqualsCardName("ZeigGreymon"))
                                         {
                                             return true;
@@ -102,7 +118,7 @@ namespace DCGO.CardEffects.BT21
                             return false;
                         }
 
-                        List<DigiXrosConditionElement> elements = new List<DigiXrosConditionElement>() { element };
+                        List<DigiXrosConditionElement> elements = new List<DigiXrosConditionElement>() { element, element2 };
 
                         DigiXrosCondition digiXrosCondition = new DigiXrosCondition(elements, null, 3);
 

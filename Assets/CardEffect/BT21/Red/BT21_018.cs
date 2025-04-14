@@ -143,6 +143,19 @@ namespace DCGO.CardEffects.BT21
 
             #endregion
 
+            #region Link
+            if (timing == EffectTiming.OnDeclaration)
+            {
+                /// <summary>
+                /// Used to link a card
+                /// </summary>
+                /// <param name="card">Reference to this card</param>
+                /// <param name="condition">OPTIONAL - Function to check for effect conditions</param>
+                /// <author>Mike Bunch</author>
+                cardEffects.Add(CardEffectFactory.LinkEffect(card));
+            }
+            #endregion
+
             #endregion
 
             #region Your Turn
@@ -162,7 +175,7 @@ namespace DCGO.CardEffects.BT21
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (CardEffectCommons.CanTriggerWhenLinking(hashtable, PermanentCondition, card))
+                        if (CardEffectCommons.CanTriggerWhenLinked(hashtable, LinkPermanentCondition, null))
                         {
                             return true;
                         }
@@ -185,34 +198,26 @@ namespace DCGO.CardEffects.BT21
                     return false;
                 }
 
-                bool PermanentCondition(Permanent permanent)
+                bool LinkPermanentCondition(Permanent permanent)
                 {
                     return permanent == card.PermanentOfThisCard();
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (card.PermanentOfThisCard().CanAttack(activateClass))
-                        {
-                            SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
+                    SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
 
-                            selectAttackEffect.SetUp(
-                                attacker: card.PermanentOfThisCard(),
-                                canAttackPlayerCondition: () => true,
-                                defenderCondition: (permanent) => true,
-                                cardEffect: activateClass);
+                    selectAttackEffect.SetUp(
+                        attacker: card.PermanentOfThisCard(),
+                        canAttackPlayerCondition: () => true,
+                        defenderCondition: (permanent) => true,
+                        cardEffect: activateClass);
 
-                            yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
-                        }
-                    }
+                    yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
                 }
             }
 
             #endregion
-
-            #region Link ESS
 
             #region When Linked
 
@@ -275,17 +280,6 @@ namespace DCGO.CardEffects.BT21
                     }
                 }
             }
-
-            #endregion
-
-            #region +3k DP
-
-            if (timing == EffectTiming.None)
-            {
-                cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect(changeValue: 3000, isInheritedEffect: false, card: card, condition: null, isLinkedEffect: true));
-            }
-
-            #endregion
 
             #endregion
 

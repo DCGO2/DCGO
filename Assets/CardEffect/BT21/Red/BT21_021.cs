@@ -147,19 +147,12 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (CardEffectCommons.CanTriggerOnDeletion(hashtable, card))
-                        {
-                            return true;
-                        }
-                    }
-                    return false;
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.CanActivateOnDeletion(card);
                 }
 
                 bool CanSelectTamerCondition(Permanent permanent)
@@ -295,7 +288,7 @@ namespace DCGO.CardEffects.BT21
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 [Xros Heart]/[Blue Flare]/[Hero] Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -329,7 +322,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.IsDigimon)
+                    if (cardSource.IsDigimon || cardSource.IsTamer)
                     {
                         if (cardSource.EqualsTraits("Xros Heart") || cardSource.EqualsTraits("Blue Flare") || cardSource.EqualsTraits("Hero"))
                         {
@@ -371,10 +364,21 @@ namespace DCGO.CardEffects.BT21
                     {
                         bool isPlayed = false;
                         var reducdedCost = selectedCard.BasePlayCostFromEntity - 5;
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: new List<CardSource>() { selectedCard }, activateClass: activateClass, payCost: true, isTapped: false, root: SelectCardEffect.Root.Hand, activateETB: true, fixedCost: reducdedCost));
+
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
+                                     cardSources: new List<CardSource>() { selectedCard }, 
+                                     activateClass: activateClass, 
+                                     payCost: true, 
+                                     isTapped: false, 
+                                     root: SelectCardEffect.Root.Hand,
+                                     activateETB: true, 
+                                     fixedCost: reducdedCost));
+
                         if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedCard.PermanentOfThisCard())) isPlayed = true;
+
                         if (isPlayed)
                         {
+
                             SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                             selectPermanentEffect.SetUp(

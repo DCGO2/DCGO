@@ -1856,7 +1856,7 @@ public class IDigiBurst
         {
             if (_permanent.TopCard != null)
             {
-                if (_permanent.ImmuneFromStackTrashing()) return false;
+                if (_permanent.ImmuneFromStackTrashing(_cardEffect)) return false;
 
                 if (_upToMaxCount)
                 {
@@ -3773,7 +3773,7 @@ public class IDegeneration
         if (_permanent == null) yield break;
         if (_permanent.TopCard == null) yield break;
         if (_permanent.ImmuneFromDeDigivolve()) yield break;
-        if (_permanent.ImmuneFromStackTrashing()) yield break;
+        if (_permanent.ImmuneFromStackTrashing(_cardEffect)) yield break;
         if (_permanent.TopCard.CanNotBeAffected(_cardEffect)) yield break;
 
         int maxCount = Math.Min(_permanent.DigivolutionCards.Count, _degenerationCount);
@@ -3926,7 +3926,7 @@ public class ITrashDigivolutionCards
         if (_cardEffect == null) yield break;
         if (_permanent == null) yield break;
         if (_permanent.TopCard == null) yield break;
-        if (_permanent.ImmuneFromStackTrashing()) yield break;
+        if (_permanent.ImmuneFromStackTrashing(_cardEffect)) yield break;
         if (_permanent.TopCard.CanNotBeAffected(_cardEffect)) yield break;
         if (_permanent.HasNoDigivolutionCards) yield break;
 
@@ -4025,15 +4025,13 @@ public class ITrashLinkCards
     public IEnumerator TrashLinkCards()
     {
         if (_trashTargetCards == null) yield break;
-        if (_cardEffect == null) yield break;
         if (_permanent == null) yield break;
         if (_permanent.TopCard == null) yield break;
-        if (_permanent.TopCard.CanNotBeAffected(_cardEffect)) yield break;
-        if (_permanent.HasNoDigivolutionCards) yield break;
+        if (_cardEffect != null && _permanent.TopCard.CanNotBeAffected(_cardEffect)) yield break;
+        if (_permanent.HasNoLinkCards) yield break;
 
         _trashTargetCards = _trashTargetCards.Filter((cardSource) =>
-            _permanent.DigivolutionCards.Contains(cardSource) &&
-            !cardSource.CanNotTrashFromDigivolutionCards(_cardEffect));
+            _permanent.LinkedCards.Contains(cardSource));
 
         if (_trashTargetCards.Count == 0) yield break;
 
@@ -4543,7 +4541,7 @@ public class ITrashStack
         if (_cardEffect.EffectSourceCard == null) yield break;
         if (_permanent == null) yield break;
         if (_permanent.TopCard == null) yield break;
-        if (_permanent.ImmuneFromStackTrashing()) yield break;
+        if (_permanent.ImmuneFromStackTrashing(_cardEffect)) yield break;
         if (_permanent.TopCard.CanNotBeAffected(_cardEffect)) yield break;
 
         _trashCount = Math.Min(_permanent.StackCards.Count, _trashCount);

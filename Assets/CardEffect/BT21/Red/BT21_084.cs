@@ -3,7 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DCGO.CardEffects
+//Haru Shinkai
+namespace DCGO.CardEffects.BT21
 {
     public class BT21_084 : CEntity_Effect
     {

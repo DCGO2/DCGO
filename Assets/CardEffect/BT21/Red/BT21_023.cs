@@ -120,6 +120,19 @@ namespace DCGO.CardEffects.BT21
 
             #endregion
 
+            #region Link
+            if (timing == EffectTiming.OnDeclaration)
+            {
+                /// <summary>
+                /// Used to link a card
+                /// </summary>
+                /// <param name="card">Reference to this card</param>
+                /// <param name="condition">OPTIONAL - Function to check for effect conditions</param>
+                /// <author>Mike Bunch</author>
+                cardEffects.Add(CardEffectFactory.LinkEffect(card));
+            }
+            #endregion
+
             #endregion
 
             #region On Play / When digivolving Shared
@@ -134,7 +147,6 @@ namespace DCGO.CardEffects.BT21
                         {
                             return true;
                         }
-                        return true;
                     }
                 }
                 return false;
@@ -230,7 +242,7 @@ namespace DCGO.CardEffects.BT21
 
                     if (selectedCard != null)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddLinkCard(card, activateClass));
+                        yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddLinkCard(selectedCard, activateClass));
                     }
                 }
             }
@@ -243,7 +255,7 @@ namespace DCGO.CardEffects.BT21
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("You may Link 1 level 4 or lower digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, hashtable => SharedActivateCoroutine(hashtable, activateClass), -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, hashtable => SharedActivateCoroutine(hashtable, activateClass), -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -284,7 +296,7 @@ namespace DCGO.CardEffects.BT21
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("You may Link 1 level 4 or lower digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, hashtable => SharedActivateCoroutine(hashtable, activateClass), -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, hashtable => SharedActivateCoroutine(hashtable, activateClass), -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -475,14 +487,6 @@ namespace DCGO.CardEffects.BT21
 
             #endregion
 
-            #region ESS - +4k DP
-
-            if (timing == EffectTiming.None)
-            {
-                cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect(changeValue: 2000, isInheritedEffect: false, card: card, condition: null, isLinkedEffect: true));
-            }
-
-            #endregion
 
             return cardEffects;
         }

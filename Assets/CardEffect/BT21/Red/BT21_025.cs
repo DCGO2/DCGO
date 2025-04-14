@@ -41,10 +41,11 @@ namespace DCGO.CardEffects.BT21
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("trash top security", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetHashString("YT_BT21-025");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
-                    => "Your Turn] [Once Per Turn] When any of your [Reptile]/[Dragonkin] trait Digimon's attack targets change, trash your opponent's top security card.";
+                    => "[Your Turn] [Once Per Turn] When any of your [Reptile]/[Dragonkin] trait Digimon's attack targets change, trash your opponent's top security card.";
 
                 bool CanUseCondition(Hashtable hashtable)
                 {

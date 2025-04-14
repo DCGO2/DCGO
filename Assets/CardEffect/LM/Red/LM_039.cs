@@ -148,17 +148,20 @@ namespace DCGO.CardEffects.LM
                             yield return null;
                         }
 
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.BouncePeremanentAndProcessAccordingToResult(new List<Permanent> { selectedPermanent }, activateClass, SuccessProcess(), null));
-                        IEnumerator SuccessProcess()
+                        if(selectedPermanent != null)
                         {
-                            bottomdecked = true;
-                            yield return null;
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeckBouncePeremanentAndProcessAccordingToResult(new List<Permanent> { selectedPermanent }, activateClass, SuccessProcess(), null));
+                            IEnumerator SuccessProcess()
+                            {
+                                bottomdecked = true;
+                                yield return null;
+                            }
                         }
-                    }
 
-                    if (!bottomdecked)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonSAttack(targetPermanent: card.PermanentOfThisCard(), changeValue: 1, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
+                        if (!bottomdecked)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonSAttack(targetPermanent: card.PermanentOfThisCard(), changeValue: 1, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
+                        }
                     }
                 }
             }
@@ -242,17 +245,21 @@ namespace DCGO.CardEffects.LM
                             yield return null;
                         }
 
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.BouncePeremanentAndProcessAccordingToResult(new List<Permanent> { selectedPermanent }, activateClass, SuccessProcess(), null));
-                        IEnumerator SuccessProcess()
+                        if (selectedPermanent != null)
                         {
-                            bottomdecked = true;
-                            yield return null;
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeckBouncePeremanentAndProcessAccordingToResult(new List<Permanent> { selectedPermanent }, activateClass, SuccessProcess(), null));
+                            
+                            IEnumerator SuccessProcess()
+                            {
+                                bottomdecked = true;
+                                yield return null;
+                            }
                         }
-                    }
 
-                    if (!bottomdecked)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonSAttack(targetPermanent: card.PermanentOfThisCard(), changeValue: 1, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
+                        if (!bottomdecked)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonSAttack(targetPermanent: card.PermanentOfThisCard(), changeValue: 1, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
+                        }
                     }
                 }
             }

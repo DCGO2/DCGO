@@ -113,6 +113,8 @@ namespace DCGO.CardEffects.BT21
 
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
+                List<Permanent> playedPermanents = new List<Permanent>();
+
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Suspend this tamer, Attack with a [Xros Heart]/[Hero] Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
@@ -157,22 +159,28 @@ namespace DCGO.CardEffects.BT21
 
                 bool AttackingPermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                    if (playedPermanents.Contains(permanent))
                     {
-                        if (permanent.TopCard.EqualsTraits("Xros Heart") || permanent.TopCard.EqualsTraits("Hero"))
+                        if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                         {
-                            if (permanent.CanAttack(activateClass))
+                            if (permanent.TopCard.EqualsTraits("Xros Heart") || permanent.TopCard.EqualsTraits("Hero"))
                             {
-                                return true;
+                                if (permanent.CanAttack(activateClass))
+                                {
+                                    return true;
+                                }
                             }
                         }
                     }
+                    
                     return false;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(new List<Permanent>() { card.PermanentOfThisCard() }, CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
+
+                    playedPermanents = CardEffectCommons.GetPermanentsFromHashtable(hashtable);
 
                     if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, AttackingPermanentCondition))
                     {

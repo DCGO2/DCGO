@@ -92,13 +92,7 @@ namespace DCGO.CardEffects.LM
                     {
                         if (permanent.IsTamer || permanent.IsDigimon)
                         {
-                            if (!permanent.IsSuspended)
-                            {
-                                if (!permanent.TopCard.CanNotBeAffected(activateClass))
-                                {
-                                    return true;
-                                }
-                            }
+                            return true;
                         }
                     }
                     return false;
@@ -137,7 +131,7 @@ namespace DCGO.CardEffects.LM
                         mode: SelectPermanentEffect.Mode.Tap,
                         cardEffect: activateClass);
 
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimom or Tamer to suspend", "The opponent is selecting 1 Digimom or tamer to suspend");
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon or Tamer to suspend", "The opponent is selecting 1 Digimon or tamer to suspend");
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
                     Permanent selectedPermanent = null;
@@ -157,7 +151,7 @@ namespace DCGO.CardEffects.LM
                         mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                    selectPermanentEffect1.SetUpCustomMessage("Select 1 Digimom or Tamer to disable WD effects", "The opponent is selecting 1 Digimom or tamer to disable WD effects");
+                    selectPermanentEffect1.SetUpCustomMessage("Select 1 Digimon or Tamer to disable WD effects", "The opponent is selecting 1 Digimon or tamer to disable WD effects");
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect1.Activate());
 
                     IEnumerator SelectPermanentCoroutine(Permanent permanent)
@@ -250,13 +244,7 @@ namespace DCGO.CardEffects.LM
                     {
                         if (permanent.IsTamer || permanent.IsDigimon)
                         {
-                            if (!permanent.IsSuspended)
-                            {
-                                if (!permanent.TopCard.CanNotBeAffected(activateClass))
-                                {
-                                    return true;
-                                }
-                            }
+                            return true;
                         }
                     }
                     return false;
@@ -295,7 +283,7 @@ namespace DCGO.CardEffects.LM
                         mode: SelectPermanentEffect.Mode.Tap,
                         cardEffect: activateClass);
 
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimom or Tamer to suspend", "The opponent is selecting 1 Digimom or tamer to suspend");
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon or Tamer to suspend", "The opponent is selecting 1 Digimon or tamer to suspend");
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
                     Permanent selectedPermanent = null;
@@ -315,7 +303,7 @@ namespace DCGO.CardEffects.LM
                         mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                    selectPermanentEffect1.SetUpCustomMessage("Select 1 Digimom or Tamer to disable WD effects", "The opponent is selecting 1 Digimom or tamer to disable WD effects");
+                    selectPermanentEffect1.SetUpCustomMessage("Select 1 Digimon or Tamer to disable WD effects", "The opponent is selecting 1 Digimon or tamer to disable WD effects");
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect1.Activate());
 
                     IEnumerator SelectPermanentCoroutine(Permanent permanent)
@@ -377,19 +365,12 @@ namespace DCGO.CardEffects.LM
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (CardEffectCommons.CanTriggerOnDeletion(hashtable, card))
-                        {
-                            return true;
-                        }
-                    }
-                    return false;
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    if (CardEffectCommons.CanActivateOnDeletion(card))
                     {
                         if (card.Owner.CanAddSecurity(activateClass))
                         {
