@@ -213,7 +213,6 @@ namespace DCGO.CardEffects.BT21
                             {
                                 return true;
                             }
-                            return true;
                         }
                     }
                     return false;

@@ -28,11 +28,10 @@ namespace DCGO.CardEffects.BT21
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent.cardSources.Find(source =>
-                                                        (source.EqualsCardName("Agunimon") || source.EqualsCardName("BurningGreymon")) &&
-                                                        source.CanPlayCardTargetFrame(permanent.PermanentFrame, true, activateClass)))
+                        if (permanent.DigivolutionCards.Find(source =>
+                                                        (source.EqualsCardName("Agunimon") || source.EqualsCardName("BurningGreymon"))))
                         {
-                            return true;
+                            return card.CanPlayCardTargetFrame(permanent.PermanentFrame, true, activateClass);
                         }
                     }
                     return false;
