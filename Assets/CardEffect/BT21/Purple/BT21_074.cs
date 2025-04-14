@@ -38,6 +38,30 @@ namespace DCGO.CardEffects.BT21
             }
             #endregion
 
+            #region Ability to link
+            if (timing == EffectTiming.None)
+            {
+                bool PermanentCondition(Permanent permanent)
+                {
+                    return permanent.TopCard.HasAppmonTraits;
+                }
+                cardEffects.Add(CardEffectFactory.AddSelfLinkConditionStaticEffect(permanentCondition: PermanentCondition, linkCost: 3, card: card));
+
+            }
+
+            if (timing == EffectTiming.OnDeclaration)
+            {
+                cardEffects.Add(CardEffectFactory.LinkEffect(card));
+            }
+            #endregion
+
+            #region Shared Conditions
+            bool CanTuckOrTrash(CardSource cardSource)
+            {
+                return cardSource.EqualsTraits("Appmon") || cardSource.HasThreeMusketeersTraits;
+            }
+            #endregion
+
             #region On Play/When Digivolving shared
             bool CanActivateConditionSharedOP(Hashtable hashtable)
             {
@@ -71,15 +95,8 @@ namespace DCGO.CardEffects.BT21
             }
             #endregion
 
-            #region OnPlay/WhenDigivolving/WhenAttacking shared
-            bool CanTuckOrTrash(CardSource cardSource)
-            {
-                return cardSource.EqualsTraits("Appmon") || cardSource.HasThreeMusketeersTraits;
-            }
-            #endregion
-
             #region On Play
-            if(timing == EffectTiming.OnEnterFieldAnyone)
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Tuck to get protections", CanUseCondition, card);
@@ -214,38 +231,42 @@ namespace DCGO.CardEffects.BT21
 
                             yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
+                            Permanent selectedPermanent = null;
+
                             IEnumerator SelectPermanentCoroutine(Permanent permanent)
                             {
-                                Permanent selectedPermanent = permanent;
+                                selectedPermanent = permanent;
 
-                                if (selectedPermanent != null)
+                                yield return null;
+                            }
+
+                            if (selectedPermanent != null)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(new List<CardSource>() { selectedCards[0] }, activateClass));
+
+                                #region Immunities
+
+                                bool CardEffectCondition(ICardEffect cardEffect)
                                 {
-                                    yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(new List<CardSource>() { selectedCards[0] }, activateClass));
-
-                                    #region Immunities
-
-                                    bool CardEffectCondition(ICardEffect cardEffect)
-                                    {
-                                        return CardEffectCommons.IsOpponentEffect(cardEffect, card);
-                                    }
-
-                                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotReturnToHand(
-                                        targetPermanent: card.PermanentOfThisCard(),
-                                        cardEffectCondition: CardEffectCondition,
-                                        effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                                        activateClass: activateClass,
-                                        effectName: "Can't return to hand by opponent's effects"));
-
-                                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotReturnToDeck(
-                                        targetPermanent: card.PermanentOfThisCard(),
-                                        cardEffectCondition: CardEffectCondition,
-                                        effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                                        activateClass: activateClass,
-                                        effectName: "Can't return to deck by opponent's effects"));
-
-                                    ActivateDeDigivolveProtection();
-                                    #endregion
+                                    return CardEffectCommons.IsOpponentEffect(cardEffect, card);
                                 }
+
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotReturnToHand(
+                                    targetPermanent: selectedPermanent,
+                                    cardEffectCondition: CardEffectCondition,
+                                    effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                                    activateClass: activateClass,
+                                    effectName: "Can't return to hand by opponent's effects"));
+
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotReturnToDeck(
+                                    targetPermanent: selectedPermanent,
+                                    cardEffectCondition: CardEffectCondition,
+                                    effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                                    activateClass: activateClass,
+                                    effectName: "Can't return to deck by opponent's effects"));
+
+                                ActivateDeDigivolveProtection();
+                                #endregion
                             }
                         }
                     }
@@ -458,7 +479,7 @@ namespace DCGO.CardEffects.BT21
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash source to de-digivolve", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateConditionAtkShared, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateConditionAtkShared, ActivateCoroutine, 1, true, EffectDescription());
                 activateClass.SetHashString("BT21_074De-digivolve");
                 cardEffects.Add(activateClass);
                     
@@ -532,7 +553,7 @@ namespace DCGO.CardEffects.BT21
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash source to de-digivolve", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateConditionAtkShared, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateConditionAtkShared, ActivateCoroutine, 1, true, EffectDescription());
                 activateClass.SetHashString("BT21_074De-digivolve");
                 cardEffects.Add(activateClass);
 
@@ -598,23 +619,6 @@ namespace DCGO.CardEffects.BT21
                         }
                     }
                 }
-            }
-            #endregion
-
-            #region Ability to link
-            if (timing == EffectTiming.None)
-            {
-                bool PermanentCondition(Permanent permanent)
-                {
-                    return permanent.TopCard.HasAppmonTraits;
-                }
-                cardEffects.Add(CardEffectFactory.AddSelfLinkConditionStaticEffect(permanentCondition: PermanentCondition, linkCost: 3, card: card));
-
-            }
-
-            if(timing == EffectTiming.OnDeclaration)
-            {
-                cardEffects.Add(CardEffectFactory.LinkEffect(card));
             }
             #endregion
 

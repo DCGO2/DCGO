@@ -627,7 +627,7 @@ public class Permanent
     #endregion
 
     #region Immune From Trashing Stack
-    public bool ImmuneFromStackTrashing()
+    public bool ImmuneFromStackTrashing(ICardEffect effect)
     {
         foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players)
         {
@@ -639,7 +639,7 @@ public class Permanent
                     {
                         if (cardEffect1.CanUse(null))
                         {
-                            if (((IImmuneFromStackTrashingEffect)cardEffect1).ImmuneStackTrashing(this, cardEffect1))
+                            if (((IImmuneFromStackTrashingEffect)cardEffect1).ImmuneStackTrashing(this, effect))
                             {
                                 return true;
                             }
@@ -1233,8 +1233,10 @@ public class Permanent
                                     continue;
                                 }
 
-                                if(isTopCard && !cardSource.IsLinked)
+                                if(isTopCard && !cardEffect.IsInheritedEffect && !cardSource.IsLinked)
+                                {
                                     _EffectList.Add(cardEffect);
+                                }
                             }
                         }
                     }

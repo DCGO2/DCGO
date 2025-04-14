@@ -196,7 +196,7 @@ namespace DCGO.CardEffects.BT21
             if (timing == EffectTiming.SecuritySkill)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play 1 Tamer with inherited effects", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Play 1 [Xros Heart] trait card with a play cost of 5 or less", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 

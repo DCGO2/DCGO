@@ -75,7 +75,8 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card);
+                    return CardEffectCommons.IsOwnerTurn(card) &&
+                           CardEffectCommons.IsExistOnBattleArea(card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -105,7 +106,7 @@ namespace DCGO.CardEffects.BT21
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: 1,
-                            canNoSelect: true,
+                            canNoSelect: false,
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine,
                             afterSelectPermanentCoroutine: null,
@@ -135,8 +136,6 @@ namespace DCGO.CardEffects.BT21
                                     canAttackPlayerCondition: () => true,
                                     defenderCondition: (permanent) => true,
                                     cardEffect: activateClass);
-
-                                selectAttackEffect.SetCanNotSelectNotAttack();
 
                                 yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
                             }

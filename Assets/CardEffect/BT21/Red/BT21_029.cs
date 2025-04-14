@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 // Medusamon
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.BT21
 {
     public class BT21_029 : CEntity_Effect
     {
@@ -15,7 +15,7 @@ namespace DCGO.CardEffects
 
             #region Progress
 
-            if (timing == EffectTiming.OnAllyAttack)
+            if (timing == EffectTiming.OnAllyAttack || timing == EffectTiming.OnEnterFieldAnyone)
             {
                 bool Condition()
                 {

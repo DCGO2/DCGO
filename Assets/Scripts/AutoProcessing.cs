@@ -193,8 +193,8 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
             if (!GManager.instance.attackProcess.AttackingPermanent.IsDigimon)
                 return true;
 
-            if (GManager.instance.attackProcess.DefendingPermanent == null && GManager.instance.attackProcess.HasDefender)
-                return true;
+            //if (GManager.instance.attackProcess.HasDefender && GManager.instance.attackProcess.DefendingPermanent == null)
+            //    return true;
         }
 
         return false;
@@ -206,7 +206,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
         {
             if (permanent.TopCard != null)
             {
-                if (!permanent.LinkedCards.Any(source => source.CanLinkToTargetPermanent(permanent, false)))
+                if (permanent.LinkedCards.Any(source => !source.CanLinkToTargetPermanent(permanent, false)))
                 {
                     return true;
                 }
@@ -235,6 +235,9 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
 
             //Battle as Tamer
             yield return ContinuousController.instance.StartCoroutine(BattleWithoutDigimon());
+
+            //Link Lacking condition
+            yield return ContinuousController.instance.StartCoroutine(DigimonLackLinkConditionProcess());
 
             IsRuleProcessing = false;
         }
@@ -269,7 +272,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
         #region Is it necessary to deal with Battle Without Digimon?
         if (IsAttackerNotADigimon())
         {
-            return true;
+            //return true;
         }
         #endregion
 
@@ -383,7 +386,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
         {
             foreach(Permanent permanent in LackLinkConditionPermanents)
             {
-                List<CardSource> selectedCards = permanent.LinkedCards.FindAll(source => source.CanLinkToTargetPermanent(permanent, false));
+                List<CardSource> selectedCards = permanent.LinkedCards.FindAll(source => !source.CanLinkToTargetPermanent(permanent, false));
 
                 yield return ContinuousController.instance.StartCoroutine(new ITrashLinkCards(
                                permanent,

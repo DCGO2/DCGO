@@ -148,15 +148,27 @@ namespace DCGO.CardEffects.P
 
             if (timing == EffectTiming.None)
             {
-                List<CardSource> cards = card.Owner.FieldPermanents
-                        .Where(x => x.IsDigimon && x.IsTamer)
+                int count()
+                {
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    {
+
+                        List<CardSource> cards = card.Owner.FieldPermanents
+                        .Where(x => x.IsDigimon || x.IsTamer)
                         .Select(x => x.TopCard)
                         .Concat(card.Owner.Enemy.FieldPermanents
-                            .Where(x => x.IsDigimon && x.IsTamer)
+                            .Where(x => x.IsDigimon || x.IsTamer)
                             .Select(x => x.TopCard))
                         .ToList();
-                var colourCount = Combinations.GetDifferenetColorCardCount(cards);
-                var newDP = colourCount * 1000;
+                        var colourCount = Combinations.GetDifferenetColorCardCount(cards);
+                        var newDP = colourCount * 1000;
+
+
+                        return newDP;
+                    }
+
+                    return 0;
+                }
 
                 bool Condition()
                 {
@@ -178,7 +190,7 @@ namespace DCGO.CardEffects.P
 
                 cardEffects.Add(CardEffectFactory.ChangeDPStaticEffect(
                 permanentCondition: PermanentCondition,
-                changeValue: newDP,
+                changeValue: count(),
                 isInheritedEffect: false,
                 card: card,
                 condition: Condition,

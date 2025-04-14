@@ -132,7 +132,7 @@ namespace DCGO.CardEffects.P
                 {
                     if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
                     {
-                        if (permanent.IsTamer || permanent.IsTamer)
+                        if (permanent.IsDigimon || permanent.IsTamer)
                         {
                             return true;
                         }
@@ -169,6 +169,8 @@ namespace DCGO.CardEffects.P
                                 cardEffect: activateClass);
 
                             selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to place in security", "The opponent is selecting 1 Digimon place in security.");
+
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
                             IEnumerator SelectPermanentCoroutine(Permanent permanent)
                             {

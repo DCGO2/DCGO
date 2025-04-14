@@ -164,7 +164,7 @@ namespace DCGO.CardEffects.P
                     return false;
                 }
 
-                Permanent permanent = null;
+                Permanent selectedPermanent = null;
                 bool permanentDeleted = false;
 
                 int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(PermanentCondition));
@@ -190,13 +190,13 @@ namespace DCGO.CardEffects.P
 
                 IEnumerator SelectPermanentCoroutine(Permanent permanent)
                 {
-                    Permanent selectedPermanent = permanent;
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: selectedPermanent, trashCount: 4, isFromTop: false, activateClass: activateClass));
+                    selectedPermanent = permanent;
+                    yield return null;
                 }
 
-                if (permanent != null)
+                if (selectedPermanent != null)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: new List<Permanent>() { permanent }, activateClass: activateClass, successProcess: permanents => SuccessProcess(), failureProcess: null));
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: new List<Permanent>() { selectedPermanent }, activateClass: activateClass, successProcess: permanents => SuccessProcess(), failureProcess: null));
 
                     IEnumerator SuccessProcess()
                     {
@@ -205,7 +205,7 @@ namespace DCGO.CardEffects.P
                     }
                 }
 
-                if (permanent == null || !permanentDeleted)
+                if (!permanentDeleted)
                 {
                     if (card.Owner.CanAddSecurity(activateClass))
                     {

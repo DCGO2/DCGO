@@ -112,13 +112,12 @@ namespace DCGO.CardEffects.P
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: card.PermanentOfThisCard(), changeValue: 3000, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
-                    if (card.PermanentOfThisCard().cardSources.Find(x => x.EqualsCardName("Kosuke Kisakata")) != null)
+                    
+                    if (card.PermanentOfThisCard().DigivolutionCards.Any(x => x.EqualsCardName("Kosuke Kisakata")))
                     {
                         var permanents = card.Owner.GetBattleAreaDigimons().Filter(x => CanTargetPermanentCondition(x)).ToList();
-                        if (permanents.Any())
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(permanents, activateClass).Unsuspend());
-                        }
+
+                        yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(permanents, activateClass).Unsuspend());
                     }
                 }
             }

@@ -25,31 +25,42 @@ namespace DCGO.CardEffects.BT21
                     return "[Start of Your Main Phase] 1 of your Digimon or Tamers may digivolve into a Digimon card with the [Hybrid] or [Hero] trait in the hand. For each of your red Tamers with different names, reduce this effect's digivolution cost by 1.";
                 }
 
+                bool CanSelectPermanentCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
+                    {
+                        if(permanent.IsDigimon || permanent.IsTamer)
+                        {
+                            foreach (CardSource cardSource in card.Owner.HandCards)
+                            {
+                                if (CanSelectCardCondition(cardSource))
+                                {
+                                    if (cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, true, activateClass))
+                                    {
+                                        return true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    return false;
+                }
+
+                bool CanSelectCardCondition(CardSource cardSource)
+                {
+                    return cardSource.EqualsTraits("Hybrid") || cardSource.EqualsTraits("Hero");
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card);
+                    return CardEffectCommons.IsOwnerTurn(card) &&
+                           CardEffectCommons.IsExistOnBattleArea(card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card);
-                }
-
-                bool CanSelectDigivolvePermanent(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card) && (permanent.IsTamer || permanent.IsDigimon);
-                }
-
-                bool CanSelectCardCondition(CardSource digivolveTarget, Permanent digivolvingTarget)
-                {
-                    if (digivolveTarget.EqualsTraits("Hybrid") || digivolveTarget.EqualsTraits("Hero"))
-                    {
-                        if (digivolveTarget.CanPlayCardTargetFrame(digivolvingTarget.PermanentFrame, true, activateClass))
-                        {
-                            return true;
-                        }
-                    }
-                    return false;
                 }
 
                 int costReduction()
@@ -67,45 +78,48 @@ namespace DCGO.CardEffects.BT21
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    Permanent selectedPermanent = null;
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectDigivolvePermanent));
-                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                    selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectDigivolvePermanent,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: maxCount,
-                        canNoSelect: true,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: SelectPermanentCoroutine,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Custom,
-                        cardEffect: activateClass);
-
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 digimon to digivolve", "The opponent is selecting 1 digimon to digivolve");
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
-                        selectedPermanent = permanent;
-                        yield return null;
-                    }
+                        Permanent selectedPermanent = null;
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                    if (selectedPermanent != null)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                                targetPermanent: selectedPermanent,
-                                cardCondition: (cardSource) => CanSelectCardCondition(cardSource, selectedPermanent),
-                                payCost: true,
-                                reduceCostTuple: (reduceCost: costReduction(), reduceCostCardCondition: null),
-                                fixedCostTuple: null,
-                                ignoreDigivolutionRequirementFixedCost: -1,
-                                isHand: true,
-                                activateClass: activateClass,
-                                successProcess: null));
-                    }
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectPermanentCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: maxCount,
+                            canNoSelect: true,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 digimon to digivolve", "The opponent is selecting 1 digimon to digivolve");
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                        {
+                            selectedPermanent = permanent;
+                            yield return null;
+                        }
+
+                        if (selectedPermanent != null)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                                    targetPermanent: selectedPermanent,
+                                    cardCondition: CanSelectCardCondition,
+                                    payCost: true,
+                                    reduceCostTuple: (reduceCost: costReduction(), reduceCostCardCondition: null),
+                                    fixedCostTuple: null,
+                                    ignoreDigivolutionRequirementFixedCost: -1,
+                                    isHand: true,
+                                    activateClass: activateClass,
+                                    successProcess: null));
+                        }
+                    } 
                 }
             }
             #endregion
@@ -116,7 +130,6 @@ namespace DCGO.CardEffects.BT21
                 cardEffects.Add(CardEffectFactory.PlaySelfTamerSecurityEffect(card));
             }
             #endregion
-
 
             #region Inherit
             if(timing == EffectTiming.OnLoseSecurity)
@@ -187,6 +200,7 @@ namespace DCGO.CardEffects.BT21
                 }
             }
             #endregion
+
             return cardEffects;
         }
     }

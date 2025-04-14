@@ -2569,28 +2569,25 @@ public class CardSource : MonoBehaviour
         {
             if (targetPermanent.TopCard != null)
             {
-                if (targetPermanent.TopCard.Owner.GetFieldPermanents().Contains(targetPermanent))
+                if (this.CanLink(PayCost))
                 {
-                    if (this.CanLink(PayCost))
+                    if (linkCondition != null)
                     {
-                        if (linkCondition != null)
+                        if (linkCondition.digimonCondition(targetPermanent))
                         {
-                            if (linkCondition.digimonCondition(targetPermanent))
+                            if (PayCost)
                             {
-                                if (PayCost)
+                                int cost = linkCondition.cost;
+
+                                cost = GetChangedCostItselef(cost, SelectCardEffect.Root.Hand, new List<Permanent>() { targetPermanent }, checkAvailability: true);
+
+                                if (Owner.MaxMemoryCost < cost)
                                 {
-                                    int cost = linkCondition.cost;
-
-                                    cost = GetChangedCostItselef(cost, SelectCardEffect.Root.Hand, new List<Permanent>() { targetPermanent }, checkAvailability: true);
-
-                                    if (Owner.MaxMemoryCost < cost)
-                                    {
-                                        return false;
-                                    }
+                                    return false;
                                 }
-
-                                return true;
                             }
+
+                            return true;
                         }
                     }
                 }

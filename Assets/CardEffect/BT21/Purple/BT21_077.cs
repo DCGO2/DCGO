@@ -128,6 +128,7 @@ namespace DCGO.CardEffects.BT21
 
                                 if (selectedPermanent != null)
                                 {
+                                    /*
                                     #region Give Collision
                                     AddSkillClass addSkillClass = new AddSkillClass();
                                     addSkillClass.SetUpICardEffect("Gain Collision", CanUseCondition1, card);
@@ -137,17 +138,20 @@ namespace DCGO.CardEffects.BT21
 
                                     bool CanUseCondition1(Hashtable hashtable)
                                     {
+                                        UnityEngine.Debug.Log($"GIVE COLLISION: Can Use");
                                         return true;
                                     }
 
                                     bool CardSourceCondition(CardSource cardSource)
                                     {
+                                        UnityEngine.Debug.Log($"GIVE COLLISION: CardSourceCondition - {PermanentCondition(selectedPermanent)}");
                                         return PermanentCondition(selectedPermanent);
                                     }
 
                                     bool PermanentCondition(Permanent permanent)
                                     {
-                                        if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent))
+                                        UnityEngine.Debug.Log($"GIVE COLLISION: PermanentCondition - {CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)}, {permanent.TopCard.CanNotBeAffected(activateClass)}, {(permanent == selectedPermanent)}");
+                                        if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                                         {
                                             if (!permanent.TopCard.CanNotBeAffected(activateClass))
                                             {
@@ -159,16 +163,19 @@ namespace DCGO.CardEffects.BT21
                                         return false;
                                     }
 
-                                    List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming _timing)
+                                    List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> gainEffects, EffectTiming _timing)
                                     {
                                         if (_timing == EffectTiming.OnCounterTiming)
                                         {
                                             bool CardSourceCondition(CardSource cardSource)
                                             {
+                                                UnityEngine.Debug.Log($"GAIN COLLISION: {CardEffectCommons.IsExistOnBattleAreaDigimon(cardSource)}");
                                                 if (CardEffectCommons.IsExistOnBattleAreaDigimon(cardSource))
                                                 {
+                                                    UnityEngine.Debug.Log($"GAIN COLLISION: {(cardSource == selectedPermanent.TopCard)}");
                                                     if (cardSource == selectedPermanent.TopCard)
                                                     {
+                                                        UnityEngine.Debug.Log($"GAIN COLLISION: {PermanentCondition(selectedPermanent)}");
                                                         if (PermanentCondition(selectedPermanent))
                                                         {
                                                             return true;
@@ -181,15 +188,22 @@ namespace DCGO.CardEffects.BT21
 
                                             bool Condition()
                                             {
+                                                UnityEngine.Debug.Log($"GAIN COLLISION: Condition - {CardSourceCondition(cardSource)}");
                                                 return CardSourceCondition(cardSource);
                                             }
 
-                                            cardEffects.Add(CardEffectFactory.CollisionSelfStaticEffect(false, cardSource, Condition));
+                                            gainEffects.Add(CardEffectFactory.CollisionSelfStaticEffect(false, cardSource, Condition));
                                         }
 
-                                        return cardEffects;
+                                        return gainEffects;
                                     }
                                     #endregion
+                                    */
+
+                                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCollision(
+                                            selectedPermanent,
+                                            EffectDuration.UntilOpponentTurnEnd,
+                                            activateClass));
 
                                     ActivateClass activateClassDebuff = new ActivateClass();
                                     activateClassDebuff.SetUpICardEffect("Attack with this Digimon", CanUseConditionDebuff,
@@ -353,17 +367,20 @@ namespace DCGO.CardEffects.BT21
 
                                     bool CanUseCondition1(Hashtable hashtable)
                                     {
+                                        UnityEngine.Debug.Log($"GIVE COLLISION: Can Use");
                                         return true;
                                     }
 
                                     bool CardSourceCondition(CardSource cardSource)
                                     {
+                                        UnityEngine.Debug.Log($"GIVE COLLISION: CardSourceCondition - {PermanentCondition(selectedPermanent)}");
                                         return PermanentCondition(selectedPermanent);
                                     }
 
                                     bool PermanentCondition(Permanent permanent)
                                     {
-                                        if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent))
+                                        UnityEngine.Debug.Log($"GIVE COLLISION: PermanentCondition - {CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)}, {permanent.TopCard.CanNotBeAffected(activateClass)}, {(permanent == selectedPermanent)}");
+                                        if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                                         {
                                             if (!permanent.TopCard.CanNotBeAffected(activateClass))
                                             {
@@ -375,16 +392,19 @@ namespace DCGO.CardEffects.BT21
                                         return false;
                                     }
 
-                                    List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming _timing)
+                                    List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> gainEffects, EffectTiming _timing)
                                     {
                                         if (_timing == EffectTiming.OnCounterTiming)
                                         {
                                             bool CardSourceCondition(CardSource cardSource)
                                             {
+                                                UnityEngine.Debug.Log($"GAIN COLLISION: {CardEffectCommons.IsExistOnBattleAreaDigimon(cardSource)}");
                                                 if (CardEffectCommons.IsExistOnBattleAreaDigimon(cardSource))
                                                 {
+                                                    UnityEngine.Debug.Log($"GAIN COLLISION: {(cardSource == selectedPermanent.TopCard)}");
                                                     if (cardSource == selectedPermanent.TopCard)
                                                     {
+                                                        UnityEngine.Debug.Log($"GAIN COLLISION: {PermanentCondition(selectedPermanent)}");
                                                         if (PermanentCondition(selectedPermanent))
                                                         {
                                                             return true;
@@ -397,21 +417,20 @@ namespace DCGO.CardEffects.BT21
 
                                             bool Condition()
                                             {
+                                                UnityEngine.Debug.Log($"GAIN COLLISION: Condition - {CardSourceCondition(cardSource)}");
                                                 return CardSourceCondition(cardSource);
                                             }
 
-                                            cardEffects.Add(CardEffectFactory.CollisionSelfStaticEffect(false, cardSource, Condition));
+                                            gainEffects.Add(CardEffectFactory.CollisionSelfStaticEffect(false, cardSource, Condition));
                                         }
 
-                                        return cardEffects;
+                                        return gainEffects;
                                     }
                                     #endregion
 
                                     ActivateClass activateClassDebuff = new ActivateClass();
-                                    activateClassDebuff.SetUpICardEffect("Attack with this Digimon", CanUseConditionDebuff,
-                                        selectedPermanent.TopCard);
-                                    activateClassDebuff.SetUpActivateClass(CanActivateConditionDebuff, ActivateCoroutineDebuff, -1, false,
-                                        EffectDescriptionDebuff());
+                                    activateClassDebuff.SetUpICardEffect("Attack with this Digimon", CanUseConditionDebuff, selectedPermanent.TopCard);
+                                    activateClassDebuff.SetUpActivateClass(CanActivateConditionDebuff, ActivateCoroutineDebuff, -1, false, EffectDescriptionDebuff());
                                     activateClassDebuff.SetEffectSourcePermanent(selectedPermanent);
                                     selectedPermanent.UntilOwnerTurnEndEffects.Add(GetCardEffect);
 
