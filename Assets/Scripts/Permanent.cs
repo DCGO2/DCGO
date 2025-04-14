@@ -105,10 +105,12 @@ public class Permanent
     public IEnumerator DiscardEvoRoots(bool ignoreOverflow = false, bool putToTrash = true)
     {
         List<CardSource> evoRoots = DigivolutionCards.Clone();
+        List<CardSource> linkRoots = LinkedCards.Clone();
 
         if (!ignoreOverflow)
         {
             yield return ContinuousController.instance.StartCoroutine(new AceOverflowClass(evoRoots).Overflow());
+            yield return ContinuousController.instance.StartCoroutine(new AceOverflowClass(linkRoots).Overflow());
         }
 
         foreach (CardSource cardSource1 in evoRoots)
@@ -121,6 +123,19 @@ public class Permanent
             else
             {
                 yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveFromAllArea(cardSource1));
+            }
+        }
+
+        foreach (CardSource cardSource2 in linkRoots)
+        {
+            if (putToTrash)
+            {
+                yield return ContinuousController.instance.StartCoroutine(RemoveLinkedCard(cardSource2));
+            }
+
+            else
+            {
+                yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveFromAllArea(cardSource2));
             }
         }
     }
@@ -960,7 +975,7 @@ public class Permanent
 
     #region Add Link cards
     /// <summary>
-    /// IEnumerator to add a list of CardSource to a permanents top sources, CAN NOT be used to put a field permanent under must use IPlacePermanentToDigivolutionCards
+    /// IEnumerator to add a list of CardSource to a permanents top sources, CAN NOT be used to put a field permanent under must use IPlacePermanentToLinkCards
     /// </summary>
     /// <param name="addedLinkCards"></param>
     /// <param name="cardEffect"></param>
@@ -979,9 +994,14 @@ public class Permanent
                 isFromDigimon = true;
             }
         }
-        Debug.Log($"LINK CARDS: {LinkedCards.Count} >= {LinkedMax}");
+
         if (LinkedCards.Count >= LinkedMax)
-            yield return ContinuousController.instance.StartCoroutine(RemoveLinkedCard(LinkedCards[0]));
+        {
+            if(LinkedMax > 1)
+                yield return ContinuousController.instance.StartCoroutine(RemoveLinkedCard(null,(LinkedCards.Count - LinkedMax)));
+            else
+                yield return ContinuousController.instance.StartCoroutine(RemoveLinkedCard(LinkedCards[0]));
+        }
 
         yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveFromAllArea(addedLinkCard));
 
@@ -1030,18 +1050,42 @@ public class Permanent
     #endregion
 
     #region Remove Linked Card
-    public IEnumerator RemoveLinkedCard(CardSource cardSource)
+    public IEnumerator RemoveLinkedCard(CardSource cardSource, int removeCount = 0)
     {
         Debug.Log($"REMOVE LINK CARD: {LinkedCards.Count} >= {LinkedCards.Contains(cardSource)}");
         if (LinkedCards.Contains(cardSource))
         {
-
             LinkedDP -= cardSource.LinkDP;
             yield return ContinuousController.instance.StartCoroutine(RemoveCardSource(cardSource));
             yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddTrashCard(cardSource));
             LinkedCards.Remove(cardSource);
             Debug.Log($"REMOVE LINK CARD: {cardSource}");
-            
+        }
+
+        if(removeCount > 0)
+        {
+            int maxCount = Mathf.Min(removeCount, LinkedCards.Count);
+            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+            selectCardEffect.SetUp(
+                        canTargetCondition: (CardSource) => true,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        canNoSelect: () => false,
+                        selectCardCoroutine: null,
+                        afterSelectCardCoroutine: null,
+                        message: $"Select {maxCount} card to trash.",
+                        maxCount: removeCount,
+                        canEndNotMax: false,
+                        isShowOpponent: true,
+                        mode: SelectCardEffect.Mode.Discard,
+                        root: SelectCardEffect.Root.Custom,
+                        customRootCardList: LinkedCards,
+                        canLookReverseCard: true,
+                        selectPlayer: TopCard.Owner,
+                        cardEffect: null);
+
+            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
         }
 
         //TODO: Add event call if something was removed
