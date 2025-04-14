@@ -64,11 +64,7 @@ namespace DCGO.CardEffects.Tokens
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        return true;
-                    }
-                    return false;
+                    return card.Owner.SecurityCards.Count > 0;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

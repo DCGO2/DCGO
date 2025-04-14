@@ -43,10 +43,10 @@ namespace DCGO.CardEffects.BT21
                     {
                         if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectDigimon))
                         {
-                            return false;
+                            return true;
                         }
                     }
-                    return true;
+                    return false;
                 }
 
                 bool CanSelectDigimon(CardSource card)
@@ -157,30 +157,35 @@ namespace DCGO.CardEffects.BT21
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
                 }
 
-                bool AttackingPermanentCondition(Permanent permanent)
-                {
-                    if (playedPermanents.Contains(permanent))
-                    {
-                        if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
-                        {
-                            if (permanent.TopCard.EqualsTraits("Xros Heart") || permanent.TopCard.EqualsTraits("Hero"))
-                            {
-                                if (permanent.CanAttack(activateClass))
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-                    
-                    return false;
-                }
+                
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(new List<Permanent>() { card.PermanentOfThisCard() }, CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
 
-                    playedPermanents = CardEffectCommons.GetPermanentsFromHashtable(hashtable);
+                    foreach(Hashtable hash in CardEffectCommons.GetHashtablesFromHashtable(hashtable))
+                    {
+                        playedPermanents.Add(CardEffectCommons.GetPermanentFromHashtable(hash));
+                    }
+
+                    bool AttackingPermanentCondition(Permanent permanent)
+                    {
+                        if (playedPermanents.Contains(permanent))
+                        {
+                            if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                            {
+                                if (permanent.TopCard.EqualsTraits("Xros Heart") || permanent.TopCard.EqualsTraits("Hero"))
+                                {
+                                    if (permanent.CanAttack(activateClass))
+                                    {
+                                        return true;
+                                    }
+                                }
+                            }
+                        }
+
+                        return false;
+                    }
 
                     if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, AttackingPermanentCondition))
                     {
