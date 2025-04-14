@@ -98,7 +98,10 @@ public partial class CardEffectFactory
             {
                 yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(-card.linkCondition.cost, activateClass));
 
-                yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddLinkCard(card, activateClass));
+                if(CardEffectCommons.IsExistOnHand(card))
+                    yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddLinkCard(card, activateClass));
+                else
+                    yield return ContinuousController.instance.StartCoroutine(new IPlacePermanentToLinkCards(new List<Permanent[]>() { new Permanent[] { card.PermanentOfThisCard(), selectedPermanent } }, activateClass).PlacePermanentToLinkCards());
             }
         }
 

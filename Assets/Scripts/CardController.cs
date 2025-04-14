@@ -2604,6 +2604,277 @@ public class IPlacePermanentToDigivolutionCards
 }
 #endregion
 
+#region Place permanent to another permanent's Link cards
+public class IPlacePermanentToLinkCards
+{
+    public IPlacePermanentToLinkCards(
+        List<Permanent[]> permanentArrays,
+        ICardEffect cardEffect,
+        bool skipEffectAndActivateSkill = false)
+    {
+        permanentArrays.Clone().ForEach(permanentArray => _permanentArrays.Add(permanentArray.CloneArray()));
+        _cardEffect = cardEffect;
+        _skipEffectAndActivateSkill = skipEffectAndActivateSkill;
+    }
+
+    public void SetNotShowCards()
+    {
+        _notShowCards = true;
+    }
+
+    List<Permanent[]> _permanentArrays = new List<Permanent[]>();
+    ICardEffect _cardEffect = null;
+    bool _notShowCards = false;
+    bool _skipEffectAndActivateSkill = false;
+    public bool Placed { get; private set; } = false;
+    public IEnumerator PlacePermanentToLinkCards()
+    {
+        if (_permanentArrays.Count == 0)
+        {
+            yield break;
+        }
+
+        List<CardSource> addedLinkCards = new List<CardSource>();
+
+        List<Permanent> removeFieldPermanents = new List<Permanent>();
+
+        foreach (Permanent[] permanentArray in _permanentArrays)
+        {
+            if (permanentArray.Length == 2)
+            {
+                Permanent LinkedPermanent = permanentArray[0];
+                Permanent getLinkPermanent = permanentArray[1];
+
+                if (LinkedPermanent != null && getLinkPermanent != null)
+                {
+                    if (LinkedPermanent.TopCard != null && getLinkPermanent.TopCard != null && !getLinkPermanent.IsToken)
+                    {
+                        if (_cardEffect != null)
+                        {
+                            if (LinkedPermanent.TopCard.CanNotBeAffected(_cardEffect) || getLinkPermanent.TopCard.CanNotBeAffected(_cardEffect))
+                            {
+                                continue;
+                            }
+                        }
+
+                        removeFieldPermanents.Add(LinkedPermanent);
+                    }
+                }
+            }
+        }
+
+        foreach (Permanent permanent in removeFieldPermanents)
+        {
+            permanent.willBeRemoveField = true;
+        }
+
+        if (removeFieldPermanents.Count == 0)
+        {
+            yield break;
+        }
+
+        #region Cut in Effects
+        List<SkillInfo> skillInfos = new List<SkillInfo>();
+
+        Hashtable hashtable1 =
+        CardEffectCommons.WhenPermanentWouldRemoveFieldCheckHashtable(
+                removeFieldPermanents,
+                _cardEffect,
+                null);
+
+        #region  "When permanents would remove field" effect
+
+        foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
+        {
+            #region permanents' effects
+            foreach (Permanent permanent1 in player.GetFieldPermanents())
+            {
+                foreach (ICardEffect cardEffect in permanent1.EffectList(EffectTiming.WhenRemoveField))
+                {
+                    if (cardEffect is ActivateICardEffect)
+                    {
+                        if (cardEffect.CanTrigger(hashtable1))
+                        {
+                            skillInfos.Add(new SkillInfo(cardEffect, hashtable1, EffectTiming.WhenRemoveField));
+                        }
+                    }
+                }
+            }
+            #endregion
+
+            #region players' effects
+            foreach (ICardEffect cardEffect in player.EffectList(EffectTiming.WhenRemoveField))
+            {
+                if (cardEffect is ActivateICardEffect)
+                {
+                    if (cardEffect.CanTrigger(hashtable1))
+                    {
+                        skillInfos.Add(new SkillInfo(cardEffect, hashtable1, EffectTiming.WhenRemoveField));
+                    }
+                }
+            }
+            #endregion
+        }
+        #endregion
+
+        if (skillInfos.Count >= 1)
+        {
+            foreach (SkillInfo skillInfo in skillInfos)
+            {
+                GManager.instance.autoProcessing_CutIn.PutStackedSkill(skillInfo);
+            }
+
+            bool showEffect()
+            {
+                if (skillInfos.Count >= 2)
+                {
+                    return true;
+                }
+
+                else if (skillInfos.Count == 1)
+                {
+                    if (skillInfos[0].CardEffect.CanActivate(skillInfos[0].Hashtable))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            if (showEffect())
+            {
+                foreach (Permanent Permanent in removeFieldPermanents)
+                {
+                    if (Permanent != null)
+                    {
+                        if (Permanent.TopCard != null)
+                        {
+                            if (Permanent.willBeRemoveField)
+                            {
+                                if (Permanent.ShowingPermanentCard != null)
+                                {
+                                    if (Permanent.ShowingPermanentCard.WillRemoveFieldObject != null)
+                                    {
+                                        Permanent.ShowingPermanentCard.WillRemoveFieldObject.transform.parent.gameObject.SetActive(true);
+                                        Permanent.ShowingPermanentCard.WillRemoveFieldObject.SetActive(true);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                #region shrink security Digimon display
+                if (GManager.instance.attackProcess.IsAttacking)
+                {
+                    if (GManager.instance.attackProcess.SecurityDigimon != null)
+                    {
+                        if (GManager.instance.GetComponent<Effects>().ShowUseHandCard.gameObject.activeSelf && GManager.instance.GetComponent<Effects>().ShowUseHandCard.cardSource == GManager.instance.attackProcess.SecurityDigimon)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().MoveToExecuteCardEffect(GManager.instance.attackProcess.SecurityDigimon));
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.attackProcess.SecurityDigimon.Owner.brainStormObject.BrainStormCoroutine(GManager.instance.attackProcess.SecurityDigimon));
+                        }
+                    }
+                }
+                #endregion
+            }
+
+            // cut in effect process
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.TriggeredSkillProcess(false, null));
+
+            foreach (Permanent Permanent in removeFieldPermanents)
+            {
+                if (Permanent != null)
+                {
+                    if (Permanent.TopCard != null)
+                    {
+                        if (Permanent.ShowingPermanentCard != null)
+                        {
+                            if (Permanent.ShowingPermanentCard.WillRemoveFieldObject != null)
+                            {
+                                Permanent.ShowingPermanentCard.WillRemoveFieldObject.SetActive(false);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        #endregion
+
+        foreach (Permanent[] permanentArray in _permanentArrays)
+        {
+            if (permanentArray.Length == 2)
+            {
+                Permanent LinkedPermanent = permanentArray[0];
+                Permanent getLinkPermanent = permanentArray[1];
+
+                if (LinkedPermanent != null && getLinkPermanent != null)
+                {
+                    if (LinkedPermanent.TopCard != null && getLinkPermanent.TopCard != null && !getLinkPermanent.IsToken && LinkedPermanent.willBeRemoveField)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(LinkedPermanent.DiscardEvoRoots());
+
+                        CardSource cardSource = LinkedPermanent.TopCard;
+
+                        #region record used effect
+                        if (_cardEffect != null)
+                        {
+                            if (LinkedPermanent.TopCard != null)
+                            {
+                                LinkedPermanent.PlaceOtherPermanentEffect = _cardEffect;
+                            }
+                        }
+                        #endregion
+
+                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveField(
+                            LinkedPermanent,
+                            ignoreOverflow: true));
+
+                        yield return ContinuousController.instance.StartCoroutine(getLinkPermanent.AddLinkCard(cardSource, _cardEffect));
+
+                        cardSource.cEntity_EffectController.InitUseCountThisTurn();
+
+                        addedLinkCards.Add(cardSource);
+
+                        Placed = true;
+                    }
+                }
+            }
+        }
+
+        #region add log
+        if (addedLinkCards.Count >= 1)
+        {
+            string log = "";
+
+            log += $"\nLink cards:";
+
+            foreach (CardSource cardSource in addedLinkCards)
+            {
+                log += $"\n{cardSource.BaseENGCardNameFromEntity}({cardSource.CardID})";
+            }
+
+            log += "\n";
+
+            PlayLog.OnAddLog?.Invoke(log);
+        }
+        #endregion
+
+        #region hide icon
+        if (addedLinkCards.Count >= 1)
+        {
+            if (!_notShowCards)
+            {
+                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(addedLinkCards, "Link Cards", true, true));
+            }
+        }
+
+        #endregion
+    }
+}
+#endregion
+
 #region Place permanents to security
 
 public class IPutSecurityPermanent

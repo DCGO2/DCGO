@@ -216,6 +216,22 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
         return false;
     }
 
+    bool IsDigimonLackLinkCount(Permanent permanent)
+    {
+        if (permanent != null)
+        {
+            if (permanent.TopCard != null)
+            {
+                if (permanent.LinkedCards.Count >= permanent.LinkedMax)
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     public IEnumerator RuleProcess()
     {
         while (DoRuleProcess())
@@ -238,6 +254,8 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
 
             //Link Lacking condition
             yield return ContinuousController.instance.StartCoroutine(DigimonLackLinkConditionProcess());
+
+            //TODO: Add link count correction
 
             IsRuleProcessing = false;
         }
@@ -282,6 +300,8 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
             return true;
         }
         #endregion
+
+        //TODO: Add link count condition
 
         return false;
     }
@@ -392,6 +412,29 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
                                permanent,
                                selectedCards,
                                null).TrashLinkCards());
+            }
+        }
+    }
+    #endregion
+
+    #region Link Card Lacking Max Count handling
+    IEnumerator DigimonLackLinkMaxCountProcess()
+    {
+        List<Permanent> LackLinkCountPermanents = GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer
+            .Map(player => player.GetFieldPermanents()
+            .Filter(IsDigimonLackLinkCount)).Flat();
+
+        if (LackLinkCountPermanents.Count >= 1)
+        {
+            foreach (Permanent permanent in LackLinkCountPermanents)
+            {
+                if (permanent.LinkedCards.Count >= permanent.LinkedMax)
+                {
+                    if (permanent.LinkedMax > 1)
+                        yield return ContinuousController.instance.StartCoroutine(permanent.RemoveLinkedCard(null, (permanent.LinkedCards.Count - permanent.LinkedMax)));
+                    else
+                        yield return ContinuousController.instance.StartCoroutine(permanent.RemoveLinkedCard(permanent.LinkedCards[0]));
+                }
             }
         }
     }
