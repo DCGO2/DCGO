@@ -126,7 +126,8 @@ namespace DCGO.CardEffects.BT21
 
                         if (selectedPermanent != null)
                         {
-                            CardEffectCommons.GainPierce(selectedPermanent, EffectDuration.UntilEachTurnEnd, activateClass);
+                            ContinuousController.instance.StartCoroutine(CardEffectCommons.GainPierce(selectedPermanent, EffectDuration.UntilEachTurnEnd, activateClass));
+
                             if (selectedPermanent.CanAttack(activateClass))
                             {
                                 SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
