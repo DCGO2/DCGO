@@ -24,7 +24,7 @@ namespace DCGO.CardEffects.BT21
                 string EffectDiscription()
                     => "When any of your Digimon with [Agunimon]/[BurningGreymon] in their digivolution cards would digivolve into this card in the hand, reduce the digivolution cost by 1.";
 
-                bool PermanentCondition(Permanent permanent)
+                bool PermanentEvoCondition(Permanent permanent)
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
@@ -47,9 +47,9 @@ namespace DCGO.CardEffects.BT21
                 {
                     if (CardEffectCommons.IsExistOnHand(card))
                     {
-                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, PermanentCondition))
+                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, PermanentEvoCondition))
                         {
-                            if (CardEffectCommons.CanTriggerWhenPermanentWouldDigivolve(hashtable, PermanentCondition, CardCondition))
+                            if (CardEffectCommons.CanTriggerWhenPermanentWouldDigivolve(hashtable, PermanentEvoCondition, CardCondition))
                             {
                                 return true;
                             }
@@ -115,7 +115,7 @@ namespace DCGO.CardEffects.BT21
                     {
                         if (targetPermanent.TopCard != null)
                         {
-                            return PermanentCondition(targetPermanent);
+                            return PermanentEvoCondition(targetPermanent);
                         }
 
                         return false;

@@ -132,9 +132,12 @@ namespace DCGO.CardEffects.P
                 {
                     if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
                     {
-                        if (permanent.IsDigimon || permanent.IsTamer)
+                        if(permanent != card.PermanentOfThisCard())
                         {
-                            return true;
+                            if (permanent.IsDigimon || permanent.IsTamer)
+                            {
+                                return true;
+                            }
                         }
                     }
                     return false;
@@ -174,7 +177,7 @@ namespace DCGO.CardEffects.P
 
                             IEnumerator SelectPermanentCoroutine(Permanent permanent)
                             {
-                                Permanent selectedPermanent = permanent;
+                                selectedPermanent = permanent;
                                 yield return null;
                             }
 

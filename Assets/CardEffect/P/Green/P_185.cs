@@ -143,7 +143,7 @@ namespace DCGO.CardEffects.P
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        List<CardSource> cards = card.PermanentOfThisCard().cardSources;
+                        List<CardSource> cards = card.PermanentOfThisCard().DigivolutionCards;
                         var colourCount = Combinations.GetDifferenetColorCardCount(cards);
                         var newDP = colourCount * 1000;
 
