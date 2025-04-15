@@ -135,20 +135,12 @@ public class BT8_097 : CEntity_Effect
 
                 bool CardCondition(CardSource cardSource)
                 {
-                    if (cardSource.Owner == card.Owner.Enemy)
-                    {
-                        if (cardSource.IsDigimon)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return cardSource.IsDigimon;
                 }
 
                 bool CardEffectCondition(ICardEffect cardEffect)
                 {
-                    return cardEffect != null;
+                    return cardEffect.EffectSourceCard.Owner == card.Owner.Enemy;
                 }
 
                 List<Permanent> destroyTargetPermanents = card.Owner.Enemy.GetBattleAreaDigimons().Filter(CanSelectPermanentCondition);

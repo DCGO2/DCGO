@@ -45,7 +45,7 @@ public partial class CardEffectCommons
     #region Can activate [Progress]
     public static bool CanActivateProgress(CardSource cardSource)
     {
-        if (IsExistOnBattleArea(cardSource))
+        if (IsExistOnBattleAreaDigimon(cardSource))
         {
             if (GManager.instance.attackProcess.IsAttacking)
             {

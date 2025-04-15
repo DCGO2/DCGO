@@ -71,8 +71,12 @@ public partial class CardEffectCommons
 
             #region Delete this Digimon
 
-            yield return ContinuousController.instance.StartCoroutine(
-                new DestroyPermanentsClass(new List<Permanent>() { selectedPermanent }, CardEffectHashtable(activateClass)).Destroy());
+            if(GManager.instance.attackProcess.IsAttacking && GManager.instance.attackProcess.AttackingPermanent.Equals(selectedPermanent))
+            {
+                yield return ContinuousController.instance.StartCoroutine(
+                    new DestroyPermanentsClass(new List<Permanent>() { selectedPermanent }, CardEffectHashtable(activateClass)).Destroy());
+            }
+                
 
             #endregion
         }
