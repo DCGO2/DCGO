@@ -142,7 +142,7 @@ public class PlayCardClass
 
     public void SetAppFusion(int AppFusionFrameID, CardSource card)
     {
-        if (0 >= AppFusionFrameID && AppFusionFrameID <= card.Owner.fieldCardFrames.Count - 1)
+        if (0 <= AppFusionFrameID && AppFusionFrameID <= card.Owner.fieldCardFrames.Count - 1)
         {
             _appFusionFrameID = AppFusionFrameID;
         }
@@ -592,6 +592,10 @@ public class PlayCardClass
                 {
                     return true;
                 }
+                else if (IsAppFusion(card))
+                {
+                    return true;
+                }
 
                 return false;
             }
@@ -721,7 +725,6 @@ public class PlayCardClass
 
             if (IsAppFusion(card))
             {
-                UnityEngine.Debug.Log($"PLAYING: {card}");
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.selectAppFusionEffect.AddToSources());
 
                 if (!GManager.instance.selectAppFusionEffect.LinkAdded)
@@ -939,6 +942,9 @@ public class PlayCardClass
             playPermanent.SetBurstDigivolved();
         }
 
+        if (appFusion)
+            playPermanent.SetAppFusion();
+
         if (_isBreedingArea)
         {
             playPermanent.SetIsBreedingArea();
@@ -1078,6 +1084,11 @@ public class PlayPermanentClass
         _burstDigivolved = true;
     }
 
+    public void SetAppFusion()
+    {
+        _appFusion = true;
+    }
+
     public void SetIsBreedingArea()
     {
         _isBreedingArea = true;
@@ -1096,6 +1107,7 @@ public class PlayPermanentClass
     int[] _jogressEvoRootsFrameIDs = null;
     int _digiXrosCount = 0;
     bool _burstDigivolved = false;
+    bool _appFusion = false;
     bool _isBreedingArea = false;
     bool _isPlayOption = false;
 
@@ -1269,7 +1281,7 @@ public class PlayPermanentClass
                             {
                                 bool isBlast = CardEffect != null && CardEffect.EffectName != null && CardEffect.EffectName.Contains("Blast");
                                 //effect
-                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().DigivolveFieldPermanentCardEffect(permanent.ShowingPermanentCard, _burstDigivolved, isBlast));
+                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().DigivolveFieldPermanentCardEffect(permanent.ShowingPermanentCard, _burstDigivolved, isBlast, _appFusion));
                             }
                         }
                     }
@@ -1373,6 +1385,14 @@ public class PlayPermanentClass
                             permanent.IsBurstDigivolved = true;
 
                             GManager.instance.selectBurstDigivolutionEffect.AddTrashTopCardAtTurnEnd(permanent);
+                        }
+                    }
+
+                    if (_appFusion)
+                    {
+                        if (permanent.TopCard != null)
+                        {
+                            permanent.IsAppFusion = true;
                         }
                     }
 
