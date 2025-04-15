@@ -131,6 +131,25 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
     #region Rule processing
     public bool IsRuleProcessing { get; set; } = false;
 
+    bool IsNotDigimonInBreeding(Permanent permanent)
+    {
+        if (permanent != null)
+        {
+            if (permanent.TopCard != null)
+            {
+                if (CardEffectCommons.IsExistOnBreedingArea(permanent.TopCard))
+                {
+                    if (!permanent.IsDigimon)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
     bool IsNotHavingDP(Permanent permanent)
     {
         if (permanent != null)
@@ -243,6 +262,9 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
 
             if (GManager.instance.turnStateMachine.endGame) yield break;
 
+            //Trash Non Digimon from Breeding
+            yield return ContinuousController.instance.StartCoroutine(TrashNonDigimonPermanentProcess());
+
             //DPを持たないカードをトラッシュする処理
             yield return ContinuousController.instance.StartCoroutine(TrashNoDPPermanentProcess());
 
@@ -273,6 +295,13 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
         }
         #endregion
 
+        #region Is it necessary to discard cards in breeding?
+        if (CardEffectCommons.HasMatchConditionPermanent(IsNotDigimonInBreeding, true))
+        {
+            return true;
+        }
+        #endregion
+        
         #region Is it necessary to discard cards without DP?
         if (CardEffectCommons.HasMatchConditionPermanent(IsNotHavingDP))
         {
@@ -327,6 +356,36 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
                 }
 
                 yield break;
+            }
+        }
+    }
+    #endregion
+
+    #region Process of trashing cards in Breeding
+    IEnumerator TrashNonDigimonPermanentProcess()
+    {
+        List<Permanent> BreedingPermanents = GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer
+            .Map(player => player.GetBreedingAreaPermanents()
+            .Filter(IsNotDigimonInBreeding)).Flat();
+
+        if (BreedingPermanents.Count >= 1)
+        {
+            foreach (Permanent permanent in BreedingPermanents)
+            {
+                if (permanent != null)
+                {
+                    if (permanent.TopCard != null)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(permanent.DiscardEvoRoots());
+
+                        CardSource cardSource = permanent.TopCard;
+
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(new List<CardSource>() { cardSource }, "Cards put to trash", true, true));
+
+                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveField(permanent));
+                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddTrashCard(cardSource));
+                    }
+                }
             }
         }
     }
