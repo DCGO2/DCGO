@@ -998,7 +998,7 @@ public class Permanent
         if (LinkedCards.Count >= LinkedMax)
         {
             if(LinkedMax > 1)
-                yield return ContinuousController.instance.StartCoroutine(RemoveLinkedCard(null,(LinkedCards.Count - LinkedMax)));
+                yield return ContinuousController.instance.StartCoroutine(RemoveLinkedCard(null,((LinkedCards.Count + 1) - LinkedMax)));
             else
                 yield return ContinuousController.instance.StartCoroutine(RemoveLinkedCard(LinkedCards[0]));
         }
@@ -3445,6 +3445,10 @@ public class Permanent
 
     #region バースト進化したか
     public bool IsBurstDigivolved { get; set; } = false;
+    #endregion
+
+    #region Did it App Fusion?
+    public bool IsAppFusion { get; set; } = false;
     #endregion
 
     #region 効果で場に出たオプションか

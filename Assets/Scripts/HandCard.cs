@@ -57,6 +57,9 @@ public class HandCard : MonoBehaviour
     [Header("バーストプレイテキスト")]
     public TextMeshProUGUI BurstPlayText;
 
+    [Header("App Fusion play text")]
+    public TextMeshProUGUI AppFusionPlayText;
+
     [Header("タイトルテキスト")]
     public TextMeshProUGUI titleText;
 
@@ -149,6 +152,8 @@ public class HandCard : MonoBehaviour
         OffJogressPlayText();
 
         OffBurstPlayText();
+
+        OffAppFusionPlayText();
 
         OffDP();
 
@@ -598,6 +603,12 @@ public class HandCard : MonoBehaviour
             BurstPlayText.transform.parent.gameObject.SetActive(false);
             BurstPlayText.transform.parent.parent.gameObject.SetActive(true);
         }
+
+        if (AppFusionPlayText != null)
+        {
+            AppFusionPlayText.transform.parent.gameObject.SetActive(false);
+            AppFusionPlayText.transform.parent.parent.gameObject.SetActive(true);
+        }
     }
 
     public void SetBurstPlayText()
@@ -615,6 +626,36 @@ public class HandCard : MonoBehaviour
         {
             JogressPlayText.transform.parent.gameObject.SetActive(false);
             JogressPlayText.transform.parent.parent.gameObject.SetActive(true);
+        }
+
+        if (AppFusionPlayText != null)
+        {
+            AppFusionPlayText.transform.parent.gameObject.SetActive(false);
+            AppFusionPlayText.transform.parent.parent.gameObject.SetActive(true);
+        }
+    }
+
+    public void SetAppFusionPlayText()
+    {
+        if (AppFusionPlayText != null)
+        {
+            AppFusionPlayText.transform.parent.gameObject.SetActive(true);
+            AppFusionPlayText.transform.parent.parent.gameObject.SetActive(true);
+        }
+    }
+
+    public void OffAppFusionPlayText()
+    {
+        if (JogressPlayText != null)
+        {
+            JogressPlayText.transform.parent.gameObject.SetActive(false);
+            JogressPlayText.transform.parent.parent.gameObject.SetActive(true);
+        }
+
+        if (BurstPlayText != null)
+        {
+            BurstPlayText.transform.parent.gameObject.SetActive(false);
+            BurstPlayText.transform.parent.parent.gameObject.SetActive(true);
         }
     }
 

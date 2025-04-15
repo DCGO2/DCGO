@@ -39,7 +39,6 @@ public class SelectAppFusionEffect : MonoBehaviour
     }
 
     CardSource _card = null;
-    
     public CardSource EvoRoot = null;
     bool _isLocal = false;
 
@@ -183,6 +182,11 @@ public class SelectAppFusionEffect : MonoBehaviour
                 selectPlayer: _card.Owner,
                 cardEffect: null);
 
+                if (this._isLocal)
+                {
+                    selectCardEffect.SetIsLocal();
+                }
+
                 yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 
                 IEnumerator SelectCardCoroutine(CardSource source)
@@ -220,8 +224,9 @@ public class SelectAppFusionEffect : MonoBehaviour
         if (selectedLink != null)
         {
             yield return ContinuousController.instance.StartCoroutine(EvoRoot.PermanentOfThisCard().RemoveLinkedCard(selectedLink));
-            yield return ContinuousController.instance.StartCoroutine(EvoRoot.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource> { selectedLink }, null, true));
-            yield return ContinuousController.instance.StartCoroutine(EvoRoot.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource> { EvoRoot }, null, true));
+            yield return ContinuousController.instance.StartCoroutine(EvoRoot.PermanentOfThisCard().AddDigivolutionCardsTop(new List<CardSource> { selectedLink, EvoRoot }, null));
+            //yield return ContinuousController.instance.StartCoroutine(EvoRoot.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource> { selectedLink }, null, true));
+            //yield return ContinuousController.instance.StartCoroutine(EvoRoot.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource> { EvoRoot }, null, true));
             
             LinkAdded = true;
         }
