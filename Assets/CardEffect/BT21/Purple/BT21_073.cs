@@ -398,7 +398,8 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenLinked(hashtable, LinkedPermanentCondition, null);
+                    return CardEffectCommons.IsOwnerTurn(card) &&
+                           CardEffectCommons.CanTriggerWhenLinked(hashtable, LinkedPermanentCondition, null);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
