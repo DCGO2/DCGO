@@ -12,6 +12,18 @@ namespace DCGO.CardEffects.BT21
 
             #region Static effects
 
+            #region Alternative Digivolution Condition - Stand.
+            if (timing == EffectTiming.None)
+            {
+                bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.EqualsTraits("Stand.");
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 4, ignoreDigivolutionRequirement: false, card: card, condition: null));
+            }
+            #endregion
+
             #region Raid
 
             if (timing == EffectTiming.OnAllyAttack)

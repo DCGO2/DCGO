@@ -160,6 +160,11 @@ namespace DCGO.CardEffects.LM
                         yield return null;
                     }
 
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCantUnsuspendUntilOpponentTurnEnd(
+                                targetPermanent: selectedPermanent,
+                                activateClass: activateClass
+                            ));
+
                     DisableEffectClass invalidationClass = new DisableEffectClass();
                     invalidationClass.SetUpICardEffect("Ignore [When Digivolving] Effect", hashtableDebuff => true, card);
                     invalidationClass.SetUpDisableEffectClass(DisableCondition: InvalidateCondition);
@@ -311,6 +316,11 @@ namespace DCGO.CardEffects.LM
                         selectedPermanent = permanent;
                         yield return null;
                     }
+
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCantUnsuspendUntilOpponentTurnEnd(
+                                targetPermanent: selectedPermanent,
+                                activateClass: activateClass
+                            ));
 
                     DisableEffectClass invalidationClass = new DisableEffectClass();
                     invalidationClass.SetUpICardEffect("Ignore [When Digivolving] Effect", hashtableDebuff => true, card);

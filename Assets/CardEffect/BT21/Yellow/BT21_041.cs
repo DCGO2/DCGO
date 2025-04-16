@@ -47,7 +47,7 @@ namespace DCGO.CardEffects.BT21
             }
             #endregion
 
-            #region Inherit
+            #region Linke Effect
             if (timing == EffectTiming.None)
             {
                 bool CardCondition(CardSource cardSource)

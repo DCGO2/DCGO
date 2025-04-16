@@ -13,6 +13,18 @@ namespace DCGO.CardEffects.BT21
 
             #region Static Effects
 
+            #region Alternative Digivolution Condition - Sup.
+            if (timing == EffectTiming.None)
+            {
+                bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.EqualsTraits("Sup.");
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 4, ignoreDigivolutionRequirement: false, card: card, condition: null));
+            }
+            #endregion
+
             #region Link Condition
 
             if (timing == EffectTiming.None)

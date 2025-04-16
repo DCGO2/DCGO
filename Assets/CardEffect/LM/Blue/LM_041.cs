@@ -50,7 +50,7 @@ namespace DCGO.CardEffects.LM
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (CardEffectCommons.CanTriggerOnAttack(hashtable, card))
+                        if (CardEffectCommons.CanTriggerOnPlay(hashtable, card))
                         {
                             return true;
                         }
@@ -246,7 +246,6 @@ namespace DCGO.CardEffects.LM
                     if (card.Owner.MemoryForPlayer <= 1 && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermanentCondition))
                     {
                         Permanent selectedPermanent = null;
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
@@ -254,7 +253,7 @@ namespace DCGO.CardEffects.LM
                             canTargetCondition: CanSelectPermanentCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: maxCount,
+                            maxCount: 1,
                             canNoSelect: false,
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine,
@@ -271,12 +270,10 @@ namespace DCGO.CardEffects.LM
                             yield return null;
                         }
 
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotUnsuspendPlayerEffect(
-                        permanentCondition: permanent => permanent == selectedPermanent,
-                        effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                        activateClass: activateClass,
-                        isOnlyActivePhase: false,
-                        effectName: "Opponent Digimon or Tamer can't unsuspend"));
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCantUnsuspendUntilOpponentTurnEnd(
+                                targetPermanent: selectedPermanent,
+                                activateClass: activateClass
+                            ));
                     }
                 }
             }
@@ -345,7 +342,6 @@ namespace DCGO.CardEffects.LM
                     if (card.Owner.MemoryForPlayer <= 1 && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermanentCondition))
                     {
                         Permanent selectedPermanent = null;
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
@@ -353,7 +349,7 @@ namespace DCGO.CardEffects.LM
                             canTargetCondition: CanSelectPermanentCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: maxCount,
+                            maxCount: 1,
                             canNoSelect: false,
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine,
@@ -370,12 +366,10 @@ namespace DCGO.CardEffects.LM
                             yield return null;
                         }
 
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotUnsuspendPlayerEffect(
-                        permanentCondition: permanent => permanent == selectedPermanent,
-                        effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                        activateClass: activateClass,
-                        isOnlyActivePhase: false,
-                        effectName: "Opponent Digimon or Tamer can't unsuspend"));
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCantUnsuspendUntilOpponentTurnEnd(
+                                targetPermanent: selectedPermanent,
+                                activateClass: activateClass
+                            ));
                     }
                 }
             }

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.XR;
 
 //Haru Shinkai
 namespace DCGO.CardEffects.BT21
@@ -21,6 +22,7 @@ namespace DCGO.CardEffects.BT21
 
             #endregion
 
+            #region Your Turn - When Linked
             if (timing == EffectTiming.WhenLinked)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -69,10 +71,15 @@ namespace DCGO.CardEffects.BT21
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent.TopCard.appFusionCondition != null)
+                        foreach(CardSource hand in card.Owner.HandCards)
                         {
-                            return true;
+                            if (hand.appFusionCondition != null)
+                            {
+                                if (hand.CanAppFusionFromTargetPermanent(permanent, true))
+                                    return true;
+                            }
                         }
+                        
                     }
                     return false;
                 }
@@ -80,9 +87,10 @@ namespace DCGO.CardEffects.BT21
                 {
                     if (CardEffectCommons.IsExistOnHand(card))
                     {
-                        if (card.CanAppFusionFromTargetPermanent(permanent, true))
+                        if (card.appFusionCondition != null)
                         {
-                            return true;
+                            if (card.CanAppFusionFromTargetPermanent(permanent, true))
+                                return true;
                         }
                     }
                     return false;
@@ -162,6 +170,7 @@ namespace DCGO.CardEffects.BT21
                     }
                 }
             }
+            #endregion
 
             #region Security
 
