@@ -1883,6 +1883,9 @@ public class Permanent
             }
         }
 
+        if (!AttackingPermanent.IsDigimon)
+            return false;
+
         if (!AttackingPermanent.CanSwitchAttackTarget)
             return false;
 
