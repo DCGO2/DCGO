@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 //Canoweissmon
 namespace DCGO.CardEffects.BT21
@@ -203,6 +204,11 @@ namespace DCGO.CardEffects.BT21
                 string EffectDiscription()
                     => "[All Turns] [Once Per Turn] When this Digimon with [Gammamon] in its text would leave the battle area by your opponent's effects, by trashing 3 Digimon cards from its digivolution cards, it doesn't leave.";
 
+                bool SourceCondition(CardSource source)
+                {
+                    return source.IsDigimon;
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
@@ -224,7 +230,8 @@ namespace DCGO.CardEffects.BT21
                     {
                         if (card.PermanentOfThisCard().TopCard.HasText("Gammamon"))
                         {
-                            return true;
+                            if(card.PermanentOfThisCard().DigivolutionCards.Count(SourceCondition) >= 3)
+                                return true;
                         }
                     }
                     return false;
@@ -239,19 +246,17 @@ namespace DCGO.CardEffects.BT21
                 {
                     Permanent permanent = card.PermanentOfThisCard();
                     List<CardSource> selectedCards = new List<CardSource>();
-                    int trashedamount = 0;
 
-                    int maxCount = Math.Min(1, permanent.DigivolutionCards.Count);
                     SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
                     selectCardEffect.SetUp(
-                                canTargetCondition: null,
+                                canTargetCondition: SourceCondition,
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
                                 canNoSelect: () => true,
-                                selectCardCoroutine: SelectCardCoroutine,
-                                afterSelectCardCoroutine: null,
+                                selectCardCoroutine: null,
+                                afterSelectCardCoroutine: SelectCardCoroutine,
                                 message: "Select digivolution cards to trash",
-                                maxCount: maxCount,
+                                maxCount: 3,
                                 canEndNotMax: false,
                                 isShowOpponent: true,
                                 mode: SelectCardEffect.Mode.Custom,
@@ -266,21 +271,16 @@ namespace DCGO.CardEffects.BT21
 
                     yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 
-                    IEnumerator SelectCardCoroutine(CardSource cardSource)
+                    IEnumerator SelectCardCoroutine(List<CardSource> cardSources)
                     {
-                        selectedCards.Add(cardSource);
+                        selectedCards = cardSources;
                         yield return null;
                     }
 
-                    if (selectedCards.Count > 0)
+                    if (selectedCards.Count >= 3)
                     {
                         yield return ContinuousController.instance.StartCoroutine(new ITrashDigivolutionCards(permanent, selectedCards, activateClass).TrashDigivolutionCards());
-                        var trashedCards = permanent.DigivolutionCards.Filter(x => selectedCards.Contains(x)).Count;
-                        trashedamount = trashedCards;
-                    }
 
-                    if (trashedamount >= 3)
-                    {
                         permanent.willBeRemoveField = false;
                         permanent.HideDeleteEffect();
                         permanent.HideHandBounceEffect();

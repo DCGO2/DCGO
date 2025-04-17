@@ -48,14 +48,7 @@ namespace DCGO.CardEffects.LM
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (CardEffectCommons.CanTriggerOnPlay(hashtable, card))
-                        {
-                            return true;
-                        }
-                    }
-                    return false;
+                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -224,7 +217,7 @@ namespace DCGO.CardEffects.LM
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card))
                     {
-                        if (permanent.IsDigimon && permanent.IsTamer)
+                        if (permanent.IsDigimon || permanent.IsTamer)
                         {
                             return true;
                         }
@@ -320,7 +313,7 @@ namespace DCGO.CardEffects.LM
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card))
                     {
-                        if (permanent.IsDigimon && permanent.IsTamer)
+                        if (permanent.IsDigimon || permanent.IsTamer)
                         {
                             return true;
                         }

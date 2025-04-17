@@ -13,6 +13,8 @@ namespace DCGO.CardEffects.BT21
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region Static Effects
+
             #region Alternative Digivolution Condition - Ult.
             if (timing == EffectTiming.None)
             {
@@ -24,8 +26,6 @@ namespace DCGO.CardEffects.BT21
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 5, ignoreDigivolutionRequirement: false, card: card, condition: null));
             }
             #endregion
-
-            #region Static Effects
 
             #region App Fusion (Globemon & Charismon)
 

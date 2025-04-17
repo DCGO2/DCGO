@@ -828,7 +828,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
     int TargetFrameID { get; set; } = 0;
     int[] JogressEvoRootsFrameIDs { get; set; } = new int[0];
     int BurstTamerFrameID { get; set; } = 0;
-    int AppFusionFrameID { get; set; } = 0;
+    int[] AppFusionFrameIDs { get; set; } = new int[0];
     ICardEffect UseCardEffect { get; set; } = null;
     Permanent AttackingPermanent { get; set; } = null;
     Permanent DefendingPermanent { get; set; } = null;
@@ -1212,9 +1212,9 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                     playCard.SetBurst(BurstTamerFrameID, PlayCard);
                 }
 
-                if (0 <= AppFusionFrameID && AppFusionFrameID <= gameContext.TurnPlayer.fieldCardFrames.Count - 1)
+                if (AppFusionFrameIDs != null && AppFusionFrameIDs.Length == 2)
                 {
-                    playCard.SetAppFusion(AppFusionFrameID, PlayCard);
+                    playCard.SetAppFusion(AppFusionFrameIDs);
                 }
 
 
@@ -1321,7 +1321,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
             TargetFrameID = -1;
             JogressEvoRootsFrameIDs = new int[0];
             BurstTamerFrameID = -1;
-            AppFusionFrameID = -1;
+            AppFusionFrameIDs = new int[0];
             UseCardEffect = null;
             AttackingPermanent = null;
             DefendingPermanent = null;
@@ -2385,7 +2385,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                                             IEnumerator _EndSelectCoroutine_SelectDigivolutionRoots(List<Permanent> permanents)
                                                             {
                                                                 yield return null;
-                                                                photonView.RPC("SetPlayCard", RpcTarget.All, handCard.cardSource.CardIndex, fieldCardFrame.FrameID, new int[] { permanents[0].PermanentFrame.FrameID, permanents[1].PermanentFrame.FrameID }, -1, -1);
+                                                                photonView.RPC("SetPlayCard", RpcTarget.All, handCard.cardSource.CardIndex, fieldCardFrame.FrameID, new int[] { permanents[0].PermanentFrame.FrameID, permanents[1].PermanentFrame.FrameID }, -1, new int[0]);
                                                             }
 
                                                             IEnumerator _NoSelectCoroutine()
@@ -2436,7 +2436,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                                             IEnumerator EndSelectCoroutine_SelectTamer(Permanent permanent)
                                                             {
                                                                 yield return null;
-                                                                photonView.RPC("SetPlayCard", RpcTarget.All, handCard.cardSource.CardIndex, fieldCardFrame.FrameID, new int[0], permanent.PermanentFrame.FrameID, -1);
+                                                                photonView.RPC("SetPlayCard", RpcTarget.All, handCard.cardSource.CardIndex, fieldCardFrame.FrameID, new int[0], permanent.PermanentFrame.FrameID, new int[0]);
                                                             }
 
                                                             IEnumerator _NoSelectCoroutine()
@@ -2488,7 +2488,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                                                 yield return null;
 
                                                                 //int sourceIndex = fieldCardFrame.GetFramePermanent().LinkedCards.IndexOf(cardSource);
-                                                                photonView.RPC("SetPlayCard", RpcTarget.All, handCard.cardSource.CardIndex, fieldCardFrame.FrameID, new int[0], -1, fieldCardFrame.FrameID);
+                                                                photonView.RPC("SetPlayCard", RpcTarget.All, handCard.cardSource.CardIndex, fieldCardFrame.FrameID, new int[0], -1, new int[] { targetPermanent.PermanentFrame.FrameID, targetPermanent.LinkedCards.IndexOf(cardSource)});
                                                             }
 
                                                             IEnumerator _NoSelectCoroutine()
@@ -2505,7 +2505,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                                     #region usually evolves
                                                     void Digivolution()
                                                     {
-                                                        photonView.RPC("SetPlayCard", RpcTarget.All, handCard.cardSource.CardIndex, fieldCardFrame.FrameID, new int[0], -1, -1);
+                                                        photonView.RPC("SetPlayCard", RpcTarget.All, handCard.cardSource.CardIndex, fieldCardFrame.FrameID, new int[0], -1, new int[0]);
                                                     }
                                                     #endregion
 
@@ -2555,7 +2555,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                             GManager.instance.You.playMatCardFrame.RemoveClickTarget();
                                             GManager.instance.You.playMatCardFrame.Frame.transform.parent.gameObject.SetActive(false);
 
-                                            photonView.RPC("SetPlayCard", RpcTarget.All, handCard.cardSource.CardIndex, handCard.cardSource.PreferredFrame().FrameID, new int[0], -1, -1);
+                                            photonView.RPC("SetPlayCard", RpcTarget.All, handCard.cardSource.CardIndex, handCard.cardSource.PreferredFrame().FrameID, new int[0], -1, new int[0]);
                                             selected = true;
 
                                             return;
@@ -2592,7 +2592,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                         GManager.instance.You.playMatCardFrame.RemoveClickTarget();
                                         GManager.instance.You.playMatCardFrame.Frame.transform.parent.gameObject.SetActive(false);
 
-                                        photonView.RPC("SetPlayCard", RpcTarget.All, handCard.cardSource.CardIndex, 0, new int[0], -1, -1);
+                                        photonView.RPC("SetPlayCard", RpcTarget.All, handCard.cardSource.CardIndex, 0, new int[0], -1, new int[0]);
                                         selected = true;
 
                                         return;
@@ -3092,7 +3092,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
     #region Play card decision
     [PunRPC]
-    public void SetPlayCard(int cardIndex, int TargetFrameID, int[] JogressEvoRootsFrameIDs, int BurstTamerFrameID, int AppFusionFrameID)
+    public void SetPlayCard(int cardIndex, int TargetFrameID, int[] JogressEvoRootsFrameIDs, int BurstTamerFrameID, int[] AppFusionFrameIDs)
     {
         PlayCard = gameContext.ActiveCardList[cardIndex];
         this.TargetFrameID = TargetFrameID;
@@ -3111,7 +3111,19 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         }
 
         this.BurstTamerFrameID = BurstTamerFrameID;
-        this.AppFusionFrameID = AppFusionFrameID;
+
+        if (AppFusionFrameIDs != null)
+        {
+            if (AppFusionFrameIDs.Length == 2)
+            {
+                this.AppFusionFrameIDs = new int[AppFusionFrameIDs.Length];
+
+                for (int i = 0; i < AppFusionFrameIDs.Length; i++)
+                {
+                    this.AppFusionFrameIDs[i] = AppFusionFrameIDs[i];
+                }
+            }
+        }
     }
     #endregion
 

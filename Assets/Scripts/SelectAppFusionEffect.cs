@@ -217,18 +217,24 @@ public class SelectAppFusionEffect : MonoBehaviour
         }
     }
 
-    public IEnumerator AddToSources()
+    public IEnumerator AddToSources(CardSource link)
     {
         LinkAdded = false;
 
-        if (selectedLink != null)
+        if (link != null)
         {
-            yield return ContinuousController.instance.StartCoroutine(EvoRoot.PermanentOfThisCard().RemoveLinkedCard(selectedLink));
-            yield return ContinuousController.instance.StartCoroutine(EvoRoot.PermanentOfThisCard().AddDigivolutionCardsTop(new List<CardSource> { selectedLink, EvoRoot }, null));
-            //yield return ContinuousController.instance.StartCoroutine(EvoRoot.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource> { selectedLink }, null, true));
-            //yield return ContinuousController.instance.StartCoroutine(EvoRoot.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource> { EvoRoot }, null, true));
-            
-            LinkAdded = true;
+            if(link.PermanentOfThisCard() != null)
+            {
+                Permanent linkPermanent = link.PermanentOfThisCard();
+
+                if (link.Owner.GetBattleAreaDigimons().Contains(linkPermanent))
+                {
+                    yield return ContinuousController.instance.StartCoroutine(EvoRoot.PermanentOfThisCard().RemoveLinkedCard(selectedLink));
+                    yield return ContinuousController.instance.StartCoroutine(EvoRoot.PermanentOfThisCard().AddDigivolutionCardsTop(new List<CardSource> { selectedLink, EvoRoot }, null));
+
+                    LinkAdded = true;
+                }
+            }
         }
     }
 }

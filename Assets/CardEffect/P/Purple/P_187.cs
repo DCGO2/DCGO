@@ -198,9 +198,13 @@ namespace DCGO.CardEffects.P
 
                                 if (selectedPermanent.TopCard.Owner.CanAddSecurity(activateClass))
                                 {
-                                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(selectedPermanent.TopCard, position));
-                                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(selectedPermanent.TopCard.Owner));
-                                    yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(selectedPermanent.TopCard.Owner).AddSecurity());
+                                    yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(selectedPermanent, CardEffectCommons.CardEffectHashtable(activateClass), toTop: position).PutSecurity());
+
+                                    yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
+                                        player: card.Owner.Enemy,
+                                        destroySecurityCount: 1,
+                                        cardEffect: activateClass,
+                                        fromTop: true).DestroySecurity());
                                 }
                             }
                         }

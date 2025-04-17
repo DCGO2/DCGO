@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 // Spirit Evolution!
 namespace DCGO.CardEffects.BT21
@@ -80,7 +81,7 @@ namespace DCGO.CardEffects.BT21
                             mode: SelectHandEffect.Mode.Discard,
                             cardEffect: activateClass);
 
-                        selectHandEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
+                        selectHandEffect.SetUpCustomMessage("Select 1 card to discard.", "The opponent is selecting 1 card to discard.");
                         selectHandEffect.SetUpCustomMessage_ShowCard("Selected Card");
                         yield return StartCoroutine(selectHandEffect.Activate());
 
@@ -94,11 +95,10 @@ namespace DCGO.CardEffects.BT21
                         }
 
                         if (cardTrashed)
-                        {
                             yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 2, activateClass).Draw());
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlaceDelayOptionCards(card: card, cardEffect: activateClass));
-                        }
                     }
+
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlaceDelayOptionCards(card: card, cardEffect: activateClass));
                 }
             }
 
@@ -110,7 +110,7 @@ namespace DCGO.CardEffects.BT21
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Your 1 Digimon digivolves", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -132,14 +132,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanDeclareOptionDelayEffect(card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
-                        {
-                            return true;
-                        }
-                    }
-                    return false;
+                    return CardEffectCommons.CanDeclareOptionDelayEffect(card);
                 }
 
                 bool PermamentConndition(Permanent permanent)
@@ -168,18 +161,21 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
                     {
-                        foreach (CardSource cardSource in card.Owner.HandCards)
+                        if (permanent.IsTamer)
                         {
-                            if (CanSelectCardCondition(cardSource))
+                            foreach (CardSource cardSource in card.Owner.HandCards)
                             {
-                                if (cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass))
+                                if (CanSelectCardCondition(cardSource))
                                 {
-                                    return true;
+                                    if (cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass))
+                                    {
+                                        return true;
+                                    }
                                 }
                             }
-                        }
+                        }                        
                     }
 
                     return false;
@@ -187,15 +183,20 @@ namespace DCGO.CardEffects.BT21
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
+                    bool destroyed = false;
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: new List<Permanent>() { card.PermanentOfThisCard() }, activateClass: activateClass, successProcess: permanents => SuccessProcess(), failureProcess: null));
 
                     IEnumerator SuccessProcess()
                     {
+                        destroyed = true;
+                        yield return null;
+                    }
+
+                    if (destroyed)
+                    {
                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                         {
                             Permanent selectedPermanent = null;
-
-                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
 
                             SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
@@ -204,7 +205,7 @@ namespace DCGO.CardEffects.BT21
                                 canTargetCondition: CanSelectPermanentCondition,
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
-                                maxCount: maxCount,
+                                maxCount: 1,
                                 canNoSelect: true,
                                 canEndNotMax: false,
                                 selectPermanentCoroutine: SelectPermanentCoroutine,

@@ -115,6 +115,9 @@ namespace DCGO.CardEffects.BT21
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    Permanent selectedPermanent = null;
+                    List<CardSource> selectedCards = new List<CardSource>();
+
                     bool canSelectHand = card.Owner.HandCards.Count(CanTuckOrTrash) >= 1;
                     bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanTuckOrTrash);
 
@@ -142,8 +145,6 @@ namespace DCGO.CardEffects.BT21
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
                         bool fromHand = GManager.instance.userSelectionManager.SelectedBoolValue;
-
-                        List<CardSource> selectedCards = new List<CardSource>();
 
                         IEnumerator SelectCardCoroutine(CardSource cardSource)
                         {
@@ -230,8 +231,6 @@ namespace DCGO.CardEffects.BT21
                             selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will get a digivolution card.", "The opponent is selecting 1 Digimon that will get a digivolution card.");
 
                             yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                            Permanent selectedPermanent = null;
 
                             IEnumerator SelectPermanentCoroutine(Permanent permanent)
                             {
@@ -294,6 +293,8 @@ namespace DCGO.CardEffects.BT21
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    Permanent selectedPermanent = null;
+
                     bool canSelectHand = card.Owner.HandCards.Count(CanTuckOrTrash) >= 1;
                     bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanTuckOrTrash);
 
@@ -410,12 +411,10 @@ namespace DCGO.CardEffects.BT21
 
                             yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                            Permanent selectedPermanent = null;
-
                             IEnumerator SelectPermanentCoroutine(Permanent permanent)
                             {
                                 selectedPermanent = permanent;
-
+                                UnityEngine.Debug.Log($"PERMENENT SELECTED: {permanent}");
                                 yield return null;
                             }
 

@@ -474,6 +474,14 @@ public class Permanent
                 }
                 #endregion
 
+                #region DP Boosts
+                foreach(DPBoost boost in Boosts)
+                {
+                    if (boost.Condition())
+                        DP += boost.DP;
+                }
+                #endregion
+
                 DP += LinkedDP;
 
                 if (DP < 0)
@@ -488,7 +496,34 @@ public class Permanent
 
     public int LinkedDP { get; set; }
 
-    public int DPBoost { get; set; }
+    public List<DPBoost> Boosts = new List<DPBoost>();
+
+    public void AddBoost(DPBoost boost)
+    {
+        if (Boosts.Any(x => x.ID == boost.ID))
+            Boosts.First(x => x.ID == boost.ID).DP = boost.DP;
+        else
+            Boosts.Add(boost);            
+    }
+
+    public void RemoveBoost(string ID)
+    {
+        if (Boosts.Any(x => x.ID == ID))
+            Boosts.Remove(Boosts.First(x => x.ID == ID));
+    }
+    public class DPBoost
+    {
+        public DPBoost(string id, int dp, Func<bool> cond)
+        {
+            ID = id;
+            DP = dp;
+            Condition = cond;
+        }
+
+        public string ID = "";
+        public int DP = 0;
+        public Func<bool> Condition = null;
+    }
     #endregion
 
     #region Will it not receive negative DP effect?
@@ -1277,7 +1312,7 @@ public class Permanent
                                     continue;
                                 }
 
-                                if(isTopCard && !cardEffect.IsInheritedEffect && !cardSource.IsLinked)
+                                if(isTopCard && !cardEffect.IsInheritedEffect && !cardEffect.IsLinkedEffect)
                                 {
                                     _EffectList.Add(cardEffect);
                                 }
