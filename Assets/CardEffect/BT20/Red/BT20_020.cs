@@ -80,19 +80,12 @@ namespace DCGO.CardEffects.BT20
 
                     bool CardCondition(CardSource cardSource)
                     {
-                        if (cardSource.Owner == card.Owner.Enemy)
-                        {
-                            if (cardSource.IsDigimon || cardSource.IsTamer)
-                            {
-                                return true;
-                            }
-                        }
-                        return false;
+                        return cardSource.IsDigimon || cardSource.IsTamer;
                     }
 
                     bool CardEffectCondition(ICardEffect cardEffect)
                     {
-                        return cardEffect != null;
+                        return cardEffect.EffectSourceCard.Owner == card.Owner.Enemy;
                     }
 
                     if (card.PermanentOfThisCard().DigivolutionCards.Count((cardSource) => cardSource.EqualsCardName("Imperialdramon: Dragon Mode")) >= 1)
