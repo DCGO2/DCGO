@@ -141,13 +141,9 @@ namespace DCGO.CardEffects.P
             {
                 int count()
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        List<CardSource> cards = card.PermanentOfThisCard().DigivolutionCards;
-                        var colourCount = Combinations.GetDifferenetColorCardCount(cards);
-                        var newDP = colourCount * 1000;
-
-                        return newDP;
+                        return card.PermanentOfThisCard().DigivolutionCardsColors.Count;
                     }
 
                     return 0;
@@ -155,14 +151,9 @@ namespace DCGO.CardEffects.P
 
                 bool Condition()
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
-                }
-
-                bool PermanentCondition(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (permanent == card.PermanentOfThisCard())
+                        if (count() >= 1)
                         {
                             return true;
                         }
@@ -171,17 +162,7 @@ namespace DCGO.CardEffects.P
                     return false;
                 }
 
-                cardEffects.Add(CardEffectFactory.ChangeDPStaticEffect(
-                permanentCondition: PermanentCondition,
-                changeValue: count(),
-                isInheritedEffect: false,
-                card: card,
-                condition: Condition,
-                effectName: EffectDiscription));
-                string EffectDiscription()
-                {
-                    return "[All Turns] This Digimon gets +1000 DP for each color in its digivolution cards.";
-                }
+                cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect<Func<int>>(changeValue: () => 1000 * count(), isInheritedEffect: false, card: card, condition: Condition));
             }
 
             #endregion

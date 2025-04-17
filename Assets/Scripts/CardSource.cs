@@ -2602,26 +2602,35 @@ public class CardSource : MonoBehaviour
     #region whether target permanent can App Fusion into this card
     public bool CanAppFusionFromTargetPermanent(Permanent targetPermanent, bool PayCost)
     {
+        UnityEngine.Debug.Log($"CAN APP FUSE ON TARGET: {targetPermanent}");
         if (targetPermanent != null)
         {
+            UnityEngine.Debug.Log($"CAN APP FUSE ON TARGET: {targetPermanent.TopCard}");
             if (targetPermanent.TopCard != null)
             {
+                UnityEngine.Debug.Log($"CAN APP FUSE ON TARGET: {appFusionCondition}");
                 if (appFusionCondition != null)
                 {
+                    UnityEngine.Debug.Log($"CAN APP FUSE ON TARGET: {this.CanNotEvolve(targetPermanent)}");
                     if (!this.CanNotEvolve(targetPermanent))
                     {
+                        UnityEngine.Debug.Log($"CAN APP FUSE ON TARGET: {appFusionCondition.digimonCondition(targetPermanent)}");
                         if (appFusionCondition.digimonCondition(targetPermanent))
-                        { 
+                        {
+                            UnityEngine.Debug.Log($"CAN APP FUSE ON TARGET: {targetPermanent.LinkedCards.Count}");
                             foreach (CardSource linkedCard in targetPermanent.LinkedCards)
                             {
+                                UnityEngine.Debug.Log($"CAN APP FUSE ON TARGET: {appFusionCondition.linkedCondition(targetPermanent, linkedCard)}");
                                 if (appFusionCondition.linkedCondition(targetPermanent, linkedCard))
                                 {
+                                    UnityEngine.Debug.Log($"CAN APP FUSE ON TARGET: {PayCost}");
                                     if (PayCost)
                                     {
                                         int cost = appFusionCondition.cost;
 
                                         cost = GetChangedCostItselef(cost, SelectCardEffect.Root.Hand, new List<Permanent>() { targetPermanent }, checkAvailability: true);
 
+                                        UnityEngine.Debug.Log($"CAN APP FUSE ON TARGET: {Owner.MaxMemoryCost} < {cost}");
                                         if (Owner.MaxMemoryCost < cost)
                                         {
                                             return false;

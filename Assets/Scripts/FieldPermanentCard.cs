@@ -445,34 +445,43 @@ public class FieldPermanentCard : MonoBehaviour
             SetCardSuspended(updateIsTapped);
 
             //DP
-            if (ThisPermanent.IsDigimon && ThisPermanent.DP >= 0)
+            if (ThisPermanent.IsDigimon)
             {
-                DPText.transform.parent.gameObject.SetActive(true);
+                int DP = ThisPermanent.DP;
 
-                if(DPText.text != ThisPermanent.DP.ToString())
-                    DPText.text = ThisPermanent.DP.ToString();
-
-                for (int i = 0; i < DPBackground_color.Count; i++)
+                if (DP >= 0)
                 {
-                    CardColor cardColor = CardColor.None;
+                    DPText.transform.parent.gameObject.SetActive(true);
 
-                    if (i < ThisPermanent.TopCard.CardColors.Count)
+                    if (DPText.text != DP.ToString())
+                        DPText.text = DP.ToString();
+
+                    for (int i = 0; i < DPBackground_color.Count; i++)
                     {
-                        cardColor = ThisPermanent.TopCard.CardColors[i];
-                        float fillAmount = (float)((i + 1) / (float)ThisPermanent.TopCard.CardColors.Count);
+                        CardColor cardColor = CardColor.None;
 
-                        if (DPBackground_color[i].color != DataBase.CardColor_ColorLightDictionary[cardColor])
-                            DPBackground_color[i].color = DataBase.CardColor_ColorLightDictionary[cardColor];
+                        if (i < ThisPermanent.TopCard.CardColors.Count)
+                        {
+                            cardColor = ThisPermanent.TopCard.CardColors[i];
+                            float fillAmount = (float)((i + 1) / (float)ThisPermanent.TopCard.CardColors.Count);
 
-                        DPBackground_color[i].fillAmount = fillAmount;
-                        DPBackground_color[i].gameObject.SetActive(true);
-                    }
+                            if (DPBackground_color[i].color != DataBase.CardColor_ColorLightDictionary[cardColor])
+                                DPBackground_color[i].color = DataBase.CardColor_ColorLightDictionary[cardColor];
 
-                    else
-                    {
-                        DPBackground_color[i].gameObject.SetActive(false);
+                            DPBackground_color[i].fillAmount = fillAmount;
+                            DPBackground_color[i].gameObject.SetActive(true);
+                        }
+
+                        else
+                        {
+                            DPBackground_color[i].gameObject.SetActive(false);
+                        }
                     }
                 }
+                else
+                {
+                    DPText.transform.parent.gameObject.SetActive(false);
+                }                
             }
 
             else

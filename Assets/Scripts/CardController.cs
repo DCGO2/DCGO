@@ -140,11 +140,11 @@ public class PlayCardClass
         }
     }
 
-    public void SetAppFusion(int AppFusionFrameID, CardSource card)
+    public void SetAppFusion(int[] AppFusionFrameID)
     {
-        if (0 <= AppFusionFrameID && AppFusionFrameID <= card.Owner.fieldCardFrames.Count - 1)
+        if (AppFusionFrameID != null)
         {
-            _appFusionFrameID = AppFusionFrameID;
+            _appFusionFrameIDs = AppFusionFrameID.CloneArray(); ;
         }
     }
 
@@ -204,7 +204,7 @@ public class PlayCardClass
     int _reducedCost = 0;
     int[] _jogressEvoRootsFrameIDs = null;
     int _burstTamerFrameID = -1;
-    int _appFusionFrameID = -1;
+    int[] _appFusionFrameIDs = null;
     bool _addSecurityEndOption = false;
     bool _isBreedingArea = false;
 
@@ -248,22 +248,21 @@ public class PlayCardClass
 
     bool IsAppFusion(CardSource card)
     {
-        CardSource linkCard = GManager.instance.selectAppFusionEffect.selectedLink;
+       CardSource linkCard = LinkedCard(card);
 
         if (linkCard != null)
         {
             if (card.appFusionCondition != null)
             {
-                if (card.appFusionCondition.linkedCondition != null)
+                if (card.appFusionCondition.digimonCondition != null)
                 {
-                    if (card.appFusionCondition.digimonCondition(GManager.instance.selectAppFusionEffect.EvoRoot.PermanentOfThisCard()))
+                    Permanent digimon = card.Owner.fieldCardFrames[_appFusionFrameIDs[0]].GetFramePermanent();
+
+                    if (card.appFusionCondition.linkedCondition != null)
                     {
-                        if (card.appFusionCondition.linkedCondition != null)
+                        if (card.appFusionCondition.linkedCondition(digimon, linkCard))
                         {
-                            if (card.appFusionCondition.linkedCondition(GManager.instance.selectAppFusionEffect.EvoRoot.PermanentOfThisCard(), linkCard))
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
                 }
@@ -271,6 +270,26 @@ public class PlayCardClass
         }
 
         return false;
+    }
+
+    CardSource LinkedCard(CardSource card)
+    {
+        if (_appFusionFrameIDs != null && _appFusionFrameIDs.Length == 2)
+        {
+            if (0 <= _appFusionFrameIDs[0] && _appFusionFrameIDs[0] <= card.Owner.fieldCardFrames.Count - 1)
+            {
+                Permanent targetPermanent = card.Owner.fieldCardFrames[_appFusionFrameIDs[0]].GetFramePermanent();
+
+                if(targetPermanent.LinkedCards.Count > _appFusionFrameIDs[1])
+                {
+                    CardSource link = targetPermanent.LinkedCards[_appFusionFrameIDs[1]];
+                    return link;
+                }
+            }
+        }
+            
+
+        return null;
     }
 
     public IEnumerator PlayCard()
@@ -725,15 +744,14 @@ public class PlayCardClass
 
             if (IsAppFusion(card))
             {
-                yield return ContinuousController.instance.StartCoroutine(GManager.instance.selectAppFusionEffect.AddToSources());
+                yield return ContinuousController.instance.StartCoroutine(GManager.instance.selectAppFusionEffect.AddToSources(LinkedCard(card)));
 
                 if (!GManager.instance.selectAppFusionEffect.LinkAdded)
                 {
-                    _appFusionFrameID = -1;
+                    _appFusionFrameIDs = new int[0];
 
-                    yield return ContinuousController.instance.StartCoroutine(SelectCost());
+                    yield return ContinuousController.instance.StartCoroutine(SelectCost());                    
                 }
-
                 else
                 {
                     appFusion = true;

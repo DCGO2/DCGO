@@ -15,7 +15,7 @@ namespace DCGO.CardEffects.BT21
 
             #region Progress
 
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnAllyAttack || timing == EffectTiming.OnEnterFieldAnyone)
             {
                 bool Condition()
                 {

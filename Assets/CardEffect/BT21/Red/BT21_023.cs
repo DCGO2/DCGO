@@ -54,25 +54,19 @@ namespace DCGO.CardEffects.BT21
                     {
                         if (source != null && source != card)
                         {
-                            if (source.PermanentOfThisCard().TopCard.EqualsCardName("DoGatchmon"))
+                            if (permanent.TopCard.EqualsCardName("DoGatchmon"))
                             {
-                                if (source.PermanentOfThisCard().LinkedCards.Find(x => x.EqualsCardName("Timemon")))
+                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Timemon")))
                                 {
-                                    if (source.CanAppFusionFromTargetPermanent(permanent, true))
-                                    {
-                                        return true;
-                                    }
+                                    return true;
                                 }
                             }
 
-                            if (source.PermanentOfThisCard().TopCard.EqualsCardName("Timemon"))
+                            if (permanent.TopCard.EqualsCardName("Timemon"))
                             {
-                                if (source.PermanentOfThisCard().LinkedCards.Find(x => x.EqualsCardName("DoGatchmon")))
+                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("DoGatchmon")))
                                 {
-                                    if (source.CanAppFusionFromTargetPermanent(permanent, true))
-                                    {
-                                        return true;
-                                    }
+                                    return true;
                                 }
                             }
                         }

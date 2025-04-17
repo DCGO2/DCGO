@@ -162,7 +162,7 @@ namespace DCGO.CardEffects.BT21
                             if (selectedCard != null && selectedCard.CanAppFusionFromTargetPermanent(selectedPermanent, true))
                             {
                                 PlayCardClass playCardClass = new PlayCardClass(new List<CardSource> { selectedCard }, hashtable, true, selectedPermanent, false, SelectCardEffect.Root.Hand, true);
-                                playCardClass.SetAppFusion(selectedPermanent.PermanentFrame.FrameID, selectedCard);
+                                playCardClass.SetAppFusion(new int[] { selectedPermanent.PermanentFrame.FrameID, selectedPermanent.LinkedCards.IndexOf(selectedCard) });
 
                                 yield return ContinuousController.instance.StartCoroutine(playCardClass.PlayCard());
                             }

@@ -71,36 +71,27 @@ namespace DCGO.CardEffects.BT21
                     {
                         if (source != null && source != card)
                         {
-                            if (source.PermanentOfThisCard().TopCard.EqualsCardName("Gatchmon"))
+                            if (permanent.TopCard.EqualsCardName("Gatchmon"))
                             {
-                                if (source.PermanentOfThisCard().LinkedCards.Find(x => x.EqualsCardName("Navimon")) || source.PermanentOfThisCard().LinkedCards.Find(x => x.EqualsCardName("Tweetmon")))
+                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Navimon") || x.EqualsCardName("Tweetmon")))
                                 {
-                                    if (source.CanAppFusionFromTargetPermanent(permanent, true))
-                                    {
-                                        return true;
-                                    }
+                                    return true;
                                 }
                             }
 
-                            if (source.PermanentOfThisCard().TopCard.EqualsCardName("Navimon"))
+                            if (permanent.TopCard.EqualsCardName("Navimon"))
                             {
-                                if (source.PermanentOfThisCard().LinkedCards.Find(x => x.EqualsCardName("Gatchmon")) || source.PermanentOfThisCard().LinkedCards.Find(x => x.EqualsCardName("Tweetmon")))
+                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Gatchmon") || x.EqualsCardName("Tweetmon")))
                                 {
-                                    if (source.CanAppFusionFromTargetPermanent(permanent, true))
-                                    {
-                                        return true;
-                                    }
+                                    return true;
                                 }
                             }
 
-                            if (source.PermanentOfThisCard().TopCard.EqualsCardName("Tweetmon"))
+                            if (permanent.TopCard.EqualsCardName("Tweetmon"))
                             {
-                                if (source.PermanentOfThisCard().LinkedCards.Find(x => x.EqualsCardName("Gatchmon")) || source.PermanentOfThisCard().LinkedCards.Find(x => x.EqualsCardName("Navimon")))
+                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Gatchmon") || x.EqualsCardName("Navimon")))
                                 {
-                                    if (source.CanAppFusionFromTargetPermanent(permanent, true))
-                                    {
-                                        return true;
-                                    }
+                                    return true;
                                 }
                             }
                         }
@@ -113,7 +104,7 @@ namespace DCGO.CardEffects.BT21
                         {
                             if (permanent.TopCard.EqualsCardName("Gatchmon"))
                             {
-                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Navimon")) || permanent.LinkedCards.Find(x => x.EqualsCardName("Tweetmon")))
+                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Navimon") || x.EqualsCardName("Tweetmon")))
                                 {
                                     return true;
                                 }
@@ -121,7 +112,7 @@ namespace DCGO.CardEffects.BT21
 
                             if (permanent.TopCard.EqualsCardName("Navimon"))
                             {
-                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Gatchmon")) || permanent.LinkedCards.Find(x => x.EqualsCardName("Tweetmon")))
+                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Gatchmon") || x.EqualsCardName("Tweetmon")))
                                 {
                                     return true;
                                 }
@@ -129,7 +120,7 @@ namespace DCGO.CardEffects.BT21
 
                             if (permanent.TopCard.EqualsCardName("Tweetmon"))
                             {
-                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Gatchmon")) || permanent.LinkedCards.Find(x => x.EqualsCardName("Navimon")))
+                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Gatchmon") || x.EqualsCardName("Navimon")))
                                 {
                                     return true;
                                 }

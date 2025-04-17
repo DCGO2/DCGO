@@ -144,7 +144,7 @@ namespace DCGO.CardEffects.LM
 
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
-                            Permanent selectedPermanent = permanent;
+                            selectedPermanent = permanent;
                             yield return null;
                         }
 
@@ -241,7 +241,7 @@ namespace DCGO.CardEffects.LM
 
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
-                            Permanent selectedPermanent = permanent;
+                            selectedPermanent = permanent;
                             yield return null;
                         }
 
