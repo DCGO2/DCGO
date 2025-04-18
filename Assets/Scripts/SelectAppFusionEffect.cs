@@ -229,8 +229,9 @@ public class SelectAppFusionEffect : MonoBehaviour
 
                 if (link.Owner.GetBattleAreaDigimons().Contains(linkPermanent))
                 {
-                    yield return ContinuousController.instance.StartCoroutine(EvoRoot.PermanentOfThisCard().RemoveLinkedCard(selectedLink));
-                    yield return ContinuousController.instance.StartCoroutine(EvoRoot.PermanentOfThisCard().AddDigivolutionCardsTop(new List<CardSource> { selectedLink, EvoRoot }, null));
+                    UnityEngine.Debug.Log($"ADD SOURCES: {linkPermanent}, {link}");
+                    yield return ContinuousController.instance.StartCoroutine(linkPermanent.RemoveLinkedCard(link));
+                    yield return ContinuousController.instance.StartCoroutine(linkPermanent.AddDigivolutionCardsTop(new List<CardSource> { link, linkPermanent.TopCard }, null));
 
                     LinkAdded = true;
                 }
