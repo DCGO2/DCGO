@@ -263,9 +263,12 @@ namespace DCGO.CardEffects.LM
                             yield return null;
                         }
 
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCantUnsuspendUntilOpponentTurnEnd(
-                                targetPermanent: selectedPermanent,
-                                activateClass: activateClass
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotSuspendPlayerEffect(
+                                permanentCondition: (permanent) => permanent == selectedPermanent,
+                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                                activateClass: activateClass,
+                                isOnlyActivePhase: false,
+                                effectName: "Can't Suspend"
                             ));
                     }
                 }
@@ -359,9 +362,12 @@ namespace DCGO.CardEffects.LM
                             yield return null;
                         }
 
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCantUnsuspendUntilOpponentTurnEnd(
-                                targetPermanent: selectedPermanent,
-                                activateClass: activateClass
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotSuspendPlayerEffect(
+                                permanentCondition: (permanent) => permanent == selectedPermanent,
+                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                                activateClass: activateClass,
+                                isOnlyActivePhase: false,
+                                effectName: "Can't Suspend"
                             ));
                     }
                 }

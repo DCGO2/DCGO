@@ -272,7 +272,7 @@ public class PlayCardClass
         return false;
     }
 
-    CardSource LinkedCard(CardSource card)
+    public CardSource LinkedCard(CardSource card)
     {
         if (_appFusionFrameIDs != null && _appFusionFrameIDs.Length == 2)
         {
@@ -308,6 +308,7 @@ public class PlayCardClass
                 continue;
             }
 
+            #region Set Root
             ICardEffect CardEffect = null;
 
             CardEffect = CardEffectCommons.GetCardEffectFromHashtable(this._hashtable);
@@ -340,7 +341,9 @@ public class PlayCardClass
             {
                 Root = SelectCardEffect.Root.Execution;
             }
+            #endregion
 
+            #region Set target(s)
             List<Permanent> targetPermanents = new List<Permanent>();
 
             if (card.IsPermanent)
@@ -372,7 +375,9 @@ public class PlayCardClass
                     }
                 }
             }
+            #endregion
 
+            #region Determine if Evolution
             bool isEvolution = false;
 
             if (targetPermanents.Count >= 1)
@@ -410,6 +415,7 @@ public class PlayCardClass
                     }
                 }
             }
+            #endregion
 
             List<CardSource> oldTrashCards = new List<CardSource>();
 
@@ -741,7 +747,7 @@ public class PlayCardClass
             #endregion
 
             #region Add Link Card of App Fusion
-
+            UnityEngine.Debug.Log($"PLAYING CARD: {IsAppFusion(card)}");
             if (IsAppFusion(card))
             {
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.selectAppFusionEffect.AddToSources(LinkedCard(card)));

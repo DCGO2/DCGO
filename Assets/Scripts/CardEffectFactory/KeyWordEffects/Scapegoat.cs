@@ -62,7 +62,7 @@ public partial class CardEffectFactory
 
         bool CanUseCondition(Hashtable hashtable)
         {
-            bool CardEffectCondition(ICardEffect cardEffect) => CardEffectCommons.IsOwnerEffect(cardEffect,cardEffect.EffectSourceCard);
+            bool CardEffectCondition(ICardEffect cardEffect) => CardEffectCommons.IsOwnerEffect(cardEffect,card);
 
             if (CardEffectCommons.IsPermanentExistsOnBattleArea(targetPermanent))
             {

@@ -25,6 +25,7 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
         _customMessage = null;
         _customMessage_Enemy = null;
         _beforeOnAttackCoroutine = null;
+        _afterOnAttackCoroutine = null;
     }
 
     public void SetUpCustomMessage(string customMessage, string customMessage_Enemy)
@@ -53,6 +54,11 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
         _beforeOnAttackCoroutine = beforeOnAttackCoroutine;
     }
 
+    public void SetAfterOnAttackCoroutine(Func<IEnumerator> afterOnAttackCoroutine)
+    {
+        _afterOnAttackCoroutine = afterOnAttackCoroutine;
+    }
+
     Permanent _attacker = null;
     Func<bool> _canAttackPlayerCondition = null;
     Func<Permanent, bool> _defenderCondition = null;
@@ -69,6 +75,7 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
     Permanent _defender = null;
     ICardEffect _cardEffect = null;
     Func<IEnumerator> _beforeOnAttackCoroutine = null;
+    Func<IEnumerator> _afterOnAttackCoroutine = null;
 
     #region ƒp[ƒ}ƒlƒ“ƒg‚ð‘I‘ð‚Å‚«‚é‚©
     bool CanTarget(Permanent permanent)
@@ -495,6 +502,9 @@ public class SelectAttackEffect : MonoBehaviourPunCallbacks
                 if (CanEndSelect(_defender))
                 {
                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.attackProcess.Attack(_attacker, _defender, _cardEffect, _withoutTap, _beforeOnAttackCoroutine));
+
+                    if(_afterOnAttackCoroutine != null)
+                        yield return ContinuousController.instance.StartCoroutine(_afterOnAttackCoroutine());
                 }
             }
         }

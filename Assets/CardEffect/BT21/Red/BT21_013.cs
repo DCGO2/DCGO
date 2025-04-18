@@ -112,15 +112,18 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanSelectPermanent(Permanent permanent)
                 {
-                    if (permanent == card.PermanentOfThisCard())
+                    if(CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
                     {
-                        return true;
-                    }
+                        if (permanent == card.PermanentOfThisCard())
+                        {
+                            return true;
+                        }
 
-                    if (permanent.TopCard.CardColors.Contains(CardColor.Red) && permanent.IsTamer && permanent.TopCard.HasInheritedEffect)
-                    {
-                        return true;
-                    }
+                        if (permanent.TopCard.CardColors.Contains(CardColor.Red) && permanent.IsTamer && permanent.TopCard.HasInheritedEffect)
+                        {
+                            return true;
+                        }
+                    }                    
 
                     return false;
                 }
@@ -128,6 +131,8 @@ namespace DCGO.CardEffects.BT21
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     Permanent selectedPermanent = null;
+                    CardSource selectedCard = null;
+
                     int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanent));
 
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
@@ -237,7 +242,6 @@ namespace DCGO.CardEffects.BT21
                                 yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
                             }
 
-                            CardSource selectedCard = null;
 
                             IEnumerator SelectCardCoroutine(CardSource cardSource)
                             {

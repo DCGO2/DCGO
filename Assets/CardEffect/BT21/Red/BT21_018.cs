@@ -12,12 +12,12 @@ namespace DCGO.CardEffects.BT21
 
             #region Static effects
 
-            #region Alternative Digivolution Condition - Stand.
+            #region Alternative Digivolution Condition - Stnd.
             if (timing == EffectTiming.None)
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.EqualsTraits("Stand.");
+                    return targetPermanent.TopCard.EqualsTraits("Stnd.");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 4, ignoreDigivolutionRequirement: false, card: card, condition: null));
