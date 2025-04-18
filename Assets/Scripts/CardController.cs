@@ -276,6 +276,7 @@ public class PlayCardClass
     {
         if (_appFusionFrameIDs != null && _appFusionFrameIDs.Length == 2)
         {
+            UnityEngine.Debug.Log($"GETTING LINKED CARD: {_appFusionFrameIDs[0]}, {_appFusionFrameIDs[1]}");
             if (0 <= _appFusionFrameIDs[0] && _appFusionFrameIDs[0] <= card.Owner.fieldCardFrames.Count - 1)
             {
                 Permanent targetPermanent = card.Owner.fieldCardFrames[_appFusionFrameIDs[0]].GetFramePermanent();
