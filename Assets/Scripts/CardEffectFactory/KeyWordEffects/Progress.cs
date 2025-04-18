@@ -47,6 +47,7 @@ public partial class CardEffectFactory
         activateClass.SetUpICardEffect("Progress", CanUseCondition, card);
         activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
         activateClass.SetIsInheritedEffect(isInheritedEffect);
+        activateClass.SetIsBackgroundProcess(true);
 
         string EffectDiscription()
         {

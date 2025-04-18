@@ -164,9 +164,12 @@ namespace DCGO.CardEffects.BT21
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (CardEffectCommons.CanTriggerWhenLoseSecurity(hashtable, PlayerCondition))
+                        if (CardEffectCommons.IsOwnerTurn(card))
                         {
-                            return true;
+                            if (CardEffectCommons.CanTriggerWhenLoseSecurity(hashtable, PlayerCondition))
+                            {
+                                return true;
+                            }
                         }
                     }
                     return false;

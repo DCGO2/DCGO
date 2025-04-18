@@ -75,24 +75,25 @@ namespace DCGO.CardEffects.BT21
                 return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) && !permanent.IsToken;
             }
 
-            void ActivateDeDigivolveProtection()
+            void ActivateDeDigivolveProtection(Permanent selectedPermanent)
             {
+                bool CanUseImmunityCondition(Hashtable hashtable1)
+                {
+                    return selectedPermanent.TopCard != null;
+                }
+
+                bool PermanentImmunityCondition(Permanent permanent)
+                {
+                    return permanent == selectedPermanent;
+                }
+
                 ImmuneFromDeDigivolveClass immuneFromDeDigivolveClass = new ImmuneFromDeDigivolveClass();
                 immuneFromDeDigivolveClass.SetUpICardEffect("Isn't affected by <De-Digivolve>", CanUseImmunityCondition,
-                    card.PermanentOfThisCard().TopCard);
+                    selectedPermanent.TopCard);
                 immuneFromDeDigivolveClass.SetUpImmuneFromDeDigivolveClass(PermanentCondition: PermanentImmunityCondition);
-                card.PermanentOfThisCard().UntilOpponentTurnEndEffects.Add(_ => immuneFromDeDigivolveClass);
+                selectedPermanent.UntilOpponentTurnEndEffects.Add(_ => immuneFromDeDigivolveClass);
             }
-
-            bool CanUseImmunityCondition(Hashtable hashtable1)
-            {
-                return card.PermanentOfThisCard().TopCard != null;
-            }
-
-            bool PermanentImmunityCondition(Permanent permanent)
-            {
-                return permanent == card.PermanentOfThisCard();
-            }
+            
             #endregion
 
             #region On Play
@@ -264,7 +265,7 @@ namespace DCGO.CardEffects.BT21
                                     activateClass: activateClass,
                                     effectName: "Can't return to deck by opponent's effects"));
 
-                                ActivateDeDigivolveProtection();
+                                ActivateDeDigivolveProtection(selectedPermanent);
                                 #endregion
                             }
                         }
@@ -443,7 +444,7 @@ namespace DCGO.CardEffects.BT21
                                     activateClass: activateClass,
                                     effectName: "Can't return to deck by opponent's effects"));
 
-                                ActivateDeDigivolveProtection();
+                                ActivateDeDigivolveProtection(selectedPermanent);
                                 #endregion
                             }
                         }
