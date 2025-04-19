@@ -146,7 +146,7 @@ namespace DCGO.CardEffects.P
 
             #region All Turns
 
-            if (timing == EffectTiming.OnEnterFieldAnyone || timing == EffectTiming.AfterEffectsActivate)
+            if (timing == EffectTiming.RulesTiming || timing == EffectTiming.AfterEffectsActivate)
             {
                 if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                 {

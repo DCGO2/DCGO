@@ -119,7 +119,7 @@ public static class Combinations
         }
 
         int colorCount = cardsCorrespondingToColor.ToList().Count((cardSource) => cardSource != null);
-        UnityEngine.Debug.Log($"COUNTS: {colorCount} >= {maxColorCount}");
+
         if (colorCount >= maxColorCount)
         {
             maxColorCount = colorCount;

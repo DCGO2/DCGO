@@ -120,6 +120,9 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
         //Rule processing
         yield return ContinuousController.instance.StartCoroutine(RuleProcess());
 
+        //Rule Timing
+        yield return ContinuousController.instance.StartCoroutine(StackSkillInfos(null, EffectTiming.RulesTiming));
+
         //Trigger effect processing
         yield return ContinuousController.instance.StartCoroutine(TriggeredSkillProcess(false, null));
 
