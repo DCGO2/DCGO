@@ -228,7 +228,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.HasPlayCost || cardSource.HasUseCost)
+                    if (cardSource.HasPlayCost)
                     {
                         if (cardSource.BasePlayCostFromEntity <= 5)
                         {

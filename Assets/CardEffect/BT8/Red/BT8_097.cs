@@ -140,7 +140,8 @@ public class BT8_097 : CEntity_Effect
 
                 bool CardEffectCondition(ICardEffect cardEffect)
                 {
-                    return cardEffect.EffectSourceCard.Owner == card.Owner.Enemy;
+                    return cardEffect != null &&
+                           cardEffect.EffectSourceCard.Owner == card.Owner.Enemy;
                 }
 
                 List<Permanent> destroyTargetPermanents = card.Owner.Enemy.GetBattleAreaDigimons().Filter(CanSelectPermanentCondition);
