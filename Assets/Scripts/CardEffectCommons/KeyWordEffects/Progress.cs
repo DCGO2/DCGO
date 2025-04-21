@@ -16,8 +16,6 @@ public partial class CardEffectCommons
 
         CardSource card = activateClass.EffectSourceCard;
 
-        bool PermanentCondition(Permanent permanent) => permanent == targetPermanent;
-
         bool CanUseCondition()
         {
             if (IsPermanentExistsOnBattleArea(targetPermanent))
@@ -31,9 +29,9 @@ public partial class CardEffectCommons
             return false;
         }
 
-        ActivateClass progress = CardEffectFactory.ProgressStaticEffect(permanentCondition: PermanentCondition, isInheritedEffect: false, card: card, condition: CanUseCondition);
+        CanNotAffectedClass progress = CardEffectFactory.ProgressStaticEffect(isInheritedEffect: false, card: card, condition: CanUseCondition);
 
-        AddEffectToPermanent(targetPermanent: targetPermanent, effectDuration: effectDuration, card: card, cardEffect: progress, timing: EffectTiming.OnAllyAttack);
+        AddEffectToPermanent(targetPermanent: targetPermanent, effectDuration: effectDuration, card: card, cardEffect: progress, timing: EffectTiming.None);
 
         if (!targetPermanent.TopCard.CanNotBeAffected(activateClass))
         {

@@ -31,10 +31,6 @@ namespace DCGO.CardEffects.BT21
                     {
                         if (CardEffectCommons.CanTriggerOnAttack(hashtable, card))
                         {
-                            if (card.PermanentOfThisCard().TopCard.HasText("Gammamon") || card.PermanentOfThisCard().TopCard.CardTraits.FirstOrDefault(x => x.Equals("Hero")) != null)
-                            {
-                                return true;
-                            }
                             return true;
                         }
                     }
@@ -43,7 +39,8 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           (card.PermanentOfThisCard().TopCard.HasText("Gammamon") || card.PermanentOfThisCard().TopCard.EqualsTraits("Hero"));
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
