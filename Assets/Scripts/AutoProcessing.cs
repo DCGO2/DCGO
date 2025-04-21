@@ -244,7 +244,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
         {
             if (permanent.TopCard != null)
             {
-                if (permanent.LinkedCards.Count >= permanent.LinkedMax)
+                if (permanent.LinkedCards.Count > permanent.LinkedMax)
                 {
                     return true;
                 }
@@ -280,7 +280,8 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
             //Link Lacking condition
             yield return ContinuousController.instance.StartCoroutine(DigimonLackLinkConditionProcess());
 
-            //TODO: Add link count correction
+            //Add link count correction
+            yield return ContinuousController.instance.StartCoroutine(DigimonLackLinkMaxCountProcess());
 
             IsRuleProcessing = false;
         }
@@ -333,7 +334,12 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
         }
         #endregion
 
-        //TODO: Add link count condition
+        #region Is it necessary to deal with Digimon's Link Count?
+        if (CardEffectCommons.HasMatchConditionPermanent(IsDigimonLackLinkCount))
+        {
+            return true;
+        }
+        #endregion
 
         return false;
     }
@@ -490,13 +496,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
         {
             foreach (Permanent permanent in LackLinkCountPermanents)
             {
-                if (permanent.LinkedCards.Count >= permanent.LinkedMax)
-                {
-                    if (permanent.LinkedMax > 1)
-                        yield return ContinuousController.instance.StartCoroutine(permanent.RemoveLinkedCard(null, (permanent.LinkedCards.Count - permanent.LinkedMax)));
-                    else
-                        yield return ContinuousController.instance.StartCoroutine(permanent.RemoveLinkedCard(permanent.LinkedCards[0]));
-                }
+                yield return ContinuousController.instance.StartCoroutine(permanent.RemoveLinkedCard(null, (permanent.LinkedCards.Count - permanent.LinkedMax)));
             }
         }
     }

@@ -15,14 +15,9 @@ namespace DCGO.CardEffects.BT21
 
             #region Progress
 
-            if (timing == EffectTiming.RulesTiming || timing == EffectTiming.AfterEffectsActivate)
+            if (timing == EffectTiming.None)
             {
-                bool Condition()
-                {
-                    return CardEffectCommons.CanActivateProgress(card);
-                }
-
-                cardEffects.Add(CardEffectFactory.ProgressSelfStaticEffect(false, card, Condition));
+                cardEffects.Add(CardEffectFactory.ProgressSelfStaticEffect(false, card, null));
             }
 
             #endregion

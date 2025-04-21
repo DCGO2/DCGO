@@ -968,7 +968,7 @@ public class PlayCardClass
         }
 
         if (appFusion)
-            playPermanent.SetAppFusion();
+            playPermanent.SetAppFusion(_appFusionFrameIDs);
 
         if (_isBreedingArea)
         {
@@ -1109,8 +1109,12 @@ public class PlayPermanentClass
         _burstDigivolved = true;
     }
 
-    public void SetAppFusion()
+    public void SetAppFusion(int[] appFusionFrameIDs)
     {
+        if (appFusionFrameIDs != null)
+        {
+            _appFusionFrameIDs = appFusionFrameIDs.CloneArray();
+        }
         _appFusion = true;
     }
 
@@ -1132,11 +1136,14 @@ public class PlayPermanentClass
     int[] _jogressEvoRootsFrameIDs = null;
     int _digiXrosCount = 0;
     bool _burstDigivolved = false;
+    int[] _appFusionFrameIDs = null;
     bool _appFusion = false;
     bool _isBreedingArea = false;
     bool _isPlayOption = false;
 
     public bool isJogress => _jogressEvoRootsFrameIDs != null && _jogressEvoRootsFrameIDs.Length == 2;
+
+    public bool isAppFusion => _appFusionFrameIDs != null && _appFusionFrameIDs.Length == 2;
 
     public IEnumerator PlayPermanent()
     {
