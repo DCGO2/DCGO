@@ -32,7 +32,7 @@ namespace DCGO.CardEffects.BT21
             #region On Play/When-Digivolving/When Linking shared
             bool CanActivateConditionShared(Hashtable hashtable)
             {
-                return isExistOnField(card) && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectReturn); ;
+                return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectReturn); ;
             }
 
             bool CanSelectReturn(CardSource card)

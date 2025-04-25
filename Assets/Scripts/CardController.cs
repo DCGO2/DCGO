@@ -763,6 +763,8 @@ public class PlayCardClass
                 {
                     appFusion = true;
                 }
+
+                yield return GManager.instance.photonWaitController.StartWait("AppFuse");
             }
             #endregion
 

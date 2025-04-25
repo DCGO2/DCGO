@@ -24,7 +24,7 @@ public partial class CardEffectFactory
         if (!CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition)) return null;
 
         ActivateClass activateClass = new ActivateClass();
-        activateClass.SetUpICardEffect("Link", CanUseCondition, card);
+        activateClass.SetUpICardEffect($"Link (Cost: {card.linkCondition.cost})", CanUseCondition, card);
         activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, DataBase.LinkEffectDiscription());
 
         bool CanSelectPermanentCondition(Permanent permanent)
