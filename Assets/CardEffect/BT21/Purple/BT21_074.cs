@@ -65,7 +65,7 @@ namespace DCGO.CardEffects.BT21
             #region On Play/When Digivolving shared
             bool CanActivateConditionSharedOP(Hashtable hashtable)
             {
-                return isExistOnField(card) &&
+                return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
                     (card.Owner.HandCards.Count >= 1 || card.Owner.TrashCards.Count >= 1) &&
                     CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanTuckUnderCondition);
             }

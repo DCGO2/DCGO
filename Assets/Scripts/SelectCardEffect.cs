@@ -58,6 +58,8 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
         _skillInfos = new List<SkillInfo>();
 
         _afterSelectIndexCoroutine = null;
+
+        _endSelect = false;
     }
 
     public void SetIsLocal()
@@ -273,7 +275,7 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
         _targetCards = new List<CardSource>();
 
         _slectedInexesInList = new List<int>();
-
+        
         if (!_isLocal)
         {
             yield return GManager.instance.photonWaitController.StartWait("SelectCardEffect");

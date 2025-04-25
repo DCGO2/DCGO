@@ -161,8 +161,8 @@ namespace DCGO.CardEffects.BT21
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
                 bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardConditionShared);
-                bool canSelectSources = card.PermanentOfThisCard().DigivolutionCards.Filter(x => CanSelectCardConditionShared(x)) != null;
-
+                bool canSelectSources = card.PermanentOfThisCard().DigivolutionCards.Filter(x => CanSelectCardConditionShared(x)).Count > 0;
+                UnityEngine.Debug.Log($"GLOBEMON: ACTIVATION - {canSelectHand}, {canSelectSources}");
                 if (canSelectHand || canSelectSources)
                 {
                     if (canSelectHand && canSelectSources)
@@ -184,10 +184,10 @@ namespace DCGO.CardEffects.BT21
                     }
 
                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-
+                    
                     bool fromHand = GManager.instance.userSelectionManager.SelectedBoolValue;
                     CardSource selectedCard = null;
-
+                    UnityEngine.Debug.Log($"GLOBEMON: ACTIVATION - {fromHand}");
                     if (fromHand)
                     {
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInHand(card, CanSelectCardConditionShared));
@@ -248,6 +248,7 @@ namespace DCGO.CardEffects.BT21
 
                     if (selectedCard != null)
                     {
+                        UnityEngine.Debug.Log($"GLOBEMON: ACTIVATION - {selectedCard.BaseENGCardNameFromEntity}");
                         yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddLinkCard(selectedCard, activateClass));
                     }
                 }
@@ -261,7 +262,7 @@ namespace DCGO.CardEffects.BT21
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("You may Link 1 level 4 or lower digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, hashtable => SharedActivateCoroutine(hashtable, activateClass), -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, hashtable => SharedActivateCoroutine(hashtable, activateClass), -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -285,7 +286,7 @@ namespace DCGO.CardEffects.BT21
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardConditionShared) || card.PermanentOfThisCard().DigivolutionCards.Filter(x => CanSelectCardConditionShared(x)) != null)
+                        if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardConditionShared) || card.PermanentOfThisCard().DigivolutionCards.Filter(x => CanSelectCardConditionShared(x)).Count > 0)
                         {
                             return true;
                         }
@@ -302,7 +303,7 @@ namespace DCGO.CardEffects.BT21
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("You may Link 1 level 4 or lower digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, hashtable => SharedActivateCoroutine(hashtable, activateClass), -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, hashtable => SharedActivateCoroutine(hashtable, activateClass), -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -312,6 +313,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
+                    UnityEngine.Debug.Log($"GLOBEMON: CAN USE - {CardEffectCommons.IsExistOnBattleAreaDigimon(card)}, {CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card)}");
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card))
@@ -324,9 +326,10 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
+                    UnityEngine.Debug.Log($"GLOBEMON: CAN ACTIVATE - {CardEffectCommons.IsExistOnBattleAreaDigimon(card)}, ({CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardConditionShared)} || {card.PermanentOfThisCard().DigivolutionCards.Filter(x => CanSelectCardConditionShared(x)).Count})");
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardConditionShared) || card.PermanentOfThisCard().DigivolutionCards.Filter(x => CanSelectCardConditionShared(x)) != null)
+                        if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardConditionShared) || card.PermanentOfThisCard().DigivolutionCards.Filter(x => CanSelectCardConditionShared(x)).Count > 0)
                         {
                             return true;
                         }

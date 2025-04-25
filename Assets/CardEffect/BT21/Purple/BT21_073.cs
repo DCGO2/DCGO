@@ -118,7 +118,7 @@ namespace DCGO.CardEffects.BT21
 
             bool CanActivateConditionShared(Hashtable hashtable)
             {
-                return isExistOnField(card) && 
+                return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && 
                     (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanLinkCondition) ||
                     card.PermanentOfThisCard().DigivolutionCards.Exists(CanLinkCondition));
             }
@@ -129,7 +129,7 @@ namespace DCGO.CardEffects.BT21
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Link from trash or sources", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -185,6 +185,34 @@ namespace DCGO.CardEffects.BT21
                         if (fromSources)
                         {
                             SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+                            selectCardEffect.SetUp(
+                                canTargetCondition: CanLinkCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                canNoSelect: () => true,
+                                selectCardCoroutine: SelectCardCoroutine,
+                                afterSelectCardCoroutine: null,
+                                message: "Select 1 card to link.",
+                                maxCount: 1,
+                                canEndNotMax: false,
+                                isShowOpponent: true,
+                                mode: SelectCardEffect.Mode.Custom,
+                                root: SelectCardEffect.Root.Trash,
+                                customRootCardList: null,
+                                canLookReverseCard: true,
+                                selectPlayer: card.Owner,
+                                cardEffect: activateClass);
+
+
+                            selectCardEffect.SetUpCustomMessage("Select 1 digivolution card to link.", "The opponent is selecting 1 digivolution card to link.");
+                            selectCardEffect.SetUpCustomMessage_ShowCard("Linked Card");
+
+                            yield return StartCoroutine(selectCardEffect.Activate());
+                        }
+
+                        else
+                        {
+                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                             selectCardEffect.SetUp(
                                 canTargetCondition: CanLinkCondition,
@@ -200,33 +228,6 @@ namespace DCGO.CardEffects.BT21
                                 mode: SelectCardEffect.Mode.Custom,
                                 root: SelectCardEffect.Root.Custom,
                                 customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
-                                canLookReverseCard: true,
-                                selectPlayer: card.Owner,
-                                cardEffect: activateClass);
-
-                            selectCardEffect.SetUpCustomMessage("Select 1 digivolution card to link.", "The opponent is selecting 1 digivolution card to link.");
-                            selectCardEffect.SetUpCustomMessage_ShowCard("Linked Card");
-
-                            yield return StartCoroutine(selectCardEffect.Activate());
-                        }
-
-                        else
-                        {
-                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-                            selectCardEffect.SetUp(
-                                canTargetCondition: CanLinkCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                canNoSelect: () => true,
-                                selectCardCoroutine: SelectCardCoroutine,
-                                afterSelectCardCoroutine: null,
-                                message: "Select 1 card to link.",
-                                maxCount: 1,
-                                canEndNotMax: false,
-                                isShowOpponent: true,
-                                mode: SelectCardEffect.Mode.Custom,
-                                root: SelectCardEffect.Root.Trash,
-                                customRootCardList: null,
                                 canLookReverseCard: true,
                                 selectPlayer: card.Owner,
                                 cardEffect: activateClass);
@@ -253,7 +254,7 @@ namespace DCGO.CardEffects.BT21
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Link from trash or sources", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -277,8 +278,9 @@ namespace DCGO.CardEffects.BT21
                         {
                             List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>
                             {
-                                new(message: "From sources", value: true, spriteIndex: 0),
-                                new(message: "From trash", value: false, spriteIndex: 1),
+                                new(message: "From trash", value: true, spriteIndex: 0),
+                                new(message: "From sources", value: false, spriteIndex: 1),
+                                
                             };
 
                             string selectPlayerMessage = "From which area do you select a card?";
@@ -294,7 +296,7 @@ namespace DCGO.CardEffects.BT21
 
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                        bool fromSources = GManager.instance.userSelectionManager.SelectedBoolValue;
+                        bool fromTrash = GManager.instance.userSelectionManager.SelectedBoolValue;
 
 
                         List<CardSource> selectedCards = new List<CardSource>();
@@ -306,7 +308,35 @@ namespace DCGO.CardEffects.BT21
                             yield return null;
                         }
 
-                        if (fromSources)
+                        if (fromTrash)
+                        {
+
+                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+                            selectCardEffect.SetUp(
+                                canTargetCondition: CanLinkCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                canNoSelect: () => true,
+                                selectCardCoroutine: SelectCardCoroutine,
+                                afterSelectCardCoroutine: null,
+                                message: "Select 1 card to link.",
+                                maxCount: 1,
+                                canEndNotMax: false,
+                                isShowOpponent: true,
+                                mode: SelectCardEffect.Mode.Custom,
+                                root: SelectCardEffect.Root.Trash,
+                                customRootCardList: null,
+                                canLookReverseCard: true,
+                                selectPlayer: card.Owner,
+                                cardEffect: activateClass);
+
+                            selectCardEffect.SetUpCustomMessage("Select 1 digivolution card to link.", "The opponent is selecting 1 digivolution card to link.");
+                            selectCardEffect.SetUpCustomMessage_ShowCard("Linked Card");
+
+                            yield return StartCoroutine(selectCardEffect.Activate());
+                        }
+
+                        else
                         {
                             SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
@@ -324,33 +354,6 @@ namespace DCGO.CardEffects.BT21
                                 mode: SelectCardEffect.Mode.Custom,
                                 root: SelectCardEffect.Root.Custom,
                                 customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
-                                canLookReverseCard: true,
-                                selectPlayer: card.Owner,
-                                cardEffect: activateClass);
-
-                            selectCardEffect.SetUpCustomMessage("Select 1 digivolution card to link.", "The opponent is selecting 1 digivolution card to link.");
-                            selectCardEffect.SetUpCustomMessage_ShowCard("Linked Card");
-
-                            yield return StartCoroutine(selectCardEffect.Activate());
-                        }
-
-                        else
-                        {
-                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-                            selectCardEffect.SetUp(
-                                canTargetCondition: CanLinkCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                canNoSelect: () => true,
-                                selectCardCoroutine: SelectCardCoroutine,
-                                afterSelectCardCoroutine: null,
-                                message: "Select 1 card to link.",
-                                maxCount: 1,
-                                canEndNotMax: false,
-                                isShowOpponent: true,
-                                mode: SelectCardEffect.Mode.Custom,
-                                root: SelectCardEffect.Root.Trash,
-                                customRootCardList: null,
                                 canLookReverseCard: true,
                                 selectPlayer: card.Owner,
                                 cardEffect: activateClass);

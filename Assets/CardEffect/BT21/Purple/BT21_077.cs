@@ -491,7 +491,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanPlay(CardSource cardSource)
                 {
-                    return ((cardSource.HasText("Gammamon") && cardSource.HasLevel && cardSource.Level <= 4) || cardSource.EqualsCardName("Cannonweissmon")) &&
+                    return ((cardSource.HasText("Gammamon") && cardSource.HasLevel && cardSource.Level <= 4) || cardSource.EqualsCardName("Canoweissmon")) &&
                            CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
                 }
 
@@ -513,7 +513,7 @@ namespace DCGO.CardEffects.BT21
                         canNoSelect: () => true,
                         selectCardCoroutine: SelectCardCoroutine,
                         afterSelectCardCoroutine: null,
-                        message: "Select 1 [Cannonweissmon] or level 4 or lower [Gammamon] in text Digimon to play.",
+                        message: "Select 1 [Canoweissmon] or level 4 or lower [Gammamon] in text Digimon to play.",
                         maxCount: 1,
                         canEndNotMax: false,
                         isShowOpponent: true,

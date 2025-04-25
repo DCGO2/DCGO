@@ -146,7 +146,7 @@ namespace DCGO.CardEffects.BT21
 
                 string EffectDiscription()
                 {
-                    return "[Your Turn] When any of your Digimon would digivolve into a Digimon card with<Save> in its text or the [Hero] trait, by suspending this Tamer and placing 1 card from under your Tamers as any of their bottom digivolution card, reduce the digivolution cost by 1.";
+                    return "[Your Turn] When any of your Digimon would digivolve into a Digimon card with <Save> in its text or the [Hero] trait, by suspending this Tamer and placing 1 card from under your Tamers as any of their bottom digivolution card, reduce the digivolution cost by 1.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
@@ -407,7 +407,7 @@ namespace DCGO.CardEffects.BT21
 
                                         bool CardSourceCondition(CardSource cardSource)
                                         {
-                                            return cardSource.HasSaveText;
+                                            return cardSource.HasSaveText || cardSource.EqualsTraits("Hero");
                                         }
 
                                         bool RootCondition(SelectCardEffect.Root root)

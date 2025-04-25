@@ -129,12 +129,9 @@ namespace DCGO.CardEffects.BT21
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (CardEffectCommons.CanActivateSuspendCostEffect(card))
+                        if (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PermanentCondition) || CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, PermanentCondition))
                         {
-                            if (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PermanentCondition) || CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, PermanentCondition))
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
                     return false;
@@ -146,7 +143,10 @@ namespace DCGO.CardEffects.BT21
                     {
                         if (CardEffectCommons.IsOwnerTurn(card))
                         {
-                            return true;
+                            if (CardEffectCommons.CanActivateSuspendCostEffect(card))
+                            {
+                                return true;
+                            }
                         }
                     }
                     return false;
