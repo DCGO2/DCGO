@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Linq;
+using System.Xml;
 
 
 public static class Combinations
@@ -49,50 +50,59 @@ public static class Combinations
         }
     }
 
+    struct UniqueCardValue
+    {
+        public string value;
+        public List<CardSource> sources;
+    }
+
     //GetUniqueNameCardCount
     public static int GetUniqueNameCardCount(List<CardSource> cardSources)
     {
-        List<string> cardNames = new List<string>();
-        List<CardSource> sourceList = new List<CardSource>();
+        List<UniqueCardValue> cardList = new List<UniqueCardValue>();
 
         foreach (CardSource cardSource in cardSources)
         {
             foreach (string name in cardSource.CardNames)
             {
-                if (!cardNames.Contains(name))
+                if (!cardList.Any(x => x.value == name))
                 {
-                    cardNames.Add(name);
-                    sourceList.Add(cardSource);
-
-                    break;
+                    cardList.Add(
+                        new UniqueCardValue
+                        {
+                            value = name,
+                            sources = new List<CardSource> { cardSource }
+                        }
+                    );
                 }
             }
         }
 
-        return sourceList.Count;
+        return cardList.Count;
     }
 
     //GetUniqueColorCardCount
     public static int GetUniqueColorCardCount(List<CardSource> cardSources)
     {
-        List<CardColor> cardColors = new List<CardColor>();
-        List<CardSource> sourceList = new List<CardSource>();
+        List<UniqueCardValue> cardList = new List<UniqueCardValue>();
 
         foreach (CardSource cardSource in cardSources)
         {
             foreach(CardColor cardColor in cardSource.CardColors)
             {
-                if (!cardColors.Contains(cardColor))
+                if (!cardList.Any(x => x.value == cardColor.ToString()))
                 {
-                    cardColors.Add(cardColor);
-                    sourceList.Add(cardSource);
-                    
-                    break;
+                    cardList.Add(
+                        new UniqueCardValue {
+                            value = cardColor.ToString(),
+                            sources = new List<CardSource> { cardSource }
+                        }
+                    );
                 }
             }
         }
 
-        return sourceList.Count;
+        return cardList.Count;
     }
 
     //GetDifferenetColorCardCount
