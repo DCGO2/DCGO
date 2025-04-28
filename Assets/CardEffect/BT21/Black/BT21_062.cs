@@ -260,7 +260,7 @@ namespace DCGO.CardEffects.BT21
             if (timing == EffectTiming.OnStartMainPhase)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Delete 1 oppont Digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Delete 1 opponent Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 

@@ -144,7 +144,8 @@ namespace DCGO.CardEffects.BT21
 
                     IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(new IDegeneration(permanent, OwnerTamerColorCountDividedBy2(), activateClass).Degeneration());
+                        for (int i = 0; i < OwnerTamerColorCountDividedBy2(); i++)
+                            yield return ContinuousController.instance.StartCoroutine(new IDegeneration(permanent, 1, activateClass).Degeneration());
                     }
                 }
             }

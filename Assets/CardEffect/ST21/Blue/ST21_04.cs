@@ -37,7 +37,7 @@ namespace DCGO.CardEffects.ST21
 
                 foreach (Permanent permanent in card.Owner.GetBattleAreaPermanents())
                 {
-                    if (permanent.IsTamer && permanent.TopCard.HasAdventureTraits)
+                    if (permanent.IsTamer)
                     {
                         tamerCards.Add(permanent.TopCard);
                     }

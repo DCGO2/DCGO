@@ -321,7 +321,7 @@ namespace DCGO.CardEffects.BT17
 
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+                        int maxCount = Math.Min(2, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
 
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
@@ -365,6 +365,8 @@ namespace DCGO.CardEffects.BT17
                             }
                         }
 
+                        List<Permanent> suspendedTargets = new List<Permanent>();
+
                         foreach (Permanent selectedPermanent in selectedPermanents)
                         {
                             if (selectedPermanent != null)
@@ -375,20 +377,20 @@ namespace DCGO.CardEffects.BT17
                                     {
                                         if (!selectedPermanent.IsSuspended && selectedPermanent.CanSuspend)
                                         {
-                                            Permanent suspendTargetPermanent = selectedPermanent;
-
-                                            yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(new List<Permanent>() { suspendTargetPermanent }, CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
+                                            suspendedTargets.Add(selectedPermanent);
                                         }
                                     }
                                 }
                             }
                         }
 
-                        if(selectedPermanents.Count > 0)
+                        if(suspendedTargets.Count > 0)
                         {
+                            yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(suspendedTargets, CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
+
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonSAttack(
                             targetPermanent: card.PermanentOfThisCard(),
-                            changeValue: selectedPermanents.Count(),
+                            changeValue: suspendedTargets.Count,
                             effectDuration: EffectDuration.UntilEachTurnEnd,
                             activateClass: activateClass));
                         }
