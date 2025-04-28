@@ -34,7 +34,7 @@ namespace DCGO.CardEffects.BT21
 
             bool CanActivateConditionShared(Hashtable hashtable)
             {
-                return isExistOnField(card);
+                return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
             }
 
             bool CanTrashCard(CardSource card)

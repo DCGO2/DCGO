@@ -198,6 +198,7 @@ namespace DCGO.CardEffects.BT21
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 [Xros Heart] trait card with a play cost of 5 or less", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetIsSecurityEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

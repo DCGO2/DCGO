@@ -179,7 +179,8 @@ namespace DCGO.CardEffects.P
 
                 bool Condition()
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           card.PermanentOfThisCard().TopCard == card;
                 }
 
                 /*bool PermanentCondition(Permanent permanent)

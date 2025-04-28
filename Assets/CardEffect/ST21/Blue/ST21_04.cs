@@ -186,7 +186,7 @@ namespace DCGO.CardEffects.ST21
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Gain alliance then attack", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
-                activateClass.SetHashString("alliance-attack-ST21-04");
+                activateClass.SetHashString("alliance-attack-ST21_04");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -237,7 +237,12 @@ namespace DCGO.CardEffects.ST21
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    {
+                        return true;
+                    }
+
+                    return false;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -317,7 +322,7 @@ namespace DCGO.CardEffects.ST21
                             yield return null;
                         }
 
-                        if (selectedPermanent.CanAttack(activateClass))
+                        if (selectedPermanent != null)
                         {
                             SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
 

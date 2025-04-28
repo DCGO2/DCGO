@@ -245,7 +245,7 @@ namespace DCGO.CardEffects.P
                     {
                         if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition) || CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
                         {
-                            return true;
+                            return card.Owner.SecurityCards.Count > 0;
                         }
                     }
                     return false;
@@ -268,6 +268,7 @@ namespace DCGO.CardEffects.P
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+
                     yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
                     player: card.Owner,
                     destroySecurityCount: 1,
@@ -393,7 +394,7 @@ namespace DCGO.CardEffects.P
                     {
                         if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition) || CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
                         {
-                            return true;
+                            return card.Owner.SecurityCards.Count > 0;
                         }
                     }
                     return false;

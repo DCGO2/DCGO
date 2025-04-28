@@ -457,7 +457,7 @@ namespace DCGO.CardEffects.BT21
             bool CanActivateConditionAtkShared(Hashtable hashtable)
             {
                 return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && 
-                       card.PermanentOfThisCard().DigivolutionCards.Some(CanTuckOrTrash);
+                       CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
             }
 
             bool CanSelectPermanentCondition(Permanent permanent)
