@@ -191,26 +191,25 @@ namespace DCGO.CardEffects.EX7
                          return true;
                      }
 
-                     bool CardCondition(CardSource cardSource)
-                     {
-                         if (cardSource.Owner == card.Owner.Enemy)
-                         {
-                             if (cardSource.IsDigimon)
-                             {
-                                 if (cardSource.CardDP <= 6000)
-                                 {
-                                     return true;
-                                 }
-                             }
-                         }
+                    bool CardCondition(CardSource cardSource)
+                    {
+                        if (cardSource.IsDigimon)
+                        {
+                            if (cardSource.CardDP <= 6000)
+                            {
+                                return true;
+                            }
+                        }
 
-                         return false;
+                        return false;
                      }
 
                     bool CardEffectCondition(ICardEffect cardEffect)
                     {
-                        return cardEffect != null &&
-                               cardEffect.EffectSourceCard.Owner == card.Owner.Enemy;
+                        if (cardEffect == null)
+                            return true;
+                        else
+                            return cardEffect.EffectSourceCard.Owner == card.Owner.Enemy;
                     }
 
                     yield return null;

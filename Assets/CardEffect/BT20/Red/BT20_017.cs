@@ -19,7 +19,7 @@ namespace DCGO.CardEffects.BT20
                 {
                     ActivateClass activateClass = new ActivateClass();
                     activateClass.SetUpICardEffect("Play a token", CanUseCondition, card);
-                    activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                    activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                     cardEffects.Add(activateClass);
 
                     string EffectDiscription()
@@ -45,7 +45,6 @@ namespace DCGO.CardEffects.BT20
                         return false;
                     }
 
-                    //#TODO Implement token effect script
                     IEnumerator ActivateCoroutine(Hashtable hashtable)
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayAthoRenePorToken(activateClass));
@@ -57,7 +56,7 @@ namespace DCGO.CardEffects.BT20
                 {
                     ActivateClass activateClass = new ActivateClass();
                     activateClass.SetUpICardEffect("Play token", CanUseCondition, card);
-                    activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                    activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                     cardEffects.Add(activateClass);
 
                     string EffectDiscription()

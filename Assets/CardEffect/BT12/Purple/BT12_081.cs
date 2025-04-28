@@ -147,7 +147,29 @@ namespace DCGO.CardEffects.BT12
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (card.PermanentOfThisCard().DigivolutionCards.Count >= 4)
+                        bool canEvo = card.PermanentOfThisCard().DigivolutionCards.Count >= 4;
+
+                        if (canEvo)
+                        {
+                            List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
+                            {
+                                new SelectionElement<bool>(message: $"Play From Sources", value : true, spriteIndex: 0),
+                                new SelectionElement<bool>(message: $"Digivolve to [Quartzmon]", value : false, spriteIndex: 1),
+                            };
+
+                            string selectPlayerMessage = "Which effect would you like to do?";
+                            string notSelectPlayerMessage = "The opponent is choosing effect to do.";
+
+                            GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+                        }
+                        else
+                        {
+                            GManager.instance.userSelectionManager.SetBool(canEvo);
+                        }
+
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+                        
+                        if (GManager.instance.userSelectionManager.SelectedBoolValue)
                         {
                             #region 進化コスト
 

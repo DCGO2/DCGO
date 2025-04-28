@@ -154,7 +154,8 @@ namespace DCGO.CardEffects.BT21
 
                 bool PermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                           (permanent.TopCard.EqualsTraits("Xros Heart") || permanent.TopCard.EqualsTraits("Hero"));
                 }
 
                 
@@ -213,10 +214,24 @@ namespace DCGO.CardEffects.BT21
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
                             selectedPermanent = permanent;
-                            yield return null;
+
+                            if(selectedPermanent.CanAttack(activateClass))
+                            {
+                                SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
+
+                                selectAttackEffect.SetUp(
+                                    attacker: selectedPermanent,
+                                    canAttackPlayerCondition: () => true,
+                                    defenderCondition: (permanent) => true,
+                                    cardEffect: activateClass);
+
+                                selectAttackEffect.SetCanNotSelectNotAttack();
+
+                                yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
+                            }
                         }
 
-                        if (selectedPermanent != null)
+                        /*if (selectedPermanent != null)
                         {
                             if (selectedPermanent.CanAttack(activateClass))
                             {
@@ -232,7 +247,7 @@ namespace DCGO.CardEffects.BT21
 
                                 yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
                             }
-                        }
+                        }*/
                     }
                 }
             }
