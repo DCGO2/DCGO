@@ -57,7 +57,7 @@ namespace DCGO.CardEffects.BT21
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                     {
-                        return permanent.DP <= card.Owner.MaxDP_DeleteEffect(3000, activateClass);
+                        return permanent.DP <= card.Owner.MaxDP_DeleteEffect(4000, activateClass);
                     }
                     return false;
                 }
@@ -132,7 +132,7 @@ namespace DCGO.CardEffects.BT21
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                     {
-                        return permanent.DP <= card.Owner.MaxDP_DeleteEffect(3000, activateClass);
+                        return permanent.DP <= card.Owner.MaxDP_DeleteEffect(4000, activateClass);
                     }
                     return false;
                 }

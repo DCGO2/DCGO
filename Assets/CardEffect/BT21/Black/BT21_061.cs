@@ -91,7 +91,8 @@ namespace DCGO.CardEffects.BT21
 
                     IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(new IDegeneration(permanent, OwnerTamerColorCountDividedBy2(), activateClass).Degeneration());
+                        for (int i = 0; i < OwnerTamerColorCountDividedBy2(); i++)
+                            yield return ContinuousController.instance.StartCoroutine(new IDegeneration(permanent, 1, activateClass).Degeneration());
                     }
                 }
             }
@@ -155,7 +156,7 @@ namespace DCGO.CardEffects.BT21
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Gain alliance then attack", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
-                activateClass.SetHashString("alliance-attack-BT21-061");
+                activateClass.SetHashString("alliance-attack-BT21_061");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -206,7 +207,12 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    {
+                        return true;
+                    }
+
+                    return false;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -220,14 +226,14 @@ namespace DCGO.CardEffects.BT21
                         {
                             Permanent permanent = CardEffectCommons.GetPermanentFromHashtable(hashtable1);
 
-                            if(permanent != null)
+                            if (permanent != null)
                                 etbPermanents.Add(permanent);
                         }
 
                         etbPermanents = etbPermanents.Filter(MyDigimonAdventurePlayedDigid);
                     }
 
-                    if(etbPermanents.Count > 0)
+                    if (etbPermanents.Count > 0)
                     {
                         if (CardEffectCommons.HasMatchConditionPermanent(MyDigimonAlliance))
                         {
@@ -286,7 +292,7 @@ namespace DCGO.CardEffects.BT21
                             yield return null;
                         }
 
-                        if (selectedPermanent.CanAttack(activateClass))
+                        if (selectedPermanent != null)
                         {
                             SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
 

@@ -26,7 +26,7 @@ namespace DCGO.CardEffects.P
                 {
                     if (cardSource == card)
                     {
-                        CardNames.Add("Greymon");
+                        CardNames.Add("Greymon_P_183");
                     }
 
                     return CardNames;

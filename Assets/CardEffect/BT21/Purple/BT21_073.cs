@@ -120,7 +120,7 @@ namespace DCGO.CardEffects.BT21
             {
                 return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && 
                     (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanLinkCondition) ||
-                    card.PermanentOfThisCard().DigivolutionCards.Exists(CanLinkCondition));
+                    card.PermanentOfThisCard().DigivolutionCards.Any(CanLinkCondition));
             }
             #endregion
 
@@ -145,132 +145,7 @@ namespace DCGO.CardEffects.BT21
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanLinkCondition);
-                    bool canSelectSources = card.PermanentOfThisCard().DigivolutionCards.Exists(CanLinkCondition);
-
-                    if(canSelectSources || canSelectTrash)
-                    {
-                        if(canSelectTrash && canSelectSources)
-                        {
-                            List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>
-                            {
-                                new(message: "From sources", value: true, spriteIndex: 0),
-                                new(message: "From trash", value: false, spriteIndex: 1),
-                            };
-
-                            string selectPlayerMessage = "From which area do you select a card?";
-                            string notSelectPlayerMessage = "The opponent is choosing from which area to select a card.";
-
-                            GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
-                        }
-
-                        else
-                        {
-                            GManager.instance.userSelectionManager.SetBool(canSelectSources);
-                        }
-
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-
-                        bool fromSources = GManager.instance.userSelectionManager.SelectedBoolValue;
-
-
-                        List<CardSource> selectedCards = new List<CardSource>();
-
-                        IEnumerator SelectCardCoroutine(CardSource cardSource)
-                        {
-                            selectedCards.Add(cardSource);
-
-                            yield return null;
-                        }
-
-                        if (fromSources)
-                        {
-                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-                            selectCardEffect.SetUp(
-                                canTargetCondition: CanLinkCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                canNoSelect: () => true,
-                                selectCardCoroutine: SelectCardCoroutine,
-                                afterSelectCardCoroutine: null,
-                                message: "Select 1 card to link.",
-                                maxCount: 1,
-                                canEndNotMax: false,
-                                isShowOpponent: true,
-                                mode: SelectCardEffect.Mode.Custom,
-                                root: SelectCardEffect.Root.Trash,
-                                customRootCardList: null,
-                                canLookReverseCard: true,
-                                selectPlayer: card.Owner,
-                                cardEffect: activateClass);
-
-
-                            selectCardEffect.SetUpCustomMessage("Select 1 digivolution card to link.", "The opponent is selecting 1 digivolution card to link.");
-                            selectCardEffect.SetUpCustomMessage_ShowCard("Linked Card");
-
-                            yield return StartCoroutine(selectCardEffect.Activate());
-                        }
-
-                        else
-                        {
-                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                            selectCardEffect.SetUp(
-                                canTargetCondition: CanLinkCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                canNoSelect: () => true,
-                                selectCardCoroutine: SelectCardCoroutine,
-                                afterSelectCardCoroutine: null,
-                                message: "Select 1 digivolution card to link.",
-                                maxCount: 1,
-                                canEndNotMax: false,
-                                isShowOpponent: true,
-                                mode: SelectCardEffect.Mode.Custom,
-                                root: SelectCardEffect.Root.Custom,
-                                customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
-                                canLookReverseCard: true,
-                                selectPlayer: card.Owner,
-                                cardEffect: activateClass);
-
-                            selectCardEffect.SetUpCustomMessage("Select 1 digivolution card to link.", "The opponent is selecting 1 digivolution card to link.");
-                            selectCardEffect.SetUpCustomMessage_ShowCard("Linked Card");
-
-                            yield return StartCoroutine(selectCardEffect.Activate());
-                        }
-
-                        if (selectedCards.Count >= 1)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddLinkCard(selectedCards[0], activateClass));
-                        }
-                    }
-                
-                    
-                }
-            }
-            #endregion
-
-            #region When Digivolving
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Link from trash or sources", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, true, EffectDescription());
-                cardEffects.Add(activateClass);
-
-                string EffectDescription()
-                {
-                    return "[When Digivolving] You may link 1 level 4 or lower Digimon card from your trash or this Digimon's digivolution cards to this Digimon without paying the cost.";
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanLinkCondition);
-                    bool canSelectSources = card.PermanentOfThisCard().DigivolutionCards.Exists(CanLinkCondition);
+                    bool canSelectSources = card.PermanentOfThisCard().DigivolutionCards.Any(CanLinkCondition);
 
                     if (canSelectSources || canSelectTrash)
                     {
@@ -280,7 +155,7 @@ namespace DCGO.CardEffects.BT21
                             {
                                 new(message: "From trash", value: true, spriteIndex: 0),
                                 new(message: "From sources", value: false, spriteIndex: 1),
-                                
+
                             };
 
                             string selectPlayerMessage = "From which area do you select a card?";
@@ -291,7 +166,7 @@ namespace DCGO.CardEffects.BT21
 
                         else
                         {
-                            GManager.instance.userSelectionManager.SetBool(canSelectSources);
+                            GManager.instance.userSelectionManager.SetBool(canSelectTrash);
                         }
 
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
@@ -369,8 +244,130 @@ namespace DCGO.CardEffects.BT21
                             yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddLinkCard(selectedCards[0], activateClass));
                         }
                     }
+                }
+            }
+            #endregion
+
+            #region When Digivolving
+            if (timing == EffectTiming.OnEnterFieldAnyone)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Link from trash or sources", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, true, EffectDescription());
+                cardEffects.Add(activateClass);
+
+                string EffectDescription()
+                {
+                    return "[When Digivolving] You may link 1 level 4 or lower Digimon card from your trash or this Digimon's digivolution cards to this Digimon without paying the cost.";
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanLinkCondition);
+                    bool canSelectSources = card.PermanentOfThisCard().DigivolutionCards.Any(CanLinkCondition);
+
+                    if (canSelectSources || canSelectTrash)
+                    {
+                        if (canSelectTrash && canSelectSources)
+                        {
+                            List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>
+                            {
+                                new(message: "From trash", value: true, spriteIndex: 0),
+                                new(message: "From sources", value: false, spriteIndex: 1),
+                                
+                            };
+
+                            string selectPlayerMessage = "From which area do you select a card?";
+                            string notSelectPlayerMessage = "The opponent is choosing from which area to select a card.";
+
+                            GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+                        }
+
+                        else
+                        {
+                            GManager.instance.userSelectionManager.SetBool(canSelectTrash);
+                        }
+
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                        bool fromTrash = GManager.instance.userSelectionManager.SelectedBoolValue;
 
 
+                        List<CardSource> selectedCards = new List<CardSource>();
+
+                        IEnumerator SelectCardCoroutine(CardSource cardSource)
+                        {
+                            selectedCards.Add(cardSource);
+
+                            yield return null;
+                        }
+
+                        if (fromTrash)
+                        {
+
+                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+                            selectCardEffect.SetUp(
+                                canTargetCondition: CanLinkCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                canNoSelect: () => true,
+                                selectCardCoroutine: SelectCardCoroutine,
+                                afterSelectCardCoroutine: null,
+                                message: "Select 1 card to link.",
+                                maxCount: 1,
+                                canEndNotMax: false,
+                                isShowOpponent: true,
+                                mode: SelectCardEffect.Mode.Custom,
+                                root: SelectCardEffect.Root.Trash,
+                                customRootCardList: null,
+                                canLookReverseCard: true,
+                                selectPlayer: card.Owner,
+                                cardEffect: activateClass);
+
+                            selectCardEffect.SetUpCustomMessage("Select 1 digivolution card to link.", "The opponent is selecting 1 digivolution card to link.");
+                            selectCardEffect.SetUpCustomMessage_ShowCard("Linked Card");
+
+                            yield return StartCoroutine(selectCardEffect.Activate());
+                        }
+
+                        else
+                        {
+                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                            selectCardEffect.SetUp(
+                                canTargetCondition: CanLinkCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                canNoSelect: () => true,
+                                selectCardCoroutine: SelectCardCoroutine,
+                                afterSelectCardCoroutine: null,
+                                message: "Select 1 digivolution card to link.",
+                                maxCount: 1,
+                                canEndNotMax: false,
+                                isShowOpponent: true,
+                                mode: SelectCardEffect.Mode.Custom,
+                                root: SelectCardEffect.Root.Custom,
+                                customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
+                                canLookReverseCard: true,
+                                selectPlayer: card.Owner,
+                                cardEffect: activateClass);
+
+                            selectCardEffect.SetUpCustomMessage("Select 1 digivolution card to link.", "The opponent is selecting 1 digivolution card to link.");
+                            selectCardEffect.SetUpCustomMessage_ShowCard("Linked Card");
+
+                            yield return StartCoroutine(selectCardEffect.Activate());
+                        }
+
+                        if (selectedCards.Count >= 1)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddLinkCard(selectedCards[0], activateClass));
+                        }
+                    }
                 }
             }
             #endregion

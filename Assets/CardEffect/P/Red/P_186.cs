@@ -75,21 +75,19 @@ namespace DCGO.CardEffects.P
 
                 ChangeCostClass changeCostClass = new ChangeCostClass();
                 changeCostClass.SetUpICardEffect($"Play Cost -", CanUseCondition, card);
-                changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
+                changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => true, isChangePayingCost: () => true);
+                changeCostClass.SetNotShowUI(true);
                 cardEffects.Add(changeCostClass);
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     if (card.Owner.HandCards.Contains(card))
                     {
-                        if (count() >= 1)
+                        if (CardEffectCommons.HasMatchConditionPermanent(PermanentCondition))
                         {
-                            if (CardEffectCommons.HasMatchConditionPermanent(PermanentsCondition))
-                            {
-                                changeCostClass.SetEffectName($"Play Cost -{count()}");
+                            changeCostClass.SetEffectName($"Play Cost -{count()}");
 
-                                return true;
-                            }
+                            return true;
                         }
                     }
 
@@ -102,9 +100,12 @@ namespace DCGO.CardEffects.P
                     {
                         if (RootCondition(root))
                         {
-                            if (targetPermanents.Select(x => PermanentsCondition(x)) != null)
+                            if (PermanentsCondition(targetPermanents))
                             {
-                                Cost -= count();
+                                int reducedCount = count();
+
+                                if (reducedCount >= 1)
+                                    Cost -= reducedCount;
                             }
                         }
                     }
@@ -112,11 +113,24 @@ namespace DCGO.CardEffects.P
                     return Cost;
                 }
 
-                bool PermanentsCondition(Permanent Permanent)
+                bool PermanentCondition(Permanent Permanent)
                 {
                     if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(Permanent))
                     {
                         if (Permanent.DP >= 13000)
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                bool PermanentsCondition(List<Permanent> targetPermanents)
+                {
+                    if (targetPermanents != null)
+                    {
+                        if (targetPermanents.Count(PermanentCondition) > 0)
                         {
                             return true;
                         }
@@ -132,12 +146,7 @@ namespace DCGO.CardEffects.P
 
                 bool RootCondition(SelectCardEffect.Root root)
                 {
-                    if (root == SelectCardEffect.Root.Hand)
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return root == SelectCardEffect.Root.Hand;
                 }
 
                 bool isUpDown()

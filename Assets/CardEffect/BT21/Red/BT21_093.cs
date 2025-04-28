@@ -380,6 +380,7 @@ namespace DCGO.CardEffects.BT21
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete 1 of your opponent's Digimon with the highest DP", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, hashtable => SharedActivateCoroutine(hashtable, activateClass), -1, false, EffectDiscription());
+                activateClass.SetIsSecurityEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

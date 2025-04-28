@@ -76,7 +76,8 @@ namespace DCGO.CardEffects.BT21
                     => CardEffectCommons.IsExistOnBattleArea(card);
 
                 bool CanSelectCard(CardSource source)
-                    => source.BasePlayCostFromEntity <= AdjustedPlayCostMax(source)
+                    => source.HasPlayCost &&
+                    source.BasePlayCostFromEntity <= AdjustedPlayCostMax(source)
                     && (source.HasAdventureTraits || source.HasHeroTraits);
 
                 int AdjustedPlayCostMax(CardSource cardSource)
@@ -121,9 +122,11 @@ namespace DCGO.CardEffects.BT21
                         ));
                     }
 
-                    var cardSources = new List<CardSource>() { card };
-                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources));
-                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(cardSources, "Deck Bottom Cards", true, true));
+                    var selectedPermanents = new List<Permanent>() { card.PermanentOfThisCard() };
+
+                    DeckBottomBounceClass putLibraryBottomPermanent = new DeckBottomBounceClass(selectedPermanents, hashtable);
+                    putLibraryBottomPermanent.SetNotShowCards();
+                    yield return ContinuousController.instance.StartCoroutine(putLibraryBottomPermanent.DeckBounce());
                 }
             }
 
