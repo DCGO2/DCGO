@@ -75,7 +75,8 @@ namespace DCGO.CardEffects.EX3
 
                         bool CardEffectCondition(ICardEffect cardEffect)
                         {
-                            return cardEffect.EffectSourceCard.Owner != card.Owner;
+                            return cardEffect != null &&
+                                   cardEffect.EffectSourceCard.Owner == card.Owner.Enemy;
                         }
 
                         yield return null;

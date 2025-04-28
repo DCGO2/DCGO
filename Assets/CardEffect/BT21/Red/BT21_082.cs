@@ -65,18 +65,11 @@ namespace DCGO.CardEffects.BT21
 
                 int costReduction()
                 {
-                    List<String> cards = new List<String>();
+                    List<CardSource> cards = card.Owner.GetBattleAreaPermanents()
+                        .Filter<Permanent>(permanent => permanent.TopCard.CardColors.Contains(CardColor.Red) && permanent.IsTamer)
+                        .Map(x => x.TopCard);
 
-                    foreach (Permanent selection in card.Owner.GetBattleAreaPermanents().Filter<Permanent>(permanent=>permanent.TopCard.CardColors.Contains(CardColor.Red) && permanent.IsTamer))
-                    {
-                        foreach (string name in selection.TopCard.CardNames)
-                        {
-                            if(!cards.Contains(name.Replace(" ","")))
-                                cards.Add(name.Replace(" ", ""));
-                        }
-                    }
-
-                    return cards.Count;
+                    return Combinations.GetUniqueNameCardCount(cards);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

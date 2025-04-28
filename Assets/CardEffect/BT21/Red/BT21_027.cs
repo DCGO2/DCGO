@@ -86,7 +86,7 @@ namespace DCGO.CardEffects.BT21
                                 {
                                     if (cardSource.IsDigimon)
                                     {
-                                        if (cardSource.EqualsCardName("OmniShoutmon"))
+                                        if (cardSource.EqualsCardNameDigiXros("OmniShoutmon"))
                                         {
                                             return true;
                                         }
@@ -107,7 +107,7 @@ namespace DCGO.CardEffects.BT21
                                 {
                                     if (cardSource.IsDigimon)
                                     {
-                                        if (cardSource.EqualsCardName("ZeigGreymon"))
+                                        if (cardSource.EqualsCardNameDigiXros("ZeigGreymon"))
                                         {
                                             return true;
                                         }

@@ -464,6 +464,10 @@ public class AttackProcess : MonoBehaviourPunCallbacks
             yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(effectHashtable, EffectTiming.OnEndAttack));
         }
 
+        // activate cutin effects
+        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.RuleProcess());
+        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.TriggeredSkillProcess(true, null));
+
         #region reset effects which continues until the end of attack
         foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
         {

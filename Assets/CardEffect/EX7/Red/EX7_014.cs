@@ -207,12 +207,13 @@ namespace DCGO.CardEffects.EX7
                          return false;
                      }
 
-                     bool CardEffectCondition(ICardEffect cardEffect)
-                     {
-                         return true;
-                     }
+                    bool CardEffectCondition(ICardEffect cardEffect)
+                    {
+                        return cardEffect != null &&
+                               cardEffect.EffectSourceCard.Owner == card.Owner.Enemy;
+                    }
 
-                     yield return null;
+                    yield return null;
                     
                 }
             }

@@ -39,7 +39,7 @@ namespace DCGO.CardEffects.BT21
             if(timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Delete 3k or mill 2", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Delete 4k or mill 2", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
@@ -114,7 +114,7 @@ namespace DCGO.CardEffects.BT21
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Delete 3k or mill 2", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Delete 4k or mill 2", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 

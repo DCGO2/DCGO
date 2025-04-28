@@ -150,7 +150,8 @@ public partial class CardEffectCommons
         bool isPlayOption = false,
         int fixedCost = -1) =>
     cardSource != null &&
-    (isPlayOption || !cardSource.IsOption)
+    (isPlayOption || !cardSource.IsOption) &&
+    !GManager.instance.GetComponent<SelectDigiXrosClass>().selectedDigicrossCards.Contains(cardSource)
     && cardSource.Owner.fieldCardFrames.Some((frame) =>
     frame.IsEmptyFrame()
     && cardSource.CanPlayCardTargetFrame(frame, payCost, cardEffect, root, isBreedingArea: isBreedingArea, fixedCost:fixedCost));

@@ -49,6 +49,52 @@ public static class Combinations
         }
     }
 
+    //GetUniqueNameCardCount
+    public static int GetUniqueNameCardCount(List<CardSource> cardSources)
+    {
+        List<string> cardNames = new List<string>();
+        List<CardSource> sourceList = new List<CardSource>();
+
+        foreach (CardSource cardSource in cardSources)
+        {
+            foreach (string name in cardSource.CardNames)
+            {
+                if (!cardNames.Contains(name))
+                {
+                    cardNames.Add(name);
+                    sourceList.Add(cardSource);
+
+                    break;
+                }
+            }
+        }
+
+        return sourceList.Count;
+    }
+
+    //GetUniqueColorCardCount
+    public static int GetUniqueColorCardCount(List<CardSource> cardSources)
+    {
+        List<CardColor> cardColors = new List<CardColor>();
+        List<CardSource> sourceList = new List<CardSource>();
+
+        foreach (CardSource cardSource in cardSources)
+        {
+            foreach(CardColor cardColor in cardSource.CardColors)
+            {
+                if (!cardColors.Contains(cardColor))
+                {
+                    cardColors.Add(cardColor);
+                    sourceList.Add(cardSource);
+                    
+                    break;
+                }
+            }
+        }
+
+        return sourceList.Count;
+    }
+
     //GetDifferenetColorCardCount
     public static int GetDifferenetColorCardCount(List<CardSource> cardSources, bool allowSkip = false)
     {
