@@ -151,27 +151,27 @@ namespace DCGO.CardEffects.BT12
 
                         if (canEvo)
                         {
-                            List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
+                            List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>()
                             {
-                                new SelectionElement<bool>(message: $"Play From Sources", value : true, spriteIndex: 0),
-                                new SelectionElement<bool>(message: $"Digivolve to [Quartzmon]", value : false, spriteIndex: 1),
+                                new SelectionElement<int>(message: $"Play From Sources", value : 1, spriteIndex: 0),
+                                new SelectionElement<int>(message: $"Digivolve to [Quartzmon]", value : 0, spriteIndex: 1),
                             };
 
                             string selectPlayerMessage = "Which effect would you like to do?";
                             string notSelectPlayerMessage = "The opponent is choosing effect to do.";
 
-                            GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+                            GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
                         }
                         else
                         {
-                            GManager.instance.userSelectionManager.SetBool(canEvo);
+                            GManager.instance.userSelectionManager.SetInt(1);
                         }
 
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
                         
-                        if (GManager.instance.userSelectionManager.SelectedBoolValue)
+                        if (GManager.instance.userSelectionManager.SelectedIntValue == 0)
                         {
-                            #region 進化コスト
+                            #region 審educe Cost
 
                             ChangeCostClass changeCostClass = new ChangeCostClass();
                             changeCostClass.SetUpICardEffect("Digivolution Cost -3", CanUseCondition1, card);
@@ -291,10 +291,10 @@ namespace DCGO.CardEffects.BT12
                                 if (canSelectHand && canSelectTamer)
                                 {
                                     List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
-                        {
-                            new SelectionElement<bool>(message: $"From hand", value : true, spriteIndex: 0),
-                            new SelectionElement<bool>(message: $"Under Tamer", value : false, spriteIndex: 1),
-                        };
+                                    {
+                                        new SelectionElement<bool>(message: $"From hand", value : true, spriteIndex: 0),
+                                        new SelectionElement<bool>(message: $"Under Tamer", value : false, spriteIndex: 1),
+                                    };
 
                                     string selectPlayerMessage = "From which area do you select 1 [Quartzmon]?";
                                     string notSelectPlayerMessage = "The opponent is selecting from which area to select 1 [Quartzmon].";
@@ -447,7 +447,7 @@ namespace DCGO.CardEffects.BT12
                                 }
                             }
 
-                            #region 進化コスト-3解除
+                            #region End Cost Reduction
 
                             card.Owner.UntilCalculateFixedCostEffect.Remove(getCardEffect);
 
