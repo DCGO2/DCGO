@@ -288,6 +288,8 @@ namespace DCGO.CardEffects.P
                                     {
                                         Permanent selectedPermanent = null;
 
+                                        int _maxCount = 1;
+
                                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                                         selectPermanentEffect.SetUp(
@@ -318,7 +320,7 @@ namespace DCGO.CardEffects.P
                                         {
                                             if (selectedPermanent.DigivolutionCards.Count(CanSelectDigivolutionCardsCondition) >= 1)
                                             {
-                                                int _maxCount = Math.Min(
+                                                _maxCount = Math.Min(
                                                     maxSelectCardCount(),
                                                     selectedPermanent.DigivolutionCards.Count(CanSelectDigivolutionCardsCondition));
 
@@ -334,7 +336,7 @@ namespace DCGO.CardEffects.P
                                                             selectCardCoroutine: SelectCardCoroutine,
                                                             afterSelectCardCoroutine: null,
                                                             message: "Select digivolution cards.",
-                                                            maxCount: _maxCount,
+                                                            maxCount: 1,
                                                             canEndNotMax: true,
                                                             isShowOpponent: true,
                                                             mode: SelectCardEffect.Mode.Custom,
@@ -359,9 +361,6 @@ namespace DCGO.CardEffects.P
                                     }
                                 }
                             }
-
-                            if (maxSelectCardCount() <= 0)
-                                break;
                         }
 
                         if (digivolutionCards.Count >= 1)
