@@ -176,7 +176,7 @@ namespace DCGO.CardEffects.EX7
                 {
                     CanNotMoveClass canNotMoveClass = new CanNotMoveClass();
                     canNotMoveClass.SetUpICardEffect("Can't move Digimon with 6000 DP or less", CanUseCondition1, card);
-                    canNotMoveClass.SetUpCanNotMoveClass(cardCondition: CardCondition, cardEffectCondition: CardEffectCondition);
+                    canNotMoveClass.SetUpCanNotMoveClass(cardCondition: CardCondition, cardEffectCondition: MoveCardEffectCondition);
                     card.Owner.Enemy.UntilOwnerTurnEndEffects.Add((_timing) => canNotMoveClass);
 
                     CanNotPutFieldClass canNotPutFieldClass = new CanNotPutFieldClass();
@@ -203,6 +203,11 @@ namespace DCGO.CardEffects.EX7
 
                         return false;
                      }
+
+                    bool MoveCardEffectCondition(ICardEffect cardEffect)
+                    {
+                        return true;
+                    }
 
                     bool CardEffectCondition(ICardEffect cardEffect)
                     {

@@ -214,8 +214,8 @@ namespace DCGO.CardEffects.BT21
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
                             selectedPermanent = permanent;
-
-                            if(selectedPermanent.CanAttack(activateClass))
+                            UnityEngine.Debug.Log($"SELECT ATTACK: {selectedPermanent.CanAttack(activateClass)}, {GManager.instance.attackProcess.IsAttacking}");
+                            if (selectedPermanent.CanAttack(activateClass))
                             {
                                 SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
 

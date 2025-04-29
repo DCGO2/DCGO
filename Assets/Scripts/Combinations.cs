@@ -10,15 +10,26 @@ public static class Combinations
 {
     public static void Sample()
     {
-        List<string[]> sourceList = new List<string[]>(3);
-        sourceList.Add(new string[] { "black", "green" });
-        sourceList.Add(new string[] { "red", "yellow"});
+        List<string[]> sourceList = new List<string[]>(4);
+        sourceList.Add(new string[] { "red", "yellow" });
+        sourceList.Add(new string[] { "purple", "red"});
+        sourceList.Add(new string[] { "purple", "red" });
+        sourceList.Add(new string[] { "purple", "red" });
         List<string[]> resultList = GetCombinations(sourceList);
 
-        foreach (string[] item in resultList)
-        {
-            Debug.Log(string.Join(",", item));
-        }
+        HighestValue(resultList);
+    }
+
+    public static void NameSample()
+    {
+        List<string[]> sourceList = new List<string[]>(4);
+        sourceList.Add(new string[] { "Takuya Kanbara & Koji Minamoto", "Takuya Kanbara", "Koji Minamoto" });
+        sourceList.Add(new string[] { "Takuya Kanbara"});
+        sourceList.Add(new string[] { "Takuya Kanbara & Koji Minamoto", "Takuya Kanbara", "Koji Minamoto" });
+        sourceList.Add(new string[] { "Koji Minamoto" });
+        List<string[]> resultList = GetCombinations(sourceList);
+
+        HighestValue(resultList);
     }
     public static List<T[]> GetCombinations<T>(List<T[]> sourceList)
     {
@@ -50,59 +61,46 @@ public static class Combinations
         }
     }
 
-    struct UniqueCardValue
+    static int HighestValue(List<string[]> resultList)
     {
-        public string value;
-        public List<CardSource> sources;
+        int highestCount = 0;
+
+        foreach (string[] item in resultList)
+        {
+            Debug.Log(string.Join(",", item));
+
+            int count = item.Distinct().ToArray().Length;
+
+            if (count > highestCount)
+            {
+                highestCount = count;
+                Debug.Log($"New Highest Count: {highestCount}");
+            }
+        }
+
+        return highestCount;
     }
 
     //GetUniqueNameCardCount
     public static int GetUniqueNameCardCount(List<CardSource> cardSources)
     {
-        List<UniqueCardValue> cardList = new List<UniqueCardValue>();
+        List<string[]> cardNames = new List<string[]>();
 
         foreach (CardSource cardSource in cardSources)
-        {
-            foreach (string name in cardSource.CardNames)
-            {
-                if (!cardList.Any(x => x.value == name))
-                {
-                    cardList.Add(
-                        new UniqueCardValue
-                        {
-                            value = name,
-                            sources = new List<CardSource> { cardSource }
-                        }
-                    );
-                }
-            }
-        }
+            cardNames.Add(cardSource.CardNames.ToArray());
 
-        return cardList.Count;
+        return HighestValue(GetCombinations(cardNames));
     }
 
     //GetUniqueColorCardCount
     public static int GetUniqueColorCardCount(List<CardSource> cardSources)
     {
-        List<UniqueCardValue> cardList = new List<UniqueCardValue>();
+        List<string[]> cardColors = new List<string[]>();
 
         foreach (CardSource cardSource in cardSources)
-        {
-            foreach(CardColor cardColor in cardSource.CardColors)
-            {
-                if (!cardList.Any(x => x.value == cardColor.ToString()))
-                {
-                    cardList.Add(
-                        new UniqueCardValue {
-                            value = cardColor.ToString(),
-                            sources = new List<CardSource> { cardSource }
-                        }
-                    );
-                }
-            }
-        }
+            cardColors.Add(cardSource.CardColors.Map(x => x.ToString()).ToArray());
 
-        return cardList.Count;
+        return HighestValue(GetCombinations(cardColors));
     }
 
     //GetDifferenetColorCardCount
