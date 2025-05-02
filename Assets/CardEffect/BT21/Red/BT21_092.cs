@@ -176,6 +176,7 @@ namespace DCGO.CardEffects.BT21
                         if (selectedCard)
                         {
                             var cost = selectedCard.BasePlayCostFromEntity - cardsMoved;
+                            if (cost < 0) cost = 0;
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
                                 cardSources: new List<CardSource>() { selectedCard },
                                 activateClass: activateClass,

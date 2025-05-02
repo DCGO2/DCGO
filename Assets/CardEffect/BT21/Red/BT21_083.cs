@@ -158,13 +158,11 @@ namespace DCGO.CardEffects.BT21
                            (permanent.TopCard.EqualsTraits("Xros Heart") || permanent.TopCard.EqualsTraits("Hero"));
                 }
 
-                
-
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(new List<Permanent>() { card.PermanentOfThisCard() }, CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
 
-                    foreach(Hashtable hash in CardEffectCommons.GetHashtablesFromHashtable(hashtable))
+                    foreach (Hashtable hash in CardEffectCommons.GetHashtablesFromHashtable(hashtable))
                     {
                         playedPermanents.Add(CardEffectCommons.GetPermanentFromHashtable(hash));
                     }
@@ -214,24 +212,10 @@ namespace DCGO.CardEffects.BT21
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
                             selectedPermanent = permanent;
-                            UnityEngine.Debug.Log($"SELECT ATTACK: {selectedPermanent.CanAttack(activateClass)}, {GManager.instance.attackProcess.IsAttacking}");
-                            if (selectedPermanent.CanAttack(activateClass))
-                            {
-                                SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
-
-                                selectAttackEffect.SetUp(
-                                    attacker: selectedPermanent,
-                                    canAttackPlayerCondition: () => true,
-                                    defenderCondition: (permanent) => true,
-                                    cardEffect: activateClass);
-
-                                selectAttackEffect.SetCanNotSelectNotAttack();
-
-                                yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
-                            }
+                            yield return null;
                         }
 
-                        /*if (selectedPermanent != null)
+                        if (selectedPermanent != null)
                         {
                             if (selectedPermanent.CanAttack(activateClass))
                             {
@@ -240,14 +224,14 @@ namespace DCGO.CardEffects.BT21
                                 selectAttackEffect.SetUp(
                                     attacker: selectedPermanent,
                                     canAttackPlayerCondition: () => true,
-                                    defenderCondition: (permanent) => true,
+                                    defenderCondition: _ => true,
                                     cardEffect: activateClass);
 
                                 selectAttackEffect.SetCanNotSelectNotAttack();
 
                                 yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
                             }
-                        }*/
+                        }
                     }
                 }
             }
