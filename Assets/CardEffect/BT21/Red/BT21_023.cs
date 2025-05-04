@@ -14,6 +14,7 @@ namespace DCGO.CardEffects.BT21
             #region Static Effects
 
             #region Alternative Digivolution Condition - Sup.
+
             if (timing == EffectTiming.None)
             {
                 bool PermanentCondition(Permanent targetPermanent)
@@ -23,6 +24,7 @@ namespace DCGO.CardEffects.BT21
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 4, ignoreDigivolutionRequirement: false, card: card, condition: null));
             }
+
             #endregion
 
             #region Link Condition
@@ -127,6 +129,7 @@ namespace DCGO.CardEffects.BT21
             #endregion
 
             #region Link
+
             if (timing == EffectTiming.OnDeclaration)
             {
                 /// <summary>
@@ -137,6 +140,7 @@ namespace DCGO.CardEffects.BT21
                 /// <author>Mike Bunch</author>
                 cardEffects.Add(CardEffectFactory.LinkEffect(card));
             }
+
             #endregion
 
             #endregion
@@ -184,7 +188,7 @@ namespace DCGO.CardEffects.BT21
                     }
 
                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-                    
+
                     bool fromHand = GManager.instance.userSelectionManager.SelectedBoolValue;
                     CardSource selectedCard = null;
                     UnityEngine.Debug.Log($"GLOBEMON: ACTIVATION - {fromHand}");
@@ -414,15 +418,16 @@ namespace DCGO.CardEffects.BT21
                     {
                         if (CardEffectCommons.IsOwnerTurn(card))
                         {
-                            if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermanentCondition))
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
                     return false;
                 }
             }
+
+            #endregion
+
+            #region ESS - When Linked
 
             if (timing == EffectTiming.WhenLinked)
             {
@@ -463,39 +468,6 @@ namespace DCGO.CardEffects.BT21
             }
 
             #endregion
-
-            #region ESS - When Linked
-
-            if (timing == EffectTiming.None)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
-                cardEffects.Add(activateClass);
-
-                string EffectDiscription()
-                {
-                    return "";
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return true;
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    return true;
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    yield return null;
-                }
-            }
-
-            #endregion
-
 
             return cardEffects;
         }
