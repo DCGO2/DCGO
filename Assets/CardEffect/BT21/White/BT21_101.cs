@@ -16,6 +16,7 @@ namespace DCGO.CardEffects.BT21
             #region Static Effects
 
             #region Alternative Digivolution Condition - Ult.
+
             if (timing == EffectTiming.None)
             {
                 bool PermanentCondition(Permanent targetPermanent)
@@ -25,6 +26,7 @@ namespace DCGO.CardEffects.BT21
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 5, ignoreDigivolutionRequirement: false, card: card, condition: null));
             }
+
             #endregion
 
             #region App Fusion (Globemon & Charismon)
@@ -43,7 +45,7 @@ namespace DCGO.CardEffects.BT21
                     {
                         if (source != null)
                         {
-                            if(source != card)
+                            if (source != card)
                             {
                                 if (permanent.TopCard.EqualsCardName("Globemon"))
                                 {
@@ -60,7 +62,7 @@ namespace DCGO.CardEffects.BT21
                                     }
                                 }
                             }
-                            
+
                             return false;
                         }
 
@@ -137,8 +139,7 @@ namespace DCGO.CardEffects.BT21
                     => CardEffectCommons.IsExistOnBattleAreaDigimon(card)
                     && CardEffectCommons.IsOwnerTurn(card)
                     && CardEffectCommons.CanTriggerWhenLinked(hashtable, PermanentCondition, cardSource => true)
-                    && card.PermanentOfThisCard().IsSuspended
-                    && CardEffectCommons.CanUnsuspend(card.PermanentOfThisCard());
+                    && card.PermanentOfThisCard().IsSuspended;
 
                 bool PermanentCondition(Permanent permanent)
                     => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
@@ -150,10 +151,10 @@ namespace DCGO.CardEffects.BT21
                 {
                     Permanent thisPermanent = card.PermanentOfThisCard();
 
-                    if(thisPermanent.CanUnsuspend && thisPermanent.IsSuspended)
+                    if (CardEffectCommons.CanUnsuspend(thisPermanent) && thisPermanent.IsSuspended)
                     {
                         yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(
-                            new List<Permanent>() { card.PermanentOfThisCard() }, 
+                            new List<Permanent>() { card.PermanentOfThisCard() },
                             activateClass).Unsuspend());
 
                         yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
@@ -263,9 +264,6 @@ namespace DCGO.CardEffects.BT21
                         yield return StartCoroutine(selectHandEffect.Activate());
                     }
                 }
-                    
-
-                
 
                 IEnumerator SelectCardCoroutine(CardSource cardSource)
                 {
@@ -273,7 +271,7 @@ namespace DCGO.CardEffects.BT21
                     yield return null;
                 }
 
-                if(selectedCard != null)
+                if (selectedCard != null)
                 {
                     bool CanSelectDigimon(Permanent permanent)
                     {
