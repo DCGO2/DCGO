@@ -154,11 +154,70 @@ namespace DCGO.CardEffects.EX2
                         {
                             foreach (Permanent permanent in card.Owner.GetBattleAreaPermanents().Filter(PermanentCondition))
                             {
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBlitz(
-                                    targetPermanent: permanent,
-                                    effectDuration: EffectDuration.UntilEachTurnEnd,
-                                    activateClass: activateClass,
-                                    isWhenDigivolving: true));
+
+                                ActivateClass activateClass1 = new ActivateClass();
+                                activateClass1.SetUpICardEffect("Blitz", CanUseCondition1, permanent.TopCard);
+                                activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDiscription1());
+                                activateClass1.SetEffectSourcePermanent(permanent);
+                                permanent.UntilEachTurnEndEffects.Add(GetCardEffect);
+
+                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(permanent));
+
+                                string EffectDiscription1()
+                                {
+                                    return "[When Digivolving] <Blitz> (This Digimon can attack when your opponent has 1 or more memory.)";
+                                }
+
+                                bool CanUseCondition1(Hashtable hashtable1)
+                                {
+                                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(permanent.TopCard))
+                                    {
+                                        if (CardEffectCommons.CanTriggerWhenDigivolving(hashtable1, card))
+                                        {
+                                            return true;
+                                        }
+                                    }
+
+                                    return false;
+                                }
+
+                                bool CanActivateCondition1(Hashtable hashtable1)
+                                {
+                                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(permanent.TopCard))
+                                    {
+                                        if (CardEffectCommons.CanActivateBlitz(permanent.TopCard, activateClass1))
+                                        {
+                                            return true;
+                                        }
+                                    }
+
+                                    return false;
+                                }
+
+                                IEnumerator ActivateCoroutine1(Hashtable _hashtable1)
+                                {
+                                    if (permanent.TopCard != null)
+                                    {
+                                        if (permanent.TopCard.Owner.GetBattleAreaDigimons().Contains(permanent))
+                                        {
+                                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBlitz(
+                                                targetPermanent: permanent,
+                                                effectDuration: EffectDuration.UntilEachTurnEnd,
+                                                activateClass: activateClass1,
+                                                isWhenDigivolving: true));
+                                        }
+                                    }
+                                }
+
+                                ICardEffect GetCardEffect(EffectTiming _timing)
+                                {
+                                    if (_timing == EffectTiming.OnEnterFieldAnyone)
+                                    {
+                                        return activateClass1;
+                                    }
+
+                                    return null;
+                                }
                             }
                         }
                     }

@@ -213,6 +213,7 @@ namespace DCGO.CardEffects.LM
                             new SelectionElement<int>(message: $"Digimon", value : 0, spriteIndex: 0),
                             new SelectionElement<int>(message: $"Tamer", value : 1, spriteIndex: 0),
                             new SelectionElement<int>(message: $"Option", value : 2, spriteIndex: 0),
+                            new SelectionElement<int>(message: $"Digi-Egg", value: 3, spriteIndex: 0)
                         };
 
                     string selectPlayerMessage = "Choose a card category you will use?";
@@ -269,9 +270,9 @@ namespace DCGO.CardEffects.LM
 
                         bool CardCondition(CardSource cardSource)
                             {
-                                if (cardSource == card)
+                                if (cardSource.PermanentOfThisCard() == selectedPermanent)
                                 {
-                                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                                    if (CardEffectCommons.IsExistOnBattleArea(cardSource))
                                     {
                                         return true;
                                     }
@@ -302,7 +303,13 @@ namespace DCGO.CardEffects.LM
                                             return true;
                                         }
                                         break;
-                                    }
+                                    case CardKind.DigiEgg:
+                                        if (cardEffect.IsDigimonEffect || cardEffect.EffectSourceCard.IsDigiEgg)
+                                        {
+                                            return true;
+                                        }
+                                        break;
+                                }
                                 return false;
                             }
                             yield return null;
