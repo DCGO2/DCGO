@@ -61,15 +61,13 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanTriggerOnAttack(hashtable, card))
-                        return CardEffectCommons.HasMatchConditionPermanent(IsOpponentsDigimon);
-
-                    return false;
+                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.HasMatchConditionPermanent(IsOpponentsDigimon);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
