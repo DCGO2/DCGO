@@ -149,7 +149,7 @@ namespace DCGO.CardEffects.EX4
                     {
                         if (CardEffectCommons.CanTriggerWhenPermanentWouldPlay(hashtable, CardCondition))
                         {
-                            if (CardEffectCommons.IsOnly1CadPlayed(hashtable))
+                            if (CardEffectCommons.IsOnly1CardPlayed(hashtable))
                             {
                                 return true;
                             }
