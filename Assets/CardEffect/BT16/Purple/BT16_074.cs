@@ -219,7 +219,7 @@ namespace DCGO.CardEffects.BT16
                                                     {
                                                         if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass1))
                                                         {
-                                                            return true;
+                                                            return selectedPermanent.IsDigimon;
                                                         }
                                                     }
                                                 }

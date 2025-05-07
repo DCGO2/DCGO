@@ -255,22 +255,19 @@ namespace DCGO.CardEffects.BT13
 
                     if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(selectedPermanent, card))
                     {
-                        if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
+                        if (selectedPermanent.CanAttack(activateClass))
                         {
-                            if (selectedPermanent.CanAttack(activateClass))
-                            {
-                                SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
+                            SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
 
-                                selectAttackEffect.SetUp(
-                                    attacker: selectedPermanent,
-                                    canAttackPlayerCondition: () => true,
-                                    defenderCondition: (permanent) => true,
-                                    cardEffect: activateClass);
+                            selectAttackEffect.SetUp(
+                                attacker: selectedPermanent,
+                                canAttackPlayerCondition: () => true,
+                                defenderCondition: (permanent) => true,
+                                cardEffect: activateClass);
 
-                                selectAttackEffect.SetCanNotSelectNotAttack();
+                            selectAttackEffect.SetCanNotSelectNotAttack();
 
-                                yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
-                            }
+                            yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
                         }
                     }
                 }

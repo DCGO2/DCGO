@@ -58,11 +58,14 @@ namespace DCGO.CardEffects.EX8
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(cardSource))
                     {
-                        if (cardSource == cardSource.PermanentOfThisCard().TopCard)
+                        if (cardSource.Owner == card.Owner)
                         {
-                            if (PermanentCondition(cardSource.PermanentOfThisCard()))
+                            if (cardSource == cardSource.PermanentOfThisCard().TopCard)
                             {
-                                return true;
+                                if (PermanentCondition(cardSource.PermanentOfThisCard()))
+                                {
+                                    return true;
+                                }
                             }
                         }
                     }
@@ -109,7 +112,7 @@ namespace DCGO.CardEffects.EX8
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (card.Owner.SecurityCards.Count > 1)
+                    if (card.Owner.SecurityCards.Count >= 1)
                     {
                         // Add your bottom security card to the hand
                         CardSource bottomCard = card.Owner.SecurityCards[^1];

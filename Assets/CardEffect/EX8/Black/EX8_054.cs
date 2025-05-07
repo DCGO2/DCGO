@@ -67,13 +67,19 @@ namespace DCGO.CardEffects.EX8
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        List<ICardEffect> candidateEffects = card.PermanentOfThisCard().EffectList(EffectTiming.OnEnterFieldAnyone)
-                            .Clone()
-                            .Filter(cardEffect => cardEffect != null && cardEffect is ActivateICardEffect && !cardEffect.IsSecurityEffect && cardEffect.IsWhenDigivolving)
-                            .Filter(cardEffect => cardEffect.EffectSourceCard.ContainsCardName("Justimon") && !cardEffect.EffectSourceCard.EqualsTraits("X Antibody"));
-
-                        if (candidateEffects.Count >= 1)
+                        foreach (CardSource source in card.PermanentOfThisCard().DigivolutionCards)
                         {
+                            if (!source.ContainsCardName("Justimon"))
+                                continue;
+
+                            List<ICardEffect> effects = source.EffectList(EffectTiming.OnEnterFieldAnyone)
+                            .Clone()
+                            .Filter(cardEffect => cardEffect != null && cardEffect is ActivateICardEffect && !cardEffect.IsSecurityEffect && cardEffect.IsWhenDigivolving);
+
+
+                            if (effects.Count == 0)
+                                continue;
+
                             return true;
                         }
                     }
@@ -85,10 +91,19 @@ namespace DCGO.CardEffects.EX8
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        List<ICardEffect> candidateEffects = card.PermanentOfThisCard().EffectList(EffectTiming.OnEnterFieldAnyone)
+                        List<ICardEffect> candidateEffects = new List<ICardEffect>();
+
+                        foreach (CardSource source in card.PermanentOfThisCard().DigivolutionCards)
+                        {
+                            if (!source.ContainsCardName("Justimon"))
+                                continue;
+
+                            List<ICardEffect> effects = source.EffectList_ForCard(EffectTiming.OnEnterFieldAnyone, card)
                             .Clone()
-                            .Filter(cardEffect => cardEffect != null && cardEffect is ActivateICardEffect && !cardEffect.IsSecurityEffect && cardEffect.IsWhenDigivolving)
-                            .Filter(cardEffect => cardEffect.EffectSourceCard.ContainsCardName("Justimon") && !cardEffect.EffectSourceCard.EqualsTraits("X Antibody"));
+                            .Filter(cardEffect => cardEffect != null && cardEffect is ActivateICardEffect && !cardEffect.IsSecurityEffect && cardEffect.IsWhenDigivolving);
+
+                            candidateEffects.AddRange(effects);
+                        }
 
                         if (candidateEffects.Count >= 1)
                         {
@@ -98,7 +113,6 @@ namespace DCGO.CardEffects.EX8
                             {
                                 selectedEffect = candidateEffects[0];
                             }
-
                             else
                             {
                                 List<SkillInfo> skillInfos = candidateEffects
@@ -149,7 +163,7 @@ namespace DCGO.CardEffects.EX8
                                 {
                                     if (selectedEffect.EffectSourceCard.PermanentOfThisCard() != null)
                                     {
-                                        Hashtable effectHashtable = CardEffectCommons.WhenDigivolvingCheckHashtableOfCard(selectedEffect.EffectSourceCard);
+                                        Hashtable effectHashtable = CardEffectCommons.WhenDigivolvingCheckHashtableOfCard(card);
 
                                         if (selectedEffect.CanUse(effectHashtable))
                                         {
@@ -158,7 +172,7 @@ namespace DCGO.CardEffects.EX8
                                     }
                                 }
                             }
-                        }
+                        }                        
                     }
                 }
             }

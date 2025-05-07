@@ -85,6 +85,8 @@ namespace DCGO.CardEffects.P
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    Permanent selectedPermanent = null;
+
                     if (CardEffectCommons.HasMatchConditionPermanent(HasTamer))
                     {
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(HasTamer));
@@ -111,35 +113,97 @@ namespace DCGO.CardEffects.P
 
                     IEnumerator TamerSelected(Permanent permanent)
                     {
-                        if(permanent != null)
+                        selectedPermanent = permanent;
+
+                        yield return null;
+                    }
+
+                    if(selectedPermanent != null)
+                    {
+                        tamerColors = selectedPermanent.TopCard.CardColors;
+                        bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, SelectDigimonCondition);
+                        bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, SelectDigimonCondition);
+
+                        if (canSelectHand || canSelectTrash)
                         {
-                            tamerColors = permanent.TopCard.CardColors;
-                            List<CardSource> cardOptions = card.Owner.HandCards.Concat(card.Owner.TrashCards).ToList().Filter(SelectDigimonCondition);
-                            
-                            if (cardOptions.Count > 0)
+                            if (canSelectHand && canSelectTrash)
+                            {
+                                List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>
+                            {
+                                new(message: "From hand", value: true, spriteIndex: 0),
+                                new(message: "From trash", value: false, spriteIndex: 1),
+                            };
+
+                                string selectPlayerMessage = "From which area do you play a card?";
+                                string notSelectPlayerMessage = "The opponent is choosing from which area to play a card.";
+
+                                GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements,
+                                    selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage,
+                                    notSelectPlayerMessage: notSelectPlayerMessage);
+                            }
+
+                            else
+                            {
+                                GManager.instance.userSelectionManager.SetBool(canSelectHand);
+                            }
+
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager
+                                .WaitForEndSelect());
+
+                            bool fromHand = GManager.instance.userSelectionManager.SelectedBoolValue;
+
+                            if (fromHand)
+                            {
+                                SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                                selectHandEffect.SetUp(
+                                    selectPlayer: card.Owner,
+                                    canTargetCondition: SelectDigimonCondition,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    maxCount: 1,
+                                    canNoSelect: true,
+                                    canEndNotMax: false,
+                                    isShowOpponent: true,
+                                    selectCardCoroutine: null,
+                                    afterSelectCardCoroutine: DigimonSelected,
+                                    mode: SelectHandEffect.Mode.Custom,
+                                    cardEffect: activateClass);
+
+                                selectHandEffect.SetUpCustomMessage("Select 1 Digimon to play.",
+                                    "The opponent is selecting 1 Digimon to play.");
+                                selectHandEffect.SetUpCustomMessage_ShowCard("Played card");
+
+                                yield return StartCoroutine(selectHandEffect.Activate());
+                            }
+                            else
                             {
                                 SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                                 selectCardEffect.SetUp(
-                                canTargetCondition: SelectDigimonCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                canNoSelect: () => true,
-                                selectCardCoroutine: null,
-                                afterSelectCardCoroutine: DigimonSelected,
-                                message: "Select Digimon to play.",
-                                maxCount: 1,
-                                canEndNotMax: false,
-                                isShowOpponent: false,
-                                mode: SelectCardEffect.Mode.Custom,
-                                root: SelectCardEffect.Root.Custom,
-                                customRootCardList: cardOptions,
-                                canLookReverseCard: true,
-                                selectPlayer: card.Owner,
-                                cardEffect: activateClass);
+                                    canTargetCondition: SelectDigimonCondition,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    canNoSelect: () => false,
+                                    selectCardCoroutine: null,
+                                    afterSelectCardCoroutine: DigimonSelected,
+                                    message: "Select Digimon to play.",
+                                    maxCount: 1,
+                                    canEndNotMax: true,
+                                    isShowOpponent: true,
+                                    mode: SelectCardEffect.Mode.Custom,
+                                    root: SelectCardEffect.Root.Trash,
+                                    customRootCardList: null,
+                                    canLookReverseCard: true,
+                                    selectPlayer: card.Owner,
+                                    cardEffect: activateClass);
 
-                                yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                                selectCardEffect.SetUpCustomMessage("Select 1 Digimon to play.",
+                                    "The opponent is selecting 1 Digimon to play.");
+
+                                yield return StartCoroutine(selectCardEffect.Activate());
                             }
+
                         }
                     }
 

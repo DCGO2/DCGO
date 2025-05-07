@@ -51,8 +51,7 @@ namespace DCGO.CardEffects.BT19
 
                 bool CanSelectYourSuspendedDigimon(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
-                           permanent.IsDigimon && permanent.IsSuspended;
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
                 }
 
                 bool CanSelectAquaDigimon(Permanent permanent)

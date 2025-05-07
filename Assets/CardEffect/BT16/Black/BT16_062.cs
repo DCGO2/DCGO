@@ -153,7 +153,7 @@ namespace DCGO.CardEffects.BT16
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolve] <De-Digivolve 1> 1 of your opponent's Digimon with as much or less DP as this Digimon. Then, delete 1 Digimon with a play cost of 3 or less.";
+                    return "[When Digivolving] <De-Digivolve 1> 1 of your opponent's Digimon with as much or less DP as this Digimon. Then, delete 1 Digimon with a play cost of 3 or less.";
                 }
 
                 bool CanSelectDedigivolvePermanentCondition(Permanent permanent)

@@ -91,9 +91,12 @@ namespace DCGO.CardEffects.LM
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (CardEffectCommons.CanTriggerOnPermanentAttackTargetSwitch(hashtable, permanent => true))
+                        if (CardEffectCommons.IsOpponentTurn(card))
                         {
-                            return true;
+                            if (CardEffectCommons.CanTriggerOnPermanentAttackTargetSwitch(hashtable, permanent => true))
+                            {
+                                return true;
+                            }
                         }
                     }
 

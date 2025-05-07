@@ -116,6 +116,15 @@ public interface IChangeSAttackEffect
 }
 #endregion
 
+#region "Change target permanent's Link Max" effect
+public interface IChangeLinkMaxEffect
+{
+    int GetLinkMax(int linkMax, Permanent permanent, int invertValue);
+    CalculateOrder isUpDown();
+    bool PermanentCondition(Permanent permanent);
+}
+#endregion
+
 #region "Invert target permanent's Security Attack" effect
 public interface IInvertSAttackEffect
 {
@@ -191,6 +200,13 @@ public interface IImmuneFromDPMinusEffect
 public interface IImmuneFromDeDigivolveEffect
 {
     bool ImmuneDeDigivolve(Permanent permanent);
+}
+#endregion
+
+#region "Target permanent cannot have its stack cards trashed" effect
+public interface IImmuneFromStackTrashingEffect
+{
+    bool ImmuneStackTrashing(Permanent permanent, ICardEffect effect);
 }
 #endregion
 
@@ -373,6 +389,20 @@ public interface IAddDigiXrosConditionEffect
 public interface IAddBurstDigivolutionConditionEffect
 {
     BurstDigivolutionCondition GetBurstDigivolutionCondition(CardSource cardSource);
+}
+#endregion
+
+#region "Target card gains Link conditions" effect
+public interface IAddLinkConditionEffect
+{
+    LinkCondition GetLinkCondition(CardSource cardSource);
+}
+#endregion
+
+#region "Target card gains App Fusion digivolution conditions" effect
+public interface IAddAppFusionConditionEffect
+{
+    AppFusionCondition GetAppFusionCondition(CardSource cardSource);
 }
 #endregion
 

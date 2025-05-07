@@ -11,6 +11,69 @@ namespace DCGO.CardEffects.EX8
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region DNA Digivolution - Names
+
+            if (timing == EffectTiming.None)
+            {
+                AddJogressConditionClass addJogressConditionClass = new AddJogressConditionClass();
+                addJogressConditionClass.SetUpICardEffect($"DNA Digivolution", CanUseCondition, card);
+                addJogressConditionClass.SetUpAddJogressConditionClass(getJogressCondition: GetJogress);
+                addJogressConditionClass.SetNotShowUI(true);
+                cardEffects.Add(addJogressConditionClass);
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return true;
+                }
+
+                JogressCondition GetJogress(CardSource cardSource)
+                {
+                    if (cardSource == card)
+                    {
+                        bool PermanentConditionPiedmon(Permanent permanent)
+                        {
+                            if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                            {
+                                if (permanent.TopCard.CardNames.Contains("Piedmon"))
+                                {
+                                    return true;
+                                }
+                            }
+
+                            return false;
+                        }
+
+                        bool PermanentConditionMyotismon(Permanent permanent)
+                        {
+                            if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                            {
+                                if (permanent.TopCard.CardNames.Contains("Myotismon"))
+                                {
+                                    return true;
+                                }
+                            }
+
+                            return false;
+                        }
+
+                        JogressConditionElement[] elements = new JogressConditionElement[]
+                        {
+                        new JogressConditionElement(PermanentConditionPiedmon, "Piedmon"),
+
+                        new JogressConditionElement(PermanentConditionMyotismon, "Myotismon"),
+                        };
+
+                        JogressCondition jogressCondition = new JogressCondition(elements, 0);
+
+                        return jogressCondition;
+                    }
+
+                    return null;
+                }
+            }
+
+            #endregion
+
             #region DNA Digivolution - Colors
 
             if (timing == EffectTiming.None)
@@ -92,71 +155,8 @@ namespace DCGO.CardEffects.EX8
 
                         JogressConditionElement[] elements =
                         {
-                            new(PermanentConditionPurpleBlack, "a level 5 Purple or Black Digimon"),
-                            new(PermanentConditionYellowGreen, "a level 5 Yellow or Green Digimon")
-                        };
-
-                        JogressCondition jogressCondition = new JogressCondition(elements, 0);
-
-                        return jogressCondition;
-                    }
-
-                    return null;
-                }
-            }
-
-            #endregion
-            
-            #region DNA Digivolution - Names
-
-            if (timing == EffectTiming.None)
-            {
-                AddJogressConditionClass addJogressConditionClass = new AddJogressConditionClass();
-                addJogressConditionClass.SetUpICardEffect($"DNA Digivolution", CanUseCondition, card);
-                addJogressConditionClass.SetUpAddJogressConditionClass(getJogressCondition: GetJogress);
-                addJogressConditionClass.SetNotShowUI(true);
-                cardEffects.Add(addJogressConditionClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return true;
-                }
-
-                JogressCondition GetJogress(CardSource cardSource)
-                {
-                    if (cardSource == card)
-                    {
-                        bool PermanentConditionPiedmon(Permanent permanent)
-                        {
-                            if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
-                            {
-                                if (permanent.TopCard.CardNames.Contains("Piedmon"))
-                                {
-                                    return true;
-                                }
-                            }
-
-                            return false;
-                        }
-
-                        bool PermanentConditionMyotismon(Permanent permanent)
-                        {
-                            if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
-                            {
-                                if (permanent.TopCard.CardNames.Contains("Myotismon"))
-                                {
-                                    return true;
-                                }
-                            }
-
-                            return false;
-                        }
-
-                        JogressConditionElement[] elements = new JogressConditionElement[]
-                        {
-                        new JogressConditionElement(PermanentConditionPiedmon, "Piedmon"),
-
-                        new JogressConditionElement(PermanentConditionMyotismon, "Myotismon"),
+                            new(PermanentConditionPurpleBlack, "a level 6 Purple or Black Digimon"),
+                            new(PermanentConditionYellowGreen, "a level 6 Yellow or Green Digimon")
                         };
 
                         JogressCondition jogressCondition = new JogressCondition(elements, 0);
@@ -257,6 +257,7 @@ namespace DCGO.CardEffects.EX8
                                        cardSource: cardSource,
                                        payCost: false,
                                        cardEffect: activateClass) &&
+                                   cardSource.IsDigimon &&
                                    cardSource.GetCostItself <= maxCost &&
                                    cardSource.ContainsTraits("NSo");
                         }

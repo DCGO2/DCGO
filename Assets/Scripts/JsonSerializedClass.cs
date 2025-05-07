@@ -34,11 +34,15 @@ namespace DCGO.CardEntities
         public string form;
         public string id;
         public string illustrator;
+        public string linkDP;
+        public string linkEffect;
+        public string linkRequirement;
         public CardName name;
         public string notes;
         public string playCost;
         public string rarity;
         public Restriction restrictions;
+        public string rule;
         public string securityEffect;
         public string specialDigivolve;
         public string type;

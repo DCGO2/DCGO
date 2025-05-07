@@ -74,7 +74,7 @@ namespace DCGO.CardEffects.EX2
 
                 string EffectDiscription()
                 {
-                    return "[Your Turn] When one of your Digimon would digivolve into a Digimon with [Gallantmon] or [Growlmon] in its name, that Digimon gains \"[When Digivolving] <Blitz> (This Digimon can attack when your opponent has 1 or more memory.)\" for the turn.";
+                    return "[Your Turn] When one of your Digimon would digivolve into a Digimon with [Gallantmon] or [Growlmon] in its name, that Digimon gains \"[When Digivolving] EX8-053 (This Digimon can attack when your opponent has 1 or more memory.)\" for the turn.";
                 }
 
                 bool DigivolvePermanentCondition(Permanent permanent)
@@ -154,11 +154,53 @@ namespace DCGO.CardEffects.EX2
                         {
                             foreach (Permanent permanent in card.Owner.GetBattleAreaPermanents().Filter(PermanentCondition))
                             {
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBlitz(
-                                    targetPermanent: permanent,
-                                    effectDuration: EffectDuration.UntilEachTurnEnd,
-                                    activateClass: activateClass,
-                                    isWhenDigivolving: true));
+                                AddSkillClass addSkillClass = new AddSkillClass();
+                                addSkillClass.SetUpICardEffect("Your Digimons get Blitz", CanUseCondition1, permanent.TopCard);
+                                addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
+                                CardEffectCommons.AddEffectToPermanent(permanent, effectDuration: EffectDuration.UntilEachTurnEnd, card: permanent.TopCard, cardEffect: addSkillClass, timing: EffectTiming.None);
+
+                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(permanent));
+
+                                bool CardSourceCondition(CardSource source)
+                                {
+                                    return true;
+                                }
+
+                                bool CanUseCondition1(Hashtable hashtable1)
+                                {
+                                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(permanent.TopCard))
+                                    {
+                                        if (CardEffectCommons.CanTriggerWhenDigivolving(hashtable1, card))
+                                        {
+                                            return true;
+                                        }
+                                    }
+
+                                    return false;
+                                }
+
+                                List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming _timing)
+                                {
+                                    if (_timing == EffectTiming.OnEnterFieldAnyone)
+                                    {
+                                        bool Condition()
+                                        {
+                                            if (CardSourceCondition(cardSource))
+                                            {
+                                                return true;
+                                            }
+
+                                            return false;
+                                        }
+
+                                        cardEffects.Add(CardEffectFactory.BlitzSelfEffect(isInheritedEffect: false,
+                                            card: cardSource,
+                                            condition: Condition,
+                                            isWhenDigivolving: false));
+                                    }
+
+                                    return cardEffects;
+                                }
                             }
                         }
                     }

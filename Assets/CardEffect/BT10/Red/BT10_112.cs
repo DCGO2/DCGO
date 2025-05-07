@@ -248,6 +248,11 @@ namespace DCGO.CardEffects.BT10
 
                                         IEnumerator AfterSelectIndexCoroutine(List<int> selectedIndexes)
                                         {
+                                            Debug.Log($"Testing: {selectedIndexes.Count}");
+
+                                            foreach(int index in selectedIndexes)
+                                                Debug.Log(index);
+
                                             if (selectedIndexes.Count == 1)
                                             {
                                                 selectedEffect = candidateEffects[selectedIndexes[0]];
@@ -262,6 +267,7 @@ namespace DCGO.CardEffects.BT10
 
                                         if (selectedEffect.CanUse(effectHashtable))
                                         {
+                                            selectedEffect.SetIsDigimonEffect(true);
                                             yield return ContinuousController.instance.StartCoroutine(
                                                 ((ActivateICardEffect)selectedEffect).Activate_Optional_Effect_Execute(effectHashtable));
                                         }

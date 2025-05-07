@@ -84,15 +84,7 @@ namespace DCGO.CardEffects.EX8
 
                         bool CardSourceCondition(CardSource cardSource)
                         {
-                            if (PermanentCondition(selectedPermanent))
-                            {
-                                if (cardSource == selectedPermanent.TopCard)
-                                {
-                                    return true;
-                                }
-                            }
-
-                            return false;
+                            return PermanentCondition(selectedPermanent);
                         }
 
                         bool PermanentCondition(Permanent permanent)
@@ -101,7 +93,8 @@ namespace DCGO.CardEffects.EX8
                             {
                                 if (!permanent.TopCard.CanNotBeAffected(activateClass))
                                 {
-                                    return true;
+                                    if(permanent == selectedPermanent)
+                                        return true;
                                 }
                             }
 
@@ -119,14 +112,14 @@ namespace DCGO.CardEffects.EX8
                         }
 
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotReturnToHand(
-                            targetPermanent: card.PermanentOfThisCard(),
+                            targetPermanent: selectedPermanent,
                             cardEffectCondition: CardEffectCondition,
                             effectDuration: EffectDuration.UntilOpponentTurnEnd,
                             activateClass: activateClass,
                             effectName: "Can't return to hand by opponent's effects"));
 
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotReturnToDeck(
-                            targetPermanent: card.PermanentOfThisCard(),
+                            targetPermanent: selectedPermanent,
                             cardEffectCondition: CardEffectCondition,
                             effectDuration: EffectDuration.UntilOpponentTurnEnd,
                             activateClass: activateClass,
@@ -136,7 +129,28 @@ namespace DCGO.CardEffects.EX8
                         {
                             if (_timing == EffectTiming.OnCounterTiming)
                             {
-                                cardEffects.Add(CardEffectFactory.CollisionSelfStaticEffect(false, cardSource, null));
+                                bool CardSourceCondition(CardSource cardSource)
+                                {
+                                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(cardSource))
+                                    {
+                                        if (cardSource == selectedPermanent.TopCard)
+                                        {
+                                            if (PermanentCondition(selectedPermanent))
+                                            {
+                                                return true;
+                                            }
+                                        }
+                                    }
+
+                                    return false;
+                                }
+
+                                bool Condition()
+                                {
+                                    return CardSourceCondition(cardSource);
+                                }
+
+                                cardEffects.Add(CardEffectFactory.CollisionSelfStaticEffect(false, cardSource, Condition));
                             }
 
                             return cardEffects;

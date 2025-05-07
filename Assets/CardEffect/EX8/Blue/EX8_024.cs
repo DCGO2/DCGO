@@ -112,7 +112,7 @@ namespace DCGO.CardEffects.EX8
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("1 opponents digimon can't unsuspend", CanUseCondition, card);
+                activateClass.SetUpICardEffect("1 opponents digimon can't suspend", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetHashString("WhenAttacking_EX8_024");
                 cardEffects.Add(activateClass);
@@ -156,7 +156,7 @@ namespace DCGO.CardEffects.EX8
                         mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that can't unsuspend.", "The opponent is selecting 1 Digimon that can't unsuspend.");
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that can't suspend.", "The opponent is selecting 1 Digimon that can't suspend.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 

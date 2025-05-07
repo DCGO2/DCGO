@@ -50,6 +50,10 @@ public class FieldPermanentCard : MonoBehaviour
     [Header("レベルテキスト")]
     public TextMeshProUGUI LevelText;
 
+    [Header("Link Elements")]
+    public GameObject LinkedObject;
+    public Image LinkIcon;
+
     [Header("表示親")]
     public GameObject Parent;
 
@@ -117,6 +121,11 @@ public class FieldPermanentCard : MonoBehaviour
         if (EvoRootCountText != null)
         {
             EvoRootCountText.transform.parent.gameObject.SetActive(false);
+        }
+
+        if (LinkedObject != null)
+        {
+            LinkedObject.SetActive(false);
         }
 
         if (DirectStrikeText != null)
@@ -436,34 +445,43 @@ public class FieldPermanentCard : MonoBehaviour
             SetCardSuspended(updateIsTapped);
 
             //DP
-            if (ThisPermanent.IsDigimon && ThisPermanent.DP >= 0)
+            if (ThisPermanent.IsDigimon)
             {
-                DPText.transform.parent.gameObject.SetActive(true);
+                int DP = ThisPermanent.DP;
 
-                if(DPText.text != ThisPermanent.DP.ToString())
-                    DPText.text = ThisPermanent.DP.ToString();
-
-                for (int i = 0; i < DPBackground_color.Count; i++)
+                if (DP >= 0)
                 {
-                    CardColor cardColor = CardColor.None;
+                    DPText.transform.parent.gameObject.SetActive(true);
 
-                    if (i < ThisPermanent.TopCard.CardColors.Count)
+                    if (DPText.text != DP.ToString())
+                        DPText.text = DP.ToString();
+
+                    for (int i = 0; i < DPBackground_color.Count; i++)
                     {
-                        cardColor = ThisPermanent.TopCard.CardColors[i];
-                        float fillAmount = (float)((i + 1) / (float)ThisPermanent.TopCard.CardColors.Count);
+                        CardColor cardColor = CardColor.None;
 
-                        if (DPBackground_color[i].color != DataBase.CardColor_ColorLightDictionary[cardColor])
-                            DPBackground_color[i].color = DataBase.CardColor_ColorLightDictionary[cardColor];
+                        if (i < ThisPermanent.TopCard.CardColors.Count)
+                        {
+                            cardColor = ThisPermanent.TopCard.CardColors[i];
+                            float fillAmount = (float)((i + 1) / (float)ThisPermanent.TopCard.CardColors.Count);
 
-                        DPBackground_color[i].fillAmount = fillAmount;
-                        DPBackground_color[i].gameObject.SetActive(true);
-                    }
+                            if (DPBackground_color[i].color != DataBase.CardColor_ColorLightDictionary[cardColor])
+                                DPBackground_color[i].color = DataBase.CardColor_ColorLightDictionary[cardColor];
 
-                    else
-                    {
-                        DPBackground_color[i].gameObject.SetActive(false);
+                            DPBackground_color[i].fillAmount = fillAmount;
+                            DPBackground_color[i].gameObject.SetActive(true);
+                        }
+
+                        else
+                        {
+                            DPBackground_color[i].gameObject.SetActive(false);
+                        }
                     }
                 }
+                else
+                {
+                    DPText.transform.parent.gameObject.SetActive(false);
+                }                
             }
 
             else
@@ -494,6 +512,7 @@ public class FieldPermanentCard : MonoBehaviour
                 LevelText.transform.parent.gameObject.SetActive(false);
             }
 
+            //Digivolution Count
             if (EvoRootCountText != null)
             {
                 if (ThisPermanent.DigivolutionCards.Count >= 1)
@@ -513,6 +532,28 @@ public class FieldPermanentCard : MonoBehaviour
                 }
             }
 
+            //Links
+            if (LinkedObject != null)
+            {
+                if (ThisPermanent.LinkedCards.Count > 0)
+                {
+                    LinkedObject.SetActive(true);
+
+                    //if (LinkedDPText.text != $"+{ThisPermanent.LinkedDP}")
+                    //    LinkedDPText.text = $"+{ThisPermanent.LinkedDP}";
+
+                    if (LinkIcon.color != DataBase.CardColor_ColorLightDictionary[ThisPermanent.TopCard.CardColors[0]])
+                        LinkIcon.color = DataBase.CardColor_ColorLightDictionary[ThisPermanent.TopCard.CardColors[0]];
+                    
+                }
+
+                else
+                {
+                    LinkedObject.SetActive(false);
+                }
+            }
+
+            //Summoning Sickness
             if (SummonSicknessObject != null)
             {
                 bool isActive = false;
@@ -535,6 +576,7 @@ public class FieldPermanentCard : MonoBehaviour
                 SummonSicknessObject.SetActive(isActive);
             }
 
+            //Blocker
             if (BlockerEffect != null)
             {
                 bool isActive = false;

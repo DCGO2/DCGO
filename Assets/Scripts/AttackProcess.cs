@@ -12,6 +12,7 @@ public class AttackProcess : MonoBehaviourPunCallbacks
     public Permanent DefendingPermanent { get; private set; } = null;
     public int AttackCount { get; set; } = 0;
     public bool IsAttacking { get; set; } = false;
+    public bool HasDefender { get; set; } = false;
     public bool IsBlocking { get; set; } = false;
     public CardSource SecurityDigimon { get; set; } = null;
     public bool DoSecurityCheck { get; set; } = false;
@@ -23,6 +24,9 @@ public class AttackProcess : MonoBehaviourPunCallbacks
     {
         AttackingPermanent = attackingPermanent;
         DefendingPermanent = defendingPermanent;
+
+        if (defendingPermanent != null)
+            HasDefender = true;
     }
 
     public IEnumerator Attack(Permanent attackingPermanent, Permanent defendingPermanent, ICardEffect attackEffect, bool withoutTap = false, Func<IEnumerator> beforeOnAttackCoroutine = null)
@@ -44,6 +48,7 @@ public class AttackProcess : MonoBehaviourPunCallbacks
         IsBlocking = false;
         SecurityDigimon = null;
         IsAttacking = false;
+        HasDefender = false;
         IsEndAttack = false;
 
         SetAttackerDefender(attackingPermanent, defendingPermanent);
@@ -65,7 +70,7 @@ public class AttackProcess : MonoBehaviourPunCallbacks
         }
 
         #region Attack Process
-        if (AttackingPermanent != null)
+        if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(AttackingPermanent))
         {
             AttackCount++;
 
@@ -73,9 +78,12 @@ public class AttackProcess : MonoBehaviourPunCallbacks
 
             if (DefendingPermanent != null)
             {
-                DefendingPermanent.ShowingPermanentCard.SetOrangeOutline();
-                DefendingPermanent.ShowingPermanentCard.Outline_Select.gameObject.SetActive(true);
-                GManager.instance.turnStateMachine.gameContext.NonTurnPlayer.securityObject.securityBreakGlass.gameObject.SetActive(false);
+                if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(DefendingPermanent))
+                {
+                    DefendingPermanent.ShowingPermanentCard.SetOrangeOutline();
+                    DefendingPermanent.ShowingPermanentCard.Outline_Select.gameObject.SetActive(true);
+                    GManager.instance.turnStateMachine.gameContext.NonTurnPlayer.securityObject.securityBreakGlass.gameObject.SetActive(false);
+                }
             }
 
             else
@@ -94,7 +102,8 @@ public class AttackProcess : MonoBehaviourPunCallbacks
 
             if (DefendingPermanent != null)
             {
-                log += $"\nÅ´\n{DefendingPermanent.TopCard.BaseENGCardNameFromEntity}({DefendingPermanent.TopCard.CardID})\n";
+                if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(DefendingPermanent))
+                    log += $"\nÅ´\n{DefendingPermanent.TopCard.BaseENGCardNameFromEntity}({DefendingPermanent.TopCard.CardID})\n";
             }
 
             else
@@ -138,19 +147,21 @@ public class AttackProcess : MonoBehaviourPunCallbacks
             if (DefendingPermanent == null)
             {
                 yield return GManager.instance.OnTargetArrow(
-                    AttackingPermanent.PermanentFrame.GetLocalCanvasPosition() + AttackingPermanent.TopCard.Owner.playerUIObjectParent.localPosition,
-                    GManager.instance.turnStateMachine.gameContext.NonTurnPlayer.SecurityAttackLocalCanvasPosition + GManager.instance.turnStateMachine.gameContext.NonTurnPlayer.playerUIObjectParent.localPosition,
-                    null,
-                    null);
+                        AttackingPermanent.PermanentFrame.GetLocalCanvasPosition() + AttackingPermanent.TopCard.Owner.playerUIObjectParent.localPosition,
+                        GManager.instance.turnStateMachine.gameContext.NonTurnPlayer.SecurityAttackLocalCanvasPosition + GManager.instance.turnStateMachine.gameContext.NonTurnPlayer.playerUIObjectParent.localPosition,
+                        null,
+                        null);
             }
-
             else
             {
-                yield return GManager.instance.OnTargetArrow(
-                    AttackingPermanent.PermanentFrame.GetLocalCanvasPosition() + AttackingPermanent.TopCard.Owner.playerUIObjectParent.localPosition,
-                    DefendingPermanent.PermanentFrame.GetLocalCanvasPosition() + DefendingPermanent.TopCard.Owner.playerUIObjectParent.localPosition,
-                    null,
-                    null);
+                if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(DefendingPermanent))
+                {
+                    yield return GManager.instance.OnTargetArrow(
+                        AttackingPermanent.PermanentFrame.GetLocalCanvasPosition() + AttackingPermanent.TopCard.Owner.playerUIObjectParent.localPosition,
+                        DefendingPermanent.PermanentFrame.GetLocalCanvasPosition() + DefendingPermanent.TopCard.Owner.playerUIObjectParent.localPosition,
+                        null,
+                        null);
+                }
             }
 
             // activate cutin effects
@@ -190,7 +201,7 @@ public class AttackProcess : MonoBehaviourPunCallbacks
 
             if (DefendingPermanent != null)
             {
-                if (DefendingPermanent.TopCard != null)
+                if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(DefendingPermanent))
                 {
                     DefendingPermanent.ShowingPermanentCard.SetOrangeOutline();
                     DefendingPermanent.ShowingPermanentCard.Outline_Select.gameObject.SetActive(true);
@@ -216,7 +227,7 @@ public class AttackProcess : MonoBehaviourPunCallbacks
 
             if (DefendingPermanent != null)
             {
-                if (DefendingPermanent.TopCard != null)
+                if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(DefendingPermanent))
                 {
                     DefendingPermanent.ShowingPermanentCard.SetOrangeOutline();
                     DefendingPermanent.ShowingPermanentCard.Outline_Select.gameObject.SetActive(true);
@@ -274,7 +285,7 @@ public class AttackProcess : MonoBehaviourPunCallbacks
 
             if (DefendingPermanent != null)
             {
-                if (DefendingPermanent.TopCard != null)
+                if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(DefendingPermanent))
                 {
                     DefendingPermanent.ShowingPermanentCard.SetOrangeOutline();
                     DefendingPermanent.ShowingPermanentCard.Outline_Select.gameObject.SetActive(true);
@@ -358,7 +369,7 @@ public class AttackProcess : MonoBehaviourPunCallbacks
 
             if (DefendingPermanent != null)
             {
-                if (DefendingPermanent.TopCard != null)
+                if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(DefendingPermanent))
                 {
                     DefendingPermanent.ShowingPermanentCard.SetOrangeOutline();
                     DefendingPermanent.ShowingPermanentCard.Outline_Select.gameObject.SetActive(true);
@@ -385,7 +396,7 @@ public class AttackProcess : MonoBehaviourPunCallbacks
             #region there is Defending Permanent
             else
             {
-                if (DefendingPermanent.TopCard == null || AttackingPermanent == null || AttackingPermanent.TopCard == null)
+                if (!CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(DefendingPermanent) || !CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(AttackingPermanent))
                 {
                     goto EndAttack;
                 }
@@ -453,6 +464,9 @@ public class AttackProcess : MonoBehaviourPunCallbacks
             yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(effectHashtable, EffectTiming.OnEndAttack));
         }
 
+        // activate cutin effects
+        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.AutoProcessCheck());
+
         #region reset effects which continues until the end of attack
         foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
         {
@@ -471,6 +485,7 @@ public class AttackProcess : MonoBehaviourPunCallbacks
         SecurityDigimon = null;
         IsAttacking = false;
         IsEndAttack = false;
+        UnityEngine.Debug.Log("ATTACK IS OVER");
     }
 
     public IEnumerator SwitchDefender(ICardEffect cardEffect, bool isBlock, Permanent newDefendingPermanent)

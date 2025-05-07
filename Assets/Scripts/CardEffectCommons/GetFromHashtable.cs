@@ -246,6 +246,27 @@ public partial class CardEffectCommons
     }
     #endregion
 
+    #region Get Attacking Permanent from hashtable
+    public static Permanent GetAttackerFromHashtable(Hashtable hashtable)
+    {
+        if (hashtable != null)
+        {
+            if (hashtable.ContainsKey("AttackingPermanent"))
+            {
+                if (hashtable["AttackingPermanent"] is Permanent)
+                {
+                    Permanent permanent = (Permanent)hashtable["AttackingPermanent"];
+
+                    return permanent;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    #endregion
+
     #region Get hashtables from hashtable of card effect
     public static List<Hashtable> GetHashtablesFromHashtable(Hashtable hashtable)
     {
@@ -354,7 +375,7 @@ public partial class CardEffectCommons
     #endregion
 
     #region Get whehter only 1 permanent is played from hashtable
-    public static bool IsOnly1CadPlayed(Hashtable hashtable)
+    public static bool IsOnly1CardPlayed(Hashtable hashtable)
     {
         PlayCardClass playCardClass = GetPlayCardClassFromHashtable(hashtable);
 

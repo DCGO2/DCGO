@@ -96,6 +96,16 @@ public partial class CardEffectCommons
     }
     #endregion
 
+    #region Whether the card is Linked
+    public static bool IsExistLinked(CardSource card)
+    {
+        if (IsExistOnField(card))
+            return card.PermanentOfThisCard().LinkedCards.Contains(card);
+
+        return false;
+    }
+    #endregion
+
     #region Whether the card is in trash
     public static bool IsExistOnTrash(CardSource card)
     {
@@ -140,7 +150,8 @@ public partial class CardEffectCommons
         bool isPlayOption = false,
         int fixedCost = -1) =>
     cardSource != null &&
-    (isPlayOption || !cardSource.IsOption)
+    (isPlayOption || !cardSource.IsOption) &&
+    !GManager.instance.GetComponent<SelectDigiXrosClass>().selectedDigicrossCards.Contains(cardSource)
     && cardSource.Owner.fieldCardFrames.Some((frame) =>
     frame.IsEmptyFrame()
     && cardSource.CanPlayCardTargetFrame(frame, payCost, cardEffect, root, isBreedingArea: isBreedingArea, fixedCost:fixedCost));
@@ -499,5 +510,21 @@ public partial class CardEffectCommons
 
         return false;
     }
+
+    #endregion
+
+    #region Get unique colour count from permanents in owners battle area
+
+    public static int GetUniqueColourCountOnOwnerBattleArea(CardSource card, Func<Permanent, bool> canGetCardColour)
+    {
+        var uniqueColors = card.Owner.GetBattleAreaPermanents()
+        .Filter(x => canGetCardColour(x))
+        .Select(x => x.TopCard)
+        .SelectMany(x => x.CardColors)
+        .Distinct()
+        .ToHashSet();
+        return uniqueColors.Count;
+    }
+
     #endregion
 }

@@ -9,6 +9,7 @@ using UnityEngine;
 //using Hashtable = ExitGames.Client.Photon.Hashtable;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using static UnityEngine.ParticleSystem;
 using static UnityEngine.UIElements.UxmlAttributeDescription;
 public class TurnStateMachine : MonoBehaviourPunCallbacks
 {
@@ -46,6 +47,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         _canDigivolves = new bool[GManager.instance.You.fieldCardFrames.Count];
         _canJogresses = new bool[GManager.instance.You.fieldCardFrames.Count];
         _canBursts = new bool[GManager.instance.You.fieldCardFrames.Count];
+        _canAppFusions = new bool[GManager.instance.You.fieldCardFrames.Count];
         _payingCosts = new int[GManager.instance.You.fieldCardFrames.Count];
         #endregion
 
@@ -826,6 +828,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
     int TargetFrameID { get; set; } = 0;
     int[] JogressEvoRootsFrameIDs { get; set; } = new int[0];
     int BurstTamerFrameID { get; set; } = 0;
+    int[] AppFusionFrameIDs { get; set; } = new int[0];
     ICardEffect UseCardEffect { get; set; } = null;
     Permanent AttackingPermanent { get; set; } = null;
     Permanent DefendingPermanent { get; set; } = null;
@@ -835,6 +838,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
     bool[] _canDigivolves = new bool[GManager.instance.You.fieldCardFrames.Count];
     bool[] _canJogresses = new bool[GManager.instance.You.fieldCardFrames.Count];
     bool[] _canBursts = new bool[GManager.instance.You.fieldCardFrames.Count];
+    bool[] _canAppFusions = new bool[GManager.instance.You.fieldCardFrames.Count];
     int[] _payingCosts = new int[GManager.instance.You.fieldCardFrames.Count];
     IEnumerator MainPhase()
     {
@@ -1208,6 +1212,12 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                     playCard.SetBurst(BurstTamerFrameID, PlayCard);
                 }
 
+                if (AppFusionFrameIDs != null && AppFusionFrameIDs.Length == 2)
+                {
+                    playCard.SetAppFusion(AppFusionFrameIDs);
+                }
+
+
                 yield return StartCoroutine(playCard.PlayCard());
 
                 isSync = false;
@@ -1311,6 +1321,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
             TargetFrameID = -1;
             JogressEvoRootsFrameIDs = new int[0];
             BurstTamerFrameID = -1;
+            AppFusionFrameIDs = new int[0];
             UseCardEffect = null;
             AttackingPermanent = null;
             DefendingPermanent = null;
@@ -2034,6 +2045,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                             handCard1.OffPlayText();
                             handCard1.OffJogressPlayText();
                             handCard1.OffBurstPlayText();
+                            handCard1.OffAppFusionPlayText();
                             handCard1.OffClickText();
 
                             #region デジモン・テイマー
@@ -2116,6 +2128,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                             handCard.OffPlayText();
                             handCard.OffJogressPlayText();
                             handCard.OffBurstPlayText();
+                            handCard.OffAppFusionPlayText();
 
                             #region play cards
 
@@ -2131,7 +2144,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                     #region Check if it is dropped in the frame
                                     foreach (FieldCardFrame fieldCardFrame in GManager.instance.You.fieldCardFrames)
                                     {
-                                        if (handCard.cardSource.CanPlayCardTargetFrame(fieldCardFrame, true, null) || handCard.cardSource.CanJogressFromTargetPermanent(fieldCardFrame.GetFramePermanent(), true) || handCard.cardSource.CanBurstDigivolutionFromTargetPermanent(fieldCardFrame.GetFramePermanent(), true))
+                                        if (handCard.cardSource.CanPlayCardTargetFrame(fieldCardFrame, true, null) || handCard.cardSource.CanJogressFromTargetPermanent(fieldCardFrame.GetFramePermanent(), true) || handCard.cardSource.CanBurstDigivolutionFromTargetPermanent(fieldCardFrame.GetFramePermanent(), true) || handCard.cardSource.CanAppFusionFromTargetPermanent(fieldCardFrame.GetFramePermanent(), true))
                                         {
                                             if (dropAreas.Count((dropArea) => dropArea.IsChildThisDropArea(fieldCardFrame.Frame)) > 0)
                                             {
@@ -2164,27 +2177,34 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                                     bool canNormalDigivolution = handCard.cardSource.CanPlayCardTargetFrame(fieldCardFrame, true, null);
                                                     bool canJogressDigivolution = handCard.cardSource.CanJogressFromTargetPermanent(fieldCardFrame.GetFramePermanent(), true);
                                                     bool canBurstDigivolution = handCard.cardSource.CanBurstDigivolutionFromTargetPermanent(fieldCardFrame.GetFramePermanent(), true);
+                                                    bool canAppFusion = handCard.cardSource.CanAppFusionFromTargetPermanent(fieldCardFrame.GetFramePermanent(), true);
 
                                                     //Only normal evolution possible
-                                                    if (canNormalDigivolution && !canJogressDigivolution && !canBurstDigivolution)
+                                                    if (canNormalDigivolution && !canJogressDigivolution && !canBurstDigivolution && !canAppFusion)
                                                     {
                                                         Digivolution();
                                                     }
 
                                                     //Only jogless is possible
-                                                    else if (!canNormalDigivolution && canJogressDigivolution && !canBurstDigivolution)
+                                                    else if (!canNormalDigivolution && canJogressDigivolution && !canBurstDigivolution && !canAppFusion)
                                                     {
                                                         SelectJogressDigivolutionCards(true);
                                                     }
 
                                                     //Only burst evolution possible
-                                                    else if (!canNormalDigivolution && !canJogressDigivolution && canBurstDigivolution)
+                                                    else if (!canNormalDigivolution && !canJogressDigivolution && canBurstDigivolution && !canAppFusion)
                                                     {
                                                         SelectBurstDigivolutionCards(true);
                                                     }
 
+                                                    //Only app fusion possible
+                                                    else if (!canNormalDigivolution && !canJogressDigivolution && !canBurstDigivolution && canAppFusion)
+                                                    {
+                                                        SelectAppFusionCards(true);
+                                                    }
+
                                                     //Normal evolution and Jogress possible
-                                                    else if (canNormalDigivolution && canJogressDigivolution && !canBurstDigivolution)
+                                                    else if (canNormalDigivolution && canJogressDigivolution && !canBurstDigivolution && !canAppFusion)
                                                     {
                                                         Vector3 Pos = handCard.transform.position;
 
@@ -2233,7 +2253,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                                     }
 
                                                     //Normal evolution and burst evolution possible
-                                                    else if (canNormalDigivolution && !canJogressDigivolution && canBurstDigivolution)
+                                                    else if (canNormalDigivolution && !canJogressDigivolution && canBurstDigivolution && !canAppFusion)
                                                     {
                                                         Vector3 Pos = handCard.transform.position;
 
@@ -2280,6 +2300,54 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                                             }
                                                         }
                                                     }
+                                                    //Normal evolution and App Fusion possible
+                                                    else if (canNormalDigivolution && !canJogressDigivolution && !canBurstDigivolution && canAppFusion)
+                                                    {
+                                                        Vector3 Pos = handCard.transform.position;
+
+                                                        ResetUI();
+
+                                                        handCard.transform.GetChild(0).gameObject.SetActive(false);
+
+                                                        handCard.GetComponent<Draggable_HandCard>().ReturnDefaultPosition();
+
+                                                        StartCoroutine(SelectWheterToAppFusion());
+
+                                                        IEnumerator SelectWheterToAppFusion()
+                                                        {
+                                                            isSync = true;
+
+                                                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().MoveToExecuteCardEffect_SetPosition(handCard.cardSource, Pos));
+                                                            handCard.transform.position = handCard.cardSource.Owner.brainStormObject.BrainStormHandCards[0].transform.position;
+
+                                                            GManager.instance.selectAppFusionEffect.SetUp_SelectWheterToAppFusion
+                                                                (card: handCard.cardSource,
+                                                                evoRoot: fieldCardFrame.GetFramePermanent().TopCard,
+                                                                canNoSelect: true,
+                                                                endSelectCoroutine_Digivolve: _Digivolution,
+                                                                endSelectCoroutine_AppFusion: _SelectAppFusionPermanents,
+                                                                noSelectCoroutine: _NoSelectCoroutine);
+
+                                                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.selectAppFusionEffect.SelectWheterToAppFusion());
+
+                                                            IEnumerator _Digivolution()
+                                                            {
+                                                                yield return null;
+                                                                Digivolution();
+                                                            }
+
+                                                            IEnumerator _SelectAppFusionPermanents()
+                                                            {
+                                                                yield return null;
+                                                                SelectAppFusionCards(false);
+                                                            }
+
+                                                            IEnumerator _NoSelectCoroutine()
+                                                            {
+                                                                yield return StartCoroutine(Return());
+                                                            }
+                                                        }
+                                                    }
 
                                                     #region Select Jogress evolution source
                                                     void SelectJogressDigivolutionCards(bool move)
@@ -2317,7 +2385,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                                             IEnumerator _EndSelectCoroutine_SelectDigivolutionRoots(List<Permanent> permanents)
                                                             {
                                                                 yield return null;
-                                                                photonView.RPC("SetPlayCard", RpcTarget.All, handCard.cardSource.CardIndex, fieldCardFrame.FrameID, new int[] { permanents[0].PermanentFrame.FrameID, permanents[1].PermanentFrame.FrameID }, -1);
+                                                                photonView.RPC("SetPlayCard", RpcTarget.All, handCard.cardSource.CardIndex, fieldCardFrame.FrameID, new int[] { permanents[0].PermanentFrame.FrameID, permanents[1].PermanentFrame.FrameID }, -1, new int[0]);
                                                             }
 
                                                             IEnumerator _NoSelectCoroutine()
@@ -2331,7 +2399,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                                     }
                                                     #endregion
 
-                                                    #region バースト進化元とテイマーを選択
+                                                    #region Select the burst evolution source and tamer
                                                     void SelectBurstDigivolutionCards(bool move)
                                                     {
                                                         Vector3 Pos = handCard.transform.position;
@@ -2362,12 +2430,65 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                                                 endSelectCoroutine_SelectTamer: EndSelectCoroutine_SelectTamer,
                                                                 noSelectCoroutine: _NoSelectCoroutine);
 
+
                                                             yield return ContinuousController.instance.StartCoroutine(GManager.instance.selectBurstDigivolutionEffect.SelectTamer());
 
                                                             IEnumerator EndSelectCoroutine_SelectTamer(Permanent permanent)
                                                             {
                                                                 yield return null;
-                                                                photonView.RPC("SetPlayCard", RpcTarget.All, handCard.cardSource.CardIndex, fieldCardFrame.FrameID, new int[0], permanent.PermanentFrame.FrameID);
+                                                                photonView.RPC("SetPlayCard", RpcTarget.All, handCard.cardSource.CardIndex, fieldCardFrame.FrameID, new int[0], permanent.PermanentFrame.FrameID, new int[0]);
+                                                            }
+
+                                                            IEnumerator _NoSelectCoroutine()
+                                                            {
+                                                                yield return null;
+                                                                yield return StartCoroutine(Return());
+                                                            }
+
+                                                            isSync = false;
+                                                        }
+                                                    }
+                                                    #endregion
+
+                                                    #region Select the app fusion source and link card
+                                                    void SelectAppFusionCards(bool move)
+                                                    {
+                                                        Vector3 Pos = handCard.transform.position;
+
+                                                        ResetUI();
+
+                                                        handCard.transform.GetChild(0).gameObject.SetActive(false);
+
+                                                        StartCoroutine(SelectAppFusionTarget());
+
+                                                        IEnumerator SelectAppFusionTarget()
+                                                        {
+                                                            isSync = true;
+
+                                                            if (move)
+                                                            {
+                                                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().MoveToExecuteCardEffect_SetPosition(handCard.cardSource, Pos));
+                                                                handCard.transform.position = handCard.cardSource.Owner.brainStormObject.BrainStormHandCards[0].transform.position;
+                                                            }
+
+                                                            yield return ContinuousController.instance.StartCoroutine(handCard.cardSource.Owner.brainStormObject.BrainStormCoroutine(handCard.cardSource));
+                
+                                                            GManager.instance.selectAppFusionEffect.SetUp_SelectLink
+                                                                (card: handCard.cardSource,
+                                                                isLocal: true,
+                                                                isPayCost: true,
+                                                                canNoSelect: true,
+                                                                endSelectCoroutine_SelectLink: EndSelectCoroutine_SelectLink,
+                                                                noSelectCoroutine: _NoSelectCoroutine);
+
+                                                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.selectAppFusionEffect.SelectLink(targetPermanent));
+
+                                                            IEnumerator EndSelectCoroutine_SelectLink(CardSource cardSource)
+                                                            {
+                                                                yield return null;
+
+                                                                //int sourceIndex = fieldCardFrame.GetFramePermanent().LinkedCards.IndexOf(cardSource);
+                                                                photonView.RPC("SetPlayCard", RpcTarget.All, handCard.cardSource.CardIndex, fieldCardFrame.FrameID, new int[0], -1, new int[] { targetPermanent.PermanentFrame.FrameID, targetPermanent.LinkedCards.IndexOf(cardSource)});
                                                             }
 
                                                             IEnumerator _NoSelectCoroutine()
@@ -2384,7 +2505,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                                     #region usually evolves
                                                     void Digivolution()
                                                     {
-                                                        photonView.RPC("SetPlayCard", RpcTarget.All, handCard.cardSource.CardIndex, fieldCardFrame.FrameID, new int[0], -1);
+                                                        photonView.RPC("SetPlayCard", RpcTarget.All, handCard.cardSource.CardIndex, fieldCardFrame.FrameID, new int[0], -1, new int[0]);
                                                     }
                                                     #endregion
 
@@ -2411,7 +2532,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
                                     if (CanPlayEmptyFrame)
                                     {
-                                        #region プレイマットでドロップしているかチェック
+                                        #region Check for drops on the playmat
                                         if (dropAreas.Count((dropArea) => dropArea.IsChildThisDropArea(GManager.instance.You.playMatCardFrame.Frame)) > 0)
                                         {
                                             if (handCard.cardSource.Owner.HandTransform.GetComponent<HandContoller>() != null)
@@ -2434,7 +2555,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                             GManager.instance.You.playMatCardFrame.RemoveClickTarget();
                                             GManager.instance.You.playMatCardFrame.Frame.transform.parent.gameObject.SetActive(false);
 
-                                            photonView.RPC("SetPlayCard", RpcTarget.All, handCard.cardSource.CardIndex, handCard.cardSource.PreferredFrame().FrameID, new int[0], -1);
+                                            photonView.RPC("SetPlayCard", RpcTarget.All, handCard.cardSource.CardIndex, handCard.cardSource.PreferredFrame().FrameID, new int[0], -1, new int[0]);
                                             selected = true;
 
                                             return;
@@ -2445,10 +2566,10 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                 }
                                 #endregion
 
-                                #region オプション
+                                #region option
                                 else if (handCard.cardSource.IsOption)
                                 {
-                                    #region プレイマットでドロップしているかチェック
+                                    #region Check for drops on the playmat
                                     if (dropAreas.Count((dropArea) => dropArea.IsChildThisDropArea(GManager.instance.You.playMatCardFrame.Frame)) > 0)
                                     {
                                         if (handCard.cardSource.Owner.HandTransform.GetComponent<HandContoller>() != null)
@@ -2471,7 +2592,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                         GManager.instance.You.playMatCardFrame.RemoveClickTarget();
                                         GManager.instance.You.playMatCardFrame.Frame.transform.parent.gameObject.SetActive(false);
 
-                                        photonView.RPC("SetPlayCard", RpcTarget.All, handCard.cardSource.CardIndex, 0, new int[0], -1);
+                                        photonView.RPC("SetPlayCard", RpcTarget.All, handCard.cardSource.CardIndex, 0, new int[0], -1, new int[0]);
                                         selected = true;
 
                                         return;
@@ -2516,11 +2637,12 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                             handCard.OffPlayText();
                             handCard.OffJogressPlayText();
                             handCard.OffBurstPlayText();
+                            handCard.OffAppFusionPlayText();
 
-                            #region デジモン・テイマー
+                            #region Digimon/Tamer
                             if (handCard.cardSource.IsPermanent)
                             {
-                                #region 枠の上にあるかチェック
+                                #region Check if it is on the frame
                                 bool isOnPermanentFrameAndCanEvolve = false;
 
                                 foreach (FieldCardFrame fieldCardFrame in GManager.instance.You.fieldCardFrames)
@@ -2551,6 +2673,9 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                                                     {
                                                         handCard.SetBurstPlayText();
                                                     }
+
+                                                    if (_canAppFusions[frameIndex])
+                                                        handCard.SetAppFusionPlayText();
 
                                                     handCard.SetOrangeOutline();
 
@@ -2600,7 +2725,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                             }
                             #endregion
 
-                            #region オプション
+                            #region option
                             else if (handCard.cardSource.IsOption)
                             {
                                 #region プレイマットの上にあるかチェック
@@ -2804,6 +2929,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         _canDigivolves = new bool[GManager.instance.You.fieldCardFrames.Count];
         _canJogresses = new bool[GManager.instance.You.fieldCardFrames.Count];
         _canBursts = new bool[GManager.instance.You.fieldCardFrames.Count];
+        _canAppFusions = new bool[GManager.instance.You.fieldCardFrames.Count];
         _payingCosts = new int[GManager.instance.You.fieldCardFrames.Count];
 
         if (cardSource.IsDigimon)
@@ -2821,11 +2947,13 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                 bool canDigivolve = targetPermanent != null && cardSource.CanEvolve(targetPermanent, true);
                 bool canJogress = targetPermanent != null && cardSource.CanJogressFromTargetPermanent(targetPermanent, true);
                 bool canBurst = targetPermanent != null && cardSource.CanBurstDigivolutionFromTargetPermanent(targetPermanent, true);
+                bool canAppFusion = targetPermanent != null && cardSource.CanAppFusionFromTargetPermanent(targetPermanent, true);
 
-                _canPlayTargetFrames[frameIndex] = canPlay || canJogress || canBurst;
+                _canPlayTargetFrames[frameIndex] = canPlay || canJogress || canBurst || canAppFusion;
                 _canDigivolves[frameIndex] = canDigivolve;
                 _canJogresses[frameIndex] = canJogress;
                 _canBursts[frameIndex] = canBurst;
+                _canAppFusions[frameIndex] = canAppFusion;
 
                 List<int> payingCosts = new List<int>(); ;
 
@@ -2843,6 +2971,11 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                     payingCosts.Add(cardSource.GetPayingCostWithBaseCost(cardSource.burstDigivolutionCondition.cost, SelectCardEffect.Root.Hand, new List<Permanent>() { targetPermanent }, checkAvailability: false));
                 }
 
+                if (canAppFusion)
+                {
+                    payingCosts.Add(cardSource.GetPayingCostWithBaseCost(cardSource.appFusionCondition.cost, SelectCardEffect.Root.Hand, new List<Permanent>() { targetPermanent }, checkAvailability: false));
+                }
+
                 if (payingCosts.Count > 1)
                 {
                     minPayingCost = payingCosts.Min();
@@ -2857,54 +2990,6 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
                 yield return null;
             }
-
-            /*
-            for (int i = 0; i < GManager.instance.You.fieldCardFrames.Count; i++)
-            {
-                FieldCardFrame fieldCardFrame = GManager.instance.You.fieldCardFrames[i];
-                Permanent targetPermanent = fieldCardFrame.GetFramePermanent();
-
-                bool canPlay = targetPermanent == null ? canPlayEmpty : cardSource.CanPlayCardTargetFrame(fieldCardFrame, true, null);
-                bool canDigivolve = targetPermanent != null && cardSource.CanEvolve(targetPermanent, true);
-                bool canJogress = targetPermanent != null && cardSource.CanJogressFromTargetPermanent(targetPermanent, true);
-                bool canBurst = targetPermanent != null && cardSource.CanBurstDigivolutionFromTargetPermanent(targetPermanent, true);
-
-                _canPlayTargetFrames[i] = canPlay || canJogress || canBurst;
-                _canDigivolves[i] = canDigivolve;
-                _canJogresses[i] = canJogress;
-                _canBursts[i] = canBurst;
-
-                List<int> payingCosts = new List<int>(); ;
-
-                int minPayingCost = 0;
-
-                payingCosts.Add(cardSource.PayingCost(SelectCardEffect.Root.Hand, new List<Permanent>() { targetPermanent }, checkAvailability: false));
-
-                if (canJogress)
-                {
-                    payingCosts.Add(cardSource.GetPayingCost(cardSource.jogressCondition.cost, SelectCardEffect.Root.Hand, new List<Permanent>() { targetPermanent }, checkAvailability: false));
-                }
-
-                if (canBurst)
-                {
-                    payingCosts.Add(cardSource.GetPayingCost(cardSource.burstDigivolutionCondition.cost, SelectCardEffect.Root.Hand, new List<Permanent>() { targetPermanent }, checkAvailability: false));
-                }
-
-                if (payingCosts.Count > 1)
-                {
-                    minPayingCost = payingCosts.Min();
-                }
-
-                else if (payingCosts.Count == 1)
-                {
-                    minPayingCost = payingCosts[0];
-                }
-
-                _payingCosts[i] = minPayingCost;
-
-                yield return null;
-            }
-            */
         }
 
         else
@@ -3007,7 +3092,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
     #region Play card decision
     [PunRPC]
-    public void SetPlayCard(int cardIndex, int TargetFrameID, int[] JogressEvoRootsFrameIDs, int BurstTamerFrameID)
+    public void SetPlayCard(int cardIndex, int TargetFrameID, int[] JogressEvoRootsFrameIDs, int BurstTamerFrameID, int[] AppFusionFrameIDs)
     {
         PlayCard = gameContext.ActiveCardList[cardIndex];
         this.TargetFrameID = TargetFrameID;
@@ -3026,6 +3111,19 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
         }
 
         this.BurstTamerFrameID = BurstTamerFrameID;
+
+        if (AppFusionFrameIDs != null)
+        {
+            if (AppFusionFrameIDs.Length == 2)
+            {
+                this.AppFusionFrameIDs = new int[AppFusionFrameIDs.Length];
+
+                for (int i = 0; i < AppFusionFrameIDs.Length; i++)
+                {
+                    this.AppFusionFrameIDs[i] = AppFusionFrameIDs[i];
+                }
+            }
+        }
     }
     #endregion
 

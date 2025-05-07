@@ -140,6 +140,14 @@ public class PlayCardClass
         }
     }
 
+    public void SetAppFusion(int[] AppFusionFrameID)
+    {
+        if (AppFusionFrameID != null)
+        {
+            _appFusionFrameIDs = AppFusionFrameID.CloneArray(); ;
+        }
+    }
+
     public void SetShowEffect()
     {
         _showEffect = true;
@@ -196,6 +204,7 @@ public class PlayCardClass
     int _reducedCost = 0;
     int[] _jogressEvoRootsFrameIDs = null;
     int _burstTamerFrameID = -1;
+    int[] _appFusionFrameIDs = null;
     bool _addSecurityEndOption = false;
     bool _isBreedingArea = false;
 
@@ -237,9 +246,57 @@ public class PlayCardClass
         return null;
     }
 
+    bool IsAppFusion(CardSource card)
+    {
+       CardSource linkCard = LinkedCard(card);
+
+        if (linkCard != null)
+        {
+            if (card.appFusionCondition != null)
+            {
+                if (card.appFusionCondition.digimonCondition != null)
+                {
+                    Permanent digimon = card.Owner.fieldCardFrames[_appFusionFrameIDs[0]].GetFramePermanent();
+
+                    if (card.appFusionCondition.linkedCondition != null)
+                    {
+                        if (card.appFusionCondition.linkedCondition(digimon, linkCard))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public CardSource LinkedCard(CardSource card)
+    {
+        if (_appFusionFrameIDs != null && _appFusionFrameIDs.Length == 2)
+        {
+            UnityEngine.Debug.Log($"GETTING LINKED CARD: {_appFusionFrameIDs[0]}, {_appFusionFrameIDs[1]}");
+            if (0 <= _appFusionFrameIDs[0] && _appFusionFrameIDs[0] <= card.Owner.fieldCardFrames.Count - 1)
+            {
+                Permanent targetPermanent = card.Owner.fieldCardFrames[_appFusionFrameIDs[0]].GetFramePermanent();
+
+                if(targetPermanent.LinkedCards.Count > _appFusionFrameIDs[1])
+                {
+                    CardSource link = targetPermanent.LinkedCards[_appFusionFrameIDs[1]];
+                    return link;
+                }
+            }
+        }
+            
+
+        return null;
+    }
+
     public IEnumerator PlayCard()
     {
         bool burstDigivolved = false;
+        bool appFusion = false;
 
         List<CardSource> playedCards_fixed = new List<CardSource>();
 
@@ -252,6 +309,7 @@ public class PlayCardClass
                 continue;
             }
 
+            #region Set Root
             ICardEffect CardEffect = null;
 
             CardEffect = CardEffectCommons.GetCardEffectFromHashtable(this._hashtable);
@@ -280,7 +338,13 @@ public class PlayCardClass
             {
                 Root = SelectCardEffect.Root.Security;
             }
+            else if (CardEffectCommons.IsExistOnExecutingArea(card))
+            {
+                Root = SelectCardEffect.Root.Execution;
+            }
+            #endregion
 
+            #region Set target(s)
             List<Permanent> targetPermanents = new List<Permanent>();
 
             if (card.IsPermanent)
@@ -312,7 +376,9 @@ public class PlayCardClass
                     }
                 }
             }
+            #endregion
 
+            #region Determine if Evolution
             bool isEvolution = false;
 
             if (targetPermanents.Count >= 1)
@@ -326,7 +392,13 @@ public class PlayCardClass
                             isEvolution = true;
                         }
                     }
-
+                    else if (IsAppFusion(card))
+                    {
+                        if (card.CanAppFusionFromTargetPermanent(targetPermanents[0], PayCost))
+                        {
+                            isEvolution = true;
+                        }
+                    }
                     else
                     {
                         if (card.CanEvolve(targetPermanents[0], true) || GetIgnoreRequirement(CardEffectCommons.IgnoreRequirement.Level) || _ignoreLevel)
@@ -344,6 +416,7 @@ public class PlayCardClass
                     }
                 }
             }
+            #endregion
 
             List<CardSource> oldTrashCards = new List<CardSource>();
 
@@ -392,7 +465,18 @@ public class PlayCardClass
                             {
                                 List<int> CostList = new List<int>();
 
-                                if (!IsBurst(card))
+                                bool isBurst = IsBurst(card);
+                                bool isAppFusion = IsAppFusion(card);
+
+                                if(isBurst || isAppFusion)
+                                {
+                                    if(isBurst)
+                                        CostList.Add(card.burstDigivolutionCondition.cost);
+
+                                    if(isAppFusion)
+                                        CostList.Add(card.appFusionCondition.cost);
+                                }
+                                else
                                 {
                                     foreach (int cost in card.CostList(targetPermanent, ignoreLevel: GetIgnoreRequirement(CardEffectCommons.IgnoreRequirement.Level), checkAvailability: false))
                                     {
@@ -402,12 +486,7 @@ public class PlayCardClass
                                             evoCost -= _reducedCost;
 
                                         CostList.Add(evoCost);
-                                    } 
-                                }
-
-                                else
-                                {
-                                    CostList.Add(card.burstDigivolutionCondition.cost);
+                                    }
                                 }
 
                                 CostList = CostList.Distinct().ToList();
@@ -509,7 +588,7 @@ public class PlayCardClass
 
             List<SkillInfo> skillInfos_BeforePayCost = AutoProcessing.GetSkillInfos(hashtable, EffectTiming.BeforePayCost)
             .Concat(AutoProcessing.GetSkillInfosOfCards(hashtable, EffectTiming.BeforePayCost, new List<CardSource>() { card }
-                .Filter(cardSource => !CardEffectCommons.IsExistOnHand(cardSource) && !CardEffectCommons.IsExistOnTrash(cardSource) && cardSource.PermanentOfThisCard() == null)))
+                .Filter(cardSource => !CardEffectCommons.IsExistOnHand(cardSource) && !CardEffectCommons.IsExistOnTrash(cardSource) && !CardEffectCommons.IsExistInSecurity(cardSource) && cardSource.PermanentOfThisCard() == null)))
             .ToList();
 
             yield return ContinuousController.instance.StartCoroutine(AutoProcessing.ActivateBackgroundEffects(hashtable, EffectTiming.BeforePayCost));
@@ -536,6 +615,10 @@ public class PlayCardClass
                 }
 
                 else if (IsBurst(card))
+                {
+                    return true;
+                }
+                else if (IsAppFusion(card))
                 {
                     return true;
                 }
@@ -664,6 +747,27 @@ public class PlayCardClass
             }
             #endregion
 
+            #region Add Link Card of App Fusion
+            UnityEngine.Debug.Log($"PLAYING CARD: {IsAppFusion(card)}");
+            if (IsAppFusion(card))
+            {
+                yield return ContinuousController.instance.StartCoroutine(GManager.instance.selectAppFusionEffect.AddToSources(LinkedCard(card)));
+
+                if (!GManager.instance.selectAppFusionEffect.LinkAdded)
+                {
+                    _appFusionFrameIDs = new int[0];
+
+                    yield return ContinuousController.instance.StartCoroutine(SelectCost());                    
+                }
+                else
+                {
+                    appFusion = true;
+                }
+
+                yield return GManager.instance.photonWaitController.StartWait("AppFuse");
+            }
+            #endregion
+
             #region fix cost to pay
             int Cost = 0;
 
@@ -719,7 +823,7 @@ public class PlayCardClass
 
                         if (!endPlayCard)
                         {
-                            if (!isJogress && !IsBurst(card))
+                            if (!isJogress && !IsBurst(card) && !IsAppFusion(card))
                             {
                                 if (!GetIgnoreRequirement(CardEffectCommons.IgnoreRequirement.Level) && !card.CanPlayCardTargetFrame(targetPermanents[0].PermanentFrame, PayCost, CardEffect, root: Root, fixedCost: -1))
                                 {
@@ -740,6 +844,14 @@ public class PlayCardClass
                             else if (IsBurst(card))
                             {
                                 if (!card.CanBurstDigivolutionFromTargetPermanent(targetPermanents[0], PayCost))
+                                {
+                                    endPlayCard = true;
+                                    playFailed = true;
+                                }
+                            }
+                            else if (IsAppFusion(card))
+                            {
+                                if (!card.CanAppFusionFromTargetPermanent(targetPermanents[0], PayCost))
                                 {
                                     endPlayCard = true;
                                     playFailed = true;
@@ -856,6 +968,9 @@ public class PlayCardClass
         {
             playPermanent.SetBurstDigivolved();
         }
+
+        if (appFusion)
+            playPermanent.SetAppFusion(_appFusionFrameIDs);
 
         if (_isBreedingArea)
         {
@@ -996,6 +1111,15 @@ public class PlayPermanentClass
         _burstDigivolved = true;
     }
 
+    public void SetAppFusion(int[] appFusionFrameIDs)
+    {
+        if (appFusionFrameIDs != null)
+        {
+            _appFusionFrameIDs = appFusionFrameIDs.CloneArray();
+        }
+        _appFusion = true;
+    }
+
     public void SetIsBreedingArea()
     {
         _isBreedingArea = true;
@@ -1014,10 +1138,14 @@ public class PlayPermanentClass
     int[] _jogressEvoRootsFrameIDs = null;
     int _digiXrosCount = 0;
     bool _burstDigivolved = false;
+    int[] _appFusionFrameIDs = null;
+    bool _appFusion = false;
     bool _isBreedingArea = false;
     bool _isPlayOption = false;
 
     public bool isJogress => _jogressEvoRootsFrameIDs != null && _jogressEvoRootsFrameIDs.Length == 2;
+
+    public bool isAppFusion => _appFusionFrameIDs != null && _appFusionFrameIDs.Length == 2;
 
     public IEnumerator PlayPermanent()
     {
@@ -1187,7 +1315,7 @@ public class PlayPermanentClass
                             {
                                 bool isBlast = CardEffect != null && CardEffect.EffectName != null && CardEffect.EffectName.Contains("Blast");
                                 //effect
-                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().DigivolveFieldPermanentCardEffect(permanent.ShowingPermanentCard, _burstDigivolved, isBlast));
+                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().DigivolveFieldPermanentCardEffect(permanent.ShowingPermanentCard, _burstDigivolved, isBlast, _appFusion));
                             }
                         }
                     }
@@ -1291,6 +1419,14 @@ public class PlayPermanentClass
                             permanent.IsBurstDigivolved = true;
 
                             GManager.instance.selectBurstDigivolutionEffect.AddTrashTopCardAtTurnEnd(permanent);
+                        }
+                    }
+
+                    if (_appFusion)
+                    {
+                        if (permanent.TopCard != null)
+                        {
+                            permanent.IsAppFusion = true;
                         }
                     }
 
@@ -1774,6 +1910,8 @@ public class IDigiBurst
         {
             if (_permanent.TopCard != null)
             {
+                if (_permanent.ImmuneFromStackTrashing(_cardEffect)) return false;
+
                 if (_upToMaxCount)
                 {
                     if (_permanent.DigivolutionCards.Some((cardSource) => !cardSource.CanNotTrashFromDigivolutionCards(_cardEffect)))
@@ -2512,6 +2650,277 @@ public class IPlacePermanentToDigivolutionCards
             if (!_notShowCards)
             {
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(addedDigivolutionCards, "Digivolution Cards", true, true));
+            }
+        }
+
+        #endregion
+    }
+}
+#endregion
+
+#region Place permanent to another permanent's Link cards
+public class IPlacePermanentToLinkCards
+{
+    public IPlacePermanentToLinkCards(
+        List<Permanent[]> permanentArrays,
+        ICardEffect cardEffect,
+        bool skipEffectAndActivateSkill = false)
+    {
+        permanentArrays.Clone().ForEach(permanentArray => _permanentArrays.Add(permanentArray.CloneArray()));
+        _cardEffect = cardEffect;
+        _skipEffectAndActivateSkill = skipEffectAndActivateSkill;
+    }
+
+    public void SetNotShowCards()
+    {
+        _notShowCards = true;
+    }
+
+    List<Permanent[]> _permanentArrays = new List<Permanent[]>();
+    ICardEffect _cardEffect = null;
+    bool _notShowCards = false;
+    bool _skipEffectAndActivateSkill = false;
+    public bool Placed { get; private set; } = false;
+    public IEnumerator PlacePermanentToLinkCards()
+    {
+        if (_permanentArrays.Count == 0)
+        {
+            yield break;
+        }
+
+        List<CardSource> addedLinkCards = new List<CardSource>();
+
+        List<Permanent> removeFieldPermanents = new List<Permanent>();
+
+        foreach (Permanent[] permanentArray in _permanentArrays)
+        {
+            if (permanentArray.Length == 2)
+            {
+                Permanent LinkedPermanent = permanentArray[0];
+                Permanent getLinkPermanent = permanentArray[1];
+
+                if (LinkedPermanent != null && getLinkPermanent != null)
+                {
+                    if (LinkedPermanent.TopCard != null && getLinkPermanent.TopCard != null && !getLinkPermanent.IsToken)
+                    {
+                        if (_cardEffect != null)
+                        {
+                            if (LinkedPermanent.TopCard.CanNotBeAffected(_cardEffect) || getLinkPermanent.TopCard.CanNotBeAffected(_cardEffect))
+                            {
+                                continue;
+                            }
+                        }
+
+                        removeFieldPermanents.Add(LinkedPermanent);
+                    }
+                }
+            }
+        }
+
+        foreach (Permanent permanent in removeFieldPermanents)
+        {
+            permanent.willBeRemoveField = true;
+        }
+
+        if (removeFieldPermanents.Count == 0)
+        {
+            yield break;
+        }
+
+        #region Cut in Effects
+        List<SkillInfo> skillInfos = new List<SkillInfo>();
+
+        Hashtable hashtable1 =
+        CardEffectCommons.WhenPermanentWouldRemoveFieldCheckHashtable(
+                removeFieldPermanents,
+                _cardEffect,
+                null);
+
+        #region  "When permanents would remove field" effect
+
+        foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
+        {
+            #region permanents' effects
+            foreach (Permanent permanent1 in player.GetFieldPermanents())
+            {
+                foreach (ICardEffect cardEffect in permanent1.EffectList(EffectTiming.WhenRemoveField))
+                {
+                    if (cardEffect is ActivateICardEffect)
+                    {
+                        if (cardEffect.CanTrigger(hashtable1))
+                        {
+                            skillInfos.Add(new SkillInfo(cardEffect, hashtable1, EffectTiming.WhenRemoveField));
+                        }
+                    }
+                }
+            }
+            #endregion
+
+            #region players' effects
+            foreach (ICardEffect cardEffect in player.EffectList(EffectTiming.WhenRemoveField))
+            {
+                if (cardEffect is ActivateICardEffect)
+                {
+                    if (cardEffect.CanTrigger(hashtable1))
+                    {
+                        skillInfos.Add(new SkillInfo(cardEffect, hashtable1, EffectTiming.WhenRemoveField));
+                    }
+                }
+            }
+            #endregion
+        }
+        #endregion
+
+        if (skillInfos.Count >= 1)
+        {
+            foreach (SkillInfo skillInfo in skillInfos)
+            {
+                GManager.instance.autoProcessing_CutIn.PutStackedSkill(skillInfo);
+            }
+
+            bool showEffect()
+            {
+                if (skillInfos.Count >= 2)
+                {
+                    return true;
+                }
+
+                else if (skillInfos.Count == 1)
+                {
+                    if (skillInfos[0].CardEffect.CanActivate(skillInfos[0].Hashtable))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            if (showEffect())
+            {
+                foreach (Permanent Permanent in removeFieldPermanents)
+                {
+                    if (Permanent != null)
+                    {
+                        if (Permanent.TopCard != null)
+                        {
+                            if (Permanent.willBeRemoveField)
+                            {
+                                if (Permanent.ShowingPermanentCard != null)
+                                {
+                                    if (Permanent.ShowingPermanentCard.WillRemoveFieldObject != null)
+                                    {
+                                        Permanent.ShowingPermanentCard.WillRemoveFieldObject.transform.parent.gameObject.SetActive(true);
+                                        Permanent.ShowingPermanentCard.WillRemoveFieldObject.SetActive(true);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                #region shrink security Digimon display
+                if (GManager.instance.attackProcess.IsAttacking)
+                {
+                    if (GManager.instance.attackProcess.SecurityDigimon != null)
+                    {
+                        if (GManager.instance.GetComponent<Effects>().ShowUseHandCard.gameObject.activeSelf && GManager.instance.GetComponent<Effects>().ShowUseHandCard.cardSource == GManager.instance.attackProcess.SecurityDigimon)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().MoveToExecuteCardEffect(GManager.instance.attackProcess.SecurityDigimon));
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.attackProcess.SecurityDigimon.Owner.brainStormObject.BrainStormCoroutine(GManager.instance.attackProcess.SecurityDigimon));
+                        }
+                    }
+                }
+                #endregion
+            }
+
+            // cut in effect process
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.TriggeredSkillProcess(false, null));
+
+            foreach (Permanent Permanent in removeFieldPermanents)
+            {
+                if (Permanent != null)
+                {
+                    if (Permanent.TopCard != null)
+                    {
+                        if (Permanent.ShowingPermanentCard != null)
+                        {
+                            if (Permanent.ShowingPermanentCard.WillRemoveFieldObject != null)
+                            {
+                                Permanent.ShowingPermanentCard.WillRemoveFieldObject.SetActive(false);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        #endregion
+
+        foreach (Permanent[] permanentArray in _permanentArrays)
+        {
+            if (permanentArray.Length == 2)
+            {
+                Permanent LinkedPermanent = permanentArray[0];
+                Permanent getLinkPermanent = permanentArray[1];
+
+                if (LinkedPermanent != null && getLinkPermanent != null)
+                {
+                    if (LinkedPermanent.TopCard != null && getLinkPermanent.TopCard != null && !getLinkPermanent.IsToken && LinkedPermanent.willBeRemoveField)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(LinkedPermanent.DiscardEvoRoots());
+
+                        CardSource cardSource = LinkedPermanent.TopCard;
+
+                        #region record used effect
+                        if (_cardEffect != null)
+                        {
+                            if (LinkedPermanent.TopCard != null)
+                            {
+                                LinkedPermanent.PlaceOtherPermanentEffect = _cardEffect;
+                            }
+                        }
+                        #endregion
+
+                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveField(
+                            LinkedPermanent,
+                            ignoreOverflow: true));
+
+                        yield return ContinuousController.instance.StartCoroutine(getLinkPermanent.AddLinkCard(cardSource, _cardEffect));
+
+                        cardSource.cEntity_EffectController.InitUseCountThisTurn();
+
+                        addedLinkCards.Add(cardSource);
+
+                        Placed = true;
+                    }
+                }
+            }
+        }
+
+        #region add log
+        if (addedLinkCards.Count >= 1)
+        {
+            string log = "";
+
+            log += $"\nLink cards:";
+
+            foreach (CardSource cardSource in addedLinkCards)
+            {
+                log += $"\n{cardSource.BaseENGCardNameFromEntity}({cardSource.CardID})";
+            }
+
+            log += "\n";
+
+            PlayLog.OnAddLog?.Invoke(log);
+        }
+        #endregion
+
+        #region hide icon
+        if (addedLinkCards.Count >= 1)
+        {
+            if (!_notShowCards)
+            {
+                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(addedLinkCards, "Link Cards", true, true));
             }
         }
 
@@ -3662,16 +4071,25 @@ public class IBattle
 #region De-digivolve
 public class IDegeneration
 {
-    public IDegeneration(Permanent permanent, int DegenerationCount, ICardEffect cardEffect)
+    /// <summary>
+    /// De-Digivolve Class
+    /// </summary>
+    /// <param name="permanent">Target Permanent</param>
+    /// <param name="DegenerationCount">De-Digivolve Amount</param>
+    /// <param name="cardEffect">Card Effect</param>
+    /// <param name="DegenerationCountRuling">Should we enforce rule to select De-digivolve amount before digimon, disabled by default</param>
+    public IDegeneration(Permanent permanent, int DegenerationCount, ICardEffect cardEffect, bool? DegenerationCountRuling = null)
     {
         _permanent = permanent;
         _degenerationCount = DegenerationCount;
         _cardEffect = cardEffect;
+        _degenerationCountRuling = DegenerationCountRuling;
     }
 
     Permanent _permanent = null;
-    int _degenerationCount = 0;
+    int _degenerationCount;
     ICardEffect _cardEffect = null;
+    bool? _degenerationCountRuling;
 
     public IEnumerator Degeneration()
     {
@@ -3680,13 +4098,14 @@ public class IDegeneration
         if (_permanent == null) yield break;
         if (_permanent.TopCard == null) yield break;
         if (_permanent.ImmuneFromDeDigivolve()) yield break;
+        if (_permanent.ImmuneFromStackTrashing(_cardEffect)) yield break;
         if (_permanent.TopCard.CanNotBeAffected(_cardEffect)) yield break;
 
         int maxCount = Math.Min(_permanent.DigivolutionCards.Count, _degenerationCount);
 
         SelectCountEffect selectCountEffect = GManager.instance.GetComponent<SelectCountEffect>();
 
-        if (selectCountEffect != null)
+        if (selectCountEffect != null && _degenerationCountRuling == null)
         {
             Player selectPlayer = _cardEffect.EffectSourceCard.Owner;
 
@@ -3771,6 +4190,20 @@ public class IDegeneration
                 count++;
             }
 
+            #region "When Top Card is Trashed" effect
+            #region Hashtable Setting
+            System.Collections.Hashtable hashtable = new System.Collections.Hashtable()
+                        {
+                            {"Permanent", _permanent},
+                            {"CardSources", selectedCards}
+                        };
+            #endregion
+
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing
+                .StackSkillInfos(hashtable, EffectTiming.WhenTopCardTrashed));
+
+            #endregion
+
             #region add log
             if (selectedCards.Count >= 1)
             {
@@ -3818,6 +4251,7 @@ public class ITrashDigivolutionCards
         if (_cardEffect == null) yield break;
         if (_permanent == null) yield break;
         if (_permanent.TopCard == null) yield break;
+        if (_permanent.ImmuneFromStackTrashing(_cardEffect)) yield break;
         if (_permanent.TopCard.CanNotBeAffected(_cardEffect)) yield break;
         if (_permanent.HasNoDigivolutionCards) yield break;
 
@@ -3897,6 +4331,103 @@ public class ITrashDigivolutionCards
 }
 #endregion
 
+#region Trash link cards
+public class ITrashLinkCards
+{
+    public ITrashLinkCards(Permanent permanent, List<CardSource> trashTargetCards, ICardEffect cardEffect)
+    {
+        _permanent = permanent;
+
+        _trashTargetCards = trashTargetCards.Clone();
+
+        _cardEffect = cardEffect;
+    }
+
+    Permanent _permanent = null;
+    List<CardSource> _trashTargetCards = new List<CardSource>();
+    ICardEffect _cardEffect = null;
+
+    public IEnumerator TrashLinkCards()
+    {
+        if (_trashTargetCards == null) yield break;
+        if (_permanent == null) yield break;
+        if (_permanent.TopCard == null) yield break;
+        if (_cardEffect != null && _permanent.TopCard.CanNotBeAffected(_cardEffect)) yield break;
+        if (_permanent.HasNoLinkCards) yield break;
+
+        _trashTargetCards = _trashTargetCards.Filter((cardSource) =>
+            _permanent.LinkedCards.Contains(cardSource));
+
+        if (_trashTargetCards.Count == 0) yield break;
+
+        _trashTargetCards.ForEach(source => source.willBeRemoveSources = true);
+
+        string message = "Discarded card" + Utils.PluralFormSuffix(_trashTargetCards.Count);
+        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(_trashTargetCards, message, true, true));
+
+        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(_permanent));
+
+        #region cut in effect - Would discard
+
+        // "When link cards would be trashed" effect
+        //TODO: Create CardEffectCommons.WhenLinkCardWouldDiscard function
+        /*yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.StackSkillInfos(
+            CardEffectCommons.WhenDigivolutionCardWouldDiscardedCheckHashtable(
+                _permanent,
+                _trashTargetCards,
+                _cardEffect
+            ),
+            EffectTiming.WhenWouldDigivolutionCardDiscarded));*/
+
+        if (GManager.instance.autoProcessing_CutIn.HasAwaitingActivateEffects())
+        {
+            // effect
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.ShrinkSecurityDigimonDisplay());
+
+            // cut in effect process
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.TriggeredSkillProcess(false, AutoProcessing.HasExecutedSameEffect));
+        }
+        #endregion
+
+        //fix trash target permanent
+        Permanent permanentTarget_Fixed = _permanent;
+
+        // fix trash sources sources
+        List<CardSource> trashLinkCards_Fixed = _trashTargetCards.Filter(cardsource =>
+            cardsource != null
+            && cardsource.willBeRemoveSources);
+
+        #region "When link cards are trashed" effect
+
+        #region Hashtable Setting
+        Hashtable hashtable = new Hashtable()
+            {
+                {"CardEffect", _cardEffect},
+                {"Permanent", permanentTarget_Fixed},
+                {"DiscardedCards", trashLinkCards_Fixed},
+            };
+        #endregion
+        //TODO: Create OnLinkCardDiscarded timing
+        //yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(hashtable, EffectTiming.OnDigivolutionCardDiscarded));
+        #endregion
+
+        yield return ContinuousController.instance.StartCoroutine(new AceOverflowClass(_trashTargetCards).Overflow());
+
+        foreach (CardSource cardSource in trashLinkCards_Fixed)
+        {
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().RemoveDigivolveRootEffect(cardSource, permanentTarget_Fixed));
+
+            if (!cardSource.IsToken)
+            {
+                yield return ContinuousController.instance.StartCoroutine(permanentTarget_Fixed.RemoveLinkedCard(cardSource));
+            }
+
+            cardSource.willBeRemoveSources = false;
+        }
+    }
+}
+#endregion
+
 #region Return digivolution cards to deck bottom
 public class ReturnToLibraryBottomDigivolutionCardsClass
 {
@@ -3968,6 +4499,8 @@ public class IReduceSecurity
 
     public IEnumerator ReduceSecurity()
     {
+        GManager.OnSecurityStackChanged?.Invoke(_player);
+
         #region "When cards are removed from security" effect
 
         #region Hashtable Setting
@@ -4007,6 +4540,8 @@ public class IAddSecurity
 
     public IEnumerator AddSecurity()
     {
+        GManager.OnSecurityStackChanged?.Invoke(_player);
+
         #region "When security cards are added" effect
 
         #region Hashtable setting
@@ -4302,3 +4837,127 @@ public class AceOverflowClass
 }
 #endregion
 
+#region TrashStack
+public class ITrashStack
+{
+    /// <summary>
+    /// Trash Stack Class
+    /// </summary>
+    /// <param name="permanent">Target Permanent</param>
+    /// <param name="TrashCount">Amount of cards to trash</param>
+    /// <param name="cardEffect">Card Effect</param>
+    /// <param name="fromTop">Should trashing start from top, true by default</param>
+    public ITrashStack(Permanent permanent, int TrashCount, ICardEffect cardEffect, bool fromTop = true)
+    {
+        _permanent = permanent;
+        _trashCount = TrashCount;
+        _cardEffect = cardEffect;
+        _fromTop = fromTop;
+    }
+
+    Permanent _permanent = null;
+    int _trashCount;
+    ICardEffect _cardEffect = null;
+    bool _fromTop;
+
+    public IEnumerator TrashStack()
+    {
+        if (_cardEffect == null) yield break;
+        if (_cardEffect.EffectSourceCard == null) yield break;
+        if (_permanent == null) yield break;
+        if (_permanent.TopCard == null) yield break;
+        if (_permanent.ImmuneFromStackTrashing(_cardEffect)) yield break;
+        if (_permanent.TopCard.CanNotBeAffected(_cardEffect)) yield break;
+
+        _trashCount = Math.Min(_permanent.StackCards.Count, _trashCount);
+
+        if (_trashCount >= 1)
+        {
+            int count = 0;
+
+            List<CardSource> selectedCards = new List<CardSource>();
+
+            while (true)
+            {
+                bool StopCondition()
+                {
+                    if (_permanent.HasNoDigivolutionCards)
+                    {
+                        return true;
+                    }
+
+                    if (count >= _trashCount)
+                    {
+                        return true;
+                    }
+
+                    return false;
+                }
+
+                if (StopCondition())
+                {
+                    break;
+                }
+
+                if (count == 0)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(_permanent));
+                }
+
+                CardSource cardSource = _permanent.TopCard;
+
+                selectedCards.Add(cardSource);
+
+                yield return ContinuousController.instance.StartCoroutine(new AceOverflowClass(new List<CardSource>() { cardSource }).Overflow());
+
+                yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveFromAllArea(cardSource));
+
+                if (!cardSource.IsToken)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddTrashCard(cardSource));
+                }
+
+                _permanent.ShowingPermanentCard.ShowPermanentData(true);
+                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().RemoveDigivolveRootEffect(cardSource, _permanent));
+
+                count++;
+            }
+
+            #region "When Top Card is Trashed" effect
+            #region Hashtable Setting
+            System.Collections.Hashtable hashtable = new System.Collections.Hashtable()
+                        {
+                            {"Permanent", _permanent},
+                            {"CardSources", selectedCards}
+                        };
+            #endregion
+
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing
+                .StackSkillInfos(hashtable, EffectTiming.WhenTopCardTrashed));
+
+            #endregion
+
+            #region add log
+            if (selectedCards.Count >= 1)
+            {
+                string log = "";
+
+                log += $"\nStack Trashed :";
+
+                foreach (CardSource cardSource in selectedCards)
+                {
+                    if (cardSource != null)
+                    {
+                        log += $"\n{cardSource.BaseENGCardNameFromEntity}({cardSource.CardID})";
+                    }
+                }
+
+                log += "\n";
+
+                PlayLog.OnAddLog?.Invoke(log);
+            }
+            #endregion
+        }
+    }
+}
+#endregion
