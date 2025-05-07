@@ -117,7 +117,7 @@ namespace DCGO.CardEffects.EX9
                         mode: SelectHandEffect.Mode.Discard,
                         cardEffect: activateClass);
                     selectHandEffect.SetUpCustomMessage("Choose a [Cyborg] or [Ver.1] card to discard", "The opponent is selecting 1 card in hand to discard.");
-                    selectHandEffect.SetUpCustomMessage_ShowCard("Discared Card");
+                    selectHandEffect.SetUpCustomMessage_ShowCard("Discarded Card");
                     yield return StartCoroutine(selectHandEffect.Activate());
 
                     IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
