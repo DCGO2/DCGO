@@ -198,7 +198,7 @@ namespace DCGO.CardEffects.BT21
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,
-                            canNoSelect: false,
+                            canNoSelect: true,
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine,
                             afterSelectPermanentCoroutine: null,
@@ -226,8 +226,6 @@ namespace DCGO.CardEffects.BT21
                                     canAttackPlayerCondition: () => true,
                                     defenderCondition: _ => true,
                                     cardEffect: activateClass);
-
-                                selectAttackEffect.SetCanNotSelectNotAttack();
 
                                 yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
                             }

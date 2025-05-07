@@ -23,7 +23,7 @@ public class BT2_046 : CEntity_Effect
 
             string EffectDiscription()
             {
-                return "[Your Turn] When this Digimon deletes one of your opponent's level 6 or higher Digimon in battleCunsuspend this Digimon.";
+                return "[Your Turn] When this Digimon deletes one of your opponent's level 6 or higher Digimon in battle unsuspend this Digimon.";
             }
 
             bool CanUseCondition(Hashtable hashtable)
@@ -33,7 +33,7 @@ public class BT2_046 : CEntity_Effect
                     if (CardEffectCommons.IsOwnerTurn(card))
                     {
                         bool WinnerCondition(Permanent permanent) => permanent.cardSources.Contains(card);
-                        bool LoserCondition(Permanent permanent) => CardEffectCommons.IsOpponentPermanent(permanent, card) && permanent.LevelJustBeforeRemoveField >= 6;
+                        bool LoserCondition(Permanent permanent) => CardEffectCommons.IsOpponentPermanent(permanent, card) && permanent.Level >= 6;
 
                         if (CardEffectCommons.CanTriggerWhenDeleteOpponentDigimonByBattle(
                             hashtable: hashtable,

@@ -74,7 +74,7 @@ namespace DCGO.CardEffects.EX2
 
                 string EffectDiscription()
                 {
-                    return "[Your Turn] When one of your Digimon would digivolve into a Digimon with [Gallantmon] or [Growlmon] in its name, that Digimon gains \"[When Digivolving] <Blitz> (This Digimon can attack when your opponent has 1 or more memory.)\" for the turn.";
+                    return "[Your Turn] When one of your Digimon would digivolve into a Digimon with [Gallantmon] or [Growlmon] in its name, that Digimon gains \"[When Digivolving] EX8-053 (This Digimon can attack when your opponent has 1 or more memory.)\" for the turn.";
                 }
 
                 bool DigivolvePermanentCondition(Permanent permanent)
@@ -154,18 +154,16 @@ namespace DCGO.CardEffects.EX2
                         {
                             foreach (Permanent permanent in card.Owner.GetBattleAreaPermanents().Filter(PermanentCondition))
                             {
-
-                                ActivateClass activateClass1 = new ActivateClass();
-                                activateClass1.SetUpICardEffect("Blitz", CanUseCondition1, permanent.TopCard);
-                                activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDiscription1());
-                                activateClass1.SetEffectSourcePermanent(permanent);
-                                permanent.UntilEachTurnEndEffects.Add(GetCardEffect);
+                                AddSkillClass addSkillClass = new AddSkillClass();
+                                addSkillClass.SetUpICardEffect("Your Digimons get Blitz", CanUseCondition1, permanent.TopCard);
+                                addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
+                                CardEffectCommons.AddEffectToPermanent(permanent, effectDuration: EffectDuration.UntilEachTurnEnd, card: permanent.TopCard, cardEffect: addSkillClass, timing: EffectTiming.None);
 
                                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(permanent));
 
-                                string EffectDiscription1()
+                                bool CardSourceCondition(CardSource source)
                                 {
-                                    return "[When Digivolving] <Blitz> (This Digimon can attack when your opponent has 1 or more memory.)";
+                                    return true;
                                 }
 
                                 bool CanUseCondition1(Hashtable hashtable1)
@@ -181,42 +179,27 @@ namespace DCGO.CardEffects.EX2
                                     return false;
                                 }
 
-                                bool CanActivateCondition1(Hashtable hashtable1)
-                                {
-                                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(permanent.TopCard))
-                                    {
-                                        if (CardEffectCommons.CanActivateBlitz(permanent.TopCard, activateClass1))
-                                        {
-                                            return true;
-                                        }
-                                    }
-
-                                    return false;
-                                }
-
-                                IEnumerator ActivateCoroutine1(Hashtable _hashtable1)
-                                {
-                                    if (permanent.TopCard != null)
-                                    {
-                                        if (permanent.TopCard.Owner.GetBattleAreaDigimons().Contains(permanent))
-                                        {
-                                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBlitz(
-                                                targetPermanent: permanent,
-                                                effectDuration: EffectDuration.UntilEachTurnEnd,
-                                                activateClass: activateClass1,
-                                                isWhenDigivolving: true));
-                                        }
-                                    }
-                                }
-
-                                ICardEffect GetCardEffect(EffectTiming _timing)
+                                List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming _timing)
                                 {
                                     if (_timing == EffectTiming.OnEnterFieldAnyone)
                                     {
-                                        return activateClass1;
+                                        bool Condition()
+                                        {
+                                            if (CardSourceCondition(cardSource))
+                                            {
+                                                return true;
+                                            }
+
+                                            return false;
+                                        }
+
+                                        cardEffects.Add(CardEffectFactory.BlitzSelfEffect(isInheritedEffect: false,
+                                            card: cardSource,
+                                            condition: Condition,
+                                            isWhenDigivolving: false));
                                     }
 
-                                    return null;
+                                    return cardEffects;
                                 }
                             }
                         }

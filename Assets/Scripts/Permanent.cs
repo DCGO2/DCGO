@@ -1792,9 +1792,9 @@ public class Permanent
                     .Flat()
                     .Map(permanent => permanent.EffectList(EffectTiming.None))
                     .Flat()
-                    .Some(cardEffect => cardEffect is ICanNotPutFieldEffect
+                    .Some(cardEffect => cardEffect is ICanNotMoveEffect
                         && cardEffect.CanUse(null)
-                        && ((ICanNotPutFieldEffect)cardEffect).CanNotPutField(TopCard, null)))
+                        && ((ICanNotMoveEffect)cardEffect).CanNotMove(TopCard, null)))
                 {
                     return false;
                 }
@@ -1804,9 +1804,9 @@ public class Permanent
                 if (GManager.instance.turnStateMachine.gameContext.Players
                         .Map(player => player.EffectList(EffectTiming.None))
                         .Flat()
-                        .Some(cardEffect => cardEffect is ICanNotPutFieldEffect
+                        .Some(cardEffect => cardEffect is ICanNotMoveEffect
                             && cardEffect.CanUse(null)
-                            && ((ICanNotPutFieldEffect)cardEffect).CanNotPutField(TopCard, null)))
+                            && ((ICanNotMoveEffect)cardEffect).CanNotMove(TopCard, null)))
                 {
                     return false;
                 }
@@ -1816,9 +1816,9 @@ public class Permanent
                 if (this == null)
                 {
                     if (EffectList(EffectTiming.None)
-                            .Some(cardEffect => cardEffect is ICanNotPutFieldEffect
+                            .Some(cardEffect => cardEffect is ICanNotMoveEffect
                                 && cardEffect.CanUse(null)
-                                && ((ICanNotPutFieldEffect)cardEffect).CanNotPutField(TopCard, null)))
+                                && ((ICanNotMoveEffect)cardEffect).CanNotMove(TopCard, null)))
                     {
                         return false;
                     }
@@ -2147,7 +2147,7 @@ public class Permanent
             {
                 if (cardEffect is CannotBlockClass)
                 {
-                    if (cardEffect.EffectName == "Can't Block")
+                    if (cardEffect.EffectName == "Unblockable")
                     {
                         return true;
                     }

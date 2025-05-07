@@ -50,17 +50,32 @@ public class BT6_033 : CEntity_Effect
                     {
                         if (card.Owner.SecurityCards.Count > 3)
                         {
-                            int count = 0;
+                            yield return GManager.instance.photonWaitController.StartWait("Pulsemon_Select_ETB");
 
-                            while (card.Owner.SecurityCards.Count > 3)
+                            List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>();
+
+                            for(int i = 1; i < card.Owner.SecurityCards.Count - 3; i++)
+                                selectionElements.Add(new SelectionElement<int>(message: $"{i}", value: i, spriteIndex: 0));
+
+                            string selectPlayerMessage = "Choose how many cards to trash?";
+                            string notSelectPlayerMessage = "The opponent is choosing how many cards to trash.";
+
+                            if (selectionElements.Count > 1)
+                                GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+                            else
+                                GManager.instance.userSelectionManager.SetInt(selectionElements[0].Value);
+
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                            int count = GManager.instance.userSelectionManager.SelectedIntValue;
+
+                            for (int i = count; i > 0; i--)
                             {
                                 yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
-                    player: card.Owner,
-                    destroySecurityCount: 1,
-                    cardEffect: activateClass,
-                    fromTop: true).DestroySecurity());
-
-                                count++;
+                                    player: card.Owner,
+                                    destroySecurityCount: 1,
+                                    cardEffect: activateClass,
+                                    fromTop: true).DestroySecurity());
                             }
 
                             if (count >= 1)
