@@ -365,7 +365,7 @@ namespace DCGO.CardEffects.LM
                         afterSelectPermanentCoroutine: null,
                         maxCount: 1,
                         canEndNotMax: false,
-                        mode: SelectPermanentEffect.Mode.Destroy,
+                        mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
                     selectPermanentEffect.SetUpCustomMessage("Select 1 digimon to delete.", "The opponent is selecting 1 digimon to delete.");

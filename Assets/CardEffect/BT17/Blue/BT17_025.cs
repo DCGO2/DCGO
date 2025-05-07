@@ -285,6 +285,7 @@ namespace DCGO.CardEffects.BT17
                 activateClass.SetUpICardEffect("Return 1 of your opponent's level 3 Digimon to the hand", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetIsInheritedEffect(true);
+                activateClass.SetHashString("Return_BT17-025");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()

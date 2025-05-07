@@ -8,6 +8,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
 using System.Drawing.Text;
+using System.Net;
 
 namespace DCGO.CardEntities
 {
@@ -21,7 +22,9 @@ namespace DCGO.CardEntities
 
         string cardIDString = "";
         bool onlyAA = false;
-        bool updateExisting = true;
+        bool updateExisting = false;
+        bool debugMode = false;
+        bool withoutImages = false;
 
         public override void OnInspectorGUI()
         {
@@ -35,6 +38,8 @@ namespace DCGO.CardEntities
             {
                 updateExisting = GUILayout.Toggle(updateExisting, "Update Existing Assets");
                 onlyAA = GUILayout.Toggle(onlyAA, "AA Only");
+                debugMode = GUILayout.Toggle(debugMode, "Run in Debug Mode");
+                withoutImages = GUILayout.Toggle(withoutImages, "Create Assets Without Images");
 
                 GUILayout.Label("Card ID: ");
                 cardIDString = GUILayout.TextField(cardIDString, 500).ToUpper();
@@ -50,7 +55,9 @@ namespace DCGO.CardEntities
                             cards.AddRange(_cardData.Where(x => x.cardNumber.Contains(str)).ToList());
 
                         SetDataToScriptableObject(cards);
-                        _loadJSON.prevCardIndex = _loadJSON.setCardIndex-1;
+
+                        if(!debugMode)
+                            _loadJSON.prevCardIndex = _loadJSON.setCardIndex-1;
                     }
                 }
             }
@@ -93,6 +100,9 @@ namespace DCGO.CardEntities
             string[] urlSplit = url.Split(".");
             string startURL = urlSplit[0].Substring(0, urlSplit[0].LastIndexOf("/"));
 
+            if (debugMode)
+                Debug.Log($"{ID} - {AA.Count}");
+
             if (!ID.Contains("Errata") && !ID.Contains("_") && AA.Count > 0)
             {
                 AlternateArt errata = AA.Where(x => x.id.StartsWith(ID) && x.id.Contains("Errata")).FirstOrDefault();
@@ -121,7 +131,7 @@ namespace DCGO.CardEntities
 
             cardEntity.Form_ENG = GetCardInfo(card.form);
             cardEntity.Attribute_ENG = GetCardInfo(card.attribute);
-            cardEntity.Type_ENG = GetCardInfo(card.type);
+            cardEntity.Type_ENG = GetCardInfo(card.type, card.rule);
 
             cardEntity.CardSpriteName = GetImageURL(card.cardImage, imageID, card.AAs);
 
@@ -139,10 +149,23 @@ namespace DCGO.CardEntities
             cardEntity.CardID = card.id;
             cardEntity.MaxCountInDeck = GetMaxCount(card.restrictions.japanese);
 
-            cardEntity.name = FixCharactersInName($"{cardEntity.CardName_ENG.Replace(" ", "")}-{cardEntity.CardSpriteName}"); 
-            Debug.Log($"created: {cardEntity.name}");
+            cardEntity.LinkDP = dpParse(card.linkDP);
+            cardEntity.LinkEffect = card.linkEffect;
+            cardEntity.LinkRequirement = card.linkRequirement;
 
-            SaveScriptableObject(cardEntity);
+            cardEntity.name = cardEntity.CardSpriteName.Replace("-Errata","").Replace("-","_");
+
+
+            if (!debugMode)
+            {
+                if(withoutImages || GetImage(cardEntity.CardSpriteName))
+                {
+                    Debug.Log($"created: {cardEntity.name}: {cardEntity.CardSpriteName}, {cardEntity.CardEffectClassName}");
+                    SaveScriptableObject(cardEntity);
+                }
+            }
+            else
+                Debug.Log($"DATA {cardEntity.name}: {cardEntity.CardSpriteName}, {cardEntity.CardEffectClassName}, {GetCardIndex(cardEntity)}");
         }
 
         void CreateAA(CardData data)
@@ -203,17 +226,29 @@ namespace DCGO.CardEntities
         {
             int index = _loadJSON.setCardIndex;
 
-            if (entity.SetID.Equals("P"))
+            /*f (entity.SetID.Equals("P"))
             {
                 index = _loadJSON.promoCardIndex;
                 _loadJSON.promoCardIndex++;
             }
-            else
-                _loadJSON.setCardIndex++;
+            else*/
+            _loadJSON.setCardIndex++;
 
-            EditorUtility.SetDirty(_loadJSON);
+            while (CheckIndexIsUsed())
+            {
+                _loadJSON.setCardIndex++;
+            }
+
+            if (!debugMode)
+                EditorUtility.SetDirty(_loadJSON);
 
             return index;
+        }
+
+        bool CheckIndexIsUsed()
+        {
+            return GetAsset.LoadAll<CEntity_Base>("Assets/CardBaseEntity/")
+                .Any(x => x.CardIndex == _loadJSON.setCardIndex);
         }
 
         //Parse ScriptableObject Name
@@ -283,7 +318,7 @@ namespace DCGO.CardEntities
             return effect;
         }
         //Parse card info split by "/" to list
-        List<string> GetCardInfo(string str)
+        List<string> GetCardInfo(string str, string rule = "")
         {
             List<string> strings = new List<string>();
 
@@ -291,6 +326,33 @@ namespace DCGO.CardEntities
             {
                 strings.Add(data.Trim().Replace("\n","").Replace("\r", ""));
             }
+
+            if (!String.IsNullOrEmpty(rule))
+                strings.AddRange(GetRuleText(rule));
+
+            string debugTxt = "";
+            foreach (string data in strings)
+                debugTxt += data + "\n";
+
+            return strings;
+        }
+
+        //Parse RULE text
+        List<string> GetRuleText(string str)
+        {
+            List<string> strings = new List<string>();
+
+            if (!str.Contains("[Rule] Trait:"))
+                return new List<string>();
+
+            string traitRule = str.Split("[Rule] Trait:")[1];
+            int startIndex = traitRule.IndexOf("[");
+            traitRule = traitRule.Substring(startIndex, traitRule.LastIndexOf("]") - startIndex)
+                .Replace("[","")
+                .Replace("]", "");
+       
+            foreach (string data in traitRule.Split("/"))
+                strings.Add(data.Trim().Replace("\n", "").Replace("\r", ""));
 
             return strings;
         }
@@ -304,19 +366,22 @@ namespace DCGO.CardEntities
             {
                 if (digivolveCondition.color.ToLower() == "all")
                 {
-                    foreach (CardColor color in DataBase.cardColors)
+                    if (int.TryParse(digivolveCondition.level, out _))
                     {
-                        if (color == CardColor.White || color == CardColor.None)
-                            continue;
+                        foreach (CardColor color in DataBase.cardColors)
+                        {
+                            if (color == CardColor.White || color == CardColor.None)
+                                continue;
 
-                        EvoCost evoCost = new EvoCost();
+                            EvoCost evoCost = new EvoCost();
 
-                        evoCost.CardColor = color;
+                            evoCost.CardColor = color;
 
-                        evoCost.Level = int.Parse(digivolveCondition.level);
-                        evoCost.MemoryCost = int.Parse(digivolveCondition.cost);
+                            evoCost.Level = int.Parse(digivolveCondition.level);
+                            evoCost.MemoryCost = int.Parse(digivolveCondition.cost);
 
-                        evoCosts.Add(evoCost);
+                            evoCosts.Add(evoCost);
+                        }
                     }
                 }
                 else
@@ -391,12 +456,44 @@ namespace DCGO.CardEntities
             return value;
         }
 
+        //Parse Link Cost
+        int GetLinkCost(string requirement)
+        {
+            int value = 0;
+
+            if (requirement.Equals("-"))
+                return value;
+
+            string costString = requirement.Split("Cost")[1].Trim();
+
+            if (int.TryParse(costString, out value))
+                return value;
+
+            return value;
+        }
+
         int intParse(string str)
         {
             int value = 0;
 
             if (int.TryParse(str, out value))
                 return value;
+
+            return value;
+        }
+
+        int dpParse(string str)
+        {
+            int value = 0;
+
+            if (str.Equals("-"))
+                return value;
+
+            if (int.TryParse(str.Substring(1, str.Length - 4), out value))
+                return value;
+
+            if (str.StartsWith("-"))
+                value *= -1;
 
             return value;
         }
@@ -409,6 +506,25 @@ namespace DCGO.CardEntities
                 return value;
 
             return value;
+        }
+        #endregion
+
+        #region Attempt to load Image
+        bool GetImage(string ID)
+        {
+            string imgURL = $"{baseURL}assets/images/cards/{ID}.webp";
+
+            Debug.Log(imgURL);
+            try
+            {
+                WebClient wc = new WebClient();
+                string HTMLSource = wc.DownloadString(imgURL);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
         #endregion
     }

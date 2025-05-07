@@ -144,9 +144,12 @@ namespace DCGO.CardEffects.BT17
                                     {
                                         if (permanent.DigivolutionCards.Count >= 1)
                                         {
+                                            if (permanent.TopCard.IsACE) yield return ContinuousController.instance.StartCoroutine(new AceOverflowClass(new List<CardSource> { permanent.TopCard }).Overflow());
+
                                             yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(permanent.TopCard));
 
                                             yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(permanent.TopCard.Owner));
+
 
                                             yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(permanent.TopCard.Owner).AddSecurity());
 

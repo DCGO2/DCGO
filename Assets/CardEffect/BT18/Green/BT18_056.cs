@@ -1,6 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using UnityEngine;
 
 namespace DCGO.CardEffects.BT18
 {
@@ -84,7 +87,7 @@ namespace DCGO.CardEffects.BT18
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    int maxCount = card.Owner.SecurityCards.Count(cardSource => !cardSource.IsFlipped);
+                    int maxCount = Mathf.Min(card.Owner.Enemy.GetBattleAreaDigimons().Count, card.Owner.SecurityCards.Count(cardSource => !cardSource.IsFlipped));
 
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
@@ -151,7 +154,7 @@ namespace DCGO.CardEffects.BT18
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    int maxCount = card.Owner.SecurityCards.Count(cardSource => !cardSource.IsFlipped);
+                    int maxCount = Mathf.Min(card.Owner.Enemy.GetBattleAreaDigimons().Count, card.Owner.SecurityCards.Count(cardSource => !cardSource.IsFlipped));
 
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 

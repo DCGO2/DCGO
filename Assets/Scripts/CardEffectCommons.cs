@@ -275,6 +275,81 @@ public partial class CardEffectCommons
     }
     #endregion
 
+    #region Play 1 [WarGrowlmon] Token
+    public static IEnumerator PlayWarGrowlmonToken(ICardEffect activateClass)
+    {
+        yield return ContinuousController.instance.StartCoroutine(PlayToken(
+            tokenData: ContinuousController.instance.WarGrowlmonToken,
+            activateClass: activateClass,
+            isOwnerPermanent: true,
+            isTapped: false
+        ));
+    }
+    #endregion
+
+    #region Play 1 [Taomon] Token
+    public static IEnumerator PlayTaomonToken(ICardEffect activateClass)
+    {
+        yield return ContinuousController.instance.StartCoroutine(PlayToken(
+            tokenData: ContinuousController.instance.TaomonToken,
+            activateClass: activateClass,
+            isOwnerPermanent: true,
+            isTapped: false
+        ));
+    }
+    #endregion
+
+    #region Play 1 [Rapidmon] Token
+    public static IEnumerator PlayRapidmonToken(ICardEffect activateClass)
+    {
+        yield return ContinuousController.instance.StartCoroutine(PlayToken(
+            tokenData: ContinuousController.instance.RapidmonToken,
+          activateClass: activateClass,
+            isOwnerPermanent: true,
+            isTapped: false
+        ));
+    }
+    #endregion
+    #region Play 1 [Pipe-Fox] Token
+    public static IEnumerator PlayPipeFox(ICardEffect activateClass)
+    {
+        yield return ContinuousController.instance.StartCoroutine(PlayToken(
+            tokenData: ContinuousController.instance.PipeFoxToken,
+            activateClass: activateClass,
+            isOwnerPermanent: true,
+            isTapped: false
+        ));
+    }
+    #endregion
+
+    #region Play 1 [AthoRenePor] Token
+
+    public static IEnumerator PlayAthoRenePorToken(ICardEffect activateClass)
+    {
+        yield return ContinuousController.instance.StartCoroutine(PlayToken(
+            tokenData: ContinuousController.instance.AthoRenePorToken,
+            activateClass: activateClass,
+            isOwnerPermanent: true,
+            isTapped: false
+            ));
+    }
+
+    #endregion
+
+    #region Play 1 [Petrification] Token
+
+    public static IEnumerator PlayPetrificationToken(ICardEffect activateClass)
+    {
+        yield return ContinuousController.instance.StartCoroutine(PlayToken(
+            tokenData: ContinuousController.instance.PetrificationToken,
+            activateClass: activateClass,
+            isOwnerPermanent: false,
+            isTapped: false
+            ));
+    }
+
+    #endregion
+
     #region Security effect of "add this card to hand"
     public static IEnumerator AddThisCardToHand(CardSource card1, ICardEffect activateClass)
     {
@@ -750,8 +825,8 @@ public partial class CardEffectCommons
         int ignoreDigivolutionRequirementFixedCost,
         ICardEffect activateClass,
         IEnumerator successProcess,
-        bool ignoreLevel = false,
-        bool ignoreSelection = false)
+        bool ignoreSelection = false,
+        IgnoreRequirement ignoreRequirements = IgnoreRequirement.None)
     {
         if (targetPermanent == null) yield break;
         if (targetPermanent.TopCard == null) yield break;
@@ -760,7 +835,7 @@ public partial class CardEffectCommons
 
         Player owner = targetPermanent.TopCard.Owner;
         SelectCardEffect.Root root = SelectCardEffect.Root.Execution;
-        bool ignoreDigivolutionRequirement = ignoreDigivolutionRequirementFixedCost >= 0;
+        bool ignoreDigivolutionRequirement = !ignoreRequirements.Equals(IgnoreRequirement.None) || ignoreDigivolutionRequirementFixedCost >= 0;//  ignoreDigivolutionRequirementFixedCost >= 0 || ignoreRequirements;
 
         int fixedCost = -1;
 
@@ -773,7 +848,6 @@ public partial class CardEffectCommons
         {
             fixedCost = ignoreDigivolutionRequirementFixedCost;
         }
-
         bool CanSelectCardCondition(CardSource cardSource)
         {
             if (cardSource.IsDigimon)
@@ -782,13 +856,13 @@ public partial class CardEffectCommons
                 {
                     if (!cardSource.CanNotEvolve(targetPermanent))
                     {
-                        if (ignoreLevel
-                        || cardSource.CanPlayCardTargetFrame(
+                        if (cardSource.CanPlayCardTargetFrame(
                             frame: targetPermanent.PermanentFrame,
                             PayCost: payCost,
                             cardEffect: activateClass,
                             root: root,
-                            fixedCost: fixedCost))
+                            fixedCost: fixedCost,
+                            ignore: ignoreRequirements))
                         {
                             return true;
                         }
@@ -939,7 +1013,6 @@ public partial class CardEffectCommons
             }
         }
         #endregion
-
         List<CardSource> selectedCards = new List<CardSource>();
 
         IEnumerator SelectCardCoroutine(CardSource cardSource)
@@ -949,40 +1022,39 @@ public partial class CardEffectCommons
             yield return null;
         }
 
-            if (owner.ExecutingCards.Count(CanSelectCardCondition) >= 1)
-            {
-                int maxCount = 1;
+        if (owner.ExecutingCards.Count(CanSelectCardCondition) > 1)
+        {
+            int maxCount = 1;
 
-                SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
-                selectCardEffect.SetUp(
-                            canTargetCondition: CanSelectCardCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            canNoSelect: () => true,
-                            selectCardCoroutine: SelectCardCoroutine,
-                            afterSelectCardCoroutine: null,
-                            message: "Select 1 card to digivolve.",
-                            maxCount: maxCount,
-                            canEndNotMax: false,
-                            isShowOpponent: true,
-                            mode: SelectCardEffect.Mode.Custom,
-                            root: SelectCardEffect.Root.Execution,
-                            customRootCardList: null,
-                            canLookReverseCard: true,
-                            selectPlayer: owner,
-                            cardEffect: activateClass);
+            selectCardEffect.SetUp(
+                        canTargetCondition: CanSelectCardCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        canNoSelect: () => true,
+                        selectCardCoroutine: SelectCardCoroutine,
+                        afterSelectCardCoroutine: null,
+                        message: "Select 1 card to digivolve.",
+                        maxCount: maxCount,
+                        canEndNotMax: false,
+                        isShowOpponent: true,
+                        mode: SelectCardEffect.Mode.Custom,
+                        root: SelectCardEffect.Root.Execution,
+                        customRootCardList: null,
+                        canLookReverseCard: true,
+                        selectPlayer: owner,
+                        cardEffect: activateClass);
 
-                selectCardEffect.SetUpCustomMessage("Select 1 card to digivolve.", "The opponent is selecting 1 card to digivolve.");
-                selectCardEffect.SetUpCustomMessage_ShowCard("Selected Card");
+            selectCardEffect.SetUpCustomMessage("Select 1 card to digivolve.", "The opponent is selecting 1 card to digivolve.");
+            selectCardEffect.SetUpCustomMessage_ShowCard("Selected Card");
 
-                yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-            }
-            else
-            {
-                selectedCards.Add(activateClass.EffectSourceCard);
-            }
-        
+            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+        }
+        else
+        {
+            selectedCards.Add(activateClass.EffectSourceCard);
+        }
 
         PlayCardClass playCardClass = new PlayCardClass(
             cardSources: selectedCards,
@@ -993,7 +1065,8 @@ public partial class CardEffectCommons
             root: root,
             activateETB: true);
 
-        if (ignoreLevel) playCardClass.SetIgnoreLevel();
+        playCardClass.SetIgnoreRequirements(ignoreRequirements);
+
         if (!ignoreDigivolutionRequirement && fixedCost >= 0) playCardClass.SetFixedCost(fixedCost);
 
         yield return ContinuousController.instance.StartCoroutine(playCardClass.PlayCard());

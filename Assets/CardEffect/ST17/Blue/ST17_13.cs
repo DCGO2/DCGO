@@ -45,7 +45,6 @@ namespace DCGO.CardEffects.ST17
             #region Security Effect
             if (timing == EffectTiming.SecuritySkill)
             {
-
                 #region De-Digivolve
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("De-Digivolve 1 to 1 Digimon", CanUseCondition, card);
@@ -113,7 +112,9 @@ namespace DCGO.CardEffects.ST17
 
                 ActivateClass activateClassDigivolve = new ActivateClass();
                 activateClassDigivolve.SetUpICardEffect("Digivolve into this Digimon", CanUseConditionAfterBattle, card);
-                activateClassDigivolve.SetUpActivateClass(CanActivateConditionAfterBattle, ActivateCoroutineAfterBattle, -1, true, EffectDiscriptionAfterBattle());
+                activateClassDigivolve.SetUpActivateClass(null, ActivateCoroutineAfterBattle, -1, true, EffectDiscriptionAfterBattle());
+                activateClass.SetIsSecurityEffect(true);
+                activateClass.SetIsDigimonEffect(true);
                 card.Owner.UntilEndBattleEffects.Add(GetCardEffectAfterBattle);
 
                 string EffectDiscriptionAfterBattle()
@@ -139,11 +140,6 @@ namespace DCGO.CardEffects.ST17
                 }
 
                 bool CanUseConditionAfterBattle(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerSecurityEffect(hashtable, card);
-                }
-
-                bool CanActivateConditionAfterBattle(Hashtable hashtable)
                 {
                     return CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentConditionAfterBattle);
                 }
@@ -185,19 +181,6 @@ namespace DCGO.CardEffects.ST17
 
                         if (selectedPermanent != null)
                         {
-                            /*if (card.CanPlayCardTargetFrame(selectedPermanent.PermanentFrame, false, activateClassDigivolve))
-                            {
-                                PlayCardClass playCardClass = new PlayCardClass(
-                                    cardSources: new List<CardSource>() { card },
-                                    hashtable: CardEffectCommons.CardEffectHashtable(activateClassDigivolve),
-                                    payCost: false,
-                                    targetPermanent: selectedPermanent,
-                                    isTapped: false,
-                                    root: SelectCardEffect.Root.Execution,
-                                    activateETB: true);
-
-                                yield return ContinuousController.instance.StartCoroutine(playCardClass.PlayCard());
-                            }*/
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoExcecutingAreaCard(
                                 targetPermanent: selectedPermanent,
                                 cardCondition: CanSelectCardConditionAferBattle,
@@ -241,20 +224,7 @@ namespace DCGO.CardEffects.ST17
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                    {
-                        if (permanent.DigivolutionCards.Count(CanSelectCardCondition) >= 1)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
-                bool CanSelectCardCondition(CardSource cardSource)
-                {
-                    return !cardSource.CanNotTrashFromDigivolutionCards(activateClass);
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
                 }
 
                 bool CanSelectPermanentCondition1(Permanent permanent)
@@ -277,20 +247,7 @@ namespace DCGO.CardEffects.ST17
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                        {
-                            return true;
-                        }
-
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition1))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)

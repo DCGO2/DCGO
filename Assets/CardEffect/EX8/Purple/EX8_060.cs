@@ -67,8 +67,7 @@ namespace DCGO.CardEffects.EX8
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, DigimonToPlay) &&
-                           card.Owner.MemoryForPlayer >= 1;
+                           CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, DigimonToPlay);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

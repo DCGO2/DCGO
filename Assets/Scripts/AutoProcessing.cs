@@ -120,6 +120,9 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
         //Rule processing
         yield return ContinuousController.instance.StartCoroutine(RuleProcess());
 
+        //Rule Timing
+        yield return ContinuousController.instance.StartCoroutine(StackSkillInfos(null, EffectTiming.RulesTiming));
+
         //Trigger effect processing
         yield return ContinuousController.instance.StartCoroutine(TriggeredSkillProcess(false, null));
 
@@ -130,6 +133,25 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
 
     #region Rule processing
     public bool IsRuleProcessing { get; set; } = false;
+
+    bool IsNotDigimonInBreeding(Permanent permanent)
+    {
+        if (permanent != null)
+        {
+            if (permanent.TopCard != null)
+            {
+                if (CardEffectCommons.IsExistOnBreedingArea(permanent.TopCard))
+                {
+                    if (!permanent.IsDigimon)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
 
     bool IsNotHavingDP(Permanent permanent)
     {
@@ -183,6 +205,55 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
         return false;
     }
 
+    bool IsAttackerNotADigimon()
+    {
+        if (!GManager.instance.attackProcess.IsAttacking)
+            return false;
+
+        if (GManager.instance.attackProcess.AttackingPermanent != null)
+        {
+            if (!GManager.instance.attackProcess.AttackingPermanent.IsDigimon)
+                return true;
+
+            //if (GManager.instance.attackProcess.HasDefender && GManager.instance.attackProcess.DefendingPermanent == null)
+            //    return true;
+        }
+
+        return false;
+    }
+
+    bool IsDigimonLackLinkCondition(Permanent permanent)
+    {
+        if (permanent != null)
+        {
+            if (permanent.TopCard != null)
+            {
+                if (permanent.LinkedCards.Any(source => !source.CanLinkToTargetPermanent(permanent, false)))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    bool IsDigimonLackLinkCount(Permanent permanent)
+    {
+        if (permanent != null)
+        {
+            if (permanent.TopCard != null)
+            {
+                if (permanent.LinkedCards.Count > permanent.LinkedMax)
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     public IEnumerator RuleProcess()
     {
         while (DoRuleProcess())
@@ -194,6 +265,9 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
 
             if (GManager.instance.turnStateMachine.endGame) yield break;
 
+            //Trash Non Digimon from Breeding
+            yield return ContinuousController.instance.StartCoroutine(TrashNonDigimonPermanentProcess());
+
             //DPを持たないカードをトラッシュする処理
             yield return ContinuousController.instance.StartCoroutine(TrashNoDPPermanentProcess());
 
@@ -202,6 +276,12 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
 
             //Battle as Tamer
             yield return ContinuousController.instance.StartCoroutine(BattleWithoutDigimon());
+
+            //Link Lacking condition
+            yield return ContinuousController.instance.StartCoroutine(DigimonLackLinkConditionProcess());
+
+            //Add link count correction
+            yield return ContinuousController.instance.StartCoroutine(DigimonLackLinkMaxCountProcess());
 
             IsRuleProcessing = false;
         }
@@ -219,6 +299,13 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
         }
         #endregion
 
+        #region Is it necessary to discard cards in breeding?
+        if (CardEffectCommons.HasMatchConditionPermanent(IsNotDigimonInBreeding, true))
+        {
+            return true;
+        }
+        #endregion
+        
         #region Is it necessary to discard cards without DP?
         if (CardEffectCommons.HasMatchConditionPermanent(IsNotHavingDP))
         {
@@ -228,6 +315,27 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
 
         #region Is it necessary to deal with Digimon's DP shortage?
         if (CardEffectCommons.HasMatchConditionPermanent(IsDigimonLackDP))
+        {
+            return true;
+        }
+        #endregion
+
+        #region Is it necessary to deal with Battle Without Digimon?
+        if (IsAttackerNotADigimon())
+        {
+            //return true;
+        }
+        #endregion
+
+        #region Is it necessary to deal with Digimon's Link Cards?
+        if (CardEffectCommons.HasMatchConditionPermanent(IsDigimonLackLinkCondition))
+        {
+            return true;
+        }
+        #endregion
+
+        #region Is it necessary to deal with Digimon's Link Count?
+        if (CardEffectCommons.HasMatchConditionPermanent(IsDigimonLackLinkCount))
         {
             return true;
         }
@@ -257,6 +365,36 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
                 }
 
                 yield break;
+            }
+        }
+    }
+    #endregion
+
+    #region Process of trashing cards in Breeding
+    IEnumerator TrashNonDigimonPermanentProcess()
+    {
+        List<Permanent> BreedingPermanents = GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer
+            .Map(player => player.GetBreedingAreaPermanents()
+            .Filter(IsNotDigimonInBreeding)).Flat();
+
+        if (BreedingPermanents.Count >= 1)
+        {
+            foreach (Permanent permanent in BreedingPermanents)
+            {
+                if (permanent != null)
+                {
+                    if (permanent.TopCard != null)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(permanent.DiscardEvoRoots());
+
+                        CardSource cardSource = permanent.TopCard;
+
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(new List<CardSource>() { cardSource }, "Cards put to trash", true, true));
+
+                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveField(permanent));
+                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddTrashCard(cardSource));
+                    }
+                }
             }
         }
     }
@@ -319,6 +457,48 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
 
         if(!GManager.instance.attackProcess.AttackingPermanent.IsDigimon)
             GManager.instance.attackProcess.IsEndAttack = true;
+
+        if(GManager.instance.attackProcess.DefendingPermanent == null && GManager.instance.attackProcess.HasDefender)
+            GManager.instance.attackProcess.IsEndAttack = true;
+    }
+    #endregion
+
+    #region Link Card Lacking conditions handling
+    IEnumerator DigimonLackLinkConditionProcess()
+    {
+        List<Permanent> LackLinkConditionPermanents = GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer
+            .Map(player => player.GetFieldPermanents()
+            .Filter(IsDigimonLackLinkCondition)).Flat();
+
+        if (LackLinkConditionPermanents.Count >= 1)
+        {
+            foreach(Permanent permanent in LackLinkConditionPermanents)
+            {
+                List<CardSource> selectedCards = permanent.LinkedCards.FindAll(source => !source.CanLinkToTargetPermanent(permanent, false));
+
+                yield return ContinuousController.instance.StartCoroutine(new ITrashLinkCards(
+                               permanent,
+                               selectedCards,
+                               null).TrashLinkCards());
+            }
+        }
+    }
+    #endregion
+
+    #region Link Card Lacking Max Count handling
+    IEnumerator DigimonLackLinkMaxCountProcess()
+    {
+        List<Permanent> LackLinkCountPermanents = GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer
+            .Map(player => player.GetFieldPermanents()
+            .Filter(IsDigimonLackLinkCount)).Flat();
+
+        if (LackLinkCountPermanents.Count >= 1)
+        {
+            foreach (Permanent permanent in LackLinkCountPermanents)
+            {
+                yield return ContinuousController.instance.StartCoroutine(permanent.RemoveLinkedCard(null, (permanent.LinkedCards.Count - permanent.LinkedMax)));
+            }
+        }
     }
     #endregion
 
@@ -606,6 +786,31 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
                 }
             }
         }
+        #endregion
+
+        #region Effects of faceup security
+        foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
+        {
+            foreach (CardSource source in player.SecurityCards)
+            {
+                if (source.IsFlipped)
+                    continue;
+
+                foreach (ICardEffect cardEffect in source.EffectList(timing).Filter(cardEffect => cardEffectCondition == null || cardEffectCondition(cardEffect)))
+                {
+                    if (cardEffect is ActivateICardEffect)
+                    {
+                        if (!cardEffect.IsBackgroundProcess)
+                        {
+                            if (cardEffect.CanTrigger(hashtable))
+                            {
+                                skillInfos.Add(new SkillInfo(cardEffect, hashtable, timing));
+                            }
+                        }
+                    }
+                }
+            }
+        }            
         #endregion
 
         return skillInfos;

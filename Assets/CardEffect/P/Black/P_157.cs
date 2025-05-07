@@ -29,15 +29,13 @@ namespace DCGO.CardEffects.P
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanTriggerOnDeletion(hashtable, card))
-                        return CardEffectCommons.HasMatchConditionOwnersPermanent(card, HasTamer);
-
-                    return false;
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card);
+                    return CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card) &&
+                           CardEffectCommons.HasMatchConditionOwnersPermanent(card, HasTamer); 
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

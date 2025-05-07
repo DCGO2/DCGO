@@ -97,7 +97,7 @@ namespace DCGO.CardEffects.EX8
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (card.Owner.SecurityCards.Count > 1)
+                    if (card.Owner.SecurityCards.Count >= 1)
                     {
                         // Add your bottom security card to the hand
                         CardSource bottomCard = card.Owner.SecurityCards[^1];

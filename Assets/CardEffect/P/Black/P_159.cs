@@ -48,10 +48,7 @@ namespace DCGO.CardEffects.P
 
                 bool HasDigimon(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsOwnerPermanent(permanent, card))
-                        return permanent.IsDigimon;
-
-                    return false;
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -125,10 +122,7 @@ namespace DCGO.CardEffects.P
 
                 bool HasDigimon(Permanent permanent)
                 {
-                    if(CardEffectCommons.IsOwnerPermanent(permanent, card))
-                        return permanent.IsDigimon;
-                    
-                    return false;
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

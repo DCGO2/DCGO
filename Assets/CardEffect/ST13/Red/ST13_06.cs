@@ -6,163 +6,237 @@ using Photon;
 using System;
 using Photon.Pun;
 
-public class ST13_06 : CEntity_Effect
+namespace DCGO.CardEffects.ST13
 {
-    public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
+    public class ST13_06 : CEntity_Effect
     {
-        List<ICardEffect> cardEffects = new List<ICardEffect>();
-
-        if (timing == EffectTiming.None)
+        public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
-            AddJogressConditionClass addJogressConditionClass = new AddJogressConditionClass();
-            addJogressConditionClass.SetUpICardEffect($"DNA Digivolution", CanUseCondition, card);
-            addJogressConditionClass.SetUpAddJogressConditionClass(getJogressCondition: GetJogress);
-            addJogressConditionClass.SetNotShowUI(true);
-            cardEffects.Add(addJogressConditionClass);
+            List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            bool CanUseCondition(Hashtable hashtable)
+            #region DNA Requirements
+            if (timing == EffectTiming.None)
             {
-                return true;
-            }
+                AddJogressConditionClass addJogressConditionClass = new AddJogressConditionClass();
+                addJogressConditionClass.SetUpICardEffect($"DNA Digivolution", CanUseCondition, card);
+                addJogressConditionClass.SetUpAddJogressConditionClass(getJogressCondition: GetJogress);
+                addJogressConditionClass.SetNotShowUI(true);
+                cardEffects.Add(addJogressConditionClass);
 
-            JogressCondition GetJogress(CardSource cardSource)
-            {
-                if (cardSource == card)
-                {
-                    bool PermanentCondition1(Permanent permanent)
-                    {
-                        if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
-                        {
-                            if (permanent.TopCard.CardColors.Contains(CardColor.Red))
-                            {
-                                if (permanent.Levels_ForJogress(card).Contains(6))
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-
-                        return false;
-                    }
-
-                    bool PermanentCondition2(Permanent permanent)
-                    {
-                        if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
-                        {
-                            if (permanent.TopCard.CardColors.Contains(CardColor.Black))
-                            {
-                                if (permanent.Levels_ForJogress(card).Contains(6))
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-
-                        return false;
-                    }
-
-                    JogressConditionElement[] elements = new JogressConditionElement[]
-                    {
-                        new JogressConditionElement(PermanentCondition1, "a level 6 red Digimon"),
-
-                        new JogressConditionElement(PermanentCondition2, "a level 6 black Digimon"),
-                    };
-
-                    JogressCondition jogressCondition = new JogressCondition(elements, 0);
-
-                    return jogressCondition;
-                }
-
-                return null;
-            }
-        }
-
-        if (timing == EffectTiming.OnEnterFieldAnyone)
-        {
-            ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Blitz, delete Digimon and trash opponent's Security", CanUseCondition, card);
-            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-            cardEffects.Add(activateClass);
-
-            string EffectDiscription()
-            {
-                return "[When Digivolving] <Blitz> (This Digimon can attack when your opponent has 1 or more memory.) When DNA digivolving, for every 4 cards in this Digimon's digivolution cards, delete 1 of your opponent's Digimon with a play cost of 20 or less and trash the top card of your opponent's security stack.";
-            }
-
-            int count()
-            {
-                int count = 0;
-
-                if (CardEffectCommons.IsExistOnBattleArea(card))
-                {
-                    count = card.PermanentOfThisCard().DigivolutionCards.Count / 4;
-                }
-
-                return count;
-            }
-
-            bool CanSelectPermanentCondition(Permanent permanent)
-            {
-                if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                {
-                    if (permanent.TopCard.GetCostItself <= 20)
-                    {
-                        if (permanent.TopCard.HasPlayCost)
-                        {
-                            return true;
-                        }
-                    }
-                }
-
-                return false;
-            }
-
-            bool CanUseCondition(Hashtable hashtable)
-            {
-                if (CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card))
+                bool CanUseCondition(Hashtable hashtable)
                 {
                     return true;
                 }
 
-                return false;
-            }
-
-            bool CanActivateCondition(Hashtable hashtable)
-            {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
+                JogressCondition GetJogress(CardSource cardSource)
                 {
-                    if (CardEffectCommons.CanActivateBlitz(card, activateClass))
+                    if (cardSource == card)
                     {
-                        return true;
-                    }
-
-                    if (CardEffectCommons.IsJogress(hashtable))
-                    {
-                        if (count() >= 1)
+                        bool PermanentCondition1(Permanent permanent)
                         {
-                            if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                            if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                             {
-                                return true;
+                                if (permanent.TopCard.CardColors.Contains(CardColor.Red))
+                                {
+                                    if (permanent.Levels_ForJogress(card).Contains(6))
+                                    {
+                                        return true;
+                                    }
+                                }
                             }
 
-                            if (card.Owner.Enemy.SecurityCards.Count >= 1)
+                            return false;
+                        }
+
+                        bool PermanentCondition2(Permanent permanent)
+                        {
+                            if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                            {
+                                if (permanent.TopCard.CardColors.Contains(CardColor.Black))
+                                {
+                                    if (permanent.Levels_ForJogress(card).Contains(6))
+                                    {
+                                        return true;
+                                    }
+                                }
+                            }
+
+                            return false;
+                        }
+
+                        JogressConditionElement[] elements = new JogressConditionElement[]
+                        {
+                        new JogressConditionElement(PermanentCondition1, "a level 6 red Digimon"),
+
+                        new JogressConditionElement(PermanentCondition2, "a level 6 black Digimon"),
+                        };
+
+                        JogressCondition jogressCondition = new JogressCondition(elements, 0);
+
+                        return jogressCondition;
+                    }
+
+                    return null;
+                }
+            }
+            #endregion
+
+            #region When Digivolving
+            if (timing == EffectTiming.OnEnterFieldAnyone)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Blitz, delete Digimon and trash opponent's Security", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[When Digivolving] <Blitz> (This Digimon can attack when your opponent has 1 or more memory.) When DNA digivolving, for every 4 cards in this Digimon's digivolution cards, delete 1 of your opponent's Digimon with a play cost of 20 or less and trash the top card of your opponent's security stack.";
+                }
+
+                int count()
+                {
+                    int count = 0;
+
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        count = card.PermanentOfThisCard().DigivolutionCards.Count / 4;
+                    }
+
+                    return count;
+                }
+
+                bool CanSelectPermanentCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                    {
+                        if (permanent.TopCard.GetCostItself <= 20)
+                        {
+                            if (permanent.TopCard.HasPlayCost)
                             {
                                 return true;
                             }
                         }
                     }
+
+                    return false;
                 }
 
-                return false;
-            }
-
-            IEnumerator ActivateCoroutine(Hashtable _hashtable)
-            {
-                if (CardEffectCommons.CanActivateBlitz(card, activateClass))
+                bool CanUseCondition(Hashtable hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.BlitzProcess(card, activateClass, BeforeOnAttackCoroutine));
+                    if (CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card))
+                    {
+                        return true;
+                    }
 
-                    IEnumerator BeforeOnAttackCoroutine()
+                    return false;
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (CardEffectCommons.CanActivateBlitz(card, activateClass))
+                        {
+                            return true;
+                        }
+
+                        if (CardEffectCommons.IsJogress(hashtable))
+                        {
+                            if (count() >= 1)
+                            {
+                                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                                {
+                                    return true;
+                                }
+
+                                if (card.Owner.Enemy.SecurityCards.Count >= 1)
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+
+                    return false;
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                {
+                    if (CardEffectCommons.CanActivateBlitz(card, activateClass))
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.BlitzProcess(card, activateClass, BeforeOnAttackCoroutine));
+
+                        IEnumerator BeforeOnAttackCoroutine()
+                        {
+                            if (CardEffectCommons.IsJogress(_hashtable))
+                            {
+                                if (count() >= 1)
+                                {
+                                    int maxCount = Math.Min(count(), CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+
+                                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                                    selectPermanentEffect.SetUp(
+                                        selectPlayer: card.Owner,
+                                        canTargetCondition: CanSelectPermanentCondition,
+                                        canTargetCondition_ByPreSelecetedList: null,
+                                        canEndSelectCondition: null,
+                                        maxCount: maxCount,
+                                        canNoSelect: false,
+                                        canEndNotMax: false,
+                                        selectPermanentCoroutine: null,
+                                        afterSelectPermanentCoroutine: null,
+                                        mode: SelectPermanentEffect.Mode.Destroy,
+                                        cardEffect: activateClass);
+
+                                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                                    yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
+                                                        player: card.Owner.Enemy,
+                                                        destroySecurityCount: count(),
+                                                        cardEffect: activateClass,
+                                                        fromTop: true).DestroySecurity());
+                                }
+                            }
+                        }
+
+                        if(GManager.instance.attackProcess.IsAttacking && GManager.instance.attackProcess.AttackingPermanent == card.PermanentOfThisCard())
+                        {
+                            if (CardEffectCommons.IsJogress(_hashtable))
+                            {
+                                if (count() >= 1)
+                                {
+                                    int maxCount = Math.Min(count(), CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+
+                                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                                    selectPermanentEffect.SetUp(
+                                        selectPlayer: card.Owner,
+                                        canTargetCondition: CanSelectPermanentCondition,
+                                        canTargetCondition_ByPreSelecetedList: null,
+                                        canEndSelectCondition: null,
+                                        maxCount: maxCount,
+                                        canNoSelect: false,
+                                        canEndNotMax: false,
+                                        selectPermanentCoroutine: null,
+                                        afterSelectPermanentCoroutine: null,
+                                        mode: SelectPermanentEffect.Mode.Destroy,
+                                        cardEffect: activateClass);
+
+                                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                                    yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
+                                                        player: card.Owner.Enemy,
+                                                        destroySecurityCount: count(),
+                                                        cardEffect: activateClass,
+                                                        fromTop: true).DestroySecurity());
+                                }
+                            }
+                        }
+                    }
+
+                    else
                     {
                         if (CardEffectCommons.IsJogress(_hashtable))
                         {
@@ -188,95 +262,64 @@ public class ST13_06 : CEntity_Effect
                                 yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
                                 yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
-                                                    player: card.Owner.Enemy,
-                                                    destroySecurityCount: count(),
-                                                    cardEffect: activateClass,
-                                                    fromTop: true).DestroySecurity());
+                                                        player: card.Owner.Enemy,
+                                                        destroySecurityCount: count(),
+                                                        cardEffect: activateClass,
+                                                        fromTop: true).DestroySecurity());
                             }
                         }
                     }
                 }
+            }
+            #endregion
 
-                else
+            #region All Turns
+            if (timing == EffectTiming.OnLoseSecurity)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Unsuspend this Digimon", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetHashString("Unsuspend_ ST13_06");
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
                 {
-                    if (CardEffectCommons.IsJogress(_hashtable))
+                    return "[All Turns][Once Per Turn] When a card is removed from a player's security stack, unsuspend this Digimon.";
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (count() >= 1)
+                        if (CardEffectCommons.CanTriggerWhenLoseSecurity(hashtable, player => true))
                         {
-                            int maxCount = Math.Min(count(), CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-
-                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: CanSelectPermanentCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: maxCount,
-                                canNoSelect: false,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: null,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Destroy,
-                                cardEffect: activateClass);
-
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                            yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
-                                                    player: card.Owner.Enemy,
-                                                    destroySecurityCount: count(),
-                                                    cardEffect: activateClass,
-                                                    fromTop: true).DestroySecurity());
+                            return true;
                         }
                     }
+
+                    return false;
                 }
-            }
-        }
 
-        if (timing == EffectTiming.OnLoseSecurity)
-        {
-            ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Unsuspend this Digimon", CanUseCondition, card);
-            activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
-            activateClass.SetHashString("Unsuspend_ ST13_06");
-            cardEffects.Add(activateClass);
-
-            string EffectDiscription()
-            {
-                return "[All Turns][Once Per Turn] When a card is removed from a player's security stack, unsuspend this Digimon.";
-            }
-
-            bool CanUseCondition(Hashtable hashtable)
-            {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
+                bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanTriggerWhenLoseSecurity(hashtable, player => true))
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
                         return true;
                     }
+
+                    return false;
                 }
 
-                return false;
-            }
-
-            bool CanActivateCondition(Hashtable hashtable)
-            {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
+                IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    return true;
+                    Permanent selectedPermanent = card.PermanentOfThisCard();
+
+                    yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { selectedPermanent }, activateClass).Unsuspend());
                 }
-
-                return false;
             }
+            #endregion
 
-            IEnumerator ActivateCoroutine(Hashtable _hashtable)
-            {
-                Permanent selectedPermanent = card.PermanentOfThisCard();
-
-                yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { selectedPermanent }, activateClass).Unsuspend());
-            }
+            return cardEffects;
         }
-
-        return cardEffects;
     }
 }

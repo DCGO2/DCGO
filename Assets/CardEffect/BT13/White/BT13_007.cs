@@ -42,7 +42,7 @@ namespace DCGO.CardEffects.BT13
                 isInheritedEffect: false,
                 card: card,
                 condition: Condition,
-                effectName: "Your Digimons can't digivolve")
+                effectName: "Your Digimon can't digivolve")
                 );
             }
 
@@ -480,7 +480,7 @@ namespace DCGO.CardEffects.BT13
 
                 bool PermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
+                    if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
                     {
                         if (permanent.TopCard.IsOption)
                         {

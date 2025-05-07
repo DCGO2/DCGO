@@ -31,12 +31,7 @@ namespace DCGO.CardEffects.BT12
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
                     {
-                        if (permanent.TopCard.CardNames.Contains("Beelzemon (X Antibody)"))
-                        {
-                            return true;
-                        }
-
-                        if (permanent.TopCard.CardNames.Contains("Beelzemon(XAntibody)"))
+                        if (permanent.TopCard.EqualsCardName("Beelzemon (X Antibody)"))
                         {
                             return true;
                         }

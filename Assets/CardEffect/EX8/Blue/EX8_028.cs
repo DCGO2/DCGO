@@ -175,7 +175,7 @@ namespace DCGO.CardEffects.EX8
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card) &&
-                           CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                           CardEffectCommons.IsExistOnBattleAreaDigimon(card);                           
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -224,12 +224,18 @@ namespace DCGO.CardEffects.EX8
 
                     if (selectedCard != null)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(
+                        if (!selectedCard.TopCard.CanNotBeAffected(activateClass))
+                        {
+                            CardSource _topCard = selectedCard.TopCard;
+
+                            yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(
                                     selectedCard,
                                     CardEffectCommons.CardEffectHashtable(activateClass),
                                     false).PutSecurity());
 
-                        yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() }, activateClass).Unsuspend());
+                            if(CardEffectCommons.IsExistInSecurity(_topCard, true))
+                                yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() }, activateClass).Unsuspend());
+                        }
                     }
                 }
             }
@@ -315,12 +321,18 @@ namespace DCGO.CardEffects.EX8
 
                     if (selectedCard != null)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(
+                        if (!selectedCard.TopCard.CanNotBeAffected(activateClass))
+                        {
+                            CardSource _topCard = selectedCard.TopCard;
+
+                            yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(
                                     selectedCard,
                                     CardEffectCommons.CardEffectHashtable(activateClass),
                                     false).PutSecurity());
 
-                        yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() }, activateClass).Unsuspend());
+                            if (CardEffectCommons.IsExistInSecurity(_topCard, true))
+                                yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() }, activateClass).Unsuspend());
+                        }
                     }
                 }
             }

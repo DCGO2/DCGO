@@ -604,7 +604,7 @@ public class Effects : MonoBehaviour
 
     [Header("画面振動")]
     public CinemachineImpulseSource impulseSource;
-    public IEnumerator DigivolveFieldPermanentCardEffect(FieldPermanentCard targetFieldPermanentCard, bool isBurst, bool isBlast)
+    public IEnumerator DigivolveFieldPermanentCardEffect(FieldPermanentCard targetFieldPermanentCard, bool isBurst, bool isBlast, bool isAppFusion)
     {
         if (targetFieldPermanentCard != null)
         {
@@ -614,7 +614,10 @@ public class Effects : MonoBehaviour
             {
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.burstEffectObject.EvolutionEffectAnimation(targetFieldPermanentCard.ThisPermanent.TopCard));
             }
-
+            else if (isAppFusion)
+            {
+                yield return ContinuousController.instance.StartCoroutine(GManager.instance.burstEffectObject.EvolutionEffectAnimation(targetFieldPermanentCard.ThisPermanent.TopCard));
+            }
             else if (isBlast)
             {
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.EvolutionEffectObject.EvolutionEffectAnimation(targetFieldPermanentCard.ThisPermanent.TopCard, message: "Blast Digivolution"));

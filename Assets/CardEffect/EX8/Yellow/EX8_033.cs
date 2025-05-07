@@ -10,9 +10,9 @@ namespace DCGO.CardEffects.EX8
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
-            
+
             #region Alternate Digivolution Conditions
-            
+
             if (timing == EffectTiming.None)
             {
                 bool PermanentCondition(Permanent targetPermanent)
@@ -31,11 +31,11 @@ namespace DCGO.CardEffects.EX8
                     condition: null)
                 );
             }
-            
+
             #endregion
 
             #region DNA Digivolution
-            
+
             if (timing == EffectTiming.None)
             {
                 AddJogressConditionClass addJogressConditionClass = new AddJogressConditionClass();
@@ -123,16 +123,82 @@ namespace DCGO.CardEffects.EX8
                     return null;
                 }
             }
-            
+
+            #endregion
+
+            #region Shared OP/WD Methods
+
+            bool SharedCanSelectCardCondition(CardSource cardSource)
+            {
+                if (cardSource != null)
+                {
+                    if (cardSource.Owner == card.Owner)
+                    {
+                        if (cardSource.ContainsTraits("NSo"))
+                        {
+                            return true;
+                        }
+                    }
+                }
+
+                return false;
+            }
+
+            bool SharedActivateCondition(Hashtable hashtable)
+            {
+                if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                {
+                    if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, SharedCanSelectCardCondition))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            IEnumerator SharedActivateCoroutine(Hashtable _hashtable, ActivateClass activateClass)
+            {
+                if (isExistOnField(card))
+                {
+                    if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, SharedCanSelectCardCondition))
+                    {
+                        int maxCount = Math.Min(1, card.Owner.TrashCards.Count(SharedCanSelectCardCondition));
+
+                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                        selectCardEffect.SetUp(
+                            canTargetCondition: SharedCanSelectCardCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            canNoSelect: () => false,
+                            selectCardCoroutine: null,
+                            afterSelectCardCoroutine: null,
+                            message: "Select 1 card to add to your hand.",
+                            maxCount: maxCount,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            mode: SelectCardEffect.Mode.AddHand,
+                            root: SelectCardEffect.Root.Trash,
+                            customRootCardList: null,
+                            canLookReverseCard: true,
+                            selectPlayer: card.Owner,
+                            cardEffect: activateClass);
+
+                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                    }
+                }
+            }
+
             #endregion
 
             #region On Play
-            
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Return 1 card from trash to hand", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetUpActivateClass(SharedActivateCondition, (hashtable => SharedActivateCoroutine(hashtable, activateClass)), -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -140,25 +206,9 @@ namespace DCGO.CardEffects.EX8
                     return "[On Play] Return 1 [NSo] trait card from your trash to the hand.";
                 }
 
-                bool CanSelectCardCondition(CardSource cardSource)
-                {
-                    if (cardSource != null)
-                    {
-                        if (cardSource.Owner == card.Owner)
-                        {
-                            if (cardSource.ContainsTraits("NSo"))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return false;
-                }
-
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if(CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (CardEffectCommons.CanTriggerOnPlay(hashtable, card))
                         {
@@ -168,63 +218,17 @@ namespace DCGO.CardEffects.EX8
 
                     return false;
                 }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
-                {
-                    if (isExistOnField(card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
-                        {
-                            int maxCount = Math.Min(1, card.Owner.TrashCards.Count(CanSelectCardCondition));
-
-                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                            selectCardEffect.SetUp(
-                                canTargetCondition: CanSelectCardCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                canNoSelect: () => false,
-                                selectCardCoroutine: null,
-                                afterSelectCardCoroutine: null,
-                                message: "Select 1 card to add to your hand.",
-                                maxCount: maxCount,
-                                canEndNotMax: false,
-                                isShowOpponent: true,
-                                mode: SelectCardEffect.Mode.AddHand,
-                                root: SelectCardEffect.Root.Trash,
-                                customRootCardList: null,
-                                canLookReverseCard: true,
-                                selectPlayer: card.Owner,
-                                cardEffect: activateClass);
-
-                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-                        }
-                    }
-                }
             }
-            
+
             #endregion
 
             #region When Digivolving
-            
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Return 1 card from trash to hand", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetUpActivateClass(SharedActivateCondition, (hashtable => SharedActivateCoroutine(hashtable, activateClass)), -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -232,25 +236,9 @@ namespace DCGO.CardEffects.EX8
                     return "[When Digivolving] Return 1 [NSo] trait card from your trash to the hand.";
                 }
 
-                bool CanSelectCardCondition(CardSource cardSource)
-                {
-                    if (cardSource != null)
-                    {
-                        if (cardSource.Owner == card.Owner)
-                        {
-                            if (cardSource.ContainsTraits("NSo"))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return false;
-                }
-
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if(CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card))
                         {
@@ -260,58 +248,12 @@ namespace DCGO.CardEffects.EX8
 
                     return false;
                 }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
-                {
-                    if (isExistOnField(card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
-                        {
-                            int maxCount = Math.Min(1, card.Owner.TrashCards.Count(CanSelectCardCondition));
-
-                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                            selectCardEffect.SetUp(
-                                canTargetCondition: CanSelectCardCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                canNoSelect: () => false,
-                                selectCardCoroutine: null,
-                                afterSelectCardCoroutine: null,
-                                message: "Select 1 card to add to your hand.",
-                                maxCount: maxCount,
-                                canEndNotMax: false,
-                                isShowOpponent: true,
-                                mode: SelectCardEffect.Mode.AddHand,
-                                root: SelectCardEffect.Root.Trash,
-                                customRootCardList: null,
-                                canLookReverseCard: true,
-                                selectPlayer: card.Owner,
-                                cardEffect: activateClass);
-
-                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-                        }
-                    }
-                }
             }
-            
+
             #endregion
-            
+
             #region On Deletion
-            
+
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -375,11 +317,11 @@ namespace DCGO.CardEffects.EX8
                     }
                 }
             }
-            
+
             #endregion
 
             #region Inherited Effect
-            
+
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -416,7 +358,7 @@ namespace DCGO.CardEffects.EX8
                     yield return ContinuousController.instance.StartCoroutine(new IRecovery(card.Owner, 1, activateClass).Recovery());
                 }
             }
-            
+
             #endregion
 
             return cardEffects;

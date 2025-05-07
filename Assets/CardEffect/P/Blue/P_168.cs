@@ -49,7 +49,7 @@ namespace DCGO.CardEffects.P
             
             if (timing == EffectTiming.OnAddDigivolutionCards)
             {
-                List<Permanent> sourcesAddedPermanents = new List<Permanent>();
+                Permanent sourcesAddedPermanent = null;
 
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Digivolve 1 of you Digimon", CanUseCondition, card);
@@ -63,7 +63,8 @@ namespace DCGO.CardEffects.P
 
                 bool IsValidPermanentToDigivolveCondition(Permanent permanent)
                 {
-                    return permanent.TopCard.EqualsTraits("Aqua") || permanent.TopCard.EqualsTraits("Sea Animal");
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                           (permanent.TopCard.ContainsTraits("Aqua") || permanent.TopCard.ContainsTraits("Sea Animal"));
                 }
 
                 bool IsValidCardToDigivolveIntoCondition(CardSource cardSource)
@@ -75,13 +76,16 @@ namespace DCGO.CardEffects.P
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (CardEffectCommons.CanTriggerOnAddDigivolutionCard(
+                        if (CardEffectCommons.IsOwnerTurn(card))
+                        {
+                            if (CardEffectCommons.CanTriggerOnAddDigivolutionCard(
                                 hashtable: hashtable,
                                 permanentCondition: IsValidPermanentToDigivolveCondition,
                                 cardEffectCondition: cardEffect => cardEffect.EffectSourceCard != null,
                                 cardCondition: null))
-                        {
-                            return true;
+                            {
+                                return true;
+                            }
                         }
                     }
 
@@ -90,15 +94,17 @@ namespace DCGO.CardEffects.P
 
                 bool CanSelectDigimonToDigivolve(Permanent permanent)
                 {
-                    return sourcesAddedPermanents.Contains(permanent) &&
+                    return sourcesAddedPermanent == permanent &&
                            CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    sourcesAddedPermanents = CardEffectCommons.GetPermanentsFromHashtable(hashtable).Filter(IsValidPermanentToDigivolveCondition);
+                    sourcesAddedPermanent = CardEffectCommons.GetPermanentFromHashtable(hashtable);
 
-                    return isExistOnField(card) && CardEffectCommons.CanActivateSuspendCostEffect(card);
+                    return isExistOnField(card) && 
+                           CardEffectCommons.CanActivateSuspendCostEffect(card) &&
+                           IsValidPermanentToDigivolveCondition(sourcesAddedPermanent);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)

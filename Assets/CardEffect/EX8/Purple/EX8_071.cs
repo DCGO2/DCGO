@@ -43,12 +43,16 @@ namespace DCGO.CardEffects.EX8
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistInSecurity(card, false);
+                    return  CardEffectCommons.IsOwnerEffect(addSkillClass, card) &&
+                            CardEffectCommons.IsExistInSecurity(card, false) &&
+                            CardEffectCommons.HasMatchConditionPermanent(PermanentCondition);
                 }
 
                 bool PermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                    return card.Owner == permanent.TopCard.Owner &&
+                           CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                           permanent.TopCard.HasLevel && permanent.TopCard.Level >= 4 &&
                            permanent.TopCard.EqualsTraits("NSo");
                 }
 
@@ -75,7 +79,14 @@ namespace DCGO.CardEffects.EX8
                 {
                     if (_timing == EffectTiming.WhenPermanentWouldBeDeleted)
                     {
-                        cardEffects.Add(CardEffectFactory.ScapegoatSelfEffect(isInheritedEffect: false, card: card, condition: null, effectName: "<Scapegoat>", effectDiscription: null));
+                        bool Condition()
+                        {
+                            return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(cardSource.PermanentOfThisCard(), card) &&
+                                   cardSource.HasLevel && cardSource.Level >= 4 &&
+                                   cardSource.EqualsTraits("NSo");
+                        }
+
+                        cardEffects.Add(CardEffectFactory.ScapegoatSelfEffect(isInheritedEffect: false, card: cardSource, condition: Condition, effectName: "<Scapegoat>", effectDiscription: null));
                     }
 
                     return cardEffects;
@@ -105,7 +116,7 @@ namespace DCGO.CardEffects.EX8
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if(card.Owner.SecurityCards.Count > 1)
+                    if(card.Owner.SecurityCards.Count >= 1)
                     {
                         // Add your bottom security card to the hand
                         CardSource bottomCard = card.Owner.SecurityCards[^1];

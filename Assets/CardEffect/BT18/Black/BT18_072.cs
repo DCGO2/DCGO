@@ -120,6 +120,61 @@ namespace DCGO.CardEffects.BT18
                        CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentConditionShared);
             }
 
+            IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
+            {
+                int degenrationMaxCount = 2;
+                int degenrationCount = 0;
+
+                SelectCountEffect selectCountEffect = GManager.instance.GetComponent<SelectCountEffect>();
+                if (selectCountEffect != null)
+                {
+                    selectCountEffect.SetUp(
+                        SelectPlayer: card.Owner,
+                        targetPermanent: null,
+                        MaxCount: degenrationMaxCount,
+                        CanNoSelect: false,
+                        Message: "How much will you De-Digivolve?",
+                        Message_Enemy: "The opponent is choosing how much to De-Digivolve.",
+                        SelectCountCoroutine: SelectCountCoroutine);
+
+                    yield return ContinuousController.instance.StartCoroutine(selectCountEffect.Activate());
+
+                    IEnumerator SelectCountCoroutine(int count)
+                    {
+                        degenrationCount = count;
+                        yield return null;
+                    }
+                }
+
+                SelectPermanentEffect selectPermanentEffect =
+                    GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                int maxCount = Math.Min(2, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentConditionShared));
+
+                selectPermanentEffect.SetUp(
+                    selectPlayer: card.Owner,
+                    canTargetCondition: CanSelectPermanentConditionShared,
+                    canTargetCondition_ByPreSelecetedList: null,
+                    canEndSelectCondition: null,
+                    maxCount: maxCount,
+                    canNoSelect: false,
+                    canEndNotMax: false,
+                    selectPermanentCoroutine: SelectPermanentCoroutine,
+                    afterSelectPermanentCoroutine: null,
+                    mode: SelectPermanentEffect.Mode.Custom,
+                    cardEffect: activateClass);
+
+                selectPermanentEffect.SetUpCustomMessage("Select Digimons to De-Digivolve",
+                    "The opponent is selecting Digimons to De-Digivolve");
+                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(
+                        new IDegeneration(permanent, degenrationCount, activateClass, true).Degeneration());
+                }
+            }
+
             #endregion
 
             #region On Play
@@ -128,7 +183,7 @@ namespace DCGO.CardEffects.BT18
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("De-Digivolve 2 2 of your opponent's Digimon ", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateConditionShared, (hashTable) => SharedActivateCoroutine(hashTable, activateClass), -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -141,37 +196,6 @@ namespace DCGO.CardEffects.BT18
                 {
                     return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
-
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    SelectPermanentEffect selectPermanentEffect =
-                        GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                    int maxCount = Math.Min(2, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentConditionShared));
-
-                    selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectPermanentConditionShared,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: maxCount,
-                        canNoSelect: false,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: SelectPermanentCoroutine,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Custom,
-                        cardEffect: activateClass);
-
-                    selectPermanentEffect.SetUpCustomMessage("Select 2 Digimon to De-Digivolve 2.",
-                        "The opponent is selecting 2 Digimon to De-Digivolve 2.");
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(
-                            new IDegeneration(permanent, 2, activateClass).Degeneration());
-                    }
-                }
             }
 
             #endregion
@@ -182,7 +206,7 @@ namespace DCGO.CardEffects.BT18
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("De-Digivolve 2 2 of your opponent's Digimon ", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateConditionShared, ActivateCoroutine, -1, false, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateConditionShared, (hashTable) => SharedActivateCoroutine(hashTable, activateClass), -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -194,37 +218,6 @@ namespace DCGO.CardEffects.BT18
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    SelectPermanentEffect selectPermanentEffect =
-                        GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                    int maxCount = Math.Min(2, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentConditionShared));
-
-                    selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectPermanentConditionShared,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: maxCount,
-                        canNoSelect: false,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: SelectPermanentCoroutine,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Custom,
-                        cardEffect: activateClass);
-
-                    selectPermanentEffect.SetUpCustomMessage("Select 2 Digimon to De-Digivolve 2.",
-                        "The opponent is selecting 2 Digimon to De-Digivolve 2.");
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(
-                            new IDegeneration(permanent, 2, activateClass).Degeneration());
-                    }
                 }
             }
 

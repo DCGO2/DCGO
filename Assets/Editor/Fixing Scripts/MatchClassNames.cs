@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
+using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.Analytics;
+using WebSocketSharp;
 
 namespace DCGO.Tools.Repair
 {
@@ -18,124 +20,34 @@ namespace DCGO.Tools.Repair
             if (Selection.assetGUIDs.Length != 0)
                 path = AssetDatabase.GUIDToAssetPath(Selection.assetGUIDs[0]);
 
-            Debug.Log($"ASSET PATH: {path}");
+            List<CEntity_Base> List = GetAsset.LoadAll<CEntity_Base>(path).ToList();
+            List<CEntity_Base> normalArts = List.Filter(x => !x.name.Contains("_P"));
+            List<CEntity_Base> alternateArts = List.Filter(x => x.name.Contains("_P"));
 
-            List<CEntity_Base> List = GetAsset.LoadAll<CEntity_Base>(path)
-                .OrderBy(x => x.name.Substring(x.name.LastIndexOf("-")+1, 2)).ToList();
-
-            string className = "";
-            string editList = "Asset Name - Original Class - New Class \n";
-            int foundCount = 0;
+            string assetName = "";
+            int mismatchCount = 0;
 
             //Locate All mismatched classNames
-            foreach (CEntity_Base card in List)
+            foreach (CEntity_Base card in normalArts)
             {
-                className = "";
+                assetName = card.CardEffectClassName;
 
-                if (String.IsNullOrEmpty(card.CardEffectClassName))
+                List<CEntity_Base> matchingCards = alternateArts.Filter(x => x.CardID == card.CardID);
+
+                foreach(CEntity_Base matchingCard in matchingCards)
                 {
-                    Debug.Log($"Class Name Empty: {card.name}");
-                    continue;
+                    if(matchingCard.CardEffectClassName != assetName)
+                    {
+                        Debug.Log($"Mismatch Found: {matchingCard.name}");
+                        mismatchCount++;
+                        matchingCard.CardEffectClassName = assetName;
+                        EditorUtility.SetDirty(matchingCard);
+                    }
                 }
-
-                if (!card.CardEffectClassName.Contains(card.CardID.Replace("-", "_")))
-                {
-                    Debug.Log($"Using Alternate Card: {card.name}");
-                    continue;
-                }
-
-                className = FixCharactersInClassName($"{card.CardID}");
-
-                if (className == card.CardEffectClassName)
-                {
-                    Debug.Log($"Matches already: {card.name}");
-                    continue;
-                }
-
-                editList += $"{card.name} - {card.CardEffectClassName} - {className}\n";
-
-                if (!classNameDictionary.ContainsKey(className))
-                    classNameDictionary.Add(className, card.CardEffectClassName);
-
-                /*if (!card.name.Contains("_P"))
-                {
-                    if (String.IsNullOrEmpty(card.CardEffectClassName))
-                        continue;
-
-                    if (!card.CardEffectClassName.Contains(card.CardID.Replace("-", "_")))
-                        continue;
-
-                    className = card.CardEffectClassName;
-                    continue;
-                }
-                
-
-                if (!card.CardEffectClassName.Equals(className))
-                {
-                    if (!classNameDictionary.ContainsKey(className))
-                        classNameDictionary.Add(className, card.CardEffectClassName);
-
-                    //Debug.Log($"{card.name}: {card.CardIndex} - {card.CardEffectClassName} != {className}");
-                }*/
-
-
-                //card.CardEffectClassName = className;
             }
 
-
-
-            /*foreach (string key in classNameDictionary.Keys)
-            {
-                List<CEntity_Base> filtered = List.Filter(x => x.CardEffectClassName == key).ToList();
-
-                foreach (CEntity_Base card in filtered)
-                {
-                    
-                    //card.CardEffectClassName = classNameDictionary[key];
-                    //EditorUtility.SetDirty(card);
-                }
-                    
-
-                Debug.Log($"Filtered Count: {filtered.Count}");
-            }*/
-            //Debug.Log($"{key} - {classNameDictionary[key]}");
-            Debug.Log(editList);
-            Debug.Log($"DONE: found {classNameDictionary.Keys.Count}");
+            Debug.Log($"DONE: mismatches found: {mismatchCount}");
             return;
-
-            string FixCharactersInClassName(string str)
-            {
-                string name = str;
-
-                name = FixCharactersInName(name);
-
-                name = name
-                    .Replace("-", "_")
-                    .Replace(".", "")
-                    .Replace("'", "")
-                    .Replace(",","")
-                    .Replace("&", "And")
-                    .Replace("(", "")
-                    .Replace(")", "");
-
-                return name;
-            }
-
-            //Parse ScriptableObject Name
-            string FixCharactersInName(string str)
-            {
-                string name = str;
-
-                name = name
-                    .Replace(" ", "")
-                    .Replace(":", "")
-                    .Replace("?", "")
-                    .Replace("!", "")
-                    .Replace("<", "")
-                    .Replace(">", "");
-
-                return name;
-            }
         }
     }
 }

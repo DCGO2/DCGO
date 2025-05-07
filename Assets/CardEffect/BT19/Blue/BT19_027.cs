@@ -136,7 +136,7 @@ namespace DCGO.CardEffects.BT19
                 bool CanSelectOpponentPermanentLevelCondition(Permanent permanent, int level)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
-                           permanent.TopCard.HasLevel && permanent.Level <= level;
+                           permanent.TopCard.HasLevel && permanent.TopCard.Level <= level;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -175,36 +175,40 @@ namespace DCGO.CardEffects.BT19
                         yield return null;
                     }
 
-                    if (selectedPermanent != null)
+                    if(selectedPermanent != null)
                     {
-                        int selectedLevel = selectedPermanent.Level;
+                        bool selectedHasLevel = selectedPermanent.TopCard.HasLevel;
+                        int selectedLevel = selectedPermanent.TopCard.Level;
 
                         yield return ContinuousController.instance.StartCoroutine(
                             new DeckBottomBounceClass(new List<Permanent> { selectedPermanent }, hashtable).DeckBounce());
 
-                        if (CardEffectCommons.HasMatchConditionPermanent(permanent =>
-                                CanSelectOpponentPermanentLevelCondition(permanent, selectedLevel)))
+                        if (selectedHasLevel && selectedLevel > 0)
                         {
-                            selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                            if (CardEffectCommons.HasMatchConditionPermanent(permanent =>
+                                    CanSelectOpponentPermanentLevelCondition(permanent, selectedLevel)))
+                            {
+                                selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canTargetCondition: permanent =>
-                                    CanSelectOpponentPermanentLevelCondition(permanent, selectedLevel),
-                                canEndSelectCondition: null,
-                                maxCount: 1,
-                                canNoSelect: false,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: null,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.PutLibraryBottom,
-                                cardEffect: activateClass);
+                                selectPermanentEffect.SetUp(
+                                    selectPlayer: card.Owner,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canTargetCondition: permanent =>
+                                        CanSelectOpponentPermanentLevelCondition(permanent, selectedLevel),
+                                    canEndSelectCondition: null,
+                                    maxCount: 1,
+                                    canNoSelect: false,
+                                    canEndNotMax: false,
+                                    selectPermanentCoroutine: null,
+                                    afterSelectPermanentCoroutine: null,
+                                    mode: SelectPermanentEffect.Mode.PutLibraryBottom,
+                                    cardEffect: activateClass);
 
-                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to bottom deck.",
-                                "The opponent is selecting 1 Digimon to bottom deck.");
+                                selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to bottom deck.",
+                                    "The opponent is selecting 1 Digimon to bottom deck.");
 
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                            }
                         }
                     }
                 }

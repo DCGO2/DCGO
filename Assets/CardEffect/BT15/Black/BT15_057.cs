@@ -142,11 +142,6 @@ namespace DCGO.CardEffects.BT15
                 activateDeletion.SetHashString("Play1NumemonFromTrashESS_BT15_057");
                 cardEffects.Add(activateDeletion);
 
-                if (card.PermanentOfThisCard() != null)
-                {
-                    activateDeletion.SetEffectSourcePermanent(card.PermanentOfThisCard());
-                }
-
                 string EffectDiscription()
                 {
                     return "[On Deletion] You may play 1 Digimon with [Numemon] in it's name from your trash suspended without paying its memory cost.";

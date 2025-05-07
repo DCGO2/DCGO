@@ -58,7 +58,7 @@ namespace DCGO.CardEffects.P
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Suspend 1 Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateSuspendCondition, ActivateCoroutine, -1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateSuspendCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -81,7 +81,7 @@ namespace DCGO.CardEffects.P
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: 1,
-                        canNoSelect: false,
+                        canNoSelect: true,
                         canEndNotMax: false,
                         selectPermanentCoroutine: null,
                         afterSelectPermanentCoroutine: null,
@@ -89,20 +89,22 @@ namespace DCGO.CardEffects.P
                         cardEffect: activateClass);
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                    
-                    int suspendedCount = CardEffectCommons.MatchConditionPermanentCount(DigimonIsSuspended);
-                    
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                        targetPermanent: card.PermanentOfThisCard(),
-                        cardCondition: CanSelectDigimonToDigivolveCondition,
-                        payCost: true,
-                        reduceCostTuple: (reduceCost: suspendedCount, reduceCostCardCondition: null),
-                        fixedCostTuple: null,
-                        ignoreDigivolutionRequirementFixedCost: -1,
-                        isHand: true,
-                        activateClass: activateClass,
-                        successProcess: null));
 
+                    if (CardEffectCommons.IsOwnerTurn(card))
+                    {
+                        int suspendedCount = CardEffectCommons.MatchConditionPermanentCount(DigimonIsSuspended);
+
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                            targetPermanent: card.PermanentOfThisCard(),
+                            cardCondition: CanSelectDigimonToDigivolveCondition,
+                            payCost: true,
+                            reduceCostTuple: (reduceCost: suspendedCount, reduceCostCardCondition: null),
+                            fixedCostTuple: null,
+                            ignoreDigivolutionRequirementFixedCost: -1,
+                            isHand: true,
+                            activateClass: activateClass,
+                            successProcess: null));
+                    }
                 }
             }
             
@@ -114,7 +116,7 @@ namespace DCGO.CardEffects.P
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Suspend 1 Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateSuspendCondition, ActivateCoroutine, -1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateSuspendCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -137,7 +139,7 @@ namespace DCGO.CardEffects.P
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: 1,
-                        canNoSelect: false,
+                        canNoSelect: true,
                         canEndNotMax: false,
                         selectPermanentCoroutine: null,
                         afterSelectPermanentCoroutine: null,
@@ -145,20 +147,22 @@ namespace DCGO.CardEffects.P
                         cardEffect: activateClass);
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                    
-                    int suspendedCount = CardEffectCommons.MatchConditionPermanentCount(DigimonIsSuspended);
-                    
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                        targetPermanent: card.PermanentOfThisCard(),
-                        cardCondition: CanSelectDigimonToDigivolveCondition,
-                        payCost: true,
-                        reduceCostTuple: (reduceCost: suspendedCount, reduceCostCardCondition: null),
-                        fixedCostTuple: null,
-                        ignoreDigivolutionRequirementFixedCost: -1,
-                        isHand: true,
-                        activateClass: activateClass,
-                        successProcess: null));
 
+                    if (CardEffectCommons.IsOwnerTurn(card))
+                    {
+                        int suspendedCount = CardEffectCommons.MatchConditionPermanentCount(DigimonIsSuspended);
+
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                            targetPermanent: card.PermanentOfThisCard(),
+                            cardCondition: CanSelectDigimonToDigivolveCondition,
+                            payCost: true,
+                            reduceCostTuple: (reduceCost: suspendedCount, reduceCostCardCondition: null),
+                            fixedCostTuple: null,
+                            ignoreDigivolutionRequirementFixedCost: -1,
+                            isHand: true,
+                            activateClass: activateClass,
+                            successProcess: null));
+                    }
                 }
             }
             
