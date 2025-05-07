@@ -177,12 +177,13 @@ namespace DCGO.CardEffects.BT19
 
                     if(selectedPermanent != null)
                     {
+                        bool selectedHasLevel = selectedPermanent.TopCard.HasLevel;
                         int selectedLevel = selectedPermanent.TopCard.Level;
 
                         yield return ContinuousController.instance.StartCoroutine(
                             new DeckBottomBounceClass(new List<Permanent> { selectedPermanent }, hashtable).DeckBounce());
-                        UnityEngine.Debug.Log($"Selected Level: {selectedLevel}");
-                        if (selectedLevel > 0)
+
+                        if (selectedHasLevel && selectedLevel > 0)
                         {
                             if (CardEffectCommons.HasMatchConditionPermanent(permanent =>
                                     CanSelectOpponentPermanentLevelCondition(permanent, selectedLevel)))

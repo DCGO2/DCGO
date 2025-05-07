@@ -505,6 +505,7 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
                         _slectedInexesInList.Add(selectedIndex);
                     }
 
+                    photonView.RPC("SetTargetIndicies", RpcTarget.All, _slectedInexesInList.ToArray());
                     photonView.RPC("SetTargetCard", RpcTarget.All, targetCardIDs.ToArray());
                 }
             }
@@ -762,5 +763,16 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
         }
 
         _endSelect = true;
+    }
+
+    [PunRPC]
+    public void SetTargetIndicies(int[] CardIDs)
+    {
+        _slectedInexesInList = new List<int>();
+
+        foreach (int index in CardIDs)
+        {
+            _slectedInexesInList.Add(index);
+        }
     }
 }

@@ -268,17 +268,9 @@ namespace DCGO.CardEffects.LM
                             PlayLog.OnAddLog?.Invoke(log);
                             #endregion
 
-                        bool CardCondition(CardSource cardSource)
+                            bool CardCondition(CardSource cardSource)
                             {
-                                if (cardSource.PermanentOfThisCard() == selectedPermanent)
-                                {
-                                    if (CardEffectCommons.IsExistOnBattleArea(cardSource))
-                                    {
-                                        return true;
-                                    }
-                                }
-
-                                return false;
+                                return CardEffectCommons.IsExistOnBattleArea(cardSource);
                             }
 
                             bool SkillCondition(ICardEffect cardEffect)
