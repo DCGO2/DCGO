@@ -54,7 +54,7 @@ public class BT6_033 : CEntity_Effect
 
                             List<SelectionElement<int>> selectionElements = new List<SelectionElement<int>>();
 
-                            for(int i = 1; i < card.Owner.SecurityCards.Count - 3; i++)
+                            for(int i = 1; i <= card.Owner.SecurityCards.Count - 3; i++)
                                 selectionElements.Add(new SelectionElement<int>(message: $"{i}", value: i, spriteIndex: 0));
 
                             string selectPlayerMessage = "Choose how many cards to trash?";

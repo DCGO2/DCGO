@@ -156,7 +156,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
                         if (permanent.IsTamer)
                         {

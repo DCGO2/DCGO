@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace DCGO.CardEffects.EX8
@@ -24,6 +25,12 @@ namespace DCGO.CardEffects.EX8
 
             if (timing == EffectTiming.RulesTiming || timing == EffectTiming.AfterEffectsActivate)
             {
+                bool OpponentsDigimon(Permanent permanent)
+                {
+                    return permanent.IsDigimon &&
+                           permanent.DP >= 13000;
+                }
+
                 if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                 {
                     Permanent thisPermanent = card.PermanentOfThisCard();
@@ -38,7 +45,7 @@ namespace DCGO.CardEffects.EX8
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
                            card.PermanentOfThisCard().TopCard == card &&
-                           CardEffectCommons.HasMatchConditionOpponentsPermanent(card, permanent => permanent.IsDigimon && permanent.DP >= 13000);
+                           CardEffectCommons.HasMatchConditionOpponentsPermanent(card, OpponentsDigimon);
                 }
             }
 
@@ -80,7 +87,7 @@ namespace DCGO.CardEffects.EX8
                     List<CardSource> selectedCards = new List<CardSource>();
 
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.RevealDeckTopCardsAndProcessForAll(
-                        revealCount: 1,
+                        revealCount: 3,
                         simplifiedSelectCardCondition:
                         new SimplifiedSelectCardConditionClass(
                             canTargetCondition: PlayableMineralorRock,
