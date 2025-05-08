@@ -260,7 +260,7 @@ namespace DCGO.CardEffects.EX9
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
                                 targetPermanent: permanent,
                                 changeValue: DPToReduce(),
-                                effectDuration: EffectDuration.UntilEachTurnEnd,
+                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
                                 activateClass: activateClass));
                         }
                     }
@@ -376,7 +376,7 @@ namespace DCGO.CardEffects.EX9
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
                                 targetPermanent: permanent,
                                 changeValue: DPToReduce(),
-                                effectDuration: EffectDuration.UntilEachTurnEnd,
+                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
                                 activateClass: activateClass));
                         }
                     }
