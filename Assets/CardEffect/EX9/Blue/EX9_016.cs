@@ -1,8 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
 
 // Betamon
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.EX9
 {
     public class EX9_016 : CEntity_Effect
     {
