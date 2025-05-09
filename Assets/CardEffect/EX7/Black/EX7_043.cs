@@ -71,146 +71,132 @@ namespace DCGO.CardEffects.EX7
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    List<CardSource> selectedCards = new List<CardSource>();
-                    int maxCount = 3;
+                    bool canSelectHand = card.Owner.HandCards.Count(CanSelectCardSharedCondition) >= 3;
+                    bool canSelectTrash = card.Owner.TrashCards.Count(CanSelectCardSharedCondition) >= 3;
 
-                    int handCount = card.Owner.HandCards.Count(CanSelectCardSharedCondition);
-                    int trashCount = card.Owner.TrashCards.Count(CanSelectCardSharedCondition);
-
-                    if (handCount + trashCount >= maxCount)
+                    if (canSelectHand || canSelectTrash)
                     {
-                        while (selectedCards.Count != maxCount)
+                        if (canSelectHand && canSelectTrash)
                         {
-                            bool canSelectHand = handCount > 1;
-                            bool canSelectTrash = trashCount > 1;
-
-                            if (canSelectHand || canSelectTrash)
+                            List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>
                             {
-                                if (canSelectHand && canSelectTrash)
+                                new(message: "From hand", value: true, spriteIndex: 0),
+                                new(message: "From trash", value: false, spriteIndex: 1),
+                            };
+
+                            string selectPlayerMessage = "From which area do you return cards?";
+                            string notSelectPlayerMessage = "The opponent is choosing from which area to return cards.";
+
+                            GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements,
+                                selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage,
+                                notSelectPlayerMessage: notSelectPlayerMessage);
+                        }
+
+                        else
+                        {
+                            GManager.instance.userSelectionManager.SetBool(canSelectHand);
+                        }
+
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager
+                            .WaitForEndSelect());
+
+                        bool fromHand = GManager.instance.userSelectionManager.SelectedBoolValue;
+
+                        if (fromHand)
+                        {
+                            SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                            selectHandEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: CanSelectCardSharedCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: 3,
+                                canNoSelect: true,
+                                canEndNotMax: false,
+                                isShowOpponent: false,
+                                selectCardCoroutine: null,
+                                afterSelectCardCoroutine: AfterSelectCardCoroutine,
+                                mode: SelectHandEffect.Mode.Custom,
+                                cardEffect: activateClass);
+
+                            selectHandEffect.SetUpCustomMessage("Select 3 cards to top deck\n(cards will be placed back to the top of the deck so that cards with lower numbers are on top).",
+                                "The opponent is selecting 3 cards to top deck.");
+                            selectHandEffect.SetUpCustomMessage_ShowCard("Deck Top Cards");
+
+                            yield return StartCoroutine(selectHandEffect.Activate());
+                        }
+
+                        else
+                        {
+                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                            selectCardEffect.SetUp(
+                                canTargetCondition: CanSelectCardSharedCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                canNoSelect: () => true,
+                                selectCardCoroutine: null,
+                                afterSelectCardCoroutine: AfterSelectCardCoroutine,
+                                message:
+                                "Select cards to place at the top of the deck\n(cards will be placed back to the top of the deck so that cards with lower numbers are on top).",
+                                maxCount: 3,
+                                canEndNotMax: false,
+                                isShowOpponent: false,
+                                mode: SelectCardEffect.Mode.Custom,
+                                root: SelectCardEffect.Root.Trash,
+                                customRootCardList: null,
+                                canLookReverseCard: true,
+                                selectPlayer: card.Owner,
+                                cardEffect: activateClass);
+
+                            selectCardEffect.SetUpCustomMessage("Select 3 cards to top deck.",
+                                "The opponent is selecting 3 cards to top deck.");
+                            selectCardEffect.SetUpCustomMessage_ShowCard("Deck Top Cards");
+
+                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                        }
+
+                        IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
+                        {
+                            if (cardSources.Count == 3)
+                            {
+                                cardSources.Reverse();
+
+                                yield return ContinuousController.instance.StartCoroutine(
+                                    CardObjectController.AddLibraryTopCards(cardSources));
+
+                                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentSharedCondition))
                                 {
-                                    List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>
-                                    {
-                                        new(message: "From hand", value: true, spriteIndex: 0),
-                                        new(message: "From trash", value: false, spriteIndex: 1),
-                                    };
+                                    SelectPermanentEffect selectPermanentEffect =
+                                        GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                                    string selectPlayerMessage = "From which area do you return cards?";
-                                    string notSelectPlayerMessage = "The opponent is choosing from which area to return cards.";
-
-                                    GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements,
-                                        selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage,
-                                        notSelectPlayerMessage: notSelectPlayerMessage);
-                                }
-
-                                else
-                                {
-                                    GManager.instance.userSelectionManager.SetBool(canSelectHand);
-                                }
-
-                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-
-                                bool fromHand = GManager.instance.userSelectionManager.SelectedBoolValue;
-                                int allowedCount = maxCount - selectedCards.Count;
-
-                                if (fromHand)
-                                {
-                                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                                    selectHandEffect.SetUp(
+                                    selectPermanentEffect.SetUp(
                                         selectPlayer: card.Owner,
-                                        canTargetCondition: CanSelectCardSharedCondition,
+                                        canTargetCondition: CanSelectPermanentSharedCondition,
                                         canTargetCondition_ByPreSelecetedList: null,
                                         canEndSelectCondition: null,
-                                        maxCount: allowedCount,
-                                        canNoSelect: true,
-                                        canEndNotMax: true,
-                                        isShowOpponent: false,
-                                        selectCardCoroutine: null,
-                                        afterSelectCardCoroutine: AfterSelectCardCoroutine,
-                                        mode: SelectHandEffect.Mode.Custom,
+                                        maxCount: 1,
+                                        canNoSelect: false,
+                                        canEndNotMax: false,
+                                        selectPermanentCoroutine: SelectPermanentCoroutine,
+                                        afterSelectPermanentCoroutine: null,
+                                        mode: SelectPermanentEffect.Mode.Custom,
                                         cardEffect: activateClass);
 
-                                    selectHandEffect.SetUpCustomMessage("Select cards to top deck\n(cards will be placed back to the top of the deck so that cards with lower numbers are on top).",
-                                        "The opponent is selecting cards to top deck.");
-                                    selectHandEffect.SetUpCustomMessage_ShowCard("Deck Top Cards");
+                                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to De-Digivolve.",
+                                        "The opponent is selecting 1 Digimon to De-Digivolve.");
+                                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                                    yield return StartCoroutine(selectHandEffect.Activate());
-                                }
-
-                                else
-                                {
-                                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                                    selectCardEffect.SetUp(
-                                        canTargetCondition: CanSelectCardSharedCondition,
-                                        canTargetCondition_ByPreSelecetedList: null,
-                                        canEndSelectCondition: null,
-                                        canNoSelect: () => true,
-                                        selectCardCoroutine: null,
-                                        afterSelectCardCoroutine: AfterSelectCardCoroutine,
-                                        message:
-                                        "Select cards to place at the top of the deck\n(cards will be placed back to the top of the deck so that cards with lower numbers are on top).",
-                                        maxCount: allowedCount,
-                                        canEndNotMax: true,
-                                        isShowOpponent: false,
-                                        mode: SelectCardEffect.Mode.Custom,
-                                        root: SelectCardEffect.Root.Trash,
-                                        customRootCardList: null,
-                                        canLookReverseCard: true,
-                                        selectPlayer: card.Owner,
-                                        cardEffect: activateClass);
-
-                                    selectCardEffect.SetUpCustomMessage("Select cards to top deck.",
-                                        "The opponent is selecting cards to top deck.");
-                                    selectCardEffect.SetUpCustomMessage_ShowCard("Deck Top Cards");
-
-                                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-                                }
-
-                                IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
-                                {
-                                    selectedCards.AddRange(cardSources);
-
-                                    if (selectedCards.Count == 3)
+                                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
                                     {
-                                        cardSources.Reverse();
-
                                         yield return ContinuousController.instance.StartCoroutine(
-                                            CardObjectController.AddLibraryTopCards(cardSources));
-
-                                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentSharedCondition))
-                                        {
-                                            SelectPermanentEffect selectPermanentEffect =
-                                                GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                                            selectPermanentEffect.SetUp(
-                                                selectPlayer: card.Owner,
-                                                canTargetCondition: CanSelectPermanentSharedCondition,
-                                                canTargetCondition_ByPreSelecetedList: null,
-                                                canEndSelectCondition: null,
-                                                maxCount: 1,
-                                                canNoSelect: false,
-                                                canEndNotMax: false,
-                                                selectPermanentCoroutine: SelectPermanentCoroutine,
-                                                afterSelectPermanentCoroutine: null,
-                                                mode: SelectPermanentEffect.Mode.Custom,
-                                                cardEffect: activateClass);
-
-                                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to De-Digivolve.",
-                                                "The opponent is selecting 1 Digimon to De-Digivolve.");
-                                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                                            IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                                            {
-                                                yield return ContinuousController.instance.StartCoroutine(
-                                                    new IDegeneration(permanent, 1, activateClass).Degeneration());
-                                            }
-                                        }
+                                            new IDegeneration(permanent, 1, activateClass).Degeneration());
                                     }
                                 }
                             }
                         }
-                    }                    
+                    }
                 }
             }
 
@@ -238,151 +224,127 @@ namespace DCGO.CardEffects.EX7
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    List<CardSource> selectedCards = new List<CardSource>();
-                    int maxCount = 3;
+                    bool canSelectHand = card.Owner.HandCards.Count(CanSelectCardSharedCondition) >= 3;
+                    bool canSelectTrash = card.Owner.TrashCards.Count(CanSelectCardSharedCondition) >= 3;
 
-                    int handCount = card.Owner.HandCards.Count(CanSelectCardSharedCondition);
-                    int trashCount = card.Owner.TrashCards.Count(CanSelectCardSharedCondition);
-
-                    if (handCount + trashCount >= maxCount)
+                    if (canSelectHand || canSelectTrash)
                     {
-                        while (selectedCards.Count != maxCount)
+                        if (canSelectHand && canSelectTrash)
                         {
-                            bool canSelectHand = handCount > 1;
-                            bool canSelectTrash = trashCount > 1;
-
-                            if (canSelectHand || canSelectTrash)
+                            List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>
                             {
-                                if (canSelectHand && canSelectTrash)
+                                new(message: "From hand", value: true, spriteIndex: 0),
+                                new(message: "From trash", value: false, spriteIndex: 1),
+                            };
+
+                            string selectPlayerMessage = "From which area do you return cards?";
+                            string notSelectPlayerMessage = "The opponent is choosing from which area to return cards.";
+
+                            GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements,
+                                selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage,
+                                notSelectPlayerMessage: notSelectPlayerMessage);
+                        }
+
+                        else
+                        {
+                            GManager.instance.userSelectionManager.SetBool(canSelectHand);
+                        }
+
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager
+                            .WaitForEndSelect());
+
+                        bool fromHand = GManager.instance.userSelectionManager.SelectedBoolValue;
+
+                        if (fromHand)
+                        {
+                            SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                            selectHandEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: CanSelectCardSharedCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: 3,
+                                canNoSelect: true,
+                                canEndNotMax: false,
+                                isShowOpponent: false,
+                                selectCardCoroutine: null,
+                                afterSelectCardCoroutine: AfterSelectCardCoroutine,
+                                mode: SelectHandEffect.Mode.Custom,
+                                cardEffect: activateClass);
+
+                            selectHandEffect.SetUpCustomMessage("Select 3 cards to top deck\n(cards will be placed back to the top of the deck so that cards with lower numbers are on top).",
+                                "The opponent is selecting 3 cards to top deck.");
+                            selectHandEffect.SetUpCustomMessage_ShowCard("Deck Top Cards");
+
+                            yield return StartCoroutine(selectHandEffect.Activate());
+                        }
+
+                        else
+                        {
+                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                            selectCardEffect.SetUp(
+                                canTargetCondition: CanSelectCardSharedCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                canNoSelect: () => true,
+                                selectCardCoroutine: null,
+                                afterSelectCardCoroutine: AfterSelectCardCoroutine,
+                                message:
+                                "Select cards to place at the top of the deck\n(cards will be placed back to the top of the deck so that cards with lower numbers are on top).",
+                                maxCount: 3,
+                                canEndNotMax: false,
+                                isShowOpponent: false,
+                                mode: SelectCardEffect.Mode.Custom,
+                                root: SelectCardEffect.Root.Trash,
+                                customRootCardList: null,
+                                canLookReverseCard: true,
+                                selectPlayer: card.Owner,
+                                cardEffect: activateClass);
+
+                            selectCardEffect.SetUpCustomMessage("Select 3 cards to top deck.",
+                                "The opponent is selecting 3 cards to top deck.");
+                            selectCardEffect.SetUpCustomMessage_ShowCard("Deck Top Cards");
+
+                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                        }
+
+                        IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
+                        {
+                            if (cardSources.Count == 3)
+                            {
+                                cardSources.Reverse();
+
+                                yield return ContinuousController.instance.StartCoroutine(
+                                    CardObjectController.AddLibraryTopCards(cardSources));
+
+                                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentSharedCondition))
                                 {
-                                    List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>
-                                    {
-                                        new(message: "From hand", value: true, spriteIndex: 0),
-                                        new(message: "From trash", value: false, spriteIndex: 1),
-                                    };
+                                    SelectPermanentEffect selectPermanentEffect =
+                                        GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                                    string selectPlayerMessage = "From which area do you return cards?";
-                                    string notSelectPlayerMessage = "The opponent is choosing from which area to return cards.";
-
-                                    GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements,
-                                        selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage,
-                                        notSelectPlayerMessage: notSelectPlayerMessage);
-                                }
-
-                                else
-                                {
-                                    GManager.instance.userSelectionManager.SetBool(canSelectHand);
-                                }
-
-                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-
-                                bool fromHand = GManager.instance.userSelectionManager.SelectedBoolValue;
-                                int allowedCount = maxCount - selectedCards.Count;
-
-                                if (fromHand)
-                                {
-                                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                                    selectHandEffect.SetUp(
+                                    selectPermanentEffect.SetUp(
                                         selectPlayer: card.Owner,
-                                        canTargetCondition: CanSelectCardSharedCondition,
-                                        canTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
+                                        canTargetCondition: CanSelectPermanentSharedCondition,
+                                        canTargetCondition_ByPreSelecetedList: null,
                                         canEndSelectCondition: null,
-                                        maxCount: allowedCount,
-                                        canNoSelect: true,
-                                        canEndNotMax: true,
-                                        isShowOpponent: false,
-                                        selectCardCoroutine: null,
-                                        afterSelectCardCoroutine: AfterSelectCardCoroutine,
-                                        mode: SelectHandEffect.Mode.Custom,
+                                        maxCount: 1,
+                                        canNoSelect: false,
+                                        canEndNotMax: false,
+                                        selectPermanentCoroutine: SelectPermanentCoroutine,
+                                        afterSelectPermanentCoroutine: null,
+                                        mode: SelectPermanentEffect.Mode.Custom,
                                         cardEffect: activateClass);
 
-                                    selectHandEffect.SetUpCustomMessage("Select cards to top deck\n(cards will be placed back to the top of the deck so that cards with lower numbers are on top).",
-                                        "The opponent is selecting cards to top deck.");
-                                    selectHandEffect.SetUpCustomMessage_ShowCard("Deck Top Cards");
+                                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to De-Digivolve.",
+                                        "The opponent is selecting 1 Digimon to De-Digivolve.");
+                                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                                    yield return StartCoroutine(selectHandEffect.Activate());
-                                }
-
-                                else
-                                {
-                                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                                    selectCardEffect.SetUp(
-                                        canTargetCondition: CanSelectCardSharedCondition,
-                                        canTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
-                                        canEndSelectCondition: null,
-                                        canNoSelect: () => true,
-                                        selectCardCoroutine: null,
-                                        afterSelectCardCoroutine: AfterSelectCardCoroutine,
-                                        message:
-                                        "Select cards to place at the top of the deck\n(cards will be placed back to the top of the deck so that cards with lower numbers are on top).",
-                                        maxCount: allowedCount,
-                                        canEndNotMax: true,
-                                        isShowOpponent: false,
-                                        mode: SelectCardEffect.Mode.Custom,
-                                        root: SelectCardEffect.Root.Trash,
-                                        customRootCardList: null,
-                                        canLookReverseCard: true,
-                                        selectPlayer: card.Owner,
-                                        cardEffect: activateClass);
-
-                                    selectCardEffect.SetUpCustomMessage("Select cards to top deck.",
-                                        "The opponent is selecting cards to top deck.");
-                                    selectCardEffect.SetUpCustomMessage_ShowCard("Deck Top Cards");
-
-                                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-                                }
-
-                                bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
-                                {
-                                    if (cardSources.Contains(cardSource))
+                                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
                                     {
-                                        return false;
-                                    }
-
-                                    return true;
-                                }
-
-                                IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
-                                {
-                                    selectedCards.AddRange(cardSources);
-
-                                    if (selectedCards.Count == 3)
-                                    {
-                                        cardSources.Reverse();
-
                                         yield return ContinuousController.instance.StartCoroutine(
-                                            CardObjectController.AddLibraryTopCards(selectedCards));
-
-                                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentSharedCondition))
-                                        {
-                                            SelectPermanentEffect selectPermanentEffect =
-                                                GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                                            selectPermanentEffect.SetUp(
-                                                selectPlayer: card.Owner,
-                                                canTargetCondition: CanSelectPermanentSharedCondition,
-                                                canTargetCondition_ByPreSelecetedList: null,
-                                                canEndSelectCondition: null,
-                                                maxCount: 1,
-                                                canNoSelect: false,
-                                                canEndNotMax: false,
-                                                selectPermanentCoroutine: SelectPermanentCoroutine,
-                                                afterSelectPermanentCoroutine: null,
-                                                mode: SelectPermanentEffect.Mode.Custom,
-                                                cardEffect: activateClass);
-
-                                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to De-Digivolve.",
-                                                "The opponent is selecting 1 Digimon to De-Digivolve.");
-                                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                                            IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                                            {
-                                                yield return ContinuousController.instance.StartCoroutine(
-                                                    new IDegeneration(permanent, 1, activateClass).Degeneration());
-                                            }
-                                        }
+                                            new IDegeneration(permanent, 1, activateClass).Degeneration());
                                     }
                                 }
                             }

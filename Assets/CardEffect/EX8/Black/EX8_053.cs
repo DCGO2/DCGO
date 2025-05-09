@@ -95,7 +95,7 @@ namespace DCGO.CardEffects.EX8
                                 canTargetCondition: PlayableMineralorRock,
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
-                                canNoSelect: false,
+                                canNoSelect: true,
                                 selectCardCoroutine: CardToPlay,
                                 message: "Select 1 [Mineral] or [Rock] trait digimon with 8 cost or less to play",
                                 maxCount: 1,
