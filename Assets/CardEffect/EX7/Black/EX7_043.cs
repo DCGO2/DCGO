@@ -286,7 +286,7 @@ namespace DCGO.CardEffects.EX7
                                     selectHandEffect.SetUp(
                                         selectPlayer: card.Owner,
                                         canTargetCondition: CanSelectCardSharedCondition,
-                                        canTargetCondition_ByPreSelecetedList: null,
+                                        canTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
                                         canEndSelectCondition: null,
                                         maxCount: allowedCount,
                                         canNoSelect: true,
@@ -310,7 +310,7 @@ namespace DCGO.CardEffects.EX7
 
                                     selectCardEffect.SetUp(
                                         canTargetCondition: CanSelectCardSharedCondition,
-                                        canTargetCondition_ByPreSelecetedList: null,
+                                        canTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
                                         canEndSelectCondition: null,
                                         canNoSelect: () => true,
                                         selectCardCoroutine: null,
@@ -334,6 +334,16 @@ namespace DCGO.CardEffects.EX7
                                     yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
                                 }
 
+                                bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
+                                {
+                                    if (cardSources.Contains(cardSource))
+                                    {
+                                        return false;
+                                    }
+
+                                    return true;
+                                }
+
                                 IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
                                 {
                                     selectedCards.AddRange(cardSources);
@@ -343,7 +353,7 @@ namespace DCGO.CardEffects.EX7
                                         cardSources.Reverse();
 
                                         yield return ContinuousController.instance.StartCoroutine(
-                                            CardObjectController.AddLibraryTopCards(cardSources));
+                                            CardObjectController.AddLibraryTopCards(selectedCards));
 
                                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentSharedCondition))
                                         {
