@@ -1825,9 +1825,17 @@ public class Permanent
                 }
                 #endregion
 
-                if (!TopCard.Owner.GetBreedingAreaPermanents().Contains(this))
+                if (TopCard.PermanentOfThisCard().PermanentFrame.isBreedingAreaFrame())
                 {
-                    return false;
+                    if (!TopCard.Owner.GetBreedingAreaPermanents().Contains(this))
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    if (TopCard.Owner.GetBreedingAreaPermanents().Count > 0)
+                        return false;
                 }
 
                 if (!IsDigimon)
@@ -1841,7 +1849,6 @@ public class Permanent
                     return false;
                 }
             }
-
             else
             {
                 return false;

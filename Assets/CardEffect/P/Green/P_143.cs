@@ -50,7 +50,7 @@ namespace DCGO.CardEffects.P
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if(GManager.instance.turnStateMachine.gameContext.TurnPlayer.CanMove)
+                    if(card.PermanentOfThisCard().CanMove)
                         yield return ContinuousController.instance.StartCoroutine(CardObjectController.MovePermanent(card.PermanentOfThisCard().PermanentFrame,true));
                 }
             }

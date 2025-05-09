@@ -86,15 +86,23 @@ namespace DCGO.CardEffects.EX8
                 {
                     List<CardSource> selectedCards = new List<CardSource>();
 
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.RevealDeckTopCardsAndProcessForAll(
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.RevealDeckTopCardsAndSelect(
                         revealCount: 3,
-                        simplifiedSelectCardCondition:
-                        new SimplifiedSelectCardConditionClass(
-                            canTargetCondition: PlayableMineralorRock,
-                            message: "Select 1 [Mineral] or [Rock] trait digimon with 8 cost or less to play",
-                            mode: SelectCardEffect.Mode.Custom,
-                            maxCount: -1,
-                            selectCardCoroutine: CardToPlay),
+                        selectCardConditions:
+                        new SelectCardConditionClass[]
+                        {
+                            new SelectCardConditionClass(
+                                canTargetCondition: PlayableMineralorRock,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                canNoSelect: false,
+                                selectCardCoroutine: CardToPlay,
+                                message: "Select 1 [Mineral] or [Rock] trait digimon with 8 cost or less to play",
+                                maxCount: 1,
+                                canEndNotMax: false,
+                                mode: SelectCardEffect.Mode.Custom
+                                )
+                        },                        
                         remainingCardsPlace: RemainingCardsPlace.Trash,
                         activateClass: activateClass
                     ));
