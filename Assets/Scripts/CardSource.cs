@@ -1126,6 +1126,23 @@ public class CardSource : MonoBehaviour
     }
     #endregion
 
+    #region CardNameRules 
+    bool CardNameRules(string name)
+    {
+        bool passTest = true;
+
+        string testName = name.Replace(" ", "").ToLower();
+
+        if (testName.Contains("greymon"))
+            return testName != "dorugreymon" && testName != "burninggreymon" && testName != "dexdorugreymon";
+
+        if (testName.Contains("argomon"))
+            return !testName.Contains("gargomon");
+
+        return passTest;
+    }
+    #endregion
+
     #region Whether target other card's name has same name as this
     public bool HasSameCardName(CardSource cardSource) => cardSource.CardNames.Count((cardName) => EqualsCardName(cardName)) >= 1;
     //public bool HasSameCardName(CardSource cardSource) => cardSource.CardNames.Count((cardName) => CardNames.Contains(cardName)) >= 1;
@@ -1173,10 +1190,10 @@ public class CardSource : MonoBehaviour
         string lower = name.ToLower();
 
         return CardNames.Some((cardName) =>
-        cardName.Contains(name)
+        ( cardName.Contains(name)
         || cardName.Contains(replaced)
         || cardName.Contains(lower)
-        || cardName.ToLower().Contains(lower));
+        || cardName.ToLower().Contains(lower)) && CardNameRules(cardName));
     }
     #endregion
 
