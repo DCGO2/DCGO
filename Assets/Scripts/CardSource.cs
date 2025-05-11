@@ -33,7 +33,7 @@ public class CardSource : MonoBehaviour
         Owner = owner;
         gameObject.name = _cEntity_Base.CardName_ENG;
 
-        SetFace();
+        SetFace("CardSource.SetBaseData");
     }
     #endregion
 
@@ -46,9 +46,12 @@ public class CardSource : MonoBehaviour
     public bool IsFlipped { get; private set; }
 
     #region set face
-    public void SetFace()
+    public void SetFace(string str = "")
     {
         IsFlipped = false;
+
+        if (str != "")
+            UnityEngine.Debug.Log($"CARD FLIPPED: {this.BaseENGCardNameFromEntity}, from - {str}");
 
         GManager.OnCardFlippedChanged?.Invoke();
         GManager.OnSecurityStackChanged?.Invoke(Owner);
@@ -262,7 +265,7 @@ public class CardSource : MonoBehaviour
     public void Init()
     {
         cEntity_EffectController.InitUseCountThisTurn();
-        SetFace();
+        SetFace("CardSource.Initialize");
     }
     #endregion
 
@@ -1136,7 +1139,7 @@ public class CardSource : MonoBehaviour
         if (testName.Contains("greymon"))
             return testName != "dorugreymon" && testName != "burninggreymon" && testName != "dexdorugreymon";
 
-        if (testName.Contains("argomon"))
+        if (testName.Equals("argomon"))
             return !testName.Contains("gargomon");
 
         return passTest;

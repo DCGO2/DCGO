@@ -15,7 +15,7 @@ public class BT1_002 : CEntity_Effect
 
         #region Your Turn
 
-        if (timing == EffectTiming.RulesTiming || timing == EffectTiming.AfterEffectsActivate)
+        if (timing != EffectTiming.None)
         {
             if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
             {

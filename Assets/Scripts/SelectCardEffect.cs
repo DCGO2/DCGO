@@ -668,7 +668,7 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
                 case Mode.AddHand:
                     foreach (CardSource cardSource in _targetCards)
                     {
-                        cardSource.SetFace();
+                        cardSource.SetFace("SelectCardEffect.Activate.AddHand");
 
                         if (cardSource.IsDigiEgg) yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(new List<CardSource> { cardSource }));
                         else
