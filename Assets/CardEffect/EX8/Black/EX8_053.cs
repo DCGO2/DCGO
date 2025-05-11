@@ -23,7 +23,7 @@ namespace DCGO.CardEffects.EX8
 
             #region All Turns
 
-            if (timing == EffectTiming.RulesTiming || timing == EffectTiming.AfterEffectsActivate)
+            if (timing != EffectTiming.None)
             {
                 bool OpponentsDigimon(Permanent permanent)
                 {

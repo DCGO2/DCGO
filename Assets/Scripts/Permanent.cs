@@ -477,8 +477,7 @@ public class Permanent
                 #region DP Boosts
                 foreach(DPBoost boost in Boosts)
                 {
-                    if (boost.Condition())
-                        DP += boost.DP;
+                    DP += boost.DP;
                 }
                 #endregion
 
@@ -843,7 +842,7 @@ public class Permanent
     public void AddCardSource(CardSource cardSource)
     {
         cardSources.Insert(0, cardSource);
-        cardSource.SetFace();
+        cardSource.SetFace("Permanent.AddSourceCard");
     }
     #endregion
 
@@ -882,7 +881,7 @@ public class Permanent
             if (!this.IsToken && !addedDigivolutionCard.IsToken)
             {
                 this.cardSources.Insert(1, addedDigivolutionCard);
-                addedDigivolutionCard.SetFace();
+                addedDigivolutionCard.SetFace("Permanent.AddDigivolutionCardsTop");
                 addedCards.Add(addedDigivolutionCard);
             }
         }
@@ -977,7 +976,7 @@ public class Permanent
             if (!IsToken && !addedDigivolutionCard.IsToken)
             {
                 cardSources.Add(addedDigivolutionCard);
-                addedDigivolutionCard.SetFace();
+                addedDigivolutionCard.SetFace("Permanent.AddDigivolutionCardsBottom");
                 addedCards.Add(addedDigivolutionCard);
             }
         }
@@ -1046,7 +1045,7 @@ public class Permanent
             LinkedDP += addedLinkCard.LinkDP;
 
             this.cardSources.Insert(1, addedLinkCard);
-            addedLinkCard.SetFace();
+            addedLinkCard.SetFace("Permanent.AddLinkCard");
             addedCard = true;
         }
 
