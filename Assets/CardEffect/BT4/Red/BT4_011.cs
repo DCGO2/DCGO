@@ -13,6 +13,8 @@ public class BT4_011 : CEntity_Effect
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+        List<Func<EffectTiming, ICardEffect>> getCardEffects = new List<Func<EffectTiming, ICardEffect>>();
+
         if (timing == EffectTiming.None)
         {
             bool Condition()
@@ -124,7 +126,7 @@ public class BT4_011 : CEntity_Effect
                 dontHaveDPClass.SetUpDontHaveDPClass(PermanentCondition: PermanentCondition);
                 dontHaveDPClass.SetNotShowUI(true);
 
-                List<Func<EffectTiming, ICardEffect>> getCardEffects =
+               getCardEffects =
                     new List<Func<EffectTiming, ICardEffect>>()
                     {
                                                 _ => changePermanentLevelClass,
@@ -137,21 +139,14 @@ public class BT4_011 : CEntity_Effect
                     card.Owner.PermanentEffects.Add(getCardEffect);
                 }
 
+                yield return null;
+            }
+        }
 
-                if (card.CanPlayCardTargetFrame(selectedPermanent.PermanentFrame, true, activateClass))
-                {
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                        targetPermanent: selectedPermanent,
-                        cardCondition: source => source == card,
-                        payCost: true,
-                        reduceCostTuple: null,
-                        fixedCostTuple: (fixedCost: 3, fixedCostCardCondition: null),
-                        ignoreDigivolutionRequirementFixedCost: -1,
-                        isHand: true,
-                        activateClass: activateClass,
-                        successProcess: null));
-                }
-
+        if(timing == EffectTiming.AfterPayCost)
+        {
+            if(getCardEffects.Count > 0)
+            {
                 foreach (Func<EffectTiming, ICardEffect> getCardEffect in getCardEffects)
                 {
                     card.Owner.PermanentEffects.Remove(getCardEffect);
