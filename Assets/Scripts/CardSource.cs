@@ -1139,8 +1139,8 @@ public class CardSource : MonoBehaviour
         if (testName.Contains("greymon"))
             return testName != "dorugreymon" && testName != "burninggreymon" && testName != "dexdorugreymon";
 
-        if (testName.Equals("argomon"))
-            return !testName.Contains("gargomon");
+        if (testName.Contains("argomon") && !testName.Contains("gargomon"))
+            return testName != "gargomon" && testName != "megagargomon" && testName != "blackmegagargomon";
 
         return passTest;
     }

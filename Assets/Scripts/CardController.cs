@@ -4640,9 +4640,11 @@ public class SuspendPermanentsClass
             }
             #endregion
 
-            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.RuleProcess());
-
-            if (IsAttack) yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.StackSkillInfos(_hashtable, EffectTiming.OnTappedAnyone));
+            if (IsAttack)
+            {
+                yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.RuleProcess());
+                yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.StackSkillInfos(_hashtable, EffectTiming.OnTappedAnyone));
+            }
             else yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(_hashtable, EffectTiming.OnTappedAnyone));
 
             #endregion
