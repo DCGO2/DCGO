@@ -871,7 +871,7 @@ public class Permanent
     /// <param name="cardEffect"></param>
     /// <param name="skipEffectAndActivateSkill"></param>
     /// <returns></returns>
-    public IEnumerator AddDigivolutionCardsBottom(List<CardSource> addedDigivolutionCards, ICardEffect cardEffect, bool skipEffectAndActivateSkill = false)
+    public IEnumerator AddDigivolutionCardsBottom(List<CardSource> addedDigivolutionCards, ICardEffect cardEffect, bool skipEffectAndActivateSkill = false, bool isFacedown = false)
     {
         List<CardSource> addedCards = new List<CardSource>();
 
@@ -880,6 +880,9 @@ public class Permanent
 
         foreach (CardSource addedDigivolutionCard in addedDigivolutionCards)
         {
+            if(isFacedown)
+                addedDigivolutionCard.SetReverse();
+
             if (addedDigivolutionCard.PermanentOfThisCard() != null)
             {
                 if (addedDigivolutionCard.PermanentOfThisCard() != this)
