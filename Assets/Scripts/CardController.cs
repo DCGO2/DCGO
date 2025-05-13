@@ -4641,11 +4641,9 @@ public class SuspendPermanentsClass
             #endregion
 
             if (IsAttack)
-            {
-                yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.RuleProcess());
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.StackSkillInfos(_hashtable, EffectTiming.OnTappedAnyone));
-            }
-            else yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(_hashtable, EffectTiming.OnTappedAnyone));
+            else 
+                yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(_hashtable, EffectTiming.OnTappedAnyone));
 
             #endregion
 

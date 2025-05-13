@@ -136,21 +136,10 @@ public class BT4_011 : CEntity_Effect
 
                 foreach (Func<EffectTiming, ICardEffect> getCardEffect in getCardEffects)
                 {
-                    card.Owner.PermanentEffects.Add(getCardEffect);
+                   card.Owner.UntilCalculateFixedCostEffect.Add(getCardEffect);
                 }
 
                 yield return null;
-            }
-        }
-
-        if(timing == EffectTiming.AfterPayCost)
-        {
-            if(getCardEffects.Count > 0)
-            {
-                foreach (Func<EffectTiming, ICardEffect> getCardEffect in getCardEffects)
-                {
-                    card.Owner.PermanentEffects.Remove(getCardEffect);
-                }
             }
         }
 
