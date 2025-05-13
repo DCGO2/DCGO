@@ -3409,6 +3409,10 @@ public class Permanent
     public bool HasNoDigivolutionCards => DigivolutionCards.Count == 0;
     #endregion
 
+    #region Has face down Digivolution Cards
+    public bool HasFaceDownDigivolutionCards => DigivolutionCards.Any(x => x.IsFlipped);
+    #endregion
+
     #region Has No Link Cards
     public bool HasNoLinkCards => LinkedCards.Count == 0;
     #endregion
