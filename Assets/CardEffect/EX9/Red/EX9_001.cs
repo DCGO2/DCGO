@@ -54,14 +54,15 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           card.PermanentOfThisCard().HasFaceDownDigivolutionCards;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     Permanent selectedPermanent = card.PermanentOfThisCard();
 
-                    if (selectedPermanent != null && selectedPermanent.HasFaceDownDigivolutionCards)
+                    if (selectedPermanent != null)
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
                                 targetPermanent: selectedPermanent,
