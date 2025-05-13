@@ -898,6 +898,8 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
                                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().RemoveDigivolveRootEffect(cardSource, cardSource.PermanentOfThisCard()));
                                 yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource>() { cardSource }, null));
                             }
+
+                            cardSource.cEntity_EffectController.InitUseCountThisTurn();
                         }
                     }
                 }
