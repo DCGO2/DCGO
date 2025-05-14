@@ -51,9 +51,7 @@ namespace DCGO.CardEffects.BT21
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    if (card.Owner.LibraryCards.Count == 0) yield break;
-
-                    List<CardSource> selectedCards = new List<CardSource>();
+                    CardSource selectedCard = null;
 
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SimplifiedRevealDeckTopCardsAndSelect(
                         revealCount: 3,
@@ -74,44 +72,47 @@ namespace DCGO.CardEffects.BT21
 
                     IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
-                        selectedCards.Add(cardSource);
+                        selectedCard = cardSource;
                         yield return null;
                     }
 
                     bool playCard = false;
 
-                    if (selectedCards[0].EqualsCardName("Vemmon"))
+                    if(selectedCard != null)
                     {
-                        List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
+                        if (selectedCard.EqualsCardName("Vemmon"))
+                        {
+                            List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
                         {
                             new SelectionElement<bool>(message: $"Play", value : true, spriteIndex: 0),
                             new SelectionElement<bool>(message: $"Add to your hand", value : false, spriteIndex: 1),
                         };
 
-                        string selectPlayerMessage = "Wll you play this card or add it to your hand?";
-                        string notSelectPlayerMessage = "The opponent is choosing whether to play the selected card or add it to their hand.";
+                            string selectPlayerMessage = "Will you play this card or add it to your hand?";
+                            string notSelectPlayerMessage = "The opponent is choosing whether to play the selected card or add it to their hand.";
 
-                        GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+                            GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
 
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                        playCard = GManager.instance.userSelectionManager.SelectedBoolValue;
-                    }
+                            playCard = GManager.instance.userSelectionManager.SelectedBoolValue;
+                        }
 
-                    if (playCard)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                            cardSources: selectedCards,
-                            activateClass: activateClass,
-                            payCost: false,
-                            isTapped: false,
-                            root: SelectCardEffect.Root.Library,
-                            activateETB: true));
-                    }
-                    else
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.AddThisCardToHand(selectedCards[0], activateClass));
-                    }
+                        if (playCard)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
+                                cardSources: new List<CardSource> { selectedCard },
+                                activateClass: activateClass,
+                                payCost: false,
+                                isTapped: false,
+                                root: SelectCardEffect.Root.Library,
+                                activateETB: true));
+                        }
+                        else
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.AddThisCardToHand(selectedCard, activateClass));
+                        }
+                    }                    
                 }
             }
 

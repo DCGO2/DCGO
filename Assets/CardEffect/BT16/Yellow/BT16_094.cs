@@ -27,7 +27,7 @@ namespace DCGO.CardEffects.BT16
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.CardColors.Contains(CardColor.Yellow) || cardSource.EqualsCardName("Four Great Dragons"))
+                    if (cardSource.CardColors.Contains(CardColor.Yellow) || cardSource.EqualsTraits("Four Great Dragons"))
                     {
                         return true;
                     }

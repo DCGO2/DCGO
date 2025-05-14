@@ -42,6 +42,7 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
         _selectPlayer = selectPlayer;
         _cardEffect = cardEffect;
 
+        _isLocal = false;
         _customMessage = null;
         _customMessage_Enemy = null;
         _customMessage_ShowCard = null;
@@ -57,6 +58,13 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
         _skillInfos = new List<SkillInfo>();
 
         _afterSelectIndexCoroutine = null;
+
+        _endSelect = false;
+    }
+
+    public void SetIsLocal()
+    {
+        _isLocal = true;
     }
 
     public void SetIsDeckBottom()
@@ -140,6 +148,8 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
 
     Player _selectPlayer = null;
     ICardEffect _cardEffect = null;
+
+    bool _isLocal = false;
     bool _showReverseCard = true;
     bool _showCard = true;
     bool _notAddLog = false;
@@ -265,8 +275,11 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
         _targetCards = new List<CardSource>();
 
         _slectedInexesInList = new List<int>();
-
-        yield return GManager.instance.photonWaitController.StartWait("SelectCardEffect");
+        
+        if (!_isLocal)
+        {
+            yield return GManager.instance.photonWaitController.StartWait("SelectCardEffect");
+        }
 
         bool oldIsActiveOutline_AttackingPermanent = false;
 
@@ -362,7 +375,7 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
                         RootCards.Add(cardSource);
                     }
 
-                    #region 並び替え
+                    #region Sort
 
                     if (_root == Root.Library || _root == Root.Trash)
                     {
@@ -401,7 +414,7 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
 
                     #endregion
 
-                    #region 効果発動中・発動待機中表示
+                    #region Effect in progress/waiting to be activated
 
                     if (_cardEffect != null)
                     {
@@ -492,6 +505,7 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
                         _slectedInexesInList.Add(selectedIndex);
                     }
 
+                    photonView.RPC("SetTargetIndicies", RpcTarget.All, _slectedInexesInList.ToArray());
                     photonView.RPC("SetTargetCard", RpcTarget.All, targetCardIDs.ToArray());
                 }
             }
@@ -583,7 +597,7 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
             GManager.instance.commandText.CloseCommandText();
             yield return new WaitWhile(() => GManager.instance.commandText.gameObject.activeSelf);
 
-            #region 選択されたカードを表示
+            #region Show selected card
 
             if (_targetCards.Count > 0 && _showCard)
             {
@@ -654,7 +668,7 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
                 case Mode.AddHand:
                     foreach (CardSource cardSource in _targetCards)
                     {
-                        cardSource.SetFace();
+                        cardSource.SetFace("SelectCardEffect.Activate.AddHand");
 
                         if (cardSource.IsDigiEgg) yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(new List<CardSource> { cardSource }));
                         else
@@ -749,5 +763,16 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
         }
 
         _endSelect = true;
+    }
+
+    [PunRPC]
+    public void SetTargetIndicies(int[] CardIDs)
+    {
+        _slectedInexesInList = new List<int>();
+
+        foreach (int index in CardIDs)
+        {
+            _slectedInexesInList.Add(index);
+        }
     }
 }

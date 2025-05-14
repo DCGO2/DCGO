@@ -33,7 +33,7 @@ public class CardSource : MonoBehaviour
         Owner = owner;
         gameObject.name = _cEntity_Base.CardName_ENG;
 
-        SetFace();
+        SetFace("CardSource.SetBaseData");
     }
     #endregion
 
@@ -46,9 +46,12 @@ public class CardSource : MonoBehaviour
     public bool IsFlipped { get; private set; }
 
     #region set face
-    public void SetFace()
+    public void SetFace(string str = "")
     {
         IsFlipped = false;
+
+        if (str != "")
+            UnityEngine.Debug.Log($"CARD FLIPPED: {this.BaseENGCardNameFromEntity}, from - {str}");
 
         GManager.OnCardFlippedChanged?.Invoke();
         GManager.OnSecurityStackChanged?.Invoke(Owner);
@@ -262,7 +265,7 @@ public class CardSource : MonoBehaviour
     public void Init()
     {
         cEntity_EffectController.InitUseCountThisTurn();
-        SetFace();
+        SetFace("CardSource.Initialize");
     }
     #endregion
 
@@ -2569,28 +2572,25 @@ public class CardSource : MonoBehaviour
         {
             if (targetPermanent.TopCard != null)
             {
-                if (targetPermanent.TopCard.Owner.GetFieldPermanents().Contains(targetPermanent))
+                if (this.CanLink(PayCost))
                 {
-                    if (this.CanLink(PayCost))
+                    if (linkCondition != null)
                     {
-                        if (linkCondition != null)
+                        if (linkCondition.digimonCondition(targetPermanent))
                         {
-                            if (linkCondition.digimonCondition(targetPermanent))
+                            if (PayCost)
                             {
-                                if (PayCost)
+                                int cost = linkCondition.cost;
+
+                                cost = GetChangedCostItselef(cost, SelectCardEffect.Root.Hand, new List<Permanent>() { targetPermanent }, checkAvailability: true);
+
+                                if (Owner.MaxMemoryCost < cost)
                                 {
-                                    int cost = linkCondition.cost;
-
-                                    cost = GetChangedCostItselef(cost, SelectCardEffect.Root.Hand, new List<Permanent>() { targetPermanent }, checkAvailability: true);
-
-                                    if (Owner.MaxMemoryCost < cost)
-                                    {
-                                        return false;
-                                    }
+                                    return false;
                                 }
-
-                                return true;
                             }
+
+                            return true;
                         }
                     }
                 }
@@ -2614,7 +2614,7 @@ public class CardSource : MonoBehaviour
                     if (!this.CanNotEvolve(targetPermanent))
                     {
                         if (appFusionCondition.digimonCondition(targetPermanent))
-                        { 
+                        {
                             foreach (CardSource linkedCard in targetPermanent.LinkedCards)
                             {
                                 if (appFusionCondition.linkedCondition(targetPermanent, linkedCard))

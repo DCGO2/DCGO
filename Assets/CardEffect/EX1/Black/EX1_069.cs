@@ -87,9 +87,9 @@ namespace DCGO.CardEffects.EX1
 
                         if (discarded)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(2, activateClass));
-
                             yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
+
+                            yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(2, activateClass));
                         }
                     }
                 }

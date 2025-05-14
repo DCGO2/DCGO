@@ -408,19 +408,21 @@ namespace DCGO.CardEffects.P
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card) &&
-                           CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
+                    return CardEffectCommons.IsExistOnBattleArea(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    foreach (Permanent selectedPermanent in card.Owner.Enemy.GetBattleAreaDigimons())
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
-                        if (CanSelectPermanentCondition(selectedPermanent))
+                        foreach (Permanent selectedPermanent in card.Owner.Enemy.GetBattleAreaDigimons())
                         {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: selectedPermanent, trashCount: 2, isFromTop: true, activateClass: activateClass));
+                            if (CanSelectPermanentCondition(selectedPermanent))
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: selectedPermanent, trashCount: 2, isFromTop: true, activateClass: activateClass));
+                            }
                         }
-                    }
+                    }                    
 
                     if (CardEffectCommons.HasMatchConditionPermanent(CanDigionWithoutSourcesCondition))
                     {
@@ -496,17 +498,19 @@ namespace DCGO.CardEffects.P
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card) &&
-                           CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
+                    return CardEffectCommons.IsExistOnBattleArea(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    foreach (Permanent selectedPermanent in card.Owner.Enemy.GetBattleAreaDigimons())
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
-                        if (CanSelectPermanentCondition(selectedPermanent))
+                        foreach (Permanent selectedPermanent in card.Owner.Enemy.GetBattleAreaDigimons())
                         {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: selectedPermanent, trashCount: 2, isFromTop: true, activateClass: activateClass));
+                            if (CanSelectPermanentCondition(selectedPermanent))
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: selectedPermanent, trashCount: 2, isFromTop: true, activateClass: activateClass));
+                            }
                         }
                     }
 

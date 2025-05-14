@@ -146,46 +146,42 @@ namespace DCGO.CardEffects.P
 
             #region All Turns
 
-            if (timing == EffectTiming.None)
+            if (timing != EffectTiming.None)
             {
-                List<CardSource> cards = card.Owner.FieldPermanents
-                        .Where(x => x.IsDigimon && x.IsTamer)
-                        .Select(x => x.TopCard)
-                        .Concat(card.Owner.Enemy.FieldPermanents
-                            .Where(x => x.IsDigimon && x.IsTamer)
-                            .Select(x => x.TopCard))
-                        .ToList();
-                var colourCount = Combinations.GetDifferenetColorCardCount(cards);
-                var newDP = colourCount * 1000;
+                if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                {
+                    Permanent thisPermanent = card.PermanentOfThisCard();
+
+                    
+                    if(Condition())
+                        thisPermanent.AddBoost(new Permanent.DPBoost("P_182", count(), Condition));
+                    else
+                        thisPermanent.RemoveBoost("P_182");
+                }
+
+                int count()
+                {
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    {
+
+                        List<CardSource> cards = card.Owner.GetBattleAreaPermanents()
+                        .Concat(card.Owner.Enemy.GetBattleAreaPermanents()).ToList()
+                        .Map(card => card.TopCard)
+                        .Where(x => x.IsDigimon || x.IsTamer).ToList();
+
+                        var colourCount = Combinations.GetDifferenetColorCardCount(cards);
+                        var newDP = colourCount * 1000;
+
+                        return newDP;
+                    }
+
+                    return 0;
+                }
 
                 bool Condition()
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card);
-                }
-
-                bool PermanentCondition(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
-                    {
-                        if (permanent == card.PermanentOfThisCard())
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
-                cardEffects.Add(CardEffectFactory.ChangeDPStaticEffect(
-                permanentCondition: PermanentCondition,
-                changeValue: newDP,
-                isInheritedEffect: false,
-                card: card,
-                condition: Condition,
-                effectName: EffectDiscription));
-                string EffectDiscription()
-                {
-                    return "[All Turns] This Digimon gets +1000 DP for each color Digimon and Tamers have.";
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           card.PermanentOfThisCard().TopCard == card;
                 }
             }
 

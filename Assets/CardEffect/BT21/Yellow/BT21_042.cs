@@ -10,18 +10,21 @@ namespace DCGO.CardEffects.BT21
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Alternative Digivolution Condition
+
             if (timing == EffectTiming.None)
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.EqualsCardName("Agumon") && targetPermanent.TopCard.EqualsTraits("Dinosaur") && targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 3;
+                    return targetPermanent.TopCard.ContainsCardName("Agumon") && targetPermanent.TopCard.EqualsTraits("Dinosaur") && targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 3;
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 2, ignoreDigivolutionRequirement: false, card: card, condition: null));
             }
+
             #endregion
 
-            #region All Turns 
+            #region All Turns
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -43,13 +46,13 @@ namespace DCGO.CardEffects.BT21
 
                 bool PlayedPermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card) && 
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card) &&
                            permanent.TopCard.EqualsCardName("Marcus Damon");
                 }
 
                 bool CanSelectCardToDigivolveInto(CardSource cardSource)
                 {
-                    return cardSource.CardColors.Contains(CardColor.Yellow) && 
+                    return cardSource.CardColors.Contains(CardColor.Yellow) &&
                            cardSource.ContainsCardName("RizeGreymon") &&
                            cardSource.CanPlayCardTargetFrame(card.PermanentOfThisCard().PermanentFrame, false, activateClass);
                 }
@@ -61,7 +64,7 @@ namespace DCGO.CardEffects.BT21
                         if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardToDigivolveInto))
                         {
                             return true;
-                        }                      
+                        }
                     }
                     return false;
                 }
@@ -80,9 +83,11 @@ namespace DCGO.CardEffects.BT21
                             successProcess: null));
                 }
             }
+
             #endregion
 
             #region Inherit
+
             if (timing == EffectTiming.None)
             {
                 bool Condition()
@@ -101,6 +106,7 @@ namespace DCGO.CardEffects.BT21
                     card: card,
                     condition: Condition));
             }
+
             #endregion
 
             return cardEffects;
