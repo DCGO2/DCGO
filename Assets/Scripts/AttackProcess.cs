@@ -143,8 +143,6 @@ public class AttackProcess : MonoBehaviourPunCallbacks
                     attackerTapHashtable).Tap());
             }
 
-            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.RuleProcess());
-
             // target arrow
             if (DefendingPermanent == null)
             {
@@ -167,7 +165,7 @@ public class AttackProcess : MonoBehaviourPunCallbacks
             }
 
             // activate cutin effects
-            //yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.RuleProcess());
+            yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.RuleProcess());
             //yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.TriggeredSkillProcess(true, null));
 
             // callback that is processed before [On Attack]
