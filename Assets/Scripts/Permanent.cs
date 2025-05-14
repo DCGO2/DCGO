@@ -3440,6 +3440,53 @@ public class Permanent
     }
     #endregion
 
+    #region Can Substitue for Assembly
+    public bool CanSubstituteForAssemblyCondition(CardSource cardSource)
+    {
+        #region Effects that can be used in place of Assembly conditions
+        foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
+        {
+            foreach (Permanent permanent in player.GetFieldPermanents())
+            {
+                #region Effects of permanents in play
+                foreach (ICardEffect cardEffect in permanent.EffectList(EffectTiming.None))
+                {
+                    if (cardEffect is ICanSelectAssemblyEffect)
+                    {
+                        if (cardEffect.CanUse(null))
+                        {
+                            if (((ICanSelectAssemblyEffect)cardEffect).CanSelect(cardSource, this))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+                #endregion
+            }
+
+            #region player effect
+            foreach (ICardEffect cardEffect in player.EffectList(EffectTiming.None))
+            {
+                if (cardEffect is ICanSelectAssemblyEffect)
+                {
+                    if (cardEffect.CanUse(null))
+                    {
+                        if (((ICanSelectAssemblyEffect)cardEffect).CanSelect(cardSource, this))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            #endregion
+        }
+        #endregion
+
+        return false;
+    }
+    #endregion
+
     #region 登場した直後のLevel
     public int LevelJustAfterPlayed { get; set; } = -1;
     #endregion

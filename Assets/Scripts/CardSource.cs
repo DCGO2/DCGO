@@ -509,6 +509,39 @@ public class CardSource : MonoBehaviour
         }
         #endregion
 
+        #region Assembly
+        if (!isEvolution)
+        {
+            if (HasAssembly)
+            {
+                if (Owner.CanReduceCost(null, this))
+                {
+                    //AI
+                    if (!(!Owner.isYou && GManager.instance.IsAI))
+                    {
+                        if (checkAvailability)
+                        {
+                            return 0;
+                        }
+                    }
+
+                    if (!checkAvailability)
+                    {
+                        SelectAssemblyClass selectAssemblyClass = GManager.instance.GetComponent<SelectAssemblyClass>();
+
+                        if (selectAssemblyClass != null)
+                        {
+                            if (selectAssemblyClass.playCard == this)
+                            {
+                                Cost -= selectAssemblyClass.selectedAssemblyCards.Count * assemblyCondition.reduceCost;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        #endregion
+
         Cost = GetChangedCostItselef(Cost, root, targetPermanents, checkAvailability);
 
         Cost = GetChangedPayingCost(Cost, root, targetPermanents, checkAvailability);
@@ -2011,6 +2044,10 @@ public class CardSource : MonoBehaviour
     public bool HasDigiXros => digiXrosCondition != null;
     #endregion
 
+    #region whether this card has [Assembly]
+    public bool HasAssembly => assemblyCondition != null;
+    #endregion
+
     #region traits
     public List<string> CardTraits
     {
@@ -2404,6 +2441,32 @@ public class CardSource : MonoBehaviour
                         if (appFusionCondition != null)
                         {
                             return appFusionCondition;
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+    }
+    #endregion
+
+    #region Assembly requirement
+    public AssemblyCondition assemblyCondition
+    {
+        get
+        {
+            foreach (ICardEffect cardEffect in this.EffectList(EffectTiming.None))
+            {
+                if (cardEffect is IAddAssemblyConditionEffect)
+                {
+                    if (cardEffect.CanUse(null))
+                    {
+                        AssemblyCondition assemblyCondition = ((IAddAssemblyConditionEffect)cardEffect).GetAssemblyCondition(this);
+
+                        if (assemblyCondition != null)
+                        {
+                            return assemblyCondition;
                         }
                     }
                 }
@@ -3002,4 +3065,38 @@ public class AppFusionCondition
     public Func<Permanent, bool> digimonCondition { get; private set; } = null;
 
     public int cost { get; private set; } = 0;
+}
+
+public class AssemblyCondition
+{
+    public AssemblyCondition(List<AssemblyConditionElement> elements, Func<List<CardSource>, CardSource, bool> CanTargetCondition_ByPreSelecetedList, int reduceCost)
+    {
+        this.elements = new List<AssemblyConditionElement>();
+
+        foreach (AssemblyConditionElement element in elements)
+        {
+            this.elements.Add(element);
+        }
+
+        this.CanTargetCondition_ByPreSelecetedList = CanTargetCondition_ByPreSelecetedList;
+        this.reduceCost = reduceCost;
+    }
+    public List<AssemblyConditionElement> elements { get; private set; } = new List<AssemblyConditionElement>();
+    public Func<List<CardSource>, CardSource, bool> CanTargetCondition_ByPreSelecetedList { get; private set; } = null;
+
+    public int reduceCost { get; private set; } = 0;
+}
+
+public class AssemblyConditionElement
+{
+    public AssemblyConditionElement(Func<CardSource, bool> cardCondition, string selectMessage, bool skipAllIfNoSelect = false)
+    {
+        this.CardCondition = cardCondition;
+
+        this.selectMessage = selectMessage;
+        this.skipAllIfNoSelect = skipAllIfNoSelect;
+    }
+    public Func<CardSource, bool> CardCondition { get; private set; } = null;
+    public string selectMessage { get; private set; } = "";
+    public bool skipAllIfNoSelect { get; private set; } = false;
 }

@@ -50,6 +50,7 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
         _showReverseCard = true;
         _showCard = true;
         _isDigiXros = false;
+        _isAssembly = false;
         _isDeckBottom = false;
         _isDeckTop = false;
         _notAddLog = false;
@@ -90,6 +91,11 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
     public void SetDigiXros()
     {
         _isDigiXros = true;
+    }
+
+    public void SetAssembly()
+    {
+        _isAssembly = true;
     }
 
     public void SetIsSecurity()
@@ -154,6 +160,7 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
     bool _showCard = true;
     bool _notAddLog = false;
     bool _isDigiXros = false;
+    bool _isAssembly = false;
     bool _isSecurity = false;
 
     public enum Mode
@@ -339,7 +346,7 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
 
                     if (!string.IsNullOrEmpty(_customMessage))
                     {
-                        GManager.instance.commandText.OpenCommandText(_customMessage, _isDigiXros);
+                        GManager.instance.commandText.OpenCommandText(_customMessage, _isDigiXros, _isAssembly);
                     }
                     else
                     {
@@ -362,7 +369,7 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
 
                         if (!string.IsNullOrEmpty(message))
                         {
-                            GManager.instance.commandText.OpenCommandText(message, _isDigiXros);
+                            GManager.instance.commandText.OpenCommandText(message, _isDigiXros, _isAssembly);
                         }
                     }
 
@@ -513,11 +520,11 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
             {
                 if (!string.IsNullOrEmpty(_customMessage_Enemy))
                 {
-                    GManager.instance.commandText.OpenCommandText(_customMessage_Enemy, _isDigiXros);
+                    GManager.instance.commandText.OpenCommandText(_customMessage_Enemy, _isDigiXros, _isAssembly);
                 }
                 else
                 {
-                    GManager.instance.commandText.OpenCommandText("The opponent is selecting cards.", _isDigiXros);
+                    GManager.instance.commandText.OpenCommandText("The opponent is selecting cards.", _isDigiXros, _isAssembly);
                 }
 
                 #region AI

@@ -276,7 +276,6 @@ public class PlayCardClass
     {
         if (_appFusionFrameIDs != null && _appFusionFrameIDs.Length == 2)
         {
-            UnityEngine.Debug.Log($"GETTING LINKED CARD: {_appFusionFrameIDs[0]}, {_appFusionFrameIDs[1]}");
             if (0 <= _appFusionFrameIDs[0] && _appFusionFrameIDs[0] <= card.Owner.fieldCardFrames.Count - 1)
             {
                 Permanent targetPermanent = card.Owner.fieldCardFrames[_appFusionFrameIDs[0]].GetFramePermanent();
@@ -303,6 +302,7 @@ public class PlayCardClass
         foreach (CardSource card in CardSources)
         {
             GManager.instance.GetComponent<SelectDigiXrosClass>().ResetSelectDigiXrosClass();
+            GManager.instance.GetComponent<SelectAssemblyClass>().ResetSelectAssemblyClass();
 
             if (card == null)
             {
@@ -727,6 +727,13 @@ public class PlayCardClass
             }
             #endregion
 
+            #region select Assembly
+            if (card.HasAssembly && !isEvolution)
+            {
+                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<SelectAssemblyClass>().Select(card));
+            }
+            #endregion
+
             #region Bounce Tamer of Burst digivolution
 
             if (IsBurst(card))
@@ -867,6 +874,8 @@ public class PlayCardClass
                 PlayLog.OnAddLog?.Invoke($"\nFailed to play:\n{card.BaseENGCardNameFromEntity}({card.CardID})\n");
 
                 GManager.instance.GetComponent<SelectDigiXrosClass>().ResetSelectDigiXrosClass();
+
+                GManager.instance.GetComponent<SelectAssemblyClass>().ResetSelectAssemblyClass();
 
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().FailedPlayCardEffect(card));
 
@@ -1137,6 +1146,7 @@ public class PlayPermanentClass
     bool _activateETB = true;
     int[] _jogressEvoRootsFrameIDs = null;
     int _digiXrosCount = 0;
+    int _assemblyCount = 0;
     bool _burstDigivolved = false;
     int[] _appFusionFrameIDs = null;
     bool _appFusion = false;
@@ -1162,6 +1172,11 @@ public class PlayPermanentClass
             if (GManager.instance.GetComponent<SelectDigiXrosClass>().playCard == card)
             {
                 _digiXrosCount = GManager.instance.GetComponent<SelectDigiXrosClass>().selectedDigicrossCards.Count;
+            }
+
+            if (GManager.instance.GetComponent<SelectAssemblyClass>().playCard == card)
+            {
+                _assemblyCount = GManager.instance.GetComponent<SelectAssemblyClass>().selectedAssemblyCards.Count;
             }
 
             bool isFromDigimonDigivolutionCards = card.Owner.GetBattleAreaDigimons().Some((permanent) => permanent.DigivolutionCards.Contains(card));
@@ -1302,6 +1317,7 @@ public class PlayPermanentClass
                                 isEvolution: isEvolution,
                                 isJogress: isJogress,
                                 digiXrosCount: _digiXrosCount,
+                                assemblyCount: _assemblyCount,
                                 cardEffect: CardEffect);
 
                                 bool HasETB = permanent.EffectList(EffectTiming.OnEnterFieldAnyone).Some(cardEffect =>
@@ -1516,6 +1532,9 @@ public class PlayPermanentClass
                 yield return GManager.instance.GetComponent<SelectDigiXrosClass>().AddDigivolutiuonCardsByEffect(card);
                 yield return GManager.instance.GetComponent<SelectDigiXrosClass>().AddDigivolutiuonCards(card);
 
+                yield return GManager.instance.GetComponent<SelectAssemblyClass>().AddDigivolutiuonCardsByEffect(card);
+                yield return GManager.instance.GetComponent<SelectAssemblyClass>().AddDigivolutiuonCards(card);
+
                 if (GManager.instance.turnStateMachine.DoneStartGame)
                 {
                     hashtableParams.Add(
@@ -1532,6 +1551,7 @@ public class PlayPermanentClass
             }
 
             GManager.instance.GetComponent<SelectDigiXrosClass>().ResetSelectDigiXrosClass();
+            GManager.instance.GetComponent<SelectAssemblyClass>().ResetSelectAssemblyClass();
 
             yield return GManager.instance.photonWaitController.StartWait("EndPlayPermanent");
         }
@@ -1563,6 +1583,7 @@ public class PlayPermanentClass
             isEvolution: isEvolution,
             isJogress: isJogress,
             digiXrosCount: _digiXrosCount,
+            assemblyCount: _assemblyCount,
             cardEffect: CardEffect);
 
         #region "When permanents are played" effect
