@@ -136,7 +136,7 @@ namespace DCGO.CardEffects.BT19
                 bool CanSelectOpponentPermanentLevelCondition(Permanent permanent, int level)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
-                           permanent.TopCard.HasLevel && permanent.Level <= level;
+                           permanent.TopCard.HasLevel && permanent.TopCard.Level <= level;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -177,12 +177,13 @@ namespace DCGO.CardEffects.BT19
 
                     if(selectedPermanent != null)
                     {
-                        int selectedLevel = selectedPermanent.Level;
+                        bool selectedHasLevel = selectedPermanent.TopCard.HasLevel;
+                        int selectedLevel = selectedPermanent.TopCard.Level;
 
                         yield return ContinuousController.instance.StartCoroutine(
                             new DeckBottomBounceClass(new List<Permanent> { selectedPermanent }, hashtable).DeckBounce());
 
-                        if (selectedLevel > 0)
+                        if (selectedHasLevel && selectedLevel > 0)
                         {
                             if (CardEffectCommons.HasMatchConditionPermanent(permanent =>
                                     CanSelectOpponentPermanentLevelCondition(permanent, selectedLevel)))

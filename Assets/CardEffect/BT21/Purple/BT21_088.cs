@@ -146,7 +146,7 @@ namespace DCGO.CardEffects.BT21
 
                 string EffectDiscription()
                 {
-                    return "[Your Turn] When any of your Digimon would digivolve into a Digimon card with<Save> in its text or the [Hero] trait, by suspending this Tamer and placing 1 card from under your Tamers as any of their bottom digivolution card, reduce the digivolution cost by 1.";
+                    return "[Your Turn] When any of your Digimon would digivolve into a Digimon card with <Save> in its text or the [Hero] trait, by suspending this Tamer and placing 1 card from under your Tamers as any of their bottom digivolution card, reduce the digivolution cost by 1.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
@@ -156,11 +156,14 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
+                    UnityEngine.Debug.Log($"CAN SELECT: {CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)}");
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
                     {
+                        UnityEngine.Debug.Log($"CAN SELECT: {permanent.IsTamer}");
                         if (permanent.IsTamer)
                         {
-                            if (permanent.DigivolutionCards.Count(CanSelectCardCondition) >= 1)
+                            UnityEngine.Debug.Log($"CAN SELECT: {permanent.DigivolutionCards.Count(CanSelectCardCondition)}");
+                            if (permanent.DigivolutionCards.Count() >= 1)
                             {
                                 return true;
                             }
@@ -172,7 +175,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool PermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card);
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
                 }
 
                 bool CardCondition(CardSource cardSource)
@@ -210,6 +213,7 @@ namespace DCGO.CardEffects.BT21
                     {
                         if (CardEffectCommons.CanActivateSuspendCostEffect(card))
                         {
+                            UnityEngine.Debug.Log($"CAN ACTIVATE: {card.Owner.GetBattleAreaPermanents().Count(CanSelectPermanentCondition)}");
                             if (card.Owner.GetBattleAreaPermanents().Count(CanSelectPermanentCondition) >= 1)
                             {
                                 return true;
@@ -222,6 +226,7 @@ namespace DCGO.CardEffects.BT21
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
+                    UnityEngine.Debug.Log($"ACTIVATE: {card.Owner.GetBattleAreaPermanents().Count(CanSelectPermanentCondition)}");
                     if (card.Owner.GetBattleAreaPermanents().Count(CanSelectPermanentCondition) >= 1)
                     {
                         yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(new List<Permanent>() { card.PermanentOfThisCard() }, CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
@@ -407,7 +412,7 @@ namespace DCGO.CardEffects.BT21
 
                                         bool CardSourceCondition(CardSource cardSource)
                                         {
-                                            return cardSource.HasSaveText;
+                                            return cardSource.HasSaveText || cardSource.EqualsTraits("Hero");
                                         }
 
                                         bool RootCondition(SelectCardEffect.Root root)

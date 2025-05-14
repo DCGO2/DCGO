@@ -150,11 +150,35 @@ public partial class CardEffectCommons
         bool isPlayOption = false,
         int fixedCost = -1) =>
     cardSource != null &&
-    (isPlayOption || !cardSource.IsOption)
+    (isPlayOption || !cardSource.IsOption) &&
+    !GManager.instance.GetComponent<SelectDigiXrosClass>().selectedDigicrossCards.Contains(cardSource)
     && cardSource.Owner.fieldCardFrames.Some((frame) =>
     frame.IsEmptyFrame()
     && cardSource.CanPlayCardTargetFrame(frame, payCost, cardEffect, root, isBreedingArea: isBreedingArea, fixedCost:fixedCost));
 
+    #endregion
+
+    #region Whether the permanent is in the Field
+    public static bool IsPermanentExistsOnField(Permanent permanent)
+    {
+        if (permanent != null)
+        {
+            if (permanent.TopCard != null)
+            {
+                if (permanent.TopCard.Owner.GetBreedingAreaPermanents().Contains(permanent))
+                {
+                    return true;
+                }
+
+                if (permanent.TopCard.Owner.GetBattleAreaPermanents().Contains(permanent))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
     #endregion
 
     #region Whether the permanent is in the Battle Area
@@ -413,7 +437,7 @@ public partial class CardEffectCommons
         return GManager.instance.turnStateMachine.gameContext.Players
         .Map(player => player.GetBattleAreaPermanents())
         .Flat()
-        .Some(permanent => CanSelectPermanentCondition(permanent) && IsOwnerPermanent(permanent, card));
+        .Some(permanent => IsOwnerPermanent(permanent, card) && CanSelectPermanentCondition(permanent));
     }
     #endregion
 
@@ -423,7 +447,7 @@ public partial class CardEffectCommons
         return GManager.instance.turnStateMachine.gameContext.Players
         .Map(player => player.GetBattleAreaPermanents())
         .Flat()
-        .Some(permanent => CanSelectPermanentCondition(permanent) && IsOpponentPermanent(permanent, card));
+        .Some(permanent => IsOpponentPermanent(permanent, card) && CanSelectPermanentCondition(permanent));
     }
     #endregion
 

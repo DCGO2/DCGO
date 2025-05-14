@@ -52,8 +52,6 @@ namespace DCGO.CardEffects.ST20
             }
             #endregion
 
-
-
             #region On Play
 
             if (timing == EffectTiming.OnEnterFieldAnyone)
@@ -181,13 +179,12 @@ namespace DCGO.CardEffects.ST20
             #endregion
 
             #region Your Turn
-
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Gain alliance then attack", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
-                activateClass.SetHashString("alliance-attack-ST20-004");
+                activateClass.SetHashString("alliance-attack-ST20_04");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -195,13 +192,17 @@ namespace DCGO.CardEffects.ST20
                     return "[Your Turn][Once Per Turn] When your other Digimon are played or digivolve, if any of them have the [ADVENTURE] trait, 1 of your Digimon gains <Alliance> for the turn. Then, 1 of your Digimon may attack.";
                 }
 
+                bool MyDigimonAdventurePlayedDigid(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                           permanent != card.PermanentOfThisCard() &&
+                           permanent.TopCard.EqualsTraits("ADVENTURE");
+                }
+
                 bool MyDigimonPlayedDigid(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) && permanent != card.PermanentOfThisCard())
-                    {
-                        return permanent.TopCard.HasAdventureTraits;
-                    }
-                    return false;
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                           permanent != card.PermanentOfThisCard();
                 }
 
                 bool MyDigimonAlliance(Permanent permanent)
@@ -244,30 +245,49 @@ namespace DCGO.CardEffects.ST20
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionPermanent(MyDigimonAlliance))
+                    List<Permanent> etbPermanents = new List<Permanent>();
+                    List<Hashtable> hashtables = CardEffectCommons.GetHashtablesFromHashtable(hashtable);
+
+                    if (hashtables != null)
                     {
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: MyDigimonAlliance,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: 1,
-                            canNoSelect: false,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: SelectBoostedDigimon,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to gain <Alliance>", "The opponent is selecting 1 Digimon to gain <Alliance>");
-
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                        IEnumerator SelectBoostedDigimon(Permanent target)
+                        foreach (Hashtable hashtable1 in hashtables)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainAlliance(targetPermanent: target, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass)); ;
+                            Permanent permanent = CardEffectCommons.GetPermanentFromHashtable(hashtable1);
+
+                            if (permanent != null)
+                                etbPermanents.Add(permanent);
+                        }
+
+                        etbPermanents = etbPermanents.Filter(MyDigimonAdventurePlayedDigid);
+                    }
+
+                    if (etbPermanents.Count > 0)
+                    {
+                        if (CardEffectCommons.HasMatchConditionPermanent(MyDigimonAlliance))
+                        {
+                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                            selectPermanentEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: MyDigimonAlliance,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: 1,
+                                canNoSelect: false,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: SelectBoostedDigimon,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Custom,
+                                cardEffect: activateClass);
+
+                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to gain <Alliance>", "The opponent is selecting 1 Digimon to gain <Alliance>");
+
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                            IEnumerator SelectBoostedDigimon(Permanent target)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainAlliance(targetPermanent: target, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass)); ;
+                            }
                         }
                     }
 
@@ -315,7 +335,6 @@ namespace DCGO.CardEffects.ST20
                     }
                 }
             }
-
             #endregion
 
             #region Alliance Inherit

@@ -178,96 +178,101 @@ namespace DCGO.CardEffects.EX3
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
+                        List<Permanent> selectedPermanents = new List<Permanent>();
+
                         IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
                         {
+                            selectedPermanents = permanents.Clone();
+
                             yield return null;
 
-                            if (permanents.Count >= 1)
+                        }
+
+                        if (selectedPermanents.Count >= 1)
+                        {
+                            if (card.Owner.CanReduceCost(new List<Permanent>() { new Permanent(new List<CardSource>()) }, card))
                             {
-                                if (card.Owner.CanReduceCost(new List<Permanent>() { new Permanent(new List<CardSource>()) }, card))
+                                ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().BuffSE);
+                            }
+
+                            ChangeCostClass changeCostClass = new ChangeCostClass();
+                            changeCostClass.SetUpICardEffect("Digivolution Cost -3", CanUseCondition1, card);
+                            changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
+                            card.Owner.UntilCalculateFixedCostEffect.Add((_timing) => changeCostClass);
+
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ShowReducedCost(_hashtable));
+
+                            bool CanUseCondition1(Hashtable hashtable)
+                            {
+                                return true;
+                            }
+
+                            int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
+                            {
+                                if (CardSourceCondition(cardSource))
                                 {
-                                    ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().BuffSE);
-                                }
-
-                                ChangeCostClass changeCostClass = new ChangeCostClass();
-                                changeCostClass.SetUpICardEffect("Digivolution Cost -3", CanUseCondition1, card);
-                                changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
-                                card.Owner.UntilCalculateFixedCostEffect.Add((_timing) => changeCostClass);
-
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ShowReducedCost(_hashtable));
-
-                                bool CanUseCondition1(Hashtable hashtable)
-                                {
-                                    return true;
-                                }
-
-                                int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
-                                {
-                                    if (CardSourceCondition(cardSource))
+                                    if (RootCondition(root))
                                     {
-                                        if (RootCondition(root))
+                                        if (PermanentsCondition(targetPermanents))
                                         {
-                                            if (PermanentsCondition(targetPermanents))
-                                            {
-                                                Cost -= 3;
-                                            }
+                                            Cost -= 3;
                                         }
                                     }
-
-                                    return Cost;
                                 }
 
-                                bool PermanentsCondition(List<Permanent> targetPermanents)
+                                return Cost;
+                            }
+
+                            bool PermanentsCondition(List<Permanent> targetPermanents)
+                            {
+                                if (targetPermanents != null)
                                 {
-                                    if (targetPermanents != null)
+                                    if (targetPermanents.Count(PermanentCondition) >= 1)
                                     {
-                                        if (targetPermanents.Count(PermanentCondition) >= 1)
-                                        {
-                                            return true;
-                                        }
+                                        return true;
                                     }
-
-                                    return false;
                                 }
 
-                                bool PermanentCondition(Permanent targetPermanent)
-                                {
-                                    if (targetPermanent.TopCard != null)
-                                    {
-                                        if (targetPermanent.TopCard.Owner == card.Owner)
-                                        {
-                                            if (targetPermanent.TopCard.Owner.GetBattleAreaPermanents().Contains(targetPermanent))
-                                            {
-                                                return true;
-                                            }
-                                        }
-                                    }
+                                return false;
+                            }
 
-                                    return false;
-                                }
-
-                                bool CardSourceCondition(CardSource cardSource)
+                            bool PermanentCondition(Permanent targetPermanent)
+                            {
+                                if (targetPermanent.TopCard != null)
                                 {
-                                    if (cardSource != null)
+                                    if (targetPermanent.TopCard.Owner == card.Owner)
                                     {
-                                        if (cardSource == card)
+                                        if (targetPermanent.TopCard.Owner.GetBattleAreaPermanents().Contains(targetPermanent))
                                         {
                                             return true;
                                         }
                                     }
-
-                                    return false;
                                 }
 
-                                bool RootCondition(SelectCardEffect.Root root)
+                                return false;
+                            }
+
+                            bool CardSourceCondition(CardSource cardSource)
+                            {
+                                if (cardSource != null)
                                 {
-                                    return true;
+                                    if (cardSource == card)
+                                    {
+                                        return true;
+                                    }
                                 }
 
-                                bool isUpDown()
-                                {
-                                    return true;
-                                }
+                                return false;
+                            }
+
+                            bool RootCondition(SelectCardEffect.Root root)
+                            {
+                                return true;
+                            }
+
+                            bool isUpDown()
+                            {
+                                return true;
                             }
                         }
                     }

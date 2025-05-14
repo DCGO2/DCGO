@@ -456,7 +456,7 @@ namespace DCGO.CardEffects.BT17
                     {
                         if (CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card))
                         {
-                            if(!CardEffectCommons.IsByBattle(hashtable))
+                            if(CardEffectCommons.IsByEffect(hashtable, effect => CardEffectCommons.IsOpponentEffect(effect, card)))
                                 return true;
                         }
                     }

@@ -57,19 +57,12 @@ namespace DCGO.CardEffects.LM
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (CardEffectCommons.CanTriggerOnDeletion(hashtable, card))
-                        {
-                            return true;
-                        }
-                    }
-                    return false;
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.CanActivateOnDeletion(card);
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)

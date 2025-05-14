@@ -51,13 +51,10 @@ namespace DCGO.CardEffects.BT21
                 {
                     var tamers = card.Owner
                         .GetBattleAreaPermanents()
-                        .Filter(x => x.IsTamer && x.TopCard.EqualsTraits("Hero"));
+                        .Filter(x => x.IsTamer && x.TopCard.EqualsTraits("Hero"))
+                        .Map(x => x.TopCard);
 
-                    if (tamers.Count >= 3)
-                    {
-                        return true;
-                    }
-                    return false;
+                    return Combinations.GetUniqueNameCardCount(tamers) >= 3;
                 }
 
                 bool PermanentCondition(Permanent targetPermanent)
@@ -88,7 +85,12 @@ namespace DCGO.CardEffects.BT21
 
             if (timing == EffectTiming.None)
             {
-                cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect(changeValue: 2000, isInheritedEffect: true, card: card, null));
+                bool Condition()
+                {
+                    return CardEffectCommons.IsOwnerTurn(card);
+                }
+
+                cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect(changeValue: 2000, isInheritedEffect: true, card: card, Condition));
             }
 
             #endregion
