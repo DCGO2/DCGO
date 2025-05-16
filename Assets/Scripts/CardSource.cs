@@ -2431,9 +2431,13 @@ public class CardSource : MonoBehaviour
                 }
             }
 
-            if (Owner.GetBattleAreaDigimons().Count >= 1)
+            List<Permanent> availableDigimon = new List<Permanent>();
+            availableDigimon.AddRange(Owner.GetBattleAreaDigimons());
+            availableDigimon.AddRange(Owner.GetBreedingAreaPermanents());
+
+            if (availableDigimon.Count >= 1)
             {
-                foreach (Permanent digimon in Owner.GetFieldPermanents())
+                foreach (Permanent digimon in availableDigimon)
                 {
                     if (digimon != null)
                     {
@@ -2518,7 +2522,7 @@ public class CardSource : MonoBehaviour
         {
             if (targetPermanent.TopCard != null)
             {
-                if (targetPermanent.TopCard.Owner.GetFieldPermanents().Contains(targetPermanent))
+                if (targetPermanent.TopCard.Owner.GetFieldPermanents().Contains(targetPermanent) || targetPermanent.TopCard.Owner.GetBreedingAreaPermanents().Contains(targetPermanent))
                 {
                     if (this.CanPlayBurst(PayCost))
                     {
