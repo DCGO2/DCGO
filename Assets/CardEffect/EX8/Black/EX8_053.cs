@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace DCGO.CardEffects.EX8
@@ -22,8 +23,14 @@ namespace DCGO.CardEffects.EX8
 
             #region All Turns
 
-            if (timing == EffectTiming.RulesTiming || timing == EffectTiming.AfterEffectsActivate)
+            if (timing != EffectTiming.None)
             {
+                bool OpponentsDigimon(Permanent permanent)
+                {
+                    return permanent.IsDigimon &&
+                           permanent.DP >= 13000;
+                }
+
                 if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                 {
                     Permanent thisPermanent = card.PermanentOfThisCard();
@@ -38,7 +45,7 @@ namespace DCGO.CardEffects.EX8
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
                            card.PermanentOfThisCard().TopCard == card &&
-                           CardEffectCommons.HasMatchConditionOpponentsPermanent(card, permanent => permanent.IsDigimon && permanent.DP >= 13000);
+                           CardEffectCommons.HasMatchConditionOpponentsPermanent(card, OpponentsDigimon);
                 }
             }
 
@@ -79,15 +86,23 @@ namespace DCGO.CardEffects.EX8
                 {
                     List<CardSource> selectedCards = new List<CardSource>();
 
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.RevealDeckTopCardsAndProcessForAll(
-                        revealCount: 1,
-                        simplifiedSelectCardCondition:
-                        new SimplifiedSelectCardConditionClass(
-                            canTargetCondition: PlayableMineralorRock,
-                            message: "Select 1 [Mineral] or [Rock] trait digimon with 8 cost or less to play",
-                            mode: SelectCardEffect.Mode.Custom,
-                            maxCount: -1,
-                            selectCardCoroutine: CardToPlay),
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.RevealDeckTopCardsAndSelect(
+                        revealCount: 3,
+                        selectCardConditions:
+                        new SelectCardConditionClass[]
+                        {
+                            new SelectCardConditionClass(
+                                canTargetCondition: PlayableMineralorRock,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                canNoSelect: true,
+                                selectCardCoroutine: CardToPlay,
+                                message: "Select 1 [Mineral] or [Rock] trait digimon with 8 cost or less to play",
+                                maxCount: 1,
+                                canEndNotMax: false,
+                                mode: SelectCardEffect.Mode.Custom
+                                )
+                        },                        
                         remainingCardsPlace: RemainingCardsPlace.Trash,
                         activateClass: activateClass
                     ));

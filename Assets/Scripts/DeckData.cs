@@ -777,7 +777,7 @@ public class DeckData
             return deckCards;
         }
 
-        DeckData deckData = new DeckData(GetDeckCode(ValidateDeckName(this._deckName), modifiedDeckCards, modifiedDigitamaDeckCards, KeyCard), DeckID);
+        DeckData deckData = new DeckData(GetDeckCode(this._deckName, modifiedDeckCards, modifiedDigitamaDeckCards, KeyCard), DeckID);
 
         if (!deckData.AllDeckCards().Contains(deckData.KeyCard))
         {

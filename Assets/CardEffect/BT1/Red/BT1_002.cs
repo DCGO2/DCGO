@@ -13,30 +13,30 @@ public class BT1_002 : CEntity_Effect
     {
         List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-        if (timing == EffectTiming.None)
-        {
-            bool Condition()
-            {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
-                {
-                    if (CardEffectCommons.IsOwnerTurn(card))
-                    {
-                        if (card.PermanentOfThisCard().HasPierce)
-                        {
-                            return true;
-                        }
-                    }
-                }
+        #region Your Turn
 
-                return false;
+        if (timing != EffectTiming.None)
+        {
+            if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+            {
+                Permanent thisPermanent = card.PermanentOfThisCard();
+
+                if (Condition())
+                    thisPermanent.AddBoost(new Permanent.DPBoost("BT1_002", 2000, Condition));
+                else
+                    thisPermanent.RemoveBoost("BT1_002");
             }
 
-            cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect(
-                changeValue: 2000,
-                isInheritedEffect: true,
-                card: card,
-                condition: Condition));
+            bool Condition()
+            {
+                return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(card.PermanentOfThisCard(), card) &&
+                       CardEffectCommons.IsOwnerTurn(card) &&
+                       card.PermanentOfThisCard().DigivolutionCards.Contains(card) &&
+                       card.PermanentOfThisCard().HasPierce;
+            }
         }
+
+        #endregion
 
         return cardEffects;
     }
