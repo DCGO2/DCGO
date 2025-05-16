@@ -491,7 +491,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanPlay(CardSource cardSource)
                 {
-                    return ((cardSource.HasText("Gammamon") && cardSource.HasLevel && cardSource.Level <= 4) || cardSource.EqualsCardName("Canoweissmon")) &&
+                    return ((cardSource.HasText("Gammamon") && cardSource.HasLevel && cardSource.Level <= 4 && cardSource.IsDigimon) || cardSource.EqualsCardName("Canoweissmon")) &&
                            CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
                 }
 
@@ -571,7 +571,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanPlay(CardSource cardSource)
                 {
-                    return cardSource.HasText("Gammamon") && cardSource.HasLevel && cardSource.Level <= 4 &&
+                    return cardSource.HasText("Gammamon") && cardSource.HasLevel && cardSource.Level <= 4 && cardSource.IsDigimon &&
                            CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
                 }
 

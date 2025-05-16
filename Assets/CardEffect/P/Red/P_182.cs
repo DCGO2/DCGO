@@ -146,12 +146,13 @@ namespace DCGO.CardEffects.P
 
             #region All Turns
 
-            if (timing == EffectTiming.RulesTiming || timing == EffectTiming.AfterEffectsActivate)
+            if (timing != EffectTiming.None)
             {
                 if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                 {
                     Permanent thisPermanent = card.PermanentOfThisCard();
 
+                    
                     if(Condition())
                         thisPermanent.AddBoost(new Permanent.DPBoost("P_182", count(), Condition));
                     else
@@ -182,31 +183,6 @@ namespace DCGO.CardEffects.P
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
                            card.PermanentOfThisCard().TopCard == card;
                 }
-
-                /*bool PermanentCondition(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
-                    {
-                        if (permanent == card.PermanentOfThisCard())
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
-                cardEffects.Add(CardEffectFactory.ChangeDPStaticEffect(
-                permanentCondition: PermanentCondition,
-                changeValue: count(),
-                isInheritedEffect: false,
-                card: card,
-                condition: Condition,
-                effectName: EffectDiscription));
-                string EffectDiscription()
-                {
-                    return "[All Turns] This Digimon gets +1000 DP for each color Digimon and Tamers have.";
-                }*/
             }
 
             #endregion

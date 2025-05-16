@@ -527,13 +527,16 @@ public partial class CardEffectCommons
                 {
                     if (!cardSource.CanNotEvolve(targetPermanent))
                     {
+                        bool isBreeding = cardSource.Owner.GetBreedingAreaPermanents().Contains(targetPermanent);
+
                         if (cardSource.CanPlayCardTargetFrame(
                             frame: targetPermanent.PermanentFrame,
                             PayCost: payCost,
                             cardEffect: activateClass,
                             root: root,
                             fixedCost: fixedCost,
-                            ignore: ignoreRequirements))
+                            ignore: ignoreRequirements,
+                            isBreedingArea: isBreeding))
                         {
                             return true;
                         }

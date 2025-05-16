@@ -67,12 +67,7 @@ public class BT6_065 : CEntity_Effect
 
             bool CanActivateCondition(Hashtable hashtable)
             {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
-                {
-                    return true;
-                }
-
-                return false;
+                return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
             }
 
             IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -99,22 +94,21 @@ public class BT6_065 : CEntity_Effect
                 IEnumerator SelectCardCoroutine(CardSource cardSource)
                 {
                     selectedCard = cardSource;
-                    yield return null;
+
+                    if (selectedCard != null)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(
+                            CardEffectCommons.PlayOptionCards(
+                                cardSources: new List<CardSource>() { selectedCard },
+                                activateClass: activateClass,
+                                payCost: false,
+                                root: SelectCardEffect.Root.Library
+                            )
+                        );
+                    }
                 }
 
-                if (selectedCard != null)
-                {
-                    yield return ContinuousController.instance.StartCoroutine(
-                        CardEffectCommons.PlayOptionCards(
-                            cardSources: new List<CardSource>() { selectedCard },
-                            activateClass: activateClass,
-                            payCost: false,
-                            root: SelectCardEffect.Root.Library
-                        )
-                    );
-                }
-
-                else
+                if (selectedCard == null)
                 {
                     int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
 

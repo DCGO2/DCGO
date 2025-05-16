@@ -1615,7 +1615,7 @@ public class UseOptionClass
 
             GManager.instance.turnStateMachine.isSync = true;
 
-            card.SetFace();
+            card.SetFace("CardContoller.UseOption");
 
             int cost = card.GetCostItself;
 
@@ -3028,7 +3028,7 @@ public class IPutSecurityPermanent
                 if (!_isFaceup)
                     topCard.SetReverse();
                 else
-                    topCard.SetFace();
+                    topCard.SetFace("CardController.PutSecurity");
 
                 if (!_toTop)
                 {
@@ -4640,8 +4640,10 @@ public class SuspendPermanentsClass
             }
             #endregion
 
-            if (IsAttack) yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.StackSkillInfos(_hashtable, EffectTiming.OnTappedAnyone));
-            else yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(_hashtable, EffectTiming.OnTappedAnyone));
+            if (IsAttack)
+                yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.StackSkillInfos(_hashtable, EffectTiming.OnTappedAnyone));
+            else 
+                yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(_hashtable, EffectTiming.OnTappedAnyone));
 
             #endregion
 

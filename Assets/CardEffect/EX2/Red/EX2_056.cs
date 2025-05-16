@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace DCGO.CardEffects.EX2
@@ -74,7 +75,7 @@ namespace DCGO.CardEffects.EX2
 
                 string EffectDiscription()
                 {
-                    return "[Your Turn] When one of your Digimon would digivolve into a Digimon with [Gallantmon] or [Growlmon] in its name, that Digimon gains \"[When Digivolving] EX8-053 (This Digimon can attack when your opponent has 1 or more memory.)\" for the turn.";
+                    return "[Your Turn] When one of your Digimon would digivolve into a Digimon with [Gallantmon] or [Growlmon] in its name, that Digimon gains \"[When Digivolving] <Blitz> (This Digimon can attack when your opponent has 1 or more memory.)\" for the turn.";
                 }
 
                 bool DigivolvePermanentCondition(Permanent permanent)
@@ -155,24 +156,27 @@ namespace DCGO.CardEffects.EX2
                             foreach (Permanent permanent in card.Owner.GetBattleAreaPermanents().Filter(PermanentCondition))
                             {
                                 AddSkillClass addSkillClass = new AddSkillClass();
-                                addSkillClass.SetUpICardEffect("Your Digimons get Blitz", CanUseCondition1, permanent.TopCard);
+                                addSkillClass.SetUpICardEffect("Your Digimons get Blitz", CanUseCondition1, card);
                                 addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
-                                CardEffectCommons.AddEffectToPermanent(permanent, effectDuration: EffectDuration.UntilEachTurnEnd, card: permanent.TopCard, cardEffect: addSkillClass, timing: EffectTiming.None);
+                                CardEffectCommons.AddEffectToPlayer(effectDuration: EffectDuration.UntilEachTurnEnd, card: card, cardEffect: addSkillClass, timing: EffectTiming.None);
 
                                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(permanent));
 
-                                bool CardSourceCondition(CardSource source)
+                                bool CanUseCondition1(Hashtable hashtable)
                                 {
                                     return true;
                                 }
 
-                                bool CanUseCondition1(Hashtable hashtable1)
+                                bool CardSourceCondition(CardSource cardSource)
                                 {
-                                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(permanent.TopCard))
+                                    if (CardEffectCommons.IsExistOnBattleArea(cardSource))
                                     {
-                                        if (CardEffectCommons.CanTriggerWhenDigivolving(hashtable1, card))
+                                        if (cardSource == cardSource.PermanentOfThisCard().TopCard)
                                         {
-                                            return true;
+                                            if (PermanentCondition(cardSource.PermanentOfThisCard()))
+                                            {
+                                                return true;
+                                            }
                                         }
                                     }
 
@@ -196,7 +200,7 @@ namespace DCGO.CardEffects.EX2
                                         cardEffects.Add(CardEffectFactory.BlitzSelfEffect(isInheritedEffect: false,
                                             card: cardSource,
                                             condition: Condition,
-                                            isWhenDigivolving: false));
+                                            isWhenDigivolving: true));
                                     }
 
                                     return cardEffects;

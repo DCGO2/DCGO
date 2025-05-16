@@ -33,7 +33,7 @@ public class CardSource : MonoBehaviour
         Owner = owner;
         gameObject.name = _cEntity_Base.CardName_ENG;
 
-        SetFace();
+        SetFace("CardSource.SetBaseData");
     }
     #endregion
 
@@ -46,9 +46,12 @@ public class CardSource : MonoBehaviour
     public bool IsFlipped { get; private set; }
 
     #region set face
-    public void SetFace()
+    public void SetFace(string str = "")
     {
         IsFlipped = false;
+
+        if (str != "")
+            UnityEngine.Debug.Log($"CARD FLIPPED: {this.BaseENGCardNameFromEntity}, from - {str}");
 
         GManager.OnCardFlippedChanged?.Invoke();
         GManager.OnSecurityStackChanged?.Invoke(Owner);
@@ -262,7 +265,7 @@ public class CardSource : MonoBehaviour
     public void Init()
     {
         cEntity_EffectController.InitUseCountThisTurn();
-        SetFace();
+        SetFace("CardSource.Initialize");
     }
     #endregion
 
@@ -2437,9 +2440,13 @@ public class CardSource : MonoBehaviour
                 }
             }
 
-            if (Owner.GetBattleAreaDigimons().Count >= 1)
+            List<Permanent> availableDigimon = new List<Permanent>();
+            availableDigimon.AddRange(Owner.GetBattleAreaDigimons());
+            availableDigimon.AddRange(Owner.GetBreedingAreaPermanents());
+
+            if (availableDigimon.Count >= 1)
             {
-                foreach (Permanent digimon in Owner.GetFieldPermanents())
+                foreach (Permanent digimon in availableDigimon)
                 {
                     if (digimon != null)
                     {
@@ -2524,7 +2531,7 @@ public class CardSource : MonoBehaviour
         {
             if (targetPermanent.TopCard != null)
             {
-                if (targetPermanent.TopCard.Owner.GetFieldPermanents().Contains(targetPermanent))
+                if (targetPermanent.TopCard.Owner.GetFieldPermanents().Contains(targetPermanent) || targetPermanent.TopCard.Owner.GetBreedingAreaPermanents().Contains(targetPermanent))
                 {
                     if (this.CanPlayBurst(PayCost))
                     {
