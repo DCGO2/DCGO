@@ -240,8 +240,6 @@ public class DeckInfoPanel : MonoBehaviour
             return;
         }
 
-        text = DeckData.ValidateDeckName(text);
-
         while (text.Length > DeckName.characterLimit)
         {
             text = text.Substring(0, text.Length - 1);
