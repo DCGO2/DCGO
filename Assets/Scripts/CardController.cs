@@ -572,6 +572,22 @@ public class PlayCardClass
 
             #endregion
 
+            #region select DNA condition
+            int baseDNA = -1;
+
+            SelectDNACondition selectDNACondition = new SelectDNACondition();
+            selectDNACondition.SetUp(card.Owner, card, SelectDNA);
+
+            yield return ContinuousController.instance.StartCoroutine(selectDNACondition.Activate());
+
+            IEnumerator SelectDNA(int dnaSelection)
+            {
+                baseDNA = dnaSelection;
+
+                yield return null;
+            }
+            #endregion
+
             #region HashTable Setting
 
             Hashtable hashtable = CardEffectCommons.WouldEnterFieldHashtable(
@@ -681,7 +697,7 @@ public class PlayCardClass
                 {
                     if (card.jogressCondition != null)
                     {
-                        int cost = card.GetPayingCostWithBaseCost(card.jogressCondition.cost, Root, targetPermanents, checkAvailability: false, FixedCost: _fixedCost);
+                        int cost = card.GetPayingCostWithBaseCost(card.jogressCondition[baseDNA].cost, Root, targetPermanents, checkAvailability: false, FixedCost: _fixedCost);
 
                         GManager.instance.memoryObject.ShowMemoryPredictionLine(card.Owner.ExpectedMemory(cost));
                     }
@@ -776,13 +792,14 @@ public class PlayCardClass
                 if (!isJogress)
                 {
                     Cost = card.GetPayingCostWithBaseCost(baseCost, Root, targetPermanents, checkAvailability: false, FixedCost: _fixedCost);
+                    Cost = card.GetPayingCostWithBaseCost(baseCost, Root, targetPermanents, checkAvailability: false, FixedCost: _fixedCost);
                 }
 
                 else
                 {
                     if (card.jogressCondition != null)
                     {
-                        Cost = card.GetPayingCostWithBaseCost(card.jogressCondition.cost, Root, targetPermanents, checkAvailability: false, FixedCost: _fixedCost);
+                        Cost = card.GetPayingCostWithBaseCost(card.jogressCondition[baseDNA].cost, Root, targetPermanents, checkAvailability: false, FixedCost: _fixedCost);
                     }
                 }
 
