@@ -1662,10 +1662,12 @@ public class CardSource : MonoBehaviour
 
         if (jogressCondition != null)
         {
-            foreach (JogressConditionElement element in jogressCondition.elements)
-                checkStrings.Add(element.SelectMessage);
+            foreach(JogressCondition jogress in jogressCondition)
+            {
+                foreach (JogressConditionElement element in jogress.elements)
+                    checkStrings.Add(element.SelectMessage);
+            }
         }
-
 
         foreach (string checkString in checkStrings)
         {
