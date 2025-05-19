@@ -573,19 +573,13 @@ public class PlayCardClass
             #endregion
 
             #region select DNA condition
-            int baseDNA = -1;
+            int baseDNA = 0;
 
-            SelectDNACondition selectDNACondition = new SelectDNACondition();
-            selectDNACondition.SetUp(card.Owner, card, SelectDNA);
-
-            yield return ContinuousController.instance.StartCoroutine(selectDNACondition.Activate());
-
-            IEnumerator SelectDNA(int dnaSelection)
+            if (isJogress)
             {
-                baseDNA = dnaSelection;
-
-                yield return null;
+                baseDNA = GManager.instance.GetComponent<SelectDNACondition>()._selectedCount;
             }
+            
             #endregion
 
             #region HashTable Setting
@@ -698,7 +692,6 @@ public class PlayCardClass
                     if (card.jogressCondition != null)
                     {
                         int cost = card.GetPayingCostWithBaseCost(card.jogressCondition[baseDNA].cost, Root, targetPermanents, checkAvailability: false, FixedCost: _fixedCost);
-
                         GManager.instance.memoryObject.ShowMemoryPredictionLine(card.Owner.ExpectedMemory(cost));
                     }
                 }
@@ -1549,6 +1542,7 @@ public class PlayPermanentClass
             }
 
             GManager.instance.GetComponent<SelectDigiXrosClass>().ResetSelectDigiXrosClass();
+            GManager.instance.GetComponent<SelectDNACondition>().ResetSelectDNAConditionClass();
 
             yield return GManager.instance.photonWaitController.StartWait("EndPlayPermanent");
         }
