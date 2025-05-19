@@ -147,7 +147,7 @@ public class SelectJogressEffect : MonoBehaviour
             {
                 if (_card.jogressCondition != null)
                 {
-                    foreach(JogressCondition dnaCondition in _card.jogressCondition)
+                    foreach (JogressCondition dnaCondition in _card.jogressCondition)
                     {
                         if(dnaCondition != null)
                         {
@@ -183,10 +183,10 @@ public class SelectJogressEffect : MonoBehaviour
             List<Permanent> selectedEvoRoots = new List<Permanent>();
             JogressCondition selectedDNA = _card.jogressCondition[0];
 
-            if(_card.jogressCondition.Count > 1)
+            if (_card.jogressCondition.Count > 1)
             {
                 #region select DNA condition
-                SelectDNACondition selectDNACondition = new SelectDNACondition();
+                SelectDNACondition selectDNACondition = GManager.instance.GetComponent<SelectDNACondition>();
                 selectDNACondition.SetUp(_card.Owner, _card, SelectDNA);
 
                 yield return ContinuousController.instance.StartCoroutine(selectDNACondition.Activate());
@@ -201,7 +201,6 @@ public class SelectJogressEffect : MonoBehaviour
             }
 
             
-
             for (int i = 0; i < selectedDNA.elements.Length; i++)
             {
                 JogressConditionElement element = selectedDNA.elements[i];

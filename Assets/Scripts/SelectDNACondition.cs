@@ -24,10 +24,16 @@ public class SelectDNACondition : MonoBehaviourPunCallbacks
     CardSource _targetDNA = null;
     Func<int, IEnumerator> _selectDNACoroutine = null;
     List<int> _candidates = new List<int>();
-    int _selectedCount = 0;
-    bool _endSelect = false;
+    public int _selectedCount = 0;
+    public bool _endSelect = false;
     bool _notDoSync = false;
     bool _isDigivolutionCost = false;
+
+    public void ResetSelectDNAConditionClass()
+    {
+        _selectedCount = 0;
+        _endSelect = false;
+    }
 
     public IEnumerator Activate()
     {
@@ -64,13 +70,11 @@ public class SelectDNACondition : MonoBehaviourPunCallbacks
                 string selectPlayerMessage = "Which DNA do you want?";
                 string notSelectPlayerMessage = "The opponent is choosing from which DNA to do.";
 
-                GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements,
-                    selectPlayer: _targetDNA.Owner, selectPlayerMessage: selectPlayerMessage,
-                    notSelectPlayerMessage: notSelectPlayerMessage);
+                GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements, selectPlayer: _targetDNA.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
 
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                photonView.RPC("SetCount", RpcTarget.All, GManager.instance.userSelectionManager.SelectedIntValue);
+                GManager.instance.photonView.RPC("SetDNACondition", RpcTarget.All, GManager.instance.userSelectionManager.SelectedIntValue);
             }
         }
 

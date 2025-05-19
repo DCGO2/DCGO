@@ -100,6 +100,7 @@ public class GManager : MonoBehaviourPun
 
     [Header("ジョグレス選択")]
     public SelectJogressEffect selectJogressEffect;
+    public SelectDNACondition selectDNACondition;
 
     [Header("burst evolution selection")]
     public SelectBurstDigivolutionEffect selectBurstDigivolutionEffect;

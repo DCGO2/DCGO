@@ -178,7 +178,7 @@ namespace DCGO.CardEffects.EX6
                         if (selectedLevel7.jogressCondition.Count > 1)
                         {
                             #region select DNA condition
-                            SelectDNACondition selectDNACondition = new SelectDNACondition();
+                            SelectDNACondition selectDNACondition = GManager.instance.GetComponent<SelectDNACondition>();
                             selectDNACondition.SetUp(selectedLevel7.Owner, selectedLevel7, SelectDNA);
 
                             yield return ContinuousController.instance.StartCoroutine(selectDNACondition.Activate());
