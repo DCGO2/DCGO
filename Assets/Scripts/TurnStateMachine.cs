@@ -213,7 +213,9 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
             {
                 player.PlayerNameText.transform.parent.gameObject.SetActive(true);
                 player.PlayerNameText.gameObject.SetActive(true);
-                player.PlayerNameText.text = player.PlayerName;
+
+                if(player.isYou)
+                    player.PlayerNameText.text = player.PlayerName;
             }
         }
         #endregion
