@@ -18327,6 +18327,7 @@ MonoBehaviour:
   BackgroundSpriteRenderer: {fileID: 141403726}
   attackProcess: {fileID: 198236652}
   selectJogressEffect: {fileID: 198236653}
+  selectDNACondition: {fileID: 0}
   selectBurstDigivolutionEffect: {fileID: 198236660}
   selectAppFusionEffect: {fileID: 198236662}
   autoProcessing_CutIn: {fileID: 380143110}
@@ -18581,6 +18582,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0322d74dbfb937a4f818327110776d51, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _selectedCount: 0
+  _endSelect: 0
 --- !u!1 &208123383
 GameObject:
   m_ObjectHideFlags: 0
@@ -52394,7 +52397,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Hong AHOiHong AHOi
+  m_text: Opponent
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0f5eec38322e811419052debc7c4b2bd, type: 2}
   m_sharedMaterial: {fileID: -8217270772861593479, guid: 0f5eec38322e811419052debc7c4b2bd, type: 2}
@@ -52421,7 +52424,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 26.05
+  m_fontSize: 38.45
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -155141,7 +155144,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: TEST HOIA
+  m_text: Player
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0f5eec38322e811419052debc7c4b2bd, type: 2}
   m_sharedMaterial: {fileID: -8217270772861593479, guid: 0f5eec38322e811419052debc7c4b2bd, type: 2}
