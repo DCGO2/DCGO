@@ -39,7 +39,7 @@ public class SelectDNACondition : MonoBehaviourPunCallbacks
     {
         if (!_notDoSync)
         {
-            yield return GManager.instance.photonWaitController.StartWait("SelectDNACondition");
+            //yield return GManager.instance.photonWaitController.StartWait("SelectDNACondition");
         }
 
         if(_targetDNA.jogressCondition.Count > 1)

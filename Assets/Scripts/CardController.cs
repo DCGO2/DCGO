@@ -303,6 +303,7 @@ public class PlayCardClass
         foreach (CardSource card in CardSources)
         {
             GManager.instance.GetComponent<SelectDigiXrosClass>().ResetSelectDigiXrosClass();
+            GManager.instance.GetComponent<SelectDNACondition>().ResetSelectDNAConditionClass();
 
             if (card == null)
             {
@@ -877,6 +878,7 @@ public class PlayCardClass
                 PlayLog.OnAddLog?.Invoke($"\nFailed to play:\n{card.BaseENGCardNameFromEntity}({card.CardID})\n");
 
                 GManager.instance.GetComponent<SelectDigiXrosClass>().ResetSelectDigiXrosClass();
+                GManager.instance.GetComponent<SelectDNACondition>().ResetSelectDNAConditionClass();
 
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().FailedPlayCardEffect(card));
 
