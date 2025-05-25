@@ -2144,7 +2144,8 @@ public class CardSource : MonoBehaviour
             {
                 if (EffectList(timing)
                     .Some(cardEffect => cardEffect.IsInheritedEffect
-                    && !cardEffect.IsDisabled))
+                    && !cardEffect.IsDisabled
+                    && !IsFlipped))
                 {
                     return true;
                 }
