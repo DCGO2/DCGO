@@ -45,8 +45,7 @@ namespace DCGO.CardEffects.BT21
             bool CanSelectDigimonPermanentConditionShared(Permanent permanent)
             {
                 return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
-                       permanent.TopCard.EqualsTraits("WG") &&
-                       CardEffectCommons.CanUnsuspend(permanent);
+                       permanent.TopCard.HasWGTraits;
             }
 
             bool CanActivateConditionShared(Hashtable hashtable)
@@ -78,8 +77,6 @@ namespace DCGO.CardEffects.BT21
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    Permanent selectedPermanent = null;
-
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
@@ -90,9 +87,9 @@ namespace DCGO.CardEffects.BT21
                         maxCount: 1,
                         canNoSelect: true,
                         canEndNotMax: false,
-                        selectPermanentCoroutine: SelectPermanentCoroutine,
+                        selectPermanentCoroutine: null,
                         afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Custom,
+                        mode: SelectPermanentEffect.Mode.UnTap,
                         cardEffect: activateClass);
 
                     selectPermanentEffect.SetUpCustomMessage(
@@ -100,18 +97,6 @@ namespace DCGO.CardEffects.BT21
                         "The opponent is selecting 1 Digimon that will unsuspend.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                    {
-                        selectedPermanent = permanent;
-                        yield return null;
-                    }
-
-                    if (selectedPermanent != null)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(
-                            new IUnsuspendPermanents(new List<Permanent>() { selectedPermanent }, activateClass).Unsuspend());
-                    }
                 }
             }
 
@@ -139,8 +124,6 @@ namespace DCGO.CardEffects.BT21
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    Permanent selectedPermanent = null;
-
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
@@ -151,9 +134,9 @@ namespace DCGO.CardEffects.BT21
                         maxCount: 1,
                         canNoSelect: true,
                         canEndNotMax: false,
-                        selectPermanentCoroutine: SelectPermanentCoroutine,
+                        selectPermanentCoroutine: null,
                         afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Custom,
+                        mode: SelectPermanentEffect.Mode.UnTap,
                         cardEffect: activateClass);
 
                     selectPermanentEffect.SetUpCustomMessage(
@@ -161,18 +144,6 @@ namespace DCGO.CardEffects.BT21
                         "The opponent is selecting 1 Digimon that will unsuspend.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                    {
-                        selectedPermanent = permanent;
-                        yield return null;
-                    }
-
-                    if (selectedPermanent != null)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(
-                            new IUnsuspendPermanents(new List<Permanent>() { selectedPermanent }, activateClass).Unsuspend());
-                    }
                 }
             }
 
