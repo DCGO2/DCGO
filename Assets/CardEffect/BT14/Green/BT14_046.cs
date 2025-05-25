@@ -397,19 +397,18 @@ namespace DCGO.CardEffects.BT14
                 changeCostClass.SetIsInheritedEffect(true);
                 cardEffects.Add(changeCostClass);
 
+                changeCostClass.SetMaxCountPerTurn(1);
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
                         if (CardEffectCommons.IsOwnerTurn(card))
                         {
-                            if (!card.cEntity_EffectController.isOverMaxCountPerTurn(activateClass2, activateClass2.MaxCountPerTurn))
-                            {
-                                if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) =>
+                            if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) =>
                                 permanent.TopCard.CardColors.Contains(CardColor.Green) && permanent.IsTamer))
-                                {
-                                    return true;
-                                }
+                            {
+                                return true;
                             }
                         }
                     }

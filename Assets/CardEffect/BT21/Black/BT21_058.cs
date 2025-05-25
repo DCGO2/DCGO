@@ -299,12 +299,7 @@ namespace DCGO.CardEffects.BT21
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                    {
-                        if (permanent.TopCard.HasPlayCost & permanent.TopCard.GetCostItself <= 4)
-                        {
-                            return true;
-                        }
-                    }
+                        return permanent.TopCard.HasPlayCost && permanent.TopCard.GetCostItself <= 4;
 
                     return false;
                 }

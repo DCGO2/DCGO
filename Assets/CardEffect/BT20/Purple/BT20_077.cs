@@ -350,7 +350,7 @@ namespace DCGO.CardEffects.BT20
                 changeValue: 2000,
                 isInheritedEffect: false,
                 card: card,
-                condition: null,
+                condition: CanUseCondition,
                 effectName: () => "Your Digimon with [Dark Dragon] or [Evil Dragon] traits gain DP +2000"));
 
             }

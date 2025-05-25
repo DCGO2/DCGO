@@ -59,7 +59,7 @@ namespace DCGO.CardEffects.BT21
             if (timing == EffectTiming.OnDeclaration)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play Adventure/Hero Digimon for reduced cost", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Play Adventure/Hero card for reduced cost", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("Play_BT21_102");
                 cardEffects.Add(activateClass);
@@ -76,7 +76,8 @@ namespace DCGO.CardEffects.BT21
                     => CardEffectCommons.IsExistOnBattleArea(card);
 
                 bool CanSelectCard(CardSource source)
-                    => source.BasePlayCostFromEntity <= AdjustedPlayCostMax(source)
+                    => source.HasPlayCost &&
+                    source.BasePlayCostFromEntity <= AdjustedPlayCostMax(source)
                     && (source.HasAdventureTraits || source.HasHeroTraits);
 
                 int AdjustedPlayCostMax(CardSource cardSource)
@@ -102,8 +103,8 @@ namespace DCGO.CardEffects.BT21
                         mode: SelectHandEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                    selectHandEffect.SetUpCustomMessage("Select 1 digimon to play.",
-                        "The opponent is selecting 1 digimon to play.");
+                    selectHandEffect.SetUpCustomMessage("Select 1 card to play.",
+                        "The opponent is selecting 1 card to play.");
                     selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
 
                     yield return StartCoroutine(selectHandEffect.Activate());
@@ -121,9 +122,11 @@ namespace DCGO.CardEffects.BT21
                         ));
                     }
 
-                    var cardSources = new List<CardSource>() { card };
-                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources));
-                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(cardSources, "Deck Bottom Cards", true, true));
+                    var selectedPermanents = new List<Permanent>() { card.PermanentOfThisCard() };
+
+                    DeckBottomBounceClass putLibraryBottomPermanent = new DeckBottomBounceClass(selectedPermanents, hashtable);
+                    putLibraryBottomPermanent.SetNotShowCards();
+                    yield return ContinuousController.instance.StartCoroutine(putLibraryBottomPermanent.DeckBounce());
                 }
             }
 

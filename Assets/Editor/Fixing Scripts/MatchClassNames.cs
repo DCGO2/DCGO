@@ -20,30 +20,33 @@ namespace DCGO.Tools.Repair
             if (Selection.assetGUIDs.Length != 0)
                 path = AssetDatabase.GUIDToAssetPath(Selection.assetGUIDs[0]);
 
-            Debug.Log($"ASSET PATH: {path}");
-
             List<CEntity_Base> List = GetAsset.LoadAll<CEntity_Base>(path).ToList();
+            List<CEntity_Base> normalArts = List.Filter(x => !x.name.Contains("_P"));
+            List<CEntity_Base> alternateArts = List.Filter(x => x.name.Contains("_P"));
 
             string assetName = "";
+            int mismatchCount = 0;
 
             //Locate All mismatched classNames
-            foreach (CEntity_Base card in List)
+            foreach (CEntity_Base card in normalArts)
             {
-                assetName = card.CardSpriteName.Replace("-", "_");
+                assetName = card.CardEffectClassName;
 
-                if (assetName == card.name)
+                List<CEntity_Base> matchingCards = alternateArts.Filter(x => x.CardID == card.CardID);
+
+                foreach(CEntity_Base matchingCard in matchingCards)
                 {
-                    Debug.Log($"Matches already: {card.name}");
-                    continue;
+                    if(matchingCard.CardEffectClassName != assetName)
+                    {
+                        Debug.Log($"Mismatch Found: {matchingCard.name}");
+                        mismatchCount++;
+                        matchingCard.CardEffectClassName = assetName;
+                        EditorUtility.SetDirty(matchingCard);
+                    }
                 }
-
-                Debug.Log($"Name Change: {card.name} - {assetName}");
-
-                AssetDatabase.RenameAsset(AssetDatabase.GetAssetPath(card), assetName);
-                EditorUtility.SetDirty(card);
             }
 
-            Debug.Log($"DONE");
+            Debug.Log($"DONE: mismatches found: {mismatchCount}");
             return;
         }
     }

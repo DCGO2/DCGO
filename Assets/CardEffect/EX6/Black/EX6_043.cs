@@ -179,11 +179,16 @@ namespace DCGO.CardEffects.EX6
 
                         if (selectedEffect != null)
                         {
-                            Hashtable effectHashtable = CardEffectCommons.WhenDigivolvingCheckHashtableOfCard(selectedEffect.EffectSourceCard);
+                            if (!selectedEffect.IsDisabled)
+                            {
+                                Hashtable effectHashtable =
+                                CardEffectCommons.WhenDigivolvingCheckHashtableOfCard(selectedEffect.EffectSourceCard);
 
-                            yield return ContinuousController.instance.StartCoroutine(
-                                ((ActivateICardEffect)selectedEffect).Activate_Optional_Effect_Execute(effectHashtable));
+                                selectedEffect.SetIsDigimonEffect(true);
 
+                                yield return ContinuousController.instance.StartCoroutine(
+                                    ((ActivateICardEffect)selectedEffect).Activate_Optional_Effect_Execute(effectHashtable));
+                            }
                         }
                     }
                 }

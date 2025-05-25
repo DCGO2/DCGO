@@ -12,7 +12,8 @@ namespace DCGO.CardEffects.BT21
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Digivolution condition
-            if(timing == EffectTiming.None)
+
+            if (timing == EffectTiming.None)
             {
                 bool Condition(Permanent permanent)
                 {
@@ -21,9 +22,11 @@ namespace DCGO.CardEffects.BT21
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(Condition, 3, false, card, null));
             }
+
             #endregion
 
             #region On Play/When Digivolving shared
+
             bool CanTargetPermanent(Permanent permanent)
             {
                 return permanent.IsDigimon && CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
@@ -31,17 +34,19 @@ namespace DCGO.CardEffects.BT21
 
             bool CanActivateConditionShared(Hashtable hashtable)
             {
-                return isExistOnField(card);
+                return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
             }
 
             bool CanTrashCard(CardSource card)
             {
                 return card.HasText("Gammamon");
             }
+
             #endregion
 
             #region On Play
-            if(timing == EffectTiming.OnEnterFieldAnyone)
+
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Force attack and give collision", CanUseCondition, card);
@@ -122,22 +127,19 @@ namespace DCGO.CardEffects.BT21
                                 IEnumerator SelectPermanentCoroutine(Permanent permanent)
                                 {
                                     selectedPermanent = permanent;
-
                                     yield return null;
                                 }
 
                                 if (selectedPermanent != null)
                                 {
-                                    #region Give Collision
                                     AddSkillClass addSkillClass = new AddSkillClass();
                                     addSkillClass.SetUpICardEffect("Gain Collision", CanUseCondition1, card);
                                     addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
-
-                                    selectedPermanent.TopCard.Owner.UntilOpponentTurnEndEffects.Add((_timing) => addSkillClass);
+                                    selectedPermanent.TopCard.Owner.UntilOwnerTurnEndEffects.Add((_timing) => addSkillClass);
 
                                     bool CanUseCondition1(Hashtable hashtable)
                                     {
-                                        return true;
+                                        return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                                     }
 
                                     bool CardSourceCondition(CardSource cardSource)
@@ -147,7 +149,7 @@ namespace DCGO.CardEffects.BT21
 
                                     bool PermanentCondition(Permanent permanent)
                                     {
-                                        if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent))
+                                        if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                                         {
                                             if (!permanent.TopCard.CanNotBeAffected(activateClass))
                                             {
@@ -189,7 +191,6 @@ namespace DCGO.CardEffects.BT21
 
                                         return cardEffects;
                                     }
-                                    #endregion
 
                                     ActivateClass activateClassDebuff = new ActivateClass();
                                     activateClassDebuff.SetUpICardEffect("Attack with this Digimon", CanUseConditionDebuff,
@@ -254,9 +255,11 @@ namespace DCGO.CardEffects.BT21
                     }
                 }
             }
+
             #endregion
 
             #region When Digivolving
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -338,22 +341,19 @@ namespace DCGO.CardEffects.BT21
                                 IEnumerator SelectPermanentCoroutine(Permanent permanent)
                                 {
                                     selectedPermanent = permanent;
-
                                     yield return null;
                                 }
 
                                 if (selectedPermanent != null)
                                 {
-                                    #region Give Collision
                                     AddSkillClass addSkillClass = new AddSkillClass();
                                     addSkillClass.SetUpICardEffect("Gain Collision", CanUseCondition1, card);
                                     addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
-
-                                    selectedPermanent.TopCard.Owner.UntilOpponentTurnEndEffects.Add((_timing) => addSkillClass);
+                                    selectedPermanent.TopCard.Owner.UntilOwnerTurnEndEffects.Add((_timing) => addSkillClass);
 
                                     bool CanUseCondition1(Hashtable hashtable)
                                     {
-                                        return true;
+                                        return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                                     }
 
                                     bool CardSourceCondition(CardSource cardSource)
@@ -363,7 +363,7 @@ namespace DCGO.CardEffects.BT21
 
                                     bool PermanentCondition(Permanent permanent)
                                     {
-                                        if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent))
+                                        if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                                         {
                                             if (!permanent.TopCard.CanNotBeAffected(activateClass))
                                             {
@@ -405,13 +405,10 @@ namespace DCGO.CardEffects.BT21
 
                                         return cardEffects;
                                     }
-                                    #endregion
 
                                     ActivateClass activateClassDebuff = new ActivateClass();
-                                    activateClassDebuff.SetUpICardEffect("Attack with this Digimon", CanUseConditionDebuff,
-                                        selectedPermanent.TopCard);
-                                    activateClassDebuff.SetUpActivateClass(CanActivateConditionDebuff, ActivateCoroutineDebuff, -1, false,
-                                        EffectDescriptionDebuff());
+                                    activateClassDebuff.SetUpICardEffect("Attack with this Digimon", CanUseConditionDebuff, selectedPermanent.TopCard);
+                                    activateClassDebuff.SetUpActivateClass(CanActivateConditionDebuff, ActivateCoroutineDebuff, -1, false, EffectDescriptionDebuff());
                                     activateClassDebuff.SetEffectSourcePermanent(selectedPermanent);
                                     selectedPermanent.UntilOwnerTurnEndEffects.Add(GetCardEffect);
 
@@ -470,14 +467,12 @@ namespace DCGO.CardEffects.BT21
                     }
                 }
             }
-            #endregion
 
-            #region On Deletions Shared
-            
             #endregion
 
             #region On deletion regular
-            if(timing == EffectTiming.OnDestroyedAnyone)
+
+            if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play Cannonweissmon or level 4 or lower gammamon in text digimon", CanUseCondition, card);
@@ -496,13 +491,13 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanPlay(CardSource cardSource)
                 {
-                    return ((cardSource.HasText("Gammamon") && cardSource.HasLevel && cardSource.Level <= 4) || cardSource.EqualsCardName("Cannonweissmon")) &&
+                    return ((cardSource.HasText("Gammamon") && cardSource.HasLevel && cardSource.Level <= 4 && cardSource.IsDigimon) || cardSource.EqualsCardName("Canoweissmon")) &&
                            CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card) && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanPlay);
+                    return CardEffectCommons.CanActivateOnDeletion(card) && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanPlay);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -518,7 +513,7 @@ namespace DCGO.CardEffects.BT21
                         canNoSelect: () => true,
                         selectCardCoroutine: SelectCardCoroutine,
                         afterSelectCardCoroutine: null,
-                        message: "Select 1 [Cannonweissmon] or level 4 or lower [Gammamon] in text Digimon to play.",
+                        message: "Select 1 [Canoweissmon] or level 4 or lower [Gammamon] in text Digimon to play.",
                         maxCount: 1,
                         canEndNotMax: false,
                         isShowOpponent: true,
@@ -551,9 +546,11 @@ namespace DCGO.CardEffects.BT21
                         activateETB: true));
                 }
             }
+
             #endregion
 
             #region On deletion inherit
+
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -574,7 +571,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanPlay(CardSource cardSource)
                 {
-                    return cardSource.HasText("Gammamon") && cardSource.HasLevel && cardSource.Level <= 4 &&
+                    return cardSource.HasText("Gammamon") && cardSource.HasLevel && cardSource.Level <= 4 && cardSource.IsDigimon &&
                            CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
                 }
 
@@ -629,6 +626,7 @@ namespace DCGO.CardEffects.BT21
                         activateETB: true));
                 }
             }
+
             #endregion
 
             return cardEffects;

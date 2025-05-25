@@ -22,10 +22,13 @@ public partial class CardEffectFactory
         {
             if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
             {
-                if (card.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass))
+                if (permanent.IsDigimon)
                 {
-                    if(!permanent.TopCard.CanNotBeAffected(activateClass))
-                        return true;
+                    if (card.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass))
+                    {
+                        if (!permanent.TopCard.CanNotBeAffected(activateClass))
+                            return true;
+                    }
                 }
             }
 

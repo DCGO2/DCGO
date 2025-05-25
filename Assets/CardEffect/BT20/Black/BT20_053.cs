@@ -70,8 +70,7 @@ namespace DCGO.CardEffects.BT20
 
                 bool IsAttackingCondition()
                 {
-                    return GManager.instance.attackProcess.IsAttacking &&
-                           GManager.instance.attackProcess.AttackingPermanent == card.PermanentOfThisCard();
+                    return GManager.instance.attackProcess.IsAttacking;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -240,8 +239,7 @@ namespace DCGO.CardEffects.BT20
 
                 bool IsAttackingCondition()
                 {
-                    return GManager.instance.attackProcess.IsAttacking &&
-                           GManager.instance.attackProcess.AttackingPermanent == card.PermanentOfThisCard();
+                    return GManager.instance.attackProcess.IsAttacking;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

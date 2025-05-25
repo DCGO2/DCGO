@@ -27,7 +27,7 @@ namespace DCGO.CardEffects.BT21
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
                     permanentCondition: PermanentCondition,
-                    digivolutionCost: 3,
+                    digivolutionCost:5,
                     ignoreDigivolutionRequirement: false,
                     card: card,
                     condition: null)
@@ -55,7 +55,7 @@ namespace DCGO.CardEffects.BT21
                 {
                     if (cardSource == card)
                     {
-                        DigiXrosConditionElement element = new DigiXrosConditionElement(CanSelectCardCondition, "[OmniShoutmon]/[ZeigGreymon]");
+                        DigiXrosConditionElement element = new DigiXrosConditionElement(CanSelectCardCondition, "1 Digimon card with [Xros Heart] or [Blue Flare] trait");
 
                         bool CanSelectCardCondition(CardSource cardSource)
                         {
@@ -81,17 +81,34 @@ namespace DCGO.CardEffects.BT21
                             return false;
                         }
 
-                        List<DigiXrosConditionElement> elements = new List<DigiXrosConditionElement>() { element };
+                        List<DigiXrosConditionElement> elements = new List<DigiXrosConditionElement>();
 
-                        bool CanTargetCondition_ByPreSelectedList(List<CardSource> cardSources, CardSource cardSource)
+                        for (int i = 0; i < 50; i++)
                         {
-                            return !cardSources
-                                .Select(cs => cs.CardID)
-                                .Distinct()
-                                .Contains(cardSource.CardID);
+                            elements.Add(element);
                         }
 
-                        DigiXrosCondition digiXrosCondition = new DigiXrosCondition(elements, CanTargetCondition_ByPreSelectedList, 1);
+                        bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
+                        {
+                            List<string> cardIDs = new List<string>();
+
+                            foreach (CardSource cardSource1 in cardSources)
+                            {
+                                if (!cardIDs.Contains(cardSource1.CardID))
+                                {
+                                    cardIDs.Add(cardSource1.CardID);
+                                }
+                            }
+
+                            if (cardIDs.Contains(cardSource.CardID))
+                            {
+                                return false;
+                            }
+
+                            return true;
+                        }
+
+                        DigiXrosCondition digiXrosCondition = new DigiXrosCondition(elements, CanTargetCondition_ByPreSelecetedList, 1);
 
                         return digiXrosCondition;
                     }
@@ -109,19 +126,19 @@ namespace DCGO.CardEffects.BT21
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play Cost -1 and select trash cards for a DigiXros", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
-                activateClass.SetHashString("PlayCost-1_BT21-030");
+                activateClass.SetHashString("PlayCost-1_BT12_112");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "When this card would be played, by placing 1 of your [Shoutmon] under it, reduce the play cost by 1 and cards in your trash can also be placed for DigiXros.";
+                    return "When you would play this card from your hand, by placing 1 of your [Shoutmon] as a digivolution card under this Digimon, reduce its play cost by 1 and place the cards in your trash as digivolution cards for a DigiXros.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
                     {
-                        if (permanent.TopCard.EqualsCardName("Shoutmon"))
+                        if (permanent.TopCard.CardNames.Contains("Shoutmon"))
                         {
                             if (permanent.CanSelectBySkill(activateClass))
                             {
@@ -168,7 +185,8 @@ namespace DCGO.CardEffects.BT21
                 {
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+                        int maxCount = 1;
+
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
