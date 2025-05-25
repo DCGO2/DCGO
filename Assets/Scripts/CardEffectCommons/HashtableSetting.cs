@@ -130,7 +130,7 @@ public partial class CardEffectCommons
     #endregion
 
     #region Hashtable used when check whether the permanent can activate [On Play] [When Digivolving] or "Permanent enters the field" effect
-    public static Hashtable OnEnterFieldHashtable(List<OnEnterFieldHashtableParams> hashtableParams, bool isEvolution, bool isJogress, int digiXrosCount,
+    public static Hashtable OnEnterFieldHashtable(List<OnEnterFieldHashtableParams> hashtableParams, bool isEvolution, bool isJogress, int digiXrosCount, int assemblyCount,
     ICardEffect cardEffect)
     {
         Hashtable hashtable = new Hashtable()
@@ -138,6 +138,7 @@ public partial class CardEffectCommons
             {"isEvolution", isEvolution},
             {"isJogress", isJogress},
             {"DigiXrosCount", digiXrosCount },
+            {"AssemblyCount", assemblyCount },
             {"isFromDigimonDigivolutionCards", hashtableParams.Some(param => param.IsFromDigimonDigivolutionCards)}
         };
 

@@ -44,7 +44,7 @@ public partial class CardEffectCommons
 
         bool CanSelectPermanentCondition(Permanent permanent)
         {
-            bool PermanentCondition(Permanent permanent1) => permanent1 != GManager.instance.attackProcess.DefendingPermanent && !permanent1.IsSuspended;
+            bool PermanentCondition(Permanent permanent1) => !permanent1.IsSuspended;
 
             return IsMaxDP(permanent, targetPermanent.TopCard.Owner.Enemy, PermanentCondition);
         }

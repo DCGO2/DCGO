@@ -48,7 +48,8 @@ namespace DCGO.CardEffects.BT21
 
                 bool HasNameOrTrait(CardSource cardSource)
                 {
-                    return cardSource.EqualsTraits("Hero") 
+                    return cardSource.EqualsTraits("Hero")
+                        || cardSource.ContainsCardName("Guilmon")
                         || cardSource.ContainsCardName("Growlmon")
                         || cardSource.ContainsCardName("Gallantmon")
                         || cardSource.ContainsCardName("Megidramon");
@@ -114,12 +115,12 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.CanActivateOnDeletion(card))
+                    if (CardEffectCommons.CanActivateOnDeletionInherited(hashtable, card))
                     {
                         if (card.Owner.CanAddMemory(activateClass))
                         {

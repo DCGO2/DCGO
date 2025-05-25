@@ -40,7 +40,7 @@ namespace DCGO.CardEffects.BT14
                     {
                         if (!CardEffectCommons.IsExistOnBreedingAreaDigimon(card))
                         {
-                            if (cardSource.CardDP <= 6000)
+                            if (!cardSource.IsDigiEgg && cardSource.CardDP <= 6000)
                             {
                                 return true;
                             }

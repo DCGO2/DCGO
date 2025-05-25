@@ -51,9 +51,9 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent.TopCard.IsDigimon)
+                        if (permanent.IsDigimon)
                         {
-                            if (permanent.HasDP && permanent.DP <= 6000)
+                            if (permanent.DP <= 6000)
                             {
                                 return true;
                             }

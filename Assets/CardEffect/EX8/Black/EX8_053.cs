@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 
 namespace DCGO.CardEffects.EX8
 {
@@ -8,8 +10,6 @@ namespace DCGO.CardEffects.EX8
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
-
-            bool opponentHas13kDP = false;
 
             #region Blocker
             if (timing == EffectTiming.None)
@@ -22,46 +22,33 @@ namespace DCGO.CardEffects.EX8
             #endregion
 
             #region All Turns
-            if(timing == EffectTiming.None)
+
+            if (timing != EffectTiming.None)
             {
+                bool OpponentsDigimon(Permanent permanent)
+                {
+                    return permanent.IsDigimon &&
+                           permanent.DP >= 13000;
+                }
+
+                if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                {
+                    Permanent thisPermanent = card.PermanentOfThisCard();
+
+                    if (Condition())
+                        thisPermanent.AddBoost(new Permanent.DPBoost("EX8_053", 5000, Condition));
+                    else
+                        thisPermanent.RemoveBoost("EX8_053");
+                }
+
                 bool Condition()
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           CardEffectCommons.HasMatchConditionOpponentsPermanent(card, permanent => permanent.IsDigimon && permanent.DP >= 13000);
+                           card.PermanentOfThisCard().TopCard == card &&
+                           CardEffectCommons.HasMatchConditionOpponentsPermanent(card, OpponentsDigimon);
                 }
-
-                if (Condition() != opponentHas13kDP)
-                    opponentHas13kDP = Condition();
             }
 
-            if (timing == EffectTiming.None)
-            {
-                string EffectDiscription()
-                {
-                    return "[All Turns] While your opponent has a Digimon with 13000 DP or more, this Digimon gets +5000 DP.";
-                }
-
-                bool Condition()
-                {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           opponentHas13kDP;
-                }
-
-                bool PermanentCondition(Permanent permanent)
-                {
-                    return CardEffectCommons.IsExistOnBattleArea(card) &&
-                           card == card.PermanentOfThisCard().TopCard &&
-                           permanent == card.PermanentOfThisCard();
-                }
-
-                cardEffects.Add(CardEffectFactory.ChangeDPStaticEffect(
-                permanentCondition: PermanentCondition,
-                changeValue: 5000,
-                isInheritedEffect: false,
-                card: card,
-                condition: Condition,
-                effectName: EffectDiscription));
-            }
             #endregion
 
             #region On Deletion
@@ -99,15 +86,23 @@ namespace DCGO.CardEffects.EX8
                 {
                     List<CardSource> selectedCards = new List<CardSource>();
 
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.RevealDeckTopCardsAndProcessForAll(
-                        revealCount: 1,
-                        simplifiedSelectCardCondition:
-                        new SimplifiedSelectCardConditionClass(
-                            canTargetCondition: PlayableMineralorRock,
-                            message: "Select 1 [Mineral] or [Rock] trait digimon with 8 cost or less to play",
-                            mode: SelectCardEffect.Mode.Custom,
-                            maxCount: -1,
-                            selectCardCoroutine: CardToPlay),
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.RevealDeckTopCardsAndSelect(
+                        revealCount: 3,
+                        selectCardConditions:
+                        new SelectCardConditionClass[]
+                        {
+                            new SelectCardConditionClass(
+                                canTargetCondition: PlayableMineralorRock,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                canNoSelect: true,
+                                selectCardCoroutine: CardToPlay,
+                                message: "Select 1 [Mineral] or [Rock] trait digimon with 8 cost or less to play",
+                                maxCount: 1,
+                                canEndNotMax: false,
+                                mode: SelectCardEffect.Mode.Custom
+                                )
+                        },                        
                         remainingCardsPlace: RemainingCardsPlace.Trash,
                         activateClass: activateClass
                     ));
