@@ -245,6 +245,7 @@ namespace DCGO.CardEffects.EX9
                 activateClass.SetUpICardEffect("[WG] trait may unsuspend", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("EOT_EX9-042");
+                activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
