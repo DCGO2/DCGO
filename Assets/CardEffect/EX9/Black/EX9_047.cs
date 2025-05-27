@@ -23,10 +23,6 @@ namespace DCGO.CardEffects.EX9
             }
             #endregion
 
-            #region Assembly
-            //ToDo: Add Assembly
-            #endregion
-
             #region Rush
             if (timing == EffectTiming.None)
             {
@@ -96,6 +92,82 @@ namespace DCGO.CardEffects.EX9
 
                         yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
                     }
+                }
+            }
+            #endregion
+
+            #region Assembly
+            if (timing == EffectTiming.None)
+            {
+                AddAssemblyConditionClass addAssemblyConditionClass = new AddAssemblyConditionClass();
+                addAssemblyConditionClass.SetUpICardEffect($"Assembly", CanUseCondition, card);
+                addAssemblyConditionClass.SetUpAddAssemblyConditionClass(getAssemblyCondition: GetAssembly);
+                addAssemblyConditionClass.SetNotShowUI(true);
+                cardEffects.Add(addAssemblyConditionClass);
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return true;
+                }
+
+                AssemblyCondition GetAssembly(CardSource cardSource)
+                {
+                    if (cardSource == card)
+                    {
+                        AssemblyConditionElement element = new AssemblyConditionElement(CanSelectCardCondition, "4 Digimon cards with [Eyesmon: Scatter Mode] in their names");
+
+                        bool CanSelectCardCondition(CardSource cardSource)
+                        {
+                            if (cardSource != null)
+                            {
+                                if (cardSource.Owner == card.Owner)
+                                {
+                                    if (cardSource.IsDigimon)
+                                    {
+                                        if (cardSource.ContainsCardName("Eyesmon: Scatter Mode"))
+                                        {
+                                            return true;
+                                        }
+                                    }
+                                }
+                            }
+
+                            return false;
+                        }
+
+                        List<AssemblyConditionElement> elements = new List<AssemblyConditionElement>();
+
+                        for (int i = 0; i < 4; i++)
+                        {
+                            elements.Add(element);
+                        }
+
+                        bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
+                        {
+                            List<string> cardIDs = new List<string>();
+
+                            foreach (CardSource cardSource1 in cardSources)
+                            {
+                                if (!cardIDs.Contains(cardSource1.CardID))
+                                {
+                                    cardIDs.Add(cardSource1.CardID);
+                                }
+                            }
+
+                            if (cardIDs.Contains(cardSource.CardID))
+                            {
+                                return false;
+                            }
+
+                            return true;
+                        }
+
+                        AssemblyCondition assemblyCondition = new AssemblyCondition(elements, CanTargetCondition_ByPreSelecetedList, 3);
+
+                        return assemblyCondition;
+                    }
+
+                    return null;
                 }
             }
             #endregion
