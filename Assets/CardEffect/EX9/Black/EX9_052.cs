@@ -36,6 +36,7 @@ namespace DCGO.CardEffects.EX9
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Place 3 digimon from trash as source, to digivolve", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetHashString("Digivolve_EX9_052");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
