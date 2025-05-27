@@ -152,7 +152,7 @@ namespace DCGO.CardEffects.BT19
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card) &&
                            CardEffectCommons.CanTriggerWhenPermanentWouldPlay(hashtable, CardCondition) &&
-                           CardEffectCommons.IsOnly1CadPlayed(hashtable);
+                           CardEffectCommons.IsOnly1CardPlayed(hashtable);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

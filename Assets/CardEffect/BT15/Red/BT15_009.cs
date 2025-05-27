@@ -15,6 +15,7 @@ namespace DCGO.CardEffects.BT15
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete 1 Digimon with DP less than or equal to this Digimon's DP", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetIsDigimonEffect(true);
                 activateClass.SetHashString("Delete_BT15_009");
                 cardEffects.Add(activateClass);
 

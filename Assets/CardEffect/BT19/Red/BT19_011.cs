@@ -38,7 +38,7 @@ namespace DCGO.CardEffects.BT19
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent.TopCard.CardDP <= card.Owner.MaxDP_DeleteEffect(maxDP, activateClass))
+                        if (permanent.DP <= card.Owner.MaxDP_DeleteEffect(maxDP, activateClass))
                         {
                             if (permanent.TopCard.HasDP)
                             {
@@ -59,7 +59,7 @@ namespace DCGO.CardEffects.BT19
 
                     foreach (Permanent permanent1 in permanents)
                     {
-                        sumDP += permanent1.TopCard.CardDP;
+                        sumDP += permanent1.DP;
                     }
 
                     if (sumDP > card.Owner.MaxDP_DeleteEffect(maxDP, activateClass))
@@ -74,10 +74,10 @@ namespace DCGO.CardEffects.BT19
 
                     foreach (Permanent permanent1 in permanents)
                     {
-                        sumDP += permanent1.TopCard.CardDP;
+                        sumDP += permanent1.DP;
                     }
 
-                    sumDP += permanent.TopCard.CardDP;
+                    sumDP += permanent.DP;
 
                     if (sumDP > card.Owner.MaxDP_DeleteEffect(maxDP, activateClass))
                         return false;
@@ -154,7 +154,7 @@ namespace DCGO.CardEffects.BT19
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent.TopCard.CardDP <= card.Owner.MaxDP_DeleteEffect(maxDP, activateClass))
+                        if (permanent.DP <= card.Owner.MaxDP_DeleteEffect(maxDP, activateClass))
                         {
                             if (permanent.TopCard.HasDP)
                             {
@@ -175,7 +175,7 @@ namespace DCGO.CardEffects.BT19
 
                     foreach (Permanent permanent1 in permanents)
                     {
-                        sumDP += permanent1.TopCard.CardDP;
+                        sumDP += permanent1.DP;
                     }
 
                     if (sumDP > card.Owner.MaxDP_DeleteEffect(maxDP, activateClass))
@@ -190,10 +190,10 @@ namespace DCGO.CardEffects.BT19
 
                     foreach (Permanent permanent1 in permanents)
                     {
-                        sumDP += permanent1.TopCard.CardDP;
+                        sumDP += permanent1.DP;
                     }
 
-                    sumDP += permanent.TopCard.CardDP;
+                    sumDP += permanent.DP;
 
                     if (sumDP > card.Owner.MaxDP_DeleteEffect(maxDP, activateClass))
                         return false;

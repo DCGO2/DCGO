@@ -24,6 +24,11 @@ namespace DCGO.CardEffects.BT21
                     return "[On Play] If your opponent has 5 or fewer security cards, they place 1 card from their hand as the bottom security card. Then, trash their top security card.";
                 }
 
+                bool CanSelectCardCondition(CardSource cardSource)
+                {
+                    return true;
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
@@ -36,23 +41,22 @@ namespace DCGO.CardEffects.BT21
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    CardSource selectedCard = null;
                     if (card.Owner.Enemy.SecurityCards.Count <= 5 && card.Owner.Enemy.HandCards.Count() >= 1)
                     {
-                        List<CardSource> selectedCard = new List<CardSource>();
-
                         int maxCount = 1;
 
                         SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
                         selectHandEffect.SetUp(
                             selectPlayer: card.Owner.Enemy,
-                            canTargetCondition: null,
+                            canTargetCondition: CanSelectCardCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,
                             canNoSelect: false,
                             canEndNotMax: false,
-                            isShowOpponent: true,
+                            isShowOpponent: false,
                             selectCardCoroutine: SelectCardCoroutine,
                             afterSelectCardCoroutine: null,
                             mode: SelectHandEffect.Mode.Custom,
@@ -62,20 +66,22 @@ namespace DCGO.CardEffects.BT21
                             "Select 1 card to place at the bottom of security.",
                             "The opponent is selecting 1 card to place at the bottom of security.");
 
-                        selectHandEffect.SetUpCustomMessage_ShowCard("Security Bottom Card");
-
-                        yield return StartCoroutine(selectHandEffect.Activate());
+                        yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
 
                         IEnumerator SelectCardCoroutine(CardSource cardSource)
                         {
-                            if (selectedCard != null)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(
-                                    cardSource.PermanentOfThisCard(),
-                                    CardEffectCommons.CardEffectHashtable(activateClass),
-                                    false).PutSecurity());
-                            }
+                            selectedCard = cardSource;
+                            yield return null;
                         }
+                    }
+
+                    if (selectedCard != null)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(selectedCard, toTop: false));
+
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(selectedCard.Owner));
+
+                        yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(selectedCard.Owner).AddSecurity());
                     }
 
                     yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
@@ -102,6 +108,11 @@ namespace DCGO.CardEffects.BT21
                     return "[When Digivolving] If your opponent has 5 or fewer security cards, they place 1 card from their hand as the bottom security card. Then, trash their top security card.";
                 }
 
+                bool CanSelectCardCondition(CardSource cardSource)
+                {
+                    return true;
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
@@ -114,23 +125,22 @@ namespace DCGO.CardEffects.BT21
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    CardSource selectedCard = null;
                     if (card.Owner.Enemy.SecurityCards.Count <= 5 && card.Owner.Enemy.HandCards.Count() >= 1)
                     {
-                        List<CardSource> selectedCard = new List<CardSource>();
-
                         int maxCount = 1;
 
                         SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
                         selectHandEffect.SetUp(
                             selectPlayer: card.Owner.Enemy,
-                            canTargetCondition: null,
+                            canTargetCondition: CanSelectCardCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,
                             canNoSelect: false,
                             canEndNotMax: false,
-                            isShowOpponent: true,
+                            isShowOpponent: false,
                             selectCardCoroutine: SelectCardCoroutine,
                             afterSelectCardCoroutine: null,
                             mode: SelectHandEffect.Mode.Custom,
@@ -140,20 +150,22 @@ namespace DCGO.CardEffects.BT21
                             "Select 1 card to place at the bottom of security.",
                             "The opponent is selecting 1 card to place at the bottom of security.");
 
-                        selectHandEffect.SetUpCustomMessage_ShowCard("Security Bottom Card");
-
-                        yield return StartCoroutine(selectHandEffect.Activate());
+                        yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
 
                         IEnumerator SelectCardCoroutine(CardSource cardSource)
                         {
-                            if (selectedCard != null)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(
-                                    cardSource.PermanentOfThisCard(),
-                                    CardEffectCommons.CardEffectHashtable(activateClass),
-                                    false).PutSecurity());
-                            }
+                            selectedCard = cardSource;
+                            yield return null;
                         }
+                    }
+
+                    if (selectedCard != null)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(selectedCard, toTop: false));
+
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(selectedCard.Owner));
+
+                        yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(selectedCard.Owner).AddSecurity());
                     }
 
                     yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(

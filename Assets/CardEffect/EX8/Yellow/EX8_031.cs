@@ -44,7 +44,7 @@ namespace DCGO.CardEffects.EX8
                 string EffectDescription()
                 {
                     return
-                        "[When Digivolving] Return 1 Option card with [Plug-In] in its name from your trash to your hand.";
+                        "[On Play] Return 1 Option card with [Plug-In] in its name from your trash to your hand.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)

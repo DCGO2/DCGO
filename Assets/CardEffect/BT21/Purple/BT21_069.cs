@@ -75,10 +75,7 @@ namespace DCGO.CardEffects.BT21
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                     {
-                        if (CardEffectCommons.IsExistOnBattleArea(card))
-                        {
-                            return permanent.Level == 4;
-                        }
+                        return permanent.TopCard.HasLevel && permanent.Level <= 4;
                     }
 
                     return false;
@@ -232,10 +229,7 @@ namespace DCGO.CardEffects.BT21
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                     {
-                        if (CardEffectCommons.IsExistOnBattleArea(card))
-                        {
-                            return permanent.Level == 4;
-                        }
+                        return permanent.TopCard.HasLevel && permanent.Level <= 4;
                     }
 
                     return false;

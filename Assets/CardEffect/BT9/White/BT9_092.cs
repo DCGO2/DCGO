@@ -155,9 +155,9 @@ public class BT9_092 : CEntity_Effect
             {
                 yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(new List<Permanent>() { card.PermanentOfThisCard() }, CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
 
-                yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
-
                 yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
+
+                yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
             }
         }
 

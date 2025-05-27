@@ -119,7 +119,7 @@ namespace DCGO.CardEffects.BT21
                     {
                         if (permanent.TopCard.ContainsCardName("Guilmon") || permanent.TopCard.ContainsCardName("Growlmon"))
                         {
-                            foreach (CardSource cardSource in card.Owner.HandCards)
+                            foreach (CardSource cardSource in card.Owner.TrashCards)
                             {
                                 if (CanSelectCardCondition(cardSource))
                                 {

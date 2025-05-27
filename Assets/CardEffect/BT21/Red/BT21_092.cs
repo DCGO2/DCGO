@@ -176,6 +176,7 @@ namespace DCGO.CardEffects.BT21
                         if (selectedCard)
                         {
                             var cost = selectedCard.BasePlayCostFromEntity - cardsMoved;
+                            if (cost < 0) cost = 0;
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
                                 cardSources: new List<CardSource>() { selectedCard },
                                 activateClass: activateClass,
@@ -196,8 +197,9 @@ namespace DCGO.CardEffects.BT21
             if (timing == EffectTiming.SecuritySkill)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play 1 Tamer with inherited effects", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Play 1 [Xros Heart] trait card with a play cost of 5 or less", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetIsSecurityEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -228,7 +230,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.HasPlayCost || cardSource.HasUseCost)
+                    if (cardSource.HasPlayCost)
                     {
                         if (cardSource.BasePlayCostFromEntity <= 5)
                         {

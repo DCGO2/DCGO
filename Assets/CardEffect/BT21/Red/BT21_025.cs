@@ -13,23 +13,9 @@ namespace DCGO.CardEffects.BT21
 
             #region Progress
 
-            if (timing == EffectTiming.OnAllyAttack)
+            if (timing == EffectTiming.None)
             {
-                bool Condition()
-                {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (GManager.instance.attackProcess.AttackingPermanent == card.PermanentOfThisCard())
-                        {
-                            if (CardEffectCommons.CanActivateProgress(card))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-                    return false;
-                }
-                cardEffects.Add(CardEffectFactory.ProgressSelfStaticEffect(false, card, Condition));
+                cardEffects.Add(CardEffectFactory.ProgressSelfStaticEffect(false, card, null));
             }
 
             #endregion
@@ -41,10 +27,11 @@ namespace DCGO.CardEffects.BT21
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("trash top security", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetHashString("YT_BT21-025");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
-                    => "Your Turn] [Once Per Turn] When any of your [Reptile]/[Dragonkin] trait Digimon's attack targets change, trash your opponent's top security card.";
+                    => "[Your Turn] [Once Per Turn] When any of your [Reptile]/[Dragonkin] trait Digimon's attack targets change, trash your opponent's top security card.";
 
                 bool CanUseCondition(Hashtable hashtable)
                 {

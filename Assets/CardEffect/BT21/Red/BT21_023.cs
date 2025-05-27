@@ -13,6 +13,20 @@ namespace DCGO.CardEffects.BT21
 
             #region Static Effects
 
+            #region Alternative Digivolution Condition - Sup.
+
+            if (timing == EffectTiming.None)
+            {
+                bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.EqualsTraits("Sup.");
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 4, ignoreDigivolutionRequirement: false, card: card, condition: null));
+            }
+
+            #endregion
+
             #region Link Condition
 
             if (timing == EffectTiming.None)
@@ -42,25 +56,19 @@ namespace DCGO.CardEffects.BT21
                     {
                         if (source != null && source != card)
                         {
-                            if (source.PermanentOfThisCard().TopCard.EqualsCardName("DoGatchmon"))
+                            if (permanent.TopCard.EqualsCardName("DoGatchmon"))
                             {
-                                if (source.PermanentOfThisCard().LinkedCards.Find(x => x.EqualsCardName("Timemon")))
+                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Timemon")))
                                 {
-                                    if (source.CanAppFusionFromTargetPermanent(permanent, true))
-                                    {
-                                        return true;
-                                    }
+                                    return true;
                                 }
                             }
 
-                            if (source.PermanentOfThisCard().TopCard.EqualsCardName("Timemon"))
+                            if (permanent.TopCard.EqualsCardName("Timemon"))
                             {
-                                if (source.PermanentOfThisCard().LinkedCards.Find(x => x.EqualsCardName("DoGatchmon")))
+                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("DoGatchmon")))
                                 {
-                                    if (source.CanAppFusionFromTargetPermanent(permanent, true))
-                                    {
-                                        return true;
-                                    }
+                                    return true;
                                 }
                             }
                         }
@@ -120,6 +128,21 @@ namespace DCGO.CardEffects.BT21
 
             #endregion
 
+            #region Link
+
+            if (timing == EffectTiming.OnDeclaration)
+            {
+                /// <summary>
+                /// Used to link a card
+                /// </summary>
+                /// <param name="card">Reference to this card</param>
+                /// <param name="condition">OPTIONAL - Function to check for effect conditions</param>
+                /// <author>Mike Bunch</author>
+                cardEffects.Add(CardEffectFactory.LinkEffect(card));
+            }
+
+            #endregion
+
             #endregion
 
             #region On Play / When digivolving Shared
@@ -134,7 +157,6 @@ namespace DCGO.CardEffects.BT21
                         {
                             return true;
                         }
-                        return true;
                     }
                 }
                 return false;
@@ -143,8 +165,8 @@ namespace DCGO.CardEffects.BT21
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
                 bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardConditionShared);
-                bool canSelectSources = card.PermanentOfThisCard().DigivolutionCards.Filter(x => CanSelectCardConditionShared(x)) != null;
-
+                bool canSelectSources = card.PermanentOfThisCard().DigivolutionCards.Filter(x => CanSelectCardConditionShared(x)).Count > 0;
+                UnityEngine.Debug.Log($"GLOBEMON: ACTIVATION - {canSelectHand}, {canSelectSources}");
                 if (canSelectHand || canSelectSources)
                 {
                     if (canSelectHand && canSelectSources)
@@ -169,7 +191,7 @@ namespace DCGO.CardEffects.BT21
 
                     bool fromHand = GManager.instance.userSelectionManager.SelectedBoolValue;
                     CardSource selectedCard = null;
-
+                    UnityEngine.Debug.Log($"GLOBEMON: ACTIVATION - {fromHand}");
                     if (fromHand)
                     {
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInHand(card, CanSelectCardConditionShared));
@@ -230,7 +252,8 @@ namespace DCGO.CardEffects.BT21
 
                     if (selectedCard != null)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddLinkCard(card, activateClass));
+                        UnityEngine.Debug.Log($"GLOBEMON: ACTIVATION - {selectedCard.BaseENGCardNameFromEntity}");
+                        yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddLinkCard(selectedCard, activateClass));
                     }
                 }
             }
@@ -267,7 +290,7 @@ namespace DCGO.CardEffects.BT21
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardConditionShared) || card.PermanentOfThisCard().DigivolutionCards.Filter(x => CanSelectCardConditionShared(x)) != null)
+                        if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardConditionShared) || card.PermanentOfThisCard().DigivolutionCards.Filter(x => CanSelectCardConditionShared(x)).Count > 0)
                         {
                             return true;
                         }
@@ -294,6 +317,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
+                    UnityEngine.Debug.Log($"GLOBEMON: CAN USE - {CardEffectCommons.IsExistOnBattleAreaDigimon(card)}, {CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card)}");
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card))
@@ -306,9 +330,10 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
+                    UnityEngine.Debug.Log($"GLOBEMON: CAN ACTIVATE - {CardEffectCommons.IsExistOnBattleAreaDigimon(card)}, ({CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardConditionShared)} || {card.PermanentOfThisCard().DigivolutionCards.Filter(x => CanSelectCardConditionShared(x)).Count})");
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardConditionShared) || card.PermanentOfThisCard().DigivolutionCards.Filter(x => CanSelectCardConditionShared(x)) != null)
+                        if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardConditionShared) || card.PermanentOfThisCard().DigivolutionCards.Filter(x => CanSelectCardConditionShared(x)).Count > 0)
                         {
                             return true;
                         }
@@ -393,15 +418,16 @@ namespace DCGO.CardEffects.BT21
                     {
                         if (CardEffectCommons.IsOwnerTurn(card))
                         {
-                            if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermanentCondition))
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
                     return false;
                 }
             }
+
+            #endregion
+
+            #region ESS - When Linked
 
             if (timing == EffectTiming.WhenLinked)
             {
@@ -439,47 +465,6 @@ namespace DCGO.CardEffects.BT21
                     }
                     return false;
                 }
-            }
-
-            #endregion
-
-            #region ESS - When Linked
-
-            if (timing == EffectTiming.None)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
-                cardEffects.Add(activateClass);
-
-                string EffectDiscription()
-                {
-                    return "";
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return true;
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    return true;
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    yield return null;
-                }
-            }
-
-            #endregion
-
-            #region ESS - +4k DP
-
-            if (timing == EffectTiming.None)
-            {
-                cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect(changeValue: 2000, isInheritedEffect: false, card: card, condition: null, isLinkedEffect: true));
             }
 
             #endregion

@@ -2,8 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.XR;
 
-namespace DCGO.CardEffects
+//Haru Shinkai
+namespace DCGO.CardEffects.BT21
 {
     public class BT21_084 : CEntity_Effect
     {
@@ -20,6 +22,7 @@ namespace DCGO.CardEffects
 
             #endregion
 
+            #region Your Turn - When Linked
             if (timing == EffectTiming.WhenLinked)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -68,10 +71,15 @@ namespace DCGO.CardEffects
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent.TopCard.appFusionCondition != null)
+                        foreach(CardSource hand in card.Owner.HandCards)
                         {
-                            return true;
+                            if (hand.appFusionCondition != null)
+                            {
+                                if (hand.CanAppFusionFromTargetPermanent(permanent, true))
+                                    return true;
+                            }
                         }
+                        
                     }
                     return false;
                 }
@@ -79,9 +87,10 @@ namespace DCGO.CardEffects
                 {
                     if (CardEffectCommons.IsExistOnHand(card))
                     {
-                        if (card.CanAppFusionFromTargetPermanent(permanent, true))
+                        if (card.appFusionCondition != null)
                         {
-                            return true;
+                            if (card.CanAppFusionFromTargetPermanent(permanent, true))
+                                return true;
                         }
                     }
                     return false;
@@ -152,8 +161,10 @@ namespace DCGO.CardEffects
 
                             if (selectedCard != null && selectedCard.CanAppFusionFromTargetPermanent(selectedPermanent, true))
                             {
+                                CardSource linkCard = selectedPermanent.LinkedCards.Where(x => selectedCard.appFusionCondition.linkedCondition(selectedPermanent, x)).First();
+
                                 PlayCardClass playCardClass = new PlayCardClass(new List<CardSource> { selectedCard }, hashtable, true, selectedPermanent, false, SelectCardEffect.Root.Hand, true);
-                                playCardClass.SetAppFusion(selectedPermanent.PermanentFrame.FrameID, selectedCard);
+                                playCardClass.SetAppFusion(new int[] { selectedPermanent.PermanentFrame.FrameID, selectedPermanent.LinkedCards.IndexOf(linkCard) });
 
                                 yield return ContinuousController.instance.StartCoroutine(playCardClass.PlayCard());
                             }
@@ -161,6 +172,7 @@ namespace DCGO.CardEffects
                     }
                 }
             }
+            #endregion
 
             #region Security
 
