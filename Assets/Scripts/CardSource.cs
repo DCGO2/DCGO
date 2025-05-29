@@ -2944,6 +2944,18 @@ public class CardSource : MonoBehaviour
     }
 
     #endregion
+
+    #region whether this card has "WG" trait
+
+    public bool HasWGTraits
+    {
+        get
+        {
+            return EqualsTraits("WG");
+        }
+    }
+
+    #endregion
 }
 
 public class JogressCondition
