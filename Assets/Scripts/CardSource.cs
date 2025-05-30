@@ -33,7 +33,7 @@ public class CardSource : MonoBehaviour
         Owner = owner;
         gameObject.name = _cEntity_Base.CardName_ENG;
 
-        SetFace();
+        SetFace("CardSource.SetBaseData");
     }
     #endregion
 
@@ -46,9 +46,12 @@ public class CardSource : MonoBehaviour
     public bool IsFlipped { get; private set; }
 
     #region set face
-    public void SetFace()
+    public void SetFace(string str = "")
     {
         IsFlipped = false;
+
+        if (str != "")
+            UnityEngine.Debug.Log($"CARD FLIPPED: {this.BaseENGCardNameFromEntity}, from - {str}");
 
         GManager.OnCardFlippedChanged?.Invoke();
         GManager.OnSecurityStackChanged?.Invoke(Owner);
@@ -262,7 +265,7 @@ public class CardSource : MonoBehaviour
     public void Init()
     {
         cEntity_EffectController.InitUseCountThisTurn();
-        SetFace();
+        SetFace("CardSource.Initialize");
     }
     #endregion
 
@@ -498,6 +501,39 @@ public class CardSource : MonoBehaviour
                             if (selectDigiXrosClass.playCard == this)
                             {
                                 Cost -= selectDigiXrosClass.selectedDigicrossCards.Count * digiXrosCondition.reduceCostPerCard;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region Assembly
+        if (!isEvolution)
+        {
+            if (HasAssembly)
+            {
+                if (Owner.CanReduceCost(null, this))
+                {
+                    //AI
+                    if (!(!Owner.isYou && GManager.instance.IsAI))
+                    {
+                        if (checkAvailability)
+                        {
+                            return 0;
+                        }
+                    }
+
+                    if (!checkAvailability)
+                    {
+                        SelectAssemblyClass selectAssemblyClass = GManager.instance.GetComponent<SelectAssemblyClass>();
+
+                        if (selectAssemblyClass != null)
+                        {
+                            if (selectAssemblyClass.playCard == this)
+                            {
+                                Cost -= selectAssemblyClass.selectedAssemblyCards.Count * assemblyCondition.reduceCost;
                             }
                         }
                     }
@@ -2008,6 +2044,10 @@ public class CardSource : MonoBehaviour
     public bool HasDigiXros => digiXrosCondition != null;
     #endregion
 
+    #region whether this card has [Assembly]
+    public bool HasAssembly => assemblyCondition != null;
+    #endregion
+
     #region traits
     public List<string> CardTraits
     {
@@ -2104,7 +2144,8 @@ public class CardSource : MonoBehaviour
             {
                 if (EffectList(timing)
                     .Some(cardEffect => cardEffect.IsInheritedEffect
-                    && !cardEffect.IsDisabled))
+                    && !cardEffect.IsDisabled
+                    && !IsFlipped))
                 {
                     return true;
                 }
@@ -2411,6 +2452,32 @@ public class CardSource : MonoBehaviour
     }
     #endregion
 
+    #region Assembly requirement
+    public AssemblyCondition assemblyCondition
+    {
+        get
+        {
+            foreach (ICardEffect cardEffect in this.EffectList(EffectTiming.None))
+            {
+                if (cardEffect is IAddAssemblyConditionEffect)
+                {
+                    if (cardEffect.CanUse(null))
+                    {
+                        AssemblyCondition assemblyCondition = ((IAddAssemblyConditionEffect)cardEffect).GetAssemblyCondition(this);
+
+                        if (assemblyCondition != null)
+                        {
+                            return assemblyCondition;
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+    }
+    #endregion
+
     #region whether this card can Burst digivolve
     public bool CanPlayBurst(bool PayCost)
     {
@@ -2569,28 +2636,25 @@ public class CardSource : MonoBehaviour
         {
             if (targetPermanent.TopCard != null)
             {
-                if (targetPermanent.TopCard.Owner.GetFieldPermanents().Contains(targetPermanent))
+                if (this.CanLink(PayCost))
                 {
-                    if (this.CanLink(PayCost))
+                    if (linkCondition != null)
                     {
-                        if (linkCondition != null)
+                        if (linkCondition.digimonCondition(targetPermanent))
                         {
-                            if (linkCondition.digimonCondition(targetPermanent))
+                            if (PayCost)
                             {
-                                if (PayCost)
+                                int cost = linkCondition.cost;
+
+                                cost = GetChangedCostItselef(cost, SelectCardEffect.Root.Hand, new List<Permanent>() { targetPermanent }, checkAvailability: true);
+
+                                if (Owner.MaxMemoryCost < cost)
                                 {
-                                    int cost = linkCondition.cost;
-
-                                    cost = GetChangedCostItselef(cost, SelectCardEffect.Root.Hand, new List<Permanent>() { targetPermanent }, checkAvailability: true);
-
-                                    if (Owner.MaxMemoryCost < cost)
-                                    {
-                                        return false;
-                                    }
+                                    return false;
                                 }
-
-                                return true;
                             }
+
+                            return true;
                         }
                     }
                 }
@@ -2614,7 +2678,7 @@ public class CardSource : MonoBehaviour
                     if (!this.CanNotEvolve(targetPermanent))
                     {
                         if (appFusionCondition.digimonCondition(targetPermanent))
-                        { 
+                        {
                             foreach (CardSource linkedCard in targetPermanent.LinkedCards)
                             {
                                 if (appFusionCondition.linkedCondition(targetPermanent, linkedCard))
@@ -3002,4 +3066,38 @@ public class AppFusionCondition
     public Func<Permanent, bool> digimonCondition { get; private set; } = null;
 
     public int cost { get; private set; } = 0;
+}
+
+public class AssemblyCondition
+{
+    public AssemblyCondition(List<AssemblyConditionElement> elements, Func<List<CardSource>, CardSource, bool> CanTargetCondition_ByPreSelecetedList, int reduceCost)
+    {
+        this.elements = new List<AssemblyConditionElement>();
+
+        foreach (AssemblyConditionElement element in elements)
+        {
+            this.elements.Add(element);
+        }
+
+        this.CanTargetCondition_ByPreSelecetedList = CanTargetCondition_ByPreSelecetedList;
+        this.reduceCost = reduceCost;
+    }
+    public List<AssemblyConditionElement> elements { get; private set; } = new List<AssemblyConditionElement>();
+    public Func<List<CardSource>, CardSource, bool> CanTargetCondition_ByPreSelecetedList { get; private set; } = null;
+
+    public int reduceCost { get; private set; } = 0;
+}
+
+public class AssemblyConditionElement
+{
+    public AssemblyConditionElement(Func<CardSource, bool> cardCondition, string selectMessage, bool skipAllIfNoSelect = false)
+    {
+        this.CardCondition = cardCondition;
+
+        this.selectMessage = selectMessage;
+        this.skipAllIfNoSelect = skipAllIfNoSelect;
+    }
+    public Func<CardSource, bool> CardCondition { get; private set; } = null;
+    public string selectMessage { get; private set; } = "";
+    public bool skipAllIfNoSelect { get; private set; } = false;
 }

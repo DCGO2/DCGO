@@ -11,7 +11,31 @@ namespace DCGO.CardEffects.BT21
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Alternative Digivolution Condition
+            #region Alternative Digivolution Condition - Tamer
+
+            if (timing == EffectTiming.None)
+            {
+                bool PermanentCondition(Permanent targetPermanent)
+                {
+                    if (targetPermanent.TopCard.IsTamer)
+                    {
+                        return targetPermanent.TopCard.CardColors.Contains(CardColor.Red);
+                    }
+                    return false;
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
+                    permanentCondition: PermanentCondition,
+                    digivolutionCost: 2,
+                    ignoreDigivolutionRequirement: false,
+                    card: card,
+                    condition: null)
+                );
+            }
+
+            #endregion
+
+            #region Alternative Digivolution Condition - BurningGreymon
 
             if (timing == EffectTiming.None)
             {
@@ -88,15 +112,18 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanSelectPermanent(Permanent permanent)
                 {
-                    if (permanent == card.PermanentOfThisCard())
+                    if(CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
                     {
-                        return true;
-                    }
+                        if (permanent == card.PermanentOfThisCard())
+                        {
+                            return true;
+                        }
 
-                    if (permanent.TopCard.CardColors.Contains(CardColor.Red) && permanent.IsTamer)
-                    {
-                        return true;
-                    }
+                        if (permanent.TopCard.CardColors.Contains(CardColor.Red) && permanent.IsTamer && permanent.TopCard.HasInheritedEffect)
+                        {
+                            return true;
+                        }
+                    }                    
 
                     return false;
                 }
@@ -104,6 +131,8 @@ namespace DCGO.CardEffects.BT21
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     Permanent selectedPermanent = null;
+                    CardSource selectedCard = null;
+
                     int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanent));
 
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
@@ -131,55 +160,88 @@ namespace DCGO.CardEffects.BT21
 
                     if (selectedPermanent != null)
                     {
-                        SelectCardEffect.Root? rootmode = null!;
                         bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectSourceCard);
                         bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectSourceCard);
 
-                        if (canSelectHand && !canSelectTrash) rootmode = SelectCardEffect.Root.Hand;
-
-                        if (!canSelectHand && canSelectTrash) rootmode = SelectCardEffect.Root.Trash;
-
-                        if (canSelectHand && canSelectTrash)
+                        if (canSelectHand || canSelectTrash)
                         {
-                            List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
+                            if (canSelectHand && canSelectTrash)
                             {
-                                new SelectionElement<bool>(message: $"From hand", value : true, spriteIndex: 0),
-                                new SelectionElement<bool>(message: $"From trash", value : false, spriteIndex: 1),
-                            };
+                                List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
+                                {
+                                    new SelectionElement<bool>(message: $"From hand", value : true, spriteIndex: 0),
+                                    new SelectionElement<bool>(message: $"From trash", value : false, spriteIndex: 1),
+                                };
 
-                            string selectPlayerMessage = "From which area do you select a card?";
-                            string notSelectPlayerMessage = "The opponent is choosing from which area to select a card.";
+                                string selectPlayerMessage = "From which area do you select a card?";
+                                string notSelectPlayerMessage = "The opponent is choosing from which area to select a card.";
 
-                            GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+                                GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+                            }
+                            else
+                            {
+                                GManager.instance.userSelectionManager.SetBool(canSelectHand);
+                            }
+
                             yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-                            rootmode = GManager.instance.userSelectionManager.SelectedBoolValue ? SelectCardEffect.Root.Hand : SelectCardEffect.Root.Trash;
-                        }
 
-                        if (rootmode != null)
-                        {
-                            CardSource selectedCard = null;
-                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+                            bool fromHand = GManager.instance.userSelectionManager.SelectedBoolValue;
 
-                            selectCardEffect.SetUp(
-                                canTargetCondition: CanSelectSourceCard,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                canNoSelect: () => true,
-                                selectCardCoroutine: SelectCardCoroutine,
-                                afterSelectCardCoroutine: null,
-                                message: "Select 1 card to add as source.",
-                                maxCount: 1,
-                                canEndNotMax: false,
-                                isShowOpponent: true,
-                                mode: SelectCardEffect.Mode.Custom,
-                                root: (SelectCardEffect.Root)rootmode!,
-                                customRootCardList: null,
-                                canLookReverseCard: true,
-                                selectPlayer: card.Owner,
-                                cardEffect: activateClass);
+                            if (fromHand)
+                            {
+                                SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
-                            selectCardEffect.SetUpCustomMessage("Select 1 card to add as source.", "The opponent is selecting 1 card to add as source.");
-                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                                selectHandEffect.SetUp(
+                                    selectPlayer: card.Owner,
+                                    canTargetCondition: CanSelectSourceCard,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    maxCount: 1,
+                                    canNoSelect: true,
+                                    canEndNotMax: false,
+                                    isShowOpponent: true,
+                                    selectCardCoroutine: SelectCardCoroutine,
+                                    afterSelectCardCoroutine: null,
+                                    mode: SelectHandEffect.Mode.Custom,
+                                    cardEffect: activateClass);
+
+                                selectHandEffect.SetUpCustomMessage(
+                                    "Select 1 card to add as source.",
+                                    "The opponent is selecting 1 card to add as source.");
+                                selectHandEffect.SetUpCustomMessage_ShowCard("Digivolution Card");
+
+                                yield return StartCoroutine(selectHandEffect.Activate());
+                            }
+                            else
+                            {
+                                SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                                selectCardEffect.SetUp(
+                                    canTargetCondition: CanSelectSourceCard,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    canNoSelect: () => true,
+                                    selectCardCoroutine: SelectCardCoroutine,
+                                    afterSelectCardCoroutine: null,
+                                    message: "Select 1 card to add as source.",
+                                    maxCount: 1,
+                                    canEndNotMax: false,
+                                    isShowOpponent: true,
+                                    mode: SelectCardEffect.Mode.Custom,
+                                    root: SelectCardEffect.Root.Trash,
+                                    customRootCardList: null,
+                                    canLookReverseCard: true,
+                                    selectPlayer: card.Owner,
+                                    cardEffect: activateClass);
+
+                                selectCardEffect.SetUpCustomMessage(
+                                    "Select 1 card to add as source.",
+                                    "The opponent is selecting 1 card to add as source.");
+                                selectCardEffect.SetUpCustomMessage_ShowCard("Digivolution Card");
+
+                                yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                            }
+
 
                             IEnumerator SelectCardCoroutine(CardSource cardSource)
                             {

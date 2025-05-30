@@ -10,6 +10,30 @@ namespace DCGO.CardEffects.BT21
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region Alternative Digivolution Condition - Tamer
+
+            if (timing == EffectTiming.None)
+            {
+                bool PermanentCondition(Permanent targetPermanent)
+                {
+                    if (targetPermanent.TopCard.IsTamer)
+                    {
+                        return targetPermanent.TopCard.CardColors.Contains(CardColor.Red);
+                    }
+                    return false;
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
+                    permanentCondition: PermanentCondition,
+                    digivolutionCost: 3,
+                    ignoreDigivolutionRequirement: false,
+                    card: card,
+                    condition: null)
+                );
+            }
+
+            #endregion
+
             #region Alternative Digivolution Condition
 
             if (timing == EffectTiming.None)
@@ -140,9 +164,12 @@ namespace DCGO.CardEffects.BT21
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (CardEffectCommons.CanTriggerWhenLoseSecurity(hashtable, PlayerCondition))
+                        if (CardEffectCommons.IsOwnerTurn(card))
                         {
-                            return true;
+                            if (CardEffectCommons.CanTriggerWhenLoseSecurity(hashtable, PlayerCondition))
+                            {
+                                return true;
+                            }
                         }
                     }
                     return false;

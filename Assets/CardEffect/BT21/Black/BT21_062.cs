@@ -260,7 +260,7 @@ namespace DCGO.CardEffects.BT21
             if (timing == EffectTiming.OnStartMainPhase)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Delete 1 oppont Digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Delete 1 opponent Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -331,23 +331,24 @@ namespace DCGO.CardEffects.BT21
             if (timing == EffectTiming.WhenRemoveField)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Return 4 [Vemmon] from evo cards to bottom of deck to prevent this Digimon from leaving Battle Area", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Prevent this Digimon from leaving play", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetHashString("Substitute_BT21_062");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[All Turns] When this Digimon would leave the battle area, by returning 4 [Vemmon] from its digivolution cards to the bottom of the deck, it doesn't leave.";
+                    return "[All Turns] When this Digimon would leave the battle area, by placing 4 [Vemmon] from this Digimon's digivolution cards at the bottom of their owners' decks, prevent it from leaving play.";
                 }
 
-                bool CanSelectVemmon(CardSource cardSource)
+                bool CanSelectCardCondition(CardSource cardSource)
                 {
                     return cardSource.EqualsCardName("Vemmon");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
                         if (CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card))
                         {
@@ -360,9 +361,9 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (card.PermanentOfThisCard().DigivolutionCards.Count(CanSelectVemmon) >= 4)
+                        if (card.PermanentOfThisCard().DigivolutionCards.Count(CanSelectCardCondition) >= 4)
                         {
                             return true;
                         }
@@ -371,52 +372,74 @@ namespace DCGO.CardEffects.BT21
                     return false;
                 }
 
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    bool canSelectDigivolutionCards = CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                         && card.PermanentOfThisCard().DigivolutionCards.Count(CanSelectVemmon) >= 4;
-
-                    if (canSelectDigivolutionCards)
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+                        Permanent selectedPermanent = card.PermanentOfThisCard();
 
-                        selectCardEffect.SetUp(
-                        canTargetCondition: CanSelectVemmon,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        canNoSelect: () => false,
-                        selectCardCoroutine: null,
-                        afterSelectCardCoroutine: AfterSelectCardCoroutine,
-                        message: "Select 4 [Vemmon] to place at the bottom of the deck.",
-                        maxCount: 4,
-                        canEndNotMax: false,
-                        isShowOpponent: false,
-                        mode: SelectCardEffect.Mode.Custom,
-                        root: SelectCardEffect.Root.Custom,
-                        customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
-                        canLookReverseCard: true,
-                        selectPlayer: card.Owner,
-                        cardEffect: activateClass);
-
-                        selectCardEffect.SetNotShowCard();
-                        selectCardEffect.SetNotAddLog();
-
-                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-
-                        IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
+                        if (selectedPermanent.DigivolutionCards.Count(CanSelectCardCondition) >= 4)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources));
+                            List<CardSource> selectedCards = new List<CardSource>();
 
-                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(cardSources, "Deck Bottom Cards", true, true));
+                            int maxCount = 4;
 
-                            Permanent thisCardPermanent = card.PermanentOfThisCard();
+                            bool returnedToLibrary = false;
 
-                            thisCardPermanent.willBeRemoveField = false;
+                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
-                            thisCardPermanent.HideDeleteEffect();
-                            thisCardPermanent.HideHandBounceEffect();
-                            thisCardPermanent.HideDeckBounceEffect();
-                            thisCardPermanent.HideWillRemoveFieldEffect();
+                            selectCardEffect.SetUp(
+                                        canTargetCondition: CanSelectCardCondition,
+                                        canTargetCondition_ByPreSelecetedList: null,
+                                        canEndSelectCondition: null,
+                                        canNoSelect: () => true,
+                                        selectCardCoroutine: SelectCardCoroutine,
+                                        afterSelectCardCoroutine: null,
+                                        message: "Select digivolution cards to return to the bottom of deck\n(cards will be placed back to the bottom of the deck so that cards with lower numbers are on top).",
+                                        maxCount: maxCount,
+                                        canEndNotMax: false,
+                                        isShowOpponent: true,
+                                        mode: SelectCardEffect.Mode.Custom,
+                                        root: SelectCardEffect.Root.Custom,
+                                        customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
+                                        canLookReverseCard: true,
+                                        selectPlayer: card.Owner,
+                                        cardEffect: null);
+
+                            selectCardEffect.SetUpCustomMessage("Select digivolution cards to return to the bottom of deck.", "The opponent is selecting digivolution cards to return to the bottom of deck.");
+                            selectCardEffect.SetNotShowCard();
+
+                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+
+                            IEnumerator SelectCardCoroutine(CardSource cardSource)
+                            {
+                                selectedCards.Add(cardSource);
+
+                                yield return null;
+                            }
+
+                            if (selectedCards.Count >= 1)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(new ReturnToLibraryBottomDigivolutionCardsClass(
+                                    card.PermanentOfThisCard(),
+                                    selectedCards,
+                                    CardEffectCommons.CardEffectHashtable(activateClass)).ReturnToLibraryBottomDigivolutionCards());
+
+                                if (selectedCards.Count == 4)
+                                {
+                                    returnedToLibrary = true;
+                                }
+                            }
+
+                            if (returnedToLibrary)
+                            {
+                                selectedPermanent.willBeRemoveField = false;
+
+                                selectedPermanent.HideDeleteEffect();
+                                selectedPermanent.HideHandBounceEffect();
+                                selectedPermanent.HideDeckBounceEffect();
+                                selectedPermanent.HideWillRemoveFieldEffect();
+                            }
                         }
                     }
                 }

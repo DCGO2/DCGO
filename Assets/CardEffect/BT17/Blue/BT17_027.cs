@@ -560,6 +560,7 @@ namespace DCGO.CardEffects.BT17
                 activateClass.SetUpICardEffect("Unsuspend", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetIsInheritedEffect(true);
+                activateClass.SetHashString("Unsuspend_BT17-027");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()

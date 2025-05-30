@@ -33,14 +33,11 @@ namespace DCGO.CardEffects.EX7
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (card.Owner.LibraryCards.Count >= 1)
+                        if (card.Owner.HandCards.Count <= 4)
                         {
-                            if (card.Owner.HandCards.Count <= 4)
+                            if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
                             {
-                                if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition)) 
-                                {
-                                    return true;
-                                }
+                                return true;
                             }
                         }
                     }

@@ -104,7 +104,7 @@ public partial class CardEffectFactory
 
         bool PermanentCondition(Permanent targetPermanent)
         {
-            if (CardEffectCommons.IsPermanentExistsOnBattleArea(targetPermanent))
+            if (CardEffectCommons.IsPermanentExistsOnField(targetPermanent))
             {
                 return permanentCondition == null || permanentCondition(targetPermanent);
             }

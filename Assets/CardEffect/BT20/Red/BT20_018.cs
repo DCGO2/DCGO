@@ -58,7 +58,6 @@ namespace DCGO.CardEffects.BT20
                 bool IsAttackingCondition()
                 {
                     return GManager.instance.attackProcess.IsAttacking &&
-                           GManager.instance.attackProcess.AttackingPermanent == card.PermanentOfThisCard() &&
                            card.Owner.GetBreedingAreaPermanents().Count > 0 &&
                            (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectDigivolveCardCondition) ||
                             CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectDigivolveCardCondition));
@@ -215,7 +214,6 @@ namespace DCGO.CardEffects.BT20
                 bool IsAttackingCondition()
                 {
                     return GManager.instance.attackProcess.IsAttacking &&
-                           GManager.instance.attackProcess.AttackingPermanent == card.PermanentOfThisCard() &&
                            card.Owner.GetBreedingAreaPermanents().Count > 0 &&
                            (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectDigivolveCardCondition) ||
                             CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectDigivolveCardCondition));

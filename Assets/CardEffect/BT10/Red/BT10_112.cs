@@ -248,6 +248,11 @@ namespace DCGO.CardEffects.BT10
 
                                         IEnumerator AfterSelectIndexCoroutine(List<int> selectedIndexes)
                                         {
+                                            Debug.Log($"Testing: {selectedIndexes.Count}");
+
+                                            foreach(int index in selectedIndexes)
+                                                Debug.Log(index);
+
                                             if (selectedIndexes.Count == 1)
                                             {
                                                 selectedEffect = candidateEffects[selectedIndexes[0]];

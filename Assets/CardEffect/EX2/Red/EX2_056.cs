@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace DCGO.CardEffects.EX2
@@ -154,11 +155,56 @@ namespace DCGO.CardEffects.EX2
                         {
                             foreach (Permanent permanent in card.Owner.GetBattleAreaPermanents().Filter(PermanentCondition))
                             {
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBlitz(
-                                    targetPermanent: permanent,
-                                    effectDuration: EffectDuration.UntilEachTurnEnd,
-                                    activateClass: activateClass,
-                                    isWhenDigivolving: true));
+                                AddSkillClass addSkillClass = new AddSkillClass();
+                                addSkillClass.SetUpICardEffect("Your Digimons get Blitz", CanUseCondition1, card);
+                                addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
+                                CardEffectCommons.AddEffectToPlayer(effectDuration: EffectDuration.UntilEachTurnEnd, card: card, cardEffect: addSkillClass, timing: EffectTiming.None);
+
+                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(permanent));
+
+                                bool CanUseCondition1(Hashtable hashtable)
+                                {
+                                    return true;
+                                }
+
+                                bool CardSourceCondition(CardSource cardSource)
+                                {
+                                    if (CardEffectCommons.IsExistOnBattleArea(cardSource))
+                                    {
+                                        if (cardSource == cardSource.PermanentOfThisCard().TopCard)
+                                        {
+                                            if (PermanentCondition(cardSource.PermanentOfThisCard()))
+                                            {
+                                                return true;
+                                            }
+                                        }
+                                    }
+
+                                    return false;
+                                }
+
+                                List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming _timing)
+                                {
+                                    if (_timing == EffectTiming.OnEnterFieldAnyone)
+                                    {
+                                        bool Condition()
+                                        {
+                                            if (CardSourceCondition(cardSource))
+                                            {
+                                                return true;
+                                            }
+
+                                            return false;
+                                        }
+
+                                        cardEffects.Add(CardEffectFactory.BlitzSelfEffect(isInheritedEffect: false,
+                                            card: cardSource,
+                                            condition: Condition,
+                                            isWhenDigivolving: true));
+                                    }
+
+                                    return cardEffects;
+                                }
                             }
                         }
                     }
