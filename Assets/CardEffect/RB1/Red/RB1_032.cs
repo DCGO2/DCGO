@@ -152,9 +152,9 @@ public class RB1_032 : CEntity_Effect
                                     {
                                         yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass));
 
-                                        yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
-
                                         yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
+
+                                        yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
                                     }
                                 }
                             }

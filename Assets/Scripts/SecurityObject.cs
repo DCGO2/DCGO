@@ -170,6 +170,7 @@ public class SecurityObject : MonoBehaviour
         if (player != changedPlayer)
             return;
 
+        UnityEngine.Debug.Log($"CHECKING FACE UP SECURITY: you - {changedPlayer.isYou}, icon - {changedPlayer.SecurityCards.Count(cardSource => !cardSource.IsFlipped)}");
         faceupIcon.SetActive((changedPlayer.SecurityCards.Count(cardSource => !cardSource.IsFlipped) > 0));
     }
 

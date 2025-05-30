@@ -120,7 +120,8 @@ namespace DCGO.CardEffects.BT21
 
                     IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(new IDegeneration(permanent, VemmonInSourceDividedBy2(), activateClass).Degeneration());
+                        for (int i = 0; i < VemmonInSourceDividedBy2(); i++)
+                            yield return ContinuousController.instance.StartCoroutine(new IDegeneration(permanent, 1, activateClass).Degeneration());
                     }
                 }
             }
@@ -250,6 +251,8 @@ namespace DCGO.CardEffects.BT21
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
+                    List<CardSource> selectedCards = new List<CardSource>();
+
                     SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                     selectCardEffect.SetUp(
@@ -277,9 +280,16 @@ namespace DCGO.CardEffects.BT21
 
                     IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources));
+                        selectedCards = cardSources;
 
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(cardSources, "Deck Bottom Cards", true, true));
+                        yield return null;
+                    }
+
+                    if(selectedCards.Count > 0)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(new ReturnToLibraryBottomDigivolutionCardsClass(card.PermanentOfThisCard(), selectedCards, CardEffectCommons.CardEffectHashtable(activateClass)).ReturnToLibraryBottomDigivolutionCards());
+
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(selectedCards, "Deck Bottom Cards", true, true));
 
                         GManager.instance.attackProcess.IsEndAttack = true;
                     }

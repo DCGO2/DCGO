@@ -176,7 +176,7 @@ namespace DCGO.CardEffects.EX7
                 {
                     CanNotMoveClass canNotMoveClass = new CanNotMoveClass();
                     canNotMoveClass.SetUpICardEffect("Can't move Digimon with 6000 DP or less", CanUseCondition1, card);
-                    canNotMoveClass.SetUpCanNotMoveClass(cardCondition: CardCondition, cardEffectCondition: CardEffectCondition);
+                    canNotMoveClass.SetUpCanNotMoveClass(cardCondition: CardCondition, cardEffectCondition: MoveCardEffectCondition);
                     card.Owner.Enemy.UntilOwnerTurnEndEffects.Add((_timing) => canNotMoveClass);
 
                     CanNotPutFieldClass canNotPutFieldClass = new CanNotPutFieldClass();
@@ -191,28 +191,36 @@ namespace DCGO.CardEffects.EX7
                          return true;
                      }
 
-                     bool CardCondition(CardSource cardSource)
-                     {
-                         if (cardSource.Owner == card.Owner.Enemy)
-                         {
-                             if (cardSource.IsDigimon)
-                             {
-                                 if (cardSource.CardDP <= 6000)
-                                 {
-                                     return true;
-                                 }
-                             }
-                         }
+                    bool CardCondition(CardSource cardSource)
+                    {
+                        if (cardSource.Owner == card.Owner.Enemy)
+                        {
+                            if (cardSource.IsDigimon)
+                            {
+                                if (cardSource.CardDP <= 6000)
+                                {
+                                    return true;
+                                }
+                            }
+                        } 
 
-                         return false;
+                        return false;
                      }
 
-                     bool CardEffectCondition(ICardEffect cardEffect)
-                     {
-                         return true;
-                     }
+                    bool MoveCardEffectCondition(ICardEffect cardEffect)
+                    {
+                        return true;
+                    }
 
-                     yield return null;
+                    bool CardEffectCondition(ICardEffect cardEffect)
+                    {
+                        if (cardEffect == null)
+                            return true;
+                        else
+                            return cardEffect.EffectSourceCard.Owner == card.Owner.Enemy;
+                    }
+
+                    yield return null;
                     
                 }
             }

@@ -35,7 +35,7 @@ namespace DCGO.CardEffects.BT17
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 Tamer from hand, for each Tamer give and DP -5000", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -159,7 +159,7 @@ namespace DCGO.CardEffects.BT17
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 Tamer from hand, for each Tamer give and DP -5000", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -312,15 +312,7 @@ namespace DCGO.CardEffects.BT17
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition) >= 2)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleArea(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -373,6 +365,8 @@ namespace DCGO.CardEffects.BT17
                             }
                         }
 
+                        List<Permanent> suspendedTargets = new List<Permanent>();
+
                         foreach (Permanent selectedPermanent in selectedPermanents)
                         {
                             if (selectedPermanent != null)
@@ -383,20 +377,23 @@ namespace DCGO.CardEffects.BT17
                                     {
                                         if (!selectedPermanent.IsSuspended && selectedPermanent.CanSuspend)
                                         {
-                                            Permanent suspendTargetPermanent = selectedPermanent;
-
-                                            yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(new List<Permanent>() { suspendTargetPermanent }, CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
+                                            suspendedTargets.Add(selectedPermanent);
                                         }
                                     }
                                 }
                             }
                         }
 
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonSAttack(
+                        if(suspendedTargets.Count > 0)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(suspendedTargets, CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
+
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonSAttack(
                             targetPermanent: card.PermanentOfThisCard(),
-                            changeValue: selectedPermanents.Count(),
+                            changeValue: suspendedTargets.Count,
                             effectDuration: EffectDuration.UntilEachTurnEnd,
                             activateClass: activateClass));
+                        }
                     }                    
                 }
             }

@@ -150,9 +150,9 @@ namespace DCGO.CardEffects.BT11
 
                             if (placed)
                             {
-                                yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
-
                                 yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
+
+                                yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
                             }
                         }
                     }
@@ -196,7 +196,7 @@ namespace DCGO.CardEffects.BT11
                         {
                             if (CardEffectCommons.CanTriggerWhenPermanentWouldPlay(hashtable, CardCondition))
                             {
-                                if (CardEffectCommons.IsOnly1CadPlayed(hashtable))
+                                if (CardEffectCommons.IsOnly1CardPlayed(hashtable))
                                 {
                                     return true;
                                 }

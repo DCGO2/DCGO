@@ -62,18 +62,18 @@ public partial class CardEffectFactory
 
         bool CanUseCondition(Hashtable hashtable)
         {
-            bool CardEffectCondition(ICardEffect cardEffect) => cardEffect.EffectSourceCard.Owner == card.Owner.Enemy;
+            bool CardEffectCondition(ICardEffect cardEffect) => CardEffectCommons.IsOwnerEffect(cardEffect,card);
 
             if (CardEffectCommons.IsPermanentExistsOnBattleArea(targetPermanent))
             {
                 if (CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, PermanentCondition))
                 {
-                    if (CardEffectCommons.IsByEffect(hashtable, CardEffectCondition) || CardEffectCommons.IsByBattle(hashtable))
+                    if (CardEffectCommons.IsByEffect(hashtable, CardEffectCondition))
+                        return false;
+
+                    if (condition == null || condition())
                     {
-                        if (condition == null || condition())
-                        {
-                            return true;
-                        }
+                        return true;
                     }
                 }
             }

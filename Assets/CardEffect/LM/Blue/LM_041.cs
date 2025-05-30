@@ -48,14 +48,7 @@ namespace DCGO.CardEffects.LM
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (CardEffectCommons.CanTriggerOnAttack(hashtable, card))
-                        {
-                            return true;
-                        }
-                    }
-                    return false;
+                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -74,15 +67,9 @@ namespace DCGO.CardEffects.LM
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent.IsSuspended)
+                        if (permanent.TopCard.EqualsTraits("DS"))
                         {
-                            if (CardEffectCommons.CanUnsuspend(permanent))
-                            {
-                                if (permanent.TopCard.EqualsTraits("DS"))
-                                {
-                                    return true;
-                                }
-                            }
+                            return true;
                         }
                     }
                     return false;
@@ -106,7 +93,7 @@ namespace DCGO.CardEffects.LM
                         mode: SelectPermanentEffect.Mode.UnTap,
                         cardEffect: activateClass);
 
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will be returned to bottom of the deck", "The opponent is selecting 1 Digimon that will be returned to bottom of the deck");
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will be returned to unsuspend", "The opponent is selecting 1 Digimon that will be returned to unsuspend");
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                 }
@@ -156,15 +143,9 @@ namespace DCGO.CardEffects.LM
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent.IsSuspended)
+                        if (permanent.TopCard.EqualsTraits("DS"))
                         {
-                            if (CardEffectCommons.CanUnsuspend(permanent))
-                            {
-                                if (permanent.TopCard.EqualsTraits("DS"))
-                                {
-                                    return true;
-                                }
-                            }
+                            return true;
                         }
                     }
                     return false;
@@ -188,7 +169,7 @@ namespace DCGO.CardEffects.LM
                         mode: SelectPermanentEffect.Mode.UnTap,
                         cardEffect: activateClass);
 
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will be returned to bottom of the deck", "The opponent is selecting 1 Digimon that will be returned to bottom of the deck");
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will be returned to unsuspend", "The opponent is selecting 1 Digimon that will be returned to unsuspend");
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                 }
@@ -236,12 +217,9 @@ namespace DCGO.CardEffects.LM
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card))
                     {
-                        if (permanent.IsDigimon && permanent.IsTamer)
+                        if (permanent.IsDigimon || permanent.IsTamer)
                         {
-                            if (!permanent.TopCard.CanNotBeAffected(activateClass))
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
                     return false;
@@ -257,10 +235,10 @@ namespace DCGO.CardEffects.LM
                             player: card.Owner.Enemy,
                             refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
                     }
+
                     if (card.Owner.MemoryForPlayer <= 1 && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermanentCondition))
                     {
                         Permanent selectedPermanent = null;
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
@@ -268,7 +246,7 @@ namespace DCGO.CardEffects.LM
                             canTargetCondition: CanSelectPermanentCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: maxCount,
+                            maxCount: 1,
                             canNoSelect: false,
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine,
@@ -285,12 +263,13 @@ namespace DCGO.CardEffects.LM
                             yield return null;
                         }
 
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotUnsuspendPlayerEffect(
-                        permanentCondition: permanent => permanent == selectedPermanent,
-                        effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                        activateClass: activateClass,
-                        isOnlyActivePhase: false,
-                        effectName: "Opponent Digimon or Tamer can't unsuspend"));
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotSuspendPlayerEffect(
+                                permanentCondition: (permanent) => permanent == selectedPermanent,
+                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                                activateClass: activateClass,
+                                isOnlyActivePhase: false,
+                                effectName: "Can't Suspend"
+                            ));
                     }
                 }
             }
@@ -337,12 +316,9 @@ namespace DCGO.CardEffects.LM
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card))
                     {
-                        if (permanent.IsDigimon && permanent.IsTamer)
+                        if (permanent.IsDigimon || permanent.IsTamer)
                         {
-                            if (!permanent.TopCard.CanNotBeAffected(activateClass))
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
                     return false;
@@ -358,10 +334,10 @@ namespace DCGO.CardEffects.LM
                             player: card.Owner.Enemy,
                             refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
                     }
+
                     if (card.Owner.MemoryForPlayer <= 1 && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermanentCondition))
                     {
                         Permanent selectedPermanent = null;
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
@@ -369,7 +345,7 @@ namespace DCGO.CardEffects.LM
                             canTargetCondition: CanSelectPermanentCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: maxCount,
+                            maxCount: 1,
                             canNoSelect: false,
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine,
@@ -386,12 +362,13 @@ namespace DCGO.CardEffects.LM
                             yield return null;
                         }
 
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotUnsuspendPlayerEffect(
-                        permanentCondition: permanent => permanent == selectedPermanent,
-                        effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                        activateClass: activateClass,
-                        isOnlyActivePhase: false,
-                        effectName: "Opponent Digimon or Tamer can't unsuspend"));
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotSuspendPlayerEffect(
+                                permanentCondition: (permanent) => permanent == selectedPermanent,
+                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                                activateClass: activateClass,
+                                isOnlyActivePhase: false,
+                                effectName: "Can't Suspend"
+                            ));
                     }
                 }
             }

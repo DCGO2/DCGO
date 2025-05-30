@@ -11,6 +11,7 @@ namespace DCGO.CardEffects.BT20
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Treated As
+
             if (timing == EffectTiming.None)
             {
                 ChangeCardNamesClass changeCardNamesClass = new ChangeCardNamesClass();
@@ -33,9 +34,11 @@ namespace DCGO.CardEffects.BT20
                     return CardNames;
                 }
             }
+
             #endregion
 
             #region Blocker
+
             if (timing == EffectTiming.None)
             {
                 cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(
@@ -43,9 +46,11 @@ namespace DCGO.CardEffects.BT20
                     card: card,
                     condition: null));
             }
+
             #endregion
 
             #region On Play
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -95,13 +100,15 @@ namespace DCGO.CardEffects.BT20
                         ignoreDigivolutionRequirementFixedCost: 0,
                         isHand: true,
                         activateClass: activateClass,
-                        ignoreRequirements:CardEffectCommons.IgnoreRequirement.All,
+                        ignoreRequirements: CardEffectCommons.IgnoreRequirement.All,
                         successProcess: null));
                 }
             }
+
             #endregion
 
             #region On Deletion
+
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -118,7 +125,6 @@ namespace DCGO.CardEffects.BT20
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBreedingArea(permanent, card) &&
                            permanent.TopCard.EqualsCardName("King Drasil_7D6");
-                                                             
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -141,9 +147,11 @@ namespace DCGO.CardEffects.BT20
                     yield return ContinuousController.instance.StartCoroutine(breedingPermanent.AddDigivolutionCardsBottom(new List<CardSource>() { card }, activateClass));
                 }
             }
+
             #endregion
 
             #region Opponents Turn - ESS
+
             if (timing == EffectTiming.OnLoseSecurity)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -187,9 +195,12 @@ namespace DCGO.CardEffects.BT20
                 {
                     if (CardEffectCommons.IsExistOnBreedingArea(card))
                     {
-                        if (CardEffectCommons.CanActivateSuspendCostEffect(card, true))
+                        if (CardEffectCommons.IsOpponentTurn(card))
                         {
-                            return true;
+                            if (CardEffectCommons.CanActivateSuspendCostEffect(card, true))
+                            {
+                                return true;
+                            }
                         }
                     }
 
@@ -242,6 +253,7 @@ namespace DCGO.CardEffects.BT20
                         activateETB: true));
                 }
             }
+
             #endregion
 
             return cardEffects;

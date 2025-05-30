@@ -43,10 +43,10 @@ namespace DCGO.CardEffects.BT21
                     {
                         if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectDigimon))
                         {
-                            return false;
+                            return true;
                         }
                     }
-                    return true;
+                    return false;
                 }
 
                 bool CanSelectDigimon(CardSource card)
@@ -94,7 +94,7 @@ namespace DCGO.CardEffects.BT21
 
                         if (selectedCard != null)
                         {
-                            card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass);
+                            yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass));
 
                             yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
 
@@ -113,6 +113,8 @@ namespace DCGO.CardEffects.BT21
 
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
+                List<Permanent> playedPermanents = new List<Permanent>();
+
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Suspend this tamer, Attack with a [Xros Heart]/[Hero] Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
@@ -127,12 +129,9 @@ namespace DCGO.CardEffects.BT21
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (CardEffectCommons.CanActivateSuspendCostEffect(card))
+                        if (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PermanentCondition) || CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, PermanentCondition))
                         {
-                            if (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PermanentCondition) || CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, PermanentCondition))
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
                     return false;
@@ -144,24 +143,7 @@ namespace DCGO.CardEffects.BT21
                     {
                         if (CardEffectCommons.IsOwnerTurn(card))
                         {
-                            return true;
-                        }
-                    }
-                    return false;
-                }
-
-                bool PermanentCondition(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
-                }
-
-                bool AttackingPermanentCondition(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
-                    {
-                        if (permanent.TopCard.EqualsTraits("Xros Heart") || permanent.TopCard.EqualsTraits("Hero"))
-                        {
-                            if (permanent.CanAttack(activateClass))
+                            if (CardEffectCommons.CanActivateSuspendCostEffect(card))
                             {
                                 return true;
                             }
@@ -170,9 +152,39 @@ namespace DCGO.CardEffects.BT21
                     return false;
                 }
 
+                bool PermanentCondition(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                           (permanent.TopCard.EqualsTraits("Xros Heart") || permanent.TopCard.EqualsTraits("Hero"));
+                }
+
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(new List<Permanent>() { card.PermanentOfThisCard() }, CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
+
+                    foreach (Hashtable hash in CardEffectCommons.GetHashtablesFromHashtable(hashtable))
+                    {
+                        playedPermanents.Add(CardEffectCommons.GetPermanentFromHashtable(hash));
+                    }
+
+                    bool AttackingPermanentCondition(Permanent permanent)
+                    {
+                        if (playedPermanents.Contains(permanent))
+                        {
+                            if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                            {
+                                if (permanent.TopCard.EqualsTraits("Xros Heart") || permanent.TopCard.EqualsTraits("Hero"))
+                                {
+                                    if (permanent.CanAttack(activateClass))
+                                    {
+                                        return true;
+                                    }
+                                }
+                            }
+                        }
+
+                        return false;
+                    }
 
                     if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, AttackingPermanentCondition))
                     {
@@ -186,7 +198,7 @@ namespace DCGO.CardEffects.BT21
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,
-                            canNoSelect: false,
+                            canNoSelect: true,
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine,
                             afterSelectPermanentCoroutine: null,
@@ -212,10 +224,8 @@ namespace DCGO.CardEffects.BT21
                                 selectAttackEffect.SetUp(
                                     attacker: selectedPermanent,
                                     canAttackPlayerCondition: () => true,
-                                    defenderCondition: (permanent) => true,
+                                    defenderCondition: _ => true,
                                     cardEffect: activateClass);
-
-                                selectAttackEffect.SetCanNotSelectNotAttack();
 
                                 yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
                             }
