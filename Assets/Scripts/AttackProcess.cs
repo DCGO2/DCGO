@@ -275,7 +275,7 @@ public class AttackProcess : MonoBehaviourPunCallbacks
                 goto EndAttack;
             }
 
-            if (AttackingPermanent.TopCard == null || !AttackingPermanent.TopCard.IsDigimon)
+            if (AttackingPermanent.TopCard == null || !AttackingPermanent.IsDigimon)
             {
                 goto EndAttack;
             }
