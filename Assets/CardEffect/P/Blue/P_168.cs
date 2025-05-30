@@ -76,13 +76,16 @@ namespace DCGO.CardEffects.P
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (CardEffectCommons.CanTriggerOnAddDigivolutionCard(
+                        if (CardEffectCommons.IsOwnerTurn(card))
+                        {
+                            if (CardEffectCommons.CanTriggerOnAddDigivolutionCard(
                                 hashtable: hashtable,
                                 permanentCondition: IsValidPermanentToDigivolveCondition,
                                 cardEffectCondition: cardEffect => cardEffect.EffectSourceCard != null,
                                 cardCondition: null))
-                        {
-                            return true;
+                            {
+                                return true;
+                            }
                         }
                     }
 

@@ -84,7 +84,7 @@ namespace DCGO.CardEffects.EX3
 
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(targetPermanent, card) && targetPermanent.HasNoDigivolutionCards;
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(targetPermanent, card) && targetPermanent.HasNoDigivolutionCards;
                 }
 
                 bool CardSourceCondition(CardSource cardSource)

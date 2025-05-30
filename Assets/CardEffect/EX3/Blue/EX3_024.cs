@@ -269,7 +269,7 @@ namespace DCGO.CardEffects.EX3
                                 return true;
                             }
 
-                            if (permanent.TopCard.CardNames.Contains("Examon"))
+                            if (permanent.TopCard.ContainsCardName("Examon"))
                             {
                                 return true;
                             }

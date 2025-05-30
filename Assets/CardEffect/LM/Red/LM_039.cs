@@ -144,16 +144,19 @@ namespace DCGO.CardEffects.LM
 
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
-                            Permanent selectedPermanent = permanent;
+                            selectedPermanent = permanent;
                             yield return null;
                         }
 
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.BouncePeremanentAndProcessAccordingToResult(new List<Permanent> { selectedPermanent }, activateClass, SuccessProcess(), null));
-                        IEnumerator SuccessProcess()
+                        if(selectedPermanent != null)
                         {
-                            bottomdecked = true;
-                            yield return null;
-                        }
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeckBouncePeremanentAndProcessAccordingToResult(new List<Permanent> { selectedPermanent }, activateClass, SuccessProcess(), null));
+                            IEnumerator SuccessProcess()
+                            {
+                                bottomdecked = true;
+                                yield return null;
+                            }
+                        }                        
                     }
 
                     if (!bottomdecked)
@@ -238,15 +241,19 @@ namespace DCGO.CardEffects.LM
 
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
-                            Permanent selectedPermanent = permanent;
+                            selectedPermanent = permanent;
                             yield return null;
                         }
 
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.BouncePeremanentAndProcessAccordingToResult(new List<Permanent> { selectedPermanent }, activateClass, SuccessProcess(), null));
-                        IEnumerator SuccessProcess()
+                        if (selectedPermanent != null)
                         {
-                            bottomdecked = true;
-                            yield return null;
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeckBouncePeremanentAndProcessAccordingToResult(new List<Permanent> { selectedPermanent }, activateClass, SuccessProcess(), null));
+                            
+                            IEnumerator SuccessProcess()
+                            {
+                                bottomdecked = true;
+                                yield return null;
+                            }
                         }
                     }
 

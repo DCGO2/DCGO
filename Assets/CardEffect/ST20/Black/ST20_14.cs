@@ -75,8 +75,8 @@ namespace DCGO.CardEffects.ST20
 
                 bool PermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                           && permanent.TopCard.Level >= 5
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                           permanent.TopCard.HasLevel && permanent.TopCard.Level >= 5
                            && permanent.willBeRemoveField;
                 }
 
@@ -113,6 +113,7 @@ namespace DCGO.CardEffects.ST20
                             {
                                 return cardSource.IsDigimon &&
                                         cardSource.HasAdventureTraits &&
+                                        cardSource.HasLevel &&
                                         cardSource.Level <= 5;
                             }
 

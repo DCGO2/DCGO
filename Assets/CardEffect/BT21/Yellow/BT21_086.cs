@@ -81,7 +81,8 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanSelectMarcus(Permanent permanent)
                 {
-                    return permanent.TopCard.EqualsCardName("Marcus Damon");
+                    return CardEffectCommons.IsOwnerPermanent(permanent, card) && 
+                           permanent.TopCard.EqualsCardName("Marcus Damon");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

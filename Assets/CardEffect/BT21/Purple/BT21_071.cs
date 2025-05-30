@@ -44,7 +44,7 @@ namespace DCGO.CardEffects.BT21
 
             bool CanActivateConditionShared(Hashtable hashtable)
             {
-                return isExistOnField(card) &&
+                return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
                     (card.Owner.HandCards.Count >= 1 || card.Owner.TrashCards.Count >= 1) &&
                     CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanTuckUnderCondition);
             }
