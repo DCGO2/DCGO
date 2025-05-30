@@ -2945,6 +2945,18 @@ public class CardSource : MonoBehaviour
     }
 
     #endregion
+
+    #region whether this card has "DM" trait
+
+    public bool HasDMTraits
+    {
+        get
+        {
+            return ContainsTraits("DM");
+        }
+    }
+
+    #endregion
 }
 
 public class JogressCondition
