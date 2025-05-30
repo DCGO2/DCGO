@@ -291,7 +291,7 @@ namespace DCGO.CardEffects.EX8
                                 
                                 if (DNADigivolved)
                                 {
-                                    List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
+                                    /*List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
                                     {
                                         new SelectionElement<bool>(message: $"Yes", value: true, spriteIndex: 0),
                                         new SelectionElement<bool>(message: $"No", value: false, spriteIndex: 1),
@@ -308,10 +308,10 @@ namespace DCGO.CardEffects.EX8
                                     yield return ContinuousController.instance.StartCoroutine(GManager.instance
                                         .userSelectionManager.WaitForEndSelect());
 
-                                    bool willAttack = GManager.instance.userSelectionManager.SelectedBoolValue;
+                                    bool willAttack = GManager.instance.userSelectionManager.SelectedBoolValue;*/
 
-                                    if (willAttack)
-                                    {
+                                    //if (willAttack)
+                                    //{
                                         if (selectedCard.PermanentOfThisCard() != null)
                                         {
                                             if (selectedCard.PermanentOfThisCard().CanAttack(activateClass))
@@ -325,13 +325,13 @@ namespace DCGO.CardEffects.EX8
                                                     defenderCondition: (permanent) => true,
                                                     cardEffect: activateClass);
 
-                                                selectAttackEffect.SetCanNotSelectNotAttack();
+                                                //selectAttackEffect.SetCanNotSelectNotAttack();
 
                                                 yield return ContinuousController.instance.StartCoroutine(selectAttackEffect
                                                     .Activate());
                                             }
                                         }
-                                    }
+                                    //}
                                 }
                             }
                         }
