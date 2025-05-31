@@ -37,8 +37,6 @@ public class SelectDNACondition : MonoBehaviourPunCallbacks
 
     public IEnumerator Activate()
     {
-        ResetSelectDNAConditionClass();
-
         if (!_notDoSync)
         {
             //yield return GManager.instance.photonWaitController.StartWait("SelectDNACondition");
