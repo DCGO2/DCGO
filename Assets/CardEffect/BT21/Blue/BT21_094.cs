@@ -90,7 +90,8 @@ namespace DCGO.CardEffects.BT21
 
                 bool TrashedCardCondition(CardSource cardSource)
                 {
-                    return cardSource.EqualsTraits("Armor Form");
+                    return cardSource.Owner == card.Owner &&
+                           cardSource.EqualsTraits("Armor Form");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

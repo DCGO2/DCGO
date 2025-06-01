@@ -39,7 +39,6 @@ public class SelectAppFusionEffect : MonoBehaviour
     }
 
     CardSource _card = null;
-    
     public CardSource EvoRoot = null;
     bool _isLocal = false;
 
@@ -183,6 +182,11 @@ public class SelectAppFusionEffect : MonoBehaviour
                 selectPlayer: _card.Owner,
                 cardEffect: null);
 
+                if (this._isLocal)
+                {
+                    selectCardEffect.SetIsLocal();
+                }
+
                 yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 
                 IEnumerator SelectCardCoroutine(CardSource source)
@@ -213,17 +217,25 @@ public class SelectAppFusionEffect : MonoBehaviour
         }
     }
 
-    public IEnumerator AddToSources()
+    public IEnumerator AddToSources(CardSource link)
     {
         LinkAdded = false;
 
-        if (selectedLink != null)
+        if (link != null)
         {
-            yield return ContinuousController.instance.StartCoroutine(EvoRoot.PermanentOfThisCard().RemoveLinkedCard(selectedLink));
-            yield return ContinuousController.instance.StartCoroutine(EvoRoot.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource> { selectedLink }, null, true));
-            yield return ContinuousController.instance.StartCoroutine(EvoRoot.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource> { EvoRoot }, null, true));
-            
-            LinkAdded = true;
+            if(link.PermanentOfThisCard() != null)
+            {
+                Permanent linkPermanent = link.PermanentOfThisCard();
+
+                if (link.Owner.GetBattleAreaDigimons().Contains(linkPermanent))
+                {
+                    UnityEngine.Debug.Log($"ADD SOURCES: {linkPermanent}, {link}");
+                    yield return ContinuousController.instance.StartCoroutine(linkPermanent.RemoveLinkedCard(link));
+                    yield return ContinuousController.instance.StartCoroutine(linkPermanent.AddDigivolutionCardsTop(new List<CardSource> { link, linkPermanent.TopCard }, null));
+
+                    LinkAdded = true;
+                }
+            }
         }
     }
 }

@@ -142,7 +142,7 @@ namespace DCGO.CardEffects.EX2
                 }
             }
 
-            if (timing == EffectTiming.None)
+            /*if (timing == EffectTiming.None)
             {
                 bool Condition()
                 {
@@ -177,7 +177,51 @@ namespace DCGO.CardEffects.EX2
                     card: card,
                     condition: Condition,
                     effectName: () => "Your Digimons with [D-Reaper] in their traits gain DP +1000"));
+            }*/
+
+            #region All Turns - ESS
+
+            if (timing != EffectTiming.None)
+            {
+                if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                {
+                    Permanent thisPermanent = card.PermanentOfThisCard();
+
+
+                    if (Condition())
+                    {
+                        foreach(Permanent permanent in card.Owner.GetBattleAreaPermanents().Filter(PermanentCondition))
+                            permanent.AddBoost(new Permanent.DPBoost($"EX2_046_{card.GetInstanceID()}", 1000, Condition));
+                    }
+                    else
+                    {
+                        foreach (Permanent permanent in card.Owner.GetBattleAreaPermanents().Filter(PermanentCondition))
+                            permanent.RemoveBoost($"EX2_046_{card.GetInstanceID()}");
+                    }
+                }
+
+                bool PermanentCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                    {
+                        if (permanent.TopCard.CardTraits.Contains("D-Reaper"))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                bool Condition()
+                {
+                    return CardEffectCommons.IsExistOnBattleArea(card) &&
+                           CardEffectCommons.IsOwnerTurn(card) &&
+                           card.PermanentOfThisCard().DigivolutionCards.Contains(card);
+                }
             }
+
+            #endregion
 
             return cardEffects;
         }

@@ -146,7 +146,7 @@ namespace DCGO.CardEffects.EX3
                                         {
                                             if (!permanent.IsSuspended)
                                             {
-                                                if (permanent.TopCard.Owner.GetBattleAreaPermanents().Contains(permanent))
+                                                if (permanent.TopCard.Owner.GetBattleAreaDigimons().Contains(permanent))
                                                 {
                                                     return true;
                                                 }

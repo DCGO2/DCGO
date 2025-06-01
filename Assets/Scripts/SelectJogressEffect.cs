@@ -147,23 +147,26 @@ public class SelectJogressEffect : MonoBehaviour
             {
                 if (_card.jogressCondition != null)
                 {
-                    if (_card.jogressCondition.elements != null)
+                    foreach (JogressCondition dnaCondition in _card.jogressCondition)
                     {
-                        if (_card.jogressCondition.elements.Length == 2)
+                        if(dnaCondition != null)
                         {
-                            if (GManager.instance != null)
+                            if(dnaCondition.elements.Length == 2)
                             {
-                                if (GManager.instance.turnStateMachine != null)
+                                if (GManager.instance != null)
                                 {
-                                    if (GManager.instance.turnStateMachine.gameContext != null)
+                                    if (GManager.instance.turnStateMachine != null)
                                     {
-                                        if (GManager.instance.turnStateMachine.gameContext.ActiveCardList.Count >= 1)
+                                        if (GManager.instance.turnStateMachine.gameContext != null)
                                         {
-                                            selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                                            if (selectPermanentEffect != null)
+                                            if (GManager.instance.turnStateMachine.gameContext.ActiveCardList.Count >= 1)
                                             {
-                                                active = true;
+                                                selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                                                if (selectPermanentEffect != null)
+                                                {
+                                                    active = true;
+                                                }
                                             }
                                         }
                                     }
@@ -178,10 +181,29 @@ public class SelectJogressEffect : MonoBehaviour
         if (active)
         {
             List<Permanent> selectedEvoRoots = new List<Permanent>();
+            JogressCondition selectedDNA = _card.jogressCondition[0];
 
-            for (int i = 0; i < _card.jogressCondition.elements.Length; i++)
+            if (_card.jogressCondition.Count > 1)
             {
-                JogressConditionElement element = _card.jogressCondition.elements[i];
+                #region select DNA condition
+                SelectDNACondition selectDNACondition = GManager.instance.GetComponent<SelectDNACondition>();
+                selectDNACondition.SetUp(_card.Owner, _card, SelectDNA);
+
+                yield return ContinuousController.instance.StartCoroutine(selectDNACondition.Activate());
+
+                IEnumerator SelectDNA(int dnaSelection)
+                {
+                    selectedDNA = _card.jogressCondition[dnaSelection];
+
+                    yield return null;
+                }
+                #endregion
+            }
+
+            
+            for (int i = 0; i < selectedDNA.elements.Length; i++)
+            {
+                JogressConditionElement element = selectedDNA.elements[i];
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
@@ -212,7 +234,7 @@ public class SelectJogressEffect : MonoBehaviour
 
                                                             else
                                                             {
-                                                                JogressConditionElement element1 = _card.jogressCondition.elements[1];
+                                                                JogressConditionElement element1 = selectedDNA.elements[1];
 
                                                                 if (_card.Owner.GetBattleAreaDigimons().Count((permanent1) => permanent1 != permanent && element1.EvoRootCondition(permanent1) && _customPermanentConditions[0](permanent1)) == 0)
                                                                 {
@@ -264,7 +286,7 @@ public class SelectJogressEffect : MonoBehaviour
                                                     {
                                                         if (_customPermanentConditions[0](permanent) || _customPermanentConditions[1](permanent))
                                                         {
-                                                            JogressConditionElement element1 = _card.jogressCondition.elements[1];
+                                                            JogressConditionElement element1 = selectedDNA.elements[1];
 
                                                             if (_customPermanentConditions[0](permanent))
                                                             {
@@ -303,7 +325,7 @@ public class SelectJogressEffect : MonoBehaviour
                                         List<Permanent> nextCandidates = _card.Owner.GetBattleAreaDigimons()
                                             .Filter(permanent1 => permanent1 != permanent);
 
-                                        if (nextCandidates.Count(_card.jogressCondition.elements[1].EvoRootCondition) == 0)
+                                        if (nextCandidates.Count(selectedDNA.elements[1].EvoRootCondition) == 0)
                                         {
                                             return false;
                                         }
@@ -371,7 +393,7 @@ public class SelectJogressEffect : MonoBehaviour
             }
 
             //do not jogress
-            if (selectedEvoRoots.Count != _card.jogressCondition.elements.Length)
+            if (selectedEvoRoots.Count != selectedDNA.elements.Length)
             {
                 if (_noSelectCoroutine != null)
                 {

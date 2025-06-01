@@ -49,10 +49,7 @@ namespace DCGO.CardEffects.P
                 {
                     if (cardSource == card)
                     {
-                        if (CardEffectCommons.IsExistOnHand(cardSource))
-                        {
-                            return true;
-                        }
+                        return true;
                     }
 
                     return false;
@@ -78,12 +75,9 @@ namespace DCGO.CardEffects.P
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnHand(card))
+                    if (CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, CanSelectThreeMusketeersCondition) >= 3)
                     {
-                        if (CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, CanSelectThreeMusketeersCondition) >= 3)
-                        {
-                            return true;
-                        }
+                        return true;
                     }
 
                     return false;
@@ -220,16 +214,13 @@ namespace DCGO.CardEffects.P
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (card.Owner.HandCards.Contains(card))
-                    {
-                        ICardEffect activateClass = card.EffectList(EffectTiming.BeforePayCost).Find(cardEffect => cardEffect.EffectName == "Return 3 [Three Musketeers] to get Play Cost -6");
+                    ICardEffect activateClass = card.EffectList(EffectTiming.BeforePayCost).Find(cardEffect => cardEffect.EffectName == "Return 3 [Three Musketeers] to get Play Cost -6");
 
-                        if (activateClass != null)
+                    if (activateClass != null)
+                    {
+                        if (CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, CanSelectThreeMusketeersCondition) >= 3)
                         {
-                            if (CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, CanSelectThreeMusketeersCondition) >= 3)
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
 

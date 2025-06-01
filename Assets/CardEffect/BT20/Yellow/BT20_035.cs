@@ -230,6 +230,7 @@ namespace DCGO.CardEffects.BT20
 
                             if (!selectedEffect.IsDisabled)
                             {
+                                selectedEffect.SetIsDigimonEffect(true);
                                 yield return ContinuousController.instance.StartCoroutine(
                                 ((ActivateICardEffect)selectedEffect).Activate_Optional_Effect_Execute(effectHashtable));
                             }

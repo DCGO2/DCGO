@@ -58,6 +58,9 @@ public class UserSelectionManager : MonoBehaviourPunCallbacks
 
     public void SetIntSelection(List<SelectionElement<int>> selectionElements, Player selectPlayer, string selectPlayerMessage, string notSelectPlayerMessage)
     {
+        _endSelect = false;
+        _selectedIntValue = 0;
+
         if (selectPlayer.isYou)
         {
             GManager.instance.commandText.OpenCommandText(selectPlayerMessage);

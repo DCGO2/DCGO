@@ -604,7 +604,7 @@ public class Effects : MonoBehaviour
 
     [Header("画面振動")]
     public CinemachineImpulseSource impulseSource;
-    public IEnumerator DigivolveFieldPermanentCardEffect(FieldPermanentCard targetFieldPermanentCard, bool isBurst, bool isBlast)
+    public IEnumerator DigivolveFieldPermanentCardEffect(FieldPermanentCard targetFieldPermanentCard, bool isBurst, bool isBlast, bool isAppFusion)
     {
         if (targetFieldPermanentCard != null)
         {
@@ -614,7 +614,10 @@ public class Effects : MonoBehaviour
             {
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.burstEffectObject.EvolutionEffectAnimation(targetFieldPermanentCard.ThisPermanent.TopCard));
             }
-
+            else if (isAppFusion)
+            {
+                yield return ContinuousController.instance.StartCoroutine(GManager.instance.burstEffectObject.EvolutionEffectAnimation(targetFieldPermanentCard.ThisPermanent.TopCard));
+            }
             else if (isBlast)
             {
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.EvolutionEffectObject.EvolutionEffectAnimation(targetFieldPermanentCard.ThisPermanent.TopCard, message: "Blast Digivolution"));
@@ -1543,6 +1546,45 @@ public class Effects : MonoBehaviour
             StartCoroutine(DeleteCoroutine(effect, permanent.ShowingPermanentCard));
 
             ContinuousController.instance.PlaySE(DigiXrosSelectCardEffectSE);
+        }
+
+        yield return new WaitForSeconds(0.3f);
+    }
+    #endregion
+
+    #region Assembly Effect
+    [Header("Assembly Select Effect")]
+    [SerializeField] GameObject AssemblySelectCardEffect;
+
+    [Header("Assembly Select Audio")]
+    public AudioClip AssemblySelectCardEffectSE;
+
+    public IEnumerator CreateAssemblySelectCardEffect(Permanent permanent, Player player = null)
+    {
+        if (AssemblySelectCardEffect != null)
+        {
+            Vector3 position = new Vector3();
+
+            if (permanent != null)
+            {
+                if (permanent.ShowingPermanentCard != null)
+                {
+                    position = new Vector3(permanent.ShowingPermanentCard.transform.position.x, permanent.ShowingPermanentCard.transform.position.y, permanent.ShowingPermanentCard.transform.position.z);
+                }
+            }
+
+            else if (player != null)
+            {
+                position = new Vector3(player.TrashCardImage.transform.position.x, player.TrashCardImage.transform.position.y, player.TrashCardImage.transform.position.z);
+            }
+
+            GameObject effect = Instantiate(AssemblySelectCardEffect, effectParent);
+
+            effect.transform.position = position;
+
+            StartCoroutine(DeleteCoroutine(effect, permanent.ShowingPermanentCard));
+
+            ContinuousController.instance.PlaySE(AssemblySelectCardEffectSE);
         }
 
         yield return new WaitForSeconds(0.3f);

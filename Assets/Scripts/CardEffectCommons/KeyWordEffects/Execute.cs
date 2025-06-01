@@ -65,14 +65,19 @@ public partial class CardEffectCommons
                 defenderCondition: _ => true,
                 cardEffect: activateClass);
 
+            selectAttackEffect.SetAfterOnAttackCoroutine(AfterAttackCoroutine);
+
             yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
 
             #endregion
 
             #region Delete this Digimon
 
-            yield return ContinuousController.instance.StartCoroutine(
-                new DestroyPermanentsClass(new List<Permanent>() { selectedPermanent }, CardEffectHashtable(activateClass)).Destroy());
+            IEnumerator AfterAttackCoroutine()
+            {
+                yield return ContinuousController.instance.StartCoroutine(
+                    new DestroyPermanentsClass(new List<Permanent>() { selectedPermanent }, CardEffectHashtable(activateClass)).Destroy());
+            }
 
             #endregion
         }
