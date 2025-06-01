@@ -213,7 +213,9 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
             {
                 player.PlayerNameText.transform.parent.gameObject.SetActive(true);
                 player.PlayerNameText.gameObject.SetActive(true);
-                player.PlayerNameText.text = player.PlayerName;
+
+                if(player.isYou || GManager.instance.IsAI)
+                    player.PlayerNameText.text = player.PlayerName;
             }
         }
         #endregion
@@ -2963,7 +2965,8 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
                 if (canJogress)
                 {
-                    payingCosts.Add(cardSource.GetPayingCostWithBaseCost(cardSource.jogressCondition.cost, SelectCardEffect.Root.Hand, new List<Permanent>() { targetPermanent }, checkAvailability: false));
+                    foreach(JogressCondition dnaCondition in cardSource.jogressCondition)
+                        payingCosts.Add(cardSource.GetPayingCostWithBaseCost(dnaCondition.cost, SelectCardEffect.Root.Hand, new List<Permanent>() { targetPermanent }, checkAvailability: false));
                 }
 
                 if (canBurst)
