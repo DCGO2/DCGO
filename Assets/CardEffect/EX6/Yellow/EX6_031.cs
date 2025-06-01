@@ -355,13 +355,12 @@ namespace DCGO.CardEffects.EX6
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
                         Permanent cardPermanent = card.PermanentOfThisCard();
-                        
+                        List<CardSource> selectedCards = new List<CardSource>();
+
                         if (cardPermanent.DigivolutionCards.Count(CanSelectDigimonSanzomonCardCondition) >= 1)
                         {
                             int maxCount = Math.Min(1,
                                 cardPermanent.DigivolutionCards.Count(CanSelectDigimonSanzomonCardCondition));
-                            
-                            List<CardSource> selectedCards = new List<CardSource>();
                             
                             SelectCardEffect selectCardEffect =
                                 GManager.instance.GetComponent<SelectCardEffect>();
@@ -397,24 +396,12 @@ namespace DCGO.CardEffects.EX6
                                 
                                 yield return null;
                             }
-                            
-                            // Play the selected Digivolution card
-                            yield return ContinuousController.instance.StartCoroutine(
-                                CardEffectCommons.PlayPermanentCards(
-                                    cardSources: selectedCards,
-                                    activateClass: activateClass,
-                                    payCost: false,
-                                    isTapped: false,
-                                    root: SelectCardEffect.Root.DigivolutionCards,
-                                    activateETB: true));
                         }
                         
                         if (cardPermanent.DigivolutionCards.Count(CanSelectDigimonJourneyCardCondition) >= 1)
                         {
                             int maxCount = Math.Min(1,
                                 cardPermanent.DigivolutionCards.Count(CanSelectDigimonJourneyCardCondition));
-                            
-                            List<CardSource> selectedCards = new List<CardSource>();
                             
                             SelectCardEffect selectCardEffect =
                                 GManager.instance.GetComponent<SelectCardEffect>();
@@ -450,17 +437,17 @@ namespace DCGO.CardEffects.EX6
                                 
                                 yield return null;
                             }
-                            
-                            // Play the selected Digivolution card
-                            yield return ContinuousController.instance.StartCoroutine(
-                                CardEffectCommons.PlayPermanentCards(
-                                    cardSources: selectedCards,
-                                    activateClass: activateClass,
-                                    payCost: false,
-                                    isTapped: false,
-                                    root: SelectCardEffect.Root.DigivolutionCards,
-                                    activateETB: true));
                         }
+
+                        // Play the selected Digivolution card
+                        yield return ContinuousController.instance.StartCoroutine(
+                            CardEffectCommons.PlayPermanentCards(
+                                cardSources: selectedCards,
+                                activateClass: activateClass,
+                                payCost: false,
+                                isTapped: false,
+                                root: SelectCardEffect.Root.DigivolutionCards,
+                                activateETB: true));
                     }
                 }
             }

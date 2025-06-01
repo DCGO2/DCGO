@@ -132,9 +132,12 @@ namespace DCGO.CardEffects.P
                 {
                     if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
                     {
-                        if (permanent.IsTamer || permanent.IsTamer)
+                        if(permanent != card.PermanentOfThisCard())
                         {
-                            return true;
+                            if (permanent.IsDigimon || permanent.IsTamer)
+                            {
+                                return true;
+                            }
                         }
                     }
                     return false;
@@ -170,9 +173,11 @@ namespace DCGO.CardEffects.P
 
                             selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to place in security", "The opponent is selecting 1 Digimon place in security.");
 
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
                             IEnumerator SelectPermanentCoroutine(Permanent permanent)
                             {
-                                Permanent selectedPermanent = permanent;
+                                selectedPermanent = permanent;
                                 yield return null;
                             }
 
@@ -193,9 +198,18 @@ namespace DCGO.CardEffects.P
 
                                 if (selectedPermanent.TopCard.Owner.CanAddSecurity(activateClass))
                                 {
-                                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(selectedPermanent.TopCard, position));
-                                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(selectedPermanent.TopCard.Owner));
-                                    yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(selectedPermanent.TopCard.Owner).AddSecurity());
+                                    CardSource topCard = selectedPermanent.TopCard;
+
+                                    yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(selectedPermanent, CardEffectCommons.CardEffectHashtable(activateClass), toTop: position).PutSecurity());
+
+                                    if (topCard.Owner.SecurityCards.Contains(topCard))
+                                    {
+                                        yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
+                                        player: card.Owner.Enemy,
+                                        destroySecurityCount: 1,
+                                        cardEffect: activateClass,
+                                        fromTop: true).DestroySecurity());
+                                    }
                                 }
                             }
                         }
@@ -236,7 +250,7 @@ namespace DCGO.CardEffects.P
                     {
                         if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition) || CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
                         {
-                            return true;
+                            return card.Owner.SecurityCards.Count > 0;
                         }
                     }
                     return false;
@@ -259,6 +273,7 @@ namespace DCGO.CardEffects.P
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+
                     yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
                     player: card.Owner,
                     destroySecurityCount: 1,
@@ -384,7 +399,7 @@ namespace DCGO.CardEffects.P
                     {
                         if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition) || CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
                         {
-                            return true;
+                            return card.Owner.SecurityCards.Count > 0;
                         }
                     }
                     return false;

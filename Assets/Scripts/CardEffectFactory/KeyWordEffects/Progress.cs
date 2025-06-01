@@ -7,21 +7,49 @@ using UnityEngine;
 public partial class CardEffectFactory
 {
     #region Static effect of [Progress] on oneself
-    public static ActivateClass ProgressSelfStaticEffect(bool isInheritedEffect, CardSource card, Func<bool> condition)
+    public static CanNotAffectedClass ProgressSelfStaticEffect(bool isInheritedEffect, CardSource card, Func<bool> condition)
     {
-        Permanent targetPermanent = card.PermanentOfThisCard();
-
-        bool PermanentCondition(Permanent permanent) => permanent == card.PermanentOfThisCard();
-
         bool CanUseCondition()
         {
-            if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+            return CardEffectCommons.CanActivateProgress(card) &&
+                   (condition == null || condition());
+        }
+
+        return ProgressStaticEffect(isInheritedEffect: isInheritedEffect, card: card, condition: CanUseCondition);
+    }
+    #endregion
+
+    #region Static effect of [Progress]
+    public static CanNotAffectedClass ProgressStaticEffect(
+        bool isInheritedEffect,
+        CardSource card,
+        Func<bool> condition)
+    {
+        CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
+        canNotAffectedClass.SetUpICardEffect("Progress", CanUseCondition, card);
+        canNotAffectedClass.SetUpCanNotAffectedClass(CardCondition: CardCondition, SkillCondition: SkillCondition);
+        canNotAffectedClass.SetIsInheritedEffect(isInheritedEffect);
+        canNotAffectedClass.SetIsBackgroundProcess(true);
+
+        bool CanUseCondition(Hashtable hashtable)
+        {
+            if (condition == null || condition())
             {
-                if (GManager.instance.attackProcess.IsAttacking)
+                return true;
+            }
+
+            return false;
+        }
+
+        bool CardCondition(CardSource cardSource)
+        {
+            if (CardEffectCommons.IsExistOnBattleArea(card))
+            {
+                if (cardSource == card)
                 {
-                    if (GManager.instance.attackProcess.AttackingPermanent == card.PermanentOfThisCard())
+                    if (GManager.instance.attackProcess.IsAttacking)
                     {
-                        if (condition == null || condition())
+                        if (GManager.instance.attackProcess.AttackingPermanent == cardSource.PermanentOfThisCard())
                         {
                             return true;
                         }
@@ -32,62 +60,23 @@ public partial class CardEffectFactory
             return false;
         }
 
-        return ProgressStaticEffect(permanentCondition: PermanentCondition, isInheritedEffect: isInheritedEffect, card: card, condition: CanUseCondition);
-    }
-    #endregion
-
-    #region Static effect of [Progress]
-    public static ActivateClass ProgressStaticEffect(
-        Func<Permanent, bool> permanentCondition,
-        bool isInheritedEffect,
-        CardSource card,
-        Func<bool> condition)
-    {
-        ActivateClass activateClass = new ActivateClass();
-        activateClass.SetUpICardEffect("Progress", CanUseCondition, card);
-        activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-        activateClass.SetIsInheritedEffect(isInheritedEffect);
-
-        string EffectDiscription()
+        bool SkillCondition(ICardEffect cardEffect)
         {
-            return DataBase.ProgressEffectDiscription();
-        }
-
-        bool PermanentCondition(Permanent permanent)
-        {
-            if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
+            if (cardEffect != null)
             {
-                if (permanentCondition == null || permanentCondition(permanent))
+                if (cardEffect.EffectSourceCard != null)
                 {
-                    return true;
+                    if (CardEffectCommons.IsOpponentEffect(cardEffect, card))
+                    {
+                        return true;
+                    }
                 }
             }
 
             return false;
         }
 
-        bool CanUseCondition(Hashtable hashtable)
-        {
-            if (condition == null || condition())
-            {
-                if(PermanentCondition(card.PermanentOfThisCard()))
-                    return true;
-            }
-
-            return false;
-        }
-
-        bool CanActivateCondition(Hashtable hashtable)
-        {
-            return true;
-        }
-
-        IEnumerator ActivateCoroutine(Hashtable _hashtable)
-        {
-            return CardEffectCommons.ProgressProcess(card, activateClass);
-        }
-
-        return activateClass;
+        return canNotAffectedClass;
     }
     #endregion
 }

@@ -146,6 +146,20 @@ public class BT8_110 : CEntity_Effect
 
                                 permanent.ShowingPermanentCard.ShowPermanentData(true);
                                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().RemoveDigivolveRootEffect(cardSource, permanent));
+
+                                #region "When Top Card is Trashed" effect
+                                #region Hashtable Setting
+                                System.Collections.Hashtable hashtable = new System.Collections.Hashtable()
+                                {
+                                    {"Permanent", permanent},
+                                    {"CardSources", new List<CardSource> { cardSource } }
+                                };
+                                #endregion
+
+                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing
+                                    .StackSkillInfos(hashtable, EffectTiming.WhenTopCardTrashed));
+
+                                #endregion
                             }
                         }
                     }

@@ -549,14 +549,10 @@ public class EditDeck : MonoBehaviour
 
     public void OnEndEdit(string text)
     {
-        string deckName = text;
-
-        deckName = DeckData.ValidateDeckName(deckName);
-
         ContinuousController.instance.RenameDeck(EdittingDeckData, text);
 
         DeckNameInputField.onEndEdit.RemoveAllListeners();
-        DeckNameInputField.text = deckName;
+        DeckNameInputField.text = text;
         DeckNameInputField.onEndEdit.AddListener(OnEndEdit);
     }
     #endregion
