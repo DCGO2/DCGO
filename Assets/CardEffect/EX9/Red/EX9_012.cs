@@ -191,14 +191,14 @@ namespace DCGO.CardEffects.EX9
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
                            !permanent.IsOption &&
-                           (permanent.TopCard.EqualsCardName("Garurumon") || permanent.TopCard.EqualsCardName("Tai Kamiya"));
+                           (permanent.TopCard.HasGarurumonName || permanent.TopCard.EqualsCardName("Tai Kamiya"));
                 }
 
                 bool DigivolveRequirement(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
                            !permanent.IsOption &&
-                           permanent.TopCard.EqualsCardName("Garurumon");
+                           permanent.TopCard.HasGarurumonName;
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
@@ -215,7 +215,7 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return true;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
