@@ -303,6 +303,7 @@ public class PlayCardClass
         {
             GManager.instance.GetComponent<SelectDigiXrosClass>().ResetSelectDigiXrosClass();
             GManager.instance.GetComponent<SelectAssemblyClass>().ResetSelectAssemblyClass();
+            GManager.instance.GetComponent<SelectDNACondition>().ResetSelectDNAConditionClass();
 
             if (card == null)
             {
@@ -572,6 +573,16 @@ public class PlayCardClass
 
             #endregion
 
+            #region select DNA condition
+            int baseDNA = 0;
+
+            if (isJogress)
+            {
+                baseDNA = GManager.instance.GetComponent<SelectDNACondition>()._selectedCount;
+            }
+            
+            #endregion
+
             #region HashTable Setting
 
             Hashtable hashtable = CardEffectCommons.WouldEnterFieldHashtable(
@@ -681,8 +692,7 @@ public class PlayCardClass
                 {
                     if (card.jogressCondition != null)
                     {
-                        int cost = card.GetPayingCostWithBaseCost(card.jogressCondition.cost, Root, targetPermanents, checkAvailability: false, FixedCost: _fixedCost);
-
+                        int cost = card.GetPayingCostWithBaseCost(card.jogressCondition[baseDNA].cost, Root, targetPermanents, checkAvailability: false, FixedCost: _fixedCost);
                         GManager.instance.memoryObject.ShowMemoryPredictionLine(card.Owner.ExpectedMemory(cost));
                     }
                 }
@@ -783,13 +793,14 @@ public class PlayCardClass
                 if (!isJogress)
                 {
                     Cost = card.GetPayingCostWithBaseCost(baseCost, Root, targetPermanents, checkAvailability: false, FixedCost: _fixedCost);
+                    Cost = card.GetPayingCostWithBaseCost(baseCost, Root, targetPermanents, checkAvailability: false, FixedCost: _fixedCost);
                 }
 
                 else
                 {
                     if (card.jogressCondition != null)
                     {
-                        Cost = card.GetPayingCostWithBaseCost(card.jogressCondition.cost, Root, targetPermanents, checkAvailability: false, FixedCost: _fixedCost);
+                        Cost = card.GetPayingCostWithBaseCost(card.jogressCondition[baseDNA].cost, Root, targetPermanents, checkAvailability: false, FixedCost: _fixedCost);
                     }
                 }
 
@@ -874,6 +885,7 @@ public class PlayCardClass
                 PlayLog.OnAddLog?.Invoke($"\nFailed to play:\n{card.BaseENGCardNameFromEntity}({card.CardID})\n");
 
                 GManager.instance.GetComponent<SelectDigiXrosClass>().ResetSelectDigiXrosClass();
+                GManager.instance.GetComponent<SelectDNACondition>().ResetSelectDNAConditionClass();
 
                 GManager.instance.GetComponent<SelectAssemblyClass>().ResetSelectAssemblyClass();
 
@@ -1552,6 +1564,7 @@ public class PlayPermanentClass
 
             GManager.instance.GetComponent<SelectDigiXrosClass>().ResetSelectDigiXrosClass();
             GManager.instance.GetComponent<SelectAssemblyClass>().ResetSelectAssemblyClass();
+            GManager.instance.GetComponent<SelectDNACondition>().ResetSelectDNAConditionClass();
 
             yield return GManager.instance.photonWaitController.StartWait("EndPlayPermanent");
         }
