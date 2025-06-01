@@ -68,26 +68,35 @@ namespace DCGO.CardEffects.P
 
             if (timing == EffectTiming.None)
             {
-                int count()
-                {
-                    return 2 * ((card.Owner.TrashCards.Count + card.Owner.Enemy.TrashCards.Count) / 5);
-                }
-
                 ChangeCostClass changeCostClass = new ChangeCostClass();
                 changeCostClass.SetUpICardEffect($"Play Cost -", CanUseCondition, card);
-                changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
+                changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost,
+                    cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: IsUpDown,
+                    isCheckAvailability: () => false, isChangePayingCost: () => true);
+
                 cardEffects.Add(changeCostClass);
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     if (card.Owner.HandCards.Contains(card))
                     {
-                        if (count() >= 1)
+                        if (CardEffectCommons.HasMatchConditionPermanent(PermanentCondition))
                         {
-                            if (CardEffectCommons.HasMatchConditionPermanent(PermanentsCondition))
-                            {
-                                changeCostClass.SetEffectName($"Play Cost -{count()}");
+                            return true;
+                        }
+                    }
 
+                    return false;
+                }
+
+                bool PermanentCondition(Permanent Permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(Permanent))
+                    {
+                        if (Permanent.IsDigimon)
+                        {
+                            if (Permanent.DP >= 13000)
+                            {
                                 return true;
                             }
                         }
@@ -96,30 +105,38 @@ namespace DCGO.CardEffects.P
                     return false;
                 }
 
-                int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
+                int count()
+                {
+                    return 2 * ((card.Owner.TrashCards.Count + card.Owner.Enemy.TrashCards.Count) / 5);
+                }
+
+                int ChangeCost(CardSource cardSource, int cost, SelectCardEffect.Root root,
+                    List<Permanent> targetPermanents)
                 {
                     if (CardSourceCondition(cardSource))
                     {
                         if (RootCondition(root))
                         {
-                            if (targetPermanents.Select(x => PermanentsCondition(x)) != null)
+                            if (PermanentsCondition(targetPermanents))
                             {
-                                Cost -= count();
+                                cost -= count();
                             }
                         }
                     }
 
-                    return Cost;
+                    return cost;
                 }
 
-                bool PermanentsCondition(Permanent Permanent)
+                bool PermanentsCondition(List<Permanent> targetPermanents)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(Permanent))
+                    if (targetPermanents == null)
                     {
-                        if (Permanent.DP >= 13000)
-                        {
-                            return true;
-                        }
+                        return true;
+                    }
+
+                    if (targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0)
+                    {
+                        return true;
                     }
 
                     return false;
@@ -132,15 +149,10 @@ namespace DCGO.CardEffects.P
 
                 bool RootCondition(SelectCardEffect.Root root)
                 {
-                    if (root == SelectCardEffect.Root.Hand)
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return (root == SelectCardEffect.Root.Hand);
                 }
 
-                bool isUpDown()
+                bool IsUpDown()
                 {
                     return true;
                 }
@@ -164,7 +176,7 @@ namespace DCGO.CardEffects.P
                     return false;
                 }
 
-                Permanent permanent = null;
+                Permanent selectedPermanent = null;
                 bool permanentDeleted = false;
 
                 int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(PermanentCondition));
@@ -190,13 +202,13 @@ namespace DCGO.CardEffects.P
 
                 IEnumerator SelectPermanentCoroutine(Permanent permanent)
                 {
-                    Permanent selectedPermanent = permanent;
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: selectedPermanent, trashCount: 4, isFromTop: false, activateClass: activateClass));
+                    selectedPermanent = permanent;
+                    yield return null;
                 }
 
-                if (permanent != null)
+                if (selectedPermanent != null)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: new List<Permanent>() { permanent }, activateClass: activateClass, successProcess: permanents => SuccessProcess(), failureProcess: null));
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: new List<Permanent>() { selectedPermanent }, activateClass: activateClass, successProcess: permanents => SuccessProcess(), failureProcess: null));
 
                     IEnumerator SuccessProcess()
                     {
@@ -205,7 +217,7 @@ namespace DCGO.CardEffects.P
                     }
                 }
 
-                if (permanent == null || !permanentDeleted)
+                if (!permanentDeleted)
                 {
                     if (card.Owner.CanAddSecurity(activateClass))
                     {

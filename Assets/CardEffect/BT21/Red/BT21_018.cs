@@ -12,6 +12,18 @@ namespace DCGO.CardEffects.BT21
 
             #region Static effects
 
+            #region Alternative Digivolution Condition - Stnd.
+            if (timing == EffectTiming.None)
+            {
+                bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.EqualsTraits("Stnd.");
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
+            }
+            #endregion
+
             #region Raid
 
             if (timing == EffectTiming.OnAllyAttack)
@@ -59,36 +71,27 @@ namespace DCGO.CardEffects.BT21
                     {
                         if (source != null && source != card)
                         {
-                            if (source.PermanentOfThisCard().TopCard.EqualsCardName("Gatchmon"))
+                            if (permanent.TopCard.EqualsCardName("Gatchmon"))
                             {
-                                if (source.PermanentOfThisCard().LinkedCards.Find(x => x.EqualsCardName("Navimon")) || source.PermanentOfThisCard().LinkedCards.Find(x => x.EqualsCardName("Tweetmon")))
+                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Navimon") || x.EqualsCardName("Tweetmon")))
                                 {
-                                    if (source.CanAppFusionFromTargetPermanent(permanent, true))
-                                    {
-                                        return true;
-                                    }
+                                    return true;
                                 }
                             }
 
-                            if (source.PermanentOfThisCard().TopCard.EqualsCardName("Navimon"))
+                            if (permanent.TopCard.EqualsCardName("Navimon"))
                             {
-                                if (source.PermanentOfThisCard().LinkedCards.Find(x => x.EqualsCardName("Gatchmon")) || source.PermanentOfThisCard().LinkedCards.Find(x => x.EqualsCardName("Tweetmon")))
+                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Gatchmon") || x.EqualsCardName("Tweetmon")))
                                 {
-                                    if (source.CanAppFusionFromTargetPermanent(permanent, true))
-                                    {
-                                        return true;
-                                    }
+                                    return true;
                                 }
                             }
 
-                            if (source.PermanentOfThisCard().TopCard.EqualsCardName("Tweetmon"))
+                            if (permanent.TopCard.EqualsCardName("Tweetmon"))
                             {
-                                if (source.PermanentOfThisCard().LinkedCards.Find(x => x.EqualsCardName("Gatchmon")) || source.PermanentOfThisCard().LinkedCards.Find(x => x.EqualsCardName("Navimon")))
+                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Gatchmon") || x.EqualsCardName("Navimon")))
                                 {
-                                    if (source.CanAppFusionFromTargetPermanent(permanent, true))
-                                    {
-                                        return true;
-                                    }
+                                    return true;
                                 }
                             }
                         }
@@ -101,7 +104,7 @@ namespace DCGO.CardEffects.BT21
                         {
                             if (permanent.TopCard.EqualsCardName("Gatchmon"))
                             {
-                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Navimon")) || permanent.LinkedCards.Find(x => x.EqualsCardName("Tweetmon")))
+                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Navimon") || x.EqualsCardName("Tweetmon")))
                                 {
                                     return true;
                                 }
@@ -109,7 +112,7 @@ namespace DCGO.CardEffects.BT21
 
                             if (permanent.TopCard.EqualsCardName("Navimon"))
                             {
-                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Gatchmon")) || permanent.LinkedCards.Find(x => x.EqualsCardName("Tweetmon")))
+                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Gatchmon") || x.EqualsCardName("Tweetmon")))
                                 {
                                     return true;
                                 }
@@ -117,7 +120,7 @@ namespace DCGO.CardEffects.BT21
 
                             if (permanent.TopCard.EqualsCardName("Tweetmon"))
                             {
-                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Gatchmon")) || permanent.LinkedCards.Find(x => x.EqualsCardName("Navimon")))
+                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Gatchmon") || x.EqualsCardName("Navimon")))
                                 {
                                     return true;
                                 }
@@ -143,6 +146,19 @@ namespace DCGO.CardEffects.BT21
 
             #endregion
 
+            #region Link
+            if (timing == EffectTiming.OnDeclaration)
+            {
+                /// <summary>
+                /// Used to link a card
+                /// </summary>
+                /// <param name="card">Reference to this card</param>
+                /// <param name="condition">OPTIONAL - Function to check for effect conditions</param>
+                /// <author>Mike Bunch</author>
+                cardEffects.Add(CardEffectFactory.LinkEffect(card));
+            }
+            #endregion
+
             #endregion
 
             #region Your Turn
@@ -162,7 +178,7 @@ namespace DCGO.CardEffects.BT21
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (CardEffectCommons.CanTriggerWhenLinking(hashtable, PermanentCondition, card))
+                        if (CardEffectCommons.CanTriggerWhenLinked(hashtable, LinkPermanentCondition, null))
                         {
                             return true;
                         }
@@ -185,34 +201,26 @@ namespace DCGO.CardEffects.BT21
                     return false;
                 }
 
-                bool PermanentCondition(Permanent permanent)
+                bool LinkPermanentCondition(Permanent permanent)
                 {
                     return permanent == card.PermanentOfThisCard();
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (card.PermanentOfThisCard().CanAttack(activateClass))
-                        {
-                            SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
+                    SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
 
-                            selectAttackEffect.SetUp(
-                                attacker: card.PermanentOfThisCard(),
-                                canAttackPlayerCondition: () => true,
-                                defenderCondition: (permanent) => true,
-                                cardEffect: activateClass);
+                    selectAttackEffect.SetUp(
+                        attacker: card.PermanentOfThisCard(),
+                        canAttackPlayerCondition: () => true,
+                        defenderCondition: (permanent) => true,
+                        cardEffect: activateClass);
 
-                            yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
-                        }
-                    }
+                    yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
                 }
             }
 
             #endregion
-
-            #region Link ESS
 
             #region When Linked
 
@@ -275,17 +283,6 @@ namespace DCGO.CardEffects.BT21
                     }
                 }
             }
-
-            #endregion
-
-            #region +3k DP
-
-            if (timing == EffectTiming.None)
-            {
-                cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect(changeValue: 3000, isInheritedEffect: false, card: card, condition: null, isLinkedEffect: true));
-            }
-
-            #endregion
 
             #endregion
 

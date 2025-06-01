@@ -24,6 +24,19 @@ namespace DCGO.CardEffects.BT21
 
             #endregion
 
+            #region Link
+            if (timing == EffectTiming.OnDeclaration)
+            {
+                /// <summary>
+                /// Used to link a card
+                /// </summary>
+                /// <param name="card">Reference to this card</param>
+                /// <param name="condition">OPTIONAL - Function to check for effect conditions</param>
+                /// <author>Mike Bunch</author>
+                cardEffects.Add(CardEffectFactory.LinkEffect(card));
+            }
+            #endregion
+
             #region Alternative Digivolution Condition
 
             if (timing == EffectTiming.None)
@@ -64,11 +77,16 @@ namespace DCGO.CardEffects.BT21
                 string EffectDiscription()
                     => "[Your Turn] [Once Per Turn] When this Digimon gets linked, if you have 1 or fewer Tamers, you may play 1 [Haru Shinkai] from your hand without paying the cost.";
 
+                bool LinkPermanentCondition(Permanent permanent)
+                {
+                    return permanent == card.PermanentOfThisCard();
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     if (isExistOnField(card))
                     {
-                        if (CardEffectCommons.CanTriggerWhenLinking(hashtable, null, card))
+                        if (CardEffectCommons.CanTriggerWhenLinked(hashtable, LinkPermanentCondition, null))
                         {
                             return true;
                         }
@@ -154,15 +172,6 @@ namespace DCGO.CardEffects.BT21
             if (timing == EffectTiming.OnAllyAttack)
             {
                 cardEffects.Add(CardEffectFactory.RaidSelfEffect(isInheritedEffect: false, card: card, condition: null, isLinkedEffect: true));
-            }
-
-            #endregion
-
-            #region +2k DP
-
-            if (timing == EffectTiming.None)
-            {
-                cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect(changeValue: 2000, isInheritedEffect: false, card: card, condition: null, isLinkedEffect: true));
             }
 
             #endregion

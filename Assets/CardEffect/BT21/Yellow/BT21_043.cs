@@ -112,7 +112,7 @@ namespace DCGO.CardEffects.BT21
                          yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
                              targetPermanent: permanent,
                              changeValue: -2000,
-                             effectDuration: EffectDuration.UntilEachTurnEnd,
+                             effectDuration: EffectDuration.UntilOpponentTurnEnd,
                              activateClass: activateClass));
                      }                    
                 }
@@ -183,7 +183,7 @@ namespace DCGO.CardEffects.BT21
                          yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
                              targetPermanent: permanent,
                              changeValue: -2000,
-                             effectDuration: EffectDuration.UntilEachTurnEnd,
+                             effectDuration: EffectDuration.UntilOpponentTurnEnd,
                              activateClass: activateClass));
                      }                 
                 }
@@ -255,7 +255,7 @@ namespace DCGO.CardEffects.BT21
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
                             targetPermanent: permanent,
                             changeValue: -2000,
-                            effectDuration: EffectDuration.UntilEachTurnEnd,
+                            effectDuration: EffectDuration.UntilOpponentTurnEnd,
                             activateClass: activateClass));
                     }
                 }

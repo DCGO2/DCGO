@@ -11,6 +11,56 @@ namespace DCGO.CardEffects.BT21
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region Alternative Digivolution Condition
+
+            if (timing == EffectTiming.None)
+            {
+                bool PermanentCondition(Permanent targetPermanent)
+                {
+                    if (targetPermanent.TopCard.IsLevel3)
+                    {
+                        return targetPermanent.TopCard.HasHeroTraits || targetPermanent.TopCard.EqualsTraits("Xros Heart");
+                    }
+                    return false;
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
+                    permanentCondition: PermanentCondition,
+                    digivolutionCost: 2,
+                    ignoreDigivolutionRequirement: false,
+                    card: card,
+                    condition: null)
+                );
+            }
+
+            #endregion
+
+            #region Also treated as [Shoutmon]
+            if (timing == EffectTiming.None)
+            {
+                ChangeCardNamesClass changeCardNamesClass = new ChangeCardNamesClass();
+                changeCardNamesClass.SetUpICardEffect("Also treated as [Shoutmon]", CanUseCondition, card);
+                changeCardNamesClass.SetUpChangeCardNamesClass(changeCardNames: changeCardNames);
+
+                cardEffects.Add(changeCardNamesClass);
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return true;
+                }
+
+                List<string> changeCardNames(CardSource cardSource, List<string> CardNames)
+                {
+                    if (cardSource == card)
+                    {
+                        CardNames.Add("Shoutmon");
+                    }
+
+                    return CardNames;
+                }
+            }
+            #endregion
+
             #region Raid
 
             if (timing == EffectTiming.OnAllyAttack)
@@ -101,19 +151,12 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (CardEffectCommons.CanTriggerOnDeletion(hashtable, card))
-                        {
-                            return true;
-                        }
-                    }
-                    return false;
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.CanActivateOnDeletion(card);
                 }
 
                 bool CanSelectTamerCondition(Permanent permanent)

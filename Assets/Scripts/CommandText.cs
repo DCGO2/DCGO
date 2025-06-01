@@ -8,6 +8,7 @@ public class CommandText : MonoBehaviour
 {
     public TextMeshProUGUI commandText;
     public GameObject digiXrosObject;
+    public GameObject assemblyObject;
 
     public void Init()
     {
@@ -20,7 +21,7 @@ public class CommandText : MonoBehaviour
     }
 
     #region Open command message
-    public void OpenCommandText(string Text, bool digiXros = false)
+    public void OpenCommandText(string Text, bool digiXros = false, bool assembly = false)
     {
         commandText.text = Text;
         this.gameObject.SetActive(true);
@@ -30,6 +31,11 @@ public class CommandText : MonoBehaviour
         if (digiXrosObject != null)
         {
             digiXrosObject.SetActive(digiXros);
+        }
+
+        if(assemblyObject != null)
+        {
+            assemblyObject.SetActive(assembly);
         }
     }
     #endregion

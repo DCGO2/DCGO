@@ -17,7 +17,7 @@ public class PatchNotes : OffAnimation
 
     public void OnClickOpenPatchNotesPanelButton()
     {
-        Application.OpenURL("https://dcgo.online/");
+        Application.OpenURL("https://dcgo.online/PatchNotes.html");
         /*if (_isOpen)
         {
             ClosePatchNotesPanel();

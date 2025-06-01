@@ -51,13 +51,22 @@ namespace DCGO.CardEffects.BT13
 
                         bool DigimonCondition(Permanent permanent)
                         {
-                            if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
+                            if(permanent != null)
                             {
-                                if (!card.CanNotEvolve(permanent))
+                                if (permanent.TopCard != null)
                                 {
-                                    if (permanent.TopCard.CardNames.Contains("MirageGaogamon"))
+                                    if (permanent.TopCard.Owner == card.Owner)
                                     {
-                                        return true;
+                                        if (permanent.TopCard.Owner.GetFieldPermanents().Contains(permanent))
+                                        {
+                                            if (!card.CanNotEvolve(permanent))
+                                            {
+                                                if (permanent.TopCard.CardNames.Contains("MirageGaogamon"))
+                                                {
+                                                    return true;
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }

@@ -57,15 +57,21 @@ public class BT7_110 : CEntity_Effect
             {
                 if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                 {
-                    if (permanent.TopCard.HasLevel && permanent.Level == 4)
+                    if (permanent.TopCard.HasLevel && permanent.TopCard.Level == 4)
                     {
                         foreach (CardSource cardSource in card.Owner.HandCards)
                         {
-                            if (CanSelectCardCondition(cardSource, permanent))
+                            if(cardSource.CardColors.Any(x => permanent.TopCard.CardColors.Contains(x)))
                             {
-                                if (!cardSource.CanNotEvolve(permanent))
+                                if (IsYourDigimonToDigivolve(cardSource))
                                 {
-                                    return true;
+                                    if (!cardSource.CanNotEvolve(permanent))
+                                    {
+                                        if (cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, true, activateClass, ignore: CardEffectCommons.IgnoreRequirement.Level))
+                                        {
+                                            return true;
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -75,19 +81,13 @@ public class BT7_110 : CEntity_Effect
                 return false;
             }
 
-            bool CanSelectCardCondition(CardSource cardSource, Permanent permanent)
+            bool IsYourDigimonToDigivolve(CardSource cardSource)
             {
-                if (cardSource.CardTraits.Contains("Ten Warriors") || cardSource.CardTraits.Contains("TenWarriors"))
+                if (cardSource.EqualsTraits("Ten Warriors"))
                 {
                     if (cardSource.IsDigimon)
                     {
-                        if (card.Owner.MaxMemoryCost >= cardSource.PayingCost(SelectCardEffect.Root.Hand, new List<Permanent>() { permanent }, true, ignoreLevel: true))
-                        {
-                            if (cardSource.CardColors.Count((cardColor) => permanent.TopCard.CardColors.Contains(cardColor)) >= 1)
-                            {
-                                return true;
-                            }
-                        }
+                        return true;
                     }
                 }
 
@@ -137,7 +137,7 @@ public class BT7_110 : CEntity_Effect
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
                             targetPermanent: selectedPermanent,
-                            cardCondition: (cardSource) => CanSelectCardCondition(cardSource, selectedPermanent),
+                            cardCondition: IsYourDigimonToDigivolve,
                             payCost: true,
                             reduceCostTuple: null,
                             fixedCostTuple: null,

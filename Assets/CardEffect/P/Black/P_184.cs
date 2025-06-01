@@ -65,6 +65,7 @@ namespace DCGO.CardEffects.P
 
             #endregion
 
+            #region When Digivolving
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -98,31 +99,28 @@ namespace DCGO.CardEffects.P
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent.TopCard.EqualsTraits("Soc"))
+                        if (permanent.TopCard.HasSocTraits)
                         {
-                            if (CardEffectCommons.CanUnsuspend(permanent))
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
+
                     return false;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: card.PermanentOfThisCard(), changeValue: 3000, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
-                    if (card.PermanentOfThisCard().cardSources.Find(x => x.EqualsCardName("Kosuke Kisakata")) != null)
+                    
+                    if (card.PermanentOfThisCard().DigivolutionCards.Any(x => x.EqualsCardName("Kosuke Kisakata")))
                     {
-                        var permanents = card.Owner.GetBattleAreaDigimons().Filter(x => CanTargetPermanentCondition(x)).ToList();
-                        if (permanents.Any())
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(permanents, activateClass).Unsuspend());
-                        }
+                        List<Permanent> permanents = card.Owner.GetBattleAreaDigimons().Filter(x => CanTargetPermanentCondition(x)).ToList();
+
+                        yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(permanents, activateClass).Unsuspend());
                     }
                 }
             }
-
+            #endregion
             return cardEffects;
         }
     }
