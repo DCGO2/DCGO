@@ -165,10 +165,7 @@ namespace DCGO.CardEffects.BT20
                     {
                         if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermanentToSuspend))
                         {
-                            if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardToDigivolveInto))
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
                     return false;
@@ -210,16 +207,19 @@ namespace DCGO.CardEffects.BT20
 
                     if (selectedPermanents.Count > 0)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                            targetPermanent: card.PermanentOfThisCard(),
-                            cardCondition: CanSelectCardToDigivolveInto,
-                            payCost: false,
-                            reduceCostTuple: null,
-                            fixedCostTuple: null,
-                            ignoreDigivolutionRequirementFixedCost: -1,
-                            isHand: true,
-                            activateClass: activateClass,
-                            successProcess: null));
+                        if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardToDigivolveInto))
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                               targetPermanent: card.PermanentOfThisCard(),
+                               cardCondition: CanSelectCardToDigivolveInto,
+                               payCost: false,
+                               reduceCostTuple: null,
+                               fixedCostTuple: null,
+                               ignoreDigivolutionRequirementFixedCost: -1,
+                               isHand: true,
+                               activateClass: activateClass,
+                               successProcess: null));
+                        }
                     }
                 }
             }

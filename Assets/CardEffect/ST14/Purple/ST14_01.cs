@@ -31,17 +31,12 @@ public class ST14_01 : CEntity_Effect
             {
                 if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
-                    if (card.PermanentOfThisCard().TopCard.CardTraits.Contains("Wizard"))
+                    if (card.PermanentOfThisCard().TopCard.EqualsTraits("Wizard"))
                     {
                         return true;
                     }
 
-                    if (card.PermanentOfThisCard().TopCard.CardTraits.Contains("Demon Lord"))
-                    {
-                        return true;
-                    }
-
-                    if (card.PermanentOfThisCard().TopCard.CardTraits.Contains("DemonLord"))
+                    if (card.PermanentOfThisCard().TopCard.EqualsTraits("Demon Lord"))
                     {
                         return true;
                     }

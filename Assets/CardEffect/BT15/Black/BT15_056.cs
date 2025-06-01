@@ -192,7 +192,7 @@ namespace DCGO.CardEffects.BT15
 
                 string EffectDiscription()
                 {
-                    return "[All Turns][Once per turn] When this Digimon becomes suspened, suspened 1 of your opponent's Digimon or Tamers with a play cost less than or equal to this Digimon.";
+                    return "[All Turns] [Once Per Turn] When this Digimon becomes suspended, suspend 1 of your opponent's Digimon or Tamers with a play cost less than or equal to this Digimon's play cost.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)

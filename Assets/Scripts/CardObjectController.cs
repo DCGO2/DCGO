@@ -369,7 +369,7 @@ public class CardObjectController : MonoBehaviour
     #region Remove cards from all areas
     public static IEnumerator RemoveFromAllArea(CardSource cardSource)
     {
-        cardSource.SetFace();
+        cardSource.SetFace("CardObjectController.RemoveFromAllArea");
 
         if (cardSource.Owner.HandCards.Contains(cardSource))
         {
@@ -481,7 +481,7 @@ public class CardObjectController : MonoBehaviour
 
                     permanent.TopCard.Owner.fieldCardFrames[frameID].SetFramePermanent(permanent);
 
-                    permanent.TopCard.SetFace();
+                    permanent.TopCard.SetFace("CardObjectController.CreateNewPermanent");
 
                     FieldPermanentCard fieldPermanentCard = Instantiate(GManager.instance.fieldCardPrefab, permanent.TopCard.Owner.PermanentTransform);
 
@@ -608,7 +608,7 @@ public class CardObjectController : MonoBehaviour
     public static IEnumerator AddHandCard(CardSource cardSource, bool isDraw)
     {
         cardSource.Init();
-        cardSource.SetFace();
+        cardSource.SetFace("CardObjectController.AddHandCard");
 
         if (!cardSource.Owner.HandCards.Contains(cardSource))
         {
@@ -705,7 +705,7 @@ public class CardObjectController : MonoBehaviour
 
             if (!cardSource.IsToken)
             {
-                cardSource.SetFace();
+                cardSource.SetFace("CardObjectController.AddTrashCard");
 
                 if (!CardEffectCommons.IsExistOnTrash(cardSource))
                 {
@@ -746,7 +746,7 @@ public class CardObjectController : MonoBehaviour
 
                 if (!cardSource.IsToken)
                 {
-                    cardSource.SetFace();
+                    cardSource.SetFace("CardObjectController.AddTrashCards");
 
                     if (!CardEffectCommons.IsExistOnTrash(cardSource))
                     {
@@ -797,7 +797,7 @@ public class CardObjectController : MonoBehaviour
 
             if (!cardSource.IsToken)
             {
-                cardSource.SetFace();
+                cardSource.SetFace("CardObjectController.AddLibraryTopCards");
 
                 if (!cardSource.IsDigiEgg)
                 {
@@ -891,7 +891,7 @@ public class CardObjectController : MonoBehaviour
 
             if (!cardSource.IsToken)
             {
-                cardSource.SetFace();
+                cardSource.SetFace("CardObjectController.AddLibraryBottomCards");
 
                 if (!cardSource.IsDigiEgg)
                 {
@@ -945,7 +945,7 @@ public class CardObjectController : MonoBehaviour
 
             if (!cardSource.IsToken)
             {
-                cardSource.SetFace();
+                cardSource.SetFace("CardObjectController.AddExecutingCard");
 
                 cardSource.Owner.ExecutingCards.Insert(0, cardSource);
 
@@ -967,7 +967,7 @@ public class CardObjectController : MonoBehaviour
                 if (!faceUp)
                     cardSource.SetReverse();
                 else
-                    cardSource.SetFace();
+                    cardSource.SetFace("CardObjectController.AddSecurityCard");
 
                 cardSource.Owner.SecurityCards.Insert(0, cardSource);
 

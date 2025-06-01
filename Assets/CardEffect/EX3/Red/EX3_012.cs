@@ -62,14 +62,11 @@ namespace DCGO.CardEffects.EX3
 
                         bool CardCondition(CardSource cardSource)
                         {
-                            if (cardSource.Owner == card.Owner.Enemy)
+                            if (cardSource.IsDigimon)
                             {
-                                if (cardSource.IsDigimon)
+                                if (cardSource.CardDP <= 5000)
                                 {
-                                    if (cardSource.CardDP <= 5000)
-                                    {
-                                        return true;
-                                    }
+                                    return true;
                                 }
                             }
 
@@ -78,7 +75,8 @@ namespace DCGO.CardEffects.EX3
 
                         bool CardEffectCondition(ICardEffect cardEffect)
                         {
-                            return true;
+                            return cardEffect != null &&
+                                   cardEffect.EffectSourceCard.Owner == card.Owner.Enemy;
                         }
 
                         yield return null;

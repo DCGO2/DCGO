@@ -66,6 +66,8 @@ namespace DCGO.CardEffects.EX6
                     {
                         if (CardEffectCommons.HasMatchConditionPermanent(IsOwnerYellowDigimonSharedCondition))
                         {
+                            Permanent selectedPermanent = null;
+
                             int maxCount = Math.Min(1,
                                 CardEffectCommons.MatchConditionPermanentCount(IsOwnerYellowDigimonSharedCondition));
                             
@@ -93,8 +95,12 @@ namespace DCGO.CardEffects.EX6
                             
                             IEnumerator SelectPermanentCoroutine(Permanent permanent)
                             {
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBarrier(targetPermanent: permanent, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
+                                selectedPermanent = permanent;
+                                yield return null;
                             }
+
+                            if(selectedPermanent != null)
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBarrier(targetPermanent: selectedPermanent, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
                         }
                     }
                 }
@@ -139,12 +145,14 @@ namespace DCGO.CardEffects.EX6
                     {
                         if (CardEffectCommons.HasMatchConditionPermanent(IsOwnerYellowDigimonSharedCondition))
                         {
+                            Permanent selectedPermanent = null;
+
                             int maxCount = Math.Min(1,
                                 CardEffectCommons.MatchConditionPermanentCount(IsOwnerYellowDigimonSharedCondition));
-                            
+
                             SelectPermanentEffect selectPermanentEffect =
                                 GManager.instance.GetComponent<SelectPermanentEffect>();
-                            
+
                             selectPermanentEffect.SetUp(
                                 selectPlayer: card.Owner,
                                 canTargetCondition: IsOwnerYellowDigimonSharedCondition,
@@ -157,17 +165,21 @@ namespace DCGO.CardEffects.EX6
                                 afterSelectPermanentCoroutine: null,
                                 mode: SelectPermanentEffect.Mode.Custom,
                                 cardEffect: activateClass);
-                            
+
                             selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will gain Barrier.",
                                 "The opponent is selecting 1 Digimon that will gain Barrier.");
-                            
+
                             yield return ContinuousController.instance.StartCoroutine(
                                 selectPermanentEffect.Activate());
-                            
+
                             IEnumerator SelectPermanentCoroutine(Permanent permanent)
                             {
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBarrier(targetPermanent: permanent, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
+                                selectedPermanent = permanent;
+                                yield return null;
                             }
+
+                            if (selectedPermanent != null)
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBarrier(targetPermanent: selectedPermanent, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
                         }
                     }
                 }

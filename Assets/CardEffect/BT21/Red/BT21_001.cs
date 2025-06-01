@@ -30,9 +30,12 @@ namespace DCGO.CardEffects.BT21
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (CardEffectCommons.CanTriggerWhenLoseSecurity(hashtable, player => player == card.Owner.Enemy))
+                        if (CardEffectCommons.IsOwnerTurn(card))
                         {
-                            return true;
+                            if (CardEffectCommons.CanTriggerWhenLoseSecurity(hashtable, player => player == card.Owner.Enemy))
+                            {
+                                return true;
+                            }
                         }
                     }
                     return false;
@@ -42,21 +45,16 @@ namespace DCGO.CardEffects.BT21
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        return true;
+                        return card.Owner.HandCards.Any(source => 
+                               CanSelectCardCondition(source) &&
+                               source.CanPlayCardTargetFrame(permanent.PermanentFrame, true, activateClass));
                     }
                     return false;
                 }
 
-                bool CanSelectCardCondition(CardSource digivolveTarget, Permanent digivolvingTarget)
+                bool CanSelectCardCondition(CardSource digivolveTarget)
                 {
-                    if (digivolveTarget.CardTraits.FirstOrDefault(x => x.Equals("Reptile")) != null || digivolveTarget.CardTraits.FirstOrDefault(x => x.Equals("Dragonkin")) != null)
-                    {
-                        if (digivolveTarget.CanPlayCardTargetFrame(digivolvingTarget.PermanentFrame, true, activateClass))
-                        {
-                            return true;
-                        }
-                    }
-                    return false;
+                    return digivolveTarget.EqualsTraits("Reptile") || digivolveTarget.EqualsTraits("Dragonkin");
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -96,7 +94,7 @@ namespace DCGO.CardEffects.BT21
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
                                 targetPermanent: selectedPermanent,
-                                cardCondition: (cardSource) => CanSelectCardCondition(cardSource, selectedPermanent),
+                                cardCondition: CanSelectCardCondition,
                                 payCost: true,
                                 reduceCostTuple: (reduceCost: 1, reduceCostCardCondition: null),
                                 fixedCostTuple: null,

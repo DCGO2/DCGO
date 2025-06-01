@@ -337,6 +337,9 @@ public abstract class ICardEffect
                         if (EffectSourceCard == EffectSourceCard.PermanentOfThisCard().TopCard)
                             return false;
 
+                        if (EffectSourceCard.IsFlipped)
+                            return false;
+
                         if (!EffectSourceCard.PermanentOfThisCard().IsDigimon)
                             return false;
 
@@ -365,6 +368,7 @@ public abstract class ICardEffect
 
         #endregion
 
+        //TODO: Look into this for the on deletion General issue
         #region Determination whether the permanent is same as when triggered
 
         if (IsInheritedEffect || IsLinkedEffect)
@@ -919,7 +923,8 @@ public enum EffectTiming
     AfterEffectsActivate,
     WhenWouldDigivolutionCardDiscarded,
     WhenLinked,
-    WhenTopCardTrashed
+    WhenTopCardTrashed,
+    RulesTiming
 }
 
 #endregion

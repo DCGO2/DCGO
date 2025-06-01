@@ -93,7 +93,7 @@ namespace DCGO.CardEffects.BT21
             if(timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play guilmon or growlmonname", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Play guilmon or growlmon in name", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 

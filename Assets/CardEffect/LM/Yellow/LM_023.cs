@@ -212,7 +212,7 @@ namespace DCGO.CardEffects.LM
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           CardEffectCommons.CanTriggerWhenOwnerUseOption(hashtable, null, null, card);
+                           CardEffectCommons.CanTriggerWhenUseOption(hashtable, null, null, card);
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)

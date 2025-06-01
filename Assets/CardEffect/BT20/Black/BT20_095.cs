@@ -73,7 +73,7 @@ namespace DCGO.CardEffects.BT20
                 string EffectDescription()
                 {
                     return
-                        "[All Turns] When any of your [Chronicle] trait Digimon are deleted, <Delay>.\n・By moving your level 3 or higher [Chronicle] trait Digimon from the breeding area to the battle area, it may digivolve into a [Chronicle] trait Digimon card in the hand or trash without paying the cost.";
+                        "[All Turns] When any of your [Chronicle] trait Digimon are deleted, <Delay>.\n・By moving your level 3 or higher Digimon from the breeding area to the battle area, it may digivolve into a [Chronicle] trait Digimon card in the hand or trash without paying the cost.";
                 }
 
                 bool PermanentCondition(Permanent permanent)
@@ -85,7 +85,6 @@ namespace DCGO.CardEffects.BT20
                 bool BreedingAreaPermanentCondition(Permanent permanent)
                 {
                     return permanent.IsDigimon &&
-                           permanent.TopCard.ContainsTraits("Chronicle") &&
                            permanent.TopCard.HasLevel && permanent.Level >= 3 &&
                            permanent.CanMove;
                 }

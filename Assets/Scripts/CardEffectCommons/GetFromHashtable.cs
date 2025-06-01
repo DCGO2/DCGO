@@ -375,7 +375,7 @@ public partial class CardEffectCommons
     #endregion
 
     #region Get whehter only 1 permanent is played from hashtable
-    public static bool IsOnly1CadPlayed(Hashtable hashtable)
+    public static bool IsOnly1CardPlayed(Hashtable hashtable)
     {
         PlayCardClass playCardClass = GetPlayCardClassFromHashtable(hashtable);
 
