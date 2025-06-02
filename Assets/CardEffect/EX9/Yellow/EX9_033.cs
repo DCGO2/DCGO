@@ -1,0 +1,225 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+
+// Kaguyamon
+namespace DCGO.CardEffects.EX9
+{
+    public class EX9_033 : CEntity_Effect
+    {
+        public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
+        {
+            List<ICardEffect> cardEffects = new List<ICardEffect>();
+
+            #region Static Effects
+
+            #region Alernative Digivolution Cost
+
+            if (timing == EffectTiming.None)
+            {
+                bool PermanentCondition(Permanent targetPermanent)
+                {
+                    if (targetPermanent.TopCard.IsLevel5)
+                    {
+                        if (targetPermanent.TopCard.EqualsTraits("Puppet"))
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
+                    permanentCondition: PermanentCondition,
+                    digivolutionCost: 3,
+                    ignoreDigivolutionRequirement: false,
+                    card: card,
+                    condition: null)
+                );
+            }
+
+            #endregion
+
+            #region Give Alliance & Blocker
+
+            if (timing == EffectTiming.None)
+            {
+                bool CanUseCondition()
+                {
+                    return CardEffectCommons.IsExistOnBattleArea(card);
+                }
+
+                bool PermanentCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                    {
+                        if (permanent.IsToken || permanent.TopCard.EqualsTraits("Puppet"))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                cardEffects.Add(CardEffectFactory.BlockerStaticEffect(
+                    permanentCondition: PermanentCondition,
+                    isInheritedEffect: false,
+                    card: card,
+                    condition: CanUseCondition));
+
+                cardEffects.Add(CardEffectFactory.AllianceStaticEffect(
+                    permanentCondition: PermanentCondition,
+                    isInheritedEffect: false,
+                    card: card,
+                    condition: CanUseCondition));
+            }
+
+            #endregion
+
+            #endregion
+
+            #region All Turns
+
+            if (timing == EffectTiming.OnDestroyedAnyone)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Delete 1 lowest level digimon", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetHashString("EX9_033_Deletion");
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[All Turns] [Once Per Turn] When other Digimon are deleted, delete 1 of your opponent's lowest level Digimon.";
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, permanent => permanent != card.PermanentOfThisCard());
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                }
+
+                bool CanSelectPermanentCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                    {
+                        if (CardEffectCommons.IsMinLevel(permanent, card.Owner.Enemy))
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermanentCondition))
+                    {
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, CanSelectPermanentCondition));
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectPermanentCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: maxCount,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: null,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Destroy,
+                            cardEffect: activateClass);
+
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to delete.", "The opponent is selecting 1 Digimon to delete.");
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                    }
+                }
+            }
+
+            #endregion
+
+            #region End of Your Turn
+
+            if (timing == EffectTiming.OnEndTurn)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Play 1 level 4 [Puppet] digimon from trash", null, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetHashString("EX9_033_PlayPuppet");
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[End of Your Turn] [Once Per Turn] You may play 1 level 4 or lower [Puppet] trait Digimon card from your trash without paying the cost.";
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                        && CardEffectCommons.IsOwnerTurn(card);
+                }
+
+                bool CanSelectCardCondition(CardSource cardSource)
+                {
+                    if (cardSource.IsLevel4 && cardSource.EqualsTraits("Puppet"))
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, (cardSource) => CanSelectCardCondition(cardSource)))
+                    {
+                        List<CardSource> selectedCards = new List<CardSource>();
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, CanSelectCardCondition));
+                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                        selectCardEffect.SetUp(
+                                    canTargetCondition: CanSelectCardCondition,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    canNoSelect: () => true,
+                                    selectCardCoroutine: SelectCardCoroutine,
+                                    afterSelectCardCoroutine: null,
+                                    message: "Select 1 card to play.",
+                                    maxCount: maxCount,
+                                    canEndNotMax: false,
+                                    isShowOpponent: true,
+                                    mode: SelectCardEffect.Mode.Custom,
+                                    root: SelectCardEffect.Root.Trash,
+                                    customRootCardList: null,
+                                    canLookReverseCard: true,
+                                    selectPlayer: card.Owner,
+                                    cardEffect: activateClass);
+
+                        selectCardEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
+                        selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
+
+                        yield return StartCoroutine(selectCardEffect.Activate());
+
+                        IEnumerator SelectCardCoroutine(CardSource cardSource)
+                        {
+                            selectedCards.Add(cardSource);
+
+                            yield return null;
+                        }
+
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: selectedCards, activateClass: activateClass, payCost: false, isTapped: false, root: SelectCardEffect.Root.Trash, activateETB: true));
+                    }
+                }
+            }
+
+            #endregion
+
+            return cardEffects;
+        }
+    }
+}
