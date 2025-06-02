@@ -289,7 +289,26 @@ namespace DCGO.CardEffects.BT17
 
                         if (selectedLevel7 != null)
                         {
-                            JogressConditionElement[] elements = (JogressConditionElement[])selectedLevel7.jogressCondition.elements.Clone();
+                            JogressCondition dnaCondition = selectedLevel7.jogressCondition[0];
+
+                            if(selectedLevel7.jogressCondition.Count > 1)
+                            {
+                                #region select DNA condition
+                                SelectDNACondition selectDNACondition = GManager.instance.GetComponent<SelectDNACondition>();
+                                selectDNACondition.SetUp(selectedLevel7.Owner, selectedLevel7, SelectDNA);
+
+                                yield return ContinuousController.instance.StartCoroutine(selectDNACondition.Activate());
+
+                                IEnumerator SelectDNA(int dnaSelection)
+                                {
+                                    dnaCondition = selectedLevel7.jogressCondition[dnaSelection];
+
+                                    yield return null;
+                                }
+                                #endregion
+                            }
+
+                            JogressConditionElement[] elements = (JogressConditionElement[])dnaCondition.elements.Clone();
 
                             for (int i = 0; i < elements.Length; i++)
                             {
