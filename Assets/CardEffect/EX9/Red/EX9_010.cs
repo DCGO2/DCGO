@@ -38,10 +38,12 @@ namespace DCGO.CardEffects.EX9
             #endregion
 
             #region Training
-            if (timing == EffectTiming.None)
+
+            if (timing == EffectTiming.OnDeclaration)
             {
-                // TODO Implement Training
+                cardEffects.Add(CardEffectFactory.TrainingEffect(card: card));
             }
+
             #endregion
 
             #region When Digivolving
