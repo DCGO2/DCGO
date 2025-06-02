@@ -330,6 +330,7 @@ namespace DCGO.CardEffects.EX9
                 activateClass.SetUpICardEffect("De-Digivolve 1", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetHashString("WA_EX9-019");
+                activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -396,8 +397,6 @@ namespace DCGO.CardEffects.EX9
                 }
             }
             #endregion
-
-            
 
             return cardEffects;
         }
