@@ -24,9 +24,9 @@ namespace DCGO.CardEffects.EX9
 
             #region Training
 
-            if (timing == EffectTiming.OnStartMainPhase)
+            if (timing == EffectTiming.OnDeclaration)
             {
-                // To be implemented
+                cardEffects.Add(CardEffectFactory.TrainingEffect(card: card));
             }
 
             #endregion
