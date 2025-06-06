@@ -40,7 +40,7 @@ namespace DCGO.CardEffects.EX9
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Place 1top card from deck FD as bottom source, delete 1 digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Place top card from deck FD as bottom source, delete 1 digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("EX9_061_Deletion");
                 cardEffects.Add(activateClass);
@@ -90,8 +90,7 @@ namespace DCGO.CardEffects.EX9
                     {
                         CardSource selectedCard = card.Owner.LibraryCards[0];
                         yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddExecutingCard(selectedCard));
-                        selectedCard.SetReverse();
-                        yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass));
+                        yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass, isFacedown: true));
 
                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                         {
