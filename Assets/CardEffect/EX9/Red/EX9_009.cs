@@ -96,10 +96,9 @@ namespace DCGO.CardEffects.EX9
                     {
                         var selectedCard = card.Owner.LibraryCards[0];
                         yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddExecutingCard(selectedCard));
-                        selectedCard.SetReverse();
-                        yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass));
+                        yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass, isFacedown: true));
 
-                        var flippedCards = card.PermanentOfThisCard().DigivolutionCards.Select(x => x.IsFlipped).Count();
+                        var flippedCards = card.PermanentOfThisCard().DigivolutionCards.Count(x => x.IsFlipped);
                         var dpBonus = flippedCards * 1000;
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: card.PermanentOfThisCard(), changeValue: dpBonus, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
                     }

@@ -140,7 +140,7 @@ public class CardInfo : MonoBehaviour
 
     public void OnClick()
     {
-        if (cardSource.IsFlipped && cardSource.Owner.isYou)
+        if (cardSource.IsFlipped && !cardSource.Owner.isYou)
         {
             return;
         }

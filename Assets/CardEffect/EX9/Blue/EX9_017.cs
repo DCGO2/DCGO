@@ -53,7 +53,7 @@ namespace DCGO.CardEffects.EX9
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Place 1 digimon in hand as source, to delete digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Place 1 digimon in hand as source, to trash digimon sources", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
@@ -123,9 +123,8 @@ namespace DCGO.CardEffects.EX9
                     if (selectedCard)
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddExecutingCard(selectedCard));
-                        selectedCard.SetReverse();
                         yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard()
-                            .AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass));
+                            .AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass, isFacedown: true));
 
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SelectTrashDigivolutionCards(
                             permanentCondition: CanSelectPermanentCondition,
@@ -146,7 +145,7 @@ namespace DCGO.CardEffects.EX9
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Place 1 digimon in hand as source, to delete digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Place 1 digimon in hand as source, to trash digimon sources", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
@@ -216,9 +215,8 @@ namespace DCGO.CardEffects.EX9
                     if (selectedCard)
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddExecutingCard(selectedCard));
-                        selectedCard.SetReverse();
                         yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard()
-                            .AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass));
+                            .AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass, isFacedown: true));
 
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SelectTrashDigivolutionCards(
                             permanentCondition: CanSelectPermanentCondition,
