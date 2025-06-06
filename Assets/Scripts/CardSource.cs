@@ -2961,13 +2961,25 @@ public class CardSource : MonoBehaviour
 
     #endregion
 
+
+    #region whether this card has "WG" trait
+
+    public bool HasWGTraits
+    {
+        get
+        {
+            return EqualsTraits("WG");
+         }
+    }
+
     #region whether this card has "DM" trait
 
     public bool HasDMTraits
     {
         get
         {
-            return ContainsTraits("DM");
+            return EqualsTraits("DM");
+
         }
     }
 
@@ -2975,6 +2987,7 @@ public class CardSource : MonoBehaviour
 }
 
 public class JogressCondition
+  
 {
     public JogressCondition(JogressConditionElement[] elements, int cost)
     {
