@@ -48,6 +48,7 @@ namespace DCGO.CardEffects.EX6
             if (timing == EffectTiming.OptionSkill)
             {
                 CardSource selectedLevel7 = null;
+                JogressCondition selectedDNACondition = null; 
                 List<Permanent> allowedPermanents = new List<Permanent>();
                 List<CardSource> allowedCards = new List<CardSource>();
 
@@ -88,7 +89,7 @@ namespace DCGO.CardEffects.EX6
 
                 void FilterAllowableSelections(Permanent selectedPermanent = null) 
                 {
-                    JogressConditionElement[] elements = (JogressConditionElement[])selectedLevel7.jogressCondition.elements.Clone();
+                    JogressConditionElement[] elements = (JogressConditionElement[])selectedDNACondition.elements.Clone();
 
                     allowedPermanents = new List<Permanent>();
                     allowedCards = new List<CardSource>();
@@ -172,6 +173,25 @@ namespace DCGO.CardEffects.EX6
 
                     if(selectedLevel7 != null)
                     {
+                        selectedDNACondition = selectedLevel7.jogressCondition[0];
+
+                        if (selectedLevel7.jogressCondition.Count > 1)
+                        {
+                            #region select DNA condition
+                            SelectDNACondition selectDNACondition = GManager.instance.GetComponent<SelectDNACondition>();
+                            selectDNACondition.SetUp(selectedLevel7.Owner, selectedLevel7, SelectDNA);
+
+                            yield return ContinuousController.instance.StartCoroutine(selectDNACondition.Activate());
+
+                            IEnumerator SelectDNA(int dnaSelection)
+                            {
+                                selectedDNACondition = selectedLevel7.jogressCondition[dnaSelection];
+
+                                yield return null;
+                            }
+                            #endregion
+                        }
+
                         FilterAllowableSelections();
 
                         #region Selecting Field Permanent for DNA

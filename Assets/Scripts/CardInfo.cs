@@ -9,6 +9,7 @@ public class CardInfo : MonoBehaviour
 {
     [Header("BackGround")]
     public List<Image> BackGrounds = new List<Image>();
+    public GameObject BackGround;
     public GameObject LinkBackground;
 
     [Header("CardImage")]
@@ -30,6 +31,8 @@ public class CardInfo : MonoBehaviour
     UnityAction OnEnterAction;
     UnityAction OnExitAction;
 
+    private Permanent detailPermanent;
+
     public CardSource cardSource { get; set; }
 
     public void OnEnter()
@@ -42,8 +45,11 @@ public class CardInfo : MonoBehaviour
         OnExitAction?.Invoke();
     }
 
-    public async void SetUpCardInfo(CardSource cardSource)
+    public async void SetUpCardInfo(CardSource cardSource, Permanent permanent = null)
     {
+        if (permanent != null)
+            detailPermanent = permanent;
+
         this.cardSource = cardSource;
 
         this.gameObject.SetActive(true);
@@ -134,7 +140,7 @@ public class CardInfo : MonoBehaviour
 
     public void OnClick()
     {
-        if (cardSource.IsFlipped)
+        if (cardSource.IsFlipped && cardSource.Owner.isYou)
         {
             return;
         }

@@ -11,7 +11,8 @@ public partial class CardEffectFactory
     {
         bool CanUseCondition()
         {
-            return CardEffectCommons.CanActivateProgress(card);
+            return CardEffectCommons.CanActivateProgress(card) &&
+                   (condition == null || condition());
         }
 
         return ProgressStaticEffect(isInheritedEffect: isInheritedEffect, card: card, condition: CanUseCondition);
