@@ -18183,6 +18183,8 @@ GameObject:
   - component: {fileID: 198236660}
   - component: {fileID: 198236662}
   - component: {fileID: 198236661}
+  - component: {fileID: 198236663}
+  - component: {fileID: 198236664}
   m_Layer: 0
   m_Name: GManager
   m_TagString: Untagged
@@ -18236,6 +18238,8 @@ MonoBehaviour:
   DebuffSE: {fileID: 8300000, guid: 6435d2fe6607fe040b957ce33d550aec, type: 3}
   DigiXrosSelectCardEffect: {fileID: 100004, guid: 66cc48e0294709b4ab3958c8a243b0ba, type: 3}
   DigiXrosSelectCardEffectSE: {fileID: 8300000, guid: 27f3b38afa2b9da44915f77d9eb0c7d6, type: 3}
+  AssemblySelectCardEffect: {fileID: 0}
+  AssemblySelectCardEffectSE: {fileID: 0}
   FreezeSE: {fileID: 8300000, guid: 949e1686482c3d2439a1d7242d9f6828, type: 3}
   HealLifeEffect: {fileID: 100008, guid: bc00d416d18684a42ae0ecb244d2fa95, type: 3}
   HealLifeSE: {fileID: 8300000, guid: 3c8669efb2f62b645a53ef51b5979db2, type: 3}
@@ -18326,6 +18330,7 @@ MonoBehaviour:
   BackgroundSpriteRenderer: {fileID: 141403726}
   attackProcess: {fileID: 198236652}
   selectJogressEffect: {fileID: 198236653}
+  selectDNACondition: {fileID: 0}
   selectBurstDigivolutionEffect: {fileID: 198236660}
   selectAppFusionEffect: {fileID: 198236662}
   autoProcessing_CutIn: {fileID: 380143110}
@@ -18564,6 +18569,34 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9ed437182e0b5594f8bbbad4a80241be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EvoRoot: {fileID: 0}
+  selectedLink: {fileID: 0}
+--- !u!114 &198236663
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 198236640}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0322d74dbfb937a4f818327110776d51, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _selectedCount: 0
+  _endSelect: 0
+--- !u!114 &198236664
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 198236640}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69f9ca96bc7186a45880ab24f159e284, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &208123383
@@ -43623,6 +43656,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   commandText: {fileID: 1573802145}
   digiXrosObject: {fileID: 1798886764}
+  assemblyObject: {fileID: 0}
 --- !u!95 &507911419
 Animator:
   serializedVersion: 4
@@ -52379,7 +52413,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Hong AHOiHong AHOi
+  m_text: Opponent
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0f5eec38322e811419052debc7c4b2bd, type: 2}
   m_sharedMaterial: {fileID: -8217270772861593479, guid: 0f5eec38322e811419052debc7c4b2bd, type: 2}
@@ -52406,7 +52440,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 26.05
+  m_fontSize: 38.45
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -155126,7 +155160,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: TEST HOIA
+  m_text: Player
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0f5eec38322e811419052debc7c4b2bd, type: 2}
   m_sharedMaterial: {fileID: -8217270772861593479, guid: 0f5eec38322e811419052debc7c4b2bd, type: 2}
@@ -197837,6 +197871,7 @@ MonoBehaviour:
   PlayText: {fileID: 0}
   JogressPlayText: {fileID: 0}
   BurstPlayText: {fileID: 0}
+  AppFusionPlayText: {fileID: 0}
   titleText: {fileID: 0}
   singleDigivolutionArrow: {fileID: 0}
   jogressDigivolutionArrow: {fileID: 0}

@@ -100,6 +100,7 @@ public class GManager : MonoBehaviourPun
 
     [Header("ジョグレス選択")]
     public SelectJogressEffect selectJogressEffect;
+    public SelectDNACondition selectDNACondition;
 
     [Header("burst evolution selection")]
     public SelectBurstDigivolutionEffect selectBurstDigivolutionEffect;
@@ -510,8 +511,9 @@ public class GManager : MonoBehaviourPun
         //Place Top Security
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.R))
         {
-            photonView.RPC("PlaceInSecurityRPC", RpcTarget.Others);
-            StartCoroutine(PlaceInSecurity(You));
+            bool keyInput = Input.GetKeyDown(KeyCode.LeftShift);
+            photonView.RPC("PlaceInSecurityRPC", RpcTarget.Others, keyInput);
+            StartCoroutine(PlaceInSecurity(You, keyInput));
         }
 
         //Gain Memory
@@ -549,9 +551,9 @@ public class GManager : MonoBehaviourPun
     }
 
     [PunRPC]
-    public void PlaceInSecurityRPC()
+    public void PlaceInSecurityRPC(bool keyInput)
     {
-        StartCoroutine(PlaceInSecurity(Opponent));
+        StartCoroutine(PlaceInSecurity(Opponent, keyInput));
     }
 
     [PunRPC]
@@ -623,7 +625,7 @@ public class GManager : MonoBehaviourPun
         yield return StartCoroutine(turnStateMachine.SetMainPhase());
     }
 
-    IEnumerator PlaceInSecurity(Player _player)
+    IEnumerator PlaceInSecurity(Player _player, bool placeFaceup)
     {
         CardSource selectedSource = null;
 
@@ -656,7 +658,7 @@ public class GManager : MonoBehaviourPun
         if (selectedSource != null)
         {
             // Place this card face up as the top security card
-            yield return StartCoroutine(CardObjectController.AddSecurityCard(selectedSource, toTop: true, faceUp: true));
+            yield return StartCoroutine(CardObjectController.AddSecurityCard(selectedSource, toTop: true, faceUp: placeFaceup));
 
             yield return StartCoroutine(GetComponent<Effects>().CreateRecoveryEffect(selectedSource.Owner));
 

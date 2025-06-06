@@ -1695,10 +1695,12 @@ public class CardSource : MonoBehaviour
 
         if (jogressCondition != null)
         {
-            foreach (JogressConditionElement element in jogressCondition.elements)
-                checkStrings.Add(element.SelectMessage);
+            foreach(JogressCondition jogress in jogressCondition)
+            {
+                foreach (JogressConditionElement element in jogress.elements)
+                    checkStrings.Add(element.SelectMessage);
+            }
         }
-
 
         foreach (string checkString in checkStrings)
         {
@@ -2144,7 +2146,8 @@ public class CardSource : MonoBehaviour
             {
                 if (EffectList(timing)
                     .Some(cardEffect => cardEffect.IsInheritedEffect
-                    && !cardEffect.IsDisabled))
+                    && !cardEffect.IsDisabled
+                    && !IsFlipped))
                 {
                     return true;
                 }
@@ -2156,19 +2159,19 @@ public class CardSource : MonoBehaviour
     #endregion
 
     #region DNA digivolution requirement
-    public JogressCondition jogressCondition
+    public List<JogressCondition> jogressCondition
     {
         get
         {
-            ICardEffect addJogressConditionEffect =
+            List<JogressCondition> addJogressConditionEffect =
             EffectList(EffectTiming.None)
-            .Find(cardEffect => cardEffect is IAddJogressConditionEffect
+            .Filter(cardEffect => cardEffect is IAddJogressConditionEffect
                 && cardEffect.CanUse(null)
-                && ((IAddJogressConditionEffect)cardEffect).GetJogressCondition(this) != null);
+                && ((IAddJogressConditionEffect)cardEffect).GetJogressCondition(this) != null)
+            .Select(cardEffect => ((IAddJogressConditionEffect)cardEffect).GetJogressCondition(this))
+            .ToList();
 
-            if (addJogressConditionEffect != null) return ((IAddJogressConditionEffect)addJogressConditionEffect).GetJogressCondition(this);
-
-            return null;
+            return addJogressConditionEffect;
         }
     }
     #endregion
@@ -2196,27 +2199,75 @@ public class CardSource : MonoBehaviour
     {
         if (jogressCondition != null)
         {
-            if (Owner.GetBattleAreaDigimons().Count >= jogressCondition.elements.Length)
+            foreach(JogressCondition condition in jogressCondition)
             {
-                List<Permanent[]> permanentsList = ParameterComparer.Enumerate(Owner.GetBattleAreaDigimons(), jogressCondition.elements.Length).ToList();
-
-                foreach (Permanent[] permanents in permanentsList)
+                if (Owner.GetBattleAreaDigimons().Count >= condition.elements.Length)
                 {
-                    if (permanents != null)
+                    List<Permanent[]> permanentsList = ParameterComparer.Enumerate(Owner.GetBattleAreaDigimons(), condition.elements.Length).ToList();
+
+                    foreach (Permanent[] permanents in permanentsList)
                     {
-                        if (permanents.Length == jogressCondition.elements.Length)
+                        if (permanents != null)
                         {
-                            if (permanents.Length == 2)
+                            if (permanents.Length == condition.elements.Length)
                             {
-                                if (jogressCondition.elements[0].EvoRootCondition(permanents[0]) && !this.CanNotEvolve(permanents[0]))
+                                if (permanents.Length == 2)
                                 {
-                                    if (jogressCondition.elements[1].EvoRootCondition(permanents[1]) && !this.CanNotEvolve(permanents[1]))
+                                    if (condition.elements[0].EvoRootCondition(permanents[0]) && !this.CanNotEvolve(permanents[0]))
+                                    {
+                                        if (condition.elements[1].EvoRootCondition(permanents[1]) && !this.CanNotEvolve(permanents[1]))
+                                        {
+                                            if (PayCost)
+                                            {
+                                                int cost = condition.cost;
+
+                                                cost = GetChangedCostItselef(cost, SelectCardEffect.Root.Hand, permanents.ToList(), checkAvailability: true);
+
+                                                if (Owner.MaxMemoryCost < cost)
+                                                {
+                                                    return false;
+                                                }
+                                            }
+
+                                            return true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+    #endregion
+
+    #region whether target permanent can DNA digivolve into this card
+    public bool CanJogressFromTargetPermanent(Permanent targetPermanent, bool PayCost)
+    {
+        if (targetPermanent != null)
+        {
+            if (targetPermanent.TopCard != null)
+            {
+                foreach (JogressCondition condition in jogressCondition)
+                {
+                    if (targetPermanent.TopCard.Owner.GetBattleAreaDigimons().Contains(targetPermanent))
+                    {
+                        if (this.CanPlayJogress(PayCost))
+                        {
+                            if (condition != null)
+                            {
+                                if (condition.elements.ToList().Count((element) => element.EvoRootCondition(targetPermanent)) >= 1)
+                                {
+                                    if (!this.CanNotEvolve(targetPermanent))
                                     {
                                         if (PayCost)
                                         {
-                                            int cost = jogressCondition.cost;
+                                            int cost = condition.cost;
 
-                                            cost = GetChangedCostItselef(cost, SelectCardEffect.Root.Hand, permanents.ToList(), checkAvailability: true);
+                                            cost = GetChangedCostItselef(cost, SelectCardEffect.Root.Hand, new List<Permanent>() { targetPermanent, new Permanent(new List<CardSource>()) }, checkAvailability: true);
 
                                             if (Owner.MaxMemoryCost < cost)
                                             {
@@ -2238,48 +2289,6 @@ public class CardSource : MonoBehaviour
     }
     #endregion
 
-    #region whether target permanent can DNA digivolve into this card
-    public bool CanJogressFromTargetPermanent(Permanent targetPermanent, bool PayCost)
-    {
-        if (targetPermanent != null)
-        {
-            if (targetPermanent.TopCard != null)
-            {
-                if (targetPermanent.TopCard.Owner.GetBattleAreaDigimons().Contains(targetPermanent))
-                {
-                    if (this.CanPlayJogress(PayCost))
-                    {
-                        if (jogressCondition != null)
-                        {
-                            if (jogressCondition.elements.ToList().Count((element) => element.EvoRootCondition(targetPermanent)) >= 1)
-                            {
-                                if (!this.CanNotEvolve(targetPermanent))
-                                {
-                                    if (PayCost)
-                                    {
-                                        int cost = jogressCondition.cost;
-
-                                        cost = GetChangedCostItselef(cost, SelectCardEffect.Root.Hand, new List<Permanent>() { targetPermanent, new Permanent(new List<CardSource>()) }, checkAvailability: true);
-
-                                        if (Owner.MaxMemoryCost < cost)
-                                        {
-                                            return false;
-                                        }
-                                    }
-
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        return false;
-    }
-    #endregion
-
     #region whether target permanents can DNA digivolve into this card
     public bool CanJogressFromTargetPermanents(List<Permanent> targetPermanents, bool PayCost)
     {
@@ -2289,34 +2298,37 @@ public class CardSource : MonoBehaviour
             {
                 if (this.CanPlayJogress(PayCost))
                 {
-                    if (jogressCondition != null)
+                    foreach (JogressCondition condition in jogressCondition)
                     {
-                        List<Permanent[]> permanentsList = ParameterComparer.Enumerate(targetPermanents, 2).ToList();
-
-                        foreach (Permanent[] permanents in permanentsList)
+                        if (jogressCondition != null)
                         {
-                            if (jogressCondition.elements.Length == permanents.Length)
-                            {
-                                bool canJogress = true;
+                            List<Permanent[]> permanentsList = ParameterComparer.Enumerate(targetPermanents, 2).ToList();
 
-                                for (int i = 0; i < permanents.Length; i++)
+                            foreach (Permanent[] permanents in permanentsList)
+                            {
+                                if (condition.elements.Length == permanents.Length)
                                 {
-                                    if (permanents[i] != null)
+                                    bool canJogress = true;
+
+                                    for (int i = 0; i < permanents.Length; i++)
                                     {
-                                        if (permanents[i].TopCard != null)
+                                        if (permanents[i] != null)
                                         {
-                                            if ((!jogressCondition.elements[i].EvoRootCondition(permanents[i])) || this.CanNotEvolve(permanents[i]))
+                                            if (permanents[i].TopCard != null)
                                             {
-                                                canJogress = false;
-                                                break;
+                                                if ((!condition.elements[i].EvoRootCondition(permanents[i])) || this.CanNotEvolve(permanents[i]))
+                                                {
+                                                    canJogress = false;
+                                                    break;
+                                                }
                                             }
                                         }
                                     }
-                                }
 
-                                if (canJogress)
-                                {
-                                    return true;
+                                    if (canJogress)
+                                    {
+                                        return true;
+                                    }
                                 }
                             }
                         }
@@ -2494,9 +2506,13 @@ public class CardSource : MonoBehaviour
                 }
             }
 
-            if (Owner.GetBattleAreaDigimons().Count >= 1)
+            List<Permanent> availableDigimon = new List<Permanent>();
+            availableDigimon.AddRange(Owner.GetBattleAreaDigimons());
+            availableDigimon.AddRange(Owner.GetBreedingAreaPermanents());
+
+            if (availableDigimon.Count >= 1)
             {
-                foreach (Permanent digimon in Owner.GetFieldPermanents())
+                foreach (Permanent digimon in availableDigimon)
                 {
                     if (digimon != null)
                     {
@@ -2581,7 +2597,7 @@ public class CardSource : MonoBehaviour
         {
             if (targetPermanent.TopCard != null)
             {
-                if (targetPermanent.TopCard.Owner.GetFieldPermanents().Contains(targetPermanent))
+                if (targetPermanent.TopCard.Owner.GetFieldPermanents().Contains(targetPermanent) || targetPermanent.TopCard.Owner.GetBreedingAreaPermanents().Contains(targetPermanent))
                 {
                     if (this.CanPlayBurst(PayCost))
                     {
@@ -2945,6 +2961,7 @@ public class CardSource : MonoBehaviour
 
     #endregion
 
+
     #region whether this card has "WG" trait
 
     public bool HasWGTraits
@@ -2952,6 +2969,17 @@ public class CardSource : MonoBehaviour
         get
         {
             return EqualsTraits("WG");
+         }
+    }
+
+    #region whether this card has "DM" trait
+
+    public bool HasDMTraits
+    {
+        get
+        {
+            return EqualsTraits("DM");
+
         }
     }
 
@@ -2959,6 +2987,7 @@ public class CardSource : MonoBehaviour
 }
 
 public class JogressCondition
+  
 {
     public JogressCondition(JogressConditionElement[] elements, int cost)
     {
