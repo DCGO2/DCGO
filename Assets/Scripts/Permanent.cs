@@ -929,9 +929,6 @@ public class Permanent
 
         foreach (CardSource addedDigivolutionCard in addedDigivolutionCards)
         {
-            if(isFacedown)
-                addedDigivolutionCard.SetReverse();
-
             if (addedDigivolutionCard.PermanentOfThisCard() != null)
             {
                 if (addedDigivolutionCard.PermanentOfThisCard() != this)
@@ -979,7 +976,12 @@ public class Permanent
             if (!IsToken && !addedDigivolutionCard.IsToken)
             {
                 cardSources.Add(addedDigivolutionCard);
-                addedDigivolutionCard.SetFace("Permanent.AddDigivolutionCardsBottom");
+
+                if (isFacedown)
+                    addedDigivolutionCard.SetReverse();
+                else
+                    addedDigivolutionCard.SetFace("Permanent.AddDigivolutionCardsBottom");
+
                 addedCards.Add(addedDigivolutionCard);
             }
         }

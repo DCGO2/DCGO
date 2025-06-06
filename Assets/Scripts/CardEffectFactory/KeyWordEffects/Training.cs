@@ -11,7 +11,7 @@ public partial class CardEffectFactory
     {
         ActivateClass activateClass = new ActivateClass();
         activateClass.SetUpICardEffect("Training", CanUseCondition, card);
-        activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, DataBase.SaveEffectDiscription());
+        activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, DataBase.TrainingEffectDiscription());
 
         bool CanUseCondition(Hashtable hashtable)
         {
