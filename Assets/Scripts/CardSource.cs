@@ -2971,6 +2971,7 @@ public class CardSource : MonoBehaviour
             return EqualsTraits("WG");
          }
     }
+    #endregion
 
     #region whether this card has "DM" trait
 
