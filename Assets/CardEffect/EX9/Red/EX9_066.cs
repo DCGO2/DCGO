@@ -76,7 +76,7 @@ namespace DCGO.CardEffects.EX9
                         yield return null;
                     }
 
-                    if(selectedSource != null)
+                    if(selectedSource == null)
                     {
                         yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
                     }                    

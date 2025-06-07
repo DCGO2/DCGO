@@ -67,6 +67,27 @@ namespace DCGO.CardEffects.EX9
                     isInheritedEffect: false,
                     card: card,
                     condition: CanUseCondition));
+            }
+
+            if (timing == EffectTiming.OnAllyAttack)
+            {
+                bool CanUseCondition()
+                {
+                    return CardEffectCommons.IsExistOnBattleArea(card);
+                }
+
+                bool PermanentCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                    {
+                        if (permanent.IsToken || permanent.TopCard.EqualsTraits("Puppet"))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
 
                 cardEffects.Add(CardEffectFactory.AllianceStaticEffect(
                     permanentCondition: PermanentCondition,
@@ -85,7 +106,7 @@ namespace DCGO.CardEffects.EX9
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete 1 lowest level digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetHashString("EX9_033_Deletion");
                 cardEffects.Add(activateClass);
 
@@ -149,14 +170,19 @@ namespace DCGO.CardEffects.EX9
             if (timing == EffectTiming.OnEndTurn)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play 1 level 4 [Puppet] digimon from trash", null, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpICardEffect("Play 1 level 4 [Puppet] digimon from trash", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("EX9_033_PlayPuppet");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
                     return "[End of Your Turn] [Once Per Turn] You may play 1 level 4 or lower [Puppet] trait Digimon card from your trash without paying the cost.";
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -167,19 +193,15 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.IsLevel4 && cardSource.EqualsTraits("Puppet"))
-                    {
-                        return true;
-                    }
-                    return false;
+                    return CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass, SelectCardEffect.Root.Trash) &&
+                           cardSource.IsLevel4 && cardSource.EqualsTraits("Puppet");
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, (cardSource) => CanSelectCardCondition(cardSource)))
+                    if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
                     {
                         List<CardSource> selectedCards = new List<CardSource>();
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, CanSelectCardCondition));
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                         selectCardEffect.SetUp(
@@ -190,7 +212,7 @@ namespace DCGO.CardEffects.EX9
                                     selectCardCoroutine: SelectCardCoroutine,
                                     afterSelectCardCoroutine: null,
                                     message: "Select 1 card to play.",
-                                    maxCount: maxCount,
+                                    maxCount: 1,
                                     canEndNotMax: false,
                                     isShowOpponent: true,
                                     mode: SelectCardEffect.Mode.Custom,

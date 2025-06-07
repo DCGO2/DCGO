@@ -280,7 +280,7 @@ namespace DCGO.CardEffects.EX9
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
                            !permanent.IsOption &&
-                           (permanent.TopCard.HasGreymonName || permanent.TopCard.EqualsCardName("Matt Ishida"));
+                           (permanent.TopCard.HasGreymonName || permanent.TopCard.ContainsCardName("Matt Ishida"));
                 }
 
                 bool DigivolveRequirement(Permanent permanent)

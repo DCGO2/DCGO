@@ -41,6 +41,7 @@ namespace DCGO.CardEffects.EX9
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Place 1 digimon from hand as source for Recovery +1", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetHashString("Recover_EX9-029");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -112,6 +113,7 @@ namespace DCGO.CardEffects.EX9
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Place 1 digimon from hand as source for Recovery +1", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetHashString("Recover_EX9-029");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
