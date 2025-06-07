@@ -22,7 +22,11 @@ namespace DCGO.CardEffects.EX9
                 cardEffects.Add(ignoreColorConditionClass);
 
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.TopCard.IsDigimon || permanent.TopCard.IsTamer && permanent.TopCard.EqualsTraits("DM"));
+                {
+                    return card.Owner.GetFieldPermanents().Some(permanet =>
+                        permanet.TopCard.HasDMTraits &&
+                        (permanet.TopCard.IsDigimon || permanet.TopCard.IsTamer));
+                }
 
                 bool CardCondition(CardSource cardSource)
                     => cardSource == card;
@@ -67,8 +71,8 @@ namespace DCGO.CardEffects.EX9
             if (timing == EffectTiming.OnDeclaration)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpICardEffect("Place 1 face down in sources, digivolve into [DM] trait Digimon", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -97,7 +101,7 @@ namespace DCGO.CardEffects.EX9
                 {
                     if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent))
                     {
-                        if (permanent.TopCard.EqualsTraits("DM"))
+                        if (permanent.TopCard.HasDMTraits)
                         {
                             return true;
                         }
@@ -105,90 +109,97 @@ namespace DCGO.CardEffects.EX9
                     return false;
                 }
 
-                bool CanSelectDigivovleCondition(CardSource card)
-                {
-                    return card.EqualsTraits("DM") &&
-                           card.CanPlayCardTargetFrame(card.PermanentOfThisCard().PermanentFrame, true, activateClass);
-                }
-
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (card.Owner.HandCards.Any())
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: new List<Permanent>() { card.PermanentOfThisCard() }, activateClass: activateClass, successProcess: permanents => SuccessProcess(), failureProcess: null));
+
+                    CardSource selectedCard = null;
+
+                    IEnumerator SuccessProcess()
                     {
-                        CardSource selectedCard = null;
-                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-                        selectHandEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: (cardSource) => true,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: 1,
-                            canNoSelect: true,
-                            canEndNotMax: false,
-                            isShowOpponent: false,
-                            selectCardCoroutine: SelectCardCoroutine,
-                            afterSelectCardCoroutine: null,
-                            mode: SelectHandEffect.Mode.Custom,
-                            cardEffect: activateClass);
-                        yield return StartCoroutine(selectHandEffect.Activate());
-                        selectHandEffect.SetUpCustomMessage("Select a card to add face down as a source", "Opponent is selecting a card to add face down as a source");
-
-                        IEnumerator SelectCardCoroutine(CardSource cardSource)
+                        if (card.Owner.HandCards.Count > 0)
                         {
-                            selectedCard = cardSource;
-                            yield return null;
-                        }
+                            SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                            selectHandEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: (cardSource) => true,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: 1,
+                                canNoSelect: true,
+                                canEndNotMax: false,
+                                isShowOpponent: false,
+                                selectCardCoroutine: SelectCardCoroutine,
+                                afterSelectCardCoroutine: null,
+                                mode: SelectHandEffect.Mode.Custom,
+                                cardEffect: activateClass);
 
-                        if (selectedCard != null)
-                        {
-                            if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermanentCondition))
+                            yield return StartCoroutine(selectHandEffect.Activate());
+
+                            selectHandEffect.SetUpCustomMessage("Select a card to add face down as a source", "Opponent is selecting a card to add face down as a source");
+
+                            IEnumerator SelectCardCoroutine(CardSource cardSource)
                             {
-                                Permanent selectedPermanent = null;
-                                int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersPermanentCount(card, CanSelectPermanentCondition));
+                                selectedCard = cardSource;
+                                yield return null;
+                            }
+                        }
+                    }
 
-                                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-                                selectPermanentEffect.SetUp(
-                                    selectPlayer: card.Owner,
-                                    canTargetCondition: CanSelectPermanentCondition,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    maxCount: maxCount,
-                                    canNoSelect: false,
-                                    canEndNotMax: false,
-                                    selectPermanentCoroutine: SelectPermanentCoroutine,
-                                    afterSelectPermanentCoroutine: null,
-                                    mode: SelectPermanentEffect.Mode.Custom,
-                                    cardEffect: activateClass
-                                );
+                    if (selectedCard != null)
+                    {
+                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermanentCondition))
+                        {
+                            Permanent selectedPermanent = null;
 
-                                selectPermanentEffect.SetUpCustomMessage("Select a Digimon to add source to", "Opponent is selecting a Digimon to add source to");
-                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                            
+                            selectPermanentEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: CanSelectPermanentCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: 1,
+                                canNoSelect: false,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: SelectPermanentCoroutine,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Custom,
+                                cardEffect: activateClass
+                            );
 
-                                IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                            selectPermanentEffect.SetUpCustomMessage("Select a Digimon to add source to", "Opponent is selecting a Digimon to add source to");
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                            IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                            {
+                                selectedPermanent = permanent;
+                                yield return null;
+                            }
+
+                            if (selectedPermanent != null)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddExecutingCard(selectedCard));
+                                yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass, isFacedown: true));
+
+                                bool CanSelectDigivovleCondition(CardSource card)
                                 {
-                                    selectedPermanent = permanent;
-                                    yield return null;
+                                    return card.HasDMTraits &&
+                                           card.CanPlayCardTargetFrame(selectedPermanent.PermanentFrame, true, activateClass);
                                 }
 
-                                if (selectedPermanent != null)
+                                if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectDigivovleCondition))
                                 {
-                                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddExecutingCard(selectedCard));
-                                    selectedCard.SetReverse();
-                                    yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass));
-
-                                    if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectDigivovleCondition))
-                                    {
-                                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                                            targetPermanent: selectedPermanent,
-                                            cardCondition: CanSelectDigivovleCondition,
-                                            payCost: true,
-                                            reduceCostTuple: (reduceCost: 2, reduceCostCardCondition: null),
-                                            fixedCostTuple: null,
-                                            ignoreDigivolutionRequirementFixedCost: -1,
-                                            isHand: true,
-                                            activateClass: activateClass,
-                                            successProcess: null));
-                                    }
+                                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                                        targetPermanent: selectedPermanent,
+                                        cardCondition: CanSelectDigivovleCondition,
+                                        payCost: true,
+                                        reduceCostTuple: (reduceCost: 2, reduceCostCardCondition: null),
+                                        fixedCostTuple: null,
+                                        ignoreDigivolutionRequirementFixedCost: -1,
+                                        isHand: true,
+                                        activateClass: activateClass,
+                                        successProcess: null));
                                 }
                             }
                         }

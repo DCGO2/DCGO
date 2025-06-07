@@ -38,7 +38,7 @@ namespace DCGO.CardEffects.EX9
             #region Alliance/Blocker
             if (timing == EffectTiming.OnAllyAttack)
             {
-                cardEffects.Add(CardEffectFactory.AllianceSelfEffect(isInheritedEffect: true, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.AllianceSelfEffect(isInheritedEffect: false, card: card, condition: null));
             }
 
             if (timing == EffectTiming.None)
@@ -114,7 +114,7 @@ namespace DCGO.CardEffects.EX9
                         canEndNotMax: false,
                         selectPermanentCoroutine: null,
                         afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Bounce,
+                        mode: SelectPermanentEffect.Mode.PutLibraryBottom,
                         cardEffect: activateClass);
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
@@ -155,7 +155,7 @@ namespace DCGO.CardEffects.EX9
                         canEndNotMax: false,
                         selectPermanentCoroutine: null,
                         afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Bounce,
+                        mode: SelectPermanentEffect.Mode.PutLibraryBottom,
                         cardEffect: activateClass);
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());

@@ -18,28 +18,17 @@ namespace DCGO.CardEffects.EX9
                 IgnoreColorConditionClass ignoreColorConditionClass = new IgnoreColorConditionClass();
                 ignoreColorConditionClass.SetUpICardEffect("Ignore color requirements", CanUseCondition, card);
                 ignoreColorConditionClass.SetUpIgnoreColorConditionClass(cardCondition: CardCondition);
-
                 cardEffects.Add(ignoreColorConditionClass);
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.TopCard.HasDMTraits && (permanent.IsDigimon || permanent.IsTamer)))
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return card.Owner.GetFieldPermanents().Some(permanet =>
+                        permanet.TopCard.HasDMTraits &&
+                        (permanet.TopCard.IsDigimon || permanet.TopCard.IsTamer));
                 }
 
                 bool CardCondition(CardSource cardSource)
-                {
-                    if (cardSource == card)
-                    {
-                        return true;
-                    }
-
-                    return false;
-                }
+                    => cardSource == card;
             }
             #endregion
 
@@ -214,9 +203,10 @@ namespace DCGO.CardEffects.EX9
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
                     yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
-                }
 
-                cardEffects.Add(CardEffectFactory.PlaceSelfDelayOptionSecurityEffect(card));
+                    if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: card, payCost: false, cardEffect: activateClass, isPlayOption: true))
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlaceDelayOptionCards(card: card, cardEffect: activateClass));
+                }
             }
             #endregion
 

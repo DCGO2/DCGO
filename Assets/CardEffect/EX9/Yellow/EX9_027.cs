@@ -65,7 +65,7 @@ namespace DCGO.CardEffects.EX9
                     SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
                     selectHandEffect.SetUp(
                         selectPlayer: card.Owner,
-                        canTargetCondition: null,
+                        canTargetCondition: (cardSource) => true,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: 1,
@@ -253,7 +253,7 @@ namespace DCGO.CardEffects.EX9
 
                 bool AllyPermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent) && permanent != card.PermanentOfThisCard().TopCard.PermanentOfThisCard();
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) && permanent != card.PermanentOfThisCard().TopCard.PermanentOfThisCard();
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

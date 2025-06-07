@@ -52,7 +52,9 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanSelectPermantentCondition(Permanent permanent)
                 {
-                    return permanent.IsToken || (permanent.TopCard.EqualsTraits("Puppet") && permanent.TopCard != card);
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                           (permanent.IsToken || (permanent.TopCard.EqualsTraits("Puppet")) && 
+                           permanent.TopCard != card);
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
@@ -132,7 +134,9 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanSelectPermantentCondition(Permanent permanent)
                 {
-                    return permanent.IsToken || (permanent.TopCard.EqualsTraits("Puppet") && permanent.TopCard != card);
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                           (permanent.IsToken || (permanent.TopCard.EqualsTraits("Puppet")) &&
+                           permanent.TopCard != card);
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)

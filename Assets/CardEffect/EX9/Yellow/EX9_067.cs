@@ -69,7 +69,7 @@ namespace DCGO.CardEffects.EX9
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 Arisa Kinosaki or [Puppet] digimon from hand for -3 cost", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -130,7 +130,7 @@ namespace DCGO.CardEffects.EX9
                         canEndNotMax: true,
                         selectPermanentCoroutine: null,
                         afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
-                        mode: SelectPermanentEffect.Mode.Bounce,
+                        mode: SelectPermanentEffect.Mode.PutLibraryBottom,
                         cardEffect: activateClass);
 
                     selectPermanentEffect.SetUpCustomMessage("Select Mirai to bottom deck", "Your opponent is deciding to bottom deck tamer");
