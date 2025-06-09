@@ -9,12 +9,13 @@ namespace DCGO.CardEffects.P
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
-
+            #region Inherit
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Draw 1", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
+                activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("Draw1_P_188");
                 cardEffects.Add(activateClass);
 
@@ -70,6 +71,7 @@ namespace DCGO.CardEffects.P
                     yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
                 }
             }
+            #endregion
 
             return cardEffects;
         }
