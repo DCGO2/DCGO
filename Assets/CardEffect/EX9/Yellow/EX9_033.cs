@@ -42,6 +42,19 @@ namespace DCGO.CardEffects.EX9
 
             #region Give Alliance & Blocker
 
+            bool SharedPermanentCondition(Permanent permanent)
+            {
+                if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                {
+                    if (permanent.IsToken || permanent.TopCard.EqualsTraits("Puppet"))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
             if (timing == EffectTiming.None)
             {
                 bool CanUseCondition()
@@ -49,48 +62,22 @@ namespace DCGO.CardEffects.EX9
                     return CardEffectCommons.IsExistOnBattleArea(card);
                 }
 
-                bool PermanentCondition(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
-                    {
-                        if (permanent.IsToken || permanent.TopCard.EqualsTraits("Puppet"))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
                 cardEffects.Add(CardEffectFactory.BlockerStaticEffect(
-                    permanentCondition: PermanentCondition,
+                    permanentCondition: SharedPermanentCondition,
                     isInheritedEffect: false,
                     card: card,
                     condition: CanUseCondition));
             }
 
-            if (timing == EffectTiming.OnAllyAttack)
+            if (timing == EffectTiming.None)
             {
                 bool CanUseCondition()
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card);
                 }
 
-                bool PermanentCondition(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
-                    {
-                        if (permanent.IsToken || permanent.TopCard.EqualsTraits("Puppet"))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
                 cardEffects.Add(CardEffectFactory.AllianceStaticEffect(
-                    permanentCondition: PermanentCondition,
+                    permanentCondition: SharedPermanentCondition,
                     isInheritedEffect: false,
                     card: card,
                     condition: CanUseCondition));
@@ -194,7 +181,7 @@ namespace DCGO.CardEffects.EX9
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
                     return CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass, SelectCardEffect.Root.Trash) &&
-                           cardSource.IsLevel4 && cardSource.EqualsTraits("Puppet");
+                           cardSource.Level <= 4 && cardSource.EqualsTraits("Puppet");
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace DCGO.CardEffects.EX9
 {
@@ -37,6 +36,7 @@ namespace DCGO.CardEffects.EX9
             #endregion
 
             #region On Play
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -103,9 +103,11 @@ namespace DCGO.CardEffects.EX9
                     }
                 }
             }
+
             #endregion
 
             #region When Digivolving
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -172,9 +174,11 @@ namespace DCGO.CardEffects.EX9
                     }
                 }
             }
+
             #endregion
 
             #region Your Turn
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -191,7 +195,7 @@ namespace DCGO.CardEffects.EX9
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
                            !permanent.IsOption &&
-                           (permanent.TopCard.HasGarurumonName || permanent.TopCard.ContainsCardName("Tai Kamiya"));
+                           (permanent.TopCard.HasGarurumonName || permanent.TopCard.CardNames.Some((cardName) => cardName.Contains("Tai Kamiya") || cardName.Contains("TaiKamiya")));
                 }
 
                 bool DigivolveRequirement(Permanent permanent)
@@ -232,9 +236,11 @@ namespace DCGO.CardEffects.EX9
                                 successProcess: null));
                 }
             }
+
             #endregion
 
             #region Your Turn - ESS
+
             if (timing == EffectTiming.None)
             {
                 bool Condition()
@@ -253,6 +259,7 @@ namespace DCGO.CardEffects.EX9
                     card: card,
                     condition: Condition));
             }
+
             #endregion
 
             return cardEffects;

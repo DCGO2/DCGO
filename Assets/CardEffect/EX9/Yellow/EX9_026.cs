@@ -20,6 +20,7 @@ namespace DCGO.CardEffects.EX9
                 {
                     return permanent.TopCard.IsLevel3 && permanent.TopCard.EqualsTraits("DM");
                 }
+
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(Condition, 2, false, card, null));
             }
 
@@ -126,9 +127,7 @@ namespace DCGO.CardEffects.EX9
                     if (selectedCard != null)
                     {
                         Permanent permanent = card.PermanentOfThisCard();
-                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddExecutingCard(selectedCard));
-                        selectedCard.SetReverse();
-                        yield return ContinuousController.instance.StartCoroutine(permanent.AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass));
+                        yield return ContinuousController.instance.StartCoroutine(permanent.AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass, isFacedown: true));
 
                         if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermanentCondition))
                         {
