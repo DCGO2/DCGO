@@ -104,7 +104,8 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, permanent => permanent != card.PermanentOfThisCard());
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, permanent => permanent != card.PermanentOfThisCard());
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
