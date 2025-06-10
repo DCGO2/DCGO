@@ -44,9 +44,10 @@ namespace DCGO.CardEffects.EX9
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    CardSource selectedSource = null;
+
                     if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, ReturnCard))
                     {
-                        CardSource selectedSource = null;
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                         selectCardEffect.SetUp(
@@ -54,8 +55,8 @@ namespace DCGO.CardEffects.EX9
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             canNoSelect: () => true,
-                            selectCardCoroutine: null,
-                            afterSelectCardCoroutine: AfterSelectCardCoroutine,
+                            selectCardCoroutine: SelectCardCoroutine,
+                            afterSelectCardCoroutine: null,
                             message: "Select 1 Digimon card with [Greymon], [Garurumon] or [Omnimon] in its name",
                             maxCount: 1,
                             canEndNotMax: false,
@@ -69,16 +70,16 @@ namespace DCGO.CardEffects.EX9
 
                         yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 
-                        IEnumerator AfterSelectCardCoroutine(List<CardSource> sources)
+                        IEnumerator SelectCardCoroutine(CardSource source)
                         {
-                            selectedSource = sources[0];
+                            selectedSource = source;
                             yield return null;
                         }
+                    }
 
-                        if (selectedSource == null)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
-                        }
+                    if (selectedSource == null)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
                     }
                 }
             }
