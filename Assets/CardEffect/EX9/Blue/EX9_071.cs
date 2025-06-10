@@ -24,7 +24,7 @@ namespace DCGO.CardEffects.EX9
                 {
                     return card.Owner.GetFieldPermanents().Some(permanet =>
                         permanet.TopCard.HasDMTraits &&
-                        (permanet.TopCard.IsDigimon || permanet.TopCard.IsTamer));
+                        !permanet.TopCard.IsOption);
                 }
 
                 bool CardCondition(CardSource cardSource)

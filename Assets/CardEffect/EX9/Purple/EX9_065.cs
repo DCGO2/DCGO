@@ -70,36 +70,52 @@ namespace DCGO.CardEffects.EX9
 
             if (timing == EffectTiming.None)
             {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Gain <Retaliation>", null, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-                cardEffects.Add(activateClass);
+                AddSkillClass addSkillClass = new AddSkillClass();
+                addSkillClass.SetUpICardEffect("Your Digimon gain <Retaliation>", CanUseCondition, card);
+                addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
+                addSkillClass.SetIsInheritedEffect(true);
+                cardEffects.Add(addSkillClass);
 
-                string EffectDiscription()
-                {
-                    return "[All Turns] All of your [Ver.4] trait Digimon gain <Retaliation> (When this Digimon is deleted after losing a battle, delete the Digimon it was battling).";
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
+                bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 bool PermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) && permanent.TopCard.EqualsTraits("Ver.4");
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) && 
+                           permanent.TopCard.EqualsTraits("Ver.4");
                 }
 
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                bool CardSourceCondition(CardSource cardSource)
                 {
-                    var permanents = card.Owner.GetBattleAreaDigimons().Filter(x => PermanentCondition(x));
-                    foreach (var permanent in permanents)
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(cardSource))
                     {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainRetaliation(targetPermanent: permanent, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
+                        if (cardSource.Owner == card.Owner)
+                        {
+                            if (cardSource == cardSource.PermanentOfThisCard().TopCard)
+                            {
+                                if (PermanentCondition(cardSource.PermanentOfThisCard()))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
                     }
+
+                    return false;
+                }
+
+                List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming _timing)
+                {
+                    if (_timing == EffectTiming.OnDestroyedAnyone)
+                    {
+                        cardEffects.Add(CardEffectFactory.RetaliationSelfEffect(isInheritedEffect: false, card: card, condition: null));
+                    }
+
+                    return cardEffects;
                 }
             }
-
             #endregion
 
             #region On Play

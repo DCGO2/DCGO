@@ -207,6 +207,13 @@ public class PermanentDetail : MonoBehaviour
         }
         #endregion
 
+        #region Scapegoat
+        if (permanent.HasScapegoat)
+        {
+            effectString += $"- Scapegoat\n";
+        }
+        #endregion
+
         #region Collision
         /*if (permanent.hascCollision)
         {
