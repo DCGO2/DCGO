@@ -12,6 +12,20 @@ namespace DCGO.CardEffects.EX9
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region Alternate Digivolution Requirement
+
+            if (timing == EffectTiming.None)
+            {
+                static bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.HasDMTraits && targetPermanent.TopCard.IsLevel3;
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 2, ignoreDigivolutionRequirement: false, card: card, condition: null));
+            }
+
+            #endregion
+
             #region Training
 
             if (timing == EffectTiming.OnDeclaration)

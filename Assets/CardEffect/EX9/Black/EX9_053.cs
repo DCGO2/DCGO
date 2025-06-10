@@ -39,7 +39,7 @@ namespace DCGO.CardEffects.EX9
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Reveal 3, Play 1 [DM] trait Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -118,7 +118,7 @@ namespace DCGO.CardEffects.EX9
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Reveal 3, Play 1 [DM] trait Digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

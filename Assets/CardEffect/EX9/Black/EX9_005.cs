@@ -19,7 +19,7 @@ namespace DCGO.CardEffects.EX9
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Reduce play cost", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
-                activateClass.SetHashString("Reduce_BT13_007");
+                activateClass.SetHashString("Reduce_EX9_005");
 
                 cardEffects.Add(activateClass);
 
@@ -252,7 +252,7 @@ namespace DCGO.CardEffects.EX9
 
                 string EffectDiscription()
                 {
-                    return "[Opponent's Turn] [Once Per Turn] When any of your opponent's Digimon attack, you may change the attack target to 1 of your Digimon with the [Composite] or [Wicked God] trait.";
+                    return "[Opponent's Turn] [Once Per Turn] When one of your opponent's Digimon attacks, you may change the attack target to 1 of your Digimon with [Negamon] in its text.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)

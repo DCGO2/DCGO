@@ -15,7 +15,7 @@ namespace DCGO.CardEffects.EX9
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Reaval 3, Add 1 [Negamon] in text and 1 [Abbadomon] in name", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
