@@ -2776,6 +2776,27 @@ public class Permanent
     }
     #endregion
 
+    #region Has Scapegoat
+    public bool HasScapegoat
+    {
+        get
+        {
+            foreach (ICardEffect cardEffect in this.EffectList(EffectTiming.WhenPermanentWouldBeDeleted))
+            {
+                if (cardEffect is ActivateICardEffect)
+                {
+                    if (cardEffect.EffectName == "<Scapegoat>")
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+    }
+    #endregion
+
     #region 消滅時効化を持つか
     public bool HasOnDeletionEffect
     {
