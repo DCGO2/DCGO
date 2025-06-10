@@ -284,9 +284,9 @@ namespace DCGO.CardEffects.EX9
 
                 bool PlayedRequirement(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card) &&
                            !permanent.IsOption &&
-                           (permanent.TopCard.HasGreymonName || permanent.TopCard.CardNames.Some((cardName) => cardName.Contains("Matt Ishida") || cardName.Contains("MattIshida")));
+                           (permanent.TopCard.HasGreymonName || permanent.TopCard.ContainsCardName("Matt Ishida"));
                 }
 
                 bool DigivolveRequirement(Permanent permanent)
