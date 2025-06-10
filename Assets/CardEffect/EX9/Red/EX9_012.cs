@@ -193,9 +193,9 @@ namespace DCGO.CardEffects.EX9
 
                 bool PlayedRequirement(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card) &&
                            !permanent.IsOption &&
-                           (permanent.TopCard.HasGarurumonName || permanent.TopCard.CardNames.Some((cardName) => cardName.Contains("Tai Kamiya") || cardName.Contains("TaiKamiya")));
+                           (permanent.TopCard.HasGarurumonName || permanent.TopCard.ContainsCardName("Tai Kamiya"));
                 }
 
                 bool DigivolveRequirement(Permanent permanent)
