@@ -44,10 +44,9 @@ namespace DCGO.CardEffects.EX9
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    CardSource selectedSource = null;
-
                     if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, ReturnCard))
                     {
+                        CardSource selectedSource = null;
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                         selectCardEffect.SetUp(
@@ -69,17 +68,17 @@ namespace DCGO.CardEffects.EX9
                             cardEffect: activateClass);
 
                         yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-                    }
 
-                    IEnumerator AfterSelectCardCoroutine(List<CardSource> sources)
-                    {
-                        selectedSource = sources[0];
-                        yield return null;
-                    }
+                        IEnumerator AfterSelectCardCoroutine(List<CardSource> sources)
+                        {
+                            selectedSource = sources[0];
+                            yield return null;
+                        }
 
-                    if (selectedSource == null)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
+                        if (selectedSource == null)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
+                        }
                     }
                 }
             }
