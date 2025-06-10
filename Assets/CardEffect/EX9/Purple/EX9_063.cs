@@ -41,7 +41,7 @@ namespace DCGO.CardEffects.EX9
 
             #region Ver.4 Digivolution Cost Reduction
 
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.BeforePayCost)
             {
                 Permanent selectedPermanent = null;
                 bool Condition()
@@ -56,7 +56,7 @@ namespace DCGO.CardEffects.EX9
 
                 bool CardSourceCondition(CardSource cardSource)
                 {
-                    return cardSource == card;
+                    return cardSource.EqualsTraits("Ver.4");
                 }
 
                 bool RootCondition(SelectCardEffect.Root root)
@@ -66,12 +66,12 @@ namespace DCGO.CardEffects.EX9
 
                 int ReduceCost()
                 {
-                    return selectedPermanent.DigivolutionCards.Filter(x => x.IsFlipped).Count;
+                    return card.PermanentOfThisCard().DigivolutionCards.Filter(x => x.IsFlipped).Count;
                 }
 
                 cardEffects.Add(CardEffectFactory.ChangeDigivolutionCostStaticEffect<Func<int>>(
                     changeValue: () => -ReduceCost(),
-                    permanentCondition: (permanent) => { selectedPermanent = permanent; return PermanentCondition(permanent); },
+                    permanentCondition: PermanentCondition,
                     cardCondition: CardSourceCondition,
                     rootCondition: RootCondition,
                     isInheritedEffect: false,
