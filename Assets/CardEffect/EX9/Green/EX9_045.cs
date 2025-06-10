@@ -76,7 +76,7 @@ namespace DCGO.CardEffects.EX9
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 digimon, then if DNA bounce 2 digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -96,7 +96,7 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.EqualsTraits("WG") && card.BasePlayCostFromEntity <= 7)
+                    if (cardSource.EqualsTraits("WG") && card.GetCostItself <= 7)
                     {
                         if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                         {
@@ -150,40 +150,28 @@ namespace DCGO.CardEffects.EX9
                             payCost: false,
                             isTapped: false,
                             root: SelectCardEffect.Root.Hand,
-                            activateETB: true));
-                        bool isJogress = false;
+                            activateETB: true));                        
+                    }
 
-                        if (hashtable != null)
-                        {
-                            if (hashtable.ContainsKey("isJogress"))
-                            {
-                                if (hashtable["isJogress"] is bool)
-                                {
-                                    isJogress = (bool)hashtable["isJogress"];
-                                }
-                            }
-                        }
+                    if (CardEffectCommons.IsJogress(hashtable) && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermanentCondition))
+                    {
+                        int maxCount1 = Math.Min(2, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectPermanentCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: maxCount1,
+                            canNoSelect: true,
+                            canEndNotMax: true,
+                            selectPermanentCoroutine: null,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.PutLibraryBottom,
+                            cardEffect: activateClass);
 
-                        if (isJogress && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermanentCondition))
-                        {
-                            int maxCount1 = Math.Min(2, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: CanSelectPermanentCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: maxCount1,
-                                canNoSelect: true,
-                                canEndNotMax: true,
-                                selectPermanentCoroutine: null,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.PutLibraryBottom,
-                                cardEffect: activateClass);
-
-                            selectPermanentEffect.SetUpCustomMessage("Select up to 2 Digimon to bounce", "The opponent is selecting up to 2 Digimon to bounce");
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                        }
+                        selectPermanentEffect.SetUpCustomMessage("Select up to 2 Digimon to bounce", "The opponent is selecting up to 2 Digimon to bounce");
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
                 }
             }
@@ -236,7 +224,7 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.EqualsTraits("WG") && card.BasePlayCostFromEntity <= 7)
+                    if (cardSource.EqualsTraits("WG") && card.GetCostItself <= 7)
                     {
                         if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                         {
