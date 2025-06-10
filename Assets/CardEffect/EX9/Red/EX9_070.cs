@@ -153,7 +153,7 @@ namespace DCGO.CardEffects.EX9
                             Permanent selectedPermanent = null;
 
                             SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-                            
+
                             selectPermanentEffect.SetUp(
                                 selectPlayer: card.Owner,
                                 canTargetCondition: CanSelectPermanentCondition,

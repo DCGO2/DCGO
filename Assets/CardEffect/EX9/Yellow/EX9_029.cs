@@ -56,9 +56,7 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                        card.Owner.HandCards.Count >= 1 &&
-                        CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectHandCardCondition);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && card.Owner.HandCards.Count >= 1;
                 }
 
                 bool CanSelectHandCardCondition(CardSource cardSource)
@@ -71,7 +69,6 @@ namespace DCGO.CardEffects.EX9
                     CardSource selectedCard = null;
 
                     SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
                     selectHandEffect.SetUp(
                         selectPlayer: card.Owner,
                         canTargetCondition: CanSelectHandCardCondition,
@@ -86,9 +83,9 @@ namespace DCGO.CardEffects.EX9
                         mode: SelectHandEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                    selectHandEffect.SetUpCustomMessage("Select 1 card to place face-down on bottom of digivolution cards.",
-                        "The opponent is selecting 1 card to place face-down on bottom of digivolution cards.");
+                    selectHandEffect.SetUpCustomMessage("Select 1 card to place face-down on bottom of digivolution cards.", "The opponent is selecting 1 card to place face-down on bottom of digivolution cards.");
                     selectHandEffect.SetUpCustomMessage_ShowCard("Digivolution Card");
+                    yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
 
                     IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
@@ -96,11 +93,7 @@ namespace DCGO.CardEffects.EX9
                         yield return null;
                     }
 
-                    if (selectedCard &&
-                        card.Owner.SecurityCards.Count <= card.PermanentOfThisCard().DigivolutionCards.Filter(x => x.IsFlipped).Count)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(new IRecovery(card.Owner, 1, activateClass).Recovery());
-                    }
+                    if (selectedCard && card.Owner.SecurityCards.Count <= card.PermanentOfThisCard().DigivolutionCards.Filter(x => x.IsFlipped).Count) yield return ContinuousController.instance.StartCoroutine(new IRecovery(card.Owner, 1, activateClass).Recovery());
                 }
             }
 

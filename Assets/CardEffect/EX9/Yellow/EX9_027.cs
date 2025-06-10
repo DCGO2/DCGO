@@ -135,7 +135,7 @@ namespace DCGO.CardEffects.EX9
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("By trashing 1 card, give 1 digimon -4k", null, card);
+                activateClass.SetUpICardEffect("By trashing 1 card, give 1 digimon -4k", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -144,9 +144,14 @@ namespace DCGO.CardEffects.EX9
                     return "[On Deletion] By trashing 1 card in your hand, 1 of your opponent's Digimon gets -4000 DP for the turn.";
                 }
 
-                bool CanActivateCondition(Hashtable hashtable)
+                bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanActivateOnDeletion(card) && card.Owner.HandCards.Count >= 1;
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
