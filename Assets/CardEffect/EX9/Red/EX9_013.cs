@@ -28,16 +28,19 @@ namespace DCGO.CardEffects.EX9
             #endregion
 
             #region Blast Digivolve
+
             if (timing == EffectTiming.OnCounterTiming)
             {
                 cardEffects.Add(CardEffectFactory.BlastDigivolveEffect(card: card, condition: null));
             }
+
             #endregion
 
             #region Alliance/Blocker
+
             if (timing == EffectTiming.OnAllyAttack)
             {
-                cardEffects.Add(CardEffectFactory.AllianceSelfEffect(isInheritedEffect: true, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.AllianceSelfEffect(isInheritedEffect: false, card: card, condition: null));
             }
 
             if (timing == EffectTiming.None)
@@ -47,9 +50,11 @@ namespace DCGO.CardEffects.EX9
                     card: card,
                     condition: null));
             }
+
             #endregion
 
             #region On Play
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -120,7 +125,6 @@ namespace DCGO.CardEffects.EX9
                                     }
 
                                     return true;
-
                                 }
 
                                 IEnumerator SelectPermanentCoroutine(Permanent permanent)
@@ -139,9 +143,11 @@ namespace DCGO.CardEffects.EX9
                     }
                 }
             }
+
             #endregion
 
             #region When Digivolving
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -212,7 +218,6 @@ namespace DCGO.CardEffects.EX9
                                     }
 
                                     return true;
-
                                 }
 
                                 IEnumerator SelectPermanentCoroutine(Permanent permanent)
@@ -231,9 +236,11 @@ namespace DCGO.CardEffects.EX9
                     }
                 }
             }
+
             #endregion
 
             #region End of Your Turn
+
             if (timing == EffectTiming.OnEndTurn)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -373,63 +380,62 @@ namespace DCGO.CardEffects.EX9
                                             playCard.SetJogress(_jogressEvoRootsFrameIDs);
 
                                             yield return ContinuousController.instance.StartCoroutine(playCard.PlayCard());
-
-                                            if (CardEffectCommons.IsExistOnBattleAreaDigimon(selectedCard))
-                                            {
-                                                if (CardEffectCommons.HasMatchConditionPermanent(IsYourAttackingDigimon))
-                                                {
-                                                    Permanent selectedPermanent = null;
-                                                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                                                    selectPermanentEffect.SetUp(
-                                                        selectPlayer: card.Owner,
-                                                        canTargetCondition: IsYourAttackingDigimon,
-                                                        canTargetCondition_ByPreSelecetedList: null,
-                                                        canEndSelectCondition: null,
-                                                        maxCount: 1,
-                                                        canNoSelect: true,
-                                                        canEndNotMax: false,
-                                                        selectPermanentCoroutine: SelectPermanentCoroutine,
-                                                        afterSelectPermanentCoroutine: null,
-                                                        mode: SelectPermanentEffect.Mode.Custom,
-                                                        cardEffect: activateClass);
-
-                                                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to attack.", "The opponent is selecting 1 Digimon to attack.");
-
-                                                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                                                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                                                    {
-                                                        selectedPermanent = permanent;
-
-                                                        yield return null;
-                                                    }
-
-                                                    if (selectedPermanent != null)
-                                                    {
-                                                        SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
-
-                                                        selectAttackEffect.SetUp(
-                                                            attacker: selectedPermanent,
-                                                            canAttackPlayerCondition: () => true,
-                                                            defenderCondition: _ => true,
-                                                            cardEffect: activateClass);
-
-                                                        yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
-                                                    }
-                                                }
-                                            }
                                         }
                                     }
                                 }
                             }
                         }
                     }
+
+                    if (CardEffectCommons.HasMatchConditionPermanent(IsYourAttackingDigimon))
+                    {
+                        Permanent selectedPermanent = null;
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: IsYourAttackingDigimon,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: true,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to attack.", "The opponent is selecting 1 Digimon to attack.");
+
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                        {
+                            selectedPermanent = permanent;
+
+                            yield return null;
+                        }
+
+                        if (selectedPermanent != null)
+                        {
+                            SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
+
+                            selectAttackEffect.SetUp(
+                                attacker: selectedPermanent,
+                                canAttackPlayerCondition: () => true,
+                                defenderCondition: _ => true,
+                                cardEffect: activateClass);
+
+                            yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
+                        }
+                    }
                 }
             }
+
             #endregion
 
             #region Sec +1 - ESS
+
             if (timing == EffectTiming.None)
             {
                 cardEffects.Add(CardEffectFactory.ChangeSelfSAttackStaticEffect(
@@ -438,6 +444,7 @@ namespace DCGO.CardEffects.EX9
                     card: card,
                     condition: null));
             }
+
             #endregion
 
             return cardEffects;

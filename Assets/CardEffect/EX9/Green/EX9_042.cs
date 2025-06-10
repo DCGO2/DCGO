@@ -25,13 +25,16 @@ namespace DCGO.CardEffects.EX9
             #endregion
 
             #region On Play/When Digivolving Shared
+
             bool OpponentsDigimon(Permanent permanent)
             {
                 return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
             }
+
             #endregion
 
             #region On Play
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -105,9 +108,11 @@ namespace DCGO.CardEffects.EX9
                     yield return null;
                 }
             }
+
             #endregion
 
             #region When Digivolving
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -122,7 +127,7 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && 
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
                            CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
 
@@ -182,9 +187,11 @@ namespace DCGO.CardEffects.EX9
                     yield return null;
                 }
             }
+
             #endregion
 
             #region All Turns
+
             if (timing == EffectTiming.OnTappedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -227,7 +234,7 @@ namespace DCGO.CardEffects.EX9
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
                                 targetPermanent: card.PermanentOfThisCard(),
                                 cardCondition: DigivolutionTarget,
-                                payCost: true,
+                                payCost: false,
                                 reduceCostTuple: null,
                                 fixedCostTuple: null,
                                 ignoreDigivolutionRequirementFixedCost: -1,
@@ -236,9 +243,11 @@ namespace DCGO.CardEffects.EX9
                                 successProcess: null));
                 }
             }
+
             #endregion
 
             #region End of your Turn - ESS
+
             if (timing == EffectTiming.OnEndTurn)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -294,8 +303,8 @@ namespace DCGO.CardEffects.EX9
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                 }
             }
-            #endregion
 
+            #endregion
 
             return cardEffects;
         }
