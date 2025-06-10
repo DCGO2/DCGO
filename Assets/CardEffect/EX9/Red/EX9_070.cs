@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 // Meat
@@ -25,7 +26,7 @@ namespace DCGO.CardEffects.EX9
                 {
                     return card.Owner.GetFieldPermanents().Some(permanet =>
                         permanet.TopCard.HasDMTraits &&
-                        (permanet.TopCard.IsDigimon || permanet.TopCard.IsTamer));
+                        !permanet.TopCard.IsOption);
                 }
 
                 bool CardCondition(CardSource cardSource)
@@ -113,10 +114,10 @@ namespace DCGO.CardEffects.EX9
                 {
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: new List<Permanent>() { card.PermanentOfThisCard() }, activateClass: activateClass, successProcess: permanents => SuccessProcess(), failureProcess: null));
 
-                    CardSource selectedCard = null;
-
                     IEnumerator SuccessProcess()
                     {
+                        CardSource selectedCard = null;
+
                         if (card.Owner.HandCards.Count > 0)
                         {
                             SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
