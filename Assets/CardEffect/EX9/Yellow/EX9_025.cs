@@ -44,6 +44,7 @@ namespace DCGO.CardEffects.EX9
 
             if (timing == EffectTiming.OnDeclaration)
             {
+                cardEffects.Add(CardEffectFactory.TrainingEffect(card: card));
             }
 
             #endregion
@@ -65,9 +66,7 @@ namespace DCGO.CardEffects.EX9
                     return "[When Attacking] [Once Per Turn] By placing your deck's top card face down as this Digimon's bottom digivolution card, to 1 of your opponent's Digimon, give -2000 DP for the turn for each of this Digimon's face-down digivolution cards.";
                 }
 
-                int DPMinus() => FDCount(card.PermanentOfThisCard()) * 2000;
-
-                int FDCount(Permanent permanent) => permanent.DigivolutionCards.Filter(y => !y.IsFlipped).Count;
+                int DPMinus() => card.PermanentOfThisCard().DigivolutionCards.Filter(x => x.IsFlipped).Count * 2000;
 
                 bool CanUseCondition(Hashtable hashtable)
                 {

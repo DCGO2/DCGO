@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 //WereGarurumon: Sagittarius Mode
 namespace DCGO.CardEffects.EX9
@@ -12,6 +11,7 @@ namespace DCGO.CardEffects.EX9
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Alternate Digivolution Requirement
+
             //[WereGarurumon]: Cost 1
             if (timing == EffectTiming.None)
             {
@@ -44,15 +44,17 @@ namespace DCGO.CardEffects.EX9
                     card: card,
                     condition: null));
             }
+
             #endregion
 
             #region On Play
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("1 of your opponent's Digimon can't suspend", CanUseCondition,
                     card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -153,15 +155,17 @@ namespace DCGO.CardEffects.EX9
                     }
                 }
             }
+
             #endregion
 
             #region When Digivolving
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("1 of your opponent's Digimon can't suspend", CanUseCondition,
                     card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -261,9 +265,11 @@ namespace DCGO.CardEffects.EX9
                     }
                 }
             }
+
             #endregion
 
             #region Your Turn
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -280,7 +286,7 @@ namespace DCGO.CardEffects.EX9
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
                            !permanent.IsOption &&
-                           (permanent.TopCard.HasGreymonName || permanent.TopCard.ContainsCardName("Matt Ishida"));
+                           (permanent.TopCard.HasGreymonName || permanent.TopCard.CardNames.Some((cardName) => cardName.Contains("Matt Ishida") || cardName.Contains("MattIshida")));
                 }
 
                 bool DigivolveRequirement(Permanent permanent)
@@ -321,9 +327,11 @@ namespace DCGO.CardEffects.EX9
                                 successProcess: null));
                 }
             }
+
             #endregion
 
             #region When Attacking - ESS
+
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -392,10 +400,11 @@ namespace DCGO.CardEffects.EX9
                         yield return null;
                     }
 
-                    if(selectedPermanent != null)
+                    if (selectedPermanent != null)
                         yield return ContinuousController.instance.StartCoroutine(new IDegeneration(selectedPermanent, 1, activateClass).Degeneration());
                 }
             }
+
             #endregion
 
             return cardEffects;

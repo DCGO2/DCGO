@@ -12,6 +12,7 @@ namespace DCGO.CardEffects.EX9
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region On Play
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -45,7 +46,7 @@ namespace DCGO.CardEffects.EX9
                 {
                     CardSource selectedSource = null;
 
-                    if(CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, ReturnCard))
+                    if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, ReturnCard))
                     {
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
@@ -54,8 +55,8 @@ namespace DCGO.CardEffects.EX9
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             canNoSelect: () => true,
-                            selectCardCoroutine: SelectCardCoroutine,
-                            afterSelectCardCoroutine: null,
+                            selectCardCoroutine: null,
+                            afterSelectCardCoroutine: AfterSelectCardCoroutine,
                             message: "Select 1 Digimon card with [Greymon], [Garurumon] or [Omnimon] in its name",
                             maxCount: 1,
                             canEndNotMax: false,
@@ -70,21 +71,23 @@ namespace DCGO.CardEffects.EX9
                         yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
                     }
 
-                    IEnumerator SelectCardCoroutine(CardSource source)
+                    IEnumerator AfterSelectCardCoroutine(List<CardSource> sources)
                     {
-                        selectedSource = source;
+                        selectedSource = sources[0];
                         yield return null;
                     }
 
-                    if(selectedSource == null)
+                    if (selectedSource == null)
                     {
                         yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
-                    }                    
+                    }
                 }
             }
+
             #endregion
 
             #region All Turns
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -99,7 +102,7 @@ namespace DCGO.CardEffects.EX9
 
                 bool EnterFieldDigimon(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);                            
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
                 }
 
                 bool DigimonWithGreymon(Permanent permanent)
@@ -141,15 +144,18 @@ namespace DCGO.CardEffects.EX9
                         yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(plusMemory, activateClass));
                 }
             }
+
             #endregion
 
             #region Security
+
             if (timing == EffectTiming.SecuritySkill)
             {
                 cardEffects.Add(CardEffectFactory.PlaySelfTamerSecurityEffect(card));
             }
+
             #endregion
-            
+
             return cardEffects;
         }
     }
