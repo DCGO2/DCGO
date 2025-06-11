@@ -96,7 +96,7 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.EqualsTraits("WG") && card.GetCostItself <= 7)
+                    if (cardSource.HasWGTraits && cardSource.GetCostItself <= 7)
                     {
                         if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                         {
@@ -114,10 +114,9 @@ namespace DCGO.CardEffects.EX9
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.MatchConditionOwnersCardCountInHand(card, CanSelectCardCondition) >= 1)
+                    if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
                     {
                         List<CardSource> selectedCards = new List<CardSource>();
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInHand(card, CanSelectCardCondition));
 
                         SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
                         selectHandEffect.SetUp(
@@ -125,7 +124,7 @@ namespace DCGO.CardEffects.EX9
                             canTargetCondition: CanSelectCardCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: maxCount,
+                            maxCount: 1,
                             canNoSelect: true,
                             canEndNotMax: false,
                             isShowOpponent: true,
@@ -138,6 +137,7 @@ namespace DCGO.CardEffects.EX9
                         selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
 
                         yield return StartCoroutine(selectHandEffect.Activate());
+
                         IEnumerator SelectCardCoroutine(CardSource cardSource)
                         {
                             selectedCards.Add(cardSource);
@@ -224,7 +224,7 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.EqualsTraits("WG") && card.GetCostItself <= 7)
+                    if (cardSource.EqualsTraits("WG") && cardSource.GetCostItself <= 7)
                     {
                         if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                         {
