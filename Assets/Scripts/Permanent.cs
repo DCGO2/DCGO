@@ -15,7 +15,8 @@ public class Permanent
     {
         List<CardSource> newCardSources = cardSources.Clone();
 
-        newCardSources.Reverse();
+        //TODO: Attempted fix for random face up secuirty/flipped sources
+        //newCardSources.Reverse();
 
         foreach (CardSource cardSource in newCardSources)
         {
@@ -842,7 +843,11 @@ public class Permanent
     public void AddCardSource(CardSource cardSource)
     {
         cardSources.Insert(0, cardSource);
-        cardSource.SetFace("Permanent.AddSourceCard");
+
+        if (!cardSource.IsFlipped)
+            cardSource.SetFace("Permanent.AddSourceCard");
+        else
+            cardSource.SetReverse();
     }
     #endregion
 
