@@ -42,7 +42,7 @@ namespace DCGO.CardEffects.EX9
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Opponent places 1 card from hand in security bottom. Trash their security top", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Place 1 Digimon in security bottom. Trash their security top", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -51,10 +51,10 @@ namespace DCGO.CardEffects.EX9
                     return "[On Play] By placing 1 8000 DP or lower Digimon as the bottom security card, trash your opponent's top security card.";
                 }
 
-                bool CanSelectCardCondition(CardSource cardSource)
+                bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    return cardSource.IsDigimon &&
-                           cardSource.CardDP <= 8000;
+                    return permanent.IsDigimon &&
+                           permanent.DP <= 8000;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -65,55 +65,54 @@ namespace DCGO.CardEffects.EX9
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);
+                           CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    CardSource selectedCard = null;
-                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                    Permanent selectedPermanent = null;
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                    selectHandEffect.SetUp(
+                    selectPermanentEffect.SetUp(
                         selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectCardCondition,
+                        canTargetCondition: CanSelectPermanentCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: 1,
                         canNoSelect: true,
                         canEndNotMax: false,
-                        isShowOpponent: false,
-                        selectCardCoroutine: SelectCardCoroutine,
-                        afterSelectCardCoroutine: null,
-                        mode: SelectHandEffect.Mode.Custom,
+                        selectPermanentCoroutine: SelectPermanentCoroutine,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                    selectHandEffect.SetUpCustomMessage(
-                        "Select 1 card to place at the bottom of security.",
-                        "The opponent is selecting 1 card to place at the bottom of security.");
+                    selectPermanentEffect.SetUpCustomMessage(
+                        "Select 1 Digimon to place at the bottom of security.",
+                        "The opponent is selecting 1 Digimon to place at the bottom of security.");
 
-                    yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                    IEnumerator SelectCardCoroutine(CardSource cardSource)
+                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
-                        selectedCard = cardSource;
+                        selectedPermanent = permanent;
                         yield return null;
                     }
 
-                    if (selectedCard != null)
+                    if (selectedPermanent != null)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(selectedCard, toTop: false));
+                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(selectedPermanent.TopCard, toTop: false));
 
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(selectedCard.Owner));
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(selectedPermanent.TopCard.Owner));
 
-                        yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(selectedCard.Owner).AddSecurity());
+                        yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(selectedPermanent.TopCard.Owner).AddSecurity());
 
-                        if (card.Owner.SecurityCards.Contains(selectedCard))
+                        if (card.Owner.SecurityCards.Contains(selectedPermanent.TopCard))
                         {
                             yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
-                        player: card.Owner.Enemy,
-                        destroySecurityCount: 1,
-                        cardEffect: activateClass,
-                        fromTop: true).DestroySecurity());
+                                player: card.Owner.Enemy,
+                                destroySecurityCount: 1,
+                                cardEffect: activateClass,
+                                fromTop: true).DestroySecurity());
                         }
                     }
                 }
@@ -133,10 +132,10 @@ namespace DCGO.CardEffects.EX9
                     return "[When Digivolving] By placing 1 8000 DP or lower Digimon as the bottom security card, trash your opponent's top security card.";
                 }
 
-                bool CanSelectCardCondition(CardSource cardSource)
+                bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    return cardSource.IsDigimon &&
-                           cardSource.CardDP <= 8000;
+                    return permanent.IsDigimon &&
+                           permanent.DP <= 8000;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -148,55 +147,54 @@ namespace DCGO.CardEffects.EX9
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);
+                           CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    CardSource selectedCard = null;
-                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                    Permanent selectedPermanent = null;
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                    selectHandEffect.SetUp(
+                    selectPermanentEffect.SetUp(
                         selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectCardCondition,
+                        canTargetCondition: CanSelectPermanentCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: 1,
                         canNoSelect: true,
                         canEndNotMax: false,
-                        isShowOpponent: false,
-                        selectCardCoroutine: SelectCardCoroutine,
-                        afterSelectCardCoroutine: null,
-                        mode: SelectHandEffect.Mode.Custom,
+                        selectPermanentCoroutine: SelectPermanentCoroutine,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                    selectHandEffect.SetUpCustomMessage(
-                        "Select 1 card to place at the bottom of security.",
-                        "The opponent is selecting 1 card to place at the bottom of security.");
+                    selectPermanentEffect.SetUpCustomMessage(
+                        "Select 1 Digimon to place at the bottom of security.",
+                        "The opponent is selecting 1 Digimon to place at the bottom of security.");
 
-                    yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                    IEnumerator SelectCardCoroutine(CardSource cardSource)
+                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
-                        selectedCard = cardSource;
+                        selectedPermanent = permanent;
                         yield return null;
                     }
 
-                    if (selectedCard != null)
+                    if (selectedPermanent != null)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(selectedCard, toTop: false));
+                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(selectedPermanent.TopCard, toTop: false));
 
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(selectedCard.Owner));
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(selectedPermanent.TopCard.Owner));
 
-                        yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(selectedCard.Owner).AddSecurity());
+                        yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(selectedPermanent.TopCard.Owner).AddSecurity());
 
-                        if (card.Owner.SecurityCards.Contains(selectedCard))
+                        if (card.Owner.SecurityCards.Contains(selectedPermanent.TopCard))
                         {
                             yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
-                        player: card.Owner.Enemy,
-                        destroySecurityCount: 1,
-                        cardEffect: activateClass,
-                        fromTop: true).DestroySecurity());
+                                player: card.Owner.Enemy,
+                                destroySecurityCount: 1,
+                                cardEffect: activateClass,
+                                fromTop: true).DestroySecurity());
                         }
                     }
                 }
