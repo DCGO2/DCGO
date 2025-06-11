@@ -4863,6 +4863,9 @@ public class AceOverflowClass
 
         foreach (CardSource cardSource in _cardSources)
         {
+            if (cardSource.IsFlipped)
+                continue;
+
             yield return ContinuousController.instance.StartCoroutine(cardSource.Owner.AddMemory(-cardSource.OverflowMemory, null));
 
             string log = $"\nOverflow -{cardSource.OverflowMemory}:\n{cardSource.BaseENGCardNameFromEntity}({cardSource.CardID})\n";
