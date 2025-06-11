@@ -54,12 +54,12 @@ public class CardInfo : MonoBehaviour
 
         this.gameObject.SetActive(true);
 
-        outlineImage.color = DataBase.CardColor_ColorDarkDictionary[cardSource.BaseCardColorsFromEntity[0]];
-
         InheritedEffectText.text = "";
 
         if (!cardSource.IsFlipped)
         {
+            outlineImage.color = DataBase.CardColor_ColorDarkDictionary[cardSource.BaseCardColorsFromEntity[0]];
+
             if (cardSource.PermanentOfThisCard() != null)
             {
                 if (cardSource != cardSource.PermanentOfThisCard().TopCard)
@@ -122,6 +122,7 @@ public class CardInfo : MonoBehaviour
 
         else
         {
+            outlineImage.color = DataBase.CardColor_ColorDarkDictionary[CardColor.None];
             InheritedEffectText.text = "???";
             CardImage.color = new Color(1, 1, 1, 1);
             CardImage.sprite = HatenaCard;
