@@ -62,7 +62,8 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && 
+                           CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -122,9 +123,8 @@ namespace DCGO.CardEffects.EX9
                     if (selectedCard)
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddExecutingCard(selectedCard));
-                        selectedCard.SetReverse();
                         yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard()
-                            .AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass));
+                            .AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass, isFacedown: true));
 
                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                         {
@@ -229,9 +229,8 @@ namespace DCGO.CardEffects.EX9
                     if (selectedCard)
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddExecutingCard(selectedCard));
-                        selectedCard.SetReverse();
                         yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard()
-                            .AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass));
+                            .AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass, isFacedown:true));
 
                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                         {

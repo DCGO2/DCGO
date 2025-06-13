@@ -51,12 +51,13 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           card.Owner.HandCards.Count > 0;
                 }
             }
 
@@ -78,12 +79,14 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card); ;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           card.Owner.HandCards.Count > 0;
                 }
             }
 
@@ -98,72 +101,69 @@ namespace DCGO.CardEffects.EX9
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                if (card.Owner.HandCards.Any())
+                CardSource selectedCard = null;
+                SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                selectHandEffect.SetUp(
+                    selectPlayer: card.Owner,
+                    canTargetCondition: (cardSource) => true,
+                    canTargetCondition_ByPreSelecetedList: null,
+                    canEndSelectCondition: null,
+                    maxCount: 1,
+                    canNoSelect: true,
+                    canEndNotMax: false,
+                    isShowOpponent: false,
+                    selectCardCoroutine: SelectCardCoroutine,
+                    afterSelectCardCoroutine: null,
+                    mode: SelectHandEffect.Mode.Custom,
+                    cardEffect: activateClass);
+                yield return StartCoroutine(selectHandEffect.Activate());
+                selectHandEffect.SetUpCustomMessage("Select a card to add face down as a source", "Opponent is selecting a card to add face down as a source");
+
+                IEnumerator SelectCardCoroutine(CardSource cardSource)
                 {
-                    CardSource selectedCard = null;
-                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-                    selectHandEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: (cardSource) => true,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: 1,
-                        canNoSelect: true,
-                        canEndNotMax: false,
-                        isShowOpponent: false,
-                        selectCardCoroutine: SelectCardCoroutine,
-                        afterSelectCardCoroutine: null,
-                        mode: SelectHandEffect.Mode.Custom,
-                        cardEffect: activateClass);
-                    yield return StartCoroutine(selectHandEffect.Activate());
-                    selectHandEffect.SetUpCustomMessage("Select a card to add face down as a source", "Opponent is selecting a card to add face down as a source");
+                    selectedCard = cardSource;
+                    yield return null;
+                }
 
-                    IEnumerator SelectCardCoroutine(CardSource cardSource)
+                if (selectedCard != null)
+                {
+                    Permanent permanent = card.PermanentOfThisCard();
+                    yield return ContinuousController.instance.StartCoroutine(permanent.AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass, isFacedown: true));
+
+                    if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermanentCondition))
                     {
-                        selectedCard = cardSource;
-                        yield return null;
-                    }
+                        Permanent selectedPermanent = null;
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, CanSelectPermanentCondition));
 
-                    if (selectedCard != null)
-                    {
-                        Permanent permanent = card.PermanentOfThisCard();
-                        yield return ContinuousController.instance.StartCoroutine(permanent.AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass, isFacedown: true));
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectPermanentCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: maxCount,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass
+                        );
 
-                        if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermanentCondition))
+                        selectPermanentEffect.SetUpCustomMessage("Select a Digimon to give SEC -1 & -3k DP", "Opponent is selecting a Digimon to give SEC -1 & -3k DP");
+                        selectHandEffect.SetUpCustomMessage_ShowCard("Selected Digimon");
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
-                            Permanent selectedPermanent = null;
-                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, CanSelectPermanentCondition));
+                            selectedPermanent = permanent;
+                            yield return null;
+                        }
 
-                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: CanSelectPermanentCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: maxCount,
-                                canNoSelect: false,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: SelectPermanentCoroutine,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Custom,
-                                cardEffect: activateClass
-                            );
-
-                            selectPermanentEffect.SetUpCustomMessage("Select a Digimon to give SEC -1 & -3k DP", "Opponent is selecting a Digimon to give SEC -1 & -3k DP");
-                            selectHandEffect.SetUpCustomMessage_ShowCard("Selected Digimon");
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                            IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                            {
-                                selectedPermanent = permanent;
-                                yield return null;
-                            }
-
-                            if (selectedPermanent != null)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonSAttack(targetPermanent: selectedPermanent, changeValue: -1, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: selectedPermanent, changeValue: -3000, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
-                            }
+                        if (selectedPermanent != null)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonSAttack(targetPermanent: selectedPermanent, changeValue: -1, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: selectedPermanent, changeValue: -3000, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
                         }
                     }
                 }

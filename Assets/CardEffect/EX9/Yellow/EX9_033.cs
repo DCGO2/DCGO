@@ -71,16 +71,43 @@ namespace DCGO.CardEffects.EX9
 
             if (timing == EffectTiming.None)
             {
-                bool CanUseCondition()
+                AddSkillClass addSkillClass = new AddSkillClass();
+                addSkillClass.SetUpICardEffect("Your Digimons gain Alliance", CanUseCondition, card);
+                addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
+                cardEffects.Add(addSkillClass);
+
+                bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card);
                 }
 
-                cardEffects.Add(CardEffectFactory.AllianceStaticEffect(
-                    permanentCondition: SharedPermanentCondition,
-                    isInheritedEffect: false,
-                    card: card,
-                    condition: CanUseCondition));
+                bool CardSourceCondition(CardSource cardSource)
+                {
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(cardSource))
+                    {
+                        if (cardSource == cardSource.PermanentOfThisCard().TopCard)
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming _timing)
+                {
+                    if (_timing == EffectTiming.OnAllyAttack)
+                    {
+                        bool Condition()
+                        {
+                            return CardSourceCondition(cardSource);
+                        }
+
+                        cardEffects.Add(CardEffectFactory.AllianceSelfEffect(false, cardSource, Condition));
+                    }
+
+                    return cardEffects;
+                }
             }
 
             #endregion

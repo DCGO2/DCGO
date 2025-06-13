@@ -44,7 +44,7 @@ namespace DCGO.CardEffects.EX9
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    CardSource selectedSource = null;
+                    bool cardAdded = false;
 
                     if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, ReturnCard))
                     {
@@ -72,15 +72,15 @@ namespace DCGO.CardEffects.EX9
 
                         IEnumerator SelectCardCoroutine(CardSource source)
                         {
-                            selectedSource = source;
+                            if(source != null)
+                                cardAdded = true;
+
                             yield return null;
                         }
                     }
 
-                    if (selectedSource == null)
-                    {
+                    if (cardAdded)
                         yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
-                    }
                 }
             }
 

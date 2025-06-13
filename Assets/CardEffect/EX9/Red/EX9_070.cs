@@ -100,7 +100,7 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent))
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
                         if (permanent.TopCard.HasDMTraits)
                         {

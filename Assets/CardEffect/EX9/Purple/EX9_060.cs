@@ -47,7 +47,7 @@ namespace DCGO.CardEffects.EX9
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Place 1 hand card FD as bottom source, Draw 1", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("EX9_060_Draw");
                 cardEffects.Add(activateClass);
 
@@ -58,52 +58,50 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           card.Owner.HandCards.Count > 0;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (card.Owner.HandCards.Any())
+                    CardSource selectedCard = null;
+                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                    selectHandEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: null,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: true,
+                        canEndNotMax: false,
+                        isShowOpponent: true,
+                        selectCardCoroutine: SelectCardCoroutine,
+                        afterSelectCardCoroutine: null,
+                        mode: SelectHandEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    selectHandEffect.SetUpCustomMessage("Select 1 card to add as FD Source", "The opponent is selecting 1 card to add as FD source");
+                    selectHandEffect.SetUpCustomMessage_ShowCard("Added Card");
+                    yield return StartCoroutine(selectHandEffect.Activate());
+
+                    IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
-                        CardSource selectedCard = null;
-                        int maxCount = Math.Min(1, card.Owner.HandCards.Count);
-                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                        selectedCard = cardSource;
+                        yield return null;
+                    }
 
-                        selectHandEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: null,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: true,
-                            canEndNotMax: true,
-                            isShowOpponent: true,
-                            selectCardCoroutine: SelectCardCoroutine,
-                            afterSelectCardCoroutine: null,
-                            mode: SelectHandEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-                        selectHandEffect.SetUpCustomMessage("Select 1 card to add as FD Source", "The opponent is selecting 1 card to add as FD source");
-                        selectHandEffect.SetUpCustomMessage_ShowCard("Added Card");
-                        yield return StartCoroutine(selectHandEffect.Activate());
-
-                        IEnumerator SelectCardCoroutine(CardSource cardSource)
-                        {
-                            selectedCard = cardSource;
-                            yield return null;
-                        }
-
-                        if (selectedCard != null)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddExecutingCard(selectedCard));
-                            yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass, isFacedown: true));
-                            yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
-                        }
+                    if (selectedCard != null)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddExecutingCard(selectedCard));
+                        yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass, isFacedown: true));
+                        yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
                     }
                 }
             }
@@ -116,7 +114,7 @@ namespace DCGO.CardEffects.EX9
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Place 1 hand card FD as bottom source, Draw 1", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("EX9_060_Draw");
                 cardEffects.Add(activateClass);
 
@@ -132,47 +130,44 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           card.Owner.HandCards.Count > 0;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (card.Owner.HandCards.Any())
+                    CardSource selectedCard = null;
+                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                    selectHandEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: null,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: true,
+                        canEndNotMax: false,
+                        isShowOpponent: true,
+                        selectCardCoroutine: SelectCardCoroutine,
+                        afterSelectCardCoroutine: null,
+                        mode: SelectHandEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    selectHandEffect.SetUpCustomMessage("Select 1 card to add as FD Source", "The opponent is selecting 1 card to add as FD source");
+                    selectHandEffect.SetUpCustomMessage_ShowCard("Added Card");
+                    yield return StartCoroutine(selectHandEffect.Activate());
+
+                    IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
-                        CardSource selectedCard = null;
-                        int maxCount = Math.Min(1, card.Owner.HandCards.Count);
-                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                        selectedCard = cardSource;
+                        yield return null;
+                    }
 
-                        selectHandEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: null,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: true,
-                            canEndNotMax: true,
-                            isShowOpponent: true,
-                            selectCardCoroutine: SelectCardCoroutine,
-                            afterSelectCardCoroutine: null,
-                            mode: SelectHandEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-                        selectHandEffect.SetUpCustomMessage("Select 1 card to add as FD Source", "The opponent is selecting 1 card to add as FD source");
-                        selectHandEffect.SetUpCustomMessage_ShowCard("Added Card");
-                        yield return StartCoroutine(selectHandEffect.Activate());
-
-                        IEnumerator SelectCardCoroutine(CardSource cardSource)
-                        {
-                            selectedCard = cardSource;
-                            yield return null;
-                        }
-
-                        if (selectedCard != null)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddExecutingCard(selectedCard));
-                            yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass, isFacedown: true));
-                            yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
-                        }
+                    if (selectedCard != null)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddExecutingCard(selectedCard));
+                        yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass, isFacedown: true));
+                        yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
                     }
                 }
             }

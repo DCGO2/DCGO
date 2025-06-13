@@ -437,7 +437,7 @@ public partial class CardEffectCommons
     #endregion
 
     #region Trash digivolution cards from top or bottom
-    public static IEnumerator TrashDigivolutionCardsFromTopOrBottom(Permanent targetPermanent, int trashCount, bool isFromTop, ICardEffect activateClass)
+    public static IEnumerator TrashDigivolutionCardsFromTopOrBottom(Permanent targetPermanent, int trashCount, bool isFromTop, ICardEffect activateClass, Func<CardSource, bool> cardCondition = null)
     {
         if (activateClass == null) yield break;
         if (targetPermanent == null) yield break;
@@ -455,7 +455,13 @@ public partial class CardEffectCommons
                 int index = isFromTop ? i : targetPermanent.DigivolutionCards.Count - 1 - i;
                 CardSource trashTargetCard = targetPermanent.DigivolutionCards[index];
 
-                trashTargetCards.Add(trashTargetCard);
+                bool trashCard = true;
+
+                if (cardCondition != null)
+                    trashCard = cardCondition(trashTargetCard);
+
+                if(trashCard)
+                    trashTargetCards.Add(trashTargetCard);
             }
         }
 

@@ -119,13 +119,13 @@ namespace DCGO.CardEffects.EX9
             if (timing == EffectTiming.SecuritySkill)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Play 1 5 cost or lower card", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "";
+                    return "[Security] You may play 1 play cost 5 or lower card with the [DM] trait from your hand or trash without paying the cost.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -135,7 +135,7 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.IsDigimon && cardSource.HasLevel && cardSource.Level <= 5 &&
+                    return cardSource.HasPlayCost && cardSource.GetCostItself <= 5 &&
                            cardSource.EqualsTraits("DM") &&
                            CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
                 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 //Abbadomon
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.EX9
 {
     public class EX9_055 : CEntity_Effect
     {

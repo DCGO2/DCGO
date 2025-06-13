@@ -32,19 +32,92 @@ namespace DCGO.CardEffects.EX9
             #endregion
 
             #region Assembly
-
             if (timing == EffectTiming.None)
             {
-                // TODO Implement Assembly
-            }
+                AddAssemblyConditionClass addAssemblyConditionClass = new AddAssemblyConditionClass();
+                addAssemblyConditionClass.SetUpICardEffect($"Assembly", CanUseCondition, card);
+                addAssemblyConditionClass.SetUpAddAssemblyConditionClass(getAssemblyCondition: GetAssembly);
+                addAssemblyConditionClass.SetNotShowUI(true);
+                cardEffects.Add(addAssemblyConditionClass);
 
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return true;
+                }
+
+                AssemblyCondition GetAssembly(CardSource cardSource)
+                {
+                    if (cardSource == card)
+                    {
+                        AssemblyConditionElement element = new AssemblyConditionElement(CanSelectCardCondition, "4 level 5 [Cyborg] trait Digimon cards w/different names");
+
+                        bool CanSelectCardCondition(CardSource cardSource)
+                        {
+                            if (cardSource != null)
+                            {
+                                if (cardSource.Owner == card.Owner)
+                                {
+                                    if (cardSource.IsDigimon)
+                                    {
+                                        if (cardSource.IsLevel5)
+                                        {
+                                            if (cardSource.EqualsTraits("Cyborg"))
+                                            {
+                                                return true;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            return false;
+                        }
+
+                        bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
+                        {
+                            List<string> cardNames = new List<string>();
+
+                            foreach (CardSource cardSource1 in cardSources)
+                            {
+                                foreach (string cardName in cardSource1.CardNames)
+                                {
+                                    if (!cardNames.Contains(cardName))
+                                    {
+                                        cardNames.Add(cardName);
+                                    }
+                                }
+                            }
+
+                            if (cardSource.CardNames.Count((cardName) => cardNames.Contains(cardName)) >= 1)
+                            {
+                                return false;
+                            }
+
+                            return true;
+                        }
+
+                        List<AssemblyConditionElement> elements = new List<AssemblyConditionElement>();
+
+                        for (int i = 0; i < 4; i++)
+                        {
+                            elements.Add(element);
+                        }
+
+                        AssemblyCondition assemblyCondition = new AssemblyCondition(elements, CanTargetCondition_ByPreSelecetedList, 6);
+
+                        return assemblyCondition;
+                    }
+
+                    return null;
+                }
+            }
             #endregion
 
             #region On Play/ When Digivolving/ When Attacking Shared
 
             bool CanSelectCardConditionShared(CardSource cardSource)
             {
-                return cardSource.HasLevel && cardSource.IsLevel5 &&
+                return cardSource.IsLevel5 &&
                        (cardSource.EqualsTraits("Cyborg") || cardSource.EqualsTraits("Ver.5"));
             }
 
@@ -230,9 +303,7 @@ namespace DCGO.CardEffects.EX9
                                 }
                             }
 
-                            if (selectedEffect != null &&
-                                selectedEffect.EffectSourceCard &&
-                                selectedEffect.EffectSourceCard.PermanentOfThisCard() != null)
+                            if (selectedEffect != null)
                             {
                                 Hashtable effectHashtable = CardEffectCommons.OnPlayCheckHashtableOfCard(card);
 
@@ -424,9 +495,7 @@ namespace DCGO.CardEffects.EX9
                                 }
                             }
 
-                            if (selectedEffect != null &&
-                                selectedEffect.EffectSourceCard &&
-                                selectedEffect.EffectSourceCard.PermanentOfThisCard() != null)
+                            if (selectedEffect != null)
                             {
                                 Hashtable effectHashtable = CardEffectCommons.OnPlayCheckHashtableOfCard(card);
 
@@ -618,9 +687,7 @@ namespace DCGO.CardEffects.EX9
                                 }
                             }
 
-                            if (selectedEffect != null &&
-                                selectedEffect.EffectSourceCard &&
-                                selectedEffect.EffectSourceCard.PermanentOfThisCard() != null)
+                            if (selectedEffect != null)
                             {
                                 Hashtable effectHashtable = CardEffectCommons.OnPlayCheckHashtableOfCard(card);
 
@@ -658,34 +725,120 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanSelectTrashSourceCardCondition(CardSource cardSource)
                 {
-                    return (cardSource.IsFlipped || cardSource.EqualsTraits("Cyborg")) &&
+                    return cardSource.IsFlipped &&
+                           !cardSource.CanNotTrashFromDigivolutionCards(activateClass);
+                }
+
+                bool CanSelectCyborgSourceCondition(CardSource cardSource)
+                {
+                    return cardSource.EqualsTraits("Cyborg") &&
                            !cardSource.CanNotTrashFromDigivolutionCards(activateClass);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           card.PermanentOfThisCard().DigivolutionCards.Count(CanSelectTrashSourceCardCondition) >= 2;
+                           (card.PermanentOfThisCard().DigivolutionCards.Count(CanSelectTrashSourceCardCondition) >= 2 ||
+                           card.PermanentOfThisCard().DigivolutionCards.Count(CanSelectCyborgSourceCondition) > 0);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     Permanent thisPermanent = card.PermanentOfThisCard();
 
-                    List<CardSource> selectedCards = thisPermanent.DigivolutionCards.Filter(CanSelectTrashSourceCardCondition)
-                        .GetRange(thisPermanent.DigivolutionCards.Count - 2, 2);
+                    bool hasFaceDownSources = thisPermanent.DigivolutionCards.Count(CanSelectTrashSourceCardCondition) >= 2;
+                    bool hasCyborgSources = thisPermanent.DigivolutionCards.Count(CanSelectCyborgSourceCondition) > 0;
 
-                    if (selectedCards.Count == 2)
+                    if(hasCyborgSources || hasFaceDownSources)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(
-                            new ITrashDigivolutionCards(thisPermanent, selectedCards, activateClass).TrashDigivolutionCards());
+                        if(hasCyborgSources && hasCyborgSources)
+                        {
+                            List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
+                        {
+                            new SelectionElement<bool>(message: $"Bottom 2 Face down", value : true, spriteIndex: 0),
+                            new SelectionElement<bool>(message: $"Cyborg", value : false, spriteIndex: 1),
+                        };
 
-                        thisPermanent.willBeRemoveField = false;
-                        thisPermanent.HideDeleteEffect();
-                        thisPermanent.HideHandBounceEffect();
-                        thisPermanent.HideDeckBounceEffect();
-                        thisPermanent.HideWillRemoveFieldEffect();
+                            string selectPlayerMessage = "What will you trash?";
+                            string notSelectPlayerMessage = "The opponent is choosing what cards they will trash.";
+
+                            GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+                        }
+                        else
+                        {
+                            GManager.instance.userSelectionManager.SetBool(hasFaceDownSources);
+                        }
+
+                        bool willTrashFacedown = GManager.instance.userSelectionManager.SelectedBoolValue;
+
+                        if (willTrashFacedown)
+                        {
+                            int startingSources = thisPermanent.DigivolutionCards.Count;
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: thisPermanent, trashCount: 2, isFromTop: false, activateClass: activateClass, CanSelectTrashSourceCardCondition));
+
+                            if (thisPermanent.DigivolutionCards.Count == startingSources - 2)
+                            {
+                                thisPermanent.willBeRemoveField = false;
+                                thisPermanent.HideDeleteEffect();
+                                thisPermanent.HideHandBounceEffect();
+                                thisPermanent.HideDeckBounceEffect();
+                                thisPermanent.HideWillRemoveFieldEffect();
+                            }
+                        }
+                        else
+                        {
+                            CardSource selectedCard = null;
+                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+                            selectCardEffect.SetUp(
+                                    canTargetCondition: CanSelectCyborgSourceCondition,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    canNoSelect: () => true,
+                                    selectCardCoroutine: SelectCardCoroutine,
+                                    afterSelectCardCoroutine: null,
+                                    message: "Select 1 card to trash.",
+                                    maxCount: 1,
+                                    canEndNotMax: true,
+                                    isShowOpponent: true,
+                                    mode: SelectCardEffect.Mode.Custom,
+                                    root: SelectCardEffect.Root.Custom,
+                                    customRootCardList: thisPermanent.DigivolutionCards,
+                                    canLookReverseCard: true,
+                                    selectPlayer: card.Owner,
+                                    cardEffect: activateClass);
+
+                            selectCardEffect.SetUpCustomMessage("Select 1 card to trash.", "The opponent is selecting 1 card to trash.");
+
+                            yield return StartCoroutine(selectCardEffect.Activate());
+
+
+                            IEnumerator SelectCardCoroutine (CardSource source)
+                            {
+                                selectedCard = source;
+                                yield return null;
+                            }
+
+                            if (selectedCard != null)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(new ITrashDigivolutionCards(card.PermanentOfThisCard(), new List<CardSource> { selectedCard }, activateClass).TrashDigivolutionCards());
+
+                                thisPermanent.willBeRemoveField = false;
+                                thisPermanent.HideDeleteEffect();
+                                thisPermanent.HideHandBounceEffect();
+                                thisPermanent.HideDeckBounceEffect();
+                                thisPermanent.HideWillRemoveFieldEffect();
+                            }
+                        }
                     }
+                    
+
+                    
+
+                    
+
+                    
                 }
             }
 
