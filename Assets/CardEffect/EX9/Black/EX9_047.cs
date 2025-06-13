@@ -39,63 +39,6 @@ namespace DCGO.CardEffects.EX9
 
             #endregion
 
-            #region On Deletion
-            if (timing == EffectTiming.OnDestroyedAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Return a card from trash", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
-                cardEffects.Add(activateClass);
-
-                string EffectDescription() => "[On Deletion] You may return 1 Digimon card with [Negamon] in its text from your trash to the hand.";
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
-                }
-
-                bool CanSelectCardCondition(CardSource cardSource)
-                {
-                    return cardSource.HasText("Negamon");
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
-                    {
-                        int maxCount = Math.Min(1, card.Owner.TrashCards.Count(CanSelectCardCondition));
-
-                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                        selectCardEffect.SetUp(
-                            canTargetCondition: CanSelectCardCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            canNoSelect: () => true,
-                            selectCardCoroutine: null,
-                            afterSelectCardCoroutine: null,
-                            message: "Select 1 card to add to your hand.",
-                            maxCount: maxCount,
-                            canEndNotMax: false,
-                            isShowOpponent: true,
-                            mode: SelectCardEffect.Mode.AddHand,
-                            root: SelectCardEffect.Root.Trash,
-                            customRootCardList: null,
-                            canLookReverseCard: true,
-                            selectPlayer: card.Owner,
-                            cardEffect: activateClass);
-
-                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-                    }
-                }
-            }
-            #endregion
-
             #region Assembly
             if (timing == EffectTiming.None)
             {
@@ -144,17 +87,20 @@ namespace DCGO.CardEffects.EX9
 
                         bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
                         {
-                            List<string> cardIDs = new List<string>();
+                            List<string> cardNames = new List<string>();
 
                             foreach (CardSource cardSource1 in cardSources)
                             {
-                                if (!cardIDs.Contains(cardSource1.CardID))
+                                foreach (string cardName in cardSource1.CardNames)
                                 {
-                                    cardIDs.Add(cardSource1.CardID);
+                                    if (!cardNames.Contains(cardName))
+                                    {
+                                        cardNames.Add(cardName);
+                                    }
                                 }
                             }
 
-                            if (cardIDs.Contains(cardSource.CardID))
+                            if (cardSource.CardNames.Count((cardName) => cardNames.Contains(cardName)) >= 1)
                             {
                                 return false;
                             }
@@ -168,6 +114,63 @@ namespace DCGO.CardEffects.EX9
                     }
 
                     return null;
+                }
+            }
+            #endregion
+
+            #region On Deletion
+            if (timing == EffectTiming.OnDestroyedAnyone)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Return a card from trash", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
+                cardEffects.Add(activateClass);
+
+                string EffectDescription() => "[On Deletion] You may return 1 Digimon card with [Negamon] in its text from your trash to the hand.";
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanActivateOnDeletion(card);
+                }
+
+                bool CanSelectCardCondition(CardSource cardSource)
+                {
+                    return cardSource.HasText("Negamon");
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
+                    {
+                        int maxCount = Math.Min(1, card.Owner.TrashCards.Count(CanSelectCardCondition));
+
+                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                        selectCardEffect.SetUp(
+                            canTargetCondition: CanSelectCardCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            canNoSelect: () => true,
+                            selectCardCoroutine: null,
+                            afterSelectCardCoroutine: null,
+                            message: "Select 1 card to add to your hand.",
+                            maxCount: maxCount,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            mode: SelectCardEffect.Mode.AddHand,
+                            root: SelectCardEffect.Root.Trash,
+                            customRootCardList: null,
+                            canLookReverseCard: true,
+                            selectPlayer: card.Owner,
+                            cardEffect: activateClass);
+
+                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                    }
                 }
             }
             #endregion

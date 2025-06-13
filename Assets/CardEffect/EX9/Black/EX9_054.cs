@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.EX9
 {
     public class EX9_054 : CEntity_Effect
     {

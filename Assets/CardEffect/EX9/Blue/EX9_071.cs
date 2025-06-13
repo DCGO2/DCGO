@@ -62,7 +62,7 @@ namespace DCGO.CardEffects.EX9
             if (timing == EffectTiming.OnDeclaration)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play 1 card from trash", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Unsuspend", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, 1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -120,7 +120,7 @@ namespace DCGO.CardEffects.EX9
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 option to trash.", "The opponent is selecting 1 option to trash.");
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 digimon to trash sources.", "The opponent is selecting 1 digimon to trash sources.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
@@ -130,52 +130,14 @@ namespace DCGO.CardEffects.EX9
                             yield return null;
                         }
 
-                        List<CardSource> selectedCards = new List<CardSource>();
+                        int startingSources = selectedPermanent.DigivolutionCards.Count;
 
-                        if (selectedPermanent.DigivolutionCards.Count(FaceDownDigivolutionSource) > 1)
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: selectedPermanent, trashCount: 2, isFromTop: false, activateClass: activateClass, FaceDownDigivolutionSource));
+                        
+                        if(selectedPermanent.DigivolutionCards.Count == startingSources - 2)
                         {
-
-                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                            selectCardEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: FaceDownDigivolutionSource,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: 1,
-                                message: "Select 1 card to trash.",
-                                canNoSelect: () => true,
-                                canEndNotMax: false,
-                                isShowOpponent: true,
-                                selectCardCoroutine: SelectCardCoroutine,
-                                afterSelectCardCoroutine: null,
-                                mode: SelectCardEffect.Mode.Custom,
-                                root: SelectCardEffect.Root.Custom,
-                                customRootCardList: selectedPermanent.DigivolutionCards.Filter(FaceDownDigivolutionSource).ToArray()[^2..].ToList(),
-                                canLookReverseCard: false,
-                                cardEffect: activateClass);
-
-                            selectCardEffect.SetUpCustomMessage("Select 1 card to trash.", "The opponent is selecting 1 card to trash.");
-                            selectCardEffect.SetUpCustomMessage_ShowCard("Played Trash");
-
-                            yield return StartCoroutine(selectCardEffect.Activate());
-
-                            IEnumerator SelectCardCoroutine(CardSource cardSource)
-                            {
-                                selectedCards.Add(cardSource);
-
-                                yield return null;
-                            }
+                            yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent> { selectedPermanent }, activateClass).Unsuspend());
                         }
-                        else
-                        {
-                            selectedCards.Add(selectedPermanent.DigivolutionCards.Where(FaceDownDigivolutionSource).First());
-                        }
-
-                        yield return ContinuousController.instance.StartCoroutine(new ITrashDigivolutionCards(
-                            selectedPermanent,
-                            selectedCards,
-                            activateClass).TrashDigivolutionCards());
                     }
                 }
             }

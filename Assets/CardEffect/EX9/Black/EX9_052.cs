@@ -105,12 +105,9 @@ namespace DCGO.CardEffects.EX9
                     if (selectedCards.Count >= 3)
                     {
                         foreach (CardSource card in selectedCards)
-                        {
                             yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddExecutingCard(card));
-                            card.SetReverse();
-                        }
                         
-                        yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(selectedCards, activateClass));
+                        yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(selectedCards, activateClass, isFacedown:true));
 
                         added = true;
                     }

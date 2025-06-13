@@ -19,7 +19,7 @@ namespace DCGO.CardEffects.EX9
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
                     return targetPermanent.TopCard.IsLevel4 &&
-                        targetPermanent.TopCard.EqualsTraits("DM") || targetPermanent.TopCard.EqualsTraits("Cyborg");
+                        (targetPermanent.TopCard.EqualsTraits("DM") || targetPermanent.TopCard.EqualsTraits("Cyborg"));
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
@@ -389,7 +389,8 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) && CardEffectCommons.IsMinLevel(permanent, card.Owner.Enemy);
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) && 
+                           CardEffectCommons.IsMinLevel(permanent, card.Owner);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

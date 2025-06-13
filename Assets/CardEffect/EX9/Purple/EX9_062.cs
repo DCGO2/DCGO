@@ -61,7 +61,7 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.IsDigimon && cardSource.EqualsTraits("DM") && cardSource.Level <= 4;
+                    return cardSource.IsDigimon && cardSource.EqualsTraits("DM");
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -77,7 +77,6 @@ namespace DCGO.CardEffects.EX9
 
                     if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
                     {
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, CanSelectCardCondition));
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                         selectCardEffect.SetUp(
@@ -88,7 +87,7 @@ namespace DCGO.CardEffects.EX9
                                     selectCardCoroutine: null,
                                     afterSelectCardCoroutine: null,
                                     message: "Select 1 [DM] digimon to add to hand",
-                                    maxCount: maxCount,
+                                    maxCount: 1,
                                     canEndNotMax: true,
                                     isShowOpponent: true,
                                     mode: SelectCardEffect.Mode.AddHand,
@@ -132,7 +131,7 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.IsDigimon && cardSource.EqualsTraits("DM") && cardSource.Level <= 4;
+                    return cardSource.IsDigimon && cardSource.EqualsTraits("DM");
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -148,7 +147,6 @@ namespace DCGO.CardEffects.EX9
 
                     if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
                     {
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, CanSelectCardCondition));
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                         selectCardEffect.SetUp(
@@ -159,7 +157,7 @@ namespace DCGO.CardEffects.EX9
                                     selectCardCoroutine: null,
                                     afterSelectCardCoroutine: null,
                                     message: "Select 1 [DM] digimon to add to hand",
-                                    maxCount: maxCount,
+                                    maxCount: 1,
                                     canEndNotMax: true,
                                     isShowOpponent: true,
                                     mode: SelectCardEffect.Mode.AddHand,
@@ -283,7 +281,7 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.Level <= 4 && cardSource.EqualsTraits("DM"))
+                    if (cardSource.IsDigimon && cardSource.Level <= 4 && cardSource.EqualsTraits("DM"))
                     {
                         if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                         {
@@ -299,7 +297,6 @@ namespace DCGO.CardEffects.EX9
                     if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
                     {
                         CardSource selectedCard = null;
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, CanSelectCardCondition));
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                         selectCardEffect.SetUp(
@@ -310,7 +307,7 @@ namespace DCGO.CardEffects.EX9
                                     selectCardCoroutine: SelectCardCoroutine,
                                     afterSelectCardCoroutine: null,
                                     message: "Select 1 [DM] digimon to play",
-                                    maxCount: maxCount,
+                                    maxCount: 1,
                                     canEndNotMax: true,
                                     isShowOpponent: true,
                                     mode: SelectCardEffect.Mode.Custom,
