@@ -3261,6 +3261,18 @@ public class CardSource : MonoBehaviour
     }
 
     #endregion
+
+    #region whether this card has "Flame" trait
+
+    public bool HasFlameTraits
+    {
+        get
+        {
+            return EqualsTraits("Flame");
+        }
+    }
+
+    #endregion
 }
 
 public class JogressCondition
