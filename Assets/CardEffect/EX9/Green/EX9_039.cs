@@ -36,7 +36,7 @@ namespace DCGO.CardEffects.EX9
 
             if (timing == EffectTiming.OnDeclaration)
             {
-                // To be implemented
+                cardEffects.Add(CardEffectFactory.TrainingEffect(card: card));
             }
 
             #endregion
@@ -62,7 +62,7 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && card.Owner.HandCards.Count >= 1;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -221,7 +221,7 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && card.Owner.HandCards.Count >= 1;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -248,12 +248,13 @@ namespace DCGO.CardEffects.EX9
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     CardSource selectedCard = null;
+
                     int maxCount = Math.Min(1, card.Owner.HandCards.Count);
                     SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
                     selectHandEffect.SetUp(
                         selectPlayer: card.Owner,
-                        canTargetCondition: null,
+                        canTargetCondition: _ => true,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: maxCount,

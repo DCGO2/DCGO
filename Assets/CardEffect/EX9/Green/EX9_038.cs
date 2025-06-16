@@ -136,12 +136,18 @@ namespace DCGO.CardEffects.EX9
                             if (selectedPermanent != null && !selectedPermanent.TopCard.CanNotBeAffected(activateClass))
                             {
                                 yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(new List<Permanent>() { selectedPermanent }, hashtable).Tap());
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotUnsuspend(
-                                targetPermanent: selectedPermanent,
-                                effectDuration: EffectDuration.UntilOwnerActivePhase,
-                                activateClass: activateClass,
-                                condition: null,
-                                effectName: "Your Digimon can't unsuspend"));
+
+                                bool PermanentCondition(Permanent permanent)
+                                {
+                                    return permanent == selectedPermanent;
+                                }
+
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotUnsuspendPlayerEffect(
+                                    permanentCondition: PermanentCondition,
+                                    effectDuration: EffectDuration.UntilOwnerActivePhase,
+                                    activateClass: activateClass,
+                                    isOnlyActivePhase: true,
+                                    effectName: "Your Digimon can't unsuspend"));
                             }
                         }
                     }
@@ -245,12 +251,18 @@ namespace DCGO.CardEffects.EX9
                             if (selectedPermanent != null && !selectedPermanent.TopCard.CanNotBeAffected(activateClass))
                             {
                                 yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(new List<Permanent>() { selectedPermanent }, hashtable).Tap());
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotUnsuspend(
-                                targetPermanent: selectedPermanent,
-                                effectDuration: EffectDuration.UntilOwnerActivePhase,
-                                activateClass: activateClass,
-                                condition: null,
-                                effectName: "Your Digimon can't unsuspend"));
+
+                                bool PermanentCondition(Permanent permanent)
+                                {
+                                    return permanent == selectedPermanent;
+                                }
+
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotUnsuspendPlayerEffect(
+                                    permanentCondition: PermanentCondition,
+                                    effectDuration: EffectDuration.UntilOwnerActivePhase,
+                                    activateClass: activateClass,
+                                    isOnlyActivePhase: true,
+                                    effectName: "Your Digimon can't unsuspend"));
                             }
                         }
                     }

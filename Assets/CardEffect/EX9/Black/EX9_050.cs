@@ -104,8 +104,7 @@ namespace DCGO.CardEffects.EX9
                         foreach (var selectedCard in selectedCards)
                         {
                             yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddExecutingCard(selectedCard));
-                            selectedCard.SetReverse();
-                            yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass));
+                            yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass, isFacedown: true));
                         }
 
                         bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectEvoCondition);

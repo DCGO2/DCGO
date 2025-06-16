@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -46,7 +46,7 @@ namespace DCGO.CardEffects.EX9
 
                 string EffectDescription()
                 {
-                    return "[When Digivolving] By placing 1 card in your hand face down as this Digimon's bottom digivolution card, if you have as many or fewer security cards as this Digimon has face-down digivolution cards, <Recovery +1(Deck)>.";
+                    return "[When Digivolving] [Once Per Turn] By placing 1 card in your hand face down as this Digimon's bottom digivolution card, if you have as many or fewer security cards as this Digimon has face-down digivolution cards, ＜Recovery +1 (Deck)＞ (Place the top card of your deck on top of your security stack).";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -93,7 +93,15 @@ namespace DCGO.CardEffects.EX9
                         yield return null;
                     }
 
-                    if (selectedCard && card.Owner.SecurityCards.Count <= card.PermanentOfThisCard().DigivolutionCards.Filter(x => x.IsFlipped).Count) yield return ContinuousController.instance.StartCoroutine(new IRecovery(card.Owner, 1, activateClass).Recovery());
+                    if(selectedCard != null)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddExecutingCard(selectedCard));
+                        yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass, isFacedown: true));
+
+                        if (card.Owner.SecurityCards.Count <= card.PermanentOfThisCard().DigivolutionCards.Filter(x => x.IsFlipped).Count) 
+                            yield return ContinuousController.instance.StartCoroutine(new IRecovery(card.Owner, 1, activateClass).Recovery());
+
+                    }
                 }
             }
 
@@ -111,7 +119,7 @@ namespace DCGO.CardEffects.EX9
 
                 string EffectDescription()
                 {
-                    return "[When Attacking] By placing 1 card in your hand face down as this Digimon's bottom digivolution card, if you have as many or fewer security cards as this Digimon has face-down digivolution cards, <Recovery +1(Deck)>.";
+                    return "[When Attacking] [Once Per Turn] By placing 1 card in your hand face down as this Digimon's bottom digivolution card, if you have as many or fewer security cards as this Digimon has face-down digivolution cards, ＜Recovery +1 (Deck)＞ (Place the top card of your deck on top of your security stack).";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -161,10 +169,14 @@ namespace DCGO.CardEffects.EX9
                         yield return null;
                     }
 
-                    if (selectedCard &&
-                        card.Owner.SecurityCards.Count <= card.PermanentOfThisCard().DigivolutionCards.Filter(x => x.IsFlipped).Count)
+                    if (selectedCard != null)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(new IRecovery(card.Owner, 1, activateClass).Recovery());
+                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddExecutingCard(selectedCard));
+                        yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass, isFacedown: true));
+
+                        if (card.Owner.SecurityCards.Count <= card.PermanentOfThisCard().DigivolutionCards.Filter(x => x.IsFlipped).Count)
+                            yield return ContinuousController.instance.StartCoroutine(new IRecovery(card.Owner, 1, activateClass).Recovery());
+
                     }
                 }
             }

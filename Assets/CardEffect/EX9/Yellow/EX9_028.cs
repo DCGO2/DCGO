@@ -90,8 +90,7 @@ namespace DCGO.CardEffects.EX9
                         foreach (CardSource selectedCard in selectedCards)
                         {
                             yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddExecutingCard(selectedCard));
-                            selectedCard.SetReverse();
-                            yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass));
+                            yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass, isFacedown: true));
                         }
 
                         List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()

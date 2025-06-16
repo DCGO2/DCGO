@@ -64,38 +64,6 @@ namespace DCGO.CardEffects.EX9
                     return false;
                 }
 
-                bool CanSelectPermanentHandCondition(Permanent permanent)
-                {
-                    foreach (CardSource cardSource in card.Owner.HandCards)
-                    {
-                        if (cardSource.EqualsTraits("Ver.3"))
-                        {
-                            if (cardSource.CanPlayCardTargetFrame(card.PermanentOfThisCard().PermanentFrame, false, activateClass))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return false;
-                }
-
-                bool CanSelectPermanentTrashCondition(Permanent permanent)
-                {
-                    foreach (CardSource cardSource in card.Owner.TrashCards)
-                    {
-                        if (cardSource.EqualsTraits("Ver.3"))
-                        {
-                            if (cardSource.CanPlayCardTargetFrame(card.PermanentOfThisCard().PermanentFrame, false, activateClass))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return false;
-                }
-
                 bool ValidDigivolveIntoHand(CardSource source)
                 {
                     return source.EqualsTraits("Ver.3");
@@ -165,8 +133,7 @@ namespace DCGO.CardEffects.EX9
                             foreach (var selectedCard in selectedCards)
                             {
                                 yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddExecutingCard(selectedCard));
-                                selectedCard.SetReverse();
-                                yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass));
+                                yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass, isFacedown: true));
                             }
 
                             bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition1);
