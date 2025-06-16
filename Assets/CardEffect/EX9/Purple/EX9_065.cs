@@ -93,12 +93,9 @@ namespace DCGO.CardEffects.EX9
                     {
                         if (cardSource.Owner == card.Owner)
                         {
-                            if (cardSource == cardSource.PermanentOfThisCard().TopCard)
+                            if (PermanentCondition(cardSource.PermanentOfThisCard()))
                             {
-                                if (PermanentCondition(cardSource.PermanentOfThisCard()))
-                                {
-                                    return true;
-                                }
+                                return true;
                             }
                         }
                     }

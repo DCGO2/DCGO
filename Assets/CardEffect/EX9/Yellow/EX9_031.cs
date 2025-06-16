@@ -45,7 +45,7 @@ namespace DCGO.CardEffects.EX9
 
             #region Ver3 Digivolution Cost Reduction
 
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.BeforePayCost)
             {
                 Permanent selectedPermanent = null;
                 bool Condition()
@@ -70,12 +70,12 @@ namespace DCGO.CardEffects.EX9
 
                 int ReduceCost()
                 {
-                    return selectedPermanent.DigivolutionCards.Filter(x => x.IsFlipped).Count;
+                    return card.PermanentOfThisCard().DigivolutionCards.Filter(x => x.IsFlipped).Count;
                 }
 
                 cardEffects.Add(CardEffectFactory.ChangeDigivolutionCostStaticEffect<Func<int>>(
                     changeValue: () => -ReduceCost(),
-                    permanentCondition: (permanent) => { selectedPermanent = permanent; return PermanentCondition(permanent); },
+                    permanentCondition: PermanentCondition,
                     cardCondition: CardSourceCondition,
                     rootCondition: RootCondition,
                     isInheritedEffect: false,
@@ -121,12 +121,14 @@ namespace DCGO.CardEffects.EX9
                     maxCount: 1,
                     canNoTrash: false,
                     isFromOnly1Permanent: true,
-                    activateClass: activateClass
+                    activateClass: activateClass,
+                    afterSelectionCoroutine:AfterSelectCoroutine
                 ));
 
-                if (card.Owner.LibraryCards.Count >= 1 && card.Owner.CanAddSecurity(activateClass))
+                IEnumerator AfterSelectCoroutine(Permanent permanent, List<CardSource> cards)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(new IRecovery(card.Owner, 1, activateClass).Recovery());
+                    if(cards.Count > 0)
+                        yield return ContinuousController.instance.StartCoroutine(new IRecovery(card.Owner, 1, activateClass).Recovery());
                 }
             }
 

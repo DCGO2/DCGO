@@ -152,8 +152,7 @@ namespace DCGO.CardEffects.EX9
                         if (selectedPermanent != null)
                         {
                             yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddExecutingCard(selectedCard));
-                            selectedCard.SetReverse();
-                            yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass));
+                            yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass, isFacedown: true));
                         }
                     }
                 }

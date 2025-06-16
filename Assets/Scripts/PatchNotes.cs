@@ -18,25 +18,11 @@ public class PatchNotes : OffAnimation
     public void OnClickOpenPatchNotesPanelButton()
     {
         Application.OpenURL("https://dcgo.online/PatchNotes.html");
-        /*if (_isOpen)
-        {
-            ClosePatchNotesPanel();
-        }
+    }
 
-        else
-        {
-            if (Opening.instance != null)
-            {
-                Opening.instance.PlayDecisionSE();
-            }
-
-            else if (GManager.instance != null)
-            {
-                GManager.instance.PlayDecisionSE();
-            }
-
-            ContinuousController.instance.StartCoroutine(Open());
-        }*/
+    public void OnClickOpenReportButton()
+    {
+        Application.OpenURL("https://forms.gle/GhZgGVJS1qLeUMcG8");
     }
 
     public IEnumerator Open()

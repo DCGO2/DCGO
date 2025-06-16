@@ -78,12 +78,12 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card); 
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
             }
 
