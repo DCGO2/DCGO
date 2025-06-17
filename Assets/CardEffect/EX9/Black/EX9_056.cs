@@ -53,7 +53,7 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    return permanent.IsDigimon &&
+                    return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent) &&
                            permanent.DP <= 8000;
                 }
 
@@ -100,13 +100,11 @@ namespace DCGO.CardEffects.EX9
 
                     if (selectedPermanent != null)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(selectedPermanent.TopCard, toTop: false));
+                        yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(
+                        selectedPermanent,
+                        CardEffectCommons.CardEffectHashtable(activateClass), toTop: false).PutSecurity());
 
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(selectedPermanent.TopCard.Owner));
-
-                        yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(selectedPermanent.TopCard.Owner).AddSecurity());
-
-                        if (card.Owner.SecurityCards.Contains(selectedPermanent.TopCard))
+                        if (selectedPermanent.TopCard.Owner.SecurityCards.Contains(selectedPermanent.TopCard))
                         {
                             yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
                                 player: card.Owner.Enemy,
@@ -134,7 +132,7 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    return permanent.IsDigimon &&
+                    return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent) &&
                            permanent.DP <= 8000;
                 }
 
@@ -182,13 +180,11 @@ namespace DCGO.CardEffects.EX9
 
                     if (selectedPermanent != null)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(selectedPermanent.TopCard, toTop: false));
+                        yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(
+                        selectedPermanent,
+                        CardEffectCommons.CardEffectHashtable(activateClass), toTop: false).PutSecurity());
 
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(selectedPermanent.TopCard.Owner));
-
-                        yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(selectedPermanent.TopCard.Owner).AddSecurity());
-
-                        if (card.Owner.SecurityCards.Contains(selectedPermanent.TopCard))
+                        if (selectedPermanent.TopCard.Owner.SecurityCards.Contains(selectedPermanent.TopCard))
                         {
                             yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
                                 player: card.Owner.Enemy,

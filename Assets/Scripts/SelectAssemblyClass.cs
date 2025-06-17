@@ -113,7 +113,33 @@ public class SelectAssemblyClass : MonoBehaviourPunCallbacks
             {
                 AssemblyCondition AssemblyCondition = card.assemblyCondition;
 
-                foreach (AssemblyConditionElement element in AssemblyCondition.elements)
+                yield return GManager.instance.photonWaitController.StartWait("SelectAssemblys");
+
+                if (selectedAssemblyCards.Count >= AssemblyCondition.elementCount)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(selectedAssemblyCards, "Assembly Cards", false, true));
+                }
+
+                if (_endSelectAssembly)
+                {
+                    _endSelectAssembly = false;
+                    //break; TODO: Removed for not triggering Assembly in all situations
+                }
+
+                bool canSelectTrash = false;
+
+                if (CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, (cardSource) => CanSelectAssembly(AssemblyCondition.element, cardSource, card)) >= AssemblyCondition.elementCount)
+                {
+                    canSelectTrash = true;
+                }
+
+
+                if (canSelectTrash)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(SelectTrashCard(AssemblyCondition, card));
+                }
+
+                /*foreach (AssemblyConditionElement element in AssemblyCondition.elements)
                 {
                     yield return GManager.instance.photonWaitController.StartWait("SelectAssemblys");
 
@@ -237,7 +263,7 @@ public class SelectAssemblyClass : MonoBehaviourPunCallbacks
                             yield return new WaitForSeconds(0.3f);
                         }
                     }
-                }
+                }*/
             }
         }
 
@@ -253,13 +279,13 @@ public class SelectAssemblyClass : MonoBehaviourPunCallbacks
     #endregion
 
     #region Select Trash Card
-    IEnumerator SelectTrashCard(AssemblyCondition AssemblyCondition, AssemblyConditionElement element, CardSource card)
+    IEnumerator SelectTrashCard(AssemblyCondition AssemblyCondition, CardSource card)
     {
-        bool CanSelectCardCondition(CardSource cardSource) => CanSelectAssembly(element, cardSource, card);
+        bool CanSelectCardCondition(CardSource cardSource) => CanSelectAssembly(AssemblyCondition.element, cardSource, card);
 
-        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, (cardSource) => CanSelectCardCondition(cardSource)))
+        if (CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, CanSelectCardCondition) >= AssemblyCondition.elementCount)
         {
-            int maxCount = 1;
+            int maxCount = AssemblyCondition.elementCount;
 
             SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
@@ -270,9 +296,9 @@ public class SelectAssemblyClass : MonoBehaviourPunCallbacks
                         canNoSelect: () => true,
                         selectCardCoroutine: SelectCardCoroutine,
                         afterSelectCardCoroutine: AfterSelectCardCoroutine,
-                        message: $"<color=#FF633E>Assembly</color>: Select {element.selectMessage} from trash.",
+                        message: $"<color=#FF633E>Assembly</color>: Select {AssemblyCondition.selectMessage} from trash.",
                         maxCount: maxCount,
-                        canEndNotMax: false,
+                        canEndNotMax: true,
                         isShowOpponent: true,
                         mode: SelectCardEffect.Mode.Custom,
                         root: SelectCardEffect.Root.Trash,
@@ -281,7 +307,7 @@ public class SelectAssemblyClass : MonoBehaviourPunCallbacks
                         selectPlayer: card.Owner,
                         cardEffect: null);
 
-            selectCardEffect.SetUpCustomMessage($"Select {element.selectMessage}.", $"The opponent is selecting {element.selectMessage}.");
+            selectCardEffect.SetUpCustomMessage($"Select {AssemblyCondition.selectMessage}.", $"The opponent is selecting {AssemblyCondition.selectMessage}.");
             selectCardEffect.SetUpCustomMessage_ShowCard("Selected Trash Card");
             selectCardEffect.SetAssembly();
 
@@ -300,7 +326,7 @@ public class SelectAssemblyClass : MonoBehaviourPunCallbacks
                 {
                     if (AssemblyCondition != null)
                     {
-                        if (AssemblyCondition.CanTargetCondition_ByPreSelecetedList != null || element.skipAllIfNoSelect)
+                        if (AssemblyCondition.CanTargetCondition_ByPreSelecetedList != null || AssemblyCondition.element.skipAllIfNoSelect)
                         {
                             EndSelectAssembly();
                         }
@@ -324,13 +350,13 @@ public class SelectAssemblyClass : MonoBehaviourPunCallbacks
     #region Add Digivolution Cards
     public IEnumerator AddDigivolutiuonCards(CardSource card)
     {
-        if (selectedAssemblyCards.Count >= 1)
+        if (card != null)
         {
-            if (card != null)
+            if (card == playCard)
             {
-                if (card == playCard)
+                if (card.PermanentOfThisCard() != null)
                 {
-                    if (card.PermanentOfThisCard() != null)
+                    if (selectedAssemblyCards.Count == playCard.assemblyCondition.elementCount)
                     {
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(selectedAssemblyCards, "Assembly Cards", true, true));
 

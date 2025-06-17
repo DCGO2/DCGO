@@ -65,6 +65,11 @@ namespace DCGO.CardEffects.EX9
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
+                bool CanSelectCardCondition(CardSource source)
+                {
+                    return true;
+                }
+
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
@@ -80,7 +85,7 @@ namespace DCGO.CardEffects.EX9
 
                         selectHandEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: null,
+                            canTargetCondition: CanSelectCardCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,
@@ -183,6 +188,11 @@ namespace DCGO.CardEffects.EX9
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
+                bool CanSelectCardCondition(CardSource source)
+                {
+                    return true;
+                }
+
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
@@ -198,7 +208,7 @@ namespace DCGO.CardEffects.EX9
 
                         selectHandEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: null,
+                            canTargetCondition: CanSelectCardCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,

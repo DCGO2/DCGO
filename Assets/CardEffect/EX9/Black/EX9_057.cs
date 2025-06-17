@@ -96,7 +96,7 @@ namespace DCGO.CardEffects.EX9
                         {
                             if (CardEffectCommons.CanTriggerOnPermanentAttack(hashtable, PermanentCondition))
                             {
-                                return true;
+                                return (NegamonCount() >= 4);
                             }
                         }
                     }
@@ -108,10 +108,7 @@ namespace DCGO.CardEffects.EX9
                 {
                     if (CardEffectCommons.IsExistOnBreedingAreaDigimon(card))
                     {
-                        if (NegamonCount() >= 4)
-                        {
-                            return card.PermanentOfThisCard().CanMove;
-                        }
+                        return card.PermanentOfThisCard().CanMove;
                     }
                     return false;
                 }
@@ -131,49 +128,14 @@ namespace DCGO.CardEffects.EX9
 
                     if (negamonCards.Count >= 4)
                     {
-                        int maxCount = card.Owner.TrashCards.Count(CanSelectCardCondition);
+                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(negamonCards));
 
-                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(negamonCards, "Digi-Egg deck Bottom Cards", true, true));
+                    }
 
-                        selectCardEffect.SetUp(
-                        canTargetCondition: (cardSource) => CanSelectCardCondition(cardSource),
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        canNoSelect: () => true,
-                        selectCardCoroutine: null,
-                        afterSelectCardCoroutine: AfterSelectCardCoroutine,
-                        message: "Select 1 card to place at the bottom of the Digi-Egg deck.",
-                        maxCount: maxCount,
-                        canEndNotMax: false,
-                        isShowOpponent: false,
-                        mode: SelectCardEffect.Mode.Custom,
-                        root: SelectCardEffect.Root.Custom,
-                        customRootCardList: negamonCards,
-                        canLookReverseCard: true,
-                        selectPlayer: card.Owner,
-                        cardEffect: activateClass);
-
-                        selectCardEffect.SetNotShowCard();
-                        selectCardEffect.SetNotAddLog();
-
-                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-
-                        IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
-                        {
-                            selectedCards.AddRange(cardSources);
-
-                            if (cardSources.Count == 1)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources));
-
-                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(cardSources, "Digi-Egg deck Bottom Cards", true, true));
-                            }
-
-                            if (card.Owner.CanMove)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.MovePermanent(card.Owner.GetBreedingAreaPermanents()[0].PermanentFrame));
-                            }
-                        }
+                    if (card.Owner.CanMove)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.MovePermanent(card.Owner.GetBreedingAreaPermanents()[0].PermanentFrame));
                     }
                 }
             }

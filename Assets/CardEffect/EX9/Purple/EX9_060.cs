@@ -56,6 +56,11 @@ namespace DCGO.CardEffects.EX9
                     return "[When Digivolving] [Once Per Turn] By placing 1 card in your hand face down as this Digimon's bottom digivolution card, <Draw 1> (Draw 1 card from your deck).";
                 }
 
+                bool CanSelectSource(CardSource source)
+                {
+                    return true;
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
@@ -75,7 +80,7 @@ namespace DCGO.CardEffects.EX9
 
                     selectHandEffect.SetUp(
                         selectPlayer: card.Owner,
-                        canTargetCondition: null,
+                        canTargetCondition: CanSelectSource,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: 1,
@@ -123,6 +128,11 @@ namespace DCGO.CardEffects.EX9
                     return "[When Attacking] [Once Per Turn] By placing 1 card in your hand face down as this Digimon's bottom digivolution card, <Draw 1> (Draw 1 card from your deck).";
                 }
 
+                bool CanSelectSource(CardSource source)
+                {
+                    return true;
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
@@ -141,7 +151,7 @@ namespace DCGO.CardEffects.EX9
 
                     selectHandEffect.SetUp(
                         selectPlayer: card.Owner,
-                        canTargetCondition: null,
+                        canTargetCondition: CanSelectSource,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: 1,

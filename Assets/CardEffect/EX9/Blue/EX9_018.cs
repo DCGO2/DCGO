@@ -60,8 +60,174 @@ namespace DCGO.CardEffects.EX9
 
             #endregion
 
+            #region Play Cost Reduction
+
+            if (timing == EffectTiming.BeforePayCost)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Trash 1 [Cyborg]/[Ver.1] card from hand, to get Play Cost -2", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetHashString("PlayCost-4_BT13_083");
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "When this card would be played, by trashing 1 [Cyborg]/[Ver.1] card from your hand, reduce the play cost by 2.";
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.CanTriggerWhenPermanentWouldPlay(hashtable, cardSource => cardSource == card))
+                    {
+                        return true;
+                    }
+
+                    return false;
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
+                    {
+                        return true;
+                    }
+
+                    return false;
+                }
+
+                bool CanSelectCardCondition(CardSource cardSource)
+                {
+                    if (CardEffectCommons.IsExistOnHand(cardSource))
+                    {
+                        if (cardSource != card)
+                        {
+                            if (cardSource.EqualsTraits("Cyborg") || cardSource.EqualsTraits("Ver.2"))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+
+                    return false;
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                {
+                    bool CanNoSelect =
+                    CardEffectCommons.GetPlayCardClassFromHashtable(_hashtable) != null &&
+                        card.PayingCost(
+                            CardEffectCommons.GetPlayCardClassFromHashtable(_hashtable).Root,
+                            null,
+                            checkAvailability: false)
+                        <= card.Owner.MaxMemoryCost;
+
+                    bool discarded = false;
+                    int discardCount = 1;
+                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                    selectHandEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanSelectCardCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: discardCount,
+                        canNoSelect: true,
+                        canEndNotMax: false,
+                        isShowOpponent: true,
+                        selectCardCoroutine: null,
+                        afterSelectCardCoroutine: AfterSelectCardCoroutine,
+                        mode: SelectHandEffect.Mode.Discard,
+                        cardEffect: activateClass);
+                    selectHandEffect.SetUpCustomMessage("Choose a [Cyborg] or [Ver.2] card to discard", "The opponent is selecting 1 card in hand to discard.");
+                    selectHandEffect.SetUpCustomMessage_ShowCard("Discarded Card");
+                    yield return StartCoroutine(selectHandEffect.Activate());
+
+                    IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
+                    {
+                        if (cardSources.Count >= 1)
+                        {
+                            discarded = true;
+                            yield return null;
+                        }
+                    }
+
+                    if (discarded)
+                    {
+                        if (card.Owner.CanReduceCost(null, card))
+                        {
+                            ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().BuffSE);
+                        }
+
+                        ChangeCostClass changeCostClass = new ChangeCostClass();
+                        changeCostClass.SetUpICardEffect("Play Cost -2", hashtable => true, card);
+                        changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
+                        card.Owner.UntilCalculateFixedCostEffect.Add((_timing) => changeCostClass);
+
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ShowReducedCost(_hashtable));
+
+                        int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
+                        {
+                            if (CardSourceCondition(cardSource))
+                            {
+                                if (RootCondition(root))
+                                {
+                                    if (PermanentsCondition(targetPermanents))
+                                    {
+                                        Cost -= 2;
+                                    }
+                                }
+                            }
+
+                            return Cost;
+                        }
+
+                        bool PermanentsCondition(List<Permanent> targetPermanents)
+                        {
+                            if (targetPermanents == null)
+                            {
+                                return true;
+                            }
+                            else
+                            {
+                                if (targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0)
+                                {
+                                    return true;
+                                }
+                            }
+
+                            return false;
+                        }
+
+                        bool CardSourceCondition(CardSource cardSource)
+                        {
+                            if (cardSource != null)
+                            {
+                                if (cardSource == card)
+                                {
+                                    return true;
+                                }
+                            }
+
+                            return false;
+                        }
+
+                        bool RootCondition(SelectCardEffect.Root root)
+                        {
+                            return true;
+                        }
+
+                        bool isUpDown()
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            #endregion
+
             #region On Play
-            if(timing == EffectTiming.OnEnterFieldAnyone)
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By placing 1 Digimon card from your trash face down as this Digimon's bottom digivolution card, from 1 of your opponent's Digimon, trash any 1 digivolution card for each of this Digimon's face-down digivolution cards. Then, return 1 of their Digimon with no digivolution cards to the bottom of the deck.\r\n", CanUseCondition, card);

@@ -11,7 +11,7 @@ namespace DCGO.CardEffects.EX9
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Inherit
-            if (timing == EffectTiming.OnEnterFieldAnyone)
+            if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Digivolve in the trash", CanUseCondition, card);
@@ -24,7 +24,8 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && CardEffectCommons.CanTriggerOnAttack(hashtable, card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && 
+                           CardEffectCommons.CanTriggerOnAttack(hashtable, card);
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)

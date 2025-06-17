@@ -57,7 +57,7 @@ namespace DCGO.CardEffects.EX9
                 {
                     if (cardSource == card)
                     {
-                        AssemblyConditionElement element = new AssemblyConditionElement(CanSelectCardCondition, "4 Digimon cards with [Eyesmon: Scatter Mode] in their names");
+                        AssemblyConditionElement element = new AssemblyConditionElement(CanSelectCardCondition);
 
                         bool CanSelectCardCondition(CardSource cardSource)
                         {
@@ -76,13 +76,6 @@ namespace DCGO.CardEffects.EX9
                             }
 
                             return false;
-                        }
-
-                        List<AssemblyConditionElement> elements = new List<AssemblyConditionElement>();
-
-                        for (int i = 0; i < 4; i++)
-                        {
-                            elements.Add(element);
                         }
 
                         bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
@@ -108,7 +101,12 @@ namespace DCGO.CardEffects.EX9
                             return true;
                         }
 
-                        AssemblyCondition assemblyCondition = new AssemblyCondition(elements, CanTargetCondition_ByPreSelecetedList, 3);
+                        AssemblyCondition assemblyCondition = new AssemblyCondition(
+                            element: element,
+                            CanTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
+                            selectMessage: "4 Digimon cards with [Eyesmon: Scatter Mode] in their names",
+                            elementCount: 4,
+                            reduceCost: 3);
 
                         return assemblyCondition;
                     }
@@ -140,7 +138,8 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.HasText("Negamon");
+                    return cardSource.IsDigimon &&
+                           cardSource.HasText("Negamon");
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

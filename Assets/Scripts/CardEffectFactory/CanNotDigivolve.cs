@@ -16,7 +16,7 @@ public partial class CardEffectFactory
     {
         bool CanUseCondition()
         {
-            if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+            if (CardEffectCommons.IsExistOnField(card))
             {
                 if (condition == null || condition())
                 {
@@ -29,7 +29,7 @@ public partial class CardEffectFactory
 
         bool PermanentCondition(Permanent permanent)
         {
-            if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
+            if (CardEffectCommons.IsPermanentExistsOnField(permanent))
             {
                 if (permanent == card.PermanentOfThisCard())
                 {
@@ -75,7 +75,7 @@ public partial class CardEffectFactory
 
         bool PermanentCondition(Permanent permanent)
         {
-            if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
+            if (CardEffectCommons.IsPermanentExistsOnField(permanent))
             {
                 if (!permanent.TopCard.CanNotBeAffected(canNotEvolveClass))
                 {

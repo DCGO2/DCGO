@@ -79,7 +79,7 @@ namespace DCGO.CardEffects.EX9
                         }
                     }
 
-                    if (cardAdded)
+                    if (!cardAdded)
                         yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
                 }
             }

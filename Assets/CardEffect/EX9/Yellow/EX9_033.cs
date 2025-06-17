@@ -85,10 +85,15 @@ namespace DCGO.CardEffects.EX9
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(cardSource))
                     {
-                        if (cardSource == cardSource.PermanentOfThisCard().TopCard)
+                        if (card.Owner == cardSource.Owner)
                         {
-                            return true;
+                            if (cardSource.PermanentOfThisCard().IsToken || cardSource.EqualsTraits("Puppet"))
+                            {
+                                return true;
+                            }
                         }
+
+                        return false;
                     }
 
                     return false;

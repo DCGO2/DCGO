@@ -110,7 +110,7 @@ namespace DCGO.CardEffects.EX9
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
                                 targetPermanent: card.PermanentOfThisCard(),
                                 cardCondition: CanSelectCardCondition,
-                                payCost: false,
+                                payCost: true,
                                 reduceCostTuple: null,
                                 fixedCostTuple: null,
                                 ignoreDigivolutionRequirementFixedCost: -1,
@@ -123,7 +123,7 @@ namespace DCGO.CardEffects.EX9
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
                                 targetPermanent: card.PermanentOfThisCard(),
                                 cardCondition: CanSelectCardCondition,
-                                payCost: false,
+                                payCost: true,
                                 reduceCostTuple: null,
                                 fixedCostTuple: null,
                                 ignoreDigivolutionRequirementFixedCost: -1,

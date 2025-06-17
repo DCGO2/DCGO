@@ -30,7 +30,7 @@ namespace DCGO.CardEffects.EX9
                 {
                     if (cardSource == card)
                     {
-                        AssemblyConditionElement element = new AssemblyConditionElement(CanSelectCardCondition, "7 level 4 [DM] trait Digimon cards w/different names");
+                        AssemblyConditionElement element = new AssemblyConditionElement(CanSelectCardCondition);
 
                         bool CanSelectCardCondition(CardSource cardSource)
                         {
@@ -77,14 +77,12 @@ namespace DCGO.CardEffects.EX9
                             return true;
                         }
 
-                        List<AssemblyConditionElement> elements = new List<AssemblyConditionElement>();
-
-                        for (int i = 0; i < 7; i++)
-                        {
-                            elements.Add(element);
-                        }
-
-                        AssemblyCondition assemblyCondition = new AssemblyCondition(elements, CanTargetCondition_ByPreSelecetedList, 7);
+                        AssemblyCondition assemblyCondition = new AssemblyCondition(
+                            element:element,
+                            CanTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
+                            selectMessage: "7 level 4 [DM] trait Digimon cards w/different names",
+                            elementCount: 7,
+                            reduceCost: 7);
 
                         return assemblyCondition;
                     }
@@ -207,56 +205,55 @@ namespace DCGO.CardEffects.EX9
                         if (selectedCard != null)
                         {
                             yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddExecutingCard(selectedCard));
-                            selectedCard.SetReverse();
                             yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsTop(new List<CardSource>() { selectedCard }, activateClass));
+                        }
+                    }
 
-                            List<CardColor> colours = card.PermanentOfThisCard().DigivolutionCards
+                    List<CardColor> colours = card.PermanentOfThisCard().DigivolutionCards
                                 .SelectMany(e => e.CardColors)
                                 .Distinct()
                                 .ToList();
 
-                            if (colours.Count <= 5 && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, permanent => CanSelectPermanentCondition(permanent, colours)))
-                            {
-                                int maxCount1 = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(permanent => CanSelectPermanentCondition(permanent, colours)));
-                                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                    if (colours.Count <= 5 && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, permanent => CanSelectPermanentCondition(permanent, colours)))
+                    {
+                        int maxCount1 = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(permanent => CanSelectPermanentCondition(permanent, colours)));
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                                selectPermanentEffect.SetUp(
-                                    selectPlayer: card.Owner,
-                                    canTargetCondition: permanent => CanSelectPermanentCondition(permanent, colours),
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    maxCount: maxCount1,
-                                    canNoSelect: false,
-                                    canEndNotMax: false,
-                                    selectPermanentCoroutine: null,
-                                    afterSelectPermanentCoroutine: null,
-                                    mode: SelectPermanentEffect.Mode.Destroy,
-                                    cardEffect: activateClass);
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: permanent => CanSelectPermanentCondition(permanent, colours),
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: maxCount1,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: null,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Destroy,
+                            cardEffect: activateClass);
 
-                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                            }
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                    }
 
-                            if (colours.Count >= 6 && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, permanent => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)))
-                            {
-                                int maxCount2 = 7;
-                                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                    if (colours.Count >= 6 && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, permanent => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)))
+                    {
+                        int maxCount2 = 7;
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                                selectPermanentEffect.SetUp(
-                                    selectPlayer: card.Owner,
-                                    canTargetCondition: null,
-                                    canTargetCondition_ByPreSelecetedList: (permanents, permament) => CanTargetCondition_ByPreSelecetedList(permanents, permament, colours),
-                                    canEndSelectCondition: CanEndSelectCondition,
-                                    maxCount: maxCount2,
-                                    canNoSelect: false,
-                                    canEndNotMax: true,
-                                    selectPermanentCoroutine: null,
-                                    afterSelectPermanentCoroutine: null,
-                                    mode: SelectPermanentEffect.Mode.Destroy,
-                                    cardEffect: activateClass);
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: null,
+                            canTargetCondition_ByPreSelecetedList: (permanents, permament) => CanTargetCondition_ByPreSelecetedList(permanents, permament, colours),
+                            canEndSelectCondition: CanEndSelectCondition,
+                            maxCount: maxCount2,
+                            canNoSelect: false,
+                            canEndNotMax: true,
+                            selectPermanentCoroutine: null,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Destroy,
+                            cardEffect: activateClass);
 
-                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                            }
-                        }
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
                 }
             }
@@ -290,6 +287,11 @@ namespace DCGO.CardEffects.EX9
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
                     return cardSource.IsDigimon && cardSource.HasLevel && cardSource.Level <= 4 && cardSource.HasDMTraits;
+                }
+
+                bool CanSelectPermanentCondition(Permanent permanent, List<CardColor> cardColors)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) && permanent.TopCard.CardColors.Exists(color => cardColors.Contains(color));
                 }
 
                 bool CanTargetCondition_ByPreSelecetedList(List<Permanent> permanents, Permanent permanent, List<CardColor> cardColors)
@@ -349,7 +351,6 @@ namespace DCGO.CardEffects.EX9
                         if (selectedCard != null)
                         {
                             yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddExecutingCard(selectedCard));
-                            selectedCard.SetReverse();
                             yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsTop(new List<CardSource>() { selectedCard }, activateClass));
                         }
                     }
@@ -359,57 +360,46 @@ namespace DCGO.CardEffects.EX9
                                 .Distinct()
                                 .ToList();
 
-                    bool OpponentsDigimonWithMatchingColor(Permanent permanent)
+                    if (colours.Count <= 5 && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, permanent => CanSelectPermanentCondition(permanent, colours)))
                     {
-                        return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
-                               permanent.TopCard.CardColors.Exists(x => colours.Contains(x));
+                        int maxCount1 = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(permanent => CanSelectPermanentCondition(permanent, colours)));
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: permanent => CanSelectPermanentCondition(permanent, colours),
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: maxCount1,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: null,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Destroy,
+                            cardEffect: activateClass);
+
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
 
-                    if (colours.Count <= 5)
+                    if (colours.Count >= 6 && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, permanent => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)))
                     {
-                        if (CardEffectCommons.HasMatchConditionPermanent(OpponentsDigimonWithMatchingColor))
-                        {
-                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                        int maxCount2 = 7;
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: OpponentsDigimonWithMatchingColor,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: 1,
-                                canNoSelect: false,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: null,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Destroy,
-                                cardEffect: activateClass);
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: null,
+                            canTargetCondition_ByPreSelecetedList: (permanents, permament) => CanTargetCondition_ByPreSelecetedList(permanents, permament, colours),
+                            canEndSelectCondition: CanEndSelectCondition,
+                            maxCount: maxCount2,
+                            canNoSelect: false,
+                            canEndNotMax: true,
+                            selectPermanentCoroutine: null,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Destroy,
+                            cardEffect: activateClass);
 
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                        }                        
-                    }
-
-                    if (colours.Count >= 6)
-                    {
-                        if(CardEffectCommons.HasMatchConditionOpponentsPermanent(card, permanent => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)))
-                        {
-                            int maxCount2 = 7;
-                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: null,
-                                canTargetCondition_ByPreSelecetedList: (permanents, permament) => CanTargetCondition_ByPreSelecetedList(permanents, permament, colours),
-                                canEndSelectCondition: CanEndSelectCondition,
-                                maxCount: maxCount2,
-                                canNoSelect: false,
-                                canEndNotMax: true,
-                                selectPermanentCoroutine: null,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Destroy,
-                                cardEffect: activateClass);
-
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                        }
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
                 }
             }

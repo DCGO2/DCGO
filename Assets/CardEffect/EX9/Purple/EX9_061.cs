@@ -68,7 +68,7 @@ namespace DCGO.CardEffects.EX9
 
                 int DeletionLevelCount()
                 {
-                    double count = 2 + (card.PermanentOfThisCard().DigivolutionCards.Filter(x => x.IsFlipped).Count / 2);
+                    double count = 3 + (card.PermanentOfThisCard().DigivolutionCards.Filter(x => x.IsFlipped).Count / 2);
                     return (int)Math.Round(count, MidpointRounding.AwayFromZero);
                 }
 

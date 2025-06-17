@@ -39,45 +39,140 @@ namespace DCGO.CardEffects.EX9
 
             #endregion
 
-            #region Ver.4 Digivolution Cost Reduction
+            #region Ver4 Digivolution Cost Reduction
 
             if (timing == EffectTiming.BeforePayCost)
             {
-                Permanent selectedPermanent = null;
-                bool Condition()
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Reduce the digivolution cost by 1 for each face-down source", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                    => "When any of your [Ver.4] trait Digimon would digivolve into this card, for each of their face-down digivolution cards, reduce the digivolution cost by 1.";
+
+                bool PermanentEvoCondition(Permanent permanent)
                 {
-                    return !CardEffectCommons.IsExistOnField(card);
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                    {
+                        if (permanent.TopCard.EqualsTraits("Ver.3"))
+                        {
+                            return card.CanPlayCardTargetFrame(permanent.PermanentFrame, true, activateClass);
+                        }
+                    }
+                    return false;
                 }
 
-                bool PermanentCondition(Permanent targetPermanent)
+                bool CardCondition(CardSource source)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(targetPermanent, card) && targetPermanent.TopCard.EqualsTraits("Ver.4");
+                    return (source == card);
                 }
 
-                bool CardSourceCondition(CardSource cardSource)
+                bool CanUseCondition(Hashtable hashtable)
                 {
-                    return cardSource.EqualsTraits("Ver.4");
+                    if (CardEffectCommons.IsExistOnHand(card))
+                    {
+                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, PermanentEvoCondition))
+                        {
+                            if (CardEffectCommons.CanTriggerWhenPermanentWouldDigivolve(hashtable, PermanentEvoCondition, CardCondition))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                    return false;
                 }
 
-                bool RootCondition(SelectCardEffect.Root root)
+                bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return true;
+                    return CardEffectCommons.IsExistOnHand(card);
                 }
 
-                int ReduceCost()
+                IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    return card.PermanentOfThisCard().DigivolutionCards.Filter(x => x.IsFlipped).Count;
-                }
+                    Hashtable hashtable = new Hashtable();
+                    hashtable.Add("CardEffect", activateClass);
 
-                cardEffects.Add(CardEffectFactory.ChangeDigivolutionCostStaticEffect<Func<int>>(
-                    changeValue: () => -ReduceCost(),
-                    permanentCondition: PermanentCondition,
-                    cardCondition: CardSourceCondition,
-                    rootCondition: RootCondition,
-                    isInheritedEffect: false,
-                    card: card,
-                    condition: Condition,
-                    setFixedCost: false));
+                    Permanent targetPermanent = CardEffectCommons.GetPermanentsFromHashtable(_hashtable)[0];
+
+                    ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().BuffSE);
+
+                    ChangeCostClass changeCostClass = new ChangeCostClass();
+                    changeCostClass.SetUpICardEffect($"Digivolution Cost -{ReduceCost()}", CanUseCondition, card);
+                    changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
+                    card.Owner.UntilCalculateFixedCostEffect.Add((_timing) => changeCostClass);
+
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ShowReducedCost(_hashtable));
+
+                    bool CanUseCondition(Hashtable hashtable)
+                    {
+                        return true;
+                    }
+
+                    int ReduceCost()
+                    {
+                        return targetPermanent.DigivolutionCards.Filter(x => x.IsFlipped).Count;
+                    }
+
+                    int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
+                    {
+                        if (CardSourceCondition(cardSource))
+                        {
+                            if (RootCondition(root))
+                            {
+                                if (PermanentsCondition(targetPermanents))
+                                {
+                                    Cost -= ReduceCost();
+                                }
+                            }
+                        }
+
+                        return Cost;
+                    }
+
+                    bool PermanentsCondition(List<Permanent> targetPermanents)
+                    {
+                        if (targetPermanents != null)
+                        {
+                            if (targetPermanents.Exists(PermanentCondition))
+                            {
+                                return true;
+                            }
+                        }
+
+                        return false;
+                    }
+
+                    bool PermanentCondition(Permanent targetPermanent)
+                    {
+                        if (targetPermanent.TopCard != null)
+                        {
+                            return PermanentEvoCondition(targetPermanent);
+                        }
+
+                        return false;
+                    }
+
+                    bool CardSourceCondition(CardSource cardSource)
+                    {
+                        if (cardSource != null)
+                        {
+                            return CardCondition(cardSource);
+                        }
+
+                        return false;
+                    }
+
+                    bool RootCondition(SelectCardEffect.Root root)
+                    {
+                        return true;
+                    }
+
+                    bool isUpDown()
+                    {
+                        return true;
+                    }
+                }
             }
 
             #endregion
