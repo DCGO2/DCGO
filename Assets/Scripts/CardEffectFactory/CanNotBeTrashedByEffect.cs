@@ -25,7 +25,7 @@ public partial class CardEffectFactory
 
         bool PermanentCondition(Permanent permanent)
         {
-            if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
+            if (CardEffectCommons.IsPermanentExistsOnField(permanent))
             {
                 if (!permanent.TopCard.CanNotBeAffected(canNotBeTrashedBySkillClass))
                 {

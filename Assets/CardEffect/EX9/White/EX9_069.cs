@@ -28,7 +28,8 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card);
+                    return CardEffectCommons.IsExistOnBattleArea(card) &&
+                           CardEffectCommons.IsOwnerTurn(card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -44,6 +45,11 @@ namespace DCGO.CardEffects.EX9
                            permanent.TopCard.HasDMTraits;
                 }
 
+                bool CanSelectCard(CardSource sources)
+                {
+                    return true;
+                }
+
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     CardSource selectedCard = null;
@@ -53,7 +59,7 @@ namespace DCGO.CardEffects.EX9
 
                     selectHandEffect.SetUp(
                         selectPlayer: card.Owner,
-                        canTargetCondition: null,
+                        canTargetCondition: CanSelectCard,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: maxCount,

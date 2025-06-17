@@ -114,6 +114,8 @@ namespace DCGO.CardEffects.EX9
                         "The opponent is selecting 1 card to place face-down on bottom of digivolution cards.");
                     selectHandEffect.SetUpCustomMessage_ShowCard("Digivolution Card");
 
+                    yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+
                     IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
                         selectedCard = cardSource;
@@ -205,6 +207,8 @@ namespace DCGO.CardEffects.EX9
                     selectHandEffect.SetUpCustomMessage("Select 1 card to place face-down on bottom of digivolution cards.",
                         "The opponent is selecting 1 card to place face-down on bottom of digivolution cards.");
                     selectHandEffect.SetUpCustomMessage_ShowCard("Digivolution Card");
+
+                    yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
 
                     IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {

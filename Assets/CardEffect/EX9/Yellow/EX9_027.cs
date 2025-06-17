@@ -154,6 +154,11 @@ namespace DCGO.CardEffects.EX9
                            card.Owner.HandCards.Count > 0;
                 }
 
+                bool CanSelectCardCondition(CardSource source)
+                {
+                    return true;
+                }
+
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
@@ -166,7 +171,7 @@ namespace DCGO.CardEffects.EX9
                     SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
                     selectHandEffect.SetUp(
                         selectPlayer: card.Owner,
-                        canTargetCondition: null,
+                        canTargetCondition: CanSelectCardCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: 1,

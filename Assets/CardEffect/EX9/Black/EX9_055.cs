@@ -29,7 +29,7 @@ namespace DCGO.CardEffects.EX9
                 {
                     if (cardSource == card)
                     {
-                        AssemblyConditionElement element = new AssemblyConditionElement(CanSelectCardCondition, "4 [Negamon]");
+                        AssemblyConditionElement element = new AssemblyConditionElement(CanSelectCardCondition);
 
                         bool CanSelectCardCondition(CardSource cardSource)
                         {
@@ -37,12 +37,9 @@ namespace DCGO.CardEffects.EX9
                             {
                                 if (cardSource.Owner == card.Owner)
                                 {
-                                    if (cardSource.IsDigimon)
+                                    if (cardSource.EqualsCardName("Negamon"))
                                     {
-                                        if (cardSource.ContainsCardName("Negamon"))
-                                        {
-                                            return true;
-                                        }
+                                        return true;
                                     }
                                 }
                             }
@@ -50,14 +47,12 @@ namespace DCGO.CardEffects.EX9
                             return false;
                         }
 
-                        List<AssemblyConditionElement> elements = new List<AssemblyConditionElement>();
-
-                        for (int i = 0; i < 4; i++)
-                        {
-                            elements.Add(element);
-                        }
-
-                        AssemblyCondition assemblyCondition = new AssemblyCondition(elements, null, 3);
+                        AssemblyCondition assemblyCondition = new AssemblyCondition(
+                            element: element,
+                            CanTargetCondition_ByPreSelecetedList: null,
+                            selectMessage: "4 [Negamon]",
+                            elementCount: 4,
+                            reduceCost: 3);
 
                         return assemblyCondition;
                     }
@@ -441,26 +436,30 @@ namespace DCGO.CardEffects.EX9
 
                     List<CardSource> selectedCards = new List<CardSource>();
 
-                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
-                    selectHandEffect.SetUp(
+                    selectCardEffect.SetUp(
                         selectPlayer: card.Owner,
                         canTargetCondition: CanSelectTuckedTarget,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: 1,
-                        canNoSelect: true,
+                        canNoSelect: () => true,
                         canEndNotMax: false,
                         isShowOpponent: true,
+                        message:"Select 1 card to play as source",
+                        root:SelectCardEffect.Root.Trash,
+                        customRootCardList:null,
                         selectCardCoroutine: SelectCardCoroutine,
+                        canLookReverseCard:false,
                         afterSelectCardCoroutine: null,
-                        mode: SelectHandEffect.Mode.Custom,
+                        mode: SelectCardEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                    selectHandEffect.SetUpCustomMessage("Select 1 card to place in Digivolution cards.", "The opponent is selecting 1 card to place in Digivolution cards.");
-                    selectHandEffect.SetNotShowCard();
+                    selectCardEffect.SetUpCustomMessage("Select 1 card to place in Digivolution cards.", "The opponent is selecting 1 card to place in Digivolution cards.");
+                    selectCardEffect.SetNotShowCard();
 
-                    yield return StartCoroutine(selectHandEffect.Activate());
+                    yield return StartCoroutine(selectCardEffect.Activate());
 
                     IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {

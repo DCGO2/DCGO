@@ -77,7 +77,8 @@ namespace DCGO.CardEffects.EX9
                     {
                         return permanent.IsDigimon &&
                                permanent.TopCard.HasDMTraits &&
-                               permanent.HasFaceDownDigivolutionCards;
+                               permanent.HasFaceDownDigivolutionCards &&
+                               permanent.DigivolutionCards.Count(x => x.IsFlipped) > 1;
                     }
 
                     return false;
@@ -130,14 +131,17 @@ namespace DCGO.CardEffects.EX9
                             yield return null;
                         }
 
-                        int startingSources = selectedPermanent.DigivolutionCards.Count;
-
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: selectedPermanent, trashCount: 2, isFromTop: false, activateClass: activateClass, FaceDownDigivolutionSource));
-                        
-                        if(selectedPermanent.DigivolutionCards.Count == startingSources - 2)
+                        if(selectedPermanent != null)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent> { selectedPermanent }, activateClass).Unsuspend());
-                        }
+                            int startingSources = selectedPermanent.DigivolutionCards.Count;
+
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: selectedPermanent, trashCount: 2, isFromTop: false, activateClass: activateClass, FaceDownDigivolutionSource));
+
+                            if (selectedPermanent.DigivolutionCards.Count == startingSources - 2)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent> { selectedPermanent }, activateClass).Unsuspend());
+                            }
+                        }                        
                     }
                 }
             }

@@ -198,45 +198,50 @@ namespace DCGO.CardEffects.EX9
             {
                 bool Condition()
                 {
-                    if (CardEffectCommons.IsExistOnBreedingArea(card))
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBreedingArea(card);
                 }
 
                 bool PermanentCondition(Permanent permanent)
-                { 
-                    return card.PermanentOfThisCard() == permanent;
+                {
+                    return permanent == card.PermanentOfThisCard();
                 }
 
-                cardEffects.Add(CardEffectFactory.CanNotDigivolveStaticEffect(
-                    permanentCondition: PermanentCondition,
+                bool CardEffectCondition(ICardEffect cardEffect)
+                {
+                    return cardEffect != null;
+                }
+
+                cardEffects.Add(CardEffectFactory.CanNotDigivolveStaticSelfEffect(
                     cardCondition: null,
                     isInheritedEffect: false,
                     card: card,
                     condition: Condition,
-                    effectName: "This Digimon can't digivolve")
-                    );
+                    effectName: "Can't digivolve"
+                ));
 
                 cardEffects.Add(CardEffectFactory.CanNotBeDestroyedBySkillStaticEffect(
-                   permanentCondition: PermanentCondition,
-                   cardEffectCondition: null,
-                   isInheritedEffect: false,
-                   card: card,
-                   condition: Condition,
-                   effectName: "This Digimon be deleted by effects")
-                   );
+                    permanentCondition: PermanentCondition,
+                    cardEffectCondition: CardEffectCondition,
+                    isInheritedEffect: false,
+                    card: card,
+                    condition: Condition,
+                    effectName: "Can't be deleted by effects"
+                ));
 
                 cardEffects.Add(CardEffectFactory.CanNotBeTrashedBySkillStaticEffect(
                    permanentCondition: PermanentCondition,
-                   cardEffectCondition: null,
+                   cardEffectCondition: CardEffectCondition,
                    isInheritedEffect: false,
                    card: card,
                    condition: Condition,
-                   effectName: "This Digimon be trashed by effects")
+                   effectName: "Can't be trashed by effects")
                    );
+            }
+
+            if (timing == EffectTiming.None)
+            {
+
+                
             }
             #endregion
 

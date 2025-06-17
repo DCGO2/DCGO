@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 // ExTyrannomon
 namespace DCGO.CardEffects.EX9
@@ -39,45 +40,140 @@ namespace DCGO.CardEffects.EX9
 
             #endregion
 
-            #region Ver.5 Digivolution Cost Reduction
+            #region Ver5 Digivolution Cost Reduction
 
             if (timing == EffectTiming.BeforePayCost)
             {
-                Permanent selectedPermanent = null;
-                bool Condition()
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Reduce the digivolution cost by 1 for each face-down source", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                    => "When any of your [Ver.5] trait Digimon would digivolve into this card, for each of their face-down digivolution cards, reduce the digivolution cost by 1.";
+
+                bool PermanentEvoCondition(Permanent permanent)
                 {
-                    return !CardEffectCommons.IsExistOnField(card);
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                    {
+                        if (permanent.TopCard.EqualsTraits("Ver.5"))
+                        {
+                            return card.CanPlayCardTargetFrame(permanent.PermanentFrame, true, activateClass);
+                        }
+                    }
+                    return false;
                 }
 
-                bool PermanentCondition(Permanent targetPermanent)
+                bool CardCondition(CardSource source)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(targetPermanent, card) && targetPermanent.TopCard.EqualsTraits("Ver.5");
+                    return (source == card);
                 }
 
-                bool CardSourceCondition(CardSource cardSource)
+                bool CanUseCondition(Hashtable hashtable)
                 {
-                    return cardSource == card;
+                    if (CardEffectCommons.IsExistOnHand(card))
+                    {
+                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, PermanentEvoCondition))
+                        {
+                            if (CardEffectCommons.CanTriggerWhenPermanentWouldDigivolve(hashtable, PermanentEvoCondition, CardCondition))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                    return false;
                 }
 
-                bool RootCondition(SelectCardEffect.Root root)
+                bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return true;
+                    return CardEffectCommons.IsExistOnHand(card);
                 }
 
-                int ReduceCost()
+                IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    return card.PermanentOfThisCard().DigivolutionCards.Filter(x => x.IsFlipped).Count;
-                }
+                    Hashtable hashtable = new Hashtable();
+                    hashtable.Add("CardEffect", activateClass);
 
-                cardEffects.Add(CardEffectFactory.ChangeDigivolutionCostStaticEffect<Func<int>>(
-                    changeValue: () => -ReduceCost(),
-                    permanentCondition: PermanentCondition,
-                    cardCondition: CardSourceCondition,
-                    rootCondition: RootCondition,
-                    isInheritedEffect: false,
-                    card: card,
-                    condition: Condition,
-                    setFixedCost: false));
+                    Permanent targetPermanent = CardEffectCommons.GetPermanentsFromHashtable(_hashtable)[0];
+
+                    ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().BuffSE);
+
+                    ChangeCostClass changeCostClass = new ChangeCostClass();
+                    changeCostClass.SetUpICardEffect($"Digivolution Cost -{ReduceCost()}", CanUseCondition, card);
+                    changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
+                    card.Owner.UntilCalculateFixedCostEffect.Add((_timing) => changeCostClass);
+
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ShowReducedCost(_hashtable));
+
+                    bool CanUseCondition(Hashtable hashtable)
+                    {
+                        return true;
+                    }
+
+                    int ReduceCost()
+                    {
+                        return targetPermanent.DigivolutionCards.Filter(x => x.IsFlipped).Count;
+                    }
+
+                    int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
+                    {
+                        if (CardSourceCondition(cardSource))
+                        {
+                            if (RootCondition(root))
+                            {
+                                if (PermanentsCondition(targetPermanents))
+                                {
+                                    Cost -= ReduceCost();
+                                }
+                            }
+                        }
+
+                        return Cost;
+                    }
+
+                    bool PermanentsCondition(List<Permanent> targetPermanents)
+                    {
+                        if (targetPermanents != null)
+                        {
+                            if (targetPermanents.Exists(PermanentCondition))
+                            {
+                                return true;
+                            }
+                        }
+
+                        return false;
+                    }
+
+                    bool PermanentCondition(Permanent targetPermanent)
+                    {
+                        if (targetPermanent.TopCard != null)
+                        {
+                            return PermanentEvoCondition(targetPermanent);
+                        }
+
+                        return false;
+                    }
+
+                    bool CardSourceCondition(CardSource cardSource)
+                    {
+                        if (cardSource != null)
+                        {
+                            return CardCondition(cardSource);
+                        }
+
+                        return false;
+                    }
+
+                    bool RootCondition(SelectCardEffect.Root root)
+                    {
+                        return true;
+                    }
+
+                    bool isUpDown()
+                    {
+                        return true;
+                    }
+                }
             }
 
             #endregion
@@ -101,6 +197,11 @@ namespace DCGO.CardEffects.EX9
             bool OpponentsTappedDigimon(Permanent permanent)
             {
                 return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) && permanent.IsSuspended && CardEffectCommons.IsMinDP(permanent, card.Owner.Enemy);
+            }
+
+            bool FlippedSourceCondition(CardSource source)
+            {
+                return source.IsFlipped;
             }
 
             #endregion
@@ -133,14 +234,13 @@ namespace DCGO.CardEffects.EX9
                 {
                     if (CardEffectCommons.HasMatchConditionPermanent(OpponentsDigimon))
                     {
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, OpponentsDigimon));
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
                             canTargetCondition: OpponentsDigimon,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: maxCount,
+                            maxCount: 1,
                             canNoSelect: false,
                             canEndNotMax: false,
                             selectPermanentCoroutine: null,
@@ -149,12 +249,16 @@ namespace DCGO.CardEffects.EX9
                             cardEffect: activateClass);
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                    }
 
+                    if (card.PermanentOfThisCard().DigivolutionCards.Count(FlippedSourceCondition) > 0)
+                    {
                         List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>
                         {
                             new(message: "Yes", value: true, spriteIndex: 0),
                             new(message: "No", value: false, spriteIndex: 1),
                         };
+
                         string selectPlayerMessage = "Use effect to bounce suspended digimon?";
                         string notSelectPlayerMessage = "The opponent is choosing to bounce suspended digimon.";
                         GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
@@ -164,29 +268,37 @@ namespace DCGO.CardEffects.EX9
 
                         if (isUsingEffect)
                         {
+                            int cardEvoSources = card.PermanentOfThisCard().DigivolutionCards.Count;
+
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(
                                 targetPermanent: card.PermanentOfThisCard(),
                                 trashCount: 1,
                                 isFromTop: false,
-                                activateClass: activateClass
+                                activateClass: activateClass,
+                                cardCondition: FlippedSourceCondition
                             ));
 
-                            int maxCount1 = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, OpponentsTappedDigimon));
-                            SelectPermanentEffect selectPermanentEffect1 = GManager.instance.GetComponent<SelectPermanentEffect>();
-                            selectPermanentEffect1.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: OpponentsTappedDigimon,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: maxCount1,
-                                canNoSelect: false,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: null,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Bounce,
-                                cardEffect: activateClass);
+                            if (card.PermanentOfThisCard().DigivolutionCards.Count < cardEvoSources)
+                            {
+                                if (CardEffectCommons.HasMatchConditionPermanent(OpponentsTappedDigimon))
+                                {
+                                    SelectPermanentEffect selectPermanentEffect1 = GManager.instance.GetComponent<SelectPermanentEffect>();
+                                    selectPermanentEffect1.SetUp(
+                                        selectPlayer: card.Owner,
+                                        canTargetCondition: OpponentsTappedDigimon,
+                                        canTargetCondition_ByPreSelecetedList: null,
+                                        canEndSelectCondition: null,
+                                        maxCount: 1,
+                                        canNoSelect: false,
+                                        canEndNotMax: false,
+                                        selectPermanentCoroutine: null,
+                                        afterSelectPermanentCoroutine: null,
+                                        mode: SelectPermanentEffect.Mode.Bounce,
+                                        cardEffect: activateClass);
 
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect1.Activate());
+                                }
+                            }
                         }
                     }
                 }
@@ -222,14 +334,13 @@ namespace DCGO.CardEffects.EX9
                 {
                     if (CardEffectCommons.HasMatchConditionPermanent(OpponentsDigimon))
                     {
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, OpponentsDigimon));
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
                             canTargetCondition: OpponentsDigimon,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: maxCount,
+                            maxCount: 1,
                             canNoSelect: false,
                             canEndNotMax: false,
                             selectPermanentCoroutine: null,
@@ -238,12 +349,16 @@ namespace DCGO.CardEffects.EX9
                             cardEffect: activateClass);
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                    }
 
+                    if(card.PermanentOfThisCard().DigivolutionCards.Count(FlippedSourceCondition) > 0)
+                    {
                         List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>
                         {
                             new(message: "Yes", value: true, spriteIndex: 0),
                             new(message: "No", value: false, spriteIndex: 1),
                         };
+
                         string selectPlayerMessage = "Use effect to bounce suspended digimon?";
                         string notSelectPlayerMessage = "The opponent is choosing to bounce suspended digimon.";
                         GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
@@ -253,29 +368,37 @@ namespace DCGO.CardEffects.EX9
 
                         if (isUsingEffect)
                         {
+                            int cardEvoSources = card.PermanentOfThisCard().DigivolutionCards.Count;
+
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(
                                 targetPermanent: card.PermanentOfThisCard(),
                                 trashCount: 1,
                                 isFromTop: false,
-                                activateClass: activateClass
+                                activateClass: activateClass,
+                                cardCondition: FlippedSourceCondition
                             ));
 
-                            int maxCount1 = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, OpponentsTappedDigimon));
-                            SelectPermanentEffect selectPermanentEffect1 = GManager.instance.GetComponent<SelectPermanentEffect>();
-                            selectPermanentEffect1.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: OpponentsTappedDigimon,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: maxCount1,
-                                canNoSelect: false,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: null,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Bounce,
-                                cardEffect: activateClass);
+                            if(card.PermanentOfThisCard().DigivolutionCards.Count < cardEvoSources)
+                            {
+                                if (CardEffectCommons.HasMatchConditionPermanent(OpponentsTappedDigimon))
+                                {
+                                    SelectPermanentEffect selectPermanentEffect1 = GManager.instance.GetComponent<SelectPermanentEffect>();
+                                    selectPermanentEffect1.SetUp(
+                                        selectPlayer: card.Owner,
+                                        canTargetCondition: OpponentsTappedDigimon,
+                                        canTargetCondition_ByPreSelecetedList: null,
+                                        canEndSelectCondition: null,
+                                        maxCount: 1,
+                                        canNoSelect: false,
+                                        canEndNotMax: false,
+                                        selectPermanentCoroutine: null,
+                                        afterSelectPermanentCoroutine: null,
+                                        mode: SelectPermanentEffect.Mode.Bounce,
+                                        cardEffect: activateClass);
 
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect1.Activate());
+                                }
+                            }
                         }
                     }
                 }

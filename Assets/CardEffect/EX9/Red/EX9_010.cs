@@ -114,6 +114,8 @@ namespace DCGO.CardEffects.EX9
                         "The opponent is selecting 1 card to place face-down on bottom of digivolution cards.");
                     selectHandEffect.SetUpCustomMessage_ShowCard("Digivolution Card");
 
+                    yield return StartCoroutine(selectHandEffect.Activate());
+
                     IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
                         selectedCard = cardSource;
@@ -154,7 +156,7 @@ namespace DCGO.CardEffects.EX9
             #endregion
 
             #region When Attacking
-            if (timing == EffectTiming.OnEnterFieldAnyone)
+            if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Place 1 digimon in hand as source, to delete digimon", CanUseCondition, card);
@@ -219,6 +221,8 @@ namespace DCGO.CardEffects.EX9
                     selectHandEffect.SetUpCustomMessage("Select 1 card to place face-down on bottom of digivolution cards.",
                         "The opponent is selecting 1 card to place face-down on bottom of digivolution cards.");
                     selectHandEffect.SetUpCustomMessage_ShowCard("Digivolution Card");
+
+                    yield return StartCoroutine(selectHandEffect.Activate());
 
                     IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {

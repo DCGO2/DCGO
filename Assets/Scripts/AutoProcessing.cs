@@ -254,6 +254,22 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
         return false;
     }
 
+    bool IsPermanentFaceDown(Permanent permanent)
+    {
+        if (permanent != null)
+        {
+            if (permanent.TopCard != null)
+            {
+                if (permanent.TopCard.IsFlipped)
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     public IEnumerator RuleProcess()
     {
         while (DoRuleProcess())
@@ -282,6 +298,9 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
 
             //Add link count correction
             yield return ContinuousController.instance.StartCoroutine(DigimonLackLinkMaxCountProcess());
+
+            //Permanent Face Down
+            yield return ContinuousController.instance.StartCoroutine(CardFaceDownProcess());
 
             IsRuleProcessing = false;
         }
@@ -336,6 +355,13 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
 
         #region Is it necessary to deal with Digimon's Link Count?
         if (CardEffectCommons.HasMatchConditionPermanent(IsDigimonLackLinkCount))
+        {
+            return true;
+        }
+        #endregion
+
+        #region Is it necessary to deal with card being face down?
+        if (CardEffectCommons.HasMatchConditionPermanent(IsPermanentFaceDown))
         {
             return true;
         }
@@ -497,6 +523,33 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
             foreach (Permanent permanent in LackLinkCountPermanents)
             {
                 yield return ContinuousController.instance.StartCoroutine(permanent.RemoveLinkedCard(null, (permanent.LinkedCards.Count - permanent.LinkedMax)));
+            }
+        }
+    }
+    #endregion
+
+    #region Process of trashing cards that are face down
+    IEnumerator CardFaceDownProcess()
+    {
+        List<Permanent> FacedownPermanents = GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer
+            .Map(player => player.GetBattleAreaPermanents()
+            .Filter(IsPermanentFaceDown)).Flat();
+
+        foreach (Permanent permanent in FacedownPermanents)
+        {
+            if (permanent != null)
+            {
+                if (permanent.TopCard != null)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(permanent.DiscardEvoRoots());
+
+                    CardSource cardSource = permanent.TopCard;
+
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(new List<CardSource>() { cardSource }, "Cards put to trash", true, true));
+
+                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.RemoveField(permanent));
+                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddTrashCard(cardSource));
+                }
             }
         }
     }

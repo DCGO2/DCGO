@@ -533,7 +533,8 @@ public class CardSource : MonoBehaviour
                         {
                             if (selectAssemblyClass.playCard == this)
                             {
-                                Cost -= selectAssemblyClass.selectedAssemblyCards.Count * assemblyCondition.reduceCost;
+                                if(selectAssemblyClass.selectedAssemblyCards.Count == assemblyCondition.elementCount)
+                                    Cost -= assemblyCondition.reduceCost;
                             }
                         }
                     }
@@ -3111,34 +3112,30 @@ public class AppFusionCondition
 
 public class AssemblyCondition
 {
-    public AssemblyCondition(List<AssemblyConditionElement> elements, Func<List<CardSource>, CardSource, bool> CanTargetCondition_ByPreSelecetedList, int reduceCost)
+    public AssemblyCondition(AssemblyConditionElement element, Func<List<CardSource>, CardSource, bool> CanTargetCondition_ByPreSelecetedList, string selectMessage, int elementCount, int reduceCost)
     {
-        this.elements = new List<AssemblyConditionElement>();
-
-        foreach (AssemblyConditionElement element in elements)
-        {
-            this.elements.Add(element);
-        }
-
+        this.element = element;
+        this.selectMessage = selectMessage;
         this.CanTargetCondition_ByPreSelecetedList = CanTargetCondition_ByPreSelecetedList;
+        this.elementCount = elementCount;
         this.reduceCost = reduceCost;
     }
-    public List<AssemblyConditionElement> elements { get; private set; } = new List<AssemblyConditionElement>();
+    public AssemblyConditionElement element { get; private set; } = new AssemblyConditionElement(null);
     public Func<List<CardSource>, CardSource, bool> CanTargetCondition_ByPreSelecetedList { get; private set; } = null;
 
+    public string selectMessage { get; private set; } = "";
+    public int elementCount { get; private set; } = 0;
     public int reduceCost { get; private set; } = 0;
 }
 
 public class AssemblyConditionElement
 {
-    public AssemblyConditionElement(Func<CardSource, bool> cardCondition, string selectMessage, bool skipAllIfNoSelect = false)
+    public AssemblyConditionElement(Func<CardSource, bool> cardCondition, bool skipAllIfNoSelect = false)
     {
         this.CardCondition = cardCondition;
 
-        this.selectMessage = selectMessage;
         this.skipAllIfNoSelect = skipAllIfNoSelect;
     }
     public Func<CardSource, bool> CardCondition { get; private set; } = null;
-    public string selectMessage { get; private set; } = "";
     public bool skipAllIfNoSelect { get; private set; } = false;
 }

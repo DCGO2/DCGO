@@ -213,6 +213,7 @@ namespace DCGO.CardEffects.EX9
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.IsOwnerTurn(card) &&
                            (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PlayedRequirement) ||
                            CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, DigivolveRequirement));
                 }
