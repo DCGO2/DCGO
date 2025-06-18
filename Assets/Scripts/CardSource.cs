@@ -3273,6 +3273,18 @@ public class CardSource : MonoBehaviour
     }
 
     #endregion
+
+    #region whether this card has "Eater" trait
+
+    public bool HasEaterTraits
+    {
+        get
+        {
+            return EqualsTraits("Eater");
+        }
+    }
+
+    #endregion
 }
 
 public class JogressCondition
