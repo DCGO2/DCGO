@@ -7,7 +7,8 @@ using UnityEngine;
 public partial class CardEffectFactory
 {
     #region Static effect of [Blocker] on oneself
-    public static BlockerClass BlockerSelfStaticEffect(bool isInheritedEffect, CardSource card, Func<bool> condition)
+
+    public static BlockerClass BlockerSelfStaticEffect(bool isInheritedEffect, CardSource card, Func<bool> condition, bool isLinkedEffect = false)
     {
         bool PermanentCondition(Permanent permanent) => permanent == card.PermanentOfThisCard();
 
@@ -24,12 +25,14 @@ public partial class CardEffectFactory
             return false;
         }
 
-        return BlockerStaticEffect(permanentCondition: PermanentCondition, isInheritedEffect: isInheritedEffect, card: card, condition: CanUseCondition);
+        return BlockerStaticEffect(permanentCondition: PermanentCondition, isInheritedEffect: isInheritedEffect, card: card, condition: CanUseCondition, isLinkedEffect: isLinkedEffect);
     }
+
     #endregion
 
     #region Static effect of [Blocker]
-    public static BlockerClass BlockerStaticEffect(Func<Permanent, bool> permanentCondition, bool isInheritedEffect, CardSource card, Func<bool> condition)
+
+    public static BlockerClass BlockerStaticEffect(Func<Permanent, bool> permanentCondition, bool isInheritedEffect, CardSource card, Func<bool> condition, bool isLinkedEffect = false)
     {
         string effectName = "Blocker";
 
@@ -40,6 +43,11 @@ public partial class CardEffectFactory
         if (isInheritedEffect)
         {
             blockerClass.SetIsInheritedEffect(true);
+        }
+
+        if (isLinkedEffect)
+        {
+            blockerClass.SetIsLinkedEffect(true);
         }
 
         bool CanUseCondition(Hashtable hashtable)
@@ -62,5 +70,6 @@ public partial class CardEffectFactory
 
         return blockerClass;
     }
+
     #endregion
 }
