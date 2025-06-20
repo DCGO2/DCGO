@@ -43,7 +43,7 @@ namespace DCGO.CardEffects.EX9
 
             #endregion
 
-            #region Give Ver.4 Digimon Blocker
+            #region Give Ver.4 Digimon Blocker/Retaliation
 
             if (timing == EffectTiming.None)
             {
@@ -54,7 +54,8 @@ namespace DCGO.CardEffects.EX9
 
                 bool PermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) && permanent.TopCard.EqualsTraits("Ver.4");
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) && 
+                           permanent.TopCard.EqualsTraits("Ver.4");
                 }
 
                 cardEffects.Add(CardEffectFactory.BlockerStaticEffect(
@@ -62,35 +63,22 @@ namespace DCGO.CardEffects.EX9
                     isInheritedEffect: false,
                     card: card,
                     condition: CanUseCondition));
-            }
 
-            #endregion
-
-            #region Give Ver.4 Digimon Retaliation
-
-            if (timing == EffectTiming.None)
-            {
                 AddSkillClass addSkillClass = new AddSkillClass();
-                addSkillClass.SetUpICardEffect("Your Digimon gain <Retaliation>", CanUseCondition, card);
+                addSkillClass.SetUpICardEffect("Your Digimon gain <Retaliation>", CanUseRetaliationCondition, card);
                 addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
                 cardEffects.Add(addSkillClass);
 
-                bool CanUseCondition(Hashtable hashtable)
+                bool CanUseRetaliationCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
-                }
-
-                bool PermanentCondition(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) && 
-                           permanent.TopCard.EqualsTraits("Ver.4");
+                    return CanUseCondition();
                 }
 
                 bool CardSourceCondition(CardSource cardSource)
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(cardSource))
                     {
-                        if (cardSource.Owner == card.Owner)
+                        if (cardSource == cardSource.PermanentOfThisCard().TopCard)
                         {
                             if (PermanentCondition(cardSource.PermanentOfThisCard()))
                             {
@@ -106,12 +94,13 @@ namespace DCGO.CardEffects.EX9
                 {
                     if (_timing == EffectTiming.OnDestroyedAnyone)
                     {
-                        cardEffects.Add(CardEffectFactory.RetaliationSelfEffect(isInheritedEffect: false, card: card, condition: null));
+                        cardEffects.Add(CardEffectFactory.RetaliationSelfEffect(isInheritedEffect: false, card: cardSource, condition: null));
                     }
 
                     return cardEffects;
                 }
             }
+
             #endregion
 
             #region On Play

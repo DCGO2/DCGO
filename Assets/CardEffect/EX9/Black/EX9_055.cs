@@ -483,7 +483,7 @@ namespace DCGO.CardEffects.EX9
                         bool CanSelectOpponentsDigimon(Permanent permanent)
                         {
                             return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
-                                   permanent.TopCard.HasLevel && permanent.TopCard.Level <= selectedCards[0].Level;
+                                   permanent.TopCard.HasLevel && permanent.TopCard.Level == selectedCards[0].Level;
                         }
 
                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentsDigimon))

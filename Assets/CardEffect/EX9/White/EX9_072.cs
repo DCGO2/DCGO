@@ -49,19 +49,12 @@ namespace DCGO.CardEffects.EX9
                            permanent.TopCard.EqualsTraits("DM") && permanent.DigivolutionCards.Exists(x => x.IsFlipped);
                 }
 
-                int changeDP(Permanent permanent) => permanent.DigivolutionCards.Filter(x => x.IsFlipped).Count * 1000;
-
-                foreach (Permanent permanent in card.Owner.GetBattleAreaPermanents())
+                foreach (Permanent permanent in card.Owner.GetBattleAreaPermanents().Filter(PermanentCondition))
                 {
-                    cardEffects.Add(CardEffectFactory.ChangeDPStaticEffect(
-                        permanentCondition: PermanentCondition,
-                        changeValue: changeDP(permanent),
-                        isInheritedEffect: false,
-                        card: card,
-                        condition: CanUseCondition,
-                        effectName: () => "Change DP",
-                        isLinkedEffect: false
-                    ));
+                    int dpValue = permanent.DigivolutionCards.Filter(x => x.IsFlipped).Count * 1000;
+
+                    Permanent.DPBoost dpBoost = new Permanent.DPBoost("EX9_072", dpValue, CanUseCondition);
+                    permanent.AddBoost(dpBoost);
                 }
             }
 

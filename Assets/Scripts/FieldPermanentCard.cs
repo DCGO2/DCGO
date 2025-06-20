@@ -444,6 +444,16 @@ public class FieldPermanentCard : MonoBehaviour
         {
             SetCardSuspended(updateIsTapped);
 
+
+            if (ThisPermanent.TopCard.IsFlipped)
+            {
+                DPText.transform.parent.gameObject.SetActive(false);
+                LevelText.transform.parent.gameObject.SetActive(false);
+                EvoRootCountText.transform.parent.gameObject.SetActive(false);
+                LinkedObject.SetActive(false);
+                return;
+            }
+
             //DP
             if (ThisPermanent.IsDigimon)
             {

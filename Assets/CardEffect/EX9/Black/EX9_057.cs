@@ -128,14 +128,32 @@ namespace DCGO.CardEffects.EX9
 
                     if (negamonCards.Count >= 4)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(negamonCards));
+                        List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
+                        {
+                            new SelectionElement<bool>(message: $"Yes", value : true, spriteIndex: 0),
+                            new SelectionElement<bool>(message: $"No", value : false, spriteIndex: 1),
+                        };
 
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(negamonCards, "Digi-Egg deck Bottom Cards", true, true));
-                    }
+                        string selectPlayerMessage = "Will you return 4 [Negamon] back to Digi-Egg deck?";
+                        string notSelectPlayerMessage = "The opponent is choosing whether or not to return 4 [Negamon].";
 
-                    if (card.Owner.CanMove)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.MovePermanent(card.Owner.GetBreedingAreaPermanents()[0].PermanentFrame));
+                        GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                        bool willReturn = GManager.instance.userSelectionManager.SelectedBoolValue;
+
+                        if (willReturn)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(negamonCards));
+
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(negamonCards, "Digi-Egg deck Bottom Cards", true, true));
+
+                            if (card.Owner.CanMove)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.MovePermanent(card.Owner.GetBreedingAreaPermanents()[0].PermanentFrame));
+                            }
+                        }
                     }
                 }
             }

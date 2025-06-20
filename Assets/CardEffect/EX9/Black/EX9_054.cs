@@ -134,7 +134,7 @@ namespace DCGO.CardEffects.EX9
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Play 1 Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 

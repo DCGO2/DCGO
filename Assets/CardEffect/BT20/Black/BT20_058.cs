@@ -14,7 +14,7 @@ namespace DCGO.CardEffects.BT20
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Delete 1 Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -68,7 +68,7 @@ namespace DCGO.CardEffects.BT20
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Delete 1 Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 

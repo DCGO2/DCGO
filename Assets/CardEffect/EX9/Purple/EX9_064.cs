@@ -184,7 +184,7 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    var playCost = 2 + card.PermanentOfThisCard().DigivolutionCards.Filter(x => x.IsFlipped).Count;
+                    var playCost = 4 + card.PermanentOfThisCard().DigivolutionCards.Filter(x => x.IsFlipped).Count;
                     return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) && permanent.TopCard.BasePlayCostFromEntity <= playCost;
                 }
 
@@ -288,7 +288,7 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    var playCost = 2 + card.PermanentOfThisCard().DigivolutionCards.Filter(x => x.IsFlipped).Count;
+                    var playCost = 4 + card.PermanentOfThisCard().DigivolutionCards.Filter(x => x.IsFlipped).Count;
                     return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) && permanent.TopCard.BasePlayCostFromEntity <= playCost;
                 }
 

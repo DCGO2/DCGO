@@ -219,43 +219,60 @@ namespace DCGO.CardEffects.EX9
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(targetPermanent: card.PermanentOfThisCard(), trashCount: 1, isFromTop: false, activateClass: activateClass));
-
-                    if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
+                    bool CanSelectBottomCardCondition(CardSource cardSource)
                     {
-                        CardSource selectedCard = null;
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, CanSelectCardCondition));
-                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                        selectCardEffect.SetUp(
-                                    canTargetCondition: CanSelectCardCondition,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    canNoSelect: () => true,
-                                    selectCardCoroutine: SelectCardCoroutine,
-                                    afterSelectCardCoroutine: null,
-                                    message: "Select 1 [DM] digimon to play",
-                                    maxCount: maxCount,
-                                    canEndNotMax: true,
-                                    isShowOpponent: true,
-                                    mode: SelectCardEffect.Mode.Custom,
-                                    root: SelectCardEffect.Root.Trash,
-                                    customRootCardList: null,
-                                    canLookReverseCard: true,
-                                    selectPlayer: card.Owner,
-                                    cardEffect: activateClass);
-
-                        selectCardEffect.SetUpCustomMessage("Select 1 [DM] digimon to play", "The opponent is selecting 1 digimon to play.");
-                        yield return StartCoroutine(selectCardEffect.Activate());
-
-                        IEnumerator SelectCardCoroutine(CardSource cardSource)
-                        {
-                            selectedCard = cardSource;
-                            yield return null;
-                        }
-
-                        if (selectedCard != null) yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: new List<CardSource> { selectedCard }, activateClass: activateClass, payCost: false, isTapped: false, root: SelectCardEffect.Root.Trash, activateETB: true));
+                        return cardSource.IsFlipped;
                     }
+
+                    int cardEvoSources = card.PermanentOfThisCard().DigivolutionCards.Count;
+
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashDigivolutionCardsFromTopOrBottom(
+                        targetPermanent: card.PermanentOfThisCard(),
+                        trashCount: 1,
+                        isFromTop: false,
+                        activateClass: activateClass,
+                        cardCondition: CanSelectBottomCardCondition
+                    ));
+
+                    if (card.PermanentOfThisCard().DigivolutionCards.Count < cardEvoSources)
+                    {
+                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
+                        {
+                            CardSource selectedCard = null;
+                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, CanSelectCardCondition));
+                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                            selectCardEffect.SetUp(
+                                        canTargetCondition: CanSelectCardCondition,
+                                        canTargetCondition_ByPreSelecetedList: null,
+                                        canEndSelectCondition: null,
+                                        canNoSelect: () => true,
+                                        selectCardCoroutine: SelectCardCoroutine,
+                                        afterSelectCardCoroutine: null,
+                                        message: "Select 1 [DM] digimon to play",
+                                        maxCount: maxCount,
+                                        canEndNotMax: true,
+                                        isShowOpponent: true,
+                                        mode: SelectCardEffect.Mode.Custom,
+                                        root: SelectCardEffect.Root.Trash,
+                                        customRootCardList: null,
+                                        canLookReverseCard: true,
+                                        selectPlayer: card.Owner,
+                                        cardEffect: activateClass);
+
+                            selectCardEffect.SetUpCustomMessage("Select 1 [DM] digimon to play", "The opponent is selecting 1 digimon to play.");
+                            yield return StartCoroutine(selectCardEffect.Activate());
+
+                            IEnumerator SelectCardCoroutine(CardSource cardSource)
+                            {
+                                selectedCard = cardSource;
+                                yield return null;
+                            }
+
+                            if (selectedCard != null) yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: new List<CardSource> { selectedCard }, activateClass: activateClass, payCost: false, isTapped: false, root: SelectCardEffect.Root.Trash, activateETB: true));
+                        }
+                    }
+                    
                 }
             }
 

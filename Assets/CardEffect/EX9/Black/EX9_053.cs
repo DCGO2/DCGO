@@ -196,7 +196,7 @@ namespace DCGO.CardEffects.EX9
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("", CanUseCondition, card);
+                activateClass.SetUpICardEffect("De-Digivolve 1", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetHashString("WA_EX9-053");
                 activateClass.SetIsInheritedEffect(true);

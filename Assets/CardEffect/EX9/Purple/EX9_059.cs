@@ -147,7 +147,6 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    UnityEngine.Debug.Log($"CAN USE: {CardEffectCommons.CanTriggerOnAttack(hashtable, card)}");
                     return CardEffectCommons.CanTriggerOnAttack(hashtable, card);
                 }
 
