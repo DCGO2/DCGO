@@ -14,7 +14,7 @@ public class AddSkillClass : ICardEffect, IAddSkillEffect
     }
     public List<ICardEffect> GetCardEffect(CardSource card, List<ICardEffect> getCardEffect, EffectTiming timing)
     {
-        //if (_cardSourceCondition(card))
+        if (_cardSourceCondition(card))
         {
             getCardEffect = _getEffects(card, getCardEffect, timing);
         }

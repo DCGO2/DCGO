@@ -291,7 +291,7 @@ public class SelectAssemblyClass : MonoBehaviourPunCallbacks
 
             selectCardEffect.SetUp(
                         canTargetCondition: CanSelectCardCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
+                        canTargetCondition_ByPreSelecetedList: AssemblyCondition.CanTargetCondition_ByPreSelecetedList,
                         canEndSelectCondition: null,
                         canNoSelect: () => true,
                         selectCardCoroutine: SelectCardCoroutine,

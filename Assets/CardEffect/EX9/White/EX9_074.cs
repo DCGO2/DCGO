@@ -40,7 +40,7 @@ namespace DCGO.CardEffects.EX9
                                 {
                                     if (cardSource.IsDigimon)
                                     {
-                                        if (cardSource.IsLevel4)
+                                        if (cardSource.IsLevel4 || cardSource.Level_Assembly.Contains(4))
                                         {
                                             if (cardSource.HasDMTraits)
                                             {

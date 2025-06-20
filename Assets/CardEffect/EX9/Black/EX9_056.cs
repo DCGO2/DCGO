@@ -100,11 +100,13 @@ namespace DCGO.CardEffects.EX9
 
                     if (selectedPermanent != null)
                     {
+                        Player cardOwner = selectedPermanent.TopCard.Owner;
+
                         yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(
                         selectedPermanent,
                         CardEffectCommons.CardEffectHashtable(activateClass), toTop: false).PutSecurity());
 
-                        if (selectedPermanent.TopCard.Owner.SecurityCards.Contains(selectedPermanent.TopCard))
+                        if (cardOwner.SecurityCards.Contains(selectedPermanent.TopCard))
                         {
                             yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
                                 player: card.Owner.Enemy,
@@ -180,11 +182,13 @@ namespace DCGO.CardEffects.EX9
 
                     if (selectedPermanent != null)
                     {
+                        Player cardOwner = selectedPermanent.TopCard.Owner;
+
                         yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(
                         selectedPermanent,
                         CardEffectCommons.CardEffectHashtable(activateClass), toTop: false).PutSecurity());
 
-                        if (selectedPermanent.TopCard.Owner.SecurityCards.Contains(selectedPermanent.TopCard))
+                        if (cardOwner.SecurityCards.Contains(selectedPermanent.TopCard))
                         {
                             yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
                                 player: card.Owner.Enemy,

@@ -202,7 +202,7 @@ namespace DCGO.CardEffects.EX9
             {
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return card.IsFlipped;
+                    return cardSource.IsFlipped;
                 }
 
                 int cardEvoSources = card.PermanentOfThisCard().DigivolutionCards.Count;

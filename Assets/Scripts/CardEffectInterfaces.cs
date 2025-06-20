@@ -154,6 +154,13 @@ public interface IChangeCardNamesForDigiXrosEffect
 }
 #endregion
 
+#region "Change target card's card level for Assembly" effect
+public interface IChangeCardLevelForAssemblyEffect
+{
+    List<int> ChangeCardLevelForAssembly(List<int> levels, CardSource cardSource);
+}
+#endregion
+
 #region "Change target card's traits" effect
 public interface IChangeTraitsEffect
 {

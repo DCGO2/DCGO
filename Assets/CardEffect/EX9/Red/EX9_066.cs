@@ -72,7 +72,9 @@ namespace DCGO.CardEffects.EX9
 
                         IEnumerator SelectCardCoroutine(CardSource source)
                         {
-                            if(source != null)
+                            cardAdded = false;
+
+                            if (source != null)
                                 cardAdded = true;
 
                             yield return null;

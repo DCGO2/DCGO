@@ -30,7 +30,26 @@ namespace DCGO.CardEffects.EX9
 
             if (timing == EffectTiming.None)
             {
-                // To be implemented
+                ChangeCardLevelForAssemblyClass changeCardLevelForAssemblyClass = new ChangeCardLevelForAssemblyClass();
+                changeCardLevelForAssemblyClass.SetUpICardEffect("This card is also treated as level 4 for [Kimeramon]'s assembly.", CanUseCondition, card);
+                changeCardLevelForAssemblyClass.SetUpChangeCardLevelForAssemblyClass(changeCardLevel: changeCardLevel);
+
+                cardEffects.Add(changeCardLevelForAssemblyClass);
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return true;
+                }
+
+                List<int> changeCardLevel(CardSource cardSource, List<int> Level)
+                {
+                    if (cardSource == card)
+                    {
+                        Level.Add(4);
+                    }
+
+                    return Level;
+                }
             }
 
             #endregion

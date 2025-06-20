@@ -20,7 +20,8 @@ namespace DCGO.CardEffects.P
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.HasLightFangOrNightClawTraits;
+                    return targetPermanent.TopCard.IsLevel5 &&
+                           targetPermanent.TopCard.HasLightFangOrNightClawTraits;
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
@@ -102,7 +103,7 @@ namespace DCGO.CardEffects.P
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage(customMessageArray: CardEffectCommons.customPermanentMessageArray_ChangeDP(changeValue: DPChangeValue(), maxCount: maxCount));
+                        selectPermanentEffect.SetUpCustomMessage(customMessageArray: CardEffectCommons.customPermanentMessageArray_ChangeDP(changeValue: -DPChangeValue(), maxCount: maxCount));
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
@@ -114,7 +115,7 @@ namespace DCGO.CardEffects.P
 
                         if (selectedPermanent != null)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: selectedPermanent, changeValue: DPChangeValue(), effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: selectedPermanent, changeValue: -DPChangeValue(), effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
 
                             if (CardEffectCommons.HasMatchConditionPermanent(CanSelectDeletePermanentCondition))
                             {
@@ -252,7 +253,7 @@ namespace DCGO.CardEffects.P
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage(customMessageArray: CardEffectCommons.customPermanentMessageArray_ChangeDP(changeValue: DPChangeValue(), maxCount: maxCount));
+                        selectPermanentEffect.SetUpCustomMessage(customMessageArray: CardEffectCommons.customPermanentMessageArray_ChangeDP(changeValue: -DPChangeValue(), maxCount: maxCount));
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
@@ -264,7 +265,7 @@ namespace DCGO.CardEffects.P
 
                         if (selectedPermanent != null)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: selectedPermanent, changeValue: DPChangeValue(), effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: selectedPermanent, changeValue: -DPChangeValue(), effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
 
                             if (CardEffectCommons.HasMatchConditionPermanent(CanSelectDeletePermanentCondition))
                             {

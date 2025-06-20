@@ -57,7 +57,7 @@ namespace DCGO.CardEffects.EX9
 
             if (timing == EffectTiming.None)
             {
-                bool CanUseCondition()
+                bool CanUseAllTurnsCondition()
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card);
                 }
@@ -66,11 +66,8 @@ namespace DCGO.CardEffects.EX9
                     permanentCondition: SharedPermanentCondition,
                     isInheritedEffect: false,
                     card: card,
-                    condition: CanUseCondition));
-            }
+                    condition: CanUseAllTurnsCondition));
 
-            if (timing == EffectTiming.None)
-            {
                 AddSkillClass addSkillClass = new AddSkillClass();
                 addSkillClass.SetUpICardEffect("Your Digimons gain Alliance", CanUseCondition, card);
                 addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
@@ -78,22 +75,20 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card);
+                    return CanUseAllTurnsCondition();
                 }
 
                 bool CardSourceCondition(CardSource cardSource)
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(cardSource))
                     {
-                        if (card.Owner == cardSource.Owner)
+                        if (cardSource == cardSource.PermanentOfThisCard().TopCard)
                         {
-                            if (cardSource.PermanentOfThisCard().IsToken || cardSource.EqualsTraits("Puppet"))
+                            if (SharedPermanentCondition(cardSource.PermanentOfThisCard()))
                             {
                                 return true;
                             }
                         }
-
-                        return false;
                     }
 
                     return false;

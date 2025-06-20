@@ -800,8 +800,6 @@ public class CardSource : MonoBehaviour
     }
     #endregion
 
-
-
     #region whether this card can declare skill
     public bool CanDeclareSkill => CanDeclareSkillList.Count > 0;
     #endregion
@@ -1561,7 +1559,6 @@ public class CardSource : MonoBehaviour
     }
     #endregion
 
-
     #region whether this card has "XAntibody" trait
     public bool HasXAntibodyTraits => CardTraits.Some(DataBase.IsXAntibodyString);
     #endregion
@@ -1750,6 +1747,25 @@ public class CardSource : MonoBehaviour
             #endregion
 
             return cardNames_DigiXros;
+        }
+    }
+    #endregion
+
+    #region card level checked when Assembly
+    public List<int> Level_Assembly
+    {
+        get
+        {
+            List<int> cardLevel_Assembly = new List<int>();
+            cardLevel_Assembly.Add(TreatedLevel);
+
+            #region the effects of itself
+            EffectList(EffectTiming.None)
+                .Filter(cardEffect => cardEffect is IChangeCardLevelForAssemblyEffect && cardEffect.CanUse(null))
+                .ForEach(cardEffect => cardLevel_Assembly = ((IChangeCardLevelForAssemblyEffect)cardEffect).ChangeCardLevelForAssembly(cardLevel_Assembly, this));
+            #endregion
+
+            return cardLevel_Assembly;
         }
     }
     #endregion
