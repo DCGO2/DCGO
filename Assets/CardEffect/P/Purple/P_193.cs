@@ -117,7 +117,7 @@ namespace DCGO.CardEffects.P
                         if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermanentCondition))
                         {
                             bool destroyed = false;
-                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+                            List<Permanent> deletedPermanents = new List<Permanent>();
 
                             SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
                             selectPermanentEffect.SetUp(
@@ -125,7 +125,7 @@ namespace DCGO.CardEffects.P
                                 canTargetCondition: CanSelectPermanentCondition,
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
-                                maxCount: maxCount,
+                                maxCount: 1,
                                 canNoSelect: true,
                                 canEndNotMax: false,
                                 selectPermanentCoroutine: null,
@@ -140,14 +140,15 @@ namespace DCGO.CardEffects.P
 
                             IEnumerator AfterSelectPermanentCoroutine(List<Permanent> selectedPermanents)
                             {
-                                if (selectedPermanents.Count > 0) destroyed = true;
+                                if (selectedPermanents.Count > 0)
+                                    deletedPermanents = selectedPermanents.Clone();
+
                                 yield return null;
                             }
 
-                            if (destroyed)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: new List<Permanent>() { card.PermanentOfThisCard() }, activateClass: activateClass, successProcess: permanents => DeleteSuccessProcess(), failureProcess: null));
-                            }
+
+                            if (deletedPermanents.Count > 0)
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: deletedPermanents, activateClass: activateClass, successProcess: permanents => DeleteSuccessProcess(), failureProcess: null));
                         }
                     }
 
