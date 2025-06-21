@@ -137,7 +137,7 @@ namespace DCGO.CardEffects.P
                                     mode: SelectPermanentEffect.Mode.Destroy,
                                     cardEffect: activateClass);
 
-                                selectPermanentEffect.SetUpCustomMessage("Choose digimon to delete, Opponent is choosing digimon to delete");
+                                selectPermanentEffect.SetUpCustomMessage("Choose digimon to delete", "Opponent is choosing digimon to delete");
                                 yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
                                 bool CanEndSelectCondition(List<Permanent> permanents)
@@ -287,7 +287,7 @@ namespace DCGO.CardEffects.P
                                     mode: SelectPermanentEffect.Mode.Destroy,
                                     cardEffect: activateClass);
 
-                                selectPermanentEffect.SetUpCustomMessage("Choose digimon to delete, Opponent is choosing digimon to delete");
+                                selectPermanentEffect.SetUpCustomMessage("Choose digimon to delete", "Opponent is choosing digimon to delete");
                                 yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
                                 bool CanEndSelectCondition(List<Permanent> permanents)

@@ -55,8 +55,8 @@ namespace DCGO.CardEffects.EX9
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             canNoSelect: () => true,
-                            selectCardCoroutine: SelectCardCoroutine,
-                            afterSelectCardCoroutine: null,
+                            selectCardCoroutine: null,
+                            afterSelectCardCoroutine: SelectCardCoroutine,
                             message: "Select 1 Digimon card with [Greymon], [Garurumon] or [Omnimon] in its name",
                             maxCount: 1,
                             canEndNotMax: false,
@@ -70,11 +70,9 @@ namespace DCGO.CardEffects.EX9
 
                         yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 
-                        IEnumerator SelectCardCoroutine(CardSource source)
+                        IEnumerator SelectCardCoroutine(List<CardSource> sources)
                         {
-                            cardAdded = false;
-
-                            if (source != null)
+                            if (sources.Count > 0)
                                 cardAdded = true;
 
                             yield return null;

@@ -40,7 +40,7 @@ namespace DCGO.CardEffects.EX9
             {
                 bool CanUseCondition()
                 {
-                    return CardEffectCommons.IsExistInSecurity(card, false);
+                    return CardEffectCommons.IsExistInSecurity(card);
                 }
 
                 bool PermanentCondition(Permanent permanent)
@@ -53,8 +53,10 @@ namespace DCGO.CardEffects.EX9
                 {
                     int dpValue = permanent.DigivolutionCards.Filter(x => x.IsFlipped).Count * 1000;
 
-                    Permanent.DPBoost dpBoost = new Permanent.DPBoost("EX9_072", dpValue, CanUseCondition);
-                    permanent.AddBoost(dpBoost);
+                    if (CanUseCondition())
+                        permanent.AddBoost(new Permanent.DPBoost("EX9_072", dpValue, CanUseCondition));
+                    else
+                        permanent.RemoveBoost("EX9_072");
                 }
             }
 
