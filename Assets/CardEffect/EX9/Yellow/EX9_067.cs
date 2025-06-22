@@ -69,7 +69,7 @@ namespace DCGO.CardEffects.EX9
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 Arisa Kinosaki or [Puppet] digimon from hand for -3 cost", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -115,39 +115,13 @@ namespace DCGO.CardEffects.EX9
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    bool didBounce = false;
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
 
-                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                    yield return ContinuousController.instance.StartCoroutine(new DeckBottomBounceClass(new List<Permanent> { card.PermanentOfThisCard() }, hashtable).DeckBounce());
 
-                    selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectPermanentCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: maxCount,
-                        canNoSelect: true,
-                        canEndNotMax: true,
-                        selectPermanentCoroutine: null,
-                        afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
-                        mode: SelectPermanentEffect.Mode.PutLibraryBottom,
-                        cardEffect: activateClass);
+                    List<CardSource> selectedCards = new List<CardSource>();
 
-                    selectPermanentEffect.SetUpCustomMessage("Select Mirai to bottom deck", "Your opponent is deciding to bottom deck tamer");
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                    IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
+                    if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
                     {
-                        if (permanents.Any()) didBounce = true;
-                        yield return null;
-                    }
-
-                    if (didBounce)
-                    {
-                        List<CardSource> selectedCards = new List<CardSource>();
-
-                        int maxCount1 = 1;
-
                         SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
                         selectHandEffect.SetUp(
@@ -155,7 +129,7 @@ namespace DCGO.CardEffects.EX9
                             canTargetCondition: CanSelectCardCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: maxCount,
+                            maxCount: 1,
                             canNoSelect: true,
                             canEndNotMax: true,
                             isShowOpponent: true,

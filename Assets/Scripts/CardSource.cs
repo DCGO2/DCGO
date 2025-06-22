@@ -557,7 +557,16 @@ public class CardSource : MonoBehaviour
     #endregion
 
     #region base play cost from entity
-    public int BasePlayCostFromEntity => _cEntity_Base.PlayCost;
+    public int BasePlayCostFromEntity
+    {
+        get
+        {
+            if (IsFlipped)
+                return -1;
+            else
+                return _cEntity_Base.PlayCost;
+        }
+    }
     #endregion
 
     #region get card cost of itself (refered by card effects)
@@ -1147,6 +1156,9 @@ public class CardSource : MonoBehaviour
     {
         get
         {
+            if (IsFlipped)
+                return new List<string>();
+
             List<string> cardNames = BaseCardNames.Clone();
 
             #region the effects of itself
@@ -2072,6 +2084,9 @@ public class CardSource : MonoBehaviour
     {
         get
         {
+            if (IsFlipped)
+                return new List<string>();
+
             List<string> traits =
                 _cEntity_Base.Form_ENG
                     .Filter(s => !string.IsNullOrEmpty(s))
@@ -2359,7 +2374,7 @@ public class CardSource : MonoBehaviour
     #endregion
 
     #region whether this card has level
-    public bool HasLevel => _cEntity_Base == null || _cEntity_Base.HasLevel;
+    public bool HasLevel => _cEntity_Base == null || _cEntity_Base.HasLevel || IsFlipped;
     #endregion
 
     #region whether this card is level 2

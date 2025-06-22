@@ -3092,6 +3092,9 @@ public class Permanent
         {
             if (TopCard != null)
             {
+                if (TopCard.IsFlipped)
+                    return false;
+
                 if (TopCard.IsDigimon || TopCard.IsDigiEgg)
                 {
                     return true;
@@ -3150,6 +3153,9 @@ public class Permanent
         {
             if (TopCard != null)
             {
+                if (TopCard.IsFlipped)
+                    return false;
+
                 if (TopCard.IsTamer)
                 {
                     return true;
@@ -3596,6 +3602,9 @@ public class Permanent
 
             foreach (CardSource cardSource in DigivolutionCards)
             {
+                if (cardSource.IsFlipped)
+                    continue;
+
                 foreach (CardColor cardColor in cardSource.CardColors)
                 {
                     if (!cardColors.Contains(cardColor))
