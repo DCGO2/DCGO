@@ -361,7 +361,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
         #endregion
 
         #region Is it necessary to deal with card being face down?
-        if (CardEffectCommons.HasMatchConditionPermanent(IsPermanentFaceDown))
+        if (CardEffectCommons.HasMatchConditionPermanent(IsPermanentFaceDown, true))
         {
             return true;
         }
