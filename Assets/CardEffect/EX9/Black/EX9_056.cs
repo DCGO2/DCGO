@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 //Hi-Andromon ACE
@@ -100,13 +101,14 @@ namespace DCGO.CardEffects.EX9
 
                     if (selectedPermanent != null)
                     {
-                        Player cardOwner = selectedPermanent.TopCard.Owner;
+                        CardSource selectedCard = selectedPermanent.TopCard;
+
 
                         yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(
                         selectedPermanent,
                         CardEffectCommons.CardEffectHashtable(activateClass), toTop: false).PutSecurity());
 
-                        if (cardOwner.SecurityCards.Contains(selectedPermanent.TopCard))
+                        if (selectedCard.Owner.SecurityCards.Contains(selectedCard))
                         {
                             yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
                                 player: card.Owner.Enemy,
