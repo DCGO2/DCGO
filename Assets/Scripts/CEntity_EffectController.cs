@@ -69,16 +69,13 @@ public class CEntity_EffectController : MonoBehaviour
                                     {
                                         if (cardEffect is IAddSkillEffect)
                                         {
-                                            UnityEngine.Debug.Log($"ADD SKILL CHECK {cardSource.BaseENGCardNameFromEntity}: {cardEffect.IsInheritedEffect}== {(cardSource == permanent.TopCard)} || {cardSource.IsFlipped}");
                                             if (cardEffect.IsInheritedEffect == (cardSource == permanent.TopCard) || (cardEffect.IsInheritedEffect && cardSource.IsFlipped))
                                             {
                                                 continue;
                                             }
 
-                                            UnityEngine.Debug.Log($"ADD SKILL CHECK {cardEffect.CanUse(null)}");
                                             if (cardEffect.CanUse(null))
                                             {
-                                                UnityEngine.Debug.Log($"ADD SKILL CHECK {!card.CanNotBeAffected(cardEffect)}");
                                                 if (!card.CanNotBeAffected(cardEffect))
                                                     GetCardEffects = ((IAddSkillEffect)cardEffect).GetCardEffect(card, GetCardEffects, timing);
                                             }

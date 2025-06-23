@@ -561,7 +561,7 @@ public class CardSource : MonoBehaviour
     {
         get
         {
-            if (IsFlipped)
+            if (IsFlipped && !IsBeingRevealed)
                 return -1;
             else
                 return _cEntity_Base.PlayCost;
@@ -1156,7 +1156,7 @@ public class CardSource : MonoBehaviour
     {
         get
         {
-            if (IsFlipped)
+            if (IsFlipped && !IsBeingRevealed)
                 return new List<string>();
 
             List<string> cardNames = BaseCardNames.Clone();
@@ -2084,7 +2084,7 @@ public class CardSource : MonoBehaviour
     {
         get
         {
-            if (IsFlipped)
+            if (IsFlipped && !IsBeingRevealed)
                 return new List<string>();
 
             List<string> traits =
@@ -2179,7 +2179,7 @@ public class CardSource : MonoBehaviour
                 if (EffectList(timing)
                     .Some(cardEffect => cardEffect.IsInheritedEffect
                     && !cardEffect.IsDisabled
-                    && !IsFlipped))
+                    && (!IsFlipped || IsBeingRevealed)))
                 {
                     return true;
                 }
@@ -2374,7 +2374,22 @@ public class CardSource : MonoBehaviour
     #endregion
 
     #region whether this card has level
-    public bool HasLevel => _cEntity_Base == null || _cEntity_Base.HasLevel || IsFlipped;
+    public bool HasLevel
+    {
+        get
+        {
+            if(_cEntity_Base == null || _cEntity_Base.HasLevel)
+            {
+                if (IsFlipped && !IsBeingRevealed)
+                    return false;
+
+                return true;
+            }
+
+            return false;
+        }
+    }
+
     #endregion
 
     #region whether this card is level 2
