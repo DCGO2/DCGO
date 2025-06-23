@@ -534,20 +534,7 @@ public class DataBase : MonoBehaviour
 
     public static string DecodeEffectDiscription(string[] decodeStrings)
     {
-        //string colorString = color switch
-        //{
-        //    CardColor.Red => "Red",
-        //    CardColor.Blue => "Blue",
-        //    CardColor.Yellow => "Yellow",
-        //    CardColor.Green => "Green",
-        //    CardColor.Black => "Black",
-        //    CardColor.Purple => "Purple",
-        //    CardColor.White => "White",
-        //    _ => ""
-        //};
-
-        return
-            $"<Decode {decodeStrings[0]}> (When this Digimon would leave the battle area other than in battle, you may play 1 {decodeStrings[1]} Digimon card from its digivolution cards without paying the cost.)";
+        return $"<Decode {decodeStrings[0]}> (When this Digimon would leave the battle area other than in battle, you may play 1 {decodeStrings[1]} Digimon card from its digivolution cards without paying the cost.)";
     }
 
     public static string ExecuteEffectDiscription()
