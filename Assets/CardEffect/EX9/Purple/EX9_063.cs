@@ -70,16 +70,14 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnHand(card))
+                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, PermanentEvoCondition))
                     {
-                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, PermanentEvoCondition))
+                        if (CardEffectCommons.CanTriggerWhenPermanentWouldDigivolve(hashtable, PermanentEvoCondition, CardCondition))
                         {
-                            if (CardEffectCommons.CanTriggerWhenPermanentWouldDigivolve(hashtable, PermanentEvoCondition, CardCondition))
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
+
                     return false;
                 }
 
