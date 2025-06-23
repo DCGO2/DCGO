@@ -18,7 +18,7 @@ namespace DCGO.CardEffects.BT19
                     return source.CardColors.Contains(CardColor.Blue) && source.HasLevel && source.IsLevel5;
                 }
 
-                string[] decodeStrings = { "(Blue Lv.5)", "Blue Level 5 Digimon" };
+                string[] decodeStrings = { "(Blue Lv.5)", "Blue Level 5" };
                 cardEffects.Add(CardEffectFactory.DecodeSelfEffect(card: card, isInheritedEffect: false, decodeStrings: decodeStrings, sourceCondition: SourceCondition, condition: null));
             }
 
