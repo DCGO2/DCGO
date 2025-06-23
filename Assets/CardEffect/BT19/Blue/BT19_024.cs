@@ -13,8 +13,13 @@ namespace DCGO.CardEffects.BT19
 
             if (timing == EffectTiming.WhenRemoveField)
             {
-                cardEffects.Add(CardEffectFactory.DecodeSelfEffect(color: CardColor.Blue, level: 4, isInheritedEffect: false, card: card,
-                    condition: null));
+                bool SourceCondition(CardSource source)
+                {
+                    return source.CardColors.Contains(CardColor.Blue) && source.HasLevel && source.IsLevel4;
+                }
+
+                string[] decodeStrings = { "(Blue Lv.4)", "Blue Level 4 Digimon" };
+                cardEffects.Add(CardEffectFactory.DecodeSelfEffect(card: card, isInheritedEffect: false, decodeStrings: decodeStrings, sourceCondition: SourceCondition, condition: null));
             }
 
             #endregion
