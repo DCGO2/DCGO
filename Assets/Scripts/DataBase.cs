@@ -44,7 +44,6 @@ public class DataBase : MonoBehaviour
 
     public static Dictionary<CardColor, Color> CardColor_ColorLightDictionary = new Dictionary<CardColor, Color>()
     {
-
         { CardColor.Green,new Color32(55,255,49,255)},
         { CardColor.Red,new Color32(253,63,49,255)},
         { CardColor.Blue, new Color32(49,118,253,255) },
@@ -253,7 +252,6 @@ public class DataBase : MonoBehaviour
                     break;
             }
         }
-
         else
         {
             switch (SetID)
@@ -534,22 +532,22 @@ public class DataBase : MonoBehaviour
         return $"<Overclock [{trait}]> (At the end of your turn, by deleting 1 of your Tokens or other [{trait}] trait Digimon, this Digimon attacks a player without suspending.)";
     }
 
-    public static string DecodeEffectDiscription(CardColor color, int level)
+    public static string DecodeEffectDiscription(string[] decodeStrings)
     {
-        string colorString = color switch
-        {
-            CardColor.Red => "Red",
-            CardColor.Blue => "Blue",
-            CardColor.Yellow => "Yellow",
-            CardColor.Green => "Green",
-            CardColor.Black => "Black",
-            CardColor.Purple => "Purple",
-            CardColor.White => "White",
-            _ => ""
-        };
+        //string colorString = color switch
+        //{
+        //    CardColor.Red => "Red",
+        //    CardColor.Blue => "Blue",
+        //    CardColor.Yellow => "Yellow",
+        //    CardColor.Green => "Green",
+        //    CardColor.Black => "Black",
+        //    CardColor.Purple => "Purple",
+        //    CardColor.White => "White",
+        //    _ => ""
+        //};
 
         return
-            $"<Decode {colorString} ({level})> (When this Digimon would leave the battle area other than in battle, you may play 1 {colorString} Level {level} Digimon card from its digivolution cards without paying the cost.)";
+            $"<Decode {decodeStrings[0]}> (When this Digimon would leave the battle area other than in battle, you may play 1 {decodeStrings[1]} Digimon card from its digivolution cards without paying the cost.)";
     }
 
     public static string ExecuteEffectDiscription()
@@ -561,6 +559,7 @@ public class DataBase : MonoBehaviour
     {
         return "<Progress> (While attacking, your opponent's effects don't affect this Digimon.)";
     }
+
     public static string LinkEffectDiscription()
     {
         return "[Link] (Plug this card from the hand or battle area sideways into the specified Digimon in the battle area.)";
@@ -591,8 +590,10 @@ public class DataBase : MonoBehaviour
     public static string FirstPlayerIndexIdKey = "FirstPlayerIndexId";
 
     #region use for sort
+
     public static CardKind[] cardKinds = new[] { CardKind.Digimon, CardKind.Tamer, CardKind.Option };
     public static CardColor[] cardColors = new[] { CardColor.Red, CardColor.Blue, CardColor.Yellow, CardColor.Green, CardColor.Black, CardColor.Purple, CardColor.White, CardColor.None };
+
     public static string[] SetIDs = new string[]
     {
         "BT28",
@@ -708,9 +709,11 @@ public class DataBase : MonoBehaviour
 
         "P",
     };
+
     #endregion
 
     #region ENG ban list
+
     public static CardRestriction ENGBanList = new CardRestriction(new List<CardLimitCount>()
                 {
                     new CardLimitCount("BT11-064", 1),
@@ -765,9 +768,11 @@ public class DataBase : MonoBehaviour
                         "EX7-064",
                     })
                 });
+
     #endregion
 
     #region JPN ban list
+
     public static CardRestriction JPNBanList = new CardRestriction(new List<CardLimitCount>()
                 {
                     new CardLimitCount("BT11-064", 1),
@@ -810,13 +815,13 @@ public class DataBase : MonoBehaviour
                         "ST16-14",
                     })
                 });
+
     #endregion
 }
 
 [System.Serializable]
 public class ColorSpriteDic : TableBase<CardColor, Sprite, SamplePair>
 {
-
 }
 
 [System.Serializable]
@@ -824,8 +829,8 @@ public class TableBase<TKey, TValue, Type> where Type : KeyAndValue<TKey, TValue
 {
     [SerializeField]
     private List<Type> list;
-    private Dictionary<TKey, TValue> table;
 
+    private Dictionary<TKey, TValue> table;
 
     public Dictionary<TKey, TValue> GetTable()
     {
@@ -869,6 +874,7 @@ public class KeyAndValue<TKey, TValue>
         Key = key;
         Value = value;
     }
+
     public KeyAndValue(KeyValuePair<TKey, TValue> pair)
     {
         Key = pair.Key;
@@ -881,7 +887,6 @@ public class SamplePair : KeyAndValue<CardColor, Sprite>
 {
     public SamplePair(CardColor key, Sprite value) : base(key, value)
     {
-
     }
 }
 
@@ -963,6 +968,7 @@ public class ParameterComparer : IEqualityComparer<object[]>
     }
 
     #region select k elements from n different elements
+
     public static IEnumerable<T[]> Enumerate<T>(IEnumerable<T> items, int k)
     {
         if (items.Count() < k)
@@ -988,5 +994,6 @@ public class ParameterComparer : IEqualityComparer<object[]>
             }
         }
     }
+
     #endregion
 }

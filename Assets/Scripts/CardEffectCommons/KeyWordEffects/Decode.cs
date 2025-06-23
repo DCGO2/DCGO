@@ -1,37 +1,37 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
 public partial class CardEffectCommons
 {
-    static bool CanSelectSourceCardCondition(CardSource source, CardColor color, int level, ICardEffect activateClass)
+    static bool CanSelectSourceCardCondition(CardSource source, Func<CardSource, bool> sourceCondition, ICardEffect activateClass)
     {
         return source.IsDigimon &&
-               source.CardColors.Contains(color) &&
-               source.HasLevel && source.Level == level &&
+               sourceCondition(source) &&
                CanPlayAsNewPermanent(cardSource: source, payCost: false, cardEffect: activateClass);
     }
 
     #region Can activate [Decode]
 
-    public static bool CanActivateDecode(CardColor color, int level, CardSource cardSource, ICardEffect activateClass)
+    public static bool CanActivateDecode(CardSource cardSource, Func<CardSource, bool> sourceCondition, ICardEffect activateClass)
     {
         return IsExistOnBattleAreaDigimon(cardSource) &&
                cardSource.PermanentOfThisCard().DigivolutionCards.Some(
-                   source => CanSelectSourceCardCondition(source, color, level, activateClass));
+                   source => CanSelectSourceCardCondition(source, sourceCondition, activateClass));
     }
 
     #endregion
 
     #region Effect process of [Decode]
 
-    public static IEnumerator DecodeProcess(CardColor color, int level, CardSource cardSource, ICardEffect activateClass)
+    public static IEnumerator DecodeProcess(CardSource cardSource, Func<CardSource, bool> sourceCondition, ICardEffect activateClass)
     {
         List<CardSource> selectedCards = new List<CardSource>();
 
         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
         selectCardEffect.SetUp(
-            canTargetCondition: source => CanSelectSourceCardCondition(source, color, level, activateClass),
+            canTargetCondition: source => CanSelectSourceCardCondition(source, sourceCondition, activateClass),
             canTargetCondition_ByPreSelecetedList: null,
             canEndSelectCondition: null,
             canNoSelect: () => true,
@@ -76,7 +76,7 @@ public partial class CardEffectCommons
 
     #region Target 1 Digimon gains [Decode]
 
-    public static IEnumerator GainDecode(CardColor color, int level, Permanent targetPermanent, EffectDuration effectDuration,
+    public static IEnumerator GainDecode(Permanent targetPermanent, string[] decodeStrings, Func<CardSource, bool> sourceCondition, EffectDuration effectDuration,
         ICardEffect activateClass)
     {
         if (targetPermanent == null) yield break;
@@ -93,13 +93,8 @@ public partial class CardEffectCommons
         }
 
         ActivateClass decode = CardEffectFactory.DecodeEffect(
-            color: color,
-            level: level,
-            targetPermanent: targetPermanent,
-            isInheritedEffect: false,
-            condition: CanUseCondition,
-            rootCardEffect: activateClass,
-            targetPermanent.TopCard);
+            targetPermanent: targetPermanent, isInheritedEffect: false, decodeStrings,
+            condition: CanUseCondition, sourceCondition: sourceCondition, rootCardEffect: activateClass, card);
 
         AddEffectToPermanent(
             targetPermanent: targetPermanent,
