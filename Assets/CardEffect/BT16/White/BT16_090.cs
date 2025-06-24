@@ -54,7 +54,7 @@ namespace DCGO.CardEffects.BT16
                     {
                         if (permanent.IsDigimon)
                         {
-                            return true;
+                            return !permanent.ImmuneFromStackTrashing(activateClass);
                         }
                     }
 

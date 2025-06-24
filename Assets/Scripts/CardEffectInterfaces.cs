@@ -154,6 +154,13 @@ public interface IChangeCardNamesForDigiXrosEffect
 }
 #endregion
 
+#region "Change target card's card level for Assembly" effect
+public interface IChangeCardLevelForAssemblyEffect
+{
+    List<int> ChangeCardLevelForAssembly(List<int> levels, CardSource cardSource);
+}
+#endregion
+
 #region "Change target card's traits" effect
 public interface IChangeTraitsEffect
 {
@@ -385,6 +392,13 @@ public interface IAddDigiXrosConditionEffect
 }
 #endregion
 
+#region "Target card gains Assembly conditions" effect
+public interface IAddAssemblyConditionEffect
+{
+    AssemblyCondition GetAssemblyCondition(CardSource cardSource);
+}
+#endregion
+
 #region "Target card gains Burst digivolution conditions" effect
 public interface IAddBurstDigivolutionConditionEffect
 {
@@ -422,6 +436,13 @@ public interface IAddMaxUnderTamerCountDigiXrosEffect
 
 #region "Target card be selected in DigiXros" effect
 public interface ICanSelectDigiXrosEffect
+{
+    bool CanSelect(CardSource cardSource, Permanent permanent);
+}
+#endregion
+
+#region "Target card be selected in Assembly" effect
+public interface ICanSelectAssemblyEffect
 {
     bool CanSelect(CardSource cardSource, Permanent permanent);
 }

@@ -151,7 +151,8 @@ public partial class CardEffectCommons
         int fixedCost = -1) =>
     cardSource != null &&
     (isPlayOption || !cardSource.IsOption) &&
-    !GManager.instance.GetComponent<SelectDigiXrosClass>().selectedDigicrossCards.Contains(cardSource)
+    !GManager.instance.GetComponent<SelectDigiXrosClass>().selectedDigicrossCards.Contains(cardSource) &&
+    !GManager.instance.GetComponent<SelectAssemblyClass>().selectedAssemblyCards.Contains(cardSource)
     && cardSource.Owner.fieldCardFrames.Some((frame) =>
     frame.IsEmptyFrame()
     && cardSource.CanPlayCardTargetFrame(frame, payCost, cardEffect, root, isBreedingArea: isBreedingArea, fixedCost:fixedCost));

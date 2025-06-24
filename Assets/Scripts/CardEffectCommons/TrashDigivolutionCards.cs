@@ -21,10 +21,7 @@ public partial class CardEffectCommons
             {
                 if (permanentCondition == null || permanentCondition(permanent))
                 {
-                    if (!permanent.TopCard.CanNotBeAffected(activateClass))
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
 
@@ -63,6 +60,8 @@ public partial class CardEffectCommons
         bool NotSelectYet() => digivolutionDiscardedCount == 0;
 
         int permanentSelectedCount = 0;
+
+        List<CardSource> selectedCards = new List<CardSource>();
 
         while (true)
         {
@@ -117,13 +116,13 @@ public partial class CardEffectCommons
                             maxDigivolutionDiscardCount - digivolutionDiscardedCount,
                             selectedPermanent.DigivolutionCards.Count(CanSelectCardCondition));
 
-                        List<CardSource> selectedCards = new List<CardSource>();
+                        
 
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                         selectCardEffect.SetUp(
                                     canTargetCondition: CanSelectCardCondition,
-                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
                                     canEndSelectCondition: null,
                                     canNoSelect: () => canNoTrash && NotSelectYet(),
                                     selectCardCoroutine: SelectCardCoroutine,
@@ -142,6 +141,11 @@ public partial class CardEffectCommons
                         selectCardEffect.SetUpCustomMessage("Select digivolution cards to trash.", "The opponent is selecting digivolution cards to trash.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+
+                        bool CanTargetCondition_ByPreSelecetedList(List<CardSource> sources, CardSource source)
+                        {
+                            return !selectedCards.Contains(source);
+                        }
 
                         IEnumerator SelectCardCoroutine(CardSource cardSource)
                         {

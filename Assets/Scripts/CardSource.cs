@@ -585,6 +585,40 @@ public class CardSource : MonoBehaviour
 
         #endregion
 
+        #region Assembly
+        if (!isEvolution)
+        {
+            if (HasAssembly)
+            {
+                if (Owner.CanReduceCost(null, this))
+                {
+                    //AI
+                    if (!(!Owner.isYou && GManager.instance.IsAI))
+                    {
+                        if (checkAvailability)
+                        {
+                            return 0;
+                        }
+                    }
+
+                    if (!checkAvailability)
+                    {
+                        SelectAssemblyClass selectAssemblyClass = GManager.instance.GetComponent<SelectAssemblyClass>();
+
+                        if (selectAssemblyClass != null)
+                        {
+                            if (selectAssemblyClass.playCard == this)
+                            {
+                                if(selectAssemblyClass.selectedAssemblyCards.Count == assemblyCondition.elementCount)
+                                    Cost -= assemblyCondition.reduceCost;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        #endregion
+
         Cost = GetChangedCostItselef(Cost, root, targetPermanents, checkAvailability);
 
         Cost = GetChangedPayingCost(Cost, root, targetPermanents, checkAvailability);
@@ -600,9 +634,16 @@ public class CardSource : MonoBehaviour
     #endregion
 
     #region base play cost from entity
-
-    public int BasePlayCostFromEntity => _cEntity_Base.PlayCost;
-
+    public int BasePlayCostFromEntity
+    {
+        get
+        {
+            if (IsFlipped && !IsBeingRevealed)
+                return -1;
+            else
+                return _cEntity_Base.PlayCost;
+        }
+    }
     #endregion
 
     #region get card cost of itself (refered by card effects)
@@ -874,7 +915,7 @@ public class CardSource : MonoBehaviour
 
         return _EffectList;
     }
-
+    
     #endregion
 
     #region whether this card can declare skill
@@ -1268,6 +1309,9 @@ public class CardSource : MonoBehaviour
     {
         get
         {
+            if (IsFlipped && !IsBeingRevealed)
+                return new List<string>();
+
             List<string> cardNames = BaseCardNames.Clone();
 
             #region the effects of itself
@@ -1941,6 +1985,25 @@ public class CardSource : MonoBehaviour
 
     #endregion
 
+    #region card level checked when Assembly
+    public List<int> Level_Assembly
+    {
+        get
+        {
+            List<int> cardLevel_Assembly = new List<int>();
+            cardLevel_Assembly.Add(TreatedLevel);
+
+            #region the effects of itself
+            EffectList(EffectTiming.None)
+                .Filter(cardEffect => cardEffect is IChangeCardLevelForAssemblyEffect && cardEffect.CanUse(null))
+                .ForEach(cardEffect => cardLevel_Assembly = ((IChangeCardLevelForAssemblyEffect)cardEffect).ChangeCardLevelForAssembly(cardLevel_Assembly, this));
+            #endregion
+
+            return cardLevel_Assembly;
+        }
+    }
+    #endregion
+
     #region whether this card has at least 1 card name checked when digixros that equals the string
 
     /// <summary>
@@ -2267,12 +2330,19 @@ public class CardSource : MonoBehaviour
 
     #endregion
 
+    #region whether this card has [Assembly]
+    public bool HasAssembly => assemblyCondition != null;
+    #endregion
+
     #region traits
 
     public List<string> CardTraits
     {
         get
         {
+            if (IsFlipped && !IsBeingRevealed)
+                return new List<string>();
+
             List<string> traits =
                 _cEntity_Base.Form_ENG
                     .Filter(s => !string.IsNullOrEmpty(s))
@@ -2381,7 +2451,8 @@ public class CardSource : MonoBehaviour
             {
                 if (EffectList(timing)
                     .Some(cardEffect => cardEffect.IsInheritedEffect
-                    && !cardEffect.IsDisabled))
+                    && !cardEffect.IsDisabled
+                    && (!IsFlipped || IsBeingRevealed)))
                 {
                     return true;
                 }
@@ -2588,7 +2659,21 @@ public class CardSource : MonoBehaviour
 
     #region whether this card has level
 
-    public bool HasLevel => _cEntity_Base == null || _cEntity_Base.HasLevel;
+    public bool HasLevel
+    {
+        get
+        {
+            if(_cEntity_Base == null || _cEntity_Base.HasLevel)
+            {
+                if (IsFlipped && !IsBeingRevealed)
+                    return false;
+
+                return true;
+            }
+
+            return false;
+        }
+    }
 
     #endregion
 
@@ -2716,6 +2801,32 @@ public class CardSource : MonoBehaviour
         }
     }
 
+    #endregion
+
+    #region Assembly requirement
+    public AssemblyCondition assemblyCondition
+    {
+        get
+        {
+            foreach (ICardEffect cardEffect in this.EffectList(EffectTiming.None))
+            {
+                if (cardEffect is IAddAssemblyConditionEffect)
+                {
+                    if (cardEffect.CanUse(null))
+                    {
+                        AssemblyCondition assemblyCondition = ((IAddAssemblyConditionEffect)cardEffect).GetAssemblyCondition(this);
+
+                        if (assemblyCondition != null)
+                        {
+                            return assemblyCondition;
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+    }
     #endregion
 
     #region whether this card can Burst digivolve
@@ -3238,6 +3349,29 @@ public class CardSource : MonoBehaviour
 
     #endregion
 
+    #region whether this card has "WG" trait
+
+    public bool HasWGTraits
+    {
+        get
+        {
+            return EqualsTraits("WG");
+         }
+    }
+    #endregion
+
+    #region whether this card has "DM" trait
+
+    public bool HasDMTraits
+    {
+        get
+        {
+            return EqualsTraits("DM");
+        }
+    }
+    
+    #endregion
+
     #region whether this card has "CS" trait
 
     public bool HasCSTraits
@@ -3276,6 +3410,7 @@ public class CardSource : MonoBehaviour
 }
 
 public class JogressCondition
+  
 {
     public JogressCondition(JogressConditionElement[] elements, int cost)
     {
@@ -3403,4 +3538,34 @@ public class AppFusionCondition
     public Func<Permanent, bool> digimonCondition { get; private set; } = null;
 
     public int cost { get; private set; } = 0;
+}
+
+public class AssemblyCondition
+{
+    public AssemblyCondition(AssemblyConditionElement element, Func<List<CardSource>, CardSource, bool> CanTargetCondition_ByPreSelecetedList, string selectMessage, int elementCount, int reduceCost)
+    {
+        this.element = element;
+        this.selectMessage = selectMessage;
+        this.CanTargetCondition_ByPreSelecetedList = CanTargetCondition_ByPreSelecetedList;
+        this.elementCount = elementCount;
+        this.reduceCost = reduceCost;
+    }
+    public AssemblyConditionElement element { get; private set; } = new AssemblyConditionElement(null);
+    public Func<List<CardSource>, CardSource, bool> CanTargetCondition_ByPreSelecetedList { get; private set; } = null;
+
+    public string selectMessage { get; private set; } = "";
+    public int elementCount { get; private set; } = 0;
+    public int reduceCost { get; private set; } = 0;
+}
+
+public class AssemblyConditionElement
+{
+    public AssemblyConditionElement(Func<CardSource, bool> cardCondition, bool skipAllIfNoSelect = false)
+    {
+        this.CardCondition = cardCondition;
+
+        this.skipAllIfNoSelect = skipAllIfNoSelect;
+    }
+    public Func<CardSource, bool> CardCondition { get; private set; } = null;
+    public bool skipAllIfNoSelect { get; private set; } = false;
 }
