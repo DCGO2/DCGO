@@ -90,7 +90,7 @@ namespace DCGO.CardEffects.P
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent) && permanent.TopCard.ContainsCardName("Millenniummon");
+                    return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent) && permanent.TopCard.EqualsCardName("Millenniummon");
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
@@ -145,7 +145,6 @@ namespace DCGO.CardEffects.P
 
                                 yield return null;
                             }
-
 
                             if (deletedPermanents.Count > 0)
                                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: deletedPermanents, activateClass: activateClass, successProcess: permanents => DeleteSuccessProcess(), failureProcess: null));
