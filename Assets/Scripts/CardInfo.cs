@@ -9,6 +9,7 @@ public class CardInfo : MonoBehaviour
 {
     [Header("BackGround")]
     public List<Image> BackGrounds = new List<Image>();
+    public GameObject BackGround;
     public GameObject LinkBackground;
 
     [Header("CardImage")]
@@ -30,6 +31,8 @@ public class CardInfo : MonoBehaviour
     UnityAction OnEnterAction;
     UnityAction OnExitAction;
 
+    private Permanent detailPermanent;
+
     public CardSource cardSource { get; set; }
 
     public void OnEnter()
@@ -42,18 +45,21 @@ public class CardInfo : MonoBehaviour
         OnExitAction?.Invoke();
     }
 
-    public async void SetUpCardInfo(CardSource cardSource)
+    public async void SetUpCardInfo(CardSource cardSource, Permanent permanent = null)
     {
+        if (permanent != null)
+            detailPermanent = permanent;
+
         this.cardSource = cardSource;
 
         this.gameObject.SetActive(true);
-
-        outlineImage.color = DataBase.CardColor_ColorDarkDictionary[cardSource.BaseCardColorsFromEntity[0]];
 
         InheritedEffectText.text = "";
 
         if (!cardSource.IsFlipped)
         {
+            outlineImage.color = DataBase.CardColor_ColorDarkDictionary[cardSource.BaseCardColorsFromEntity[0]];
+
             if (cardSource.PermanentOfThisCard() != null)
             {
                 if (cardSource != cardSource.PermanentOfThisCard().TopCard)
@@ -116,6 +122,7 @@ public class CardInfo : MonoBehaviour
 
         else
         {
+            outlineImage.color = DataBase.CardColor_ColorDarkDictionary[CardColor.None];
             InheritedEffectText.text = "???";
             CardImage.color = new Color(1, 1, 1, 1);
             CardImage.sprite = HatenaCard;
@@ -134,7 +141,7 @@ public class CardInfo : MonoBehaviour
 
     public void OnClick()
     {
-        if (cardSource.IsFlipped)
+        if (cardSource.IsFlipped && !cardSource.Owner.isYou)
         {
             return;
         }

@@ -653,8 +653,18 @@ public class Player : MonoBehaviour
     }
     #endregion
 
-    #region プレイヤー名
-    public string PlayerName { get; set; }
+    #region Player Name
+    private string _playerName = "Opponent";
+    public string PlayerName {
+
+        get {
+            if (isYou || GManager.instance.IsAI)
+                return _playerName; 
+            else 
+                return "Opponent";
+        }
+        set { _playerName = value; }
+    }
     [Header("プレイヤー名")]
     public TextMeshProUGUI PlayerNameText;
     #endregion

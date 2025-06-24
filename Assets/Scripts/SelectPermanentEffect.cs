@@ -142,7 +142,7 @@ public class SelectPermanentEffect : MonoBehaviourPunCallbacks
         {
             if (_canTargetCondition(permanent))
             {
-                return true;
+                return !permanent.TopCard.IsFlipped;
             }
         }
 
