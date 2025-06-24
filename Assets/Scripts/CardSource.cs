@@ -1,4 +1,3 @@
-
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -11,22 +10,31 @@ using DCGO.CardEntities;
 public class CardSource : MonoBehaviour
 {
     #region card base entity
+
     CEntity_Base _cEntity_Base = null;
+
     #endregion
 
     #region PhotonView
+
     public PhotonView PhotonView { get; set; }
+
     #endregion
 
     #region owner
+
     public Player Owner { get; private set; } = null;
+
     #endregion
 
     #region card index
+
     public int CardIndex { get; private set; } = 0;
+
     #endregion
 
     #region set card base entity
+
     public void SetBaseData(CEntity_Base cEntity_Base, Player owner)
     {
         _cEntity_Base = cEntity_Base;
@@ -35,10 +43,13 @@ public class CardSource : MonoBehaviour
 
         SetFace("CardSource.SetBaseData");
     }
+
     #endregion
 
     #region card effect controller
+
     public CEntity_EffectController cEntity_EffectController;
+
     #endregion
 
     #region whether this card is reversed
@@ -46,6 +57,7 @@ public class CardSource : MonoBehaviour
     public bool IsFlipped { get; private set; }
 
     #region set face
+
     public void SetFace(string str = "")
     {
         IsFlipped = false;
@@ -56,9 +68,11 @@ public class CardSource : MonoBehaviour
         GManager.OnCardFlippedChanged?.Invoke();
         GManager.OnSecurityStackChanged?.Invoke(Owner);
     }
+
     #endregion
 
     #region set reverse
+
     public void SetReverse()
     {
         IsFlipped = true;
@@ -66,11 +80,13 @@ public class CardSource : MonoBehaviour
         GManager.OnCardFlippedChanged?.Invoke();
         GManager.OnSecurityStackChanged?.Invoke(Owner);
     }
+
     #endregion
 
     #endregion
 
     #region Card ID setup
+
     public void SetUpCardIndex(int _cardIndex)
     {
         PhotonView _PhotonView = GetComponent<PhotonView>();
@@ -83,9 +99,11 @@ public class CardSource : MonoBehaviour
 
         PhotonView = _PhotonView;
     }
+
     #endregion
 
     #region whether this card can be played
+
     public bool CanPlayFromHandDuringMainPhase
     {
         get
@@ -105,24 +123,27 @@ public class CardSource : MonoBehaviour
                     }
                 }
             }
-
             else if (IsOption)
             {
                 #region whether cost can be paid
+
                 List<int> costs = new List<int>() { this.PayingCost(SelectCardEffect.Root.Hand, null, checkAvailability: true) };
 
                 bool canPayCost = costs.Some(cost => Owner.MaxMemoryCost >= cost);
 
                 if (!canPayCost) return false;
+
                 #endregion
             }
 
             return true;
         }
     }
+
     #endregion
 
     #region Whether this option card's effect prevents it from being played
+
     public bool CanNotPlayThisOption
     {
         get
@@ -133,6 +154,7 @@ public class CardSource : MonoBehaviour
             }
 
             #region the effects of players
+
             if (GManager.instance.turnStateMachine.gameContext.Players
                     .Map(player => player.EffectList(EffectTiming.None))
                     .Flat()
@@ -142,9 +164,11 @@ public class CardSource : MonoBehaviour
             {
                 return true;
             }
+
             #endregion
 
             #region the effects of permanents
+
             if (GManager.instance.turnStateMachine.gameContext.Players
                 .Map(player => player.GetFieldPermanents())
                 .Flat()
@@ -156,9 +180,11 @@ public class CardSource : MonoBehaviour
             {
                 return true;
             }
+
             #endregion
 
             #region the effects of itself
+
             if (PermanentOfThisCard() == null)
             {
                 if (EffectList(EffectTiming.None)
@@ -169,21 +195,26 @@ public class CardSource : MonoBehaviour
                     return true;
                 }
             }
+
             #endregion
 
             #region Whether the color requirement is met
+
             if (!MatchColorRequirement)
             {
                 return true;
             }
+
             #endregion
 
             return false;
         }
     }
+
     #endregion
 
     #region Whether the color requirement is met
+
     public bool MatchColorRequirement
     {
         get
@@ -193,6 +224,7 @@ public class CardSource : MonoBehaviour
                 #region "ignore color requirement" effects
 
                 #region the effects of permanents
+
                 if (GManager.instance.turnStateMachine.gameContext.Players
                     .Map(player => player.GetFieldPermanents())
                     .Flat()
@@ -204,9 +236,11 @@ public class CardSource : MonoBehaviour
                 {
                     return true;
                 }
+
                 #endregion
 
                 #region the effects of players
+
                 if (GManager.instance.turnStateMachine.gameContext.Players
                         .Map(player => player.EffectList(EffectTiming.None))
                         .Flat()
@@ -216,9 +250,11 @@ public class CardSource : MonoBehaviour
                 {
                     return true;
                 }
+
                 #endregion
 
                 #region the effects of itself
+
                 if (PermanentOfThisCard() == null)
                 {
                     if (EffectList(EffectTiming.None)
@@ -229,6 +265,7 @@ public class CardSource : MonoBehaviour
                         return true;
                     }
                 }
+
                 #endregion
 
                 #endregion
@@ -246,34 +283,45 @@ public class CardSource : MonoBehaviour
             return true;
         }
     }
+
     #endregion
 
     #region Card object in hand displaying this card
+
     public HandCard ShowingHandCard { get; private set; }
+
     public void SetShowingHandCard(HandCard showingHandCard) => ShowingHandCard = showingHandCard;
+
     #endregion
 
     #region Permanent in the field containing this card
+
     public Permanent PermanentOfThisCard()
     {
         return Owner.GetFieldPermanents().Find(permanent =>
             (permanent.cardSources.Contains(this)) && !IsFlipped);
     }
+
     #endregion
 
     #region initialize
+
     public void Init()
     {
         cEntity_EffectController.InitUseCountThisTurn();
         SetFace("CardSource.Initialize");
     }
+
     #endregion
 
     #region base card colors from entity
+
     public List<CardColor> BaseCardColorsFromEntity => _cEntity_Base.cardColors.Distinct().ToList();
+
     #endregion
 
-    #region base card colors 
+    #region base card colors
+
     public List<CardColor> BaseCardColors
     {
         get
@@ -283,15 +331,18 @@ public class CardSource : MonoBehaviour
             #region the effects that changes base card colors
 
             #region the effects of itself
+
             if (PermanentOfThisCard() == null)
             {
                 EffectList(EffectTiming.None)
                     .Filter(cardEffect => cardEffect is IChangeBaseCardColorEffect && cardEffect.CanUse(null))
                     .ForEach(cardEffect => baseCardColors = ((IChangeBaseCardColorEffect)cardEffect).GetBaseCardColors(baseCardColors, this));
             }
+
             #endregion
 
             #region the effects of permanents
+
             GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer
                 .Map(player => player.GetFieldPermanents())
                 .Flat()
@@ -299,6 +350,7 @@ public class CardSource : MonoBehaviour
                 .Flat()
                 .Filter(cardEffect => cardEffect is IChangeBaseCardColorEffect && cardEffect.CanUse(null))
                 .ForEach(cardEffect => baseCardColors = ((IChangeBaseCardColorEffect)cardEffect).GetBaseCardColors(baseCardColors, this));
+
             #endregion
 
             #endregion
@@ -308,9 +360,11 @@ public class CardSource : MonoBehaviour
             return baseCardColors;
         }
     }
+
     #endregion
 
     #region card colors
+
     public List<CardColor> CardColors
     {
         get
@@ -320,15 +374,18 @@ public class CardSource : MonoBehaviour
             #region the effects that changes card colors
 
             #region the effects of itself
+
             if (PermanentOfThisCard() == null)
             {
                 EffectList(EffectTiming.None)
                     .Filter(cardEffect => cardEffect is IChangeCardColorEffect && cardEffect.CanUse(null))
                     .ForEach(cardEffect => cardColors = ((IChangeCardColorEffect)cardEffect).GetCardColors(cardColors, this));
             }
+
             #endregion
 
             #region the effects of permanents
+
             GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer
                 .Map(player => player.GetFieldPermanents())
                 .Flat()
@@ -336,6 +393,7 @@ public class CardSource : MonoBehaviour
                 .Flat()
                 .Filter(cardEffect => cardEffect is IChangeCardColorEffect && cardEffect.CanUse(null))
                 .ForEach(cardEffect => cardColors = ((IChangeCardColorEffect)cardEffect).GetCardColors(cardColors, this));
+
             #endregion
 
             #endregion
@@ -345,13 +403,17 @@ public class CardSource : MonoBehaviour
             return cardColors;
         }
     }
+
     #endregion
 
     #region evoCosts from entity
+
     public List<EvoCost> BaseEvoCostsFromEntity => _cEntity_Base.EvoCosts;
+
     #endregion
 
     #region evoCosts
+
     public List<Func<Permanent, int>> EvoCosts(CardEffectCommons.IgnoreRequirement ignore, bool checkAvailability)
     {
         List<Func<Permanent, int>> EvoCosts = new List<Func<Permanent, int>>();
@@ -359,6 +421,7 @@ public class CardSource : MonoBehaviour
         #region the effects that add evoCosts
 
         #region the effects of players
+
         EvoCosts = EvoCosts
             .Concat(
                 GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer
@@ -368,9 +431,11 @@ public class CardSource : MonoBehaviour
                     .Map<ICardEffect, Func<Permanent, int>>(cardEffect =>
                         (targetPermanent) => ((IAddDigivolutionRequirementEffect)cardEffect).GetEvoCost(targetPermanent, this, checkAvailability)))
                     .ToList();
+
         #endregion
 
         #region the effects of permanents
+
         EvoCosts = EvoCosts
             .Concat(
                 GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer
@@ -382,9 +447,11 @@ public class CardSource : MonoBehaviour
                     .Map<ICardEffect, Func<Permanent, int>>(cardEffect =>
                         (targetPermanent) => ((IAddDigivolutionRequirementEffect)cardEffect).GetEvoCost(targetPermanent, this, checkAvailability)))
                     .ToList();
+
         #endregion
 
         #region the effects of itself
+
         if (PermanentOfThisCard() == null || PermanentOfThisCard().DigivolutionCards.Contains(this))
         {
             EvoCosts = EvoCosts
@@ -395,6 +462,7 @@ public class CardSource : MonoBehaviour
                             (targetPermanent) => ((IAddDigivolutionRequirementEffect)cardEffect).GetEvoCost(targetPermanent, this, checkAvailability)))
                         .ToList();
         }
+
         #endregion
 
         #endregion
@@ -424,9 +492,11 @@ public class CardSource : MonoBehaviour
 
         return EvoCosts;
     }
+
     #endregion
 
     #region evo cost list
+
     public List<int> CostList(Permanent targetPermanent, bool ignoreLevel, bool checkAvailability)
     {
         CardEffectCommons.IgnoreRequirement ignore = CardEffectCommons.IgnoreRequirement.None;
@@ -438,11 +508,13 @@ public class CardSource : MonoBehaviour
                 .Filter(evoCost => evoCost(targetPermanent) >= 0)
                 .Map(evoCost => evoCost(targetPermanent));
     }
+
     #endregion
 
-    #region cost list 
+    #region cost list
 
     #region cost to pay
+
     public int PayingCost(SelectCardEffect.Root root, List<Permanent> targetPermanents, bool checkAvailability = false, bool ignoreLevel = false, int FixedCost = -1)
     {
         int baseCost = _cEntity_Base.PlayCost;
@@ -467,9 +539,11 @@ public class CardSource : MonoBehaviour
 
         return GetPayingCostWithBaseCost(baseCost, root, targetPermanents, checkAvailability: checkAvailability, FixedCost: FixedCost);
     }
+
     #endregion
 
     #region cost that will be paid taking into account baseCost
+
     public int GetPayingCostWithBaseCost(int baseCost, SelectCardEffect.Root root, List<Permanent> targetPermanents, bool checkAvailability = false, int FixedCost = -1)
     {
         int Cost = FixedCost >= 0 ? FixedCost : baseCost;
@@ -477,6 +551,7 @@ public class CardSource : MonoBehaviour
         bool isEvolution = targetPermanents != null && targetPermanents.Some((permanent) => permanent != null);
 
         #region DigiXros
+
         if (!isEvolution)
         {
             if (HasDigiXros)
@@ -507,6 +582,7 @@ public class CardSource : MonoBehaviour
                 }
             }
         }
+
         #endregion
 
         #region Assembly
@@ -554,6 +630,7 @@ public class CardSource : MonoBehaviour
 
         return Cost;
     }
+
     #endregion
 
     #region base play cost from entity
@@ -570,10 +647,13 @@ public class CardSource : MonoBehaviour
     #endregion
 
     #region get card cost of itself (refered by card effects)
+
     public int GetCostItself => Math.Max(0, GetChangedCostItselef(BasePlayCostFromEntity, SelectCardEffect.Root.None, new List<Permanent>() { PermanentOfThisCard() }));
+
     #endregion
 
     #region get card cost of itself taking into account card effects
+
     public int GetChangedCostItselef(int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents, bool checkAvailability = false)
     {
         if (checkAvailability)
@@ -595,6 +675,7 @@ public class CardSource : MonoBehaviour
         List<ICardEffect> changeCostCardEffects = new List<ICardEffect>();
 
         #region the effects of permanents
+
         changeCostCardEffects = changeCostCardEffects
             .Concat(
             GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer
@@ -607,9 +688,11 @@ public class CardSource : MonoBehaviour
                     && !(((IChangeCostEffect)cardEffect).IsCheckAvailability() && !checkAvailability)
                     && !((IChangeCostEffect)cardEffect).IsChangePayingCost()))
                 .ToList();
+
         #endregion
 
         #region the effects of players
+
         changeCostCardEffects = changeCostCardEffects
             .Concat(
             GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer
@@ -620,9 +703,11 @@ public class CardSource : MonoBehaviour
                     && !(((IChangeCostEffect)cardEffect).IsCheckAvailability() && !checkAvailability)
                     && !((IChangeCostEffect)cardEffect).IsChangePayingCost()))
                 .ToList();
+
         #endregion
 
         #region the effects of itself
+
         if (PermanentOfThisCard() == null)
         {
             changeCostCardEffects = changeCostCardEffects
@@ -634,6 +719,7 @@ public class CardSource : MonoBehaviour
                 && !((IChangeCostEffect)cardEffect).IsChangePayingCost()))
             .ToList();
         }
+
         #endregion
 
         List<ICardEffect> changeCostCardEffects_NotIsUpDown = changeCostCardEffects
@@ -647,13 +733,16 @@ public class CardSource : MonoBehaviour
 
         changeCostCardEffects_IsUpDown
             .ForEach(cardEffect => Cost = ((IChangeCostEffect)cardEffect).GetCost(Cost, this, root, targetPermanents));
+
         #endregion
 
         return Math.Max(0, Cost);
     }
+
     #endregion
 
     #region get card cost to pay of itself taking into account card effects
+
     public int GetChangedPayingCost(int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents, bool checkAvailability = false)
     {
         #region card effects that changes card cost to pay
@@ -661,6 +750,7 @@ public class CardSource : MonoBehaviour
         List<ICardEffect> changePayingCostCardEffects = new List<ICardEffect>();
 
         #region the effects of permanents
+
         changePayingCostCardEffects = changePayingCostCardEffects
             .Concat(
             GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer
@@ -673,9 +763,11 @@ public class CardSource : MonoBehaviour
                     && !(((IChangeCostEffect)cardEffect).IsCheckAvailability() && !checkAvailability)
                     && ((IChangeCostEffect)cardEffect).IsChangePayingCost()))
                 .ToList();
+
         #endregion
 
         #region the effects of players
+
         changePayingCostCardEffects = changePayingCostCardEffects
             .Concat(
             GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer
@@ -686,9 +778,11 @@ public class CardSource : MonoBehaviour
                     && !(((IChangeCostEffect)cardEffect).IsCheckAvailability() && !checkAvailability)
                     && ((IChangeCostEffect)cardEffect).IsChangePayingCost()))
                 .ToList();
+
         #endregion
 
         #region the effects of itself
+
         if (PermanentOfThisCard() == null)
         {
             changePayingCostCardEffects = changePayingCostCardEffects
@@ -700,6 +794,7 @@ public class CardSource : MonoBehaviour
                     && ((IChangeCostEffect)cardEffect).IsChangePayingCost()))
                 .ToList();
         }
+
         #endregion
 
         List<ICardEffect> changePayingCostCardEffects_NotIsUpDown = changePayingCostCardEffects
@@ -718,15 +813,19 @@ public class CardSource : MonoBehaviour
 
         return Math.Max(0, Cost);
     }
+
     #endregion
 
     #endregion
 
     #region level
+
     public int Level => TreatedLevel;
+
     #endregion
 
     #region Level
+
     public int TreatedLevel
     {
         get
@@ -750,21 +849,26 @@ public class CardSource : MonoBehaviour
                     }
                 }
             }
+
             #endregion
 
             return treatedLevel;
         }
     }
+
     #endregion
 
     #region effect list
+
     public List<ICardEffect> EffectList(EffectTiming timing)
     {
         return EffectList_ForCard(timing, this);
     }
+
     #endregion
 
     #region effect list for 1 card
+
     public List<ICardEffect> EffectList_ForCard(EffectTiming timing, CardSource cardSource)
     {
         List<ICardEffect> _EffectList = cEntity_EffectController
@@ -781,16 +885,20 @@ public class CardSource : MonoBehaviour
 
         return _EffectList;
     }
+
     #endregion
 
     #region effect list except added effects
+
     public List<ICardEffect> EffectList_ExceptAddedEffects(EffectTiming timing)
     {
         return EffectList_ForCard_ExceptAddedEffects(timing, this);
     }
+
     #endregion
 
     #region effect list for 1 card
+
     public List<ICardEffect> EffectList_ForCard_ExceptAddedEffects(EffectTiming timing, CardSource cardSource)
     {
         List<ICardEffect> _EffectList = cEntity_EffectController
@@ -807,13 +915,17 @@ public class CardSource : MonoBehaviour
 
         return _EffectList;
     }
+    
     #endregion
 
     #region whether this card can declare skill
+
     public bool CanDeclareSkill => CanDeclareSkillList.Count > 0;
+
     #endregion
 
     #region effect list that this card can declare
+
     public List<ICardEffect> CanDeclareSkillList
     {
         get
@@ -822,14 +934,17 @@ public class CardSource : MonoBehaviour
             .Filter(cardEffect => cardEffect is ActivateICardEffect && cardEffect.CanUse(null));
         }
     }
+
     #endregion
 
     #region whether this card can not be affected by the effect
+
     public bool CanNotBeAffected(ICardEffect _cardEffect)
     {
         if (_cardEffect == null) return false;
 
         #region the effects of permanents
+
         if (GManager.instance.turnStateMachine.gameContext.Players
             .Map(player => player.GetFieldPermanents())
             .Flat()
@@ -841,9 +956,11 @@ public class CardSource : MonoBehaviour
         {
             return true;
         }
+
         #endregion
 
         #region the effects of players
+
         if (GManager.instance.turnStateMachine.gameContext.Players
                 .Map(player => player.EffectList(EffectTiming.None))
                 .Flat()
@@ -853,9 +970,11 @@ public class CardSource : MonoBehaviour
         {
             return true;
         }
+
         #endregion
 
         #region the effects of itself
+
         if (PermanentOfThisCard() == null)
         {
             if (EffectList(EffectTiming.None)
@@ -866,13 +985,16 @@ public class CardSource : MonoBehaviour
                 return true;
             }
         }
+
         #endregion
 
         return false;
     }
+
     #endregion
 
     #region whether this card can be played at the frame
+
     public bool CanPlayCardTargetFrame(FieldCardFrame frame, bool PayCost, ICardEffect cardEffect, SelectCardEffect.Root root = SelectCardEffect.Root.Hand, int fixedCost = -1, bool isBreedingArea = false, CardEffectCommons.IgnoreRequirement ignore = CardEffectCommons.IgnoreRequirement.None)
     {
         bool isBattleAreaFrame = FieldCardFrame.isBattleAreaFrameID(frame.FrameID);
@@ -918,7 +1040,6 @@ public class CardSource : MonoBehaviour
                 return false;
             }
         }
-
         else
         {
             if (!CanEnterField(cardEffect))
@@ -934,7 +1055,6 @@ public class CardSource : MonoBehaviour
                 return false;
             }
         }
-
         else
         {
             if (!isBattleAreaFrame && frame.GetFramePermanent() == null && !isBreedingArea)
@@ -945,19 +1065,24 @@ public class CardSource : MonoBehaviour
 
         return true;
     }
+
     #endregion
 
     #region whether there is at least 1 frame where this card can be placed
+
     public bool CanPutFieldThisPermanentCard(bool PayCost, ICardEffect cardEffect, bool isBreedingArea = false)
     {
         return Owner.fieldCardFrames.Some((frame) => CanPlayCardTargetFrame(frame, PayCost, cardEffect, isBreedingArea: isBreedingArea));
     }
+
     #endregion
 
     #region whether this card can be placed on the field by the effect
+
     public bool CanEnterField(ICardEffect _cardEffect)
     {
         #region the effects of permanents
+
         if (GManager.instance.turnStateMachine.gameContext.Players
             .Map(player => player.GetFieldPermanents())
             .Flat()
@@ -969,9 +1094,11 @@ public class CardSource : MonoBehaviour
         {
             return false;
         }
+
         #endregion
 
         #region the effects of players
+
         if (GManager.instance.turnStateMachine.gameContext.Players
                 .Map(player => player.EffectList(EffectTiming.None))
                 .Flat()
@@ -981,9 +1108,11 @@ public class CardSource : MonoBehaviour
         {
             return false;
         }
+
         #endregion
 
         #region the effects of itself
+
         if (PermanentOfThisCard() == null)
         {
             if (EffectList(EffectTiming.None)
@@ -994,13 +1123,16 @@ public class CardSource : MonoBehaviour
                 return false;
             }
         }
+
         #endregion
 
         return true;
     }
+
     #endregion
 
     #region whether the permanent can digivolve into this card
+
     public bool CanEvolve(Permanent targetPermanent, bool checkAvailability, CardEffectCommons.IgnoreRequirement ignore = CardEffectCommons.IgnoreRequirement.None)
     {
         if (targetPermanent != null)
@@ -1024,9 +1156,11 @@ public class CardSource : MonoBehaviour
 
         return false;
     }
+
     #endregion
 
     #region whether the permanent's digivolution into this card is prohibited
+
     public bool CanNotEvolve(Permanent targetPermanent)
     {
         if (targetPermanent.IsToken)
@@ -1042,6 +1176,7 @@ public class CardSource : MonoBehaviour
         #region card effects that can't digivolve
 
         #region the effects of permanents
+
         if (GManager.instance.turnStateMachine.gameContext.Players
             .Map(player => player.GetFieldPermanents())
             .Flat()
@@ -1053,9 +1188,11 @@ public class CardSource : MonoBehaviour
         {
             return true;
         }
+
         #endregion
 
         #region the effects of players
+
         if (GManager.instance.turnStateMachine.gameContext.Players
                 .Map(player => player.EffectList(EffectTiming.None))
                 .Flat()
@@ -1065,9 +1202,11 @@ public class CardSource : MonoBehaviour
         {
             return true;
         }
+
         #endregion
 
         #region the effects of itself
+
         if (PermanentOfThisCard() == null)
         {
             if (EffectList(EffectTiming.None)
@@ -1078,23 +1217,30 @@ public class CardSource : MonoBehaviour
                 return true;
             }
         }
+
         #endregion
 
         #endregion
 
         return false;
     }
+
     #endregion
 
     #region ENG card name from entity
+
     public string BaseENGCardNameFromEntity => _cEntity_Base.CardName_ENG;
+
     #endregion
 
     #region JPN card name from entity
+
     public string BaseJPNCardNameFromEntity => _cEntity_Base.CardName_ENG;
+
     #endregion
 
     #region base card names
+
     public List<string> BaseCardNames
     {
         get
@@ -1113,19 +1259,21 @@ public class CardSource : MonoBehaviour
                     .Filter(cardEffect => cardEffect is IChangeBaseCardNameEffect && cardEffect.CanUse(null))
                     .ForEach(cardEffect => baseCardNames = ((IChangeBaseCardNameEffect)cardEffect).ChangeBaseCardNames(baseCardNames, this));
             }
-
             else
             {
                 #region the effects of itself
+
                 if (PermanentOfThisCard() == null)
                 {
                     EffectList(EffectTiming.None)
                         .Filter(cardEffect => cardEffect is IChangeBaseCardNameEffect && cardEffect.CanUse(null))
                         .ForEach(cardEffect => baseCardNames = ((IChangeBaseCardNameEffect)cardEffect).ChangeBaseCardNames(baseCardNames, this));
                 }
+
                 #endregion
 
                 #region the effects of permanents
+
                 GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer
                     .Map(player => player.GetFieldPermanents())
                     .Flat()
@@ -1133,14 +1281,17 @@ public class CardSource : MonoBehaviour
                     .Flat()
                     .Filter(cardEffect => cardEffect is IChangeBaseCardNameEffect && cardEffect.CanUse(null))
                     .ForEach(cardEffect => baseCardNames = ((IChangeBaseCardNameEffect)cardEffect).ChangeBaseCardNames(baseCardNames, this));
+
                 #endregion
 
                 #region the effects of players
+
                 GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer
                     .Map(player => player.EffectList(EffectTiming.None))
                     .Flat()
                     .Filter(cardEffect => cardEffect is IChangeBaseCardNameEffect && cardEffect.CanUse(null))
                     .ForEach(cardEffect => baseCardNames = ((IChangeBaseCardNameEffect)cardEffect).ChangeBaseCardNames(baseCardNames, this));
+
                 #endregion
             }
 
@@ -1149,9 +1300,11 @@ public class CardSource : MonoBehaviour
             return baseCardNames;
         }
     }
+
     #endregion
 
     #region card names
+
     public List<string> CardNames
     {
         get
@@ -1162,25 +1315,32 @@ public class CardSource : MonoBehaviour
             List<string> cardNames = BaseCardNames.Clone();
 
             #region the effects of itself
+
             EffectList_ExceptAddedEffects(EffectTiming.None)
             .Filter(cardEffect => cardEffect != null)
             .Filter(cardEffect => cardEffect is IChangeCardNamesEffect && cardEffect.CanUse(null))
             .ForEach(cardEffect => cardNames = ((IChangeCardNamesEffect)cardEffect).ChangeCardNames(cardNames, this));
+
             #endregion
 
             return cardNames.Distinct().ToList();
         }
     }
+
     #endregion
 
     #region Whether target other card's name has same name as this
+
     public bool HasSameCardName(CardSource cardSource) => cardSource.CardNames.Count((cardName) => EqualsCardName(cardName)) >= 1;
+
     //public bool HasSameCardName(CardSource cardSource) => cardSource.CardNames.Count((cardName) => CardNames.Contains(cardName)) >= 1;
+
     #endregion
 
     #region whether this card has at least 1 card name that equals the string
+
     /// <summary>
-    /// Used to check if specified name is exactly in cards name values ("dra" is not "Commandramon") 
+    /// Used to check if specified name is exactly in cards name values ("dra" is not "Commandramon")
     /// </summary>
     /// <param name="string">value to check for</param>
     /// <author>Mike Bunch</author>
@@ -1201,11 +1361,13 @@ public class CardSource : MonoBehaviour
         || cardName.Equals(lower)
         || cardName.ToLower().Equals(lower));
     }
+
     #endregion
 
     #region whether this card has at least 1 card name that contains the string
+
     /// <summary>
-    /// Used to check if specified trait is within cards name values ("dra" is in "Commandramon") 
+    /// Used to check if specified trait is within cards name values ("dra" is in "Commandramon")
     /// </summary>
     /// <param trait="string">value to check for</param>
     /// <author>Mike Bunch</author>
@@ -1225,9 +1387,11 @@ public class CardSource : MonoBehaviour
         || cardName.Contains(lower)
         || cardName.ToLower().Contains(lower));
     }
+
     #endregion
 
     #region whether this card has at least 1 card name that contains "Greymon"
+
     public bool HasGreymonName
     {
         get
@@ -1243,9 +1407,11 @@ public class CardSource : MonoBehaviour
             return false;
         }
     }
+
     #endregion
 
     #region whether this card has at least 1 card name that contains "Garurumon"
+
     public bool HasGarurumonName
     {
         get
@@ -1259,9 +1425,11 @@ public class CardSource : MonoBehaviour
             return false;
         }
     }
+
     #endregion
 
     #region whether this card has at least 1 card name that contains "Impmon"
+
     public bool HasImpmonName
     {
         get
@@ -1275,9 +1443,11 @@ public class CardSource : MonoBehaviour
             return false;
         }
     }
+
     #endregion
 
     #region whether this card has at least 1 card name that contains "Dramon"
+
     public bool HasDramonName
     {
         get
@@ -1291,15 +1461,19 @@ public class CardSource : MonoBehaviour
             return false;
         }
     }
+
     #endregion
 
     #region whether this card has at least 1 card name that contains "AAntibody"
+
     public bool HasXAntiBodyName => CardNames.Some(DataBase.IsContainingXAntibodyString);
+
     #endregion
 
     #region whether this card has at least 1 trait that equals the string
+
     /// <summary>
-    /// Used to check if specified trait is exactly in cards trait values ("Sky Dragon" is not "Dragon") 
+    /// Used to check if specified trait is exactly in cards trait values ("Sky Dragon" is not "Dragon")
     /// </summary>
     /// <param trait="string">value to check for</param>
     /// <author>Mike Bunch</author>
@@ -1312,11 +1486,13 @@ public class CardSource : MonoBehaviour
 
         return CardTraits.Some(cardTrait => cardTrait.Equals(trait) || cardTrait.Equals(replaced));
     }
+
     #endregion
 
     #region whether this card has at least 1 trait that contains the string
+
     /// <summary>
-    /// Used to check if specified trait is within cards trait values ("Sky Dragon" contains "Dragon") 
+    /// Used to check if specified trait is within cards trait values ("Sky Dragon" contains "Dragon")
     /// </summary>
     /// <param trait="string">value to check for</param>
     /// <author>Mike Bunch</author>
@@ -1329,9 +1505,11 @@ public class CardSource : MonoBehaviour
 
         return CardTraits.Some(cardTrait => cardTrait.Contains(trait) || cardTrait.Contains(replaced));
     }
+
     #endregion
 
     #region whether this card has at least 1 trait that contains "Bird"
+
     public bool HasBirdTraits
     {
         get
@@ -1349,9 +1527,11 @@ public class CardSource : MonoBehaviour
             return false;
         }
     }
+
     #endregion
 
     #region whether this card has at least 1 trait that contains "Beast"
+
     public bool HasBeastTraits
     {
         get
@@ -1374,9 +1554,11 @@ public class CardSource : MonoBehaviour
             return false;
         }
     }
+
     #endregion
 
     #region whether this card has at least 1 trait that contains "Plant"
+
     public bool HasPlantTraits
     {
         get
@@ -1394,9 +1576,11 @@ public class CardSource : MonoBehaviour
             return false;
         }
     }
+
     #endregion
 
     #region whether this card has at least 1 trait that contains "Fairy"
+
     public bool HasFairyTraits
     {
         get
@@ -1409,9 +1593,11 @@ public class CardSource : MonoBehaviour
             return false;
         }
     }
+
     #endregion
 
     #region whether this card has at least 1 trait that contains "Dragon"
+
     public bool HasDragonTraits
     {
         get
@@ -1434,9 +1620,11 @@ public class CardSource : MonoBehaviour
             return false;
         }
     }
+
     #endregion
 
     #region whether this card has at least 1 trait that contains "Aqua"
+
     public bool HasAquaTraits
     {
         get
@@ -1459,9 +1647,11 @@ public class CardSource : MonoBehaviour
             return false;
         }
     }
+
     #endregion
 
     #region whether this card has at least 1 trait that contains "Angel"
+
     public bool HasAngelTraits
     {
         get
@@ -1499,9 +1689,11 @@ public class CardSource : MonoBehaviour
             return false;
         }
     }
+
     #endregion
 
     #region whether this card has 1 of the "Angel", "Archangel" or "Three Great Angels" trait
+
     public bool HasAngelTraitRestrictive
     {
         get
@@ -1528,9 +1720,11 @@ public class CardSource : MonoBehaviour
             return false;
         }
     }
+
     #endregion
 
     #region whether this card has at least 1 trait that contains "Avian", "Bird", "Beast", "Animal", "Sovereign", other than "Sea Animal"
+
     public bool HasAvianBeastAnimalTraits
     {
         get
@@ -1553,9 +1747,11 @@ public class CardSource : MonoBehaviour
             return false;
         }
     }
+
     #endregion
 
     #region whether this card has at least 1 trait that contains "Hybrid", "Ten Warriors"
+
     public bool HasHybridTenWarriorsTraits
     {
         get
@@ -1569,13 +1765,17 @@ public class CardSource : MonoBehaviour
             return false;
         }
     }
+
     #endregion
 
     #region whether this card has "XAntibody" trait
+
     public bool HasXAntibodyTraits => CardTraits.Some(DataBase.IsXAntibodyString);
+
     #endregion
 
     #region whether this card has "Royal Knight" trait
+
     public bool HasRoyalKnightTraits
     {
         get
@@ -1583,9 +1783,11 @@ public class CardSource : MonoBehaviour
             return EqualsTraits("Royal Knight");
         }
     }
+
     #endregion
 
     #region whether this card has "SoC" trait
+
     public bool HasSocTraits
     {
         get
@@ -1598,9 +1800,11 @@ public class CardSource : MonoBehaviour
             return false;
         }
     }
+
     #endregion
 
     #region whether this card has "D-Brigade"/"DigiPolice trait
+
     public bool HasDBrigadeorDigiPoliceTraits
     {
         get
@@ -1618,9 +1822,11 @@ public class CardSource : MonoBehaviour
             return false;
         }
     }
+
     #endregion
 
     #region whether this card has at least 1 trait that contains "Beast Dragon"
+
     public bool HasBeastDragonTraits
     {
         get
@@ -1638,9 +1844,11 @@ public class CardSource : MonoBehaviour
             return false;
         }
     }
+
     #endregion
 
     #region whether this card has at least 1 trait that contains "DigiPolice"
+
     public bool HasDigiPoliceTraits
     {
         get
@@ -1653,14 +1861,17 @@ public class CardSource : MonoBehaviour
             return false;
         }
     }
+
     #endregion
 
     #region whether this card has at least 1 trait that contains "Light Fang" or "Night Claw"
+
     public bool HasLightFangNightClawTraits => ContainsTraits("Light Fang") || ContainsTraits("Night Claw");
 
     #endregion
 
     #region whether this card has at least 1 trait that contains "Light Fang/Night Claw"
+
     public bool HasLightFangOrNightClawTraits
     {
         get
@@ -1678,9 +1889,11 @@ public class CardSource : MonoBehaviour
             return false;
         }
     }
+
     #endregion
 
     #region whether this card has the string in text
+
     public bool HasText(string text)
     {
         if (String.IsNullOrEmpty(text)) return false;
@@ -1705,7 +1918,7 @@ public class CardSource : MonoBehaviour
 
         if (jogressCondition != null)
         {
-            foreach(JogressCondition jogress in jogressCondition)
+            foreach (JogressCondition jogress in jogressCondition)
             {
                 foreach (JogressConditionElement element in jogress.elements)
                     checkStrings.Add(element.SelectMessage);
@@ -1735,17 +1948,23 @@ public class CardSource : MonoBehaviour
 
         return false;
     }
+
     #endregion
 
     #region whether this card has <Save> in text
+
     public bool HasSaveText => HasText("<Save>");
+
     #endregion
 
     #region whether this card has "Pulsemon" in text
+
     public bool HasPulsemonText => HasText("Pulsemon");
+
     #endregion
 
     #region card names checked when digixros
+
     public List<string> CardNames_DigiXros
     {
         get
@@ -1753,14 +1972,17 @@ public class CardSource : MonoBehaviour
             List<string> cardNames_DigiXros = CardNames.Clone();
 
             #region the effects of itself
+
             EffectList(EffectTiming.None)
                 .Filter(cardEffect => cardEffect is IChangeCardNamesForDigiXrosEffect && cardEffect.CanUse(null))
                 .ForEach(cardEffect => cardNames_DigiXros = ((IChangeCardNamesForDigiXrosEffect)cardEffect).ChangeCardNamesForDigiXros(cardNames_DigiXros, this));
+
             #endregion
 
             return cardNames_DigiXros;
         }
     }
+
     #endregion
 
     #region card level checked when Assembly
@@ -1783,8 +2005,9 @@ public class CardSource : MonoBehaviour
     #endregion
 
     #region whether this card has at least 1 card name checked when digixros that equals the string
+
     /// <summary>
-    /// Used to check if specified name is exactly in cards name values ("dra" is not "Commandramon") 
+    /// Used to check if specified name is exactly in cards name values ("dra" is not "Commandramon")
     /// </summary>
     /// <param name="string">value to check for</param>
     /// <author>Mike Bunch</author>
@@ -1804,11 +2027,13 @@ public class CardSource : MonoBehaviour
         || cardName.Equals(lower)
         || cardName.ToLower().Equals(lower));
     }
+
     #endregion
 
     #region whether this card has at least 1 card name that contains the string
+
     /// <summary>
-    /// Used to check if specified trait is within cards name values ("dra" is in "Commandramon") 
+    /// Used to check if specified trait is within cards name values ("dra" is in "Commandramon")
     /// </summary>
     /// <param trait="string">value to check for</param>
     /// <author>Mike Bunch</author>
@@ -1828,9 +2053,11 @@ public class CardSource : MonoBehaviour
         || cardName.Contains(lower)
         || cardName.ToLower().Contains(lower));
     }
+
     #endregion
 
     #region preferered frame to play
+
     public FieldCardFrame PreferredFrame()
     {
         FieldCardFrame PreferredFrame = Owner.fieldCardFrames[0];
@@ -1852,7 +2079,6 @@ public class CardSource : MonoBehaviour
                         .ThenBy(value => value.Frame.transform.parent.localPosition.x)
                         .ToList();
                 }
-
                 else
                 {
                     fieldCardFrames = fieldCardFrames
@@ -1879,7 +2105,6 @@ public class CardSource : MonoBehaviour
                     fieldCardFrames = correctOrderFrames;
                 }
             }
-
             else if (IsTamer || IsOption)
             {
                 if (Owner.isYou)
@@ -1890,7 +2115,6 @@ public class CardSource : MonoBehaviour
                         .ThenBy(value => value.Frame.transform.parent.localPosition.x)
                         .ToList();
                 }
-
                 else
                 {
                     fieldCardFrames = fieldCardFrames
@@ -1909,17 +2133,23 @@ public class CardSource : MonoBehaviour
 
         return PreferredFrame;
     }
+
     #endregion
 
     #region Whether this card has DP
+
     public bool HasDP => IsDigimon || _cEntity_Base.DP > 0;
+
     #endregion
 
     #region base card DP
+
     public int BaseCardDP => _cEntity_Base.DP;
+
     #endregion
 
     #region DP
+
     public int CardDP
     {
         get
@@ -1935,6 +2165,7 @@ public class CardSource : MonoBehaviour
                 List<ICardEffect> changeCardDPCardEffects = new List<ICardEffect>();
 
                 #region the effects of permanents
+
                 changeCardDPCardEffects = changeCardDPCardEffects
                     .Concat(
                     GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer
@@ -1945,9 +2176,11 @@ public class CardSource : MonoBehaviour
                         .Filter(cardEffect => cardEffect is IChangeCardDPEffect && cardEffect.CanUse(null)
                             && ((IChangeCardDPEffect)cardEffect).CardCondition(this)))
                         .ToList();
+
                 #endregion
 
                 #region the effects of players
+
                 changeCardDPCardEffects = changeCardDPCardEffects
                     .Concat(
                     GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer
@@ -1956,8 +2189,8 @@ public class CardSource : MonoBehaviour
                         .Filter(cardEffect => cardEffect is IChangeCardDPEffect && cardEffect.CanUse(null)
                             && ((IChangeCardDPEffect)cardEffect).CardCondition(this)))
                         .ToList();
-                #endregion
 
+                #endregion
 
                 List<ICardEffect> cardEffects_ChangeDP_IsUpDown = changeCardDPCardEffects
                     .Filter(cardEffect => ((IChangeCardDPEffect)cardEffect).IsUpDown());
@@ -1977,28 +2210,38 @@ public class CardSource : MonoBehaviour
             return Math.Max(0, cardDP);
         }
     }
+
     #endregion
 
     #region Link DP
+
     public int LinkDP => _cEntity_Base.LinkDP;
+
     #endregion
 
     #region whether this card is token
+
     public bool IsToken { get; private set; } = false;
+
     public void SetIsToken(bool isToken) => IsToken = isToken;
+
     #endregion
 
     #region Will this card be trashed from sources
+
     public bool willBeRemoveSources { get; set; } = false;
+
     #endregion
 
     #region whether this card can not be trashed from digivolution cards
+
     public bool CanNotTrashFromDigivolutionCards(ICardEffect _cardEffect)
     {
         if (willBeRemoveSources)
             return true;
 
         #region the effects of permanents
+
         if (GManager.instance.turnStateMachine.gameContext.Players
             .Map(player => player.GetFieldPermanents())
             .Flat()
@@ -2010,9 +2253,11 @@ public class CardSource : MonoBehaviour
         {
             return true;
         }
+
         #endregion
 
         #region the effects of players
+
         if (GManager.instance.turnStateMachine.gameContext.Players
                 .Map(player => player.EffectList(EffectTiming.None))
                 .Flat()
@@ -2022,9 +2267,11 @@ public class CardSource : MonoBehaviour
         {
             return true;
         }
+
         #endregion
 
         #region the effects of itself
+
         if (PermanentOfThisCard() == null)
         {
             if (EffectList(EffectTiming.None)
@@ -2035,20 +2282,25 @@ public class CardSource : MonoBehaviour
                 return true;
             }
         }
+
         #endregion
 
         return false;
     }
+
     #endregion
 
     #region whether this card has [Blocker]
+
     public bool HasBlocker =>
         EffectList(EffectTiming.None)
             .Some(cardEffect => cardEffect is BlockerClass
                 && !cardEffect.IsInheritedEffect && !cardEffect.IsSecurityEffect);
+
     #endregion
 
     #region whether this card has [DigiBurst]
+
     public bool HasDigiBurst
     {
         get
@@ -2069,10 +2321,13 @@ public class CardSource : MonoBehaviour
             return false;
         }
     }
+
     #endregion
 
     #region whether this card has [DigiXros]
+
     public bool HasDigiXros => digiXrosCondition != null;
+
     #endregion
 
     #region whether this card has [Assembly]
@@ -2080,6 +2335,7 @@ public class CardSource : MonoBehaviour
     #endregion
 
     #region traits
+
     public List<string> CardTraits
     {
         get
@@ -2097,50 +2353,62 @@ public class CardSource : MonoBehaviour
                 .ToList();
 
             #region the effects of itself
+
             EffectList(EffectTiming.None)
                 .Filter(cardEffect => cardEffect is IChangeTraitsEffect && cardEffect.CanUse(null))
                 .ForEach(cardEffect => traits = ((IChangeTraitsEffect)cardEffect).ChangTraits(traits, this));
+
             #endregion
 
             return traits;
         }
     }
+
     #endregion
 
     #region whether this card has [On Deletion] effect
+
     public bool HasOnDeletionEffect =>
         EffectList(EffectTiming.OnDestroyedAnyone)
             .Some(cardEffect => cardEffect is ActivateICardEffect
                 && !cardEffect.IsInheritedEffect && !cardEffect.IsSecurityEffect
                 && cardEffect.IsOnDeletion);
+
     #endregion
 
     #region whether this card has [On Play] effect
+
     public bool HasOnPlayEffect =>
         EffectList(EffectTiming.OnEnterFieldAnyone)
             .Some(cardEffect => cardEffect is ActivateICardEffect
                 && !cardEffect.IsInheritedEffect && !cardEffect.IsSecurityEffect
                 && cardEffect.IsOnPlay);
+
     #endregion
 
     #region whether this card has [When Digivolving] effect
+
     public bool HasWhenDigivolvingEffect =>
         EffectList(EffectTiming.OnEnterFieldAnyone)
             .Some(cardEffect => cardEffect is ActivateICardEffect
                 && !cardEffect.IsInheritedEffect && !cardEffect.IsSecurityEffect
                 && cardEffect.IsWhenDigivolving);
+
     #endregion
 
     #region whether this card has [Digisorption]
+
     public bool HasDigisorption =>
         EffectList(EffectTiming.BeforePayCost)
             .Some(cardEffect => cardEffect is ActivateICardEffect
                 && !cardEffect.IsInheritedEffect && !cardEffect.IsSecurityEffect
                 && !string.IsNullOrEmpty(cardEffect.EffectDiscription)
                 && cardEffect.EffectDiscription.Contains("Digisorption -"));
+
     #endregion
 
     #region whether this card has [Blitz]
+
     public bool HasBlitz =>
         EffectList(EffectTiming.OnEnterFieldAnyone)
             .Some(cardEffect => cardEffect is ActivateICardEffect
@@ -2148,9 +2416,11 @@ public class CardSource : MonoBehaviour
                 && (cardEffect.CanTrigger(CardEffectCommons.WhenDigivolvingCheckHashtableOfCard(this)) || cardEffect.CanTrigger(CardEffectCommons.OnPlayCheckHashtableOfCard(this)))
                 && !string.IsNullOrEmpty(cardEffect.EffectDiscription)
                 && cardEffect.EffectDiscription.Contains("Blitz"));
+
     #endregion
 
     #region whether this card has [Retaliation]
+
     public bool HasRetaliation =>
         EffectList(EffectTiming.OnDestroyedAnyone)
             .Some(cardEffect => cardEffect is ActivateICardEffect
@@ -2161,15 +2431,18 @@ public class CardSource : MonoBehaviour
     #endregion
 
     #region whether this card has [Fortitude]
+
     public bool HasFortitude =>
         EffectList(EffectTiming.OnDestroyedAnyone)
             .Some(cardEffect => cardEffect is ActivateICardEffect
                 && !cardEffect.IsInheritedEffect && !cardEffect.IsSecurityEffect
                 && cardEffect.CanTrigger(CardEffectCommons.OnDeletionHashtable(new List<Permanent>() { new Permanent(new List<CardSource>() { this }) }, null, null, false))
                 && cardEffect.EffectName == "Fortitude");
+
     #endregion
 
     #region whether this card has inherited effect
+
     public bool HasInheritedEffect
     {
         get
@@ -2188,9 +2461,11 @@ public class CardSource : MonoBehaviour
             return false;
         }
     }
+
     #endregion
 
     #region DNA digivolution requirement
+
     public List<JogressCondition> jogressCondition
     {
         get
@@ -2206,9 +2481,11 @@ public class CardSource : MonoBehaviour
             return addJogressConditionEffect;
         }
     }
+
     #endregion
 
     #region Link requirement
+
     public LinkCondition linkCondition
     {
         get
@@ -2224,14 +2501,16 @@ public class CardSource : MonoBehaviour
             return null;
         }
     }
+
     #endregion
 
     #region whether this card can DNA digivolve
+
     public bool CanPlayJogress(bool PayCost)
     {
         if (jogressCondition != null)
         {
-            foreach(JogressCondition condition in jogressCondition)
+            foreach (JogressCondition condition in jogressCondition)
             {
                 if (Owner.GetBattleAreaDigimons().Count >= condition.elements.Length)
                 {
@@ -2274,9 +2553,11 @@ public class CardSource : MonoBehaviour
 
         return false;
     }
+
     #endregion
 
     #region whether target permanent can DNA digivolve into this card
+
     public bool CanJogressFromTargetPermanent(Permanent targetPermanent, bool PayCost)
     {
         if (targetPermanent != null)
@@ -2319,9 +2600,11 @@ public class CardSource : MonoBehaviour
 
         return false;
     }
+
     #endregion
 
     #region whether target permanents can DNA digivolve into this card
+
     public bool CanJogressFromTargetPermanents(List<Permanent> targetPermanents, bool PayCost)
     {
         if (targetPermanents != null)
@@ -2371,9 +2654,11 @@ public class CardSource : MonoBehaviour
 
         return false;
     }
+
     #endregion
 
     #region whether this card has level
+
     public bool HasLevel
     {
         get
@@ -2423,6 +2708,7 @@ public class CardSource : MonoBehaviour
     #endregion
 
     #region whether this card is linked
+
     public bool IsLinked
     {
         get
@@ -2430,9 +2716,11 @@ public class CardSource : MonoBehaviour
             return PermanentOfThisCard().LinkedCards.Contains(this);
         }
     }
+
     #endregion
 
     #region DigiXros requirement
+
     public DigiXrosCondition digiXrosCondition
     {
         get
@@ -2456,9 +2744,11 @@ public class CardSource : MonoBehaviour
             return null;
         }
     }
+
     #endregion
 
     #region Blast Digivolution requirement
+
     public BurstDigivolutionCondition burstDigivolutionCondition
     {
         get
@@ -2482,9 +2772,11 @@ public class CardSource : MonoBehaviour
             return null;
         }
     }
+
     #endregion
 
     #region App Fusion requirement
+
     public AppFusionCondition appFusionCondition
     {
         get
@@ -2508,6 +2800,7 @@ public class CardSource : MonoBehaviour
             return null;
         }
     }
+
     #endregion
 
     #region Assembly requirement
@@ -2537,6 +2830,7 @@ public class CardSource : MonoBehaviour
     #endregion
 
     #region whether this card can Burst digivolve
+
     public bool CanPlayBurst(bool PayCost)
     {
         if (burstDigivolutionCondition != null)
@@ -2601,9 +2895,11 @@ public class CardSource : MonoBehaviour
 
         return false;
     }
+
     #endregion
 
     #region whether this card can Link
+
     public bool CanLink(bool PayCost)
     {
         if (linkCondition != null)
@@ -2635,9 +2931,11 @@ public class CardSource : MonoBehaviour
 
         return false;
     }
+
     #endregion
 
     #region whether target permanent can Burst digivolve into this card
+
     public bool CanBurstDigivolutionFromTargetPermanent(Permanent targetPermanent, bool PayCost)
     {
         if (targetPermanent != null)
@@ -2689,9 +2987,11 @@ public class CardSource : MonoBehaviour
 
         return false;
     }
+
     #endregion
 
     #region whether target permanent can Link into this card
+
     public bool CanLinkToTargetPermanent(Permanent targetPermanent, bool PayCost)
     {
         if (targetPermanent != null)
@@ -2725,10 +3025,11 @@ public class CardSource : MonoBehaviour
 
         return false;
     }
+
     #endregion
 
-
     #region whether target permanent can App Fusion into this card
+
     public bool CanAppFusionFromTargetPermanent(Permanent targetPermanent, bool PayCost)
     {
         if (targetPermanent != null)
@@ -2768,9 +3069,11 @@ public class CardSource : MonoBehaviour
 
         return false;
     }
+
     #endregion
 
-    #region Whether this card's digiXrosCondition contains target card 
+    #region Whether this card's digiXrosCondition contains target card
+
     public bool IsContainDigiXrosCondition(CardSource cardSource)
     {
         if (cardSource != null)
@@ -2798,54 +3101,79 @@ public class CardSource : MonoBehaviour
 
         return false;
     }
+
     #endregion
 
     #region CardID
+
     public string CardID => _cEntity_Base.CardID;
+
     #endregion
 
     #region whether this card is Digimon
+
     public bool IsDigimon => CardKind == CardKind.Digimon;
+
     #endregion
 
     #region whether this card is DigiEgg
+
     public bool IsDigiEgg => CardKind == CardKind.DigiEgg;
+
     #endregion
 
     #region whether this card is Tamer
+
     public bool IsTamer => CardKind == CardKind.Tamer;
+
     #endregion
 
     #region whether this card is Option
+
     public bool IsOption => CardKind == CardKind.Option;
+
     #endregion
 
     #region Wheter this card is permanent
+
     public bool IsPermanent => _cEntity_Base.IsPermanent;
+
     #endregion
 
     #region Whether to have Play Cost
+
     public bool HasPlayCost => _cEntity_Base.HasPlayCost;
+
     #endregion
 
     #region Whether to have Use Cost
+
     public bool HasUseCost => _cEntity_Base.HasUseCost;
+
     #endregion
 
     #region Inherited Effects ENG discription
+
     public string InheritedEffectDiscription_ENG => DataBase.ReplaceToASCII(_cEntity_Base.InheritedEffectDiscription_ENG);
+
     #endregion
 
     #region Inherited Effects JPN discription
+
     public string InheritedEffectDiscription_JPN => DataBase.ReplaceToASCII(_cEntity_Base.InheritedEffectDiscription_JPN);
+
     #endregion
 
     #region Link Effects
+
     public string LinkEffectDiscription => DataBase.ReplaceToASCII(_cEntity_Base.LinkEffect);
+
     #endregion
 
     #region Card Sprite
+
     public Sprite CardSprite => _cEntity_Base.CardSprite;
+
     public async Task<Sprite> GetCardSprite()
     {
         return await _cEntity_Base.GetCardSprite();
@@ -2854,30 +3182,43 @@ public class CardSource : MonoBehaviour
     #endregion
 
     #region SetID
+
     public string SetID => _cEntity_Base.SetID;
+
     #endregion
 
     #region CardEntityIndex
+
     public int CardEntityIndex => _cEntity_Base.CardIndex;
+
     #endregion
 
     #region Card Kind
+
     public CardKind CardKind => _cEntity_Base.cardKind;
+
     #endregion
 
     #region ACE
+
     public bool IsACE => _cEntity_Base.IsACE;
+
     #endregion
 
     #region OverflowMemory
+
     public int OverflowMemory => _cEntity_Base.OverflowMemory;
+
     #endregion
 
     #region Whether this card is being revealed
+
     public bool IsBeingRevealed { get; set; } = false;
+
     #endregion
 
     #region The permanent that belonged to this card just before it left the field
+
     public Permanent PermanentJustBeforeRemoveField { get; set; } = null;
 
     #endregion
@@ -3008,7 +3349,6 @@ public class CardSource : MonoBehaviour
 
     #endregion
 
-
     #region whether this card has "WG" trait
 
     public bool HasWGTraits
@@ -3027,7 +3367,42 @@ public class CardSource : MonoBehaviour
         get
         {
             return EqualsTraits("DM");
+        }
+    }
+    
+    #endregion
 
+    #region whether this card has "CS" trait
+
+    public bool HasCSTraits
+    {
+        get
+        {
+            return EqualsTraits("CS");
+        }
+    }
+
+    #endregion
+
+    #region whether this card has "Unidentified" trait
+
+    public bool HasUnidentifiedTraits
+    {
+        get
+        {
+            return EqualsTraits("Unidentified");
+        }
+    }
+
+    #endregion
+
+    #region whether this card has "Flame" trait
+
+    public bool HasFlameTraits
+    {
+        get
+        {
+            return EqualsTraits("Flame");
         }
     }
 
@@ -3051,6 +3426,7 @@ public class JogressCondition
 
         this.cost = cost;
     }
+
     public JogressConditionElement[] elements { get; private set; } = new JogressConditionElement[2];
     public int cost { get; private set; } = 0;
 }
@@ -3063,7 +3439,9 @@ public class JogressConditionElement
 
         SelectMessage = selectMessage;
     }
+
     Func<Permanent, bool> _evoRootCondition = null;
+
     public Func<Permanent, bool> EvoRootCondition
     {
         get
@@ -3076,6 +3454,7 @@ public class JogressConditionElement
             _evoRootCondition = value;
         }
     }
+
     public string SelectMessage { get; private set; } = "";
 }
 
@@ -3093,6 +3472,7 @@ public class DigiXrosCondition
         this.CanTargetCondition_ByPreSelecetedList = CanTargetCondition_ByPreSelecetedList;
         this.reduceCostPerCard = reduceCostPerCard;
     }
+
     public List<DigiXrosConditionElement> elements { get; private set; } = new List<DigiXrosConditionElement>();
     public Func<List<CardSource>, CardSource, bool> CanTargetCondition_ByPreSelecetedList { get; private set; } = null;
 
@@ -3108,6 +3488,7 @@ public class DigiXrosConditionElement
         this.selectMessage = selectMessage;
         this.skipAllIfNoSelect = skipAllIfNoSelect;
     }
+
     public Func<CardSource, bool> CardCondition { get; private set; } = null;
     public string selectMessage { get; private set; } = "";
     public bool skipAllIfNoSelect { get; private set; } = false;
@@ -3123,6 +3504,7 @@ public class BurstDigivolutionCondition
         this.selectDigimonMessage = selectDigimonMessage;
         this.cost = cost;
     }
+
     public Func<Permanent, bool> tamerCondition { get; private set; } = null;
     public string selectTamerMessage { get; private set; } = null;
     public Func<Permanent, bool> digimonCondition { get; private set; } = null;
@@ -3138,6 +3520,7 @@ public class LinkCondition
         this.digimonCondition = digimonCondition;
         this.cost = cost;
     }
+
     public Func<Permanent, bool> digimonCondition { get; private set; } = null;
     public int cost { get; private set; } = 0;
 }
@@ -3150,6 +3533,7 @@ public class AppFusionCondition
         this.digimonCondition = digimonCondition;
         this.cost = cost;
     }
+
     public Func<Permanent, CardSource, bool> linkedCondition { get; private set; } = null;
     public Func<Permanent, bool> digimonCondition { get; private set; } = null;
 
