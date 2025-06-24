@@ -448,21 +448,18 @@ public partial class CardEffectCommons
 
         List<CardSource> trashTargetCards = new List<CardSource>();
 
-        for (int i = 0; i < trashCount; i++)
+        while (trashTargetCards.Count < trashCount)
         {
-            if (targetPermanent.DigivolutionCards.Count >= i + 1)
-            {
-                int index = isFromTop ? i : targetPermanent.DigivolutionCards.Count - 1 - i;
-                CardSource trashTargetCard = targetPermanent.DigivolutionCards[index];
+            int index = isFromTop ? trashTargetCards.Count : targetPermanent.DigivolutionCards.Count - 1 - trashTargetCards.Count;
+            CardSource trashTargetCard = targetPermanent.DigivolutionCards[index];
 
-                bool trashCard = true;
+            bool trashCard = true;
 
-                if (cardCondition != null)
-                    trashCard = cardCondition(trashTargetCard);
+            if (cardCondition != null)
+                trashCard = cardCondition(trashTargetCard);
 
-                if(trashCard)
-                    trashTargetCards.Add(trashTargetCard);
-            }
+            if (trashCard)
+                trashTargetCards.Add(trashTargetCard);
         }
 
         yield return ContinuousController.instance.StartCoroutine(new ITrashDigivolutionCards(targetPermanent, trashTargetCards, activateClass).TrashDigivolutionCards());
