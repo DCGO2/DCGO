@@ -15,7 +15,8 @@ public class Permanent
     {
         List<CardSource> newCardSources = cardSources.Clone();
 
-        newCardSources.Reverse();
+        //TODO: Attempted fix for random face up secuirty/flipped sources
+        //newCardSources.Reverse();
 
         foreach (CardSource cardSource in newCardSources)
         {
@@ -842,7 +843,11 @@ public class Permanent
     public void AddCardSource(CardSource cardSource)
     {
         cardSources.Insert(0, cardSource);
-        cardSource.SetFace("Permanent.AddSourceCard");
+
+        if (!cardSource.IsFlipped)
+            cardSource.SetFace("Permanent.AddSourceCard");
+        else
+            cardSource.SetReverse();
     }
     #endregion
 
@@ -920,7 +925,7 @@ public class Permanent
     /// <param name="cardEffect"></param>
     /// <param name="skipEffectAndActivateSkill"></param>
     /// <returns></returns>
-    public IEnumerator AddDigivolutionCardsBottom(List<CardSource> addedDigivolutionCards, ICardEffect cardEffect, bool skipEffectAndActivateSkill = false)
+    public IEnumerator AddDigivolutionCardsBottom(List<CardSource> addedDigivolutionCards, ICardEffect cardEffect, bool skipEffectAndActivateSkill = false, bool isFacedown = false)
     {
         List<CardSource> addedCards = new List<CardSource>();
 
@@ -976,7 +981,12 @@ public class Permanent
             if (!IsToken && !addedDigivolutionCard.IsToken)
             {
                 cardSources.Add(addedDigivolutionCard);
-                addedDigivolutionCard.SetFace("Permanent.AddDigivolutionCardsBottom");
+
+                if (isFacedown)
+                    addedDigivolutionCard.SetReverse();
+                else
+                    addedDigivolutionCard.SetFace("Permanent.AddDigivolutionCardsBottom");
+
                 addedCards.Add(addedDigivolutionCard);
             }
         }
@@ -2771,6 +2781,27 @@ public class Permanent
     }
     #endregion
 
+    #region Has Scapegoat
+    public bool HasScapegoat
+    {
+        get
+        {
+            foreach (ICardEffect cardEffect in this.EffectList(EffectTiming.WhenPermanentWouldBeDeleted))
+            {
+                if (cardEffect is ActivateICardEffect)
+                {
+                    if (cardEffect.EffectName == "<Scapegoat>")
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+    }
+    #endregion
+
     #region 消滅時効化を持つか
     public bool HasOnDeletionEffect
     {
@@ -3061,6 +3092,9 @@ public class Permanent
         {
             if (TopCard != null)
             {
+                if (TopCard.IsFlipped)
+                    return false;
+
                 if (TopCard.IsDigimon || TopCard.IsDigiEgg)
                 {
                     return true;
@@ -3119,6 +3153,9 @@ public class Permanent
         {
             if (TopCard != null)
             {
+                if (TopCard.IsFlipped)
+                    return false;
+
                 if (TopCard.IsTamer)
                 {
                     return true;
@@ -3437,6 +3474,53 @@ public class Permanent
     }
     #endregion
 
+    #region Can Substitue for Assembly
+    public bool CanSubstituteForAssemblyCondition(CardSource cardSource)
+    {
+        #region Effects that can be used in place of Assembly conditions
+        foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
+        {
+            foreach (Permanent permanent in player.GetFieldPermanents())
+            {
+                #region Effects of permanents in play
+                foreach (ICardEffect cardEffect in permanent.EffectList(EffectTiming.None))
+                {
+                    if (cardEffect is ICanSelectAssemblyEffect)
+                    {
+                        if (cardEffect.CanUse(null))
+                        {
+                            if (((ICanSelectAssemblyEffect)cardEffect).CanSelect(cardSource, this))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+                #endregion
+            }
+
+            #region player effect
+            foreach (ICardEffect cardEffect in player.EffectList(EffectTiming.None))
+            {
+                if (cardEffect is ICanSelectAssemblyEffect)
+                {
+                    if (cardEffect.CanUse(null))
+                    {
+                        if (((ICanSelectAssemblyEffect)cardEffect).CanSelect(cardSource, this))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            #endregion
+        }
+        #endregion
+
+        return false;
+    }
+    #endregion
+
     #region 登場した直後のLevel
     public int LevelJustAfterPlayed { get; set; } = -1;
     #endregion
@@ -3501,6 +3585,10 @@ public class Permanent
     public bool HasNoDigivolutionCards => DigivolutionCards.Count == 0;
     #endregion
 
+    #region Has face down Digivolution Cards
+    public bool HasFaceDownDigivolutionCards => DigivolutionCards.Any(x => x.IsFlipped);
+    #endregion
+
     #region Has No Link Cards
     public bool HasNoLinkCards => LinkedCards.Count == 0;
     #endregion
@@ -3514,6 +3602,9 @@ public class Permanent
 
             foreach (CardSource cardSource in DigivolutionCards)
             {
+                if (cardSource.IsFlipped)
+                    continue;
+
                 foreach (CardColor cardColor in cardSource.CardColors)
                 {
                     if (!cardColors.Contains(cardColor))

@@ -337,6 +337,9 @@ public abstract class ICardEffect
                         if (EffectSourceCard == EffectSourceCard.PermanentOfThisCard().TopCard)
                             return false;
 
+                        if (EffectSourceCard.IsFlipped)
+                            return false;
+
                         if (!EffectSourceCard.PermanentOfThisCard().IsDigimon)
                             return false;
 

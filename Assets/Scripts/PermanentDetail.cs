@@ -207,6 +207,13 @@ public class PermanentDetail : MonoBehaviour
         }
         #endregion
 
+        #region Scapegoat
+        if (permanent.HasScapegoat)
+        {
+            effectString += $"- Scapegoat\n";
+        }
+        #endregion
+
         #region Collision
         /*if (permanent.hascCollision)
         {
@@ -295,7 +302,7 @@ public class PermanentDetail : MonoBehaviour
 
         //Adds Top card to stack
         CardInfo topCardInfo = Instantiate(cardInfoPrefab, pokemonScroll.content);
-        topCardInfo.SetUpCardInfo(permanent.TopCard);
+        topCardInfo.SetUpCardInfo(permanent.TopCard, permanent);
 
         //Adds Digivolution Cards
         foreach (CardSource cardSource in permanent.DigivolutionCards.Clone())

@@ -69,7 +69,7 @@ public class CEntity_EffectController : MonoBehaviour
                                     {
                                         if (cardEffect is IAddSkillEffect)
                                         {
-                                            if (cardEffect.IsInheritedEffect == (cardSource == permanent.TopCard))
+                                            if (cardEffect.IsInheritedEffect == (cardSource == permanent.TopCard) || (cardEffect.IsInheritedEffect && cardSource.IsFlipped))
                                             {
                                                 continue;
                                             }
@@ -135,7 +135,7 @@ public class CEntity_EffectController : MonoBehaviour
                             {
                                 if (cardEffect is IAddSkillEffect)
                                 {
-                                    if (cardEffect.IsInheritedEffect == (cardSource == thisPermanent.TopCard))
+                                    if (cardEffect.IsInheritedEffect == (cardSource == thisPermanent.TopCard) || cardEffect.IsInheritedEffect == cardSource.IsFlipped)
                                     {
                                         continue;
                                     }
