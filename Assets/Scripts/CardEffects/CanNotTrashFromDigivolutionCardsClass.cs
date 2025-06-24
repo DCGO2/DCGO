@@ -24,7 +24,7 @@ public class CanNotTrashFromDigivolutionCardsClass : ICardEffect, ICanNotTrashFr
                 {
                     if (CardEffectCondition(cardEffect))
                     {
-                        return true;
+                        return !cardSource.IsFlipped;
                     }
                 }
             }

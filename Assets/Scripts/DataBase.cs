@@ -532,6 +532,12 @@ public class DataBase : MonoBehaviour
         return $"<Overclock [{trait}]> (At the end of your turn, by deleting 1 of your Tokens or other [{trait}] trait Digimon, this Digimon attacks a player without suspending.)";
     }
 
+
+    public static string TrainingEffectDiscription()
+    {
+        return "<Training> (In the main phase, by suspending this Digimon, place your deck's top card face down as this Digimon's bottom digivolution card. This effect can also activate in the breeding area).";
+    }
+
     public static string DecodeEffectDiscription(string[] decodeStrings)
     {
         return $"<Decode {decodeStrings[0]}> (When this Digimon would leave the battle area other than in battle, you may play 1 {decodeStrings[1]} Digimon card from its digivolution cards without paying the cost.)";

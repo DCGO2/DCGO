@@ -1552,6 +1552,45 @@ public class Effects : MonoBehaviour
     }
     #endregion
 
+    #region Assembly Effect
+    [Header("Assembly Select Effect")]
+    [SerializeField] GameObject AssemblySelectCardEffect;
+
+    [Header("Assembly Select Audio")]
+    public AudioClip AssemblySelectCardEffectSE;
+
+    public IEnumerator CreateAssemblySelectCardEffect(Permanent permanent, Player player = null)
+    {
+        if (AssemblySelectCardEffect != null)
+        {
+            Vector3 position = new Vector3();
+
+            if (permanent != null)
+            {
+                if (permanent.ShowingPermanentCard != null)
+                {
+                    position = new Vector3(permanent.ShowingPermanentCard.transform.position.x, permanent.ShowingPermanentCard.transform.position.y, permanent.ShowingPermanentCard.transform.position.z);
+                }
+            }
+
+            else if (player != null)
+            {
+                position = new Vector3(player.TrashCardImage.transform.position.x, player.TrashCardImage.transform.position.y, player.TrashCardImage.transform.position.z);
+            }
+
+            GameObject effect = Instantiate(AssemblySelectCardEffect, effectParent);
+
+            effect.transform.position = position;
+
+            StartCoroutine(DeleteCoroutine(effect, permanent.ShowingPermanentCard));
+
+            ContinuousController.instance.PlaySE(AssemblySelectCardEffectSE);
+        }
+
+        yield return new WaitForSeconds(0.3f);
+    }
+    #endregion
+
     #region 攻撃・ブロック不可付与エフェクト
     [Header("凍結SE")]
     [SerializeField] AudioClip FreezeSE;
