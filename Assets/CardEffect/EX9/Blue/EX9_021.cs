@@ -320,7 +320,7 @@ namespace DCGO.CardEffects.EX9
                         yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(
                             card.PermanentOfThisCard(),
                             CardEffectCommons.CardEffectHashtable(activateClass),
-                            toTop: false).PutSecurity());
+                            toTop: true).PutSecurity());
                     }
                 }
             }

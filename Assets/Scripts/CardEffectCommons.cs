@@ -448,9 +448,13 @@ public partial class CardEffectCommons
 
         List<CardSource> trashTargetCards = new List<CardSource>();
 
-        while (trashTargetCards.Count < trashCount)
+        for (int i = 0; i < targetPermanent.DigivolutionCards.Count; i++)
         {
-            int index = isFromTop ? trashTargetCards.Count : targetPermanent.DigivolutionCards.Count - 1 - trashTargetCards.Count;
+            if (trashTargetCards.Count >= trashCount)
+                break;
+
+            int index = isFromTop ? i : targetPermanent.DigivolutionCards.Count - 1 - i;
+
             CardSource trashTargetCard = targetPermanent.DigivolutionCards[index];
 
             bool trashCard = true;

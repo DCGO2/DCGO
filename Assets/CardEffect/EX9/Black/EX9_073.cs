@@ -243,7 +243,7 @@ namespace DCGO.CardEffects.EX9
                         yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard()
                             .AddDigivolutionCardsTop(new List<CardSource>() { selectedCard }, activateClass));
 
-                        List<ICardEffect> candidateEffects = selectedCard.EffectList_ForCard(EffectTiming.OnEnterFieldAnyone, card)
+                        List<ICardEffect> candidateEffects = selectedCard.cEntity_EffectController.GetCardEffects_ExceptAddedEffects(EffectTiming.OnEnterFieldAnyone, card)
                             .Clone()
                             .Filter(cardEffect =>
                                 cardEffect is ActivateICardEffect && !cardEffect.IsSecurityEffect &&
@@ -435,7 +435,7 @@ namespace DCGO.CardEffects.EX9
                         yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard()
                             .AddDigivolutionCardsTop(new List<CardSource>() { selectedCard }, activateClass));
 
-                        List<ICardEffect> candidateEffects = selectedCard.EffectList_ForCard(EffectTiming.OnEnterFieldAnyone, card)
+                        List<ICardEffect> candidateEffects = selectedCard.cEntity_EffectController.GetCardEffects_ExceptAddedEffects(EffectTiming.OnEnterFieldAnyone, card)
                             .Clone()
                             .Filter(cardEffect =>
                                 cardEffect is ActivateICardEffect && !cardEffect.IsSecurityEffect &&
@@ -627,7 +627,7 @@ namespace DCGO.CardEffects.EX9
                         yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard()
                             .AddDigivolutionCardsTop(new List<CardSource>() { selectedCard }, activateClass));
 
-                        List<ICardEffect> candidateEffects = selectedCard.EffectList_ForCard(EffectTiming.OnEnterFieldAnyone, card)
+                        List<ICardEffect> candidateEffects = selectedCard.cEntity_EffectController.GetCardEffects_ExceptAddedEffects(EffectTiming.OnEnterFieldAnyone, card)
                             .Clone()
                             .Filter(cardEffect =>
                                 cardEffect is ActivateICardEffect && !cardEffect.IsSecurityEffect &&
