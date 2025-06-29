@@ -185,7 +185,8 @@ namespace DCGO.CardEffects.EX9
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     var playCost = 4 + card.PermanentOfThisCard().DigivolutionCards.Filter(x => x.IsFlipped).Count;
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) && permanent.TopCard.BasePlayCostFromEntity <= playCost;
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) && 
+                           permanent.TopCard.HasPlayCost && permanent.TopCard.BasePlayCostFromEntity <= playCost;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -241,7 +242,7 @@ namespace DCGO.CardEffects.EX9
                                     canEndSelectCondition: null,
                                     maxCount: maxCount1,
                                     canNoSelect: false,
-                                    canEndNotMax: true,
+                                    canEndNotMax: false,
                                     selectPermanentCoroutine: null,
                                     afterSelectPermanentCoroutine: null,
                                     mode: SelectPermanentEffect.Mode.Destroy,
@@ -289,7 +290,8 @@ namespace DCGO.CardEffects.EX9
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     var playCost = 4 + card.PermanentOfThisCard().DigivolutionCards.Filter(x => x.IsFlipped).Count;
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) && permanent.TopCard.BasePlayCostFromEntity <= playCost;
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
+                           permanent.TopCard.HasPlayCost && permanent.TopCard.BasePlayCostFromEntity <= playCost;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -345,7 +347,7 @@ namespace DCGO.CardEffects.EX9
                                     canEndSelectCondition: null,
                                     maxCount: maxCount1,
                                     canNoSelect: false,
-                                    canEndNotMax: true,
+                                    canEndNotMax: false,
                                     selectPermanentCoroutine: null,
                                     afterSelectPermanentCoroutine: null,
                                     mode: SelectPermanentEffect.Mode.Destroy,
