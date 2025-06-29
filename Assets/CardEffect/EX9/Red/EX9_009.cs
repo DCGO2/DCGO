@@ -78,30 +78,15 @@ namespace DCGO.CardEffects.EX9
                     return false;
                 }
 
-                bool CanSelectPermanentCondition(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
-                    {
-                        if (card.PermanentOfThisCard() == permanent)
-                        {
-                            return true;
-                        }
-                    }
-                    return false;
-                }
-
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermanentCondition))
-                    {
-                        var selectedCard = card.Owner.LibraryCards[0];
-                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddExecutingCard(selectedCard));
-                        yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass, isFacedown: true));
+                    var selectedCard = card.Owner.LibraryCards[0];
+                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddExecutingCard(selectedCard));
+                    yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass, isFacedown: true));
 
-                        var flippedCards = card.PermanentOfThisCard().DigivolutionCards.Count(x => x.IsFlipped);
-                        var dpBonus = flippedCards * 1000;
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: card.PermanentOfThisCard(), changeValue: dpBonus, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
-                    }
+                    var flippedCards = card.PermanentOfThisCard().DigivolutionCards.Count(x => x.IsFlipped);
+                    var dpBonus = flippedCards * 1000;
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: card.PermanentOfThisCard(), changeValue: dpBonus, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
                 }
             }
 

@@ -638,7 +638,7 @@ public class CardSource : MonoBehaviour
     {
         get
         {
-            if (IsFlipped && !IsBeingRevealed)
+            if (IsFlipped && !IsBeingRevealed && !GManager.instance.turnStateMachine.gameContext.IsSecurityLooking)
                 return -1;
             else
                 return _cEntity_Base.PlayCost;
@@ -1309,7 +1309,7 @@ public class CardSource : MonoBehaviour
     {
         get
         {
-            if (IsFlipped && !IsBeingRevealed)
+            if (IsFlipped && !IsBeingRevealed && !GManager.instance.turnStateMachine.gameContext.IsSecurityLooking)
                 return new List<string>();
 
             List<string> cardNames = BaseCardNames.Clone();
@@ -2340,7 +2340,7 @@ public class CardSource : MonoBehaviour
     {
         get
         {
-            if (IsFlipped && !IsBeingRevealed)
+            if (IsFlipped && !IsBeingRevealed && !GManager.instance.turnStateMachine.gameContext.IsSecurityLooking)
                 return new List<string>();
 
             List<string> traits =
@@ -2665,7 +2665,7 @@ public class CardSource : MonoBehaviour
         {
             if(_cEntity_Base == null || _cEntity_Base.HasLevel)
             {
-                if (IsFlipped && !IsBeingRevealed)
+                if (IsFlipped && !IsBeingRevealed && !GManager.instance.turnStateMachine.gameContext.IsSecurityLooking)
                     return false;
 
                 return true;

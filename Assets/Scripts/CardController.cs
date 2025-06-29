@@ -4857,15 +4857,12 @@ public class AceOverflowClass
     public IEnumerator Overflow()
     {
         _cardSources = _cardSources
-        .Filter(cardSource => cardSource.IsACE && CardEffectCommons.IsExistOnBattleArea(cardSource) || CardEffectCommons.IsExistOnBreedingAreaDigimon(cardSource))
+        .Filter(cardSource => cardSource.IsACE && !cardSource.IsFlipped && CardEffectCommons.IsExistOnBattleArea(cardSource) || CardEffectCommons.IsExistOnBreedingAreaDigimon(cardSource))
         .OrderBy(cardSource => cardSource.Owner == GManager.instance.turnStateMachine.gameContext.TurnPlayer ? -1 : 1)
         .ToList();
 
         foreach (CardSource cardSource in _cardSources)
         {
-            if (cardSource.IsFlipped)
-                continue;
-
             yield return ContinuousController.instance.StartCoroutine(cardSource.Owner.AddMemory(-cardSource.OverflowMemory, null));
 
             string log = $"\nOverflow -{cardSource.OverflowMemory}:\n{cardSource.BaseENGCardNameFromEntity}({cardSource.CardID})\n";

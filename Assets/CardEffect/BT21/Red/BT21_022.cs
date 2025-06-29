@@ -262,7 +262,7 @@ namespace DCGO.CardEffects.BT21
                                 mode: SelectCardEffect.Mode.Custom,
                                 root: SelectCardEffect.Root.Custom,
                                 customRootCardList: permanent.DigivolutionCards,
-                                canLookReverseCard: true,
+                                canLookReverseCard: false,
                                 selectPlayer: card.Owner,
                                 cardEffect: null);
 

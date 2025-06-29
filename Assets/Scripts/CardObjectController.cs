@@ -369,7 +369,9 @@ public class CardObjectController : MonoBehaviour
     #region Remove cards from all areas
     public static IEnumerator RemoveFromAllArea(CardSource cardSource)
     {
-        cardSource.SetFace("CardObjectController.RemoveFromAllArea");
+        //TODO: This might not even be necessary at all? - MB
+        if(!cardSource.IsFlipped || cardSource.IsBeingRevealed)
+            cardSource.SetFace("CardObjectController.RemoveFromAllArea");
 
         if (cardSource.Owner.HandCards.Contains(cardSource))
         {

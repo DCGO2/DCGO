@@ -74,8 +74,9 @@ namespace DCGO.CardEffects.BT17
                 {
                     if(CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        return true;
+                        return CardEffectCommons.IsOwnerTurn(card);
                     }
+
                     return false;
                 }
 

@@ -207,9 +207,12 @@ namespace DCGO.CardEffects.EX9
                 {
                     if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                     {
-                        if (cardSource.HasGreymonName || cardSource.EqualsTraits("Ver.1"))
+                        if (cardSource.IsDigimon)
                         {
-                            return true;
+                            if (cardSource.HasGreymonName || cardSource.EqualsTraits("Ver.1"))
+                            {
+                                return true;
+                            }
                         }
                     }
 
@@ -220,9 +223,12 @@ namespace DCGO.CardEffects.EX9
                 {
                     if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                     {
-                        if (cardSource.HasGarurumonName || cardSource.EqualsTraits("Ver.2"))
+                        if (cardSource.IsDigimon)
                         {
-                            return true;
+                            if (cardSource.HasGarurumonName || cardSource.EqualsTraits("Ver.2"))
+                            {
+                                return true;
+                            }
                         }
                     }
 
@@ -261,7 +267,7 @@ namespace DCGO.CardEffects.EX9
                             mode: SelectCardEffect.Mode.Custom,
                             root: SelectCardEffect.Root.Custom,
                             customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
-                            canLookReverseCard: true,
+                            canLookReverseCard: false,
                             selectPlayer: card.Owner,
                             cardEffect: activateClass);
 
@@ -293,7 +299,7 @@ namespace DCGO.CardEffects.EX9
                             mode: SelectCardEffect.Mode.Custom,
                             root: SelectCardEffect.Root.Custom,
                             customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
-                            canLookReverseCard: true,
+                            canLookReverseCard: false,
                             selectPlayer: card.Owner,
                             cardEffect: activateClass);
 
