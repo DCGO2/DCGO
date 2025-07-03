@@ -138,6 +138,8 @@ public partial class CardEffectCommons
                                     selectPlayer: card.Owner,
                                     cardEffect: activateClass);
 
+                        selectCardEffect.SetUseFaceDown();
+
                         selectCardEffect.SetUpCustomMessage("Select digivolution cards to trash.", "The opponent is selecting digivolution cards to trash.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());

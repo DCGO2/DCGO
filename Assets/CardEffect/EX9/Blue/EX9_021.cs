@@ -135,7 +135,7 @@ namespace DCGO.CardEffects.EX9
                         CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
                         canNotAffectedClass.SetUpICardEffect("Isn't affected by opponent's effect", CanUseCondition1, card);
                         canNotAffectedClass.SetUpCanNotAffectedClass(CardCondition: CardCondition, SkillCondition: SkillCondition);
-                        selectedPermanent.UntilOwnerTurnEndEffects.Add((_timing) => canNotAffectedClass);
+                        selectedPermanent.UntilEachTurnEndEffects.Add((_timing) => canNotAffectedClass);
 
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateBuffEffect(selectedPermanent));
 

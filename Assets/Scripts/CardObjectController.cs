@@ -370,7 +370,7 @@ public class CardObjectController : MonoBehaviour
     public static IEnumerator RemoveFromAllArea(CardSource cardSource)
     {
         //TODO: This might not even be necessary at all? - MB
-        if(!cardSource.IsFlipped || cardSource.IsBeingRevealed)
+        if(!cardSource.IsFlipped || cardSource.IsBeingRevealed || GManager.instance.turnStateMachine.gameContext.IsSecurityLooking)
             cardSource.SetFace("CardObjectController.RemoveFromAllArea");
 
         if (cardSource.Owner.HandCards.Contains(cardSource))

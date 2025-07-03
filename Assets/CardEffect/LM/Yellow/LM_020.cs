@@ -254,7 +254,7 @@ namespace DCGO.CardEffects.LM
                             CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
                             canNotAffectedClass.SetUpICardEffect($"Isn't affected by opponent's {selectedCategory}'s effects", CanUseCondition, card);
                             canNotAffectedClass.SetUpCanNotAffectedClass(CardCondition: CardCondition, SkillCondition: SkillCondition);
-                            selectedPermanent.UntilOpponentTurnEndEffects.Add((_timing) => canNotAffectedClass);
+                            selectedPermanent.UntilEachTurnEndEffects.Add((_timing) => canNotAffectedClass);
 
                             #region Log
                             string log = "";
@@ -270,7 +270,8 @@ namespace DCGO.CardEffects.LM
 
                             bool CardCondition(CardSource cardSource)
                             {
-                                return CardEffectCommons.IsExistOnBattleArea(cardSource);
+                                return CardEffectCommons.IsExistOnBattleAreaDigimon(cardSource) &&
+                                       cardSource.PermanentOfThisCard() == selectedPermanent;
                             }
 
                             bool SkillCondition(ICardEffect cardEffect)

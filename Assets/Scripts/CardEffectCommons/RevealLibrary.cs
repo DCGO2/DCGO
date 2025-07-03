@@ -300,7 +300,7 @@ public partial class CardEffectCommons
                         canEndNotMax: selectCondition.CanEndNotMax,
                         isShowOpponent: true,
                         mode: selectCondition.Mode,
-                        root: SelectCardEffect.Root.Custom,
+                        root: SelectCardEffect.Root.Library,
                         customRootCardList: revealedCards,
                         canLookReverseCard: true,
                         selectPlayer: selectPlayer,
