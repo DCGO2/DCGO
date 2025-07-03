@@ -234,6 +234,7 @@ namespace DCGO.CardEffects.EX9
                     {
                         if (cardSources.Count >= 3)
                         {
+                            cardSources.Reverse();
                             yield return ContinuousController.instance.StartCoroutine(card.Owner.brainStormObject.CloseBrainstrorm(card));
 
                             yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsTop(cardSources, activateClass));
@@ -302,6 +303,7 @@ namespace DCGO.CardEffects.EX9
                     {
                         if (cardSources.Count >= 3)
                         {
+                            cardSources.Reverse();
                             yield return ContinuousController.instance.StartCoroutine(card.Owner.brainStormObject.CloseBrainstrorm(card));
 
                             yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsTop(cardSources, activateClass));
@@ -369,6 +371,7 @@ namespace DCGO.CardEffects.EX9
                     {
                         if (cardSources.Count >= 3)
                         {
+                            cardSources.Reverse();
                             yield return ContinuousController.instance.StartCoroutine(card.Owner.brainStormObject.CloseBrainstrorm(card));
 
                             yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsTop(cardSources, activateClass));

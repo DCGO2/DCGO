@@ -83,10 +83,10 @@ namespace DCGO.CardEffects.BT21
                         if (selectedCard.EqualsCardName("Vemmon"))
                         {
                             List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
-                        {
-                            new SelectionElement<bool>(message: $"Play", value : true, spriteIndex: 0),
-                            new SelectionElement<bool>(message: $"Add to your hand", value : false, spriteIndex: 1),
-                        };
+                            {
+                                new SelectionElement<bool>(message: $"Play", value : true, spriteIndex: 0),
+                                new SelectionElement<bool>(message: $"Add to your hand", value : false, spriteIndex: 1),
+                            };
 
                             string selectPlayerMessage = "Will you play this card or add it to your hand?";
                             string notSelectPlayerMessage = "The opponent is choosing whether to play the selected card or add it to their hand.";
@@ -100,13 +100,20 @@ namespace DCGO.CardEffects.BT21
 
                         if (playCard)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                                cardSources: new List<CardSource> { selectedCard },
-                                activateClass: activateClass,
-                                payCost: false,
-                                isTapped: false,
-                                root: SelectCardEffect.Root.Library,
-                                activateETB: true));
+                            if(CardEffectCommons.CanPlayAsNewPermanent(selectedCard, false, activateClass, SelectCardEffect.Root.Library))
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
+                                    cardSources: new List<CardSource> { selectedCard },
+                                    activateClass: activateClass,
+                                    payCost: false,
+                                    isTapped: false,
+                                    root: SelectCardEffect.Root.Library,
+                                    activateETB: true));
+                            }
+                            else
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(new ITrashDeckCards(new List<CardSource> { selectedCard }, activateClass).TrashDeckCards());
+                            }
                         }
                         else
                         {

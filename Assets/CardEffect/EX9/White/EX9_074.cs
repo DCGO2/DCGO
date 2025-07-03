@@ -200,6 +200,7 @@ namespace DCGO.CardEffects.EX9
                     }
 
                     List<CardColor> colours = card.PermanentOfThisCard().DigivolutionCards
+                                .Filter(x => !x.IsFlipped)
                                 .SelectMany(e => e.CardColors)
                                 .Distinct()
                                 .ToList();
@@ -391,6 +392,7 @@ namespace DCGO.CardEffects.EX9
                     }
 
                     List<CardColor> colours = card.PermanentOfThisCard().DigivolutionCards
+                                .Filter(x => !x.IsFlipped)
                                 .SelectMany(e => e.CardColors)
                                 .Distinct()
                                 .ToList();

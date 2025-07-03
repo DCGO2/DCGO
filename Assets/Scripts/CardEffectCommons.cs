@@ -33,13 +33,13 @@ public partial class CardEffectCommons
         if (cardSources.Count == 0) yield break;
 
         PlayCardClass playCardClass = new PlayCardClass(
-                cardSources: cardSources,
-                hashtable: CardEffectHashtable(activateClass),
-                payCost: payCost,
-                targetPermanent: null,
-                isTapped: isTapped,
-                root: root,
-                activateETB: activateETB);
+            cardSources: cardSources,
+            hashtable: CardEffectHashtable(activateClass),
+            payCost: payCost,
+            targetPermanent: null,
+            isTapped: isTapped,
+            root: root,
+            activateETB: activateETB);
 
         if (isBreedingArea)
             playCardClass.SetIsBreedingArea();

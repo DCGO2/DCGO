@@ -887,8 +887,7 @@ public class Permanent
             {
                 this.cardSources.Insert(1, addedDigivolutionCard);
 
-                if(!addedDigivolutionCard.IsFlipped || addedDigivolutionCard.IsBeingRevealed)
-                    addedDigivolutionCard.SetFace("Permanent.AddDigivolutionCardsTop");
+                addedDigivolutionCard.SetFace("Permanent.AddDigivolutionCardsTop");
 
                 addedCards.Add(addedDigivolutionCard);
             }
