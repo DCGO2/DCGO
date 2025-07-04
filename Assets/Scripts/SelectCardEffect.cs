@@ -701,7 +701,7 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
 
             if (_root == Root.Library)
             {
-                yield return ContinuousController.instance.StartCoroutine(CardObjectController.Shuffle(_selectPlayer));
+                //yield return ContinuousController.instance.StartCoroutine(CardObjectController.Shuffle(_selectPlayer));
             }
 
             foreach (CardSource cardSource in _targetCards)
