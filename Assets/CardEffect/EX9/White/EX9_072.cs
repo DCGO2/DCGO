@@ -35,31 +35,38 @@ namespace DCGO.CardEffects.EX9
             #endregion
 
             #region All Turns - Security
-
             if (timing == EffectTiming.None)
             {
-                bool CanUseCondition()
+                bool Condition()
                 {
-                    return CardEffectCommons.IsExistInSecurity(card);
+                    return CardEffectCommons.IsExistInSecurity(card, false);
                 }
 
                 bool PermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
-                           permanent.TopCard.EqualsTraits("DM") && permanent.DigivolutionCards.Exists(x => x.IsFlipped);
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
+                    {
+                        if (permanent.TopCard.EqualsTraits("DM"))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
                 }
 
-                foreach (Permanent permanent in card.Owner.GetBattleAreaPermanents().Filter(PermanentCondition))
+                foreach (Permanent permanent in card.Owner.GetBattleAreaPermanents())
                 {
-                    int dpValue = permanent.DigivolutionCards.Filter(x => x.IsFlipped).Count * 1000;
-
-                    if (CanUseCondition())
-                        permanent.AddBoost(new Permanent.DPBoost("EX9_072", dpValue, CanUseCondition));
+                    if (Condition() && PermanentCondition(permanent))
+                    {
+                        int dpValue = permanent.DigivolutionCards.Filter(x => x.IsFlipped).Count * 1000;
+                        permanent.AddBoost(new Permanent.DPBoost("EX9_072", dpValue, Condition));
+                    }
+                        
                     else
                         permanent.RemoveBoost("EX9_072");
                 }
             }
-
             #endregion
 
             #region Main Effect

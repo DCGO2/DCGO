@@ -38,7 +38,7 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.EqualsTraits("Pupper") || cardSource.EqualsTraits("LIBERATOR");
+                    return cardSource.EqualsTraits("Puppet") || cardSource.EqualsTraits("LIBERATOR");
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

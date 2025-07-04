@@ -190,6 +190,7 @@ namespace DCGO.CardEffects.BT21
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card) &&
                            permanent.IsDigimon &&
+                           permanent != card.PermanentOfThisCard() &&
                            card.Owner.HandCards.Where(DigivolveToCardCondition).Any(cardSource =>
                                cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass));
                 }

@@ -134,9 +134,11 @@ public partial class CardEffectCommons
                                     mode: SelectCardEffect.Mode.Custom,
                                     root: SelectCardEffect.Root.Custom,
                                     customRootCardList: selectedPermanent.DigivolutionCards,
-                                    canLookReverseCard: true,
+                                    canLookReverseCard: false,
                                     selectPlayer: card.Owner,
                                     cardEffect: activateClass);
+
+                        selectCardEffect.SetUseFaceDown();
 
                         selectCardEffect.SetUpCustomMessage("Select digivolution cards to trash.", "The opponent is selecting digivolution cards to trash.");
 

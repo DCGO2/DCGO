@@ -357,7 +357,8 @@ namespace DCGO.CardEffects.BT20
 
                 bool CardSourceCondition(CardSource cardSource)
                 {
-                    return PermanentCondition(cardSource.PermanentOfThisCard());
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(cardSource) &&
+                           CardEffectCommons.IsOwnerPermanent(cardSource.PermanentOfThisCard(), card);
                 }
 
                 List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming _timing)
@@ -366,7 +367,8 @@ namespace DCGO.CardEffects.BT20
                     {
                         bool Condition()
                         {
-                            return CardSourceCondition(cardSource);
+                            return card.PermanentOfThisCard().TopCard.EqualsCardName("Jesmon GX") &&
+                                   CardSourceCondition(cardSource);
                         }
 
                         cardEffects.Add(CardEffectFactory.PierceSelfEffect(isInheritedEffect: false, card: card, condition: Condition));

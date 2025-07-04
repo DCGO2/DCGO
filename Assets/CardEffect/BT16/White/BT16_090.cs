@@ -78,10 +78,7 @@ namespace DCGO.CardEffects.BT16
                         if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermanentCondition) &&
                             card.Owner.GetBreedingAreaPermanents().Count(CanSelectBreedingAreaDigimon) >= 1)
                         {
-                            if (card.Owner.HandCards.Count(CanSelectCardCondition) >= 1)
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
 

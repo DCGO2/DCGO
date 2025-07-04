@@ -298,7 +298,7 @@ public class SelectAssemblyClass : MonoBehaviourPunCallbacks
                         afterSelectCardCoroutine: AfterSelectCardCoroutine,
                         message: $"<color=#FF633E>Assembly</color>: Select {AssemblyCondition.selectMessage} from trash.",
                         maxCount: maxCount,
-                        canEndNotMax: true,
+                        canEndNotMax: false,
                         isShowOpponent: true,
                         mode: SelectCardEffect.Mode.Custom,
                         root: SelectCardEffect.Root.Trash,

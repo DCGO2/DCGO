@@ -62,7 +62,7 @@ public class BT6_104 : CEntity_Effect
                         mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                    selectPermanentEffect.SetUpCustomMessage("Selcect 1 Digimon that will get effects.", "The opponent is selecting 1 Digimon that will get effects.");
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will get effects.", "The opponent is selecting 1 Digimon that will get effects.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
