@@ -200,6 +200,7 @@ namespace DCGO.CardEffects.EX9
                     }
 
                     List<CardColor> colours = card.PermanentOfThisCard().DigivolutionCards
+                                .Filter(x => !x.IsFlipped)
                                 .SelectMany(e => e.CardColors)
                                 .Distinct()
                                 .ToList();
@@ -253,7 +254,8 @@ namespace DCGO.CardEffects.EX9
                             bool CanSelectOpponentDigimon(Permanent permanent)
                             {
                                 return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
-                                       permanent.TopCard.CardColors.Contains(deletableColor);
+                                       permanent.TopCard.CardColors.Contains(deletableColor) &&
+                                       CanTargetCondition_ByPreSelecetedList(permanentToDelete, permanent);
                             }
 
                             if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentDigimon))
@@ -390,6 +392,7 @@ namespace DCGO.CardEffects.EX9
                     }
 
                     List<CardColor> colours = card.PermanentOfThisCard().DigivolutionCards
+                                .Filter(x => !x.IsFlipped)
                                 .SelectMany(e => e.CardColors)
                                 .Distinct()
                                 .ToList();
@@ -443,7 +446,8 @@ namespace DCGO.CardEffects.EX9
                             bool CanSelectOpponentDigimon(Permanent permanent)
                             {
                                 return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
-                                       permanent.TopCard.CardColors.Contains(deletableColor);
+                                       permanent.TopCard.CardColors.Contains(deletableColor) &&
+                                       CanTargetCondition_ByPreSelecetedList(permanentToDelete, permanent);
                             }
 
                             if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentDigimon))

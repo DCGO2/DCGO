@@ -52,7 +52,7 @@ namespace DCGO.CardEffects.EX9
                             CanTargetCondition_ByPreSelecetedList: null,
                             selectMessage: "4 [Negamon]",
                             elementCount: 4,
-                            reduceCost: 3);
+                            reduceCost: 6);
 
                         return assemblyCondition;
                     }

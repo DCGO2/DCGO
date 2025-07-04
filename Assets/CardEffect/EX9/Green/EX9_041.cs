@@ -189,7 +189,12 @@ namespace DCGO.CardEffects.EX9
 
             bool OpponentsTappedDigimon(Permanent permanent)
             {
-                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) && permanent.IsSuspended && CardEffectCommons.IsMinDP(permanent, card.Owner.Enemy);
+                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) && permanent.IsSuspended;
+            }
+
+            bool IsMinDPSuspended(Permanent permanent)
+            {
+                return CardEffectCommons.IsMinDP(permanent, card.Owner.Enemy,OpponentsTappedDigimon);
             }
 
             bool FlippedSourceCondition(CardSource source)
@@ -273,12 +278,12 @@ namespace DCGO.CardEffects.EX9
 
                             if (card.PermanentOfThisCard().DigivolutionCards.Count < cardEvoSources)
                             {
-                                if (CardEffectCommons.HasMatchConditionPermanent(OpponentsTappedDigimon))
+                                if (CardEffectCommons.HasMatchConditionPermanent(IsMinDPSuspended))
                                 {
                                     SelectPermanentEffect selectPermanentEffect1 = GManager.instance.GetComponent<SelectPermanentEffect>();
                                     selectPermanentEffect1.SetUp(
                                         selectPlayer: card.Owner,
-                                        canTargetCondition: OpponentsTappedDigimon,
+                                        canTargetCondition: IsMinDPSuspended,
                                         canTargetCondition_ByPreSelecetedList: null,
                                         canEndSelectCondition: null,
                                         maxCount: 1,
@@ -373,12 +378,12 @@ namespace DCGO.CardEffects.EX9
 
                             if(card.PermanentOfThisCard().DigivolutionCards.Count < cardEvoSources)
                             {
-                                if (CardEffectCommons.HasMatchConditionPermanent(OpponentsTappedDigimon))
+                                if (CardEffectCommons.HasMatchConditionPermanent(IsMinDPSuspended))
                                 {
                                     SelectPermanentEffect selectPermanentEffect1 = GManager.instance.GetComponent<SelectPermanentEffect>();
                                     selectPermanentEffect1.SetUp(
                                         selectPlayer: card.Owner,
-                                        canTargetCondition: OpponentsTappedDigimon,
+                                        canTargetCondition: IsMinDPSuspended,
                                         canTargetCondition_ByPreSelecetedList: null,
                                         canEndSelectCondition: null,
                                         maxCount: 1,

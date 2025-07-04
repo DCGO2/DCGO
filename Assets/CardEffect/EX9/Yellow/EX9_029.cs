@@ -77,14 +77,14 @@ namespace DCGO.CardEffects.EX9
                         maxCount: 1,
                         canNoSelect: true,
                         canEndNotMax: false,
-                        isShowOpponent: true,
+                        isShowOpponent: false,
                         selectCardCoroutine: SelectCardCoroutine,
                         afterSelectCardCoroutine: null,
                         mode: SelectHandEffect.Mode.Custom,
                         cardEffect: activateClass);
 
                     selectHandEffect.SetUpCustomMessage("Select 1 card to place face-down on bottom of digivolution cards.", "The opponent is selecting 1 card to place face-down on bottom of digivolution cards.");
-                    selectHandEffect.SetUpCustomMessage_ShowCard("Digivolution Card");
+
                     yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
 
                     IEnumerator SelectCardCoroutine(CardSource cardSource)
@@ -153,7 +153,7 @@ namespace DCGO.CardEffects.EX9
                         maxCount: 1,
                         canNoSelect: true,
                         canEndNotMax: false,
-                        isShowOpponent: true,
+                        isShowOpponent: false,
                         selectCardCoroutine: SelectCardCoroutine,
                         afterSelectCardCoroutine: null,
                         mode: SelectHandEffect.Mode.Custom,
@@ -161,7 +161,8 @@ namespace DCGO.CardEffects.EX9
 
                     selectHandEffect.SetUpCustomMessage("Select 1 card to place face-down on bottom of digivolution cards.",
                         "The opponent is selecting 1 card to place face-down on bottom of digivolution cards.");
-                    selectHandEffect.SetUpCustomMessage_ShowCard("Digivolution Card");
+
+                    yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
 
                     IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {

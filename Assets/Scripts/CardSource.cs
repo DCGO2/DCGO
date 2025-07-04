@@ -299,7 +299,7 @@ public class CardSource : MonoBehaviour
     public Permanent PermanentOfThisCard()
     {
         return Owner.GetFieldPermanents().Find(permanent =>
-            (permanent.cardSources.Contains(this)) && !IsFlipped);
+            (permanent.cardSources.Contains(this)));
     }
 
     #endregion
@@ -638,10 +638,7 @@ public class CardSource : MonoBehaviour
     {
         get
         {
-            if (IsFlipped && !IsBeingRevealed)
-                return -1;
-            else
-                return _cEntity_Base.PlayCost;
+            return _cEntity_Base.PlayCost;
         }
     }
     #endregion
@@ -1309,9 +1306,6 @@ public class CardSource : MonoBehaviour
     {
         get
         {
-            if (IsFlipped && !IsBeingRevealed)
-                return new List<string>();
-
             List<string> cardNames = BaseCardNames.Clone();
 
             #region the effects of itself
@@ -2340,9 +2334,6 @@ public class CardSource : MonoBehaviour
     {
         get
         {
-            if (IsFlipped && !IsBeingRevealed)
-                return new List<string>();
-
             List<string> traits =
                 _cEntity_Base.Form_ENG
                     .Filter(s => !string.IsNullOrEmpty(s))
@@ -2451,8 +2442,7 @@ public class CardSource : MonoBehaviour
             {
                 if (EffectList(timing)
                     .Some(cardEffect => cardEffect.IsInheritedEffect
-                    && !cardEffect.IsDisabled
-                    && (!IsFlipped || IsBeingRevealed)))
+                    && !cardEffect.IsDisabled))
                 {
                     return true;
                 }
@@ -2665,9 +2655,6 @@ public class CardSource : MonoBehaviour
         {
             if(_cEntity_Base == null || _cEntity_Base.HasLevel)
             {
-                if (IsFlipped && !IsBeingRevealed)
-                    return false;
-
                 return true;
             }
 
