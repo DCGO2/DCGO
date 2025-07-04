@@ -13,8 +13,13 @@ namespace DCGO.CardEffects.BT19
 
             if (timing == EffectTiming.WhenRemoveField)
             {
-                cardEffects.Add(CardEffectFactory.DecodeSelfEffect(color: CardColor.Blue, level: 5, isInheritedEffect: false, card: card,
-                    condition: null));
+                bool SourceCondition(CardSource source)
+                {
+                    return source.CardColors.Contains(CardColor.Blue) && source.HasLevel && source.IsLevel5;
+                }
+
+                string[] decodeStrings = { "(Blue Lv.5)", "Blue Level 5" };
+                cardEffects.Add(CardEffectFactory.DecodeSelfEffect(card: card, isInheritedEffect: false, decodeStrings: decodeStrings, sourceCondition: SourceCondition, condition: null));
             }
 
             #endregion
@@ -175,7 +180,7 @@ namespace DCGO.CardEffects.BT19
                         yield return null;
                     }
 
-                    if(selectedPermanent != null)
+                    if (selectedPermanent != null)
                     {
                         bool selectedHasLevel = selectedPermanent.TopCard.HasLevel;
                         int selectedLevel = selectedPermanent.TopCard.Level;
