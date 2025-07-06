@@ -12,7 +12,7 @@ namespace DCGO.Tools.Repair
     public class FixErrataImages : MonoBehaviour
     {
         static FixErrataImages instance;
-        string baseURL = "https://raw.githubusercontent.com/TakaOtaku/Digimon-Card-App/main/src/";
+        string baseURL = "https://raw.githubusercontent.com/TakaOtaku/Digimon-Cards/main/src/";
         public List<CardData> _cardData;
 
         string debugText = "";

@@ -16,7 +16,7 @@ namespace DCGO.Tools
     public class FindMissingAAs : MonoBehaviour
     {
         static FindMissingAAs instance;
-        string baseURL = "https://raw.githubusercontent.com/TakaOtaku/Digimon-Card-App/main/src/assets/";
+        string baseURL = "https://raw.githubusercontent.com/TakaOtaku/Digimon-Cards/main/src/assets/";
         public List<CardData> _cardData;
 
         string debugText = "";

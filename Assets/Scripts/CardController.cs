@@ -1995,6 +1995,8 @@ public class IDigiBurst
                         selectPlayer: _permanent.TopCard.Owner,
                         cardEffect: null);
 
+            selectCardEffect.SetUseFaceDown();
+
             selectCardEffect.SetUpCustomMessage("Select digivolution cards to discard.", "The opponent is selecting digivolution cards to discard.");
 
             yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
