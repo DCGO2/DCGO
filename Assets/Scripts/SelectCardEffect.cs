@@ -308,6 +308,7 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
             }
             else
             {
+                SetUseFaceDown();
                 return true;
             }
         }

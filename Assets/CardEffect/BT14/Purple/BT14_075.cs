@@ -177,6 +177,7 @@ namespace DCGO.CardEffects.BT14
                             cardEffect: activateClass);
 
                         selectCardEffect.SetNotShowCard();
+                        selectCardEffect.SetUseFaceDown();
                         yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 
                         IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)

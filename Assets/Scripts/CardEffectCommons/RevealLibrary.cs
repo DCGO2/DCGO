@@ -306,8 +306,6 @@ public partial class CardEffectCommons
                         selectPlayer: selectPlayer,
                         cardEffect: activateClass);
 
-                    selectCardEffect.SetUseFaceDown();
-
                     yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
                 }
 
