@@ -142,7 +142,7 @@ public class CEntity_EffectController : MonoBehaviour
 
                                     if (cardEffect.CanUse(null))
                                     {
-                                        GetCardEffects = ((IAddSkillEffect)cardEffect).GetCardEffect(card, GetCardEffects, timing);
+                                        //GetCardEffects = ((IAddSkillEffect)cardEffect).GetCardEffect(card, GetCardEffects, timing);
                                     }
                                 }
                             }
