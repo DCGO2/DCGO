@@ -1,14 +1,17 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
-namespace DCGO.CardEffects
+// Mother Eater
+namespace DCGO.CardEffects.BT22
 {
     public class BT22_007 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
+
+            #region Start of Main Phase
 
             if (timing == EffectTiming.OnStartMainPhase)
             {
@@ -96,6 +99,10 @@ namespace DCGO.CardEffects
                 }
             }
 
+            #endregion
+
+            #region All Turns
+
             if (timing == EffectTiming.None)
             {
                 string EffectDiscription()
@@ -130,61 +137,115 @@ namespace DCGO.CardEffects
                 effectName: EffectDiscription));
             }
 
-            if (timing == EffectTiming.None)
+            #endregion
+
+            #region On Play
+
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpICardEffect("Delete 1 Digimon", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "";
+                    return "[On Play] Delete 1 of your opponent's Digimon.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return true;
+                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return true;
+                    return CardEffectCommons.IsExistOnField(card)
+                        && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectCondition);
                 }
+
+                bool CanSelectCondition(Permanent permanent)
+                    => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return null;
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectCondition))
+                    {
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectCondition));
+
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: maxCount,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: null,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Destroy,
+                            cardEffect: activateClass);
+
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                    }
                 }
             }
 
-            if (timing == EffectTiming.None)
+            #endregion
+
+            #region All Turns - Remove Field
+
+            if (timing == EffectTiming.WhenRemoveField)
             {
+                List<Permanent> removedPermanents = new List<Permanent>();
+
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpICardEffect("Place card as source", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetHashString("BT22_007_Save");
+                activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "";
+                    return "[Breeding] [All Turns] [Once Per Turn] When any of your [Eater] trait Digimon would leave the battle area other than by your effects, you may place them as this Digimon's bottom digivolution cards.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return true;
+                    return CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, IsEaterDigimon)
+                        && !CardEffectCommons.IsByEffect(hashtable, cardEffect => CardEffectCommons.IsOwnerEffect(cardEffect, card));
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return true;
+                    removedPermanents = CardEffectCommons.GetPermanentsFromHashtable(hashtable).Filter(IsEaterDigimon);
+
+                    return CardEffectCommons.IsExistOnBreedingArea(card);
+                }
+
+                bool IsEaterDigimon(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                        && permanent.TopCard.HasEaterTraits;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return null;
+                    foreach (Permanent permanent in removedPermanents)
+                    {
+                        permanent.HideDeleteEffect();
+                        permanent.HideHandBounceEffect();
+                        permanent.HideDeckBounceEffect();
+                        permanent.HideWillRemoveFieldEffect();
+                        yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource>() { permanent.TopCard }, activateClass));
+                    }
                 }
             }
+
+            #endregion
 
             return cardEffects;
         }
