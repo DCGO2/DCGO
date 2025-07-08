@@ -55,6 +55,7 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
         _isDeckTop = false;
         _notAddLog = false;
         _isSecurity = false;
+        _allowFaceDown = false;
 
         _skillInfos = new List<SkillInfo>();
 
@@ -103,6 +104,10 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
         _isSecurity = true;
     }
 
+    public void SetUseFaceDown()
+    {
+        _allowFaceDown = true;
+    }
     public void SetUpSkillInfos(List<SkillInfo> skillInfos)
     {
         _skillInfos = skillInfos.Clone();
@@ -162,6 +167,7 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
     bool _isDigiXros = false;
     bool _isAssembly = false;
     bool _isSecurity = false;
+    bool _allowFaceDown = false;
 
     public enum Mode
     {
@@ -215,9 +221,19 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
         switch (_root)
         {
             case Root.Library:
-                foreach (CardSource cardSource in _selectPlayer.LibraryCards)
+                if (_customRootCardList.Count > 0)
                 {
-                    RootCardList.Add(cardSource);
+                    foreach (CardSource cardSource in _customRootCardList)
+                    {
+                        RootCardList.Add(cardSource);
+                    }
+                }
+                else
+                {
+                    foreach (CardSource cardSource in _selectPlayer.LibraryCards)
+                    {
+                        RootCardList.Add(cardSource);
+                    }
                 }
                 break;
 
@@ -253,19 +269,46 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
         return RootCardList;
     }
 
+    private bool CanSelectCard(CardSource cardSource)
+    {
+        
+        if (_root != Root.Library && _root != Root.Security && _root != Root.Custom)
+        {
+            if (cardSource.IsFlipped)
+                return false;
+        }
+
+        if (_canTargetCondition != null)
+        {
+            if (_canTargetCondition(cardSource))
+            {
+                if (!_allowFaceDown)
+                {
+                    if (cardSource.IsFlipped)
+                        return false;
+                }
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public bool active()
     {
         if (RootCardList().Count > 0)
         {
-            if (_root != Root.Library && _root != Root.Security && _root != Root.Custom)
+            if (_root != Root.Library && _root != Root.Security)
             {
-                if (RootCardList().Count((cardSource) => _canTargetCondition(cardSource)) > 0)
+                if (RootCardList().Count(CanSelectCard) > 0)
                 {
                     return true;
                 }
             }
             else
             {
+                SetUseFaceDown();
                 return true;
             }
         }
@@ -393,16 +436,13 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
 
                         foreach (CardSource cardSource in RootCards)
                         {
-                            if (_canTargetCondition != null)
+                            if (CanSelectCard(cardSource))
                             {
-                                if (_canTargetCondition(cardSource))
-                                {
-                                    matchConditionCards.Add(cardSource);
-                                }
-                                else
-                                {
-                                    notMatchConditionCards.Add(cardSource);
-                                }
+                                matchConditionCards.Add(cardSource);
+                            }
+                            else
+                            {
+                                notMatchConditionCards.Add(cardSource);
                             }
                         }
 
@@ -492,7 +532,7 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
                     yield return StartCoroutine(GManager.instance.selectCardPanel.OpenSelectCardPanel(
                         Message: _message,
                         RootCardSources: RootCards,
-                        _CanTargetCondition: _canTargetCondition,
+                        _CanTargetCondition: CanSelectCard,
                         _CanTargetCondition_ByPreSelecetedList: _canTargetCondition_ByPreSelecetedList,
                         _CanEndSelectCondition: _canEndSelectCondition,
                         _MaxCount: _maxCount,
@@ -543,7 +583,7 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
 
                 foreach (CardSource cardSource in RootCardList())
                 {
-                    if (_canTargetCondition(cardSource))
+                    if (CanSelectCard(cardSource))
                     {
                         ValidCards.Add(cardSource);
                     }
@@ -662,7 +702,7 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
 
             if (_root == Root.Library)
             {
-                yield return ContinuousController.instance.StartCoroutine(CardObjectController.Shuffle(_selectPlayer));
+                //yield return ContinuousController.instance.StartCoroutine(CardObjectController.Shuffle(_selectPlayer));
             }
 
             foreach (CardSource cardSource in _targetCards)

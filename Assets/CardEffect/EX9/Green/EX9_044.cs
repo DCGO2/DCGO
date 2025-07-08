@@ -312,10 +312,13 @@ namespace DCGO.CardEffects.EX9
                         {
                             Permanent selectedPermanent = permanent;
 
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCantUnsuspendNextActivePhase(
-                                        targetPermanent: selectedPermanent,
-                                        activateClass: activateClass
-                                    ));
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotUnsuspend(
+                                targetPermanent: selectedPermanent,
+                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                                activateClass: activateClass,
+                                condition: null,
+                                effectName: "Can't unsuspend"
+                            ));
                         }
                     }
                     yield return null;
@@ -391,10 +394,13 @@ namespace DCGO.CardEffects.EX9
                         {
                             Permanent selectedPermanent = permanent;
 
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCantUnsuspendNextActivePhase(
-                                        targetPermanent: selectedPermanent,
-                                        activateClass: activateClass
-                                    ));
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotUnsuspend(
+                                targetPermanent: selectedPermanent,
+                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                                activateClass: activateClass,
+                                condition: null,
+                                effectName: "Can't unsuspend"
+                            ));
                         }
                     }
                     yield return null;

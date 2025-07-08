@@ -86,6 +86,7 @@ namespace DCGO.CardEffects.EX6
                         cardEffect: activateClass);
 
                     selectCardEffect.SetNotShowCard();
+                    selectCardEffect.SetUseFaceDown();
 
                     if (card.Owner.isYou)
                     {
@@ -166,6 +167,7 @@ namespace DCGO.CardEffects.EX6
                         cardEffect: activateClass);
 
                     selectCardEffect.SetNotShowCard();
+                    selectCardEffect.SetUseFaceDown();
 
                     if (card.Owner.isYou)
                     {

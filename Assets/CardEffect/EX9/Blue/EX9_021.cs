@@ -135,7 +135,7 @@ namespace DCGO.CardEffects.EX9
                         CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
                         canNotAffectedClass.SetUpICardEffect("Isn't affected by opponent's effect", CanUseCondition1, card);
                         canNotAffectedClass.SetUpCanNotAffectedClass(CardCondition: CardCondition, SkillCondition: SkillCondition);
-                        selectedPermanent.UntilOwnerTurnEndEffects.Add((_timing) => canNotAffectedClass);
+                        selectedPermanent.UntilEachTurnEndEffects.Add((_timing) => canNotAffectedClass);
 
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateBuffEffect(selectedPermanent));
 
@@ -207,9 +207,12 @@ namespace DCGO.CardEffects.EX9
                 {
                     if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                     {
-                        if (cardSource.HasGreymonName || cardSource.EqualsTraits("Ver.1"))
+                        if (cardSource.IsDigimon)
                         {
-                            return true;
+                            if (cardSource.HasGreymonName || cardSource.EqualsTraits("Ver.1"))
+                            {
+                                return true;
+                            }
                         }
                     }
 
@@ -220,9 +223,12 @@ namespace DCGO.CardEffects.EX9
                 {
                     if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                     {
-                        if (cardSource.HasGarurumonName || cardSource.EqualsTraits("Ver.2"))
+                        if (cardSource.IsDigimon)
                         {
-                            return true;
+                            if (cardSource.HasGarurumonName || cardSource.EqualsTraits("Ver.2"))
+                            {
+                                return true;
+                            }
                         }
                     }
 
@@ -261,7 +267,7 @@ namespace DCGO.CardEffects.EX9
                             mode: SelectCardEffect.Mode.Custom,
                             root: SelectCardEffect.Root.Custom,
                             customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
-                            canLookReverseCard: true,
+                            canLookReverseCard: false,
                             selectPlayer: card.Owner,
                             cardEffect: activateClass);
 
@@ -293,7 +299,7 @@ namespace DCGO.CardEffects.EX9
                             mode: SelectCardEffect.Mode.Custom,
                             root: SelectCardEffect.Root.Custom,
                             customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
-                            canLookReverseCard: true,
+                            canLookReverseCard: false,
                             selectPlayer: card.Owner,
                             cardEffect: activateClass);
 
@@ -320,7 +326,7 @@ namespace DCGO.CardEffects.EX9
                         yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(
                             card.PermanentOfThisCard(),
                             CardEffectCommons.CardEffectHashtable(activateClass),
-                            toTop: false).PutSecurity());
+                            toTop: true).PutSecurity());
                     }
                 }
             }

@@ -38,7 +38,7 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.EqualsTraits("Pupper") || cardSource.EqualsTraits("LIBERATOR");
+                    return cardSource.EqualsTraits("Puppet") || cardSource.EqualsTraits("LIBERATOR");
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -149,14 +149,17 @@ namespace DCGO.CardEffects.EX9
                             yield return null;
                         }
 
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                            cardSources: selectedCards,
-                            activateClass: activateClass,
-                            payCost: true,
-                            isTapped: false,
-                            root: SelectCardEffect.Root.Hand,
-                            activateETB: true,
-                            fixedCost: selectedCards[0].BasePlayCostFromEntity - 3));
+                        if(selectedCards.Count > 0)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
+                                cardSources: selectedCards,
+                                activateClass: activateClass,
+                                payCost: true,
+                                isTapped: false,
+                                root: SelectCardEffect.Root.Hand,
+                                activateETB: true,
+                                fixedCost: selectedCards[0].BasePlayCostFromEntity - 3));
+                        }
                     }
                 }
             }

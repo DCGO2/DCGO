@@ -125,7 +125,7 @@ namespace DCGO.CardEffects.BT15
 
                 string EffectDiscription()
                 {
-                    return "[On Play][When Digivolving] Suspend 1 of your opponent's Digimon. If a Tamer card with the [Digipolice] trait is in this Digimon's digivolution cards, that Digimon can't unsuspend until the end of their turn.";
+                    return "[On Play] Suspend 1 of your opponent's Digimon. If a Tamer card with the [Digipolice] trait is in this Digimon's digivolution cards, that Digimon can't unsuspend until the end of their turn.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -225,7 +225,7 @@ namespace DCGO.CardEffects.BT15
 
                 string EffectDiscription()
                 {
-                    return "[On Play][When Digivolving] Suspend 1 of your opponent's Digimon. If a Tamer card with the [Digipolice] trait is in this Digimon's digivolution cards, that Digimon can't unsuspend until the end of their turn.";
+                    return "[When Digivolving] Suspend 1 of your opponent's Digimon. If a Tamer card with the [Digipolice] trait is in this Digimon's digivolution cards, that Digimon can't unsuspend until the end of their turn.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)

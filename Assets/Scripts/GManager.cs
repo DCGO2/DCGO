@@ -423,6 +423,11 @@ public class GManager : MonoBehaviourPun
         ContinuousController.instance.EndBattle();
     }
 
+    public void ReportBug()
+    {
+        Application.OpenURL("https://forms.gle/GhZgGVJS1qLeUMcG8");
+    }
+
     public void OnClickSurrenderButton()
     {
         if (turnStateMachine != null)

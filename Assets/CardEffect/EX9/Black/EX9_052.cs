@@ -31,12 +31,13 @@ namespace DCGO.CardEffects.EX9
             #endregion
 
             #region End of Your Turn
+
             if (timing == EffectTiming.OnEndTurn)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Place 3 digimon from trash as source, to digivolve", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
-                activateClass.SetHashString("Digivolve_EX9_052");
+                activateClass.SetHashString("Digivolve_EX9-052");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -44,14 +45,27 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card) && CardEffectCommons.IsOwnerTurn(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.IsOwnerTurn(card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, CanSelectCardCondition) >= 3;
+                }
+
+                bool CanSelectCardCondition(CardSource cardSource)
+                {
+                    return cardSource.IsDigimon &&
+                           cardSource.EqualsTraits("Ver.5");
+                }
+
+                bool CanSelectCardCondition1(CardSource cardSource)
+                {
+                    if (cardSource.EqualsTraits("Ver.5"))
                     {
-                        if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
+                        if (cardSource.CanPlayCardTargetFrame(card.PermanentOfThisCard().PermanentFrame, false, activateClass))
                         {
                             return true;
                         }
@@ -59,78 +73,64 @@ namespace DCGO.CardEffects.EX9
                     return false;
                 }
 
-                bool CanSelectCardCondition(CardSource cardSource)
-                {
-                    return cardSource.IsDigimon && cardSource.ContainsTraits("Ver.5");
-                }
-
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    bool added = false;
+                    List<CardSource> selectedCards = new List<CardSource>();
 
-                    List<CardSource> selectedCards = new List<CardSource>(); 
-
-                    int maxCount = 3;
                     SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
                     selectCardEffect.SetUp(
-                                canTargetCondition: CanSelectCardCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                canNoSelect: () => true,
-                                selectCardCoroutine: SelectCardCoroutine,
-                                afterSelectCardCoroutine: null,
-                                message: "Select 3 cards to place face down under digimon",
-                                maxCount: maxCount,
-                                canEndNotMax: false,
-                                isShowOpponent: true,
-                                mode: SelectCardEffect.Mode.Custom,
-                                root: SelectCardEffect.Root.Trash,
-                                customRootCardList: null,
-                                canLookReverseCard: true,
-                                selectPlayer: card.Owner,
-                                cardEffect: activateClass);
+                        canTargetCondition: CanSelectCardCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        canNoSelect: () => true,
+                        selectCardCoroutine: null,
+                        afterSelectCardCoroutine: AfterSelectCardCoroutine,
+                        message: "Select 3 cards to add as source",
+                        maxCount: 3,
+                        canEndNotMax: true,
+                        isShowOpponent: true,
+                        mode: SelectCardEffect.Mode.Custom,
+                        root: SelectCardEffect.Root.Trash,
+                        customRootCardList: null,
+                        canLookReverseCard: true,
+                        selectPlayer: card.Owner,
+                        cardEffect: activateClass);
 
-                    selectCardEffect.SetUpCustomMessage("Select 3 cards to place face down under digimon", "The opponent is selecting 3 cards to place face down under digimon.");
+                    selectCardEffect.SetUpCustomMessage("Select 3 cards to add as source.", "The opponent is selecting 3 cards to add as source.");
                     selectCardEffect.SetUpCustomMessage_ShowCard("Selected Cards");
-                    yield return StartCoroutine(selectCardEffect.Activate());
+                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 
-                    IEnumerator SelectCardCoroutine(CardSource cardSource)
+                    IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
                     {
-                        selectedCards.Add(cardSource);
-
+                        selectedCards.AddRange(cardSources);
                         yield return null;
                     }
 
-                    if (selectedCards.Count >= 3)
+                    if (selectedCards.Count == 3)
                     {
-                        foreach (CardSource card in selectedCards)
-                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddExecutingCard(card));
-                        
-                        yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(selectedCards, activateClass, isFacedown:true));
+                        foreach (var selectedCard in selectedCards)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddExecutingCard(selectedCard));
+                            yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass, isFacedown: true));
+                        }
 
-                        added = true;
-                    }
-
-                    if (added)
-                    {
-                        bool canSelectHand = card.Owner.HandCards.Count() >= 1;
-                        bool canSelectTrash = card.Owner.TrashCards.Count(CanSelectCardCondition) >= 1;
+                        bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition1);
+                        bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition1);
 
                         if (canSelectHand || canSelectTrash)
                         {
                             if (canSelectHand && canSelectTrash)
                             {
-                                List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
-                        {
-                            new SelectionElement<bool>(message: $"From hand", value : true, spriteIndex: 0),
-                            new SelectionElement<bool>(message: $"From trash", value : false, spriteIndex: 1),
-                        };
+                                List<SelectionElement<bool>> selectionElements1 = new List<SelectionElement<bool>>()
+                                        {
+                                            new SelectionElement<bool>(message: $"From hand", value : true, spriteIndex: 0),
+                                            new SelectionElement<bool>(message: $"From trash", value : false, spriteIndex: 1),
+                                        };
 
-                                string selectPlayerMessage = "From which area do you want to digivolve from?";
-                                string notSelectPlayerMessage = "The opponent is choosing where to digivolve from.";
+                                string selectPlayerMessage1 = "From which area do you select a card?";
+                                string notSelectPlayerMessage1 = "The opponent is choosing from which area to select a card.";
 
-                                GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+                                GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements1, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage1, notSelectPlayerMessage: notSelectPlayerMessage1);
                             }
                             else
                             {
@@ -138,35 +138,20 @@ namespace DCGO.CardEffects.EX9
                             }
 
                             yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-
                             bool fromHand = GManager.instance.userSelectionManager.SelectedBoolValue;
 
-                            if (fromHand)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                                targetPermanent: card.PermanentOfThisCard(),
-                                cardCondition: CanSelectCardCondition,
-                                payCost: true,
-                                reduceCostTuple: null,
-                                fixedCostTuple: null,
-                                ignoreDigivolutionRequirementFixedCost: -1,
-                                isHand: true,
-                                activateClass: activateClass,
-                                successProcess: null));
-                            }
-                            else
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                                targetPermanent: card.PermanentOfThisCard(),
-                                cardCondition: CanSelectCardCondition,
-                                payCost: true,
-                                reduceCostTuple: null,
-                                fixedCostTuple: null,
-                                ignoreDigivolutionRequirementFixedCost: -1,
-                                isHand: false,
-                                activateClass: activateClass,
-                                successProcess: null));
-                            }
+
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                                    targetPermanent: card.PermanentOfThisCard(),
+                                    cardCondition: CanSelectCardCondition1,
+                                    payCost: true,
+                                    reduceCostTuple: null,
+                                    fixedCostTuple: null,
+                                    ignoreDigivolutionRequirementFixedCost: -1,
+                                    isHand: fromHand,
+                                    activateClass: activateClass,
+                                    successProcess: null));
+
                         }
                     }
                 }

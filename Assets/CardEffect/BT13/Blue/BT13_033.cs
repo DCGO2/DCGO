@@ -237,6 +237,7 @@ namespace DCGO.CardEffects.BT13
                                 cardEffect: activateClass);
 
                             selectCardEffect.SetNotShowCard();
+                            selectCardEffect.SetUseFaceDown();
 
                             if (card.Owner.isYou)
                             {
