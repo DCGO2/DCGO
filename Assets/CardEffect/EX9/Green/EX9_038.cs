@@ -84,15 +84,15 @@ namespace DCGO.CardEffects.EX9
                         maxCount: maxCount,
                         canNoSelect: true,
                         canEndNotMax: true,
-                        isShowOpponent: true,
+                        isShowOpponent: false,
                         selectCardCoroutine: SelectCardCoroutine,
                         afterSelectCardCoroutine: null,
                         mode: SelectHandEffect.Mode.Custom,
                         cardEffect: activateClass);
 
                     selectHandEffect.SetUpCustomMessage("Select 1 card to add as FD Source", "The opponent is selecting 1 card to add as FD source");
-                    selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
-                    yield return StartCoroutine(selectHandEffect.Activate());
+
+                    yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
 
                     IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {

@@ -16,7 +16,7 @@ namespace DCGO.CardEntities
     public class JSONLoader_CardEntity : Editor
     {
         LoadJSON_CardEntity _loadJSON;
-        string baseURL = "https://raw.githubusercontent.com/TakaOtaku/Digimon-Card-App/main/src/";
+        string baseURL = "https://raw.githubusercontent.com/TakaOtaku/Digimon-Cards/main/src/";
 
         public List<CardData> _cardData;
 

@@ -117,7 +117,7 @@ public static class CheckEffectDisabledClass
                         {
                             foreach (ICardEffect cardEffect in cardSource.cEntity_EffectController.cEntity_Effect.GetCardEffects(EffectTiming.None, cardSource))
                             {
-                                if ((cardSource == permanent.TopCard) == (cardEffect.IsInheritedEffect) || (cardSource.IsFlipped) == (cardEffect.IsInheritedEffect))
+                                if ((cardSource == permanent.TopCard) == (cardEffect.IsInheritedEffect) || (cardSource.IsFlipped))
                                 {
                                     continue;
                                 }

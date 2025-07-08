@@ -886,7 +886,10 @@ public class Permanent
             if (!this.IsToken && !addedDigivolutionCard.IsToken)
             {
                 this.cardSources.Insert(1, addedDigivolutionCard);
-                addedDigivolutionCard.SetFace("Permanent.AddDigivolutionCardsTop");
+
+                if (!addedDigivolutionCard.IsFlipped || addedDigivolutionCard.IsBeingRevealed || GManager.instance.turnStateMachine.gameContext.IsSecurityLooking)
+                    addedDigivolutionCard.SetFace("Permanent.AddDigivolutionCardsTop");
+
                 addedCards.Add(addedDigivolutionCard);
             }
         }

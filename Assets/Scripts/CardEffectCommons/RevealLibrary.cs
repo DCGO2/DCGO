@@ -300,7 +300,7 @@ public partial class CardEffectCommons
                         canEndNotMax: selectCondition.CanEndNotMax,
                         isShowOpponent: true,
                         mode: selectCondition.Mode,
-                        root: SelectCardEffect.Root.Custom,
+                        root: SelectCardEffect.Root.Library,
                         customRootCardList: revealedCards,
                         canLookReverseCard: true,
                         selectPlayer: selectPlayer,
@@ -487,6 +487,7 @@ public partial class CardEffectCommons
             selectCardEffect.SetNotShowCard();
             selectCardEffect.SetNotAddLog();
             selectCardEffect.SetIsDeckBottom();
+            selectCardEffect.SetUseFaceDown();
 
             yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 
@@ -543,6 +544,7 @@ public partial class CardEffectCommons
             selectCardEffect.SetNotShowCard();
             selectCardEffect.SetNotAddLog();
             selectCardEffect.SetIsDeckTop();
+            selectCardEffect.SetUseFaceDown();
 
             yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 

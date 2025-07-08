@@ -156,7 +156,6 @@ namespace DCGO.CardEffects.EX9
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition1))
                     {
                         List<Permanent> selectedPermanents = new List<Permanent>();
-                        int maxCount2 = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition1));
 
                         SelectPermanentEffect selectPermanentEffect1 = GManager.instance.GetComponent<SelectPermanentEffect>();
                         selectPermanentEffect1.SetUp(
@@ -164,7 +163,7 @@ namespace DCGO.CardEffects.EX9
                             canTargetCondition: CanSelectPermanentCondition1,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: maxCount2,
+                            maxCount: 1,
                             canNoSelect: true,
                             canEndNotMax: false,
                             selectPermanentCoroutine: null,
@@ -213,7 +212,7 @@ namespace DCGO.CardEffects.EX9
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Place 1 hand card as FD bottom source, suspend 1 digimon, then attack", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -322,7 +321,6 @@ namespace DCGO.CardEffects.EX9
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition1))
                     {
                         List<Permanent> selectedPermanents = new List<Permanent>();
-                        int maxCount2 = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition1));
 
                         SelectPermanentEffect selectPermanentEffect1 = GManager.instance.GetComponent<SelectPermanentEffect>();
                         selectPermanentEffect1.SetUp(
@@ -330,7 +328,7 @@ namespace DCGO.CardEffects.EX9
                             canTargetCondition: CanSelectPermanentCondition1,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: maxCount2,
+                            maxCount: 1,
                             canNoSelect: true,
                             canEndNotMax: false,
                             selectPermanentCoroutine: null,

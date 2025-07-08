@@ -21,6 +21,8 @@ namespace DCGO.CardEffects.EX9
             #region Your Turn
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
+                List<Permanent> playedPermanent = new List<Permanent>();
+
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Draw 1 and gain 1 memory. Then place one digimon face down as a source.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
@@ -34,12 +36,19 @@ namespace DCGO.CardEffects.EX9
                 bool EnterFieldPermanent(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
-                           permanent.IsDigimon && permanent.TopCard.HasPlayCost && permanent.TopCard.GetCostItself >= 7 && 
-                           (permanent.TopCard.EqualsTraits("Cyborg") || permanent.TopCard.EqualsTraits("Machine") && permanent.TopCard.EqualsTraits("DM"));
+                           permanent.IsDigimon && permanent.TopCard.HasPlayCost && permanent.TopCard.GetCostItself >= 7 &&
+                           (permanent.TopCard.EqualsTraits("Cyborg") || permanent.TopCard.EqualsTraits("Machine") || permanent.TopCard.EqualsTraits("DM")) &&
+                           playedPermanent.Contains(permanent);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
+                    List<Hashtable> hash = CardEffectCommons.GetHashtablesFromHashtable(hashtable);
+
+                    hash.ForEach(x =>
+                        playedPermanent.Add(CardEffectCommons.GetPermanentFromHashtable(x))
+                    );
+
                     return CardEffectCommons.IsOwnerTurn(card) && CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, EnterFieldPermanent);
                 }
 
@@ -93,15 +102,13 @@ namespace DCGO.CardEffects.EX9
                             if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, EnterFieldPermanent))
                             {
                                 Permanent selectedPermanent = null;
-                                int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersPermanentCount(card, EnterFieldPermanent));
-
                                 SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
                                 selectPermanentEffect.SetUp(
                                     selectPlayer: card.Owner,
                                     canTargetCondition: EnterFieldPermanent,
                                     canTargetCondition_ByPreSelecetedList: null,
                                     canEndSelectCondition: null,
-                                    maxCount: maxCount,
+                                    maxCount: 1,
                                     canNoSelect: false,
                                     canEndNotMax: false,
                                     selectPermanentCoroutine: SelectPermanentCoroutine,

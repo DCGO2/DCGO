@@ -219,7 +219,7 @@ namespace DCGO.CardEffects.EX9
                     afterSelectCardCoroutine: AfterSelectCardCoroutine,
                     message: "Select cards to place as the top digivolution sources",
                     maxCount: 3,
-                    canEndNotMax: true,
+                    canEndNotMax: false,
                     isShowOpponent: false,
                     mode: SelectCardEffect.Mode.Custom,
                     root: SelectCardEffect.Root.Trash,
@@ -234,6 +234,7 @@ namespace DCGO.CardEffects.EX9
                     {
                         if (cardSources.Count >= 3)
                         {
+                            cardSources.Reverse();
                             yield return ContinuousController.instance.StartCoroutine(card.Owner.brainStormObject.CloseBrainstrorm(card));
 
                             yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsTop(cardSources, activateClass));
@@ -287,7 +288,7 @@ namespace DCGO.CardEffects.EX9
                     afterSelectCardCoroutine: AfterSelectCardCoroutine,
                     message: "Select cards to place as the top digivolution sources",
                     maxCount: 3,
-                    canEndNotMax: true,
+                    canEndNotMax: false,
                     isShowOpponent: false,
                     mode: SelectCardEffect.Mode.Custom,
                     root: SelectCardEffect.Root.Trash,
@@ -302,6 +303,7 @@ namespace DCGO.CardEffects.EX9
                     {
                         if (cardSources.Count >= 3)
                         {
+                            cardSources.Reverse();
                             yield return ContinuousController.instance.StartCoroutine(card.Owner.brainStormObject.CloseBrainstrorm(card));
 
                             yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsTop(cardSources, activateClass));
@@ -354,7 +356,7 @@ namespace DCGO.CardEffects.EX9
                     afterSelectCardCoroutine: AfterSelectCardCoroutine,
                     message: "Select cards to place as the top digivolution sources",
                     maxCount: 3,
-                    canEndNotMax: true,
+                    canEndNotMax: false,
                     isShowOpponent: false,
                     mode: SelectCardEffect.Mode.Custom,
                     root: SelectCardEffect.Root.Trash,
@@ -369,6 +371,7 @@ namespace DCGO.CardEffects.EX9
                     {
                         if (cardSources.Count >= 3)
                         {
+                            cardSources.Reverse();
                             yield return ContinuousController.instance.StartCoroutine(card.Owner.brainStormObject.CloseBrainstrorm(card));
 
                             yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsTop(cardSources, activateClass));

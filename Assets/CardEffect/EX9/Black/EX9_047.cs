@@ -78,32 +78,9 @@ namespace DCGO.CardEffects.EX9
                             return false;
                         }
 
-                        bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
-                        {
-                            List<string> cardNames = new List<string>();
-
-                            foreach (CardSource cardSource1 in cardSources)
-                            {
-                                foreach (string cardName in cardSource1.CardNames)
-                                {
-                                    if (!cardNames.Contains(cardName))
-                                    {
-                                        cardNames.Add(cardName);
-                                    }
-                                }
-                            }
-
-                            if (cardSource.CardNames.Count((cardName) => cardNames.Contains(cardName)) >= 1)
-                            {
-                                return false;
-                            }
-
-                            return true;
-                        }
-
                         AssemblyCondition assemblyCondition = new AssemblyCondition(
                             element: element,
-                            CanTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
+                            CanTargetCondition_ByPreSelecetedList: null,
                             selectMessage: "4 Digimon cards with [Eyesmon: Scatter Mode] in their names",
                             elementCount: 4,
                             reduceCost: 3);

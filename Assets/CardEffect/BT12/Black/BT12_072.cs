@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace DCGO.CardEffects.BT12
 {
@@ -168,7 +169,7 @@ namespace DCGO.CardEffects.BT12
                     {
                         foreach (CardSource cardSource1 in cardSource.PermanentOfThisCard().DigivolutionCards)
                         {
-                            if (cardSource1.CardNames.Contains("Machinedramon") || cardSource1.CardNames.Contains("Chaosdramon"))
+                            if (cardSource1.EqualsCardName("Machinedramon") || cardSource1.EqualsCardName("Chaosdramon"))
                             {
                                 foreach (ICardEffect cardEffect in cardSource1.cEntity_EffectController.GetCardEffects_ExceptAddedEffects(_timing, card))
                                 {

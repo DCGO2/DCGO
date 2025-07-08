@@ -29,8 +29,8 @@ namespace DCGO.CardEffects.EX9
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By Placing 3 [Ver.4] digimon FD as this digimon bottom sources, digivolve into a [Ver.4] digimon in hand or trash", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
-                activateClass.SetHashString("EX9_028_OnEndTurn");
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetHashString("Digivolve_EX9-028");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -40,22 +40,38 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsOwnerTurn(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && 
+                           CardEffectCommons.IsOwnerTurn(card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.MatchConditionOwnersCardCountInTrash(card,CanSelectCardCondition) >= 3;
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.IsDigimon && cardSource.EqualsTraits("Ver.4");
+                    return cardSource.IsDigimon && 
+                           cardSource.EqualsTraits("Ver.4");
+                }
+
+                bool CanSelectCardCondition1(CardSource cardSource)
+                {
+                    if (cardSource.EqualsTraits("Ver.4"))
+                    {
+                        if (cardSource.CanPlayCardTargetFrame(card.PermanentOfThisCard().PermanentFrame, false, activateClass))
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     List<CardSource> selectedCards = new List<CardSource>();
+
                     SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
                     selectCardEffect.SetUp(
                         canTargetCondition: CanSelectCardCondition,
@@ -87,49 +103,50 @@ namespace DCGO.CardEffects.EX9
 
                     if (selectedCards.Count == 3)
                     {
-                        foreach (CardSource selectedCard in selectedCards)
+                        foreach (var selectedCard in selectedCards)
                         {
                             yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddExecutingCard(selectedCard));
                             yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass, isFacedown: true));
                         }
 
-                        List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
-                        {
-                            new SelectionElement<bool>(message: $"Hand", value : true, spriteIndex: 0),
-                            new SelectionElement<bool>(message: $"Trash", value : false, spriteIndex: 1),
-                        };
+                        bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition1);
+                        bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition1);
 
-                        string selectPlayerMessage = "Select which location to use";
-                        string notSelectPlayerMessage = "The opponent is selecting which location to use";
-                        GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-                        bool useHand = GManager.instance.userSelectionManager.SelectedBoolValue;
+                        if (canSelectHand || canSelectTrash)
+                        {
+                            if (canSelectHand && canSelectTrash)
+                            {
+                                List<SelectionElement<bool>> selectionElements1 = new List<SelectionElement<bool>>()
+                                        {
+                                            new SelectionElement<bool>(message: $"From hand", value : true, spriteIndex: 0),
+                                            new SelectionElement<bool>(message: $"From trash", value : false, spriteIndex: 1),
+                                        };
 
-                        if (useHand)
-                        {
+                                string selectPlayerMessage1 = "From which area do you select a card?";
+                                string notSelectPlayerMessage1 = "The opponent is choosing from which area to select a card.";
+
+                                GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements1, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage1, notSelectPlayerMessage: notSelectPlayerMessage1);
+                            }
+                            else
+                            {
+                                GManager.instance.userSelectionManager.SetBool(canSelectHand);
+                            }
+
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+                            bool fromHand = GManager.instance.userSelectionManager.SelectedBoolValue;
+
+
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                                targetPermanent: card.PermanentOfThisCard(),
-                                cardCondition: CanSelectCardCondition,
-                                payCost: true,
-                                reduceCostTuple: null,
-                                fixedCostTuple: null,
-                                ignoreDigivolutionRequirementFixedCost: -1,
-                                isHand: true,
-                                activateClass: activateClass,
-                                successProcess: null));
-                        }
-                        else
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                                targetPermanent: card.PermanentOfThisCard(),
-                                cardCondition: CanSelectCardCondition,
-                                payCost: true,
-                                reduceCostTuple: null,
-                                fixedCostTuple: null,
-                                ignoreDigivolutionRequirementFixedCost: -1,
-                                isHand: false,
-                                activateClass: activateClass,
-                                successProcess: null));
+                                    targetPermanent: card.PermanentOfThisCard(),
+                                    cardCondition: CanSelectCardCondition1,
+                                    payCost: true,
+                                    reduceCostTuple: null,
+                                    fixedCostTuple: null,
+                                    ignoreDigivolutionRequirementFixedCost: -1,
+                                    isHand: fromHand,
+                                    activateClass: activateClass,
+                                    successProcess: null));
+
                         }
                     }
                 }
