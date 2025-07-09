@@ -304,6 +304,16 @@ public class CardSource : MonoBehaviour
 
     #endregion
 
+    #region Top card of permanent in the field containing this card
+
+    public Permanent TopCardPermanent()
+    {
+        return Owner.GetFieldPermanents().Find(permanent =>
+            (permanent.cardSources.Contains(this)) && !IsFlipped).TopCard.PermanentOfThisCard();
+    }
+
+    #endregion
+
     #region initialize
 
     public void Init()
@@ -586,6 +596,7 @@ public class CardSource : MonoBehaviour
         #endregion
 
         #region Assembly
+
         if (!isEvolution)
         {
             if (HasAssembly)
@@ -609,7 +620,7 @@ public class CardSource : MonoBehaviour
                         {
                             if (selectAssemblyClass.playCard == this)
                             {
-                                if(selectAssemblyClass.selectedAssemblyCards.Count == assemblyCondition.elementCount)
+                                if (selectAssemblyClass.selectedAssemblyCards.Count == assemblyCondition.elementCount)
                                     Cost -= assemblyCondition.reduceCost;
                             }
                         }
@@ -617,6 +628,7 @@ public class CardSource : MonoBehaviour
                 }
             }
         }
+
         #endregion
 
         Cost = GetChangedCostItselef(Cost, root, targetPermanents, checkAvailability);
@@ -634,6 +646,7 @@ public class CardSource : MonoBehaviour
     #endregion
 
     #region base play cost from entity
+
     public int BasePlayCostFromEntity
     {
         get
@@ -641,6 +654,7 @@ public class CardSource : MonoBehaviour
             return _cEntity_Base.PlayCost;
         }
     }
+
     #endregion
 
     #region get card cost of itself (refered by card effects)
@@ -912,7 +926,7 @@ public class CardSource : MonoBehaviour
 
         return _EffectList;
     }
-    
+
     #endregion
 
     #region whether this card can declare skill
@@ -1980,6 +1994,7 @@ public class CardSource : MonoBehaviour
     #endregion
 
     #region card level checked when Assembly
+
     public List<int> Level_Assembly
     {
         get
@@ -1988,14 +2003,17 @@ public class CardSource : MonoBehaviour
             cardLevel_Assembly.Add(TreatedLevel);
 
             #region the effects of itself
+
             EffectList(EffectTiming.None)
                 .Filter(cardEffect => cardEffect is IChangeCardLevelForAssemblyEffect && cardEffect.CanUse(null))
                 .ForEach(cardEffect => cardLevel_Assembly = ((IChangeCardLevelForAssemblyEffect)cardEffect).ChangeCardLevelForAssembly(cardLevel_Assembly, this));
+
             #endregion
 
             return cardLevel_Assembly;
         }
     }
+
     #endregion
 
     #region whether this card has at least 1 card name checked when digixros that equals the string
@@ -2325,7 +2343,9 @@ public class CardSource : MonoBehaviour
     #endregion
 
     #region whether this card has [Assembly]
+
     public bool HasAssembly => assemblyCondition != null;
+
     #endregion
 
     #region traits
@@ -2653,7 +2673,7 @@ public class CardSource : MonoBehaviour
     {
         get
         {
-            if(_cEntity_Base == null || _cEntity_Base.HasLevel)
+            if (_cEntity_Base == null || _cEntity_Base.HasLevel)
             {
                 return true;
             }
@@ -2791,6 +2811,7 @@ public class CardSource : MonoBehaviour
     #endregion
 
     #region Assembly requirement
+
     public AssemblyCondition assemblyCondition
     {
         get
@@ -2814,6 +2835,7 @@ public class CardSource : MonoBehaviour
             return null;
         }
     }
+
     #endregion
 
     #region whether this card can Burst digivolve
@@ -3343,8 +3365,9 @@ public class CardSource : MonoBehaviour
         get
         {
             return EqualsTraits("WG");
-         }
+        }
     }
+
     #endregion
 
     #region whether this card has "DM" trait
@@ -3356,7 +3379,7 @@ public class CardSource : MonoBehaviour
             return EqualsTraits("DM");
         }
     }
-    
+
     #endregion
 
     #region whether this card has "CS" trait
@@ -3406,10 +3429,34 @@ public class CardSource : MonoBehaviour
     }
 
     #endregion
+
+    #region whether this card has "Sea Animal" trait
+
+    public bool HasSeaAnimalTraits
+    {
+        get
+        {
+            return EqualsTraits("Sea Animal");
+        }
+    }
+
+    #endregion
+
+    #region whether this card has "Puppet" trait
+
+    public bool HasPuppetTraits
+    {
+        get
+        {
+            return EqualsTraits("Puppet");
+        }
+    }
+
+    #endregion
 }
 
 public class JogressCondition
-  
+
 {
     public JogressCondition(JogressConditionElement[] elements, int cost)
     {
@@ -3549,6 +3596,7 @@ public class AssemblyCondition
         this.elementCount = elementCount;
         this.reduceCost = reduceCost;
     }
+
     public AssemblyConditionElement element { get; private set; } = new AssemblyConditionElement(null);
     public Func<List<CardSource>, CardSource, bool> CanTargetCondition_ByPreSelecetedList { get; private set; } = null;
 
@@ -3565,6 +3613,7 @@ public class AssemblyConditionElement
 
         this.skipAllIfNoSelect = skipAllIfNoSelect;
     }
+
     public Func<CardSource, bool> CardCondition { get; private set; } = null;
     public bool skipAllIfNoSelect { get; private set; } = false;
 }
