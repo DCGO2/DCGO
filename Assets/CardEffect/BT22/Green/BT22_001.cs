@@ -26,7 +26,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnAddDigivolutionCard(hashtable, permanent => PermanentCondition(permanent), null, cardSource => CardCondition(cardSource));
+                    return CardEffectCommons.CanTriggerOnAddDigivolutionCard(hashtable, PermanentCondition, null, CardCondition);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
