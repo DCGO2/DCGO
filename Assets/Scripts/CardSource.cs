@@ -3453,6 +3453,30 @@ public class CardSource : MonoBehaviour
     }
 
     #endregion
+
+    #region whether this card has "Aquatic" trait
+
+    public bool HasAquaticTraits
+    {
+        get
+        {
+            return EqualsTraits("Aquatic");
+        }
+    }
+
+    #endregion
+
+    #region whether this card has "LIBERATOR" trait
+
+    public bool HasLiberatorTraits
+    {
+        get
+        {
+            return EqualsTraits("LIBERATOR");
+        }
+    }
+
+    #endregion
 }
 
 public class JogressCondition
