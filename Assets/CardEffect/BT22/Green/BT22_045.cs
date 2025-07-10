@@ -41,8 +41,7 @@ namespace DCGO.CardEffects.BT22
             {
                 if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                 {
-                    return CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, HasGammamonNameDigimon)
-                        || CardEffectCommons.HasMatchConditionOwnersHand(card, HasGammamonNameDigimon);
+                    return CardEffectCommons.HasMatchConditionOwnersHand(card, HasGammamonNameDigimon);
                 }
                 return false;
             }
@@ -103,7 +102,7 @@ namespace DCGO.CardEffects.BT22
 
                         if (selectedCard != null)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(selectedCards, activateClass));
+                            yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource> { selectedCard }, activateClass));
 
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBlocker(
                                 targetPermanent: card.PermanentOfThisCard(),
@@ -176,7 +175,7 @@ namespace DCGO.CardEffects.BT22
 
                         if (selectedCard != null)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(selectedCards, activateClass));
+                            yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource> { selectedCard }, activateClass));
 
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBlocker(
                                 targetPermanent: card.PermanentOfThisCard(),
