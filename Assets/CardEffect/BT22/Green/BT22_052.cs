@@ -56,7 +56,7 @@ namespace DCGO.CardEffects.BT22
                 return false;
             }
 
-            bool PermanentCondition(Permanent permanent)
+            bool SelectPermanentCondition(Permanent permanent)
             {
                 if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                 {
@@ -143,7 +143,7 @@ namespace DCGO.CardEffects.BT22
 
                     }
 
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBlockerPlayerEffect(permanentCondition: PermanentCondition, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBlockerPlayerEffect(permanentCondition: SelectPermanentCondition, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
                 }
             }
             #endregion
@@ -221,7 +221,7 @@ namespace DCGO.CardEffects.BT22
 
                     }
 
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBlockerPlayerEffect(permanentCondition: PermanentCondition, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBlockerPlayerEffect(permanentCondition: SelectPermanentCondition, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
                 }
             }
             #endregion
