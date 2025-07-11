@@ -34,6 +34,7 @@ namespace DCGO.CardEffects.BT22
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Tuck Gammamon name to draw", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetHashString("BT22_020-atk");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription() =>  "[When Attacking][Once Per Turn] By placing 1 Digimon card with [Gammamon] in its name from your hand as this Digimon's bottom digivolution card, <Draw 1>.";
