@@ -3454,6 +3454,66 @@ public class CardSource : MonoBehaviour
 
     #endregion
 
+    #region whether this card has "Ver.1" trait
+
+    public bool HasVer1Traits
+    {
+        get
+        {
+            return EqualsTraits("Ver.1");
+        }
+    }
+
+    #endregion
+
+    #region whether this card has "Ver.2" trait
+
+    public bool HasVer2Traits
+    {
+        get
+        {
+            return EqualsTraits("Ver.2");
+        }
+    }
+
+    #endregion
+
+    #region whether this card has "Ver.3" trait
+
+    public bool HasVer3Traits
+    {
+        get
+        {
+            return EqualsTraits("Ver.3");
+        }
+    }
+
+    #endregion
+
+    #region whether this card has "Ver.4" trait
+
+    public bool HasVer4Traits
+    {
+        get
+        {
+            return EqualsTraits("Ver.4");
+        }
+    }
+
+    #endregion
+
+    #region whether this card has "Ver.5" trait
+
+    public bool HasVer5Traits
+    {
+        get
+        {
+            return EqualsTraits("Ver.5");
+        }
+    }
+
+    #endregion
+
     #region whether this card has "Aquatic" trait
 
     public bool HasAquaticTraits
