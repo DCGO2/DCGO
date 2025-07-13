@@ -236,10 +236,21 @@ namespace DCGO.CardEffects.BT22
                 {
                     foreach (Permanent permanent in removedPermanents)
                     {
+                        #region Remove Events from Permanent
+
                         permanent.HideDeleteEffect();
                         permanent.HideHandBounceEffect();
                         permanent.HideDeckBounceEffect();
                         permanent.HideWillRemoveFieldEffect();
+
+                        permanent.DestroyingEffect = null;
+                        permanent.IsDestroyedByBattle = false;
+                        permanent.HandBounceEffect = null;
+                        permanent.LibraryBounceEffect = null;
+                        permanent.willBeRemoveField = false;
+
+                        #endregion
+
                         yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource>() { permanent.TopCard }, activateClass));
                     }
                 }
