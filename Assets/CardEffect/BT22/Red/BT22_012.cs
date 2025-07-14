@@ -55,7 +55,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card)
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
                         && CardEffectCommons.IsOwnerTurn(card)
                         && CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectTamer)
                         && card.Owner.GetBattleAreaPermanents().Filter(x => x.IsTamer).Count <= 1;

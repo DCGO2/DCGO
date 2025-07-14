@@ -46,7 +46,7 @@ namespace DCGO.CardEffects.BT22
 
             bool SharedCanActivateCondition(Hashtable hashtable)
             {
-                return CardEffectCommons.IsExistOnField(card);
+                return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
             }
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
@@ -171,7 +171,7 @@ namespace DCGO.CardEffects.BT22
             {
                 bool Condition()
                 {
-                    return CardEffectCommons.IsExistOnField(card) && CardEffectCommons.IsOpponentTurn(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && CardEffectCommons.IsOpponentTurn(card);
                 }
 
                 cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect(changeValue: 2000, isInheritedEffect: true, card: card, condition: Condition));
