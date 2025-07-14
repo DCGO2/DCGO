@@ -33,6 +33,26 @@ namespace DCGO.CardEffects.BT22
 
             #endregion
 
+            #region Alternative Digivolution Condition
+
+            if (timing == EffectTiming.None)
+            {
+                bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.EqualsTraits("Stnd.");
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
+                    permanentCondition: PermanentCondition,
+                    digivolutionCost: 0,
+                    ignoreDigivolutionRequirement: false,
+                    card: card,
+                    condition: null)
+                );
+            }
+
+            #endregion
+
             #region Secuity
 
             if (timing == EffectTiming.SecuritySkill)
@@ -110,12 +130,12 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenLinking(hashtable, permanent => permanent == card.PermanentOfThisCard().TopCard.PermanentOfThisCard(), card);
+                    return CardEffectCommons.CanTriggerWhenLinking(hashtable, null, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card) && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, SharedPermanentCondition);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, SharedPermanentCondition);
                 }
             }
 

@@ -53,15 +53,15 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card) && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition);
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
                     return cardSource.IsDigimon
-                        && (cardSource.EqualsCardName("Greymon") ||
-                            cardSource.EqualsCardName("Garurumon") ||
-                            cardSource.EqualsCardName("Omnimon"));
+                        && (cardSource.ContainsCardName("Greymon") ||
+                            cardSource.ContainsCardName("Garurumon") ||
+                            cardSource.ContainsCardName("Omnimon"));
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

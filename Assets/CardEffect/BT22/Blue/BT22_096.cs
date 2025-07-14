@@ -176,7 +176,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card);
+                    return CardEffectCommons.IsExistOnBattleArea(card);
                 }
 
                 bool IsYaoQinglan(Permanent permanent)

@@ -129,7 +129,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card)
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
                         && CardEffectCommons.HasMatchConditionPermanent(SharedDigimonCondition);
                 }
 
@@ -162,7 +162,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card)
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
                         && CardEffectCommons.HasMatchConditionPermanent(SharedDigimonCondition);
                 }
 
@@ -196,7 +196,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card)
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
                         && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, IsOpponentDigimon);
                 }
 

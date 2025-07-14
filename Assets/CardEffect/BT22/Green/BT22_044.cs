@@ -52,7 +52,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card)
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
                         && CardEffectCommons.IsOwnerTurn(card)
                         && card.Owner.CanAddMemory(activateClass);
                 }
@@ -96,7 +96,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card)
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
                         && card.PermanentOfThisCard().DigivolutionCards.Count >= 1
                         && card.PermanentOfThisCard().TopCard.HasCSTraits;
                 }

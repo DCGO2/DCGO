@@ -55,7 +55,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 bool SelectOmnimonInText(CardSource source)
@@ -137,7 +137,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (isExistOnField(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         return true;
                     }
