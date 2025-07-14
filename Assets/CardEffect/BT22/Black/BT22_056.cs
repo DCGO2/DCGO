@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,12 +33,6 @@ namespace DCGO.CardEffects.BT22
             #endregion
 
             #region OP/WD Shared
-
-            bool IsYourDigimon(Permanent permanent)
-            {
-                return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
-            }
-
             bool IsYourOpponentDigimon(Permanent permanent)
             {
                 return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
@@ -51,15 +45,15 @@ namespace DCGO.CardEffects.BT22
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsYourDigimon))
+                if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsYourOpponentDigimon))
                 {
                     Permanent selectedPermament = null;
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersPermanentCount(card, IsYourDigimon));
+                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersPermanentCount(card, IsYourOpponentDigimon));
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
                         selectPlayer: card.Owner,
-                        canTargetCondition: IsYourDigimon,
+                        canTargetCondition: IsYourOpponentDigimon,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: maxCount,
@@ -76,10 +70,11 @@ namespace DCGO.CardEffects.BT22
                         yield return null;
                     }
 
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to give 3k DP.", "The opponent is selecting 1 Digimon to give 3k DP.");
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to give -3k DP.", "The opponent is selecting 1 Digimon to give -3k DP.");
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                    if (selectedPermament != null) yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(selectedPermament, 3000, EffectDuration.UntilEachTurnEnd, activateClass));
+                    if (selectedPermament != null) 
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(selectedPermament, -3000, EffectDuration.UntilEachTurnEnd, activateClass));
                 }
 
                 int levelMatchCount = card.PermanentOfThisCard().DigivolutionCards.Sum(entity =>
@@ -126,13 +121,13 @@ namespace DCGO.CardEffects.BT22
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Give 1 digimon +3k DP. if 2 or more same level in sources, De-Digivolve 1", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Give 1 digimon -3k DP. if 2 or more same level in sources, De-Digivolve 1", CanUseCondition, card);
                 activateClass.SetUpActivateClass(SharedCanActivateCondition, hashtable => SharedActivateCoroutine(hashtable, activateClass), -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[On Play] 1 of your Digimon gets +3000 DP for the turn. Then, if this Digimon's stack has 2 or more same-level cards, <De-Digivolve 1> 1 of your opponent's Digimon (Trash the top card. You can't trash past level 3 cards).";
+                    return "[On Play] 1 of your opponent's Digimon gets -3000 DP for the turn. Then, if this Digimon's stack has 2 or more same-level cards, ＜De-Digivolve 1＞ 1 of your opponent's Digimon. (Trash the top card. You can't trash past level 3 cards.)";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -148,13 +143,13 @@ namespace DCGO.CardEffects.BT22
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Give 1 digimon +3k DP. if 2 or more same level in sources, De-Digivolve 1", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Give 1 digimon -3k DP. if 2 or more same level in sources, De-Digivolve 1", CanUseCondition, card);
                 activateClass.SetUpActivateClass(SharedCanActivateCondition, hashtable => SharedActivateCoroutine(hashtable, activateClass), -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] 1 of your Digimon gets +3000 DP for the turn. Then, if this Digimon's stack has 2 or more same-level cards, <De-Digivolve 1> 1 of your opponent's Digimon (Trash the top card. You can't trash past level 3 cards).";
+                    return "[When Digivolving] 1 of your opponent's Digimon gets -3000 DP for the turn. Then, if this Digimon's stack has 2 or more same-level cards, ＜De-Digivolve 1＞ 1 of your opponent's Digimon. (Trash the top card. You can't trash past level 3 cards.)";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

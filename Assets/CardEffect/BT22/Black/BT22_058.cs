@@ -24,6 +24,13 @@ namespace DCGO.CardEffects.BT22
 
             #endregion
 
+            #region Link Effect
+            if (timing == EffectTiming.OnDeclaration)
+            {
+                cardEffects.Add(CardEffectFactory.LinkEffect(card));
+            }
+            #endregion
+
             #region All Turns - When Linked
 
             if (timing == EffectTiming.WhenLinked)
@@ -39,24 +46,28 @@ namespace DCGO.CardEffects.BT22
                     return "[All Turns] [Once Per Turn] When this Digimon gets linked, your opponent's effects can't return 1 of your Digimon to hands or decks until their turn ends.";
                 }
 
+                bool PermanentCondition(Permanent permanent)
+                {
+                    return permanent == card.PermanentOfThisCard();
+                }
+
+                bool CardCondition(CardSource source)
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenLinking(hashtable, IsDreammon, card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.CanTriggerWhenLinked(hashtable, PermanentCondition, CardCondition);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.HasMatchConditionOwnersPermanent(card, OtherDigimonCondition);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
-                bool IsDreammon(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && permanent == card.PermanentOfThisCard();
-                }
-
-                bool OtherDigimonCondition(Permanent permanent)
+                bool MyDigimonCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
                         && permanent != card.PermanentOfThisCard();
@@ -64,18 +75,18 @@ namespace DCGO.CardEffects.BT22
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, OtherDigimonCondition))
+                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, MyDigimonCondition))
                     {
                         Permanent selectedPermanent = null;
 
                         #region Select Permanent
 
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersPermanentCount(card, OtherDigimonCondition));
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersPermanentCount(card, MyDigimonCondition));
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: OtherDigimonCondition,
+                            canTargetCondition: MyDigimonCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,
@@ -124,19 +135,13 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenLinking(hashtable, PermanentCondition, card);
+                    return CardEffectCommons.CanTriggerWhenLinking(hashtable, null, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
                         && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, OpponentCondition);
-                }
-
-                bool PermanentCondition(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && permanent == card.TopCardPermanent();
                 }
 
                 bool OpponentCondition(Permanent permanent) => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);

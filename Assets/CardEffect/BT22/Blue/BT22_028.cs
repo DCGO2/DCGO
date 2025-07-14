@@ -34,15 +34,13 @@ namespace DCGO.CardEffects.BT22
             {
                 bool Condition()
                 {
-                    return CardEffectCommons.IsExistOnHand(card) &&
-                           CardEffectCommons.HasMatchConditionOwnersPermanent(card, HasYaoQinglan) &&
-                           CardEffectCommons.HasMatchConditionOwnersPermanent(card, PermanentCondition);
+                    return CardEffectCommons.HasMatchConditionOwnersPermanent(card, HasYaoQinglan);
                 }
 
                 bool HasYaoQinglan(Permanent targetPermanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(targetPermanent, card) &&
-                           targetPermanent.TopCard.EqualsCardName("Nokia Shiramine");
+                           targetPermanent.TopCard.EqualsCardName("Yao Qinglan");
                 }
 
                 bool PermanentCondition(Permanent targetPermanent)
@@ -91,7 +89,7 @@ namespace DCGO.CardEffects.BT22
                     return CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass)
                         && cardSource.IsDigimon
                         && cardSource.HasLevel && cardSource.Level == level
-                        && (cardSource.HasSeaAnimalTraits || cardSource.HasAquaTraits);
+                        && (cardSource.HasAquaTraits);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
