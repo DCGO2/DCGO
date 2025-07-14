@@ -56,7 +56,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool IsValidDigimonCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
                 }
 
                 bool IsValidHandCardCondition(CardSource source)
@@ -173,7 +173,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool IsValidDigimonCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
                 }
 
                 bool IsValidHandCardCondition(CardSource source)

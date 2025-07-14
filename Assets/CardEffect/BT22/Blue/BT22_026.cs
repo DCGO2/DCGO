@@ -31,8 +31,8 @@ namespace DCGO.CardEffects.BT22
             if (timing == EffectTiming.OnDeclaration)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Digivolve 1 [Gabumon] into this card for 6", null, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpICardEffect("Digivolve 1 [Gabumon] into this card for 6", CanUseCondition, card);
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -40,9 +40,9 @@ namespace DCGO.CardEffects.BT22
                     return "[Hand] [Main] If you have [Nokia Shiramine], 1 of your [Gabumon] digivolves into this card for a digivolution cost of 6, ignoring digivolution requirements.";
                 }
 
-                bool CanActivateCondition(Hashtable hashtable)
+                bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsOwnerTurn(card)
+                    return CardEffectCommons.IsExistOnHand(card)
                         && CardEffectCommons.HasMatchConditionOwnersHand(card, IsMetalGarurumon)
                         && CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsNokiaShiramine)
                         && CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsGabumon);
@@ -179,18 +179,12 @@ namespace DCGO.CardEffects.BT22
                         string selectPlayerMessage = "Which effect will you activate?";
                         string notSelectPlayerMessage = "The opponent is choosing which effect to activate.";
 
-                        if (canBounce && canDigivolve)
-                        {
-                            GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements,
+                        GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements,
                                 selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage,
                                 notSelectPlayerMessage: notSelectPlayerMessage);
 
-                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-                        }
-                        else
-                        {
-                            GManager.instance.userSelectionManager.SetInt(canBounce ? 0 : 1);
-                        }
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
                         int actionID = GManager.instance.userSelectionManager.SelectedIntValue;
 
                         #region Bounce digimon to hand
