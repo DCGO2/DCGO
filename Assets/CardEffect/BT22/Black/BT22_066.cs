@@ -32,6 +32,13 @@ namespace DCGO.CardEffects.BT22
 
             #endregion
 
+            #region Blast Digivolve
+            if (timing == EffectTiming.OnCounterTiming)
+            {
+                cardEffects.Add(CardEffectFactory.BlastDigivolveEffect(card: card, condition: null));
+            }
+            #endregion
+
             #region Blocker
 
             if (timing == EffectTiming.None)
@@ -180,7 +187,7 @@ namespace DCGO.CardEffects.BT22
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("De-Digivolve 1", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetHashString("BT22_066_DeDigivolve");
                 cardEffects.Add(activateClass);
 

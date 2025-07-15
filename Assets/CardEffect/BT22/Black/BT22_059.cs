@@ -33,7 +33,7 @@ namespace DCGO.CardEffects.BT22
 
             #region On Play
 
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete a 5 or less play cost digimon, then if you have [Arata Sanada]/[Eater Adam], gain immunity to DP reduction and bounce", CanUseCondition, card);
@@ -119,7 +119,7 @@ namespace DCGO.CardEffects.BT22
 
             #region When Digivolving
 
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete a 5 or less play cost digimon, then if you have [Arata Sanada]/[Eater Adam], gain immunity to DP reduction and bounce", CanUseCondition, card);

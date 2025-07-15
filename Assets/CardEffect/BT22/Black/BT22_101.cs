@@ -47,7 +47,8 @@ namespace DCGO.CardEffects.BT22
 
                 bool IsValidPermament(Permanent permanent)
                 {
-                    return permanent.Level >= 4 && permanent.TopCard.HasCSTraits;
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                           permanent.Level >= 4 && permanent.TopCard.HasCSTraits;
                 }
 
                 bool isValidCard(CardSource cardSource)

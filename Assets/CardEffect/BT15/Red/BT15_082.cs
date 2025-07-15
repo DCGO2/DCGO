@@ -27,11 +27,6 @@ namespace DCGO.CardEffects.BT15
                     return "[All Turns] When a red Digimon card returns from your trash to the hand, by returning this Tamer to the hand, you may play 1 13000 DP or less red Digimon card with [Avian], [Bird], [Beast], [Animal] or [Sovereign], other than [Sea Animal] in one of its traits from your hand without paying the cost. For each of your opponent's security cards, remove 2000 from this effect's playable card's DP maximum.";
                 }
 
-                bool CanSelectPermanentCondition(Permanent permanent)
-                {
-                    return permanent.TopCard == card;
-                }
-
                 bool CardReturnedCondition(CardSource cardSource)
                 {
                     if (cardSource.Owner == card.Owner)
@@ -87,33 +82,7 @@ namespace DCGO.CardEffects.BT15
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    Permanent bounceTargetPermanent = null;
-
-                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                    selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectPermanentCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: 1,
-                        canNoSelect: true,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: SelectPermanentCoroutine,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Custom,
-                        cardEffect: activateClass);
-
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 tamer to return to hand.", "The opponent is selecting 1 tamer to return to hand.");
-
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                    {
-                        bounceTargetPermanent = permanent;
-
-                        yield return null;
-                    }
+                    Permanent bounceTargetPermanent = card.PermanentOfThisCard();
 
                     if (bounceTargetPermanent != null)
                     {

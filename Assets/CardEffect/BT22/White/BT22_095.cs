@@ -26,7 +26,7 @@ namespace DCGO.CardEffects.BT22
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("+1 memory, then if you have 7 or less in hand, draw 1", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -48,7 +48,8 @@ namespace DCGO.CardEffects.BT22
 
                 bool IsEater(Permanent permanent)
                 {
-                    return permanent.TopCard.HasEaterTraits;
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                           permanent.TopCard.HasEaterTraits;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

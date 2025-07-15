@@ -72,7 +72,7 @@ namespace DCGO.CardEffects.BT22
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectOpponentsDigimonCondition))
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentsDigimonCondition))
                     {
                         Permanent selectedPermanent = null;
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectOpponentsDigimonCondition));
@@ -234,7 +234,7 @@ namespace DCGO.CardEffects.BT22
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectOpponentsDigimonCondition))
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentsDigimonCondition))
                     {
                         Permanent selectedPermanent = null;
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectOpponentsDigimonCondition));
