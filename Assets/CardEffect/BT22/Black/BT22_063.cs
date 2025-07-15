@@ -119,8 +119,9 @@ namespace DCGO.CardEffects.BT22
 
                 #endregion
 
-                if (selectedPermanent == null) yield return ContinuousController.instance.StartCoroutine(
-                    CardEffectCommons.ChangeDigimonDP(selectedPermanent, -5000, EffectDuration.UntilEachTurnEnd, activateClass));
+                if (selectedPermanent != null) 
+                    yield return ContinuousController.instance.StartCoroutine(
+                        CardEffectCommons.ChangeDigimonDP(selectedPermanent, -5000, EffectDuration.UntilEachTurnEnd, activateClass));
             }
 
             #endregion

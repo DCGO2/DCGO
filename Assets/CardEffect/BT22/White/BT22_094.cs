@@ -41,15 +41,17 @@ namespace DCGO.CardEffects.BT22
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.RevealDeckTopCardsAndProcessForAll(
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SimplifiedRevealDeckTopCardsAndSelect(
                     revealCount: 3,
-                    simplifiedSelectCardCondition:
-                    new SimplifiedSelectCardConditionClass(
+                    new SimplifiedSelectCardConditionClass[]
+                    {
+                        new SimplifiedSelectCardConditionClass(
                             canTargetCondition: CanSelectCardCondition,
                             message: "Select 1 [CS] Card",
                             mode: SelectCardEffect.Mode.AddHand,
                             maxCount: 1,
                             selectCardCoroutine: null),
+                    },                    
                     remainingCardsPlace: RemainingCardsPlace.DeckBottom,
                     activateClass: activateClass
                     ));
@@ -73,7 +75,9 @@ namespace DCGO.CardEffects.BT22
                 }
 
                 bool PlayCardCondition(CardSource cardSource)
-                    => CardEffectCommons.IsExistOnHand(cardSource) && cardSource.IsDigimon && cardSource.HasCSTraits && cardSource.Owner == card.Owner;
+                    => CardEffectCommons.IsExistOnHand(cardSource) && 
+                       (cardSource.IsDigimon || cardSource.IsTamer) && 
+                       cardSource.HasCSTraits && cardSource.Owner == card.Owner;
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
@@ -88,11 +92,17 @@ namespace DCGO.CardEffects.BT22
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(new DeckBottomBounceClass(new List<Permanent>() { card.PermanentOfThisCard() }, CardEffectCommons.CardEffectHashtable(activateClass)).DeckBounce());
+                    Permanent bounceTargetPermanent = card.PermanentOfThisCard();
 
-                        if (card.PermanentOfThisCard().TopCard == null && card.PermanentOfThisCard().LibraryBounceEffect == activateClass)
+                    if (bounceTargetPermanent != null)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeckBouncePeremanentAndProcessAccordingToResult(
+                            targetPermanents: new List<Permanent>() { bounceTargetPermanent },
+                            activateClass: activateClass,
+                            successProcess: SuccessProcess(),
+                            failureProcess: null));
+
+                        IEnumerator SuccessProcess()
                         {
                             ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().BuffSE);
 

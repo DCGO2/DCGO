@@ -11,123 +11,13 @@ namespace DCGO.CardEffects.BT22
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Shared Main/Security
-
-            IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
-            {
-                bool IsYaoQinglanOrSangomon(CardSource cardSource)
-                {
-                    return cardSource.EqualsCardName("Sangomon") || cardSource.EqualsCardName("Yao Qinglan");
-                }
-
-                bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, IsYaoQinglanOrSangomon);
-                bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, IsYaoQinglanOrSangomon);
-
-                if (canSelectHand || canSelectTrash)
-                {
-                    #region Option Selection
-
-                    if (canSelectHand && canSelectTrash)
-                    {
-                        List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
-                        {
-                            new SelectionElement<bool>(message: $"From hand", value : true, spriteIndex: 0),
-                            new SelectionElement<bool>(message: $"From trash", value : false, spriteIndex: 1),
-                        };
-
-                        string selectPlayerMessage = "From which area do you select a card?";
-                        string notSelectPlayerMessage = "The opponent is choosing from which area to select a card.";
-
-                        GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
-                    }
-                    else
-                    {
-                        GManager.instance.userSelectionManager.SetBool(canSelectHand);
-                    }
-
-                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-
-                    #endregion
-
-                    bool fromHand = GManager.instance.userSelectionManager.SelectedBoolValue;
-
-                    CardSource selectedCard = null;
-                    IEnumerator SelectCardCoroutine(CardSource cardSource)
-                    {
-                        selectedCard = cardSource;
-                        yield return null;
-                    }
-
-                    if (fromHand)
-                    {
-                        #region Play from Hand
-
-                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                        selectHandEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: IsYaoQinglanOrSangomon,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: 1,
-                            canNoSelect: true,
-                            canEndNotMax: false,
-                            isShowOpponent: true,
-                            selectCardCoroutine: SelectCardCoroutine,
-                            afterSelectCardCoroutine: null,
-                            mode: SelectHandEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-                        selectHandEffect.SetUpCustomMessage("Select 1 card to add as source.", "The opponent is selecting 1 card to add as source.");
-                        yield return StartCoroutine(selectHandEffect.Activate());
-
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(new List<CardSource>() { selectedCard }, activateClass, false, false, SelectCardEffect.Root.Hand, true));
-
-                        #endregion
-                    }
-                    if (!fromHand)
-                    {
-                        #region Play from Trash
-
-                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                        selectCardEffect.SetUp(
-                            canTargetCondition: IsYaoQinglanOrSangomon,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            canNoSelect: () => true,
-                            selectCardCoroutine: SelectCardCoroutine,
-                            afterSelectCardCoroutine: null,
-                            message: "Select 1 card to add as source.",
-                            maxCount: 1,
-                            canEndNotMax: false,
-                            isShowOpponent: true,
-                            mode: SelectCardEffect.Mode.Custom,
-                            root: SelectCardEffect.Root.Trash,
-                            customRootCardList: null,
-                            canLookReverseCard: true,
-                            selectPlayer: card.Owner,
-                            cardEffect: activateClass);
-
-                        selectCardEffect.SetUpCustomMessage("Select 1 card to add as source.", "The opponent is selecting 1 card to add as source.");
-
-                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(new List<CardSource>() { selectedCard }, activateClass, false, false, SelectCardEffect.Root.Trash, true));
-
-                        #endregion
-                    }
-                }
-            }
-
-            #endregion
-
             #region Main
 
             if (timing == EffectTiming.OptionSkill)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 [Sangomon] or [Yao Qinglan] from hand or trash", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -135,20 +25,119 @@ namespace DCGO.CardEffects.BT22
                     return "[Main] You may play 1 [Sangomon] or [Yao Qinglan] from your hand or trash without paying the cost. Then, place this card in the battle area.";
                 }
 
+                bool IsYaoQinglanOrSangomon(CardSource cardSource)
+                {
+                    return cardSource.EqualsCardName("Sangomon") || cardSource.EqualsCardName("Yao Qinglan");
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card);
                 }
 
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnHand(card)
-                        && CardEffectCommons.IsOwnerTurn(card);
-                }
-
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return SharedActivateCoroutine(hashtable, activateClass);
+                    bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, IsYaoQinglanOrSangomon);
+                    bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, IsYaoQinglanOrSangomon);
+
+                    if (canSelectHand || canSelectTrash)
+                    {
+                        #region Option Selection
+
+                        if (canSelectHand && canSelectTrash)
+                        {
+                            List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
+                        {
+                            new SelectionElement<bool>(message: $"From hand", value : true, spriteIndex: 0),
+                            new SelectionElement<bool>(message: $"From trash", value : false, spriteIndex: 1),
+                        };
+
+                            string selectPlayerMessage = "From which area do you select a card?";
+                            string notSelectPlayerMessage = "The opponent is choosing from which area to select a card.";
+
+                            GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+                        }
+                        else
+                        {
+                            GManager.instance.userSelectionManager.SetBool(canSelectHand);
+                        }
+
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                        #endregion
+
+                        bool fromHand = GManager.instance.userSelectionManager.SelectedBoolValue;
+
+                        CardSource selectedCard = null;
+                        IEnumerator SelectCardCoroutine(CardSource cardSource)
+                        {
+                            selectedCard = cardSource;
+                            yield return null;
+                        }
+
+                        if (fromHand)
+                        {
+                            #region Play from Hand
+
+                            SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                            selectHandEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: IsYaoQinglanOrSangomon,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: 1,
+                                canNoSelect: true,
+                                canEndNotMax: false,
+                                isShowOpponent: true,
+                                selectCardCoroutine: SelectCardCoroutine,
+                                afterSelectCardCoroutine: null,
+                                mode: SelectHandEffect.Mode.Custom,
+                                cardEffect: activateClass);
+
+                            selectHandEffect.SetUpCustomMessage("Select 1 card to add as source.", "The opponent is selecting 1 card to add as source.");
+                            
+                            yield return StartCoroutine(selectHandEffect.Activate());
+
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(new List<CardSource>() { selectedCard }, activateClass, false, false, SelectCardEffect.Root.Hand, true));
+
+                            #endregion
+                        }
+
+                        if (!fromHand)
+                        {
+                            #region Play from Trash
+
+                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                            selectCardEffect.SetUp(
+                                canTargetCondition: IsYaoQinglanOrSangomon,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                canNoSelect: () => true,
+                                selectCardCoroutine: SelectCardCoroutine,
+                                afterSelectCardCoroutine: null,
+                                message: "Select 1 card to add as source.",
+                                maxCount: 1,
+                                canEndNotMax: false,
+                                isShowOpponent: true,
+                                mode: SelectCardEffect.Mode.Custom,
+                                root: SelectCardEffect.Root.Trash,
+                                customRootCardList: null,
+                                canLookReverseCard: true,
+                                selectPlayer: card.Owner,
+                                cardEffect: activateClass);
+
+                            selectCardEffect.SetUpCustomMessage("Select 1 card to add as source.", "The opponent is selecting 1 card to add as source.");
+
+                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(new List<CardSource>() { selectedCard }, activateClass, false, false, SelectCardEffect.Root.Trash, true));
+
+                            #endregion
+                        }
+                    }
+
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlaceDelayOptionCards(card: card, cardEffect: activateClass));
                 }
             }
 
@@ -263,26 +252,8 @@ namespace DCGO.CardEffects.BT22
             #region Security
 
             if (timing == EffectTiming.SecuritySkill)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play 1 [Sangomon] or [Yao Qinglan] from hand or trash", null, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
-                cardEffects.Add(activateClass);
-
-                string EffectDiscription()
-                {
-                    return "[Security] Activate this card's [Main] effects.";
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerSecurityEffect(hashtable, card);
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    yield return SharedActivateCoroutine(hashtable, activateClass);
-                }
+            { 
+                CardEffectCommons.AddActivateMainOptionSecurityEffect(card: card, cardEffects: ref cardEffects, effectName: $"Play 1 [Sangomon] or [Yao Qinglan] from hand or trash");
             }
 
             #endregion

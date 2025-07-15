@@ -72,7 +72,7 @@ namespace DCGO.CardEffects.BT22
 
             if (timing == EffectTiming.None)
             {
-                cardEffects.Add(CardEffectFactory.RebootSelfStaticEffect(isInheritedEffect: true, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.RebootSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
             }
 
             #endregion
@@ -266,15 +266,14 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && card.Owner.LibraryCards.Count >= 3;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 bool IsAttackingPlayer(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent)
                         && GManager.instance.attackProcess.IsAttacking
-                        && GManager.instance.attackProcess.DoSecurityCheck;
+                        && GManager.instance.attackProcess.DefendingPermanent == null;
                 }
 
                 bool IsTamer(CardSource cardSource)
