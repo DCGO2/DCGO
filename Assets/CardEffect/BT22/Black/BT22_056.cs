@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,12 +33,6 @@ namespace DCGO.CardEffects.BT22
             #endregion
 
             #region OP/WD Shared
-
-            bool IsYourDigimon(Permanent permanent)
-            {
-                return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
-            }
-
             bool IsYourOpponentDigimon(Permanent permanent)
             {
                 return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
@@ -46,78 +40,10 @@ namespace DCGO.CardEffects.BT22
 
             bool SharedCanActivateCondition(Hashtable hashtable)
             {
-                return CardEffectCommons.IsExistOnField(card);
+                return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
             }
 
-            IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
-            {
-                if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsYourDigimon))
-                {
-                    Permanent selectedPermament = null;
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersPermanentCount(card, IsYourDigimon));
-                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                    selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: IsYourDigimon,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: maxCount,
-                        canNoSelect: false,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: SelectPermanentCoroutine,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Custom,
-                        cardEffect: activateClass);
-
-                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                    {
-                        selectedPermament = permanent;
-                        yield return null;
-                    }
-
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to give 3k DP.", "The opponent is selecting 1 Digimon to give 3k DP.");
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                    if (selectedPermament != null) yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(selectedPermament, 3000, EffectDuration.UntilEachTurnEnd, activateClass));
-                }
-
-                int levelMatchCount = card.PermanentOfThisCard().DigivolutionCards.Sum(entity =>
-                    new[] { entity.IsLevel2, entity.IsLevel3, entity.IsLevel4, entity.IsLevel5, entity.IsLevel6, }
-                        .Count(level => level)
-                );
-
-                if (levelMatchCount >= 2 && CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsYourOpponentDigimon))
-                {
-                    Permanent selectedPermament = null;
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, IsYourOpponentDigimon));
-                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                    selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: IsYourOpponentDigimon,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: maxCount,
-                        canNoSelect: false,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: SelectPermanentCoroutine,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Custom,
-                        cardEffect: activateClass);
-
-                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                    {
-                        selectedPermament = permanent;
-                        yield return null;
-                    }
-
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to de-digivolve.", "The opponent is selecting 1 Digimon to de-digivolve.");
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                    if (selectedPermament != null) yield return ContinuousController.instance.StartCoroutine(new IDegeneration(selectedPermament, 1, activateClass).Degeneration());
-                }
-            }
+            
 
             #endregion
 
@@ -126,18 +52,89 @@ namespace DCGO.CardEffects.BT22
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Give 1 digimon +3k DP. if 2 or more same level in sources, De-Digivolve 1", CanUseCondition, card);
-                activateClass.SetUpActivateClass(SharedCanActivateCondition, hashtable => SharedActivateCoroutine(hashtable, activateClass), -1, false, EffectDiscription());
+                activateClass.SetUpICardEffect("Give 1 digimon -3k DP. if 2 or more same level in sources, De-Digivolve 1", CanUseCondition, card);
+                activateClass.SetUpActivateClass(SharedCanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[On Play] 1 of your Digimon gets +3000 DP for the turn. Then, if this Digimon's stack has 2 or more same-level cards, <De-Digivolve 1> 1 of your opponent's Digimon (Trash the top card. You can't trash past level 3 cards).";
+                    return "[On Play] 1 of your opponent's Digimon gets -3000 DP for the turn. Then, if this Digimon's stack has 2 or more same-level cards, ＜De-Digivolve 1＞ 1 of your opponent's Digimon. (Trash the top card. You can't trash past level 3 cards.)";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsYourOpponentDigimon))
+                    {
+                        Permanent selectedPermament = null;
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersPermanentCount(card, IsYourOpponentDigimon));
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: IsYourOpponentDigimon,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: maxCount,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                        {
+                            selectedPermament = permanent;
+                            yield return null;
+                        }
+
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to give -3k DP.", "The opponent is selecting 1 Digimon to give -3k DP.");
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                        if (selectedPermament != null)
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(selectedPermament, -3000, EffectDuration.UntilEachTurnEnd, activateClass));
+                    }
+
+                    int levelMatchCount = card.PermanentOfThisCard().DigivolutionCards.Sum(entity =>
+                        new[] { entity.IsLevel2, entity.IsLevel3, entity.IsLevel4, entity.IsLevel5, entity.IsLevel6, }
+                            .Count(level => level)
+                    );
+
+                    if (levelMatchCount >= 2 && CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsYourOpponentDigimon))
+                    {
+                        Permanent selectedPermament = null;
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, IsYourOpponentDigimon));
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: IsYourOpponentDigimon,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: maxCount,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                        {
+                            selectedPermament = permanent;
+                            yield return null;
+                        }
+
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to de-digivolve.", "The opponent is selecting 1 Digimon to de-digivolve.");
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                        if (selectedPermament != null) yield return ContinuousController.instance.StartCoroutine(new IDegeneration(selectedPermament, 1, activateClass).Degeneration());
+                    }
                 }
             }
 
@@ -148,18 +145,89 @@ namespace DCGO.CardEffects.BT22
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Give 1 digimon +3k DP. if 2 or more same level in sources, De-Digivolve 1", CanUseCondition, card);
-                activateClass.SetUpActivateClass(SharedCanActivateCondition, hashtable => SharedActivateCoroutine(hashtable, activateClass), -1, false, EffectDiscription());
+                activateClass.SetUpICardEffect("Give 1 digimon -3k DP. if 2 or more same level in sources, De-Digivolve 1", CanUseCondition, card);
+                activateClass.SetUpActivateClass(SharedCanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] 1 of your Digimon gets +3000 DP for the turn. Then, if this Digimon's stack has 2 or more same-level cards, <De-Digivolve 1> 1 of your opponent's Digimon (Trash the top card. You can't trash past level 3 cards).";
+                    return "[When Digivolving] 1 of your opponent's Digimon gets -3000 DP for the turn. Then, if this Digimon's stack has 2 or more same-level cards, ＜De-Digivolve 1＞ 1 of your opponent's Digimon. (Trash the top card. You can't trash past level 3 cards.)";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsYourOpponentDigimon))
+                    {
+                        Permanent selectedPermament = null;
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersPermanentCount(card, IsYourOpponentDigimon));
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: IsYourOpponentDigimon,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: maxCount,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                        {
+                            selectedPermament = permanent;
+                            yield return null;
+                        }
+
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to give -3k DP.", "The opponent is selecting 1 Digimon to give -3k DP.");
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                        if (selectedPermament != null)
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(selectedPermament, -3000, EffectDuration.UntilEachTurnEnd, activateClass));
+                    }
+
+                    int levelMatchCount = card.PermanentOfThisCard().DigivolutionCards.Sum(entity =>
+                        new[] { entity.IsLevel2, entity.IsLevel3, entity.IsLevel4, entity.IsLevel5, entity.IsLevel6, }
+                            .Count(level => level)
+                    );
+
+                    if (levelMatchCount >= 2 && CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsYourOpponentDigimon))
+                    {
+                        Permanent selectedPermament = null;
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, IsYourOpponentDigimon));
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: IsYourOpponentDigimon,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: maxCount,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                        {
+                            selectedPermament = permanent;
+                            yield return null;
+                        }
+
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to de-digivolve.", "The opponent is selecting 1 Digimon to de-digivolve.");
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                        if (selectedPermament != null) yield return ContinuousController.instance.StartCoroutine(new IDegeneration(selectedPermament, 1, activateClass).Degeneration());
+                    }
                 }
             }
 
@@ -171,7 +239,7 @@ namespace DCGO.CardEffects.BT22
             {
                 bool Condition()
                 {
-                    return CardEffectCommons.IsExistOnField(card) && CardEffectCommons.IsOpponentTurn(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && CardEffectCommons.IsOpponentTurn(card);
                 }
 
                 cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect(changeValue: 2000, isInheritedEffect: true, card: card, condition: Condition));

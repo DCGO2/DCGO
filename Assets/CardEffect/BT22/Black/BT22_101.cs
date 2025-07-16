@@ -41,13 +41,14 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card)
+                    return CardEffectCommons.IsExistOnBattleArea(card)
                         && CardEffectCommons.CanActivateSuspendCostEffect(card);
                 }
 
                 bool IsValidPermament(Permanent permanent)
                 {
-                    return permanent.Level >= 4 && permanent.TopCard.HasCSTraits;
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                           permanent.Level >= 4 && permanent.TopCard.HasCSTraits;
                 }
 
                 bool isValidCard(CardSource cardSource)
@@ -114,7 +115,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card)
+                    return CardEffectCommons.IsExistOnBattleArea(card)
                         && CardEffectCommons.IsOwnerTurn(card)
                         && !CardEffectCommons.HasMatchConditionOwnersPermanent(card, perm => IsAlphaMon(perm.TopCard))
                         && CardEffectCommons.HasMatchConditionOwnersHand(card, IsAlphaMon);
@@ -122,8 +123,8 @@ namespace DCGO.CardEffects.BT22
 
                 bool IsKyokoKuremi(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && permanent.TopCard.EqualsCardName("Kyoko Kuremi");
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)
+                        && permanent == card.PermanentOfThisCard();
                 }
 
                 bool IsAlphaMon(CardSource cardSource)

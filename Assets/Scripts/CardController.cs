@@ -335,6 +335,11 @@ public class PlayCardClass
                 Root = SelectCardEffect.Root.DigivolutionCards;
             }
 
+            else if (card.Owner.GetFieldPermanents().Count((permanent) => permanent.LinkedCards.Contains(card)) >= 1)
+            {
+                Root = SelectCardEffect.Root.LinkedCards;
+            }
+
             else if (card.Owner.SecurityCards.Contains(card))
             {
                 Root = SelectCardEffect.Root.Security;
@@ -434,8 +439,8 @@ public class PlayCardClass
                 oldTrashCards.Add(cardSource);
             }
 
-            // effect of removing digivolution cards
-            if (card.IsPermanent && !isEvolution && card.PermanentOfThisCard() != null && Root == SelectCardEffect.Root.DigivolutionCards)
+            // effect of removing digivolution/linked cards
+            if (card.IsPermanent && !isEvolution && card.PermanentOfThisCard() != null && (Root == SelectCardEffect.Root.DigivolutionCards || Root == SelectCardEffect.Root.LinkedCards))
             {
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().RemoveDigivolveRootEffect(card, card.PermanentOfThisCard()));
             }
@@ -765,7 +770,6 @@ public class PlayCardClass
             #endregion
 
             #region Add Link Card of App Fusion
-            UnityEngine.Debug.Log($"PLAYING CARD: {IsAppFusion(card)}");
             if (IsAppFusion(card))
             {
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.selectAppFusionEffect.AddToSources(LinkedCard(card)));

@@ -34,7 +34,7 @@ namespace DCGO.CardEffects.BT22
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Place 1 level 5 or lower [Aqua]/[Sea Animal] digimon in sources, 1 digimon or tamer cant suspend", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -44,22 +44,22 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
+                    UnityEngine.Debug.Log($"CAN USE CONDITION: {CardEffectCommons.CanTriggerOnPlay(hashtable, card)}");
                     return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card)
-                        && CardEffectCommons.HasMatchConditionOwnersHand(card, HandCondition)
-                        && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, PermanentCondition);
+                    UnityEngine.Debug.Log($"CAN ACTIVATE CONDITION: {CardEffectCommons.IsExistOnBattleAreaDigimon(card)}, {CardEffectCommons.HasMatchConditionOwnersHand(card, HandCondition)}");
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                        && CardEffectCommons.HasMatchConditionOwnersHand(card, HandCondition);
                 }
 
                 bool HandCondition(CardSource source)
                 {
-                    return CardEffectCommons.IsExistOnHand(card)
-                        && source.IsDigimon
-                        && source.HasLevel && source.Level <= 5
-                        && (source.HasSeaAnimalTraits || source.HasAquaTraits);
+                    return source.IsDigimon && 
+                        source.HasLevel && source.Level <= 5 && 
+                        source.HasAquaTraits;
                 }
 
                 bool PermanentCondition(Permanent permanent)
@@ -111,36 +111,7 @@ namespace DCGO.CardEffects.BT22
 
                         if (selectedCard != null)
                         {
-                            #region Select Permanent
-
-                            Permanent selectedPermanent = null;
-                            int maxCount1 = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(IsRyugumon));
-
-                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: IsRyugumon,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: maxCount1,
-                                canNoSelect: false,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: SelectPermanentCoroutine,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Custom,
-                                cardEffect: activateClass);
-
-                            IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                            {
-                                selectedPermanent = permanent;
-                                yield return null;
-                            }
-                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to add digivolution source.", "The opponent is selecting 1 Digimon to add digivolution source.");
-
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                            #endregion
+                            Permanent selectedPermanent = card.PermanentOfThisCard();
 
                             if (selectedPermanent != null && selectedCard != null)
                             {
@@ -201,7 +172,7 @@ namespace DCGO.CardEffects.BT22
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Place 1 level 5 or lower [Aqua]/[Sea Animal] digimon in sources, 1 digimon or tamer cant suspend", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -216,9 +187,8 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card)
-                        && CardEffectCommons.HasMatchConditionOwnersHand(card, HandCondition)
-                        && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, PermanentCondition);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                        && CardEffectCommons.HasMatchConditionOwnersHand(card, HandCondition);
                 }
 
                 bool HandCondition(CardSource source)
@@ -226,7 +196,7 @@ namespace DCGO.CardEffects.BT22
                     return CardEffectCommons.IsExistOnHand(card)
                         && source.IsDigimon
                         && source.HasLevel && source.Level <= 5
-                        && (source.HasSeaAnimalTraits || source.HasAquaTraits);
+                        && source.HasAquaTraits;
                 }
 
                 bool PermanentCondition(Permanent permanent)
@@ -278,36 +248,7 @@ namespace DCGO.CardEffects.BT22
 
                         if (selectedCard != null)
                         {
-                            #region Select Permanent
-
-                            Permanent selectedPermanent = null;
-                            int maxCount1 = Math.Min(1, CardEffectCommons.MatchConditionOwnersPermanentCount(card, IsRyugumon));
-
-                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: IsRyugumon,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: maxCount1,
-                                canNoSelect: false,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: SelectPermanentCoroutine,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Custom,
-                                cardEffect: activateClass);
-
-                            IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                            {
-                                selectedPermanent = permanent;
-                                yield return null;
-                            }
-                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to add digivolution source.", "The opponent is selecting 1 Digimon to add digivolution source.");
-
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                            #endregion
+                            Permanent selectedPermanent = card.PermanentOfThisCard();
 
                             if (selectedPermanent != null && selectedCard != null)
                             {

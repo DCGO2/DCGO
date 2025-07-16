@@ -49,14 +49,14 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card)
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
                         && CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsValidDigimonCondition)
                         && CardEffectCommons.HasMatchConditionOwnersHand(card, IsValidHandCardCondition);
                 }
 
                 bool IsValidDigimonCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
                 }
 
                 bool IsValidHandCardCondition(CardSource source)
@@ -166,14 +166,14 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card)
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
                         && CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsValidDigimonCondition)
                         && CardEffectCommons.HasMatchConditionOwnersHand(card, IsValidHandCardCondition);
                 }
 
                 bool IsValidDigimonCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
                 }
 
                 bool IsValidHandCardCondition(CardSource source)

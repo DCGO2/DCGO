@@ -33,8 +33,8 @@ namespace DCGO.CardEffects.BT22
             if (timing == EffectTiming.OnDeclaration)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Place 1 [Shellmon] from trash under 1 [Sangomon], to digivolve for 3", null, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpICardEffect("Place 1 [Shellmon] from trash under 1 [Sangomon], to digivolve for 3", CanUseCondition, card);
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -42,7 +42,7 @@ namespace DCGO.CardEffects.BT22
                     return "[Hand] [Main] If you have [Yao Qinglan], by placing 1 [Shellmon] from your trash as any of your [Sangomon]'s bottom digivolution card, it digivolves into this card for a digivolution cost of 3, ignoring digivolution requirements.";
                 }
 
-                bool CanActivateCondition(Hashtable hashtable)
+                bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnHand(card)
                         && CardEffectCommons.IsOwnerTurn(card)
@@ -159,9 +159,17 @@ namespace DCGO.CardEffects.BT22
                                         ignoreDigivolutionRequirementFixedCost: 3,
                                         isHand: true,
                                         activateClass: activateClass,
-                                        successProcess: null));
+                                        successProcess: null,
+                                        ignoreSelection:true,
+                                        failedProcess:FailureProcess()));
 
                                     #endregion
+                                }
+
+                                IEnumerator FailureProcess()
+                                {
+                                    List<IDiscardHand> discardHands = new List<IDiscardHand>() { new IDiscardHand(card, null) };
+                                    yield return ContinuousController.instance.StartCoroutine(new IDiscardHands(discardHands, null).DiscardHands());
                                 }
                             }
                         }
@@ -194,7 +202,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card)
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
                         && card.PermanentOfThisCard().DigivolutionCards.Filter(x => CanSelectCardCondition(x)).Count >= 1;
                 }
 

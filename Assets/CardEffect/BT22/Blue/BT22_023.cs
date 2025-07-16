@@ -47,13 +47,13 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card)
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
                         && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermanentCondition);
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent)
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
                         && permanent.TopCard.HasLevel && permanent.TopCard.Level <= 4;
                 }
 
@@ -107,13 +107,13 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card)
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
                         && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectPermanentCondition);
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent)
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
                         && permanent.TopCard.HasLevel && permanent.TopCard.Level <= 4;
                 }
 
@@ -151,7 +151,7 @@ namespace DCGO.CardEffects.BT22
             if (timing == EffectTiming.OnEndTurn)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Unsuspend 1 blue tamer or digimon", null, card);
+                activateClass.SetUpICardEffect("Unsuspend 1 blue tamer or digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("BT22_023_OnEndTurn");
                 cardEffects.Add(activateClass);
@@ -161,20 +161,23 @@ namespace DCGO.CardEffects.BT22
                     return "[End of Your Turn] [Once Per Turn] 1 of your blue Digimon or Tamers may unsuspend.";
                 }
 
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                        && CardEffectCommons.IsOwnerTurn(card);
+                }
+
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card)
-                        && CardEffectCommons.IsOwnerTurn(card)
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
                         && CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermanentCondition);
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)
-                        && CardEffectCommons.CanUnsuspend(permanent)
                         && permanent.TopCard.CardColors.Contains(CardColor.Blue)
-                        && permanent.IsDigimon || permanent.IsTamer
-                        && permanent.IsSuspended;
+                        && permanent.IsDigimon || permanent.IsTamer;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -229,7 +232,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card)
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
                         && CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsBlueTamer);
                 }
 

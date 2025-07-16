@@ -41,7 +41,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card)
+                    return CardEffectCommons.IsExistOnBattleArea(card)
                         && CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsVeedramonInName);
                 }
 
@@ -86,7 +86,8 @@ namespace DCGO.CardEffects.BT22
 
                         #endregion
 
-                        if (selectedPermanent != null) yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: selectedPermanent, changeValue: 3000, effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
+                        if (selectedPermanent != null) 
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: selectedPermanent, changeValue: 3000, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
                     }
                 }
             }
@@ -111,13 +112,14 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPermanentAttack(hashtable, PermanentAttackCondition);
+                    return CardEffectCommons.IsExistOnBattleArea(card) && 
+                           CardEffectCommons.CanTriggerOnPermanentAttack(hashtable, PermanentAttackCondition);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card)
-                        && CardEffectCommons.IsOwnerTurn(card);
+                    return CardEffectCommons.IsExistOnBattleArea(card) &&
+                           CardEffectCommons.IsOwnerTurn(card);
                 }
 
                 bool PermanentAttackCondition(Permanent permanent)
@@ -136,40 +138,22 @@ namespace DCGO.CardEffects.BT22
                         && permanent.TopCard.ContainsCardName("Veedramon");
                 }
 
-                bool BounceTamerCondition(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card)
-                        && permanent == card.PermanentOfThisCard();
-                }
-
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    #region Bounce digimon to hand
+                    Permanent bounceTargetPermanent = card.PermanentOfThisCard();
 
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersPermanentCount(card, BounceTamerCondition));
-                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                    selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: BounceTamerCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: maxCount,
-                        canNoSelect: false,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: null,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Bounce,
-                        cardEffect: activateClass);
-
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 tamer to bounce to hand.", "The opponent is selecting a tamer to bounce to hand.");
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                    #endregion
-
-                    if (!CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(card.PermanentOfThisCard(), card) && attackingVeedraInName != null)
+                    if (bounceTargetPermanent != null)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainJamming(attackingVeedraInName, EffectDuration.UntilEachTurnEnd, activateClass));
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.BouncePeremanentAndProcessAccordingToResult(
+                            targetPermanents: new List<Permanent>() { bounceTargetPermanent },
+                            activateClass: activateClass,
+                            successProcess: SuccessProcess(),
+                            failureProcess: null));
+
+                        IEnumerator SuccessProcess()
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainJamming(attackingVeedraInName, EffectDuration.UntilEachTurnEnd, activateClass));
+                        }
                     }
                 }
             }

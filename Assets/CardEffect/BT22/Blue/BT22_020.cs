@@ -103,7 +103,7 @@ namespace DCGO.CardEffects.BT22
             }
             #endregion
 
-            #region inherit
+            #region ESS
             if (timing == EffectTiming.None)
             {
                 cardEffects.Add(CardEffectFactory.JammingSelfStaticEffect(

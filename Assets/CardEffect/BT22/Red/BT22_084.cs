@@ -25,13 +25,19 @@ namespace DCGO.CardEffects.BT22
             if (timing == EffectTiming.OnStartMainPhase)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play 1 [Agumon] or [Gabumon]", null, card);
+                activateClass.SetUpICardEffect("Play 1 [Agumon] or [Gabumon]", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, _ => SharedActivateCoroutine(activateClass), -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
                     return "[Start of Your Main Phase] If you have 1 or fewer Digimon, you may play 1 [Agumon] or [Gabumon] from your hand without paying the cost.";
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnField(card) &&
+                           CardEffectCommons.IsOwnerTurn(card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

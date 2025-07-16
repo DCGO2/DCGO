@@ -53,7 +53,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card)
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
                         && CardEffectCommons.IsOwnerTurn(card)
                         && CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectTamer)
                         && card.Owner.GetBattleAreaPermanents().Filter(x => x.IsTamer).Count <= 1;
@@ -122,7 +122,7 @@ namespace DCGO.CardEffects.BT22
             if (timing == EffectTiming.OnDeclaration)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Place the top card of this Digimon at the bottom of digivolution cards to Draw 1 (Hagurumon)", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Place the top card of this Digimon at the bottom of digivolution cards to Draw 1", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("ReturnDigivolutionCards_BT22_043");
@@ -135,7 +135,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card)
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
                         && card.PermanentOfThisCard().DigivolutionCards.Count >= 1
                         && card.PermanentOfThisCard().TopCard.HasCSTraits;
                 }

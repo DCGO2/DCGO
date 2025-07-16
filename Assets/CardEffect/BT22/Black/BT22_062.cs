@@ -49,7 +49,7 @@ namespace DCGO.CardEffects.BT22
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Gain 4K DP, then if [MetalTyrannomon]/[X Antibody] in sources, 1 digimon cant digivolve", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -64,7 +64,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 bool OpponentDigimon(Permanent permanent)
@@ -91,7 +91,7 @@ namespace DCGO.CardEffects.BT22
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,
-                            canNoSelect: true,
+                            canNoSelect: false,
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine,
                             afterSelectPermanentCoroutine: null,
@@ -164,7 +164,7 @@ namespace DCGO.CardEffects.BT22
 
                             #endregion
 
-                            selectedPermanent.UntilOpponentTurnEndEffects.Add(CanNotDigivolve);
+                            selectedPermanent.UntilOwnerTurnEndEffects.Add(CanNotDigivolve);
                             ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().DebuffSE);
                             yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(selectedPermanent));
                         }
@@ -179,7 +179,7 @@ namespace DCGO.CardEffects.BT22
             if (timing == EffectTiming.OnEndTurn)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("1 of your opponent's digimon attacks", null, card);
+                activateClass.SetUpICardEffect("1 of your opponent's digimon attacks", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("BT22_062_EndOfOpponentTurn");
                 activateClass.SetIsInheritedEffect(true);
@@ -190,11 +190,16 @@ namespace DCGO.CardEffects.BT22
                     return "[End of Opponent's Turn] [Once Per Turn] You may choose 1 of your opponent's Digimon. Your opponent attacks with the chosen Digimon.";
                 }
 
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.IsOpponentTurn(card);
+                }
+
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card)
-                        && CardEffectCommons.IsOpponentTurn(card)
-                        && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, OpponentDigimon);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.HasMatchConditionOpponentsPermanent(card, OpponentDigimon);
                 }
 
                 bool OpponentDigimon(Permanent permanent)

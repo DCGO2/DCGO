@@ -72,7 +72,7 @@ namespace DCGO.CardEffects.BT22
 
             if (timing == EffectTiming.None)
             {
-                cardEffects.Add(CardEffectFactory.RebootSelfStaticEffect(isInheritedEffect: true, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.RebootSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
             }
 
             #endregion
@@ -201,7 +201,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -233,7 +233,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -249,7 +249,7 @@ namespace DCGO.CardEffects.BT22
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Reveal top 3, Play 1 4 cost or lower Black or Red tamer", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Reveal top 3, Play 1 4 cost or lower Black or Red card", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetHashString("BT22_067_PlayTamer");
                 cardEffects.Add(activateClass);
@@ -266,33 +266,31 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card)
-                        && card.Owner.LibraryCards.Count >= 3;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 bool IsAttackingPlayer(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent)
                         && GManager.instance.attackProcess.IsAttacking
-                        && GManager.instance.attackProcess.DoSecurityCheck;
+                        && GManager.instance.attackProcess.DefendingPermanent == null;
                 }
 
-                bool IsTamer(CardSource cardSource)
+                bool IsProperCard(CardSource cardSource)
                 {
-                    return cardSource.IsTamer
-                        && card.HasPlayCost && cardSource.BasePlayCostFromEntity <= 4
-                        && (cardSource.CardColors.Contains(CardColor.Black) || cardSource.CardColors.Contains(CardColor.Red));
+                    return card.HasPlayCost && cardSource.BasePlayCostFromEntity <= 4 &&
+                           (cardSource.CardColors.Contains(CardColor.Black) || cardSource.CardColors.Contains(CardColor.Red));
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    CardSource selectedTamer = null;
+                    CardSource selectedCard = null;
 
-                    #region Select Tamer
+                    #region Select Card
 
                     IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
-                        selectedTamer = cardSource;
+                        selectedCard = cardSource;
                         yield return null;
                     }
 
@@ -302,8 +300,8 @@ namespace DCGO.CardEffects.BT22
                         new SimplifiedSelectCardConditionClass[]
                         {
                         new SimplifiedSelectCardConditionClass(
-                            canTargetCondition:IsTamer,
-                            message: "Select 1 4 or lower play cost Black/Red tamer",
+                            canTargetCondition:IsProperCard,
+                            message: "Select 1 4 or lower play cost Black/Red card",
                             mode: SelectCardEffect.Mode.Custom,
                             maxCount: 1,
                             selectCardCoroutine: SelectCardCoroutine),
@@ -314,9 +312,9 @@ namespace DCGO.CardEffects.BT22
 
                     #endregion
 
-                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddExecutingCard(selectedTamer));
-                    if (selectedTamer != null) yield return ContinuousController.instance.StartCoroutine(
-                        CardEffectCommons.PlayPermanentCards(new List<CardSource>() { selectedTamer }, activateClass, false, false, SelectCardEffect.Root.Execution, true));
+                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddExecutingCard(selectedCard));
+                    if (selectedCard != null) yield return ContinuousController.instance.StartCoroutine(
+                        CardEffectCommons.PlayPermanentCards(new List<CardSource>() { selectedCard }, activateClass, false, false, SelectCardEffect.Root.Execution, true));
                 }
             }
 

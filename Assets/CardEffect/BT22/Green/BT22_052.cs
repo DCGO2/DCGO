@@ -231,7 +231,7 @@ namespace DCGO.CardEffects.BT22
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Memory +2", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetHashString("AllTurn_BT22-052");
                 cardEffects.Add(activateClass);
 
@@ -242,7 +242,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool PermanentCondition(Permanent permanent)
                 {
-                    return permanent.TopCard.Owner == card.Owner &&
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&                           
                            permanent != card.PermanentOfThisCard();
                 }
 
