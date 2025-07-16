@@ -192,6 +192,7 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
         Recollection,
         Execution,
         DigivolutionCards,
+        LinkedCards,
         None,
     }
 
