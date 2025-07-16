@@ -172,7 +172,6 @@ namespace DCGO.CardEffects.BT22
             }
             #endregion
 
-
             return cardEffects;
         }
     }
