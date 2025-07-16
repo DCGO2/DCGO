@@ -83,7 +83,7 @@ namespace DCGO.CardEffects.BT22
 
                 string EffectDiscription()
                 {
-                    return "[On Play] Suspend 1 of your opponent's Digimon. Then, if this Digimon's stack has 2 or more same-level cards, 1 of your opponent's Digimon can't unsuspend until their turn ends.";
+                    return "[On Play] Suspend 1 of your opponent's Digimon. Then, if this Digimon's stack has 2 or more same-level cards, return 1 of your opponent's suspended Digimon with the lowest DP to the hand.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -152,7 +152,7 @@ namespace DCGO.CardEffects.BT22
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] Suspend 1 of your opponent's Digimon. Then, if this Digimon's stack has 2 or more same-level cards, 1 of your opponent's Digimon can't unsuspend until their turn ends.";
+                    return "[When Digivolving] Suspend 1 of your opponent's Digimon. Then, if this Digimon's stack has 2 or more same-level cards, return 1 of your opponent's suspended Digimon with the lowest DP to the hand.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

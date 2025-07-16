@@ -32,6 +32,28 @@ namespace DCGO.CardEffects.BT22
             #endregion
 
             #region Static Effects
+            #region Card Name
+
+            if (timing == EffectTiming.None)
+            {
+                ChangeCardNamesClass changeCardNamesClass = new ChangeCardNamesClass();
+                changeCardNamesClass.SetUpICardEffect("Also treated as having [Greymon]", hashtable => true, card);
+                changeCardNamesClass.SetUpChangeCardNamesClass(changeCardNames: changeCardNames);
+                cardEffects.Add(changeCardNamesClass);
+
+                List<string> changeCardNames(CardSource cardSource, List<string> CardNames)
+                {
+                    if (cardSource == card)
+                    {
+                        CardNames.Add("Greymon_BT22_014");
+                    }
+
+                    return CardNames;
+                }
+            }
+
+            #endregion
+
             //Raid
             if (timing == EffectTiming.OnAllyAttack)
             {
@@ -81,7 +103,7 @@ namespace DCGO.CardEffects.BT22
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner.Enemy,
+                            selectPlayer: card.Owner,
                             canTargetCondition: IsOpponentsDigimon,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,

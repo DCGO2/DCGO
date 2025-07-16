@@ -258,18 +258,24 @@ namespace DCGO.CardEffects.BT22
                             maxCount: maxCount,
                             canNoSelect: false,
                             canEndNotMax: false,
-                            selectPermanentCoroutine: null,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
                             afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Destroy,
+                            mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
                         selectPermanentEffect.SetUpCustomMessage("Select 1 opponent's Digimon to De-digivolve.", "The opponent is selecting 1 Digimon to De-digivolve.");
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
+                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                        {
+                            targetDegenPermanent = permanent;
+                            yield return null;
+                        }
+
                         #endregion
 
-                        if (targetDegenPermanent != null) yield return ContinuousController.instance.StartCoroutine(
-                            new IDegeneration(targetDegenPermanent, 1, activateClass).Degeneration());
+                        if (targetDegenPermanent != null) 
+                            yield return ContinuousController.instance.StartCoroutine(new IDegeneration(targetDegenPermanent, 1, activateClass).Degeneration());
                     }
 
                     if (card.PermanentOfThisCard().HasFaceDownDigivolutionCards)
@@ -398,13 +404,19 @@ namespace DCGO.CardEffects.BT22
                             maxCount: maxCount,
                             canNoSelect: false,
                             canEndNotMax: false,
-                            selectPermanentCoroutine: null,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
                             afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Destroy,
+                            mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
                         selectPermanentEffect.SetUpCustomMessage("Select 1 opponent's Digimon to De-digivolve.", "The opponent is selecting 1 Digimon to De-digivolve.");
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                        {
+                            targetDegenPermanent = permanent;
+                            yield return null;
+                        }
 
                         #endregion
 

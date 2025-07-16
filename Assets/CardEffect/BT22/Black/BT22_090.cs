@@ -111,9 +111,9 @@ namespace DCGO.CardEffects.BT22
                                         targetPermanent: card.PermanentOfThisCard(),
                                         cardCondition: IsLordKnightmon,
                                         payCost: true,
-                                        reduceCostTuple: null,
+                                        reduceCostTuple: (reduceCost: 3, reduceCostCardCondition: null),
                                         fixedCostTuple: null,
-                                        ignoreDigivolutionRequirementFixedCost: 3,
+                                        ignoreDigivolutionRequirementFixedCost: -1,
                                         isHand: true,
                                         activateClass: activateClass,
                                         successProcess: null));

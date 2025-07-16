@@ -151,7 +151,7 @@ namespace DCGO.CardEffects.BT22
             if (timing == EffectTiming.OnEndTurn)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Unsuspend 1 blue tamer or digimon", null, card);
+                activateClass.SetUpICardEffect("Unsuspend 1 blue tamer or digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("BT22_023_OnEndTurn");
                 cardEffects.Add(activateClass);
@@ -161,10 +161,15 @@ namespace DCGO.CardEffects.BT22
                     return "[End of Your Turn] [Once Per Turn] 1 of your blue Digimon or Tamers may unsuspend.";
                 }
 
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                        && CardEffectCommons.IsOwnerTurn(card);
+                }
+
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.IsOwnerTurn(card)
                         && CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermanentCondition);
                 }
 

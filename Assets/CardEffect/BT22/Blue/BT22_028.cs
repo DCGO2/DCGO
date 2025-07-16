@@ -65,7 +65,7 @@ namespace DCGO.CardEffects.BT22
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Place 1 digimon as bottom source, bottom deck 1 digimon & unsuspend", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Play 1 of each level (3, 4, and 5)", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
