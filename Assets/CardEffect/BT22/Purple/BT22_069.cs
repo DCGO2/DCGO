@@ -15,7 +15,7 @@ namespace DCGO.CardEffects.BT22
             {
                 bool PermanentCondition(Permanent permanent)
                 {
-                    return permanent.Level == 2 && (permanent.TopCard.HasCSTraits || permanent.TopCard.HasLightFangNightClawTraits);
+                    return permanent.Level == 2 && (permanent.TopCard.HasCSTraits || permanent.TopCard.HasLightFangOrNightClawTraits);
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(PermanentCondition, 0, false, card, null));
@@ -95,7 +95,6 @@ namespace DCGO.CardEffects.BT22
             }
             #endregion
 
-
             #region Inherit
 
             if (timing == EffectTiming.OnDeclaration)
@@ -114,7 +113,7 @@ namespace DCGO.CardEffects.BT22
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
                         && card.PermanentOfThisCard().DigivolutionCards.Count >= 1
-                        && card.PermanentOfThisCard().TopCard.HasLightFangNightClawTraits;
+                        && card.PermanentOfThisCard().TopCard.HasLightFangOrNightClawTraits;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
