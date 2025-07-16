@@ -27,7 +27,9 @@ namespace DCGO.CardEffects.BT22
             if(timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-
+                activateClass.SetUpICardEffect("Delete level 4 or lower", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
+                cardEffects.Add(activateClass); 
 
                 string EffectDescription() => "[When Digivolving] If [DarkTyrannomon] or [X Antibody] is in this Digimon's digivolution cards, delete 1 of your opponent's level 4 or lower Digimon.";
 
