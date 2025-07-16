@@ -123,8 +123,8 @@ namespace DCGO.CardEffects.BT22
 
                 bool IsKyokoKuremi(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && permanent.TopCard.EqualsCardName("Kyoko Kuremi");
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)
+                        && permanent == card.PermanentOfThisCard();
                 }
 
                 bool IsAlphaMon(CardSource cardSource)

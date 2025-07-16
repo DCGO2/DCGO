@@ -145,7 +145,7 @@ namespace DCGO.CardEffects.BT22
 
             #region Delay
 
-            if (timing == EffectTiming.OnUnTappedAnyone)
+            if (timing == EffectTiming.OnTappedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Digiolve 1 [Aqua]/[Sea Animal] digimon into a [Aquatic]/[Liberator] digimon in your hand for 3 reduced cost", CanUseCondition, card);
@@ -189,61 +189,64 @@ namespace DCGO.CardEffects.BT22
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsAquaOrSeaAnimal))
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: new List<Permanent>() { card.PermanentOfThisCard() }, activateClass: activateClass, successProcess: permanents => SuccessProcess(), failureProcess: null));
+
+                    IEnumerator SuccessProcess()
                     {
-                        Permanent selectedPermanent = null;
-
-                        #region Select [Aqua]/[Sea Animal] Permanent
-
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersPermanentCount(card, IsAquaOrSeaAnimal));
-
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: IsAquaOrSeaAnimal,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: false,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: SelectPermanentCoroutine,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsAquaOrSeaAnimal))
                         {
-                            selectedPermanent = permanent;
-                            yield return null;
-                        }
+                            Permanent selectedPermanent = null;
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 [Aqua]/[Sea Animal] to digivolve.", "The opponent is selecting 1 [Aqua]/[Sea Animal] to digivolve.");
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                            #region Select [Aqua]/[Sea Animal] Permanent
 
-                        #endregion
+                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersPermanentCount(card, IsAquaOrSeaAnimal));
 
-                        if (selectedPermanent != null)
-                        {
-                            #region Digivolve into [Aquatic/LIBERATOR] Digimon
+                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                                selectedPermanent,
-                                digivolvingCard => IsAquaticOrLiberator(digivolvingCard, selectedPermanent),
-                                payCost: true,
-                                reduceCostTuple: (reduceCost: 3, reduceCostCardCondition: null),
-                                fixedCostTuple: null,
-                                ignoreDigivolutionRequirementFixedCost: -1,
-                                isHand: true,
-                                activateClass: activateClass,
-                                successProcess: null
-                            ));
+                            selectPermanentEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: IsAquaOrSeaAnimal,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: maxCount,
+                                canNoSelect: false,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: SelectPermanentCoroutine,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Custom,
+                                cardEffect: activateClass);
+
+                            IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                            {
+                                selectedPermanent = permanent;
+                                yield return null;
+                            }
+
+                            selectPermanentEffect.SetUpCustomMessage("Select 1 [Aqua]/[Sea Animal] to digivolve.", "The opponent is selecting 1 [Aqua]/[Sea Animal] to digivolve.");
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
                             #endregion
+
+                            if (selectedPermanent != null)
+                            {
+                                #region Digivolve into [Aquatic/LIBERATOR] Digimon
+
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                                    selectedPermanent,
+                                    digivolvingCard => IsAquaticOrLiberator(digivolvingCard, selectedPermanent),
+                                    payCost: true,
+                                    reduceCostTuple: (reduceCost: 3, reduceCostCardCondition: null),
+                                    fixedCostTuple: null,
+                                    ignoreDigivolutionRequirementFixedCost: -1,
+                                    isHand: true,
+                                    activateClass: activateClass,
+                                    successProcess: null
+                                ));
+
+                                #endregion
+                            }
                         }
                     }
-
-                    yield return null;
                 }
             }
 

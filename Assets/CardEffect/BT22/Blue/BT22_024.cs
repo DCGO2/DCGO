@@ -159,9 +159,17 @@ namespace DCGO.CardEffects.BT22
                                         ignoreDigivolutionRequirementFixedCost: 3,
                                         isHand: true,
                                         activateClass: activateClass,
-                                        successProcess: null));
+                                        successProcess: null,
+                                        ignoreSelection:true,
+                                        failedProcess:FailureProcess()));
 
                                     #endregion
+                                }
+
+                                IEnumerator FailureProcess()
+                                {
+                                    List<IDiscardHand> discardHands = new List<IDiscardHand>() { new IDiscardHand(card, null) };
+                                    yield return ContinuousController.instance.StartCoroutine(new IDiscardHands(discardHands, null).DiscardHands());
                                 }
                             }
                         }

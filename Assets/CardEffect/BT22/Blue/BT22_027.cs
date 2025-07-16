@@ -44,14 +44,15 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
+                    UnityEngine.Debug.Log($"CAN USE CONDITION: {CardEffectCommons.CanTriggerOnPlay(hashtable, card)}");
                     return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
+                    UnityEngine.Debug.Log($"CAN ACTIVATE CONDITION: {CardEffectCommons.IsExistOnBattleAreaDigimon(card)}, {CardEffectCommons.HasMatchConditionOwnersHand(card, HandCondition)}");
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.HasMatchConditionOwnersHand(card, HandCondition)
-                        && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, PermanentCondition);
+                        && CardEffectCommons.HasMatchConditionOwnersHand(card, HandCondition);
                 }
 
                 bool HandCondition(CardSource source)
@@ -187,8 +188,7 @@ namespace DCGO.CardEffects.BT22
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.HasMatchConditionOwnersHand(card, HandCondition)
-                        && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, PermanentCondition);
+                        && CardEffectCommons.HasMatchConditionOwnersHand(card, HandCondition);
                 }
 
                 bool HandCondition(CardSource source)

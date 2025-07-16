@@ -126,7 +126,7 @@ namespace DCGO.CardEffects.BT22
                                     {
                                         if (PermanentsCondition(targetPermanents))
                                         {
-                                            Cost -= 1;
+                                            Cost -= 2;
                                         }
                                     }
                                 }
