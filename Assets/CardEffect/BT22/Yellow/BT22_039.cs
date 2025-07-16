@@ -3,7 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DCGO.CardEffects
+// Ouranosmon
+namespace DCGO.CardEffects.BT22
 {
     public class BT22_039 : CEntity_Effect
     {
@@ -124,34 +125,173 @@ namespace DCGO.CardEffects
 
             #endregion
 
-            // TBC
-            if (timing == EffectTiming.None)
+            #region When Digivolving
+
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpICardEffect("Play 1 Level 4 or lower [Appmon]", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetHashString("BT22_039_WDWA");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "";
+                    return "[When Digivolving] [Once Per Turn] You may play 1 level 4 or lower [Appmon] trait Digimon card from your hand without paying the cost.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return true;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                        && CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return true;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                        && CardEffectCommons.HasMatchConditionOwnersHand(card, IsAppMon);
+                }
+
+                bool IsAppMon(CardSource cardSource)
+                {
+                    return cardSource.IsDigimon
+                        && cardSource.HasLevel && cardSource.Level <= 4
+                        && cardSource.HasAppmonTraits
+                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return null;
+                    if (CardEffectCommons.HasMatchConditionOwnersHand(card, IsAppMon))
+                    {
+                        CardSource selectedCard = null;
+
+                        #region Select Card From Hand
+
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInHand(card, IsAppMon));
+                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                        selectHandEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: IsAppMon,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: maxCount,
+                            canNoSelect: true,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            selectCardCoroutine: SelectCardCoroutine,
+                            afterSelectCardCoroutine: null,
+                            mode: SelectHandEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        IEnumerator SelectCardCoroutine(CardSource cardSource)
+                        {
+                            selectedCard = cardSource;
+                            yield return null;
+                        }
+                        selectHandEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
+                        yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+
+                        #endregion
+
+                        if (selectedCard != null) yield return ContinuousController.instance.StartCoroutine(
+                            CardEffectCommons.PlayPermanentCards(
+                                cardSources: new List<CardSource>() { selectedCard },
+                                activateClass: activateClass,
+                                payCost: false,
+                                isTapped: false,
+                                root: SelectCardEffect.Root.Hand,
+                                activateETB: true));
+                    }
                 }
             }
+
+            #endregion
+
+            #region When Attacking
+
+            if (timing == EffectTiming.OnEnterFieldAnyone)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Play 1 Level 4 or lower [Appmon]", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetHashString("BT22_039_WDWA");
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[When Attacking] [Once Per Turn] You may play 1 level 4 or lower [Appmon] trait Digimon card from your hand without paying the cost.";
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                        && CardEffectCommons.CanTriggerOnAttack(hashtable, card);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                        && CardEffectCommons.HasMatchConditionOwnersHand(card, IsAppMon);
+                }
+
+                bool IsAppMon(CardSource cardSource)
+                {
+                    return cardSource.IsDigimon
+                        && cardSource.HasLevel && cardSource.Level <= 4
+                        && cardSource.HasAppmonTraits
+                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.HasMatchConditionOwnersHand(card, IsAppMon))
+                    {
+                        CardSource selectedCard = null;
+
+                        #region Select Card From Hand
+
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInHand(card, IsAppMon));
+                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                        selectHandEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: IsAppMon,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: maxCount,
+                            canNoSelect: true,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            selectCardCoroutine: SelectCardCoroutine,
+                            afterSelectCardCoroutine: null,
+                            mode: SelectHandEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        IEnumerator SelectCardCoroutine(CardSource cardSource)
+                        {
+                            selectedCard = cardSource;
+                            yield return null;
+                        }
+                        selectHandEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
+                        yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+
+                        #endregion
+
+                        if (selectedCard != null) yield return ContinuousController.instance.StartCoroutine(
+                            CardEffectCommons.PlayPermanentCards(
+                                cardSources: new List<CardSource>() { selectedCard },
+                                activateClass: activateClass,
+                                payCost: false,
+                                isTapped: false,
+                                root: SelectCardEffect.Root.Hand,
+                                activateETB: true));
+                    }
+                }
+            }
+
+            #endregion
 
             #region All Turns
 
