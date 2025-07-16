@@ -34,15 +34,13 @@ namespace DCGO.CardEffects.BT22
             {
                 bool Condition()
                 {
-                    return CardEffectCommons.IsExistOnHand(card) &&
-                           CardEffectCommons.HasMatchConditionOwnersPermanent(card, HasYaoQinglan) &&
-                           CardEffectCommons.HasMatchConditionOwnersPermanent(card, PermanentCondition);
+                    return CardEffectCommons.HasMatchConditionOwnersPermanent(card, HasYaoQinglan);
                 }
 
                 bool HasYaoQinglan(Permanent targetPermanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(targetPermanent, card) &&
-                           targetPermanent.TopCard.EqualsCardName("Nokia Shiramine");
+                           targetPermanent.TopCard.EqualsCardName("Yao Qinglan");
                 }
 
                 bool PermanentCondition(Permanent targetPermanent)
@@ -67,7 +65,7 @@ namespace DCGO.CardEffects.BT22
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Place 1 digimon as bottom source, bottom deck 1 digimon & unsuspend", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Play 1 of each level (3, 4, and 5)", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -83,7 +81,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 bool DigimonCondition(int level, CardSource cardSource)
@@ -91,7 +89,7 @@ namespace DCGO.CardEffects.BT22
                     return CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass)
                         && cardSource.IsDigimon
                         && cardSource.HasLevel && cardSource.Level == level
-                        && (cardSource.HasSeaAnimalTraits || cardSource.HasAquaTraits);
+                        && (cardSource.HasAquaTraits);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -220,7 +218,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card)
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
                         && CardEffectCommons.HasMatchConditionOwnersPermanent(card, DigimonCondition);
                 }
 
@@ -328,7 +326,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card)
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
                         && CardEffectCommons.HasMatchConditionOwnersPermanent(card, DigimonCondition);
                 }
 

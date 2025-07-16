@@ -56,7 +56,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 bool CanSelectOpponentDigimon(Permanent permanent)
@@ -91,18 +91,12 @@ namespace DCGO.CardEffects.BT22
                         string selectPlayerMessage = "Which effect will you activate?";
                         string notSelectPlayerMessage = "The opponent is choosing which effect to activate.";
 
-                        if (CanBottomDeck && CanPlayBlueTamer)
-                        {
-                            GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements,
+                        GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements,
                                 selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage,
                                 notSelectPlayerMessage: notSelectPlayerMessage);
 
-                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-                        }
-                        else
-                        {
-                            GManager.instance.userSelectionManager.SetInt(CanBottomDeck ? 0 : 1);
-                        }
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
                         int actionID = GManager.instance.userSelectionManager.SelectedIntValue;
 
                         #region Bottom Deck
@@ -205,7 +199,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 bool CanSelectOpponentDigimon(Permanent permanent)
@@ -240,18 +234,12 @@ namespace DCGO.CardEffects.BT22
                         string selectPlayerMessage = "Which effect will you activate?";
                         string notSelectPlayerMessage = "The opponent is choosing which effect to activate.";
 
-                        if (CanBottomDeck && CanPlayBlueTamer)
-                        {
-                            GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements,
+                        GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements,
                                 selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage,
                                 notSelectPlayerMessage: notSelectPlayerMessage);
 
-                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-                        }
-                        else
-                        {
-                            GManager.instance.userSelectionManager.SetInt(CanBottomDeck ? 0 : 1);
-                        }
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
                         int actionID = GManager.instance.userSelectionManager.SelectedIntValue;
 
                         #region Bottom Deck
@@ -354,7 +342,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card)
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
                         && CardEffectCommons.CanUnsuspend(card.PermanentOfThisCard());
                 }
 

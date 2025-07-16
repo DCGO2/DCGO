@@ -33,13 +33,13 @@ namespace DCGO.CardEffects.BT22
 
             #endregion
 
-            #region Veggiemon Alternative Digivolution Condition
+            #region Vegiemon Alternative Digivolution Condition
 
             if (timing == EffectTiming.None)
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.EqualsCardName("Veggiemon");
+                    return targetPermanent.TopCard.EqualsCardName("Vegiemon");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
@@ -202,7 +202,7 @@ namespace DCGO.CardEffects.BT22
 
             #region When Digivolving
 
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("De-Digivolve 1, then by trashing bottom FD source, bounce 1 level 4 or lower digimon or tamer to hand", CanUseCondition, card);
@@ -217,12 +217,13 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 bool DeDigivolveCondition(Permanent targetPermanent)
@@ -257,18 +258,24 @@ namespace DCGO.CardEffects.BT22
                             maxCount: maxCount,
                             canNoSelect: false,
                             canEndNotMax: false,
-                            selectPermanentCoroutine: null,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
                             afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Destroy,
+                            mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
                         selectPermanentEffect.SetUpCustomMessage("Select 1 opponent's Digimon to De-digivolve.", "The opponent is selecting 1 Digimon to De-digivolve.");
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
+                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                        {
+                            targetDegenPermanent = permanent;
+                            yield return null;
+                        }
+
                         #endregion
 
-                        if (targetDegenPermanent != null) yield return ContinuousController.instance.StartCoroutine(
-                            new IDegeneration(targetDegenPermanent, 1, activateClass).Degeneration());
+                        if (targetDegenPermanent != null) 
+                            yield return ContinuousController.instance.StartCoroutine(new IDegeneration(targetDegenPermanent, 1, activateClass).Degeneration());
                     }
 
                     if (card.PermanentOfThisCard().HasFaceDownDigivolutionCards)
@@ -342,7 +349,7 @@ namespace DCGO.CardEffects.BT22
 
             #region When Attacking
 
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("De-Digivolve 1, then by trashing bottom FD source, bounce 1 level 4 or lower digimon or tamer to hand", CanUseCondition, card);
@@ -362,7 +369,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 bool DeDigivolveCondition(Permanent targetPermanent)
@@ -397,13 +404,19 @@ namespace DCGO.CardEffects.BT22
                             maxCount: maxCount,
                             canNoSelect: false,
                             canEndNotMax: false,
-                            selectPermanentCoroutine: null,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
                             afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Destroy,
+                            mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
                         selectPermanentEffect.SetUpCustomMessage("Select 1 opponent's Digimon to De-digivolve.", "The opponent is selecting 1 Digimon to De-digivolve.");
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                        {
+                            targetDegenPermanent = permanent;
+                            yield return null;
+                        }
 
                         #endregion
 
@@ -505,7 +518,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card)
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
                         && CardEffectCommons.IsOpponentTurn(card)
                         && CanBeSwitched();
                 }

@@ -116,8 +116,8 @@ namespace DCGO.CardEffects.BT22
             {
                 bool SourceCondition(CardSource source)
                 {
-                    return source.CardColors.Contains(CardColor.Red) && 
-                           source.CardColors.Contains(CardColor.Black) &&
+                    return (source.CardColors.Contains(CardColor.Red) || 
+                           source.CardColors.Contains(CardColor.Black)) &&
                            source.HasLevel && source.IsLevel3;
                 }
 
@@ -130,8 +130,8 @@ namespace DCGO.CardEffects.BT22
             {
                 bool SourceCondition(CardSource source)
                 {
-                    return source.CardColors.Contains(CardColor.Blue) &&
-                           source.CardColors.Contains(CardColor.Yellow) &&
+                    return (source.CardColors.Contains(CardColor.Blue) ||
+                           source.CardColors.Contains(CardColor.Yellow)) &&
                            source.HasLevel && source.IsLevel3;
                 }
 
@@ -273,7 +273,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBreedingAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

@@ -25,7 +25,7 @@ namespace DCGO.CardEffects.BT22
             if (timing == EffectTiming.OnEndTurn)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Delete 1 digimon or tamer [Knightmon] in text/[CS] trait, Digivolve into [LordKnightmon]", null, card);
+                activateClass.SetUpICardEffect("Delete 1 digimon or tamer [Knightmon] in text/[CS] trait, Digivolve into [LordKnightmon]", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("BT22_090_Digivolve");
                 cardEffects.Add(activateClass);
@@ -35,10 +35,15 @@ namespace DCGO.CardEffects.BT22
                     return "[End of Your Turn] [Once Per Turn] By deleting 1 of your other Digimon or Tamers with [Knightmon] in its text or the [CS] trait, this Tamer may digivolve into [LordKnightmon] in the hand with the digivolution cost reduced by 3.";
                 }
 
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleArea(card)
+                        && CardEffectCommons.IsOwnerTurn(card);
+                }
+
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card)
-                        && CardEffectCommons.IsOwnerTurn(card)
+                    return CardEffectCommons.IsExistOnBattleArea(card)
                         && CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsValidPermament)
                         && CardEffectCommons.HasMatchConditionOwnersHand(card, IsLordKnightmon);
                 }
@@ -106,9 +111,9 @@ namespace DCGO.CardEffects.BT22
                                         targetPermanent: card.PermanentOfThisCard(),
                                         cardCondition: IsLordKnightmon,
                                         payCost: true,
-                                        reduceCostTuple: null,
+                                        reduceCostTuple: (reduceCost: 3, reduceCostCardCondition: null),
                                         fixedCostTuple: null,
-                                        ignoreDigivolutionRequirementFixedCost: 3,
+                                        ignoreDigivolutionRequirementFixedCost: -1,
                                         isHand: true,
                                         activateClass: activateClass,
                                         successProcess: null));
@@ -116,6 +121,15 @@ namespace DCGO.CardEffects.BT22
                         }
                     }
                 }
+            }
+
+            #endregion
+
+            #region Security
+
+            if (timing == EffectTiming.SecuritySkill)
+            {
+                cardEffects.Add(CardEffectFactory.PlaySelfTamerSecurityEffect(card));
             }
 
             #endregion

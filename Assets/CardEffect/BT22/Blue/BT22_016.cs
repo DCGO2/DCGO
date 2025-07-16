@@ -16,7 +16,9 @@ namespace DCGO.CardEffects.BT22
             {
                 bool Condition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.EqualsTraits("Appmon");
+                    return targetPermanent.IsDigimon &&
+                           targetPermanent.TopCard.IsLevel2 && 
+                           targetPermanent.TopCard.EqualsTraits("Appmon");
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(Condition, 0, false, card, null));

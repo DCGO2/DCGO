@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.BT22
             if (timing == EffectTiming.OnStartMainPhase)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Bottom deck this tamer, play 1 [Yao Qinglan] from hand, Then if no digimon play 1 [Sangomon] from trash", null, card);
+                activateClass.SetUpICardEffect("Bottom deck this tamer, play 1 [Yao Qinglan] from hand, Then if no digimon play 1 [Sangomon] from trash", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -25,10 +25,15 @@ namespace DCGO.CardEffects.BT22
                     return "[Start of Your Main Phase] By returning this Tamer to the bottom of the deck, you may play 1 [Yao Qinglan] from your hand without paying the cost. Then, if you don't have a Digimon, you may play 1 [Sangomon] from your trash without paying the cost.";
                 }
 
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleArea(card)
+                        && CardEffectCommons.IsOwnerTurn(card);
+                }
+
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card)
-                        && CardEffectCommons.IsOwnerTurn(card);
+                    return CardEffectCommons.IsExistOnBattleArea(card);
                 }
 
                 bool BottomDeckCondition(Permanent permanent)
@@ -195,7 +200,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card)
+                    return CardEffectCommons.IsExistOnBattleArea(card)
                         && CardEffectCommons.CanActivateSuspendCostEffect(card);
                 }
 

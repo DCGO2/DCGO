@@ -59,7 +59,7 @@ namespace DCGO.CardEffects.BT22
                 bool IsCSOrUniDigimon(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && permanent.TopCard.HasCSTraits || permanent.TopCard.HasUnidentifiedTraits;
+                        && (permanent.TopCard.HasCSTraits || permanent.TopCard.HasUnidentifiedTraits);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -135,7 +135,7 @@ namespace DCGO.CardEffects.BT22
                 bool IsCSOrUniDigimon(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && permanent.TopCard.HasCSTraits || permanent.TopCard.HasUnidentifiedTraits;
+                        && (permanent.TopCard.HasCSTraits || permanent.TopCard.HasUnidentifiedTraits);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

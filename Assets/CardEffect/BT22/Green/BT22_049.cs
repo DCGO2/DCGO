@@ -30,19 +30,19 @@ namespace DCGO.CardEffects.BT22
 
             #endregion
 
-            #region End of Your Turn
+            #region End of Turn
 
             if (timing == EffectTiming.OnEndTurn)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("By placing 3 Ver2 digimon flipped in source, digivolve into a ver2", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Digivolve into a [Ver.1]", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
-                activateClass.SetHashString("Digivolve_BT22-049");
+                activateClass.SetHashString("Digivolve_EX9-050");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[End of Your Turn] [Once Per Turn] By placing 3 Digimon cards with the [Ver.2] trait from your trash face down as this Digimon's bottom digivolution cards, it may digivolve into a Digimon card with the [Ver.2] trait in the hand or trash.";
+                    return "[End of Your Turn] [Once Per Turn] By placing 3 Digimon cards with the [Ver.1] trait from your trash face down as this Digimon's bottom digivolution cards, it may digivolve into a Digimon card with the [Ver.1] trait in the hand or trash.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -158,7 +158,6 @@ namespace DCGO.CardEffects.BT22
                     }
                 }
             }
-
             #endregion
 
             #region Piercing - ESS

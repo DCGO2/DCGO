@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 // Mother Eater
 namespace DCGO.CardEffects.BT22
@@ -16,13 +17,24 @@ namespace DCGO.CardEffects.BT22
             if (timing == EffectTiming.OnStartMainPhase)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Add [Mother Eater]s to top of stack. if 10 or more in digivolution source, play 3 [Mother Eater]s", null, card);
+                activateClass.SetUpICardEffect("Add [Mother Eater]s to top of stack. if 10 or more in digivolution source, play 3 [Mother Eater]s", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
                     return "[Breeding] [Start of Your Main Phase] Look at your Digi-Egg deck's top card. Among them, you may place [Mother Eater]s as this Digimon's top digivolution cards. Then, if this Digimon has 10 or more digivolution cards, you may play 3 [Mother Eater]s from its digivolution cards without paying the costs.";
+                }
+
+                bool CanSelectMother(CardSource source)
+                {
+                    return source.EqualsCardName("Mother Eater") &&
+                           CardEffectCommons.CanPlayAsNewPermanent(source, false, activateClass, SelectCardEffect.Root.DigivolutionCards);
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsOwnerTurn(card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -64,35 +76,48 @@ namespace DCGO.CardEffects.BT22
 
                     if (card.PermanentOfThisCard().DigivolutionCards.Count >= 10)
                     {
-                        List<CardSource> motherEaterCards = card.PermanentOfThisCard().DigivolutionCards.Filter(cardSource => cardSource.EqualsCardName("Mother Eater"));
-                        if (motherEaterCards.Count >= 3 && motherEaterCards.TrueForAll(cardSource => CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass)))
+                        Permanent thisPermanent = card.PermanentOfThisCard();
+                        if (thisPermanent.DigivolutionCards.Count(CanSelectMother) >= 3)
                         {
-                            bool playDigimon = false;
+                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
-                            List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
+                            selectCardEffect.SetUp(
+                                canTargetCondition: CanSelectMother,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                canNoSelect: () => true,
+                                selectCardCoroutine: null,
+                                afterSelectCardCoroutine: SelectCardCoroutine,
+                                message: "Select 3 [Mother Eater] to play.",
+                                maxCount: 3,
+                                canEndNotMax: false,
+                                isShowOpponent: true,
+                                mode: SelectCardEffect.Mode.Custom,
+                                root: SelectCardEffect.Root.DigivolutionCards,
+                                customRootCardList: thisPermanent.DigivolutionCards,
+                                canLookReverseCard: true,
+                                selectPlayer: card.Owner,
+                                cardEffect: activateClass);
+
+                            selectCardEffect.SetUpCustomMessage(
+                                "Select 3 [Mother Eater] to play.",
+                                "The opponent is selecting 3 [Mother Eater] to play.");
+
+                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+
+                            IEnumerator SelectCardCoroutine(List<CardSource> cardSources)
                             {
-                                new SelectionElement<bool>(message: $"Yes", value : true, spriteIndex: 0),
-                                new SelectionElement<bool>(message: $"No", value : false, spriteIndex: 1),
-                            };
-
-                            string selectPlayerMessage = "Place as top digivolution card?";
-                            string notSelectPlayerMessage = "The opponent is choosing to place as top digivolution card";
-
-                            GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
-                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-
-                            playDigimon = GManager.instance.userSelectionManager.SelectedBoolValue;
-
-                            if (playDigimon)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(
-                                    CardEffectCommons.PlayPermanentCards(
-                                    cardSources: motherEaterCards,
-                                    activateClass: activateClass,
-                                    payCost: false,
-                                    isTapped: false,
-                                    root: SelectCardEffect.Root.DigivolutionCards,
-                                    activateETB: true));
+                                if (cardSources.Count == 3)
+                                {
+                                    yield return ContinuousController.instance.StartCoroutine(
+                                        CardEffectCommons.PlayPermanentCards(
+                                        cardSources: cardSources,
+                                        activateClass: activateClass,
+                                        payCost: false,
+                                        isTapped: false,
+                                        root: SelectCardEffect.Root.DigivolutionCards,
+                                        activateETB: true));
+                                }
                             }
                         }
                     }
@@ -155,12 +180,13 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && 
+                           CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card)
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
                         && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectCondition);
                 }
 

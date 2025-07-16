@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.XR;
 
 //Wargreymon
 namespace DCGO.CardEffects.BT22
@@ -30,11 +31,23 @@ namespace DCGO.CardEffects.BT22
                     condition: null)
                 );
             }
+            #endregion
 
+            #region Warp Effect
             //Warp from Augumon
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnDeclaration)
             {
-                bool Condition()
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Digivolve for a cost of 6", CanUseCondition, card);
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[Hand][Main] If you have [Nokia Shiramine], 1 of your [Agumon] digivolves into this card for a digivolution cost of 6, ignoring digivolution requirements.";
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnHand(card) &&
                            CardEffectCommons.HasMatchConditionPermanent(HasNokia) &&
@@ -49,18 +62,61 @@ namespace DCGO.CardEffects.BT22
 
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.EqualsCardName("Agumon");
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(targetPermanent, card) && 
+                           targetPermanent.TopCard.EqualsCardName("Agumon");
                 }
 
-                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
-                    permanentCondition: PermanentCondition,
-                    digivolutionCost: 6,
-                    ignoreDigivolutionRequirement: true,
-                    card: card,
-                    condition: Condition)
-                );
-            }
+                bool CanSelectHandCardCondition(CardSource cardSource)
+                {
+                    return cardSource == card;
+                }
 
+                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                {
+                    Permanent selectedPermanent = null;
+
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                    selectPermanentEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: PermanentCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: true,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: SelectPermanentCoroutine,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will digivolve.",
+                        "The opponent is selecting 1 Digimon that will digivolve.");
+
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                    {
+                        selectedPermanent = permanent;
+                        yield return null;
+                    }
+
+                    if (selectedPermanent != null)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                            targetPermanent: selectedPermanent,
+                            cardCondition: CanSelectHandCardCondition,
+                            payCost: true,
+                            reduceCostTuple: null,
+                            fixedCostTuple:(fixedCost: 6, fixedCostCardCondition: null),
+                            ignoreDigivolutionRequirementFixedCost: 0,
+                            isHand: true,
+                            activateClass: activateClass,
+                            successProcess: null,
+                            ignoreRequirements: CardEffectCommons.IgnoreRequirement.All));
+                    }
+                }
+            }
             #endregion
 
             #region When Digivolving
@@ -145,18 +201,11 @@ namespace DCGO.CardEffects.BT22
                         string selectPlayerMessage = "Which effect will you activate?";
                         string notSelectPlayerMessage = "The opponent is choosing which effect to activate.";
 
-                        if(CanDelete && CanEvo)
-                        {
-                            GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements,
+                        GManager.instance.userSelectionManager.SetIntSelection(selectionElements: selectionElements,
                                 selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage,
                                 notSelectPlayerMessage: notSelectPlayerMessage);
 
-                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-                        }
-                        else
-                        {
-                            GManager.instance.userSelectionManager.SetInt(CanEvo ? 0 : 1);
-                        }
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
                         int actionID = GManager.instance.userSelectionManager.SelectedIntValue;
 
@@ -268,7 +317,7 @@ namespace DCGO.CardEffects.BT22
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           card.PermanentOfThisCard().TopCard.EqualsCardName("Omnimon");
+                           card.PermanentOfThisCard().TopCard.ContainsCardName("Omnimon");
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)

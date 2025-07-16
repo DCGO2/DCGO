@@ -60,8 +60,7 @@ namespace DCGO.CardEffects.BT22
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card)
-                        && CardEffectCommons.HasMatchConditionOwnersHand(card, TamerWithVeedramonText)
-                        && CardEffectCommons.MatchConditionPermanentCount(permanent => permanent.IsTamer) <= 1;
+                        && CardEffectCommons.MatchConditionOwnersPermanentCount(card, permanent => permanent.IsTamer) <= 1;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
