@@ -3537,6 +3537,42 @@ public class CardSource : MonoBehaviour
     }
 
     #endregion
+
+    #region whether this card has "Standard" Appmon Grade trait
+
+    public bool HasStandardAppTraits
+    {
+        get
+        {
+            return EqualsTraits("Stnd.");
+        }
+    }
+
+    #endregion
+
+    #region whether this card has "Super" Appmon Grade trait
+
+    public bool HasSuperAppTraits
+    {
+        get
+        {
+            return EqualsTraits("Sup.");
+        }
+    }
+
+    #endregion
+
+    #region whether this card has "Ultimate" Appmon Grade trait
+
+    public bool HasUltimateAppTraits
+    {
+        get
+        {
+            return EqualsTraits("Ult.");
+        }
+    }
+
+    #endregion
 }
 
 public class JogressCondition
