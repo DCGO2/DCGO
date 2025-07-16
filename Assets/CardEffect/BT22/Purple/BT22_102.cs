@@ -11,11 +11,53 @@ namespace DCGO.CardEffects.BT22
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Start of your turn
+            #region Start of Main Phase
 
-            if (timing == EffectTiming.OnStartTurn)
+            if (timing == EffectTiming.OnStartMainPhase)
             {
-                cardEffects.Add(CardEffectFactory.SetMemoryTo3TamerEffect(card));
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Memory +1", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[Start of Your Main Phase] If your opponent has a Digimon, gain 1 memory.";
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (CardEffectCommons.IsOwnerTurn(card))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (card.Owner.Enemy.GetBattleAreaDigimons().Count >= 1)
+                        {
+                            if (card.Owner.CanAddMemory(activateClass))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+
+                    return false;
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
+                }
             }
 
             #endregion

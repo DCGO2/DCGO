@@ -361,7 +361,7 @@ namespace DCGO.CardEffects.BT22
                 List<Permanent> removedPermanents = new List<Permanent>();
 
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Trash a linked card to prevent this digimon from leaving", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Play 1 of this Digimon's link cards", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
                 activateClass.SetHashString("AllTurns_BT22_075");
                 cardEffects.Add(activateClass);
@@ -459,7 +459,7 @@ namespace DCGO.CardEffects.BT22
             #region Scapegoat - Linked
             if (timing == EffectTiming.WhenPermanentWouldBeDeleted)
             {
-                cardEffects.Add(CardEffectFactory.ScapegoatSelfEffect(isInheritedEffect: false, card: card, condition: null, effectName: "<Scapegoat>", effectDiscription: null));
+                cardEffects.Add(CardEffectFactory.ScapegoatSelfEffect(isInheritedEffect: false, card: card, condition: null, effectName: "<Scapegoat>", effectDiscription: null,isLinkedEffect:true));
             }
             #endregion
 
