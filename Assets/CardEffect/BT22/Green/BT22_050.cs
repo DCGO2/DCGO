@@ -134,7 +134,7 @@ namespace DCGO.CardEffects.BT22
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                           CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

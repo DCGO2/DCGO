@@ -135,21 +135,15 @@ namespace DCGO.CardEffects.BT22
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    Permanent thisCardPermanent = card.PermanentOfThisCard();
-
-                    IEnumerator StopFieldRemoval()
-                    {
-                        thisCardPermanent.willBeRemoveField = false;
-                        thisCardPermanent.HideDeleteEffect();
-                        thisCardPermanent.HideHandBounceEffect();
-                        thisCardPermanent.HideDeckBounceEffect();
-                        thisCardPermanent.HideWillRemoveFieldEffect();
-
-                        yield return null;
-                    }
+                    Permanent selectedPermanent = card.PermanentOfThisCard();
 
                     yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(new List<Permanent> { thisCardPermanent }, hashtable).Tap());
-                    yield return ContinuousController.instance.StartCoroutine(StopFieldRemoval());
+
+                    selectedPermanent.willBeRemoveField = false;
+
+                    selectedPermanent.HideDeleteEffect();
+                    selectedPermanent.HideHandBounceEffect();
+                    selectedPermanent.HideDeckBounceEffect();
                 }
             }
 
