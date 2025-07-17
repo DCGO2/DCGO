@@ -288,8 +288,8 @@ namespace DCGO.CardEffects.BT22
                             new SelectionElement<bool>(message: $"No", value : false, spriteIndex: 1),
                         };
 
-                        string selectPlayerMessage = "trash bottom FD source to delete 4 cost or less tamer or digimon?";
-                        string notSelectPlayerMessage = "The opponent is choosing to trash bottom FD source to delete 4 cost or less tamer or digimon.";
+                        string selectPlayerMessage = "Trash bottom FD source to bounce 4 cost or less tamer or digimon?";
+                        string notSelectPlayerMessage = "The opponent is choosing to trash bottom FD source to bounce 4 cost or less tamer or digimon.";
 
                         GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
@@ -434,8 +434,8 @@ namespace DCGO.CardEffects.BT22
                             new SelectionElement<bool>(message: $"No", value : false, spriteIndex: 1),
                         };
 
-                        string selectPlayerMessage = "trash bottom FD source to delete 4 cost or less tamer or digimon?";
-                        string notSelectPlayerMessage = "The opponent is choosing to trash bottom FD source to delete 4 cost or less tamer or digimon.";
+                        string selectPlayerMessage = "Trash bottom FD source to bounce 4 cost or less tamer or digimon?";
+                        string notSelectPlayerMessage = "The opponent is choosing to trash bottom FD source to bounce 4 cost or less tamer or digimon.";
 
                         GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());

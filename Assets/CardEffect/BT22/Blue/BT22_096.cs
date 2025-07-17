@@ -177,14 +177,14 @@ namespace DCGO.CardEffects.BT22
                 bool IsAquaOrSeaAnimal(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)
-                        && (permanent.TopCard.HasAquaTraits || permanent.TopCard.HasSeaAnimalTraits);
+                        && permanent.TopCard.HasAquaTraits;
                 }
 
                 bool IsAquaticOrLiberator(CardSource cardSource, Permanent permanent)
                 {
                     return CardEffectCommons.IsExistOnHand(cardSource)
                         && cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, true, activateClass)
-                        && cardSource.HasAquaticTraits || cardSource.HasLiberatorTraits;
+                        && cardSource.HasAquaticTraits && cardSource.HasLiberatorTraits;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

@@ -31,6 +31,26 @@ namespace DCGO.CardEffects.BT22
             }
             #endregion
 
+            #region Alternative Digivolution Condition
+
+            if (timing == EffectTiming.None)
+            {
+                bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.EqualsTraits("Stnd.");
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
+                    permanentCondition: PermanentCondition,
+                    digivolutionCost: 2,
+                    ignoreDigivolutionRequirement: false,
+                    card: card,
+                    condition: null)
+                );
+            }
+
+            #endregion
+
             #region All Turns - When Linked
 
             if (timing == EffectTiming.WhenLinked)
@@ -69,8 +89,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool MyDigimonCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && permanent != card.PermanentOfThisCard();
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -102,7 +121,7 @@ namespace DCGO.CardEffects.BT22
                             selectedPermanent = permanent;
                             yield return null;
                         }
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 opponent's Digimon to gain bounce immunity", "The opponent is selecting 1 Digimon gain bounce immunity.");
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to gain bounce immunity", "The opponent is selecting 1 Digimon gain bounce immunity.");
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
                         #endregion
@@ -110,10 +129,10 @@ namespace DCGO.CardEffects.BT22
                         if (selectedPermanent != null)
                         {
                             yield return ContinuousController.instance.StartCoroutine(
-                                CardEffectCommons.GainCanNotReturnToDeck(selectedPermanent, null, EffectDuration.UntilEachTurnEnd, activateClass, "Can not be bounced to deck"));
+                                CardEffectCommons.GainCanNotReturnToDeck(selectedPermanent, null, EffectDuration.UntilOpponentTurnEnd, activateClass, "Can not be bounced to deck"));
 
                             yield return ContinuousController.instance.StartCoroutine(
-                                CardEffectCommons.GainCanNotReturnToHand(selectedPermanent, null, EffectDuration.UntilEachTurnEnd, activateClass, "Can not be bounced to hand"));
+                                CardEffectCommons.GainCanNotReturnToHand(selectedPermanent, null, EffectDuration.UntilOpponentTurnEnd, activateClass, "Can not be bounced to hand"));
                         }
                     }
                 }

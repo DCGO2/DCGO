@@ -16,7 +16,7 @@ namespace DCGO.CardEffects.BT22
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.IsLevel3 && targetPermanent.TopCard.HasCSTraits;
+                    return targetPermanent.TopCard.IsLevel3 && targetPermanent.TopCard.HasDMTraits;
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
@@ -35,14 +35,14 @@ namespace DCGO.CardEffects.BT22
             if (timing == EffectTiming.OnEndTurn)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Digivolve into a [Ver.1]", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Digivolve into a [Ver.2]", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
-                activateClass.SetHashString("Digivolve_EX9-050");
+                activateClass.SetHashString("Digivolve_BT22-049");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[End of Your Turn] [Once Per Turn] By placing 3 Digimon cards with the [Ver.1] trait from your trash face down as this Digimon's bottom digivolution cards, it may digivolve into a Digimon card with the [Ver.1] trait in the hand or trash.";
+                    return "[End Of Your Turn] [Once Per Turn] By placing 3 Digimon cards with the [Ver.2] trait from your trash face down as this Digimon's bottom digivolution cards, it may digivolve into a Digimon card with the [Ver.2] trait in the hand or trash.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -89,7 +89,7 @@ namespace DCGO.CardEffects.BT22
                         afterSelectCardCoroutine: AfterSelectCardCoroutine,
                         message: "Select 3 cards to add as source",
                         maxCount: 3,
-                        canEndNotMax: true,
+                        canEndNotMax: false,
                         isShowOpponent: true,
                         mode: SelectCardEffect.Mode.Custom,
                         root: SelectCardEffect.Root.Trash,

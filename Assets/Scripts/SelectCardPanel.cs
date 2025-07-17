@@ -552,7 +552,7 @@ public class SelectCardPanel : MonoBehaviour
             }
         }
 
-        if (_preSelectedHandCardList.Count >= 1)
+        if (_preSelectedHandCardList.Count >= _maxCount)
         {
             NoSelectButton.SetActive(false);
         }
