@@ -44,13 +44,11 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    UnityEngine.Debug.Log($"CAN USE CONDITION: {CardEffectCommons.CanTriggerOnPlay(hashtable, card)}");
                     return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    UnityEngine.Debug.Log($"CAN ACTIVATE CONDITION: {CardEffectCommons.IsExistOnBattleAreaDigimon(card)}, {CardEffectCommons.HasMatchConditionOwnersHand(card, HandCondition)}");
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
                         && CardEffectCommons.HasMatchConditionOwnersHand(card, HandCondition);
                 }
@@ -144,7 +142,7 @@ namespace DCGO.CardEffects.BT22
                                         opponentPermanent = permanent;
                                         yield return null;
                                     }
-                                    selectPermanentEffect1.SetUpCustomMessage("Select 1 Digimon to add digivolution source.", "The opponent is selecting 1 Digimon to add digivolution source.");
+                                    selectPermanentEffect1.SetUpCustomMessage("Select 1 Digimon that can't unsuspend.", "The opponent is selecting 1 Digimon that can't unsuspend.");
 
                                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect1.Activate());
 
@@ -182,7 +180,8 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -193,10 +192,9 @@ namespace DCGO.CardEffects.BT22
 
                 bool HandCondition(CardSource source)
                 {
-                    return CardEffectCommons.IsExistOnHand(card)
-                        && source.IsDigimon
-                        && source.HasLevel && source.Level <= 5
-                        && source.HasAquaTraits;
+                    return source.IsDigimon &&
+                        source.HasLevel && source.Level <= 5 &&
+                        source.HasAquaTraits;
                 }
 
                 bool PermanentCondition(Permanent permanent)
@@ -281,7 +279,7 @@ namespace DCGO.CardEffects.BT22
                                         opponentPermanent = permanent;
                                         yield return null;
                                     }
-                                    selectPermanentEffect1.SetUpCustomMessage("Select 1 Digimon to add digivolution source.", "The opponent is selecting 1 Digimon to add digivolution source.");
+                                    selectPermanentEffect1.SetUpCustomMessage("Select 1 Digimon that can't unsuspend.", "The opponent is selecting 1 Digimon that can't unsuspend.");
 
                                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect1.Activate());
 

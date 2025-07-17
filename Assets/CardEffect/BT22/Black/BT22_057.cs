@@ -61,7 +61,7 @@ namespace DCGO.CardEffects.BT22
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card)
                         && CardEffectCommons.HasMatchConditionOwnersHand(card, IsArata)
-                        && CardEffectCommons.MatchConditionPermanentCount(permanent => permanent.IsTamer) <= 1;
+                        && CardEffectCommons.MatchConditionOwnersPermanentCount(card, permanent => permanent.IsTamer) <= 1;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -118,14 +118,13 @@ namespace DCGO.CardEffects.BT22
 
                 string EffectDiscription()
                 {
-                    return "[All Turns] [Once Per Turn] When this Digimon with [Diaboromon] in its text would leave the battle area by your opponent's effects, by deleting 1 of your other [Diaboromon], it doesn't leave.";
+                    return "[All Turns] [Once Per Turn] When this Digimon with [Diaboromon] in its text would leave the battle area, by deleting 1 of your other [Diaboromon], it doesn't leave.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card) &&
-                           CardEffectCommons.IsByEffect(hashtable, cardEffect => CardEffectCommons.IsOpponentEffect(cardEffect, card));
+                           CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

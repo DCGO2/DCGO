@@ -44,7 +44,7 @@ namespace DCGO.CardEffects.BT22
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
                     permanentCondition: PermanentCondition,
-                    digivolutionCost: 0,
+                    digivolutionCost: 2,
                     ignoreDigivolutionRequirement: false,
                     card: card,
                     condition: null)
@@ -110,7 +110,8 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card) && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, SharedPermanentCondition);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && 
+                           CardEffectCommons.HasMatchConditionOpponentsPermanent(card, SharedPermanentCondition);
                 }
             }
 
