@@ -321,7 +321,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool PermanentCondition(Permanent permanent) => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
                 bool OwnPermamentCondition(Permanent permanent) => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
-                bool LinkCardCondition(CardSource cardSource, Permanent targetPermament) => card.CanLinkToTargetPermanent(targetPermament, false);
+                bool LinkCardCondition(CardSource cardSource, Permanent targetPermament) => cardSource.CanLinkToTargetPermanent(targetPermament, false);
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
