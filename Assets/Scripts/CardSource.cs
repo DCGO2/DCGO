@@ -3573,6 +3573,42 @@ public class CardSource : MonoBehaviour
     }
 
     #endregion
+
+    #region whether this card has "Holy Beast" trait
+
+    public bool HasHolyBeastTraits
+    {
+        get
+        {
+            return EqualsTraits("Holy Beast");
+        }
+    }
+
+    #endregion
+
+    #region whether this card has "Archangel" trait
+
+    public bool HasArchAngelTraits
+    {
+        get
+        {
+            return EqualsTraits("Archangel");
+        }
+    }
+
+    #endregion
+
+    #region whether this card has "Fallen Angel" trait
+
+    public bool HasFallenAngelTraits
+    {
+        get
+        {
+            return EqualsTraits("Archangel");
+        }
+    }
+
+    #endregion
 }
 
 public class JogressCondition
