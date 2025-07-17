@@ -55,11 +55,6 @@ namespace DCGO.CardEffects.BT22
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
-
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    yield return null;
-                }
             }
 
             #endregion
@@ -86,11 +81,6 @@ namespace DCGO.CardEffects.BT22
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    yield return null;
                 }
             }
 
@@ -133,7 +123,7 @@ namespace DCGO.CardEffects.BT22
                     selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to give +3k DP.", "The opponent is selecting 1 Digimon to give +3k DP.");
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                    if (selectedPermanent != null) yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(selectedPermanent, +2000, EffectDuration.UntilEachTurnEnd, activateClass));
+                    if (selectedPermanent != null) yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(selectedPermanent, 3000, EffectDuration.UntilEachTurnEnd, activateClass));
                 }
 
                 int levelMatchCount = card.PermanentOfThisCard().DigivolutionCards.Sum(entity =>

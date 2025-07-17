@@ -50,9 +50,10 @@ namespace DCGO.CardEffects.BT22
 
                 bool IsValidPermament(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)
-                        && (permanent.IsDigimon || permanent.IsTamer)
-                        && (permanent.TopCard.HasText("Knightmon") || permanent.TopCard.HasCSTraits);
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card) &&
+                           (permanent.IsDigimon || permanent.IsTamer) &&
+                           (permanent.TopCard.HasText("Knightmon") || permanent.TopCard.HasCSTraits) &&
+                           permanent != card.PermanentOfThisCard();
                 }
 
                 bool IsLordKnightmon(CardSource cardSource)
