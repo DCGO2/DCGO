@@ -137,7 +137,7 @@ namespace DCGO.CardEffects.BT22
                 {
                     Permanent selectedPermanent = card.PermanentOfThisCard();
 
-                    yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(new List<Permanent> { thisCardPermanent }, hashtable).Tap());
+                    yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(new List<Permanent> { selectedPermanent }, hashtable).Tap());
 
                     selectedPermanent.willBeRemoveField = false;
 
