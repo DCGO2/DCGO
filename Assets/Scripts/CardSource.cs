@@ -3537,6 +3537,78 @@ public class CardSource : MonoBehaviour
     }
 
     #endregion
+
+    #region whether this card has "Standard" Appmon Grade trait
+
+    public bool HasStandardAppTraits
+    {
+        get
+        {
+            return EqualsTraits("Stnd.");
+        }
+    }
+
+    #endregion
+
+    #region whether this card has "Super" Appmon Grade trait
+
+    public bool HasSuperAppTraits
+    {
+        get
+        {
+            return EqualsTraits("Sup.");
+        }
+    }
+
+    #endregion
+
+    #region whether this card has "Ultimate" Appmon Grade trait
+
+    public bool HasUltimateAppTraits
+    {
+        get
+        {
+            return EqualsTraits("Ult.");
+        }
+    }
+
+    #endregion
+
+    #region whether this card has "Holy Beast" trait
+
+    public bool HasHolyBeastTraits
+    {
+        get
+        {
+            return EqualsTraits("Holy Beast");
+        }
+    }
+
+    #endregion
+
+    #region whether this card has "Archangel" trait
+
+    public bool HasArchAngelTraits
+    {
+        get
+        {
+            return EqualsTraits("Archangel");
+        }
+    }
+
+    #endregion
+
+    #region whether this card has "Fallen Angel" trait
+
+    public bool HasFallenAngelTraits
+    {
+        get
+        {
+            return EqualsTraits("Archangel");
+        }
+    }
+
+    #endregion
 }
 
 public class JogressCondition
