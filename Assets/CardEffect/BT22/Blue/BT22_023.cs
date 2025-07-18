@@ -177,7 +177,7 @@ namespace DCGO.CardEffects.BT22
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)
                         && permanent.TopCard.CardColors.Contains(CardColor.Blue)
-                        && permanent.IsDigimon || permanent.IsTamer;
+                        && (permanent.IsDigimon || permanent.IsTamer);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

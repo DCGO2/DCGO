@@ -425,7 +425,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                         _CanTargetCondition: (cardSource) => false,
                         _CanTargetCondition_ByPreSelecetedList: null,
                         _CanEndSelectCondition: null,
-                        _MaxCount: 0,
+                        _MaxCount: 6,
                         _CanEndNotMax: true,
                         _CanNoSelect: () => true,
                         CanLookReverseCard: true,

@@ -198,20 +198,17 @@ namespace DCGO.CardEffects.BT22
 
                         bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
                         {
-                            List<string> cardNames = new List<string>();
+                            List<string> cardIDs = new List<string>();
 
                             foreach (CardSource cardSource1 in cardSources)
                             {
-                                foreach (string cardName in cardSource1.CardNames)
+                                if (!cardIDs.Contains(cardSource1.CardID))
                                 {
-                                    if (!cardNames.Contains(cardName))
-                                    {
-                                        cardNames.Add(cardName);
-                                    }
+                                    cardIDs.Add(cardSource1.CardID);
                                 }
                             }
 
-                            if (cardSource.CardNames.Count((cardName) => cardNames.Contains(cardName)) >= 1)
+                            if (cardIDs.Contains(cardSource.CardID))
                             {
                                 return false;
                             }
@@ -222,7 +219,7 @@ namespace DCGO.CardEffects.BT22
                         AssemblyCondition assemblyCondition = new AssemblyCondition(
                             element: element,
                             CanTargetCondition_ByPreSelecetedList: CanTargetCondition_ByPreSelecetedList,
-                            selectMessage: "5 [Flame] trait Digimon cards w/different names",
+                            selectMessage: "5 [Flame] trait Digimon cards w/different card numbers",
                             elementCount: 5,
                             reduceCost: 6);
 
