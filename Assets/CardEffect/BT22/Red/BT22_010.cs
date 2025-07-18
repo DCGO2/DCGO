@@ -46,26 +46,9 @@ namespace DCGO.CardEffects.BT22
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
-                    {
-                        new SelectionElement<bool>(message: $"Yes", value : true, spriteIndex: 0),
-                        new SelectionElement<bool>(message: $"No", value : false, spriteIndex: 1),
-                    };
-
-                    string selectPlayerMessage = "Pay cost to gain raid & pierce?";
-                    string notSelectPlayerMessage = "The opponent is choosing to pay cost";
-
-                    GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
-                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-
-                    bool isPayingCost = GManager.instance.userSelectionManager.SelectedBoolValue;
-
-                    if (isPayingCost)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(-2, activateClass));
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainRaid(card.PermanentOfThisCard(), EffectDuration.UntilEachTurnEnd, activateClass));
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainPierce(card.PermanentOfThisCard(), EffectDuration.UntilEachTurnEnd, activateClass));
-                    }
+                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(-2, activateClass));
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainRaid(card.PermanentOfThisCard(), EffectDuration.UntilEachTurnEnd, activateClass));
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainPierce(card.PermanentOfThisCard(), EffectDuration.UntilEachTurnEnd, activateClass));
 
                     if (card.PermanentOfThisCard().CanAttack(activateClass))
                     {

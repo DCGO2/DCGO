@@ -126,7 +126,6 @@ namespace DCGO.CardEffects.BT22
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card)
-                        && CardEffectCommons.CanActivateSuspendCostEffect(card)
                         && CardEffectCommons.IsOpponentTurn(card)
                         && CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsCSOrUniDigimon)
                         && card.PermanentOfThisCard().TopCard.EqualsCardName("Eater Adam");

@@ -177,8 +177,9 @@ namespace DCGO.CardEffects.BT22
 
                 bool IsCSOnBoard(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && permanent.TopCard.HasCSTraits;
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                           permanent != card.PermanentOfThisCard() &&
+                           permanent.TopCard.HasCSTraits;
                 }
 
                 bool IsCSOnHand(CardSource cardSource, Permanent selectedPermanent)

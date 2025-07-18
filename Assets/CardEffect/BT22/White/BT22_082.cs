@@ -66,7 +66,7 @@ namespace DCGO.CardEffects.BT22
                 bool CanSelectOpponentsDigimonCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                        && permanent.TopCard.HasPlayCost && permanent.TopCard.BasePlayCostFromEntity <= 7;
+                        && permanent.TopCard.HasPlayCost && permanent.TopCard.GetCostItself <= 7;
                 }
 
                 bool IsArataSanada(CardSource cardSource)
@@ -78,8 +78,6 @@ namespace DCGO.CardEffects.BT22
                 {
                     if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectOpponentsDigimonCondition))
                     {
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectOpponentsDigimonCondition));
-
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
@@ -87,7 +85,7 @@ namespace DCGO.CardEffects.BT22
                             canTargetCondition: CanSelectOpponentsDigimonCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: maxCount,
+                            maxCount: 1,
                             canNoSelect: false,
                             canEndNotMax: false,
                             selectPermanentCoroutine: null,
@@ -101,6 +99,7 @@ namespace DCGO.CardEffects.BT22
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
+
                     if (card.PermanentOfThisCard().DigivolutionCards.Count == 0)
                     {
                         bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, IsArataSanada);
@@ -221,7 +220,7 @@ namespace DCGO.CardEffects.BT22
                 bool CanSelectOpponentsDigimonCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                        && permanent.TopCard.HasPlayCost && permanent.TopCard.BasePlayCostFromEntity <= 7;
+                        && permanent.TopCard.HasPlayCost && permanent.TopCard.GetCostItself <= 7;
                 }
 
                 bool IsArataSanada(CardSource cardSource)
@@ -233,8 +232,6 @@ namespace DCGO.CardEffects.BT22
                 {
                     if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectOpponentsDigimonCondition))
                     {
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectOpponentsDigimonCondition));
-
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
@@ -242,7 +239,7 @@ namespace DCGO.CardEffects.BT22
                             canTargetCondition: CanSelectOpponentsDigimonCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: maxCount,
+                            maxCount: 1,
                             canNoSelect: false,
                             canEndNotMax: false,
                             selectPermanentCoroutine: null,
