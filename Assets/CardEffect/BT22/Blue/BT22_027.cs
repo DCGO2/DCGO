@@ -142,7 +142,7 @@ namespace DCGO.CardEffects.BT22
                                         opponentPermanent = permanent;
                                         yield return null;
                                     }
-                                    selectPermanentEffect1.SetUpCustomMessage("Select 1 Digimon that can't unsuspend.", "The opponent is selecting 1 Digimon that can't unsuspend.");
+                                    selectPermanentEffect1.SetUpCustomMessage("Select 1 Digimon/Tamer that can't unsuspend.", "The opponent is selecting 1 Digimon/Tamer that can't unsuspend.");
 
                                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect1.Activate());
 
@@ -279,7 +279,7 @@ namespace DCGO.CardEffects.BT22
                                         opponentPermanent = permanent;
                                         yield return null;
                                     }
-                                    selectPermanentEffect1.SetUpCustomMessage("Select 1 Digimon that can't unsuspend.", "The opponent is selecting 1 Digimon that can't unsuspend.");
+                                    selectPermanentEffect1.SetUpCustomMessage("Select 1 Digimon/Tamer that can't unsuspend.", "The opponent is selecting 1 Digimon/Tamer that can't unsuspend.");
 
                                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect1.Activate());
 

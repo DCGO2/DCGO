@@ -69,7 +69,7 @@ namespace DCGO.CardEffects.BT22
                 bool IsPuppetDigimon(CardSource cardSource)
                 {
                     return cardSource.IsDigimon
-                        && cardSource.HasLevel && cardSource.Level >= 4
+                        && cardSource.HasLevel && cardSource.Level <= 4
                         && cardSource.HasPuppetTraits
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
                 }

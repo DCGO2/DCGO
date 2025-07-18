@@ -354,7 +354,7 @@ namespace DCGO.CardEffects.BT22
                 {
                     return CardEffectCommons.IsExistOnHand(cardSource)
                         && cardSource.IsDigimon
-                        && cardSource.HasLevel && cardSource.Level >= 4
+                        && cardSource.HasPlayCost && cardSource.BasePlayCostFromEntity <= 4
                         && cardSource.HasAppmonTraits;
                 }
 

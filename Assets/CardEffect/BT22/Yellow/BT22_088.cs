@@ -28,7 +28,8 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card);
+                    return CardEffectCommons.IsExistOnBattleArea(card) &&
+                           CardEffectCommons.IsOwnerTurn(card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -186,7 +187,7 @@ namespace DCGO.CardEffects.BT22
                 bool PermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && permanent.IsToken || permanent.TopCard.HasPuppetTraits;
+                        && (permanent.IsToken || permanent.TopCard.HasPuppetTraits);
                 }
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {

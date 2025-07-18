@@ -27,7 +27,8 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card);
+                    return CardEffectCommons.IsExistOnBattleArea(card) &&
+                           CardEffectCommons.IsOwnerTurn(card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -39,7 +40,7 @@ namespace DCGO.CardEffects.BT22
                 {
                     return CardEffectCommons.IsExistOnHand(cardSource)
                         && cardSource.HasPlayCost && cardSource.BasePlayCostFromEntity >= 4
-                        && (cardSource.EqualsCardName("Mirei Mikagura") || cardSource.HasCSTraits)
+                        && (cardSource.EqualsCardName("Mirei Mikagura") || (cardSource.IsTamer && cardSource.HasCSTraits))
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
                 }
 
@@ -133,7 +134,7 @@ namespace DCGO.CardEffects.BT22
                 {
                     return CardEffectCommons.IsExistOnHand(cardSource)
                         && cardSource.HasHolyBeastTraits
-                        || cardSource.HasAngelTraits
+                        || cardSource.EqualsTraits("Angel")
                         || cardSource.HasArchAngelTraits
                         || cardSource.HasFallenAngelTraits
                         || cardSource.HasCSTraits;
