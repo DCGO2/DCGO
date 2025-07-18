@@ -116,7 +116,8 @@ namespace DCGO.CardEffects.BT22
 
                 bool IsOwnerDigimon(Permanent permanent)
                 {
-                    return CardEffectCommons.IsOwnerPermanent(permanent, card) && permanent.IsDigimon;
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                           permanent != card.PermanentOfThisCard();
                 }
 
                 bool HasEssWhenDigivolving(CardSource cardSource)

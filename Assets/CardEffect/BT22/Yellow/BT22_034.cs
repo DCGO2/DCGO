@@ -99,7 +99,7 @@ namespace DCGO.CardEffects.BT22
                         CardSource topSec = card.Owner.SecurityCards.FirstOrDefault();
 
                         yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
-                        player: card.Owner.Enemy,
+                        player: card.Owner,
                         destroySecurityCount: 1,
                         cardEffect: activateClass,
                         fromTop: true).DestroySecurity());

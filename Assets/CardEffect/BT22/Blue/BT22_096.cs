@@ -148,7 +148,7 @@ namespace DCGO.CardEffects.BT22
             if (timing == EffectTiming.OnTappedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Digiolve 1 [Aqua]/[Sea Animal] digimon into a [Aquatic]/[Liberator] digimon in your hand for 3 reduced cost", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Digivolve 1 [Aqua]/[Sea Animal] digimon into a [Aquatic]/[Liberator] digimon in your hand for 3 reduced cost", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
