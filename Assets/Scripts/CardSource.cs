@@ -3604,7 +3604,7 @@ public class CardSource : MonoBehaviour
     {
         get
         {
-            return EqualsTraits("Archangel");
+            return EqualsTraits("Fallen Angel");
         }
     }
 
