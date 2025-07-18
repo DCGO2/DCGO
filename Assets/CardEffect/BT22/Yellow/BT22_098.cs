@@ -174,7 +174,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool IsArisaKinosaki(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card)
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)
                         && permanent.IsTamer
                         && permanent.TopCard.EqualsCardName("Arisa Kinosaki");
                 }

@@ -190,7 +190,7 @@ namespace DCGO.CardEffects.BT22
                     #endregion
 
                     if (selectedPermament != null) yield return ContinuousController.instance.StartCoroutine(
-                        CardEffectCommons.ChangeDigimonDP(selectedPermament, 4000, EffectDuration.UntilEachTurnEnd, activateClass));
+                        CardEffectCommons.ChangeDigimonDP(selectedPermament, -4000, EffectDuration.UntilEachTurnEnd, activateClass));
                 }
             }
 

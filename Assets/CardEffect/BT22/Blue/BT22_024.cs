@@ -58,7 +58,8 @@ namespace DCGO.CardEffects.BT22
 
                 bool IsSangomon(Permanent permanent)
                 {
-                    return permanent.IsDigimon && permanent.TopCard.EqualsCardName("Sangomon");
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) && 
+                           permanent.TopCard.EqualsCardName("Sangomon");
                 }
 
                 bool IsShellmon(CardSource source)

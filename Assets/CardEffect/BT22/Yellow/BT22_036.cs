@@ -26,13 +26,22 @@ namespace DCGO.CardEffects.BT22
             if (timing == EffectTiming.OnDeclaration)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Place 1 [ShoeShoemon] from trash into a [Shoemon] sources, then digivolve", null, card);
+                activateClass.SetUpICardEffect("Place 1 [ShoeShoemon] from trash into a [Shoemon] sources, then digivolve", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
                     return "[Hand] [Main] If you have [Arisa Kinosaki], by placing 1 [ShoeShoemon] from your trash as any of your [Shoemon]'s bottom digivolution card, it digivolves into this card for a digivolution cost of 3, ignoring digivolution requirements.";
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnHand(card)
+                        && CardEffectCommons.IsOwnerTurn(card)
+                        && CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsArisaKinosaki)
+                        && CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsShoemon)
+                        && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, IsShoeShoemon);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
