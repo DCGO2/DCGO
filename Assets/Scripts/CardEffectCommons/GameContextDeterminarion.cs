@@ -648,4 +648,14 @@ public partial class CardEffectCommons
     }
 
     #endregion
+
+    #region Does Owner has 1 or less tamers on the field
+
+    public static bool OwnerHas1OrLessTamers(CardSource card)
+    {
+        return card.Owner.GetBattleAreaPermanents()
+            .Count(permanent => permanent.IsTamer && permanent.TopCard.Owner == card.Owner) <= 1;
+    }
+
+    #endregion
 }
