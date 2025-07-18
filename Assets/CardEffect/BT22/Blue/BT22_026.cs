@@ -43,7 +43,6 @@ namespace DCGO.CardEffects.BT22
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnHand(card)
-                        && CardEffectCommons.HasMatchConditionOwnersHand(card, IsMetalGarurumon)
                         && CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsNokiaShiramine)
                         && CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsGabumon);
                 }
@@ -55,12 +54,13 @@ namespace DCGO.CardEffects.BT22
 
                 bool IsGabumon(Permanent permanent)
                 {
-                    return permanent.IsDigimon && permanent.TopCard.EqualsCardName("Gabumon");
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) && 
+                           permanent.TopCard.EqualsCardName("Gabumon");
                 }
 
                 bool IsMetalGarurumon(CardSource cardSource)
                 {
-                    return CardEffectCommons.IsExistOnHand(cardSource) && cardSource == card;
+                    return cardSource == card;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -70,8 +70,6 @@ namespace DCGO.CardEffects.BT22
                         Permanent gabumon = null;
 
                         #region Select Gabumon Permanent
-
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersPermanentCount(card, IsGabumon));
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
@@ -79,8 +77,8 @@ namespace DCGO.CardEffects.BT22
                             canTargetCondition: IsGabumon,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: false,
+                            maxCount: 1,
+                            canNoSelect: true,
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine,
                             afterSelectPermanentCoroutine: null,
@@ -234,26 +232,29 @@ namespace DCGO.CardEffects.BT22
                                 mode: SelectPermanentEffect.Mode.Custom,
                                 cardEffect: activateClass);
 
+                            selectPermanentEffect.SetUpCustomMessage("Select 1 [Agumon] to digivolve.", "The opponent is selecting 1 [Agumon] to digivolve.");
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
                             IEnumerator SelectPermanentCoroutine(Permanent permanent)
                             {
                                 agumon = permanent;
                                 yield return null;
                             }
 
-                            selectPermanentEffect.SetUpCustomMessage("Select 1 [Agumon] to digivolve.", "The opponent is selecting 1 [Agumon] to digivolve.");
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                            if (agumon != null) yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                                targetPermanent: agumon,
-                                cardCondition: IsWarGreymon,
-                                payCost: false,
-                                reduceCostTuple: null,
-                                fixedCostTuple: null,
-                                ignoreDigivolutionRequirementFixedCost: -1,
-                                isHand: true,
-                                activateClass: activateClass,
-                                successProcess: null
-                            ));
+                            if (agumon != null)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                                    targetPermanent: agumon,
+                                    cardCondition: IsWarGreymon,
+                                    payCost: false,
+                                    reduceCostTuple: null,
+                                    fixedCostTuple: null,
+                                    ignoreDigivolutionRequirementFixedCost: -1,
+                                    isHand: true,
+                                    activateClass: activateClass,
+                                    successProcess: null,
+                                    ignoreRequirements: CardEffectCommons.IgnoreRequirement.All));
+                            }
                         }
 
                         #endregion
