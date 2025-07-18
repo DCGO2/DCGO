@@ -324,7 +324,7 @@ namespace DCGO.CardEntities
 
             foreach (string data in str.Split("/"))
             {
-                strings.Add(data.Trim().Replace("\n","").Replace("\r", ""));
+                strings.Add(data.Replace("\n","").Replace("\r", "").Replace("(App Name)", "").Trim());
             }
 
             if (!String.IsNullOrEmpty(rule))
