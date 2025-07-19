@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-//ShinMonzaemon 
+//ShinMonzaemon
 namespace DCGO.CardEffects.BT22
 {
     public class BT22_076 : CEntity_Effect
@@ -39,6 +39,7 @@ namespace DCGO.CardEffects.BT22
             #region Static Effects
 
             #region Reduce Cost
+
             if (timing == EffectTiming.None)
             {
                 bool Condition()
@@ -83,13 +84,16 @@ namespace DCGO.CardEffects.BT22
                         condition: Condition,
                         setFixedCost: false));
             }
+
             #endregion
 
             #region Security Atk +1
+
             if (timing == EffectTiming.None)
             {
                 cardEffects.Add(CardEffectFactory.ChangeSelfSAttackStaticEffect(changeValue: 1, isInheritedEffect: false, card: card, condition: null));
             }
+
             #endregion
 
             #region Armor Purge
@@ -104,6 +108,7 @@ namespace DCGO.CardEffects.BT22
             #endregion
 
             #region When Digivolving
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -125,7 +130,7 @@ namespace DCGO.CardEffects.BT22
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent) &&
-                           permanent.HasDP && permanent.DP >= card.PermanentOfThisCard().DP;
+                           permanent.HasDP && permanent.DP <= card.PermanentOfThisCard().DP;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -137,7 +142,7 @@ namespace DCGO.CardEffects.BT22
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           card.PermanentOfThisCard().DigivolutionCards.Count(CanSelectTrashSourceCardCondition) >= 1;
+                           card.PermanentOfThisCard().DigivolutionCards.Exists(CanSelectTrashSourceCardCondition);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -190,9 +195,11 @@ namespace DCGO.CardEffects.BT22
                     }
                 }
             }
+
             #endregion
 
             #region When Attacking
+
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -214,7 +221,7 @@ namespace DCGO.CardEffects.BT22
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent) &&
-                           permanent.HasDP && permanent.DP >= card.PermanentOfThisCard().DP;
+                           permanent.HasDP && permanent.DP <= card.PermanentOfThisCard().DP;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -226,7 +233,7 @@ namespace DCGO.CardEffects.BT22
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           card.PermanentOfThisCard().DigivolutionCards.Count(CanSelectTrashSourceCardCondition) >= 1;
+                           card.PermanentOfThisCard().DigivolutionCards.Exists(CanSelectTrashSourceCardCondition);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -279,6 +286,7 @@ namespace DCGO.CardEffects.BT22
                     }
                 }
             }
+
             #endregion
 
             return cardEffects;

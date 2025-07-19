@@ -21,11 +21,12 @@ namespace DCGO.CardEffects.BT22
             #endregion
 
             #region Your Turn
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("<Draw 1> and gain 1 memory", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -11, true, EffectDescription());
+                activateClass.SetUpICardEffect("Activate 1 [Main] effect. if you do, gain 1 memory", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -84,7 +85,7 @@ namespace DCGO.CardEffects.BT22
 
                     bool HasMainEffect(Permanent permanent)
                     {
-                        foreach(ICardEffect effect in permanent.TopCard.EffectList_ForCard(EffectTiming.OnDeclaration, card))
+                        foreach (ICardEffect effect in permanent.TopCard.EffectList_ForCard(EffectTiming.OnDeclaration, card))
                         {
                             if (effect.EffectDiscription.Contains("[Main]"))
                             {
@@ -108,9 +109,8 @@ namespace DCGO.CardEffects.BT22
                         {
                             selectedPermanent = card.Owner.GetBattleAreaDigimons().Find(CanSelectPermanentCondition);
                         }
-
                         else
-                        { 
+                        {
                             SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                             selectPermanentEffect.SetUp(
@@ -220,6 +220,7 @@ namespace DCGO.CardEffects.BT22
                     }
                 }
             }
+
             #endregion
 
             #region Security
