@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-//Sayo 
+//Sayo
 namespace DCGO.CardEffects.BT22
 {
     public class BT22_102 : CEntity_Effect
@@ -15,54 +15,13 @@ namespace DCGO.CardEffects.BT22
 
             if (timing == EffectTiming.OnStartMainPhase)
             {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Memory +1", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-                cardEffects.Add(activateClass);
-
-                string EffectDiscription()
-                {
-                    return "[Start of Your Main Phase] If your opponent has a Digimon, gain 1 memory.";
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.IsOwnerTurn(card))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (card.Owner.Enemy.GetBattleAreaDigimons().Count >= 1)
-                        {
-                            if (card.Owner.CanAddMemory(activateClass))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return false;
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
-                {
-                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
-                }
+                cardEffects.Add(CardEffectFactory.Gain1MemoryTamerEffect(card));
             }
 
             #endregion
 
             #region Your Turn
+
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -122,7 +81,7 @@ namespace DCGO.CardEffects.BT22
                     bool CanSelectDigivolveTarget(CardSource source)
                     {
                         return (source.HasLightFangOrNightClawTraits || source.HasCSTraits) &&
-                               source.CanPlayCardTargetFrame(attackingPermanent.PermanentFrame, true, activateClass,SelectCardEffect.Root.Trash);
+                               source.CanPlayCardTargetFrame(attackingPermanent.PermanentFrame, true, activateClass, SelectCardEffect.Root.Trash);
                     }
 
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
@@ -137,6 +96,7 @@ namespace DCGO.CardEffects.BT22
                             successProcess: null));
                 }
             }
+
             #endregion
 
             #region Security
