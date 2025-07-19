@@ -180,13 +180,13 @@ namespace DCGO.CardEffects.BT22
                     {
                         List<ICardEffect> candidateEffects = new List<ICardEffect>();
 
-                        List<ICardEffect> effects = selectedCard.EffectList_ForCard(EffectTiming.OnDeclaration, card)
+                        List<ICardEffect> effects = selectedCard.EffectList_ForCard(EffectTiming.OnEnterFieldAnyone, card)
                             .Clone()
                             .Filter(cardEffect => cardEffect is ActivateICardEffect && !cardEffect.IsSecurityEffect && cardEffect.EffectDiscription.Contains("[When Digivolving]"));
 
                         candidateEffects.AddRange(effects);
 
-                        if (candidateEffects.Count >= 1)
+                        if (candidateEffects.Any())
                         {
                             ICardEffect selectedEffect = null;
 

@@ -44,7 +44,8 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                           && CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -55,8 +56,8 @@ namespace DCGO.CardEffects.BT22
 
                 bool HandCondition(CardSource source)
                 {
-                    return source.IsDigimon && 
-                        source.HasLevel && source.Level <= 5 && 
+                    return source.IsDigimon &&
+                        source.HasLevel && source.Level <= 5 &&
                         source.HasAquaTraits;
                 }
 
@@ -142,7 +143,7 @@ namespace DCGO.CardEffects.BT22
                                         opponentPermanent = permanent;
                                         yield return null;
                                     }
-                                    selectPermanentEffect1.SetUpCustomMessage("Select 1 Digimon/Tamer that can't unsuspend.", "The opponent is selecting 1 Digimon/Tamer that can't unsuspend.");
+                                    selectPermanentEffect1.SetUpCustomMessage("Select 1 Digimon/Tamer that can't suspend.", "The opponent is selecting 1 Digimon/Tamer that can't suspend.");
 
                                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect1.Activate());
 
@@ -150,7 +151,7 @@ namespace DCGO.CardEffects.BT22
 
                                     if (opponentPermanent != null)
                                     {
-                                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCantUnsuspendUntilOpponentTurnEnd(
+                                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCantSuspendUntilOpponentTurnEnd(
                                             targetPermanent: opponentPermanent,
                                             activateClass: activateClass
                                         ));
@@ -279,7 +280,7 @@ namespace DCGO.CardEffects.BT22
                                         opponentPermanent = permanent;
                                         yield return null;
                                     }
-                                    selectPermanentEffect1.SetUpCustomMessage("Select 1 Digimon/Tamer that can't unsuspend.", "The opponent is selecting 1 Digimon/Tamer that can't unsuspend.");
+                                    selectPermanentEffect1.SetUpCustomMessage("Select 1 Digimon/Tamer that can't suspend.", "The opponent is selecting 1 Digimon/Tamer that can't suspend.");
 
                                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect1.Activate());
 
@@ -287,7 +288,7 @@ namespace DCGO.CardEffects.BT22
 
                                     if (opponentPermanent != null)
                                     {
-                                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCantUnsuspendUntilOpponentTurnEnd(
+                                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCantSuspendUntilOpponentTurnEnd(
                                             targetPermanent: opponentPermanent,
                                             activateClass: activateClass
                                         ));

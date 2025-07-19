@@ -200,7 +200,8 @@ namespace DCGO.CardEffects.BT22
 
                 bool IsOwnerDigimon(Permanent permanent)
                 {
-                    return CardEffectCommons.IsOwnerPermanent(permanent, card) && permanent.IsDigimon;
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                           permanent != card.PermanentOfThisCard();
                 }
 
                 bool HasEssWhenDigivolving(CardSource cardSource)
@@ -263,7 +264,7 @@ namespace DCGO.CardEffects.BT22
                     {
                         List<ICardEffect> candidateEffects = new List<ICardEffect>();
 
-                        List<ICardEffect> effects = selectedCard.EffectList_ForCard(EffectTiming.OnDeclaration, card)
+                        List<ICardEffect> effects = selectedCard.EffectList_ForCard(EffectTiming.OnEnterFieldAnyone, card)
                             .Clone()
                             .Filter(cardEffect => cardEffect is ActivateICardEffect && !cardEffect.IsSecurityEffect && cardEffect.EffectDiscription.Contains("[When Digivolving]"));
 

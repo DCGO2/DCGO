@@ -144,18 +144,15 @@ namespace DCGO.CardEffects.BT22
                                 return CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent);
                             }
 
-                            bool SkillCondition(ICardEffect cardEffect)
+                            bool CardCondition(CardSource cardSource)
                             {
-                                if (cardEffect != null)
+                                if (cardSource == selectedPermanent.TopCard)
                                 {
-                                    if (cardEffect.EffectSourceCard != null)
+                                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(selectedPermanent.TopCard))
                                     {
-                                        if (cardEffect.EffectSourceCard.Owner == card.Owner.Enemy)
+                                        if (cardSource == selectedPermanent.TopCard)
                                         {
-                                            if (cardEffect.IsDigimonEffect)
-                                            {
-                                                return true;
-                                            }
+                                            return true;
                                         }
                                     }
                                 }
@@ -163,9 +160,27 @@ namespace DCGO.CardEffects.BT22
                                 return false;
                             }
 
+                            bool SkillCondition(ICardEffect cardEffect)
+                            {
+                                if (CardEffectCommons.IsOpponentEffect(cardEffect, card))
+                                {
+                                    if (cardEffect.IsDigimonEffect)
+                                    {
+                                        return true;
+                                    }
+
+                                    if (cardEffect.IsDigimonEffect && cardEffect.IsSecurityEffect)
+                                    {
+                                        return true;
+                                    }
+                                }
+
+                                return false;
+                            }
+
                             CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
-                            canNotAffectedClass.SetUpICardEffect("Isn't affected by opponent's Digimon's effect", CanUseCondition1, card);
-                            canNotAffectedClass.SetUpCanNotAffectedClass(CardCondition: null, SkillCondition: SkillCondition);
+                            canNotAffectedClass.SetUpICardEffect("Not affected by opponent's Digimon's effects", CanUseCondition1, card);
+                            canNotAffectedClass.SetUpCanNotAffectedClass(CardCondition: CardCondition, SkillCondition: SkillCondition);
                             selectedPermanent.UntilEachTurnEndEffects.Add((_timing) => canNotAffectedClass);
 
                             yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateBuffEffect(selectedPermanent));
@@ -208,12 +223,13 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnAttackTargetSwitch(hashtable, card);
+                    return CardEffectCommons.IsExistOnBattleArea(card)
+                           && CardEffectCommons.CanTriggerOnAttackTargetSwitch(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card)
+                    return CardEffectCommons.IsExistOnBattleArea(card)
                         && card.PermanentOfThisCard().TopCard.EqualsCardName("Eater Eve");
                 }
 
