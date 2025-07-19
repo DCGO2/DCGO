@@ -25,7 +25,7 @@ namespace DCGO.CardEffects.BT22
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Activate 1 [Main] effect. it if was, gain 1 memory", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Activate 1 [Main] effect. if you do, gain 1 memory", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
