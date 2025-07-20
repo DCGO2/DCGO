@@ -205,13 +205,90 @@ namespace DCGO.CardEffects.BT17
                             yield return null;
                         }
 
-                        if(selectedPermanent.TopCard.HasLevel)
+                        if (selectedPermanent.TopCard.HasLevel)
                         {
+                            List<Permanent> returnedPermanents = card.Owner.Enemy.GetBattleAreaDigimons()
+                                .Filter(permanent =>
+                                permanent.Level == selectedPermanent.Level &&
+                                !permanent.TopCard.CanNotBeAffected(activateClass));
+
+                            Hashtable _hashtable = new Hashtable();
+                            _hashtable.Add("CardEffect", activateClass);
+
                             yield return ContinuousController.instance.StartCoroutine(new DeckBottomBounceClass(
-                                deckBounceTargetPermanents: card.Owner.Enemy.GetBattleAreaDigimons().Filter(permanent => 
+                                deckBounceTargetPermanents: card.Owner.Enemy.GetBattleAreaDigimons().Filter(permanent =>
                                 permanent.Level == selectedPermanent.Level &&
                                 !permanent.TopCard.CanNotBeAffected(activateClass)),
-                                hashtable: hashtable).DeckBounce());
+                                hashtable: _hashtable).DeckBounce());
+
+                            if (returnedPermanents.Count == 1)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(new DeckBottomBounceClass(returnedPermanents, _hashtable).DeckBounce());
+                            }
+                            else
+                            {
+                                List<CardSource> cardSources = returnedPermanents.Map(permanent => permanent.TopCard);
+
+                                List<SkillInfo> skillInfos = cardSources.Map(cardSource =>
+                                {
+                                    ChangeBaseDPClass cardEffect = new ChangeBaseDPClass();
+                                    cardEffect.SetUpICardEffect(" ", null, cardSource);
+
+                                    return new SkillInfo(cardEffect, null, EffectTiming.None);
+                                });
+
+                                List<CardSource> selectedCards = new List<CardSource>();
+
+                                SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                                selectCardEffect.SetUp(
+                                    canTargetCondition: (cardSource) => true,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    canNoSelect: () => false,
+                                    selectCardCoroutine: null,
+                                    afterSelectCardCoroutine: AfterSelectCardCoroutine1,
+                                    message: "Specify the order to place the card at the bottom of the deck\n(cards will be placed back to the bottom of the deck so that cards with lower numbers are on top).",
+                                    maxCount: cardSources.Count,
+                                    canEndNotMax: false,
+                                    isShowOpponent: false,
+                                    mode: SelectCardEffect.Mode.Custom,
+                                    root: SelectCardEffect.Root.Custom,
+                                    customRootCardList: cardSources,
+                                    canLookReverseCard: true,
+                                    selectPlayer: card.Owner,
+                                    cardEffect: activateClass);
+
+                                selectCardEffect.SetNotShowCard();
+                                selectCardEffect.SetNotAddLog();
+                                selectCardEffect.SetUpSkillInfos(skillInfos);
+
+                                yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+
+                                IEnumerator AfterSelectCardCoroutine1(List<CardSource> cardSources)
+                                {
+                                    if (cardSources.Count >= 1)
+                                    {
+                                        selectedCards = cardSources.Clone();
+
+                                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(cardSources, "Deck Bottom Cards", true, true));
+                                    }
+                                }
+
+                                if (selectedCards.Count >= 1)
+                                {
+                                    List<Permanent> libraryPermanets = selectedCards.Map(cardSource => cardSource.PermanentOfThisCard());
+
+                                    if (libraryPermanets.Count >= 1)
+                                    {
+                                        DeckBottomBounceClass putLibraryBottomPermanent = new DeckBottomBounceClass(libraryPermanets, _hashtable);
+
+                                        putLibraryBottomPermanent.SetNotShowCards();
+
+                                        yield return ContinuousController.instance.StartCoroutine(putLibraryBottomPermanent.DeckBounce());
+                                    }
+                                }
+                            }
                         }
                     }
 
@@ -310,11 +387,88 @@ namespace DCGO.CardEffects.BT17
 
                         if (selectedPermanent.TopCard.HasLevel)
                         {
+                            List<Permanent> returnedPermanents = card.Owner.Enemy.GetBattleAreaDigimons()
+                                .Filter(permanent =>
+                                permanent.Level == selectedPermanent.Level &&
+                                !permanent.TopCard.CanNotBeAffected(activateClass));
+
+                            Hashtable _hashtable = new Hashtable();
+                            _hashtable.Add("CardEffect", activateClass);
+
                             yield return ContinuousController.instance.StartCoroutine(new DeckBottomBounceClass(
                                 deckBounceTargetPermanents: card.Owner.Enemy.GetBattleAreaDigimons().Filter(permanent =>
                                 permanent.Level == selectedPermanent.Level &&
                                 !permanent.TopCard.CanNotBeAffected(activateClass)),
-                                hashtable: hashtable).DeckBounce());
+                                hashtable: _hashtable).DeckBounce());
+
+                            if (returnedPermanents.Count == 1)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(new DeckBottomBounceClass(returnedPermanents, _hashtable).DeckBounce());
+                            }
+                            else
+                            {
+                                List<CardSource> cardSources = returnedPermanents.Map(permanent => permanent.TopCard);
+
+                                List<SkillInfo> skillInfos = cardSources.Map(cardSource =>
+                                {
+                                    ChangeBaseDPClass cardEffect = new ChangeBaseDPClass();
+                                    cardEffect.SetUpICardEffect(" ", null, cardSource);
+
+                                    return new SkillInfo(cardEffect, null, EffectTiming.None);
+                                });
+
+                                List<CardSource> selectedCards = new List<CardSource>();
+
+                                SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                                selectCardEffect.SetUp(
+                                    canTargetCondition: (cardSource) => true,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    canNoSelect: () => false,
+                                    selectCardCoroutine: null,
+                                    afterSelectCardCoroutine: AfterSelectCardCoroutine1,
+                                    message: "Specify the order to place the card at the bottom of the deck\n(cards will be placed back to the bottom of the deck so that cards with lower numbers are on top).",
+                                    maxCount: cardSources.Count,
+                                    canEndNotMax: false,
+                                    isShowOpponent: false,
+                                    mode: SelectCardEffect.Mode.Custom,
+                                    root: SelectCardEffect.Root.Custom,
+                                    customRootCardList: cardSources,
+                                    canLookReverseCard: true,
+                                    selectPlayer: card.Owner,
+                                    cardEffect: activateClass);
+
+                                selectCardEffect.SetNotShowCard();
+                                selectCardEffect.SetNotAddLog();
+                                selectCardEffect.SetUpSkillInfos(skillInfos);
+
+                                yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+
+                                IEnumerator AfterSelectCardCoroutine1(List<CardSource> cardSources)
+                                {
+                                    if (cardSources.Count >= 1)
+                                    {
+                                        selectedCards = cardSources.Clone();
+
+                                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(cardSources, "Deck Bottom Cards", true, true));
+                                    }
+                                }
+
+                                if (selectedCards.Count >= 1)
+                                {
+                                    List<Permanent> libraryPermanets = selectedCards.Map(cardSource => cardSource.PermanentOfThisCard());
+
+                                    if (libraryPermanets.Count >= 1)
+                                    {
+                                        DeckBottomBounceClass putLibraryBottomPermanent = new DeckBottomBounceClass(libraryPermanets, _hashtable);
+
+                                        putLibraryBottomPermanent.SetNotShowCards();
+
+                                        yield return ContinuousController.instance.StartCoroutine(putLibraryBottomPermanent.DeckBounce());
+                                    }
+                                }
+                            }
                         }
                     }
 

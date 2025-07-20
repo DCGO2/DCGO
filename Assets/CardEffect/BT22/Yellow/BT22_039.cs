@@ -211,7 +211,7 @@ namespace DCGO.CardEffects.BT22
 
             #region When Attacking
 
-            if (timing == EffectTiming.OnEnterFieldAnyone)
+            if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 Level 4 or lower [Appmon]", CanUseCondition, card);
