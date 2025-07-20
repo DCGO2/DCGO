@@ -33,7 +33,7 @@ namespace DCGO.CardEffects.BT22
                 {
                     return targetPermanent.TopCard.HasAppmonTraits;
                 }
-                cardEffects.Add(CardEffectFactory.AddSelfLinkConditionStaticEffect(permanentCondition: PermanentCondition, linkCost: 2, card: card));
+                cardEffects.Add(CardEffectFactory.AddSelfLinkConditionStaticEffect(permanentCondition: PermanentCondition, linkCost: 1, card: card));
             }
 
             #endregion
