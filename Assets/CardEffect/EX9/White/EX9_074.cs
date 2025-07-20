@@ -491,7 +491,9 @@ namespace DCGO.CardEffects.EX9
 
                         if (permanentToDelete.Count > 0)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(permanentToDelete, hashtable).Destroy());
+                            Hashtable _hashtable = new Hashtable();
+                            hashtable.Add("CardEffect", activateClass);
+                            yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(permanentToDelete, _hashtable).Destroy());
                         }
                     }
                 }

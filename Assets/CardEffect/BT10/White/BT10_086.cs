@@ -341,6 +341,7 @@ namespace DCGO.CardEffects.BT10
                                 cardEffect: activateClass);
 
                             selectCardEffect.SetIsSecurity();
+                            selectCardEffect.SetUseFaceDown();
                             selectCardEffect.SetUpCustomMessage_ShowCard("Trash card");
 
                             yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
@@ -524,6 +525,7 @@ namespace DCGO.CardEffects.BT10
                                 cardEffect: activateClass);
 
                             selectCardEffect.SetIsSecurity();
+                            selectCardEffect.SetUseFaceDown();
                             selectCardEffect.SetUpCustomMessage_ShowCard("Trash card");
 
                             yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());

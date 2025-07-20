@@ -14,7 +14,7 @@ public class ST9_06 : CEntity_Effect
         if (timing == EffectTiming.OnEnterFieldAnyone)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Play Digimons from digivolution carads", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Play Digimon from digivolution cards", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
             cardEffects.Add(activateClass);
 

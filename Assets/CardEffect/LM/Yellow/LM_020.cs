@@ -134,6 +134,7 @@ namespace DCGO.CardEffects.LM
                                 cardEffect: activateClass);
 
                             selectCardEffect.SetIsSecurity();
+                            selectCardEffect.SetUseFaceDown();
                             selectCardEffect.SetUpCustomMessage_ShowCard("Return card to top of deck");
 
                             yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());

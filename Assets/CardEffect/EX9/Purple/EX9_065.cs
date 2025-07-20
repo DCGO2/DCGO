@@ -129,7 +129,7 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.Level <= 4 && cardSource.EqualsTraits("DM"))
+                    if (cardSource.HasLevel && cardSource.Level <= 4 && cardSource.EqualsTraits("DM"))
                     {
                         if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                         {
@@ -208,7 +208,7 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.Level <= 4 && cardSource.EqualsTraits("DM"))
+                    if (cardSource.HasLevel && cardSource.Level <= 4 && cardSource.EqualsTraits("DM"))
                     {
                         if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                         {

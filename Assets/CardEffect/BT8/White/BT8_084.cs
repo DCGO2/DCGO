@@ -308,6 +308,9 @@ public class BT8_084 : CEntity_Effect
                         {
                             foreach (CardSource cardSource1 in card.PermanentOfThisCard().DigivolutionCards)
                             {
+                                if (cardSource1.IsFlipped)
+                                    continue;
+
                                 foreach (CardColor cardColor in cardSource1.CardColors)
                                 {
                                     if (!CardColors.Contains(cardColor))

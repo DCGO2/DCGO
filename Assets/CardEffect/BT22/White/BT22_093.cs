@@ -1,3 +1,4 @@
+using DCGO.CardEntities;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -85,6 +86,12 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
+                    if(DigivolvingDigimon != null)
+                    {
+                        if (!DigivolvingCondition(DigivolvingDigimon))
+                            return false;
+
+                    }
                     return CardEffectCommons.IsExistOnField(card)
                         && CardEffectCommons.IsOwnerTurn(card)
                         && CardEffectCommons.CanActivateSuspendCostEffect(card);
@@ -92,10 +99,18 @@ namespace DCGO.CardEffects.BT22
 
                 bool DigivolvingCondition(Permanent permanent)
                 {
-                    DigivolvingDigimon = permanent;
-
-                    return permanent.TopCard.HasCSTraits
-                        && permanent.DigivolutionCards.Filter(x => x.HasLevel && x.Level == permanent.Level).Count >= 1;
+                    if (CardEffectCommons.IsOwnerPermanent(permanent, card))
+                    {
+                        if (permanent.TopCard.HasCSTraits)
+                        {
+                            if(permanent.DigivolutionCards.Filter(x => x.HasLevel && x.Level == permanent.Level).Count >= 1)
+                            {
+                                DigivolvingDigimon = permanent;
+                                return true;
+                            }
+                        }
+                    }
+                    return false;
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)

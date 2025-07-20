@@ -253,12 +253,10 @@ namespace DCGO.CardEffects.BT22
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    CardSource cardSource = card.Owner.SecurityCards[0];
-
                     yield return ContinuousController.instance.StartCoroutine(
                         new IDestroySecurity(card.Owner, 1, activateClass, true).DestroySecurity());
 
-                    if (CardEffectCommons.GetDiscardedCardsFromHashtable(hashtable).Contains(cardSource)) yield return ContinuousController.instance.StartCoroutine(
+                    yield return ContinuousController.instance.StartCoroutine(
                         new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() }, activateClass).Unsuspend());
                 }
             }
