@@ -199,6 +199,7 @@ public class Permanent
             if (HasDP)
             {
                 BaseDP = TopCard.BaseCardDP;
+                BaseDP += TopCard.BaseDP;
 
                 #region 基礎DPを変更する効果
 

@@ -159,6 +159,7 @@ public class AutoProcessing : MonoBehaviourPunCallbacks
         {
             if (permanent.TopCard != null)
             {
+                Debug.Log($"RULE CHECK: {permanent.DP}");
                 if (permanent.DP < 0)
                 {
                     if (permanent.IsPlaceToTrashDueToNotHavingDP)
