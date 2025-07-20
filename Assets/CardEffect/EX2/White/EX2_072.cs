@@ -98,6 +98,8 @@ namespace DCGO.CardEffects.EX2
 
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
+                        selectCardEffect.SetUseFaceDown();
+
                         if (maxCount >= 1)
                         {
                             selectCardEffect.SetUp(

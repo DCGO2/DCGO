@@ -115,7 +115,8 @@ namespace DCGO.CardEffects.BT22
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.HasMatchConditionOwnersHand(card, CardCondition);
+                        && CardEffectCommons.HasMatchConditionOwnersHand(card, CardCondition) &&
+                           card.Owner.SecurityCards.Any();
                 }
 
                 bool CardCondition(CardSource cardSource)
@@ -127,47 +128,17 @@ namespace DCGO.CardEffects.BT22
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    bool isTrashingSecurity = false;
+                    #region Make Selection for Trashing Security
 
-                    if (card.Owner.SecurityCards.Any())
-                    {
-                        #region Make Selection for Trashing Security
-
-                        List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
-                        {
-                            new SelectionElement<bool>(message: $"Yes", value : true, spriteIndex: 0),
-                            new SelectionElement<bool>(message: $"No", value : false, spriteIndex: 1),
-                        };
-
-                        string selectPlayerMessage = "Trash top security to digivolve?";
-                        string notSelectPlayerMessage = "The opponent is choosing to trash top secuirty.";
-
-                        GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-                        isTrashingSecurity = GManager.instance.userSelectionManager.SelectedBoolValue;
-
-                        #endregion
-                    }
-
-                    if (isTrashingSecurity)
-                    {
-                        #region Trash Top Security And Check
-
-                        CardSource topSec = card.Owner.SecurityCards.FirstOrDefault();
-
-                        yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
-                        player: card.Owner.Enemy,
+                    yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
+                        player: card.Owner,
                         destroySecurityCount: 1,
                         cardEffect: activateClass,
                         fromTop: true).DestroySecurity());
 
-                        List<CardSource> DiscardedCards = CardEffectCommons.GetDiscardedCardsFromHashtable(hashtable);
+                    #endregion
 
-                        #endregion
-
-                        if (DiscardedCards.Contains(topSec))
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(
+                    yield return ContinuousController.instance.StartCoroutine(
                                 CardEffectCommons.DigivolveIntoHandOrTrashCard(
                                     targetPermanent: card.PermanentOfThisCard(),
                                     cardCondition: CardCondition,
@@ -178,8 +149,6 @@ namespace DCGO.CardEffects.BT22
                                     isHand: true,
                                     activateClass: activateClass,
                                     successProcess: null));
-                        }
-                    }
                 }
             }
 

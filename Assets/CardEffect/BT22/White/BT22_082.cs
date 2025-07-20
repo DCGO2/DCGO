@@ -76,7 +76,7 @@ namespace DCGO.CardEffects.BT22
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectOpponentsDigimonCondition))
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentsDigimonCondition))
                     {
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
@@ -230,7 +230,7 @@ namespace DCGO.CardEffects.BT22
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectOpponentsDigimonCondition))
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentsDigimonCondition))
                     {
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
