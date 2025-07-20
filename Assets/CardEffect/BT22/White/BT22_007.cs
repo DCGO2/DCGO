@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 // Mother Eater
@@ -74,10 +75,13 @@ namespace DCGO.CardEffects.BT22
                         }
                     }
 
+
                     if (card.PermanentOfThisCard().DigivolutionCards.Count >= 10)
                     {
                         Permanent thisPermanent = card.PermanentOfThisCard();
-                        if (thisPermanent.DigivolutionCards.Count(CanSelectMother) >= 3)
+
+                        if (thisPermanent.DigivolutionCards.Count(CanSelectMother) >= 3 &&
+                            card.Owner.fieldCardFrames.Count((frame) => frame.IsEmptyFrame() && frame.IsBattleAreaFrame()) >= 3)
                         {
                             SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
@@ -93,7 +97,7 @@ namespace DCGO.CardEffects.BT22
                                 canEndNotMax: false,
                                 isShowOpponent: true,
                                 mode: SelectCardEffect.Mode.Custom,
-                                root: SelectCardEffect.Root.DigivolutionCards,
+                                root: SelectCardEffect.Root.Custom,
                                 customRootCardList: thisPermanent.DigivolutionCards,
                                 canLookReverseCard: true,
                                 selectPlayer: card.Owner,
@@ -109,6 +113,11 @@ namespace DCGO.CardEffects.BT22
                             {
                                 if (cardSources.Count == 3)
                                 {
+                                    foreach(CardSource source in cardSources)
+                                    {
+                                        source.SetDP(16000);
+                                    }
+
                                     yield return ContinuousController.instance.StartCoroutine(
                                         CardEffectCommons.PlayPermanentCards(
                                         cardSources: cardSources,
@@ -128,7 +137,7 @@ namespace DCGO.CardEffects.BT22
 
             #region All Turns
 
-            if (timing == EffectTiming.None)
+            /*if (timing == EffectTiming.None)
             {
                 string EffectDiscription()
                 {
@@ -160,7 +169,7 @@ namespace DCGO.CardEffects.BT22
                 card: card,
                 condition: Condition,
                 effectName: EffectDiscription));
-            }
+            }*/
 
             #endregion
 
@@ -279,6 +288,57 @@ namespace DCGO.CardEffects.BT22
 
                         yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource>() { permanent.TopCard }, activateClass));
                     }
+                }
+            }
+
+            #endregion
+
+            #region Remove Field - Reset DP
+
+            if (timing == EffectTiming.WhenRemoveField)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("", CanUseCondition, card);
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, "");
+                activateClass.SetIsBackgroundProcess(true);
+                cardEffects.Add(activateClass);
+
+                bool IsEaterDigimon(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)
+                        && permanent.TopCard.EqualsCardName("Mother Eater");
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card);
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    List<Permanent> permanets = new List<Permanent>();
+                    if (CardEffectCommons.IsPermanentExistsOnBreedingArea(card.PermanentOfThisCard()))
+                    {
+                        permanets = card.Owner.GetBattleAreaDigimons()
+                            .Filter(IsEaterDigimon)
+                            .ToList();
+                    }
+                    else
+                    {
+                        permanets.Add(card.PermanentOfThisCard());
+                        
+                    }
+
+                    foreach (Permanent permanent in permanets)
+                    {
+                        #region Remove Events from Permanent
+
+                        permanent.TopCard.SetDP(0);
+
+                        #endregion
+                    }
+
+                    yield return null;
                 }
             }
 

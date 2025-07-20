@@ -18,6 +18,7 @@ namespace DCGO.Tools.Repair
         string debugText = "";
         int matchedCount = 0;
 
+        #region Fix Errata Images
         [MenuItem("Window/DCGO/Repair/Fix Errata Images")]
         static void ErrataImages()
         {
@@ -42,8 +43,8 @@ namespace DCGO.Tools.Repair
                 }
 
                 string errataName = FindMatchingErrata(card.CardSpriteName, data);
-                
-                if(card.CardSpriteName != errataName)
+
+                if (card.CardSpriteName != errataName)
                 {
                     card.CardSpriteName = errataName;
                     EditorUtility.SetDirty(card);
@@ -58,22 +59,73 @@ namespace DCGO.Tools.Repair
         {
             string name = imageName;
 
-            foreach(AlternateArt AA in data.AAs)
+            foreach (AlternateArt AA in data.AAs)
             {
-                if (AA.id.Replace("-Errata","") != imageName)
+                if (AA.id.Replace("-Errata", "") != imageName)
                     continue;
 
                 name = AA.id;
             }
 
-            if(name != imageName)
+            if (name != imageName)
             {
                 debugText += $"{imageName}\n";
                 matchedCount++;
-            }               
+            }
 
             return name;
         }
+
+        #endregion
+
+        #region Fix Errata Images
+        [MenuItem("Window/DCGO/Repair/Fix Sample Images")]
+        static void SampleImages()
+        {
+            instance = new FixErrataImages();
+            instance.FixSampleImages();
+        }
+
+        void FixSampleImages()
+        {
+            string path = "Assets/CardBaseEntity/";
+
+            if (Selection.assetGUIDs.Length != 0)
+                path = AssetDatabase.GUIDToAssetPath(Selection.assetGUIDs[0]);
+
+            Debug.Log($"ASSET PATH: {path}");
+
+            List<CEntity_Base> Entities = GetAsset.LoadAll<CEntity_Base>(path);
+
+            foreach (CEntity_Base card in Entities)
+            {
+                string errataName = FindMatchingSample(card.CardSpriteName);
+
+                if (card.CardSpriteName != errataName)
+                {
+                    card.CardSpriteName = errataName;
+                    EditorUtility.SetDirty(card);
+                }
+            }
+
+            Debug.Log($"COMPLETED");
+        }
+
+        string FindMatchingSample(string imageName)
+        {
+            string name = imageName;
+
+            if (!name.Contains("_P"))
+                name += "-Sample";
+
+            return name;
+        }
+
+        #endregion
+
+
+
+
 
         IEnumerator GetJsonData()
         {

@@ -1059,7 +1059,12 @@ public class CardSource : MonoBehaviour
             }
         }
 
-        if (IsDigiEgg)
+        if (!isBattleAreaFrame && frame.GetFramePermanent() == null && !isBreedingArea)
+        {
+            return false;
+        }
+
+        /*if (IsDigiEgg)
         {
             if (isBattleAreaFrame)
             {
@@ -1072,7 +1077,7 @@ public class CardSource : MonoBehaviour
             {
                 return false;
             }
-        }
+        }*/
 
         return true;
     }
@@ -2150,13 +2155,14 @@ public class CardSource : MonoBehaviour
 
     #region Whether this card has DP
 
-    public bool HasDP => IsDigimon || _cEntity_Base.DP > 0;
+    public bool HasDP => IsDigimon || _cEntity_Base.DP > 0 || BaseDP > 0;
 
     #endregion
 
     #region base card DP
 
     public int BaseCardDP => _cEntity_Base.DP;
+    public int BaseDP = 0;
 
     #endregion
 
@@ -2171,6 +2177,7 @@ public class CardSource : MonoBehaviour
             if (HasDP)
             {
                 cardDP = BaseCardDP;
+                cardDP += BaseDP;
 
                 #region card effects that change card DP
 
@@ -2229,6 +2236,13 @@ public class CardSource : MonoBehaviour
 
     public int LinkDP => _cEntity_Base.LinkDP;
 
+    #endregion
+
+    #region Set DP - Must be used in conjunction with when removed field
+    public void SetDP(int value)
+    {
+        BaseDP = value;
+    }
     #endregion
 
     #region whether this card is token
