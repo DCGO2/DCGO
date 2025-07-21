@@ -135,7 +135,7 @@ namespace DCGO.CardEffects.BT22
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
                     return cardSource.IsDigimon
-                        && cardSource.HasFlameTraits || cardSource.HasCSTraits;
+                        && (cardSource.HasFlameTraits || cardSource.HasCSTraits);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

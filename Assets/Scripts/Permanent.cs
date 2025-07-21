@@ -1098,14 +1098,18 @@ public class Permanent
     #endregion
 
     #region Remove Linked Card
-    public IEnumerator RemoveLinkedCard(CardSource cardSource, int removeCount = 0)
+    public IEnumerator RemoveLinkedCard(CardSource cardSource, int removeCount = 0, bool trashCard = true)
     {
         if (LinkedCards.Contains(cardSource))
         {
             LinkedDP -= cardSource.LinkDP;
-            yield return ContinuousController.instance.StartCoroutine(RemoveCardSource(cardSource));
-            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddTrashCard(cardSource));
             LinkedCards.Remove(cardSource);
+
+            if (trashCard)
+            {
+                yield return ContinuousController.instance.StartCoroutine(RemoveCardSource(cardSource));
+                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddTrashCard(cardSource));
+            }        
         }
 
         if(removeCount > 0)

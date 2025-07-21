@@ -442,6 +442,8 @@ namespace DCGO.CardEffects.BT22
 
                     if (playCard)
                     {
+                        card.PermanentOfThisCard().RemoveLinkedCard(playCard,trashCard:false);
+
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
                             cardSources: new List<CardSource> { playCard },
                             activateClass: activateClass,

@@ -24,7 +24,7 @@ public partial class CardEffectCommons
 
     #region Effect process of [Decode]
 
-    public static IEnumerator DecodeProcess(CardSource cardSource, Func<CardSource, bool> sourceCondition, ICardEffect activateClass)
+    public static IEnumerator DecodeProcess(CardSource cardSource, Func<CardSource, bool> sourceCondition,string[] decodeStrings, ICardEffect activateClass)
     {
         List<CardSource> selectedCards = new List<CardSource>();
 
@@ -37,7 +37,7 @@ public partial class CardEffectCommons
             canNoSelect: () => true,
             selectCardCoroutine: SelectCardCoroutine,
             afterSelectCardCoroutine: null,
-            message: "Select 1 digivolution card to play.",
+            message: $"Select 1 {decodeStrings[0]} digivolution card to play.",
             maxCount: 1,
             canEndNotMax: false,
             isShowOpponent: true,
@@ -49,8 +49,8 @@ public partial class CardEffectCommons
             cardEffect: activateClass);
 
         selectCardEffect.SetUpCustomMessage(
-            "Select 1 digivolution card to play.",
-            "The opponent is selecting 1 digivolution card to play.");
+            $"Select 1 {decodeStrings[0]} digivolution card to play.",
+            $"The opponent is selecting 1 {decodeStrings[0]} digivolution card to play.");
         selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
 
         yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());

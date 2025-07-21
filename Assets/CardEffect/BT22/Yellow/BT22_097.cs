@@ -11,23 +11,40 @@ namespace DCGO.CardEffects.BT22
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region ignoring colours
-
+            #region Ignore Color Requirment
             if (timing == EffectTiming.None)
             {
                 IgnoreColorConditionClass ignoreColorConditionClass = new IgnoreColorConditionClass();
                 ignoreColorConditionClass.SetUpICardEffect("Ignore color requirements", CanUseCondition, card);
                 ignoreColorConditionClass.SetUpIgnoreColorConditionClass(cardCondition: CardCondition);
-
                 cardEffects.Add(ignoreColorConditionClass);
 
+                bool HasAppmonTrait(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsOwnerPermanent(permanent, card))
+                    {
+                        if (permanent.TopCard.EqualsTraits("Appmon"))
+                        {
+                            if (permanent.IsDigimon || permanent.IsTamer)
+                            {
+                                return true;
+                            }
+                        }
+                    }
+
+                    return false;
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
-                    => CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => (permanent.TopCard.IsDigimon || permanent.TopCard.IsTamer) && permanent.TopCard.HasAppmonTraits);
+                {
+                    return CardEffectCommons.HasMatchConditionPermanent(HasAppmonTrait, true);
+                }
 
                 bool CardCondition(CardSource cardSource)
-                    => cardSource == card;
+                {
+                    return cardSource == card;
+                }
             }
-
             #endregion
 
             #region Main

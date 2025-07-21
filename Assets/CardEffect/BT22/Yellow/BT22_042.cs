@@ -26,7 +26,7 @@ namespace DCGO.CardEffects.BT22
                     return CardEffectCommons.HasMatchConditionOwnersPermanent(card, perm => perm.IsTamer && perm.TopCard.EqualsCardName("Arisa Kinosaki"));
                 }
 
-                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 6, ignoreDigivolutionRequirement: true, card: card, condition: Condition));
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 6, ignoreDigivolutionRequirement: false, card: card, condition: Condition));
             }
 
             #endregion
