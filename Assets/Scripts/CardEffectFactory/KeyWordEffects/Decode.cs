@@ -60,7 +60,7 @@ public partial class CardEffectFactory
 
         IEnumerator ActivateCoroutine(Hashtable hashtable)
         {
-            return CardEffectCommons.DecodeProcess(targetPermanent.TopCard, sourceCondition, activateClass);
+            return CardEffectCommons.DecodeProcess(targetPermanent.TopCard, sourceCondition, decodeStrings, activateClass);
         }
 
         return activateClass;
