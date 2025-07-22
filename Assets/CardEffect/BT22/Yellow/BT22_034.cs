@@ -70,7 +70,7 @@ namespace DCGO.CardEffects.BT22
                 if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, SharedIsOpponentDigimon))
                 {
                     bool isTrashingSecurity = false;
-                    int dpChange = -3000;
+                    int dpChange = 3000;
 
                     if (card.Owner.SecurityCards.Any())
                     {
@@ -94,9 +94,9 @@ namespace DCGO.CardEffects.BT22
 
                     if (isTrashingSecurity)
                     {
-                        #region Trash Top Security And Check
-
                         CardSource topSec = card.Owner.SecurityCards.FirstOrDefault();
+
+                        #region Trash Top Security
 
                         yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
                         player: card.Owner,
@@ -104,11 +104,9 @@ namespace DCGO.CardEffects.BT22
                         cardEffect: activateClass,
                         fromTop: true).DestroySecurity());
 
-                        List<CardSource> DiscardedCards = CardEffectCommons.GetDiscardedCardsFromHashtable(hashtable);
-
                         #endregion
 
-                        if (DiscardedCards.Contains(topSec)) dpChange = -6000;
+                        if (CardEffectCommons.IsExistOnTrash(topSec)) dpChange = 6000;
                     }
 
                     Permanent selectedPermament = null;
@@ -137,14 +135,14 @@ namespace DCGO.CardEffects.BT22
                         yield return null;
                     }
 
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to -2K DP", "The opponent is selecting 1 Digimon to -2K DP");
+                    selectPermanentEffect.SetUpCustomMessage($"Select 1 Digimon to -{dpChange} DP", $"The opponent is selecting 1 Digimon to -{dpChange} DP");
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
                     #endregion
 
                     if (selectedPermament != null) yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
                         targetPermanent: selectedPermament,
-                        changeValue: dpChange,
+                        changeValue: -dpChange,
                         effectDuration: EffectDuration.UntilOpponentTurnEnd,
                         activateClass: activateClass
                     ));

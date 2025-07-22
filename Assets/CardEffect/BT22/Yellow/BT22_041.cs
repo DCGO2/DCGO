@@ -30,12 +30,14 @@ namespace DCGO.CardEffects.BT22
 
             #region Reduce Cost
 
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.BeforePayCost)
             {
+                int securityCount = card.Owner.SecurityCards.Count + card.Owner.Enemy.SecurityCards.Count;
+
                 bool Condition()
                 {
-                    return !CardEffectCommons.IsExistOnField(card)
-                        && card.Owner.SecurityCards.Count + card.Owner.Enemy.SecurityCards.Count <= 6;
+                    return !CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                        && securityCount <= 6;
                 }
 
                 cardEffects.Add(

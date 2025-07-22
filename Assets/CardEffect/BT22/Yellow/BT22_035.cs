@@ -322,7 +322,7 @@ namespace DCGO.CardEffects.BT22
             if (timing == EffectTiming.WhenLinked)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play 1 level 4 or lower [Appmon] digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Play 1 4 cost or lower [Appmon] digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("BT22_035_WL");
                 cardEffects.Add(activateClass);
