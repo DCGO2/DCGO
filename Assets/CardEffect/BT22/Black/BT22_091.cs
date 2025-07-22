@@ -40,7 +40,7 @@ namespace DCGO.CardEffects.BT22
 
                 string EffectDiscription()
                 {
-                    return "[Opponent's Turn] When one of your opponent's Digimon attacks, by suspending this Tamer, change the attack target to 1 of your Digimon with the [Unidentified].";
+                    return "[Opponent's Turn] When one of your opponent's Digimon attacks, by suspending this Tamer, change the attack target to 1 of your Digimon with the [Unidentified] or [CS] traits.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
