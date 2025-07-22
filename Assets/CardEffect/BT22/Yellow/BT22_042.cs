@@ -44,9 +44,8 @@ namespace DCGO.CardEffects.BT22
 
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
-                int dpMinus = card.Owner.GetBattleAreaDigimons().Count * 3000;
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect($"Play 1 level 4 or lower [Puppet] digimon, then -{dpMinus} DP 1 digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect($"Play 1 level 4 or lower [Puppet] digimon, then -3K DP for each digimon to 1 digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -129,6 +128,8 @@ namespace DCGO.CardEffects.BT22
 
                     if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, IsOpponentDigimon))
                     {
+                        int dpMinus = card.Owner.GetBattleAreaDigimons().Count * 3000;
+
                         Permanent selectedPermament = null;
 
                         #region Select Permanent
