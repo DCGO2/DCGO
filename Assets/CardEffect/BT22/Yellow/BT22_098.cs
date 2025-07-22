@@ -187,8 +187,9 @@ namespace DCGO.CardEffects.BT22
 
                 bool CardCondition(CardSource cardSource)
                 {
-                    return cardSource.IsDigimon &&
-                        (cardSource.HasPuppetTraits || cardSource.HasLiberatorTraits);
+                    return cardSource.IsDigimon
+                           && cardSource.HasPuppetTraits
+                           && cardSource.HasLiberatorTraits;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
