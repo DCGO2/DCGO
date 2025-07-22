@@ -149,7 +149,7 @@ namespace DCGO.CardEffects.BT22
 
             #region Alliance
 
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnAllyAttack)
             {
                 cardEffects.Add(CardEffectFactory.AllianceSelfEffect(isInheritedEffect: true, card: card, condition: ESSCondition));
             }
@@ -158,7 +158,7 @@ namespace DCGO.CardEffects.BT22
 
             #region Scapegoat
 
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.WhenPermanentWouldBeDeleted)
             {
                 cardEffects.Add(CardEffectFactory.ScapegoatSelfEffect(isInheritedEffect: true, card: card, condition: ESSCondition, effectName: "<Scapegoat>", effectDiscription: null));
             }
