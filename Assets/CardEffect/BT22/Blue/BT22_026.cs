@@ -54,7 +54,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool IsGabumon(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) && 
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
                            permanent.TopCard.EqualsCardName("Gabumon");
                 }
 
@@ -70,6 +70,7 @@ namespace DCGO.CardEffects.BT22
                         Permanent gabumon = null;
 
                         #region Select Gabumon Permanent
+
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
@@ -145,7 +146,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool IsAgumon(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) && 
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
                         permanent.TopCard.EqualsCardName("Agumon");
                 }
 
@@ -217,7 +218,7 @@ namespace DCGO.CardEffects.BT22
                         if (actionID == 1 && canDigivolve)
                         {
                             Permanent agumon = null;
-                            int maxCount = Math.Min(1, CardEffectCommons.HasMatchConditionPermanent(card, IsAgumon));
+                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(IsAgumon));
                             SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                             selectPermanentEffect.SetUp(
