@@ -27,7 +27,8 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenLinked(hashtable, permanent => PermanentCondition(permanent), null);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && 
+                           CardEffectCommons.CanTriggerWhenLinked(hashtable, permament => permament == card.PermanentOfThisCard(), null);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -35,12 +36,6 @@ namespace DCGO.CardEffects.BT22
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
                         && CardEffectCommons.IsOwnerTurn(card)
                         && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, OpponentCondition);
-                }
-
-                bool PermanentCondition(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && card.TopCardPermanent() == permanent;
                 }
 
                 bool OpponentCondition(Permanent permanent) => CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);

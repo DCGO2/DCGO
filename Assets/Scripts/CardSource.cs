@@ -304,16 +304,6 @@ public class CardSource : MonoBehaviour
 
     #endregion
 
-    #region Top card of permanent in the field containing this card
-
-    public Permanent TopCardPermanent()
-    {
-        return Owner.GetFieldPermanents().Find(permanent =>
-            (permanent.cardSources.Contains(this)) && !IsFlipped).TopCard.PermanentOfThisCard();
-    }
-
-    #endregion
-
     #region initialize
 
     public void Init()

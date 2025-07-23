@@ -233,7 +233,7 @@ namespace DCGO.CardEffects.BT22
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
                         && permanent.TopCard.HasUnidentifiedTraits
-                        && permanent != card.TopCardPermanent();
+                        && permanent != card.PermanentOfThisCard();
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
