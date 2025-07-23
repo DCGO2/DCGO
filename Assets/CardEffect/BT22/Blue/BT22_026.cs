@@ -145,7 +145,8 @@ namespace DCGO.CardEffects.BT22
 
                 bool IsAgumon(Permanent permanent)
                 {
-                    return permanent.IsDigimon && permanent.TopCard.EqualsCardName("Agumon");
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) && 
+                        permanent.TopCard.EqualsCardName("Agumon");
                 }
 
                 bool IsWarGreymon(CardSource cardSource)
@@ -216,7 +217,7 @@ namespace DCGO.CardEffects.BT22
                         if (actionID == 1 && canDigivolve)
                         {
                             Permanent agumon = null;
-                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersPermanentCount(card, IsAgumon));
+                            int maxCount = Math.Min(1, CardEffectCommons.HasMatchConditionPermanent(card, IsAgumon));
                             SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                             selectPermanentEffect.SetUp(
