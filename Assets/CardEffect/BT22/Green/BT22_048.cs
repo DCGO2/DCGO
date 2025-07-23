@@ -126,12 +126,12 @@ namespace DCGO.CardEffects.BT22
                     if (selectedPermanent != null) yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(selectedPermanent, 3000, EffectDuration.UntilEachTurnEnd, activateClass));
                 }
 
-                int levelMatchCount = card.PermanentOfThisCard().DigivolutionCards.Sum(entity =>
-                    new[] { entity.IsLevel2, entity.IsLevel3, entity.IsLevel4, entity.IsLevel5, entity.IsLevel6, }
-                        .Count(level => level)
-                );
+                bool levelMatch = card.PermanentOfThisCard().StackCards
+                    .Filter(x => !x.IsFlipped)
+                    .GroupBy(x => x.Level)
+                    .Any(g => g.Count() >= 2);
 
-                if (levelMatchCount >= 2)
+                if (levelMatch)
                 {
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainRaid(card.PermanentOfThisCard(), EffectDuration.UntilEachTurnEnd, activateClass));
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainPierce(card.PermanentOfThisCard(), EffectDuration.UntilEachTurnEnd, activateClass));
