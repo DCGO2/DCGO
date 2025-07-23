@@ -319,7 +319,11 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnAddDigivolutionCard(hashtable, IsRyugumon, null, null);
+                    return CardEffectCommons.CanTriggerOnAddDigivolutionCard(
+                        hashtable,
+                        IsRyugumon,
+                        cardEffectCondition: cardEffect => cardEffect.EffectSourceCard != null,
+                        null);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
