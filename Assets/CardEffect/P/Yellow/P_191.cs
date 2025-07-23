@@ -346,7 +346,7 @@ namespace DCGO.CardEffects.P
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("DNA into [GraceNovamon]", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
