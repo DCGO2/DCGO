@@ -260,9 +260,10 @@ namespace DCGO.CardEffects.BT22
                 bool HasSourceCondition()
                 {
                     List<CardSource> sources = card.PermanentOfThisCard().DigivolutionCards;
+                    
 
                     if (sources.Filter(x => x.EqualsCardName("Kyoko Kuremi")).Count >= 1) return true;
-                    if (sources.GroupBy(x => x.Level).Any(y => y.Count() >= 2)) return true;
+                    if (card.PermanentOfThisCard().StackCards.GroupBy(x => x.Level).Any(y => y.Count() >= 2)) return true;
                     return false;
                 }
 
