@@ -26,7 +26,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnAddDigivolutionCard(hashtable, permanent => PermanentCondition(permanent), cardEffect => cardEffect.EffectSourceCard != null, null)
+                    return CardEffectCommons.CanTriggerOnAddDigivolutionCard(hashtable, permament => permament == card.PermanentOfThisCard(), cardEffect => cardEffect.EffectSourceCard != null, null)
                         && CardEffectCommons.IsFromDigimon(hashtable);
                 }
 
@@ -34,12 +34,6 @@ namespace DCGO.CardEffects.BT22
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
                         && CardEffectCommons.IsOwnerTurn(card);
-                }
-
-                bool PermanentCondition(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && card.TopCardPermanent() == permanent;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

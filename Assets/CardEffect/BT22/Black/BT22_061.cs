@@ -535,7 +535,7 @@ namespace DCGO.CardEffects.BT22
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     if (CanBeSwitched()) yield return ContinuousController.instance.StartCoroutine(
-                        GManager.instance.attackProcess.SwitchDefender(activateClass, false, card.TopCardPermanent()));
+                        GManager.instance.attackProcess.SwitchDefender(activateClass, false, card.PermanentOfThisCard()));
                 }
             }
 
