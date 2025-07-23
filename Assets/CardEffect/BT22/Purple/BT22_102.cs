@@ -77,7 +77,7 @@ namespace DCGO.CardEffects.BT22
 
                     bool CanSelectDigivolveTarget(CardSource source)
                     {
-                        return (source.HasLightFangOrNightClawTraits || source.HasCSTraits) &&
+                        return (source.HasLightFangOrNightClawTraits || source.HasGalaxyTraits || source.HasCSTraits) &&
                                source.CanPlayCardTargetFrame(attackingPermanent.PermanentFrame, true, activateClass, SelectCardEffect.Root.Trash);
                     }
 
