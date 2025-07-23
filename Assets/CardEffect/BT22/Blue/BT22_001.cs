@@ -27,7 +27,11 @@ namespace DCGO.CardEffects.BT22
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           CardEffectCommons.CanTriggerOnAddDigivolutionCard(hashtable, permament => permament == card.PermanentOfThisCard(), null, CardCondition);
+                           CardEffectCommons.CanTriggerOnAddDigivolutionCard(
+                               hashtable,
+                               permament => permament == card.PermanentOfThisCard(),
+                               cardEffectCondition: cardEffect => cardEffect.EffectSourceCard != null,
+                               CardCondition);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
