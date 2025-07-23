@@ -380,157 +380,151 @@ namespace DCGO.CardEffects.P
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (card.Owner.GetBattleAreaDigimons().Count >= 2)
+                    if (card.Owner.GetBattleAreaDigimons().Count >= 2 && card.Owner.HandCards.Exists(CanSelectDNACardCondition))
                     {
-                        if (card.Owner.HandCards.Count(CanSelectDNACardCondition) >= 1)
+                        List<CardSource> selectedDNACards = new List<CardSource>();
+
+                        SelectHandEffect selectDNAEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                        selectDNAEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectDNACardCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: true,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            selectCardCoroutine: SelectDNACoroutine,
+                            afterSelectCardCoroutine: null,
+                            mode: SelectHandEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        selectDNAEffect.SetUpCustomMessage("Select 1 card to DNA digivolve.",
+                            "The opponent is selecting 1 card to DNA digivolve.");
+                        selectDNAEffect.SetNotShowCard();
+
+                        yield return StartCoroutine(selectDNAEffect.Activate());
+
+                        IEnumerator SelectDNACoroutine(CardSource cardSource)
                         {
-                            List<CardSource> selectedDNACards = new List<CardSource>();
+                            selectedDNACards.Add(cardSource);
 
-                            SelectHandEffect selectDNAEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                            yield return null;
+                        }
 
-                            selectDNAEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: CanSelectDNACardCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: 1,
-                                canNoSelect: true,
-                                canEndNotMax: false,
-                                isShowOpponent: true,
-                                selectCardCoroutine: SelectDNACoroutine,
-                                afterSelectCardCoroutine: null,
-                                mode: SelectHandEffect.Mode.Custom,
-                                cardEffect: activateClass);
-
-                            selectDNAEffect.SetUpCustomMessage("Select 1 card to DNA digivolve.",
-                                "The opponent is selecting 1 card to DNA digivolve.");
-                            selectDNAEffect.SetNotShowCard();
-
-                            yield return StartCoroutine(selectDNAEffect.Activate());
-
-                            IEnumerator SelectDNACoroutine(CardSource cardSource)
+                        if (selectedDNACards.Count >= 1)
+                        {
+                            foreach (CardSource selectedCard in selectedDNACards)
                             {
-                                selectedDNACards.Add(cardSource);
-
-                                yield return null;
-                            }
-
-                            if (selectedDNACards.Count >= 1)
-                            {
-                                foreach (CardSource selectedCard in selectedDNACards)
+                                if (selectedCard.CanPlayJogress(true))
                                 {
-                                    if (selectedCard.CanPlayJogress(true))
+                                    _jogressEvoRootsFrameIDs = new int[0];
+
+                                    yield return GManager.instance.photonWaitController.StartWait("Apollomon_P_191");
+
+                                    if (card.Owner.isYou || GManager.instance.IsAI)
                                     {
-                                        _jogressEvoRootsFrameIDs = new int[0];
+                                        GManager.instance.selectJogressEffect.SetUp_SelectDigivolutionRoots
+                                        (card: selectedCard,
+                                            isLocal: true,
+                                            isPayCost: true,
+                                            canNoSelect: true,
+                                            endSelectCoroutine_SelectDigivolutionRoots: EndSelectCoroutine_SelectDigivolutionRoots,
+                                            noSelectCoroutine: null);
 
-                                        yield return GManager.instance.photonWaitController.StartWait("Apollomon_P_191");
+                                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.selectJogressEffect
+                                            .SelectDigivolutionRoots());
 
-                                        if (card.Owner.isYou || GManager.instance.IsAI)
+                                        IEnumerator EndSelectCoroutine_SelectDigivolutionRoots(List<Permanent> permanents)
                                         {
-                                            GManager.instance.selectJogressEffect.SetUp_SelectDigivolutionRoots
-                                            (card: selectedCard,
-                                                isLocal: true,
-                                                isPayCost: true,
-                                                canNoSelect: true,
-                                                endSelectCoroutine_SelectDigivolutionRoots: EndSelectCoroutine_SelectDigivolutionRoots,
-                                                noSelectCoroutine: null);
-
-                                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.selectJogressEffect
-                                                .SelectDigivolutionRoots());
-
-                                            IEnumerator EndSelectCoroutine_SelectDigivolutionRoots(List<Permanent> permanents)
+                                            if (permanents.Count == 2)
                                             {
-                                                if (permanents.Count == 2)
-                                                {
-                                                    _jogressEvoRootsFrameIDs = permanents.Distinct().ToArray()
-                                                        .Map(permanent => permanent.PermanentFrame.FrameID);
-                                                }
-
-                                                yield return null;
+                                                _jogressEvoRootsFrameIDs = permanents.Distinct().ToArray()
+                                                    .Map(permanent => permanent.PermanentFrame.FrameID);
                                             }
 
-                                            photonView.RPC("SetJogressEvoRootsFrameIDs", RpcTarget.All, _jogressEvoRootsFrameIDs);
-                                        }
-                                        else
-                                        {
-                                            GManager.instance.commandText.OpenCommandText(
-                                                "The opponent is choosing a card to DNA digivolve.");
+                                            yield return null;
                                         }
 
-                                        yield return new WaitWhile(() => !_endSelect);
-                                        _endSelect = false;
+                                        photonView.RPC("SetJogressEvoRootsFrameIDs", RpcTarget.All, _jogressEvoRootsFrameIDs);
+                                    }
+                                    else
+                                    {
+                                        GManager.instance.commandText.OpenCommandText(
+                                            "The opponent is choosing a card to DNA digivolve.");
+                                    }
 
-                                        GManager.instance.commandText.CloseCommandText();
-                                        yield return new WaitWhile(() => GManager.instance.commandText.gameObject.activeSelf);
+                                    yield return new WaitWhile(() => !_endSelect);
+                                    _endSelect = false;
 
-                                        if (_jogressEvoRootsFrameIDs.Length == 2)
-                                        {
-                                            yield return ContinuousController.instance.StartCoroutine(GManager.instance
-                                                .GetComponent<Effects>().ShowCardEffect(new List<CardSource>() { selectedCard },
-                                                    "Played Card", true, true));
+                                    GManager.instance.commandText.CloseCommandText();
+                                    yield return new WaitWhile(() => GManager.instance.commandText.gameObject.activeSelf);
 
-                                            PlayCardClass playCard = new PlayCardClass(
-                                                cardSources: new List<CardSource>() { selectedCard },
-                                                hashtable: CardEffectCommons.CardEffectHashtable(activateClass),
-                                                payCost: true,
-                                                targetPermanent: null,
-                                                isTapped: false,
-                                                root: SelectCardEffect.Root.Hand,
-                                                activateETB: true);
+                                    if (_jogressEvoRootsFrameIDs.Length == 2)
+                                    {
+                                        yield return ContinuousController.instance.StartCoroutine(GManager.instance
+                                            .GetComponent<Effects>().ShowCardEffect(new List<CardSource>() { selectedCard },
+                                                "Played Card", true, true));
 
-                                            playCard.SetJogress(_jogressEvoRootsFrameIDs);
+                                        PlayCardClass playCard = new PlayCardClass(
+                                            cardSources: new List<CardSource>() { selectedCard },
+                                            hashtable: CardEffectCommons.CardEffectHashtable(activateClass),
+                                            payCost: true,
+                                            targetPermanent: null,
+                                            isTapped: false,
+                                            root: SelectCardEffect.Root.Hand,
+                                            activateETB: true);
 
-                                            yield return ContinuousController.instance.StartCoroutine(playCard.PlayCard());
+                                        playCard.SetJogress(_jogressEvoRootsFrameIDs);
 
-                                            if (CardEffectCommons.IsExistOnBattleAreaDigimon(selectedCard))
-                                            {
-                                                if (CardEffectCommons.HasMatchConditionPermanent(IsYourAttackingDigimon))
-                                                {
-                                                    Permanent selectedPermanent = null;
-                                                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                                                    selectPermanentEffect.SetUp(
-                                                        selectPlayer: card.Owner,
-                                                        canTargetCondition: IsYourAttackingDigimon,
-                                                        canTargetCondition_ByPreSelecetedList: null,
-                                                        canEndSelectCondition: null,
-                                                        maxCount: 1,
-                                                        canNoSelect: true,
-                                                        canEndNotMax: false,
-                                                        selectPermanentCoroutine: SelectPermanentCoroutine,
-                                                        afterSelectPermanentCoroutine: null,
-                                                        mode: SelectPermanentEffect.Mode.Custom,
-                                                        cardEffect: activateClass);
-
-                                                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to attack.", "The opponent is selecting 1 Digimon to attack.");
-
-                                                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                                                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                                                    {
-                                                        selectedPermanent = permanent;
-
-                                                        yield return null;
-                                                    }
-
-                                                    if (selectedPermanent != null)
-                                                    {
-                                                        SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
-
-                                                        selectAttackEffect.SetUp(
-                                                            attacker: selectedPermanent,
-                                                            canAttackPlayerCondition: () => true,
-                                                            defenderCondition: _ => true,
-                                                            cardEffect: activateClass);
-
-                                                        yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
-                                                    }
-                                                }
-                                            }
-                                        }
+                                        yield return ContinuousController.instance.StartCoroutine(playCard.PlayCard());
                                     }
                                 }
                             }
+                        }
+                    }
+
+                    if (CardEffectCommons.HasMatchConditionPermanent(IsYourAttackingDigimon))
+                    {
+                        Permanent selectedPermanent = null;
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: IsYourAttackingDigimon,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: true,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to attack.", "The opponent is selecting 1 Digimon to attack.");
+
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                        {
+                            selectedPermanent = permanent;
+
+                            yield return null;
+                        }
+
+                        if (selectedPermanent != null)
+                        {
+                            SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
+
+                            selectAttackEffect.SetUp(
+                                attacker: selectedPermanent,
+                                canAttackPlayerCondition: () => true,
+                                defenderCondition: _ => true,
+                                cardEffect: activateClass);
+
+                            yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
                         }
                     }
                 }
