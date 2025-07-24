@@ -80,7 +80,7 @@ namespace DCGO.CardEffects.BT20
 
                     bool CardCondition(CardSource cardSource)
                     {
-                        return cardSource.IsDigimon || cardSource.IsTamer;
+                        return cardSource.IsDigimon || cardSource.IsTamer || cardSource.IsDigiEgg;
                     }
 
                     bool CardEffectCondition(ICardEffect cardEffect)

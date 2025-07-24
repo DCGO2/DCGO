@@ -62,7 +62,7 @@ namespace DCGO.CardEffects.EX3
 
                         bool CardCondition(CardSource cardSource)
                         {
-                            if (cardSource.IsDigimon)
+                            if (cardSource.IsDigimon || cardSource.IsDigiEgg)
                             {
                                 if (cardSource.CardDP <= 5000)
                                 {
