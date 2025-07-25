@@ -215,12 +215,6 @@ namespace DCGO.CardEffects.BT17
                             Hashtable _hashtable = new Hashtable();
                             _hashtable.Add("CardEffect", activateClass);
 
-                            yield return ContinuousController.instance.StartCoroutine(new DeckBottomBounceClass(
-                                deckBounceTargetPermanents: card.Owner.Enemy.GetBattleAreaDigimons().Filter(permanent =>
-                                permanent.Level == selectedPermanent.Level &&
-                                !permanent.TopCard.CanNotBeAffected(activateClass)),
-                                hashtable: _hashtable).DeckBounce());
-
                             if (returnedPermanents.Count == 1)
                             {
                                 yield return ContinuousController.instance.StartCoroutine(new DeckBottomBounceClass(returnedPermanents, _hashtable).DeckBounce());
@@ -394,12 +388,6 @@ namespace DCGO.CardEffects.BT17
 
                             Hashtable _hashtable = new Hashtable();
                             _hashtable.Add("CardEffect", activateClass);
-
-                            yield return ContinuousController.instance.StartCoroutine(new DeckBottomBounceClass(
-                                deckBounceTargetPermanents: card.Owner.Enemy.GetBattleAreaDigimons().Filter(permanent =>
-                                permanent.Level == selectedPermanent.Level &&
-                                !permanent.TopCard.CanNotBeAffected(activateClass)),
-                                hashtable: _hashtable).DeckBounce());
 
                             if (returnedPermanents.Count == 1)
                             {
