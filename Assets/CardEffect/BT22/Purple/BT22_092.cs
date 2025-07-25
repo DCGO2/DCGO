@@ -83,6 +83,7 @@ namespace DCGO.CardEffects.BT22
                         rootCondition: null)
                         .Filter(HasMainEffect);
 
+
                     bool HasMainEffect(Permanent permanent)
                     {
                         foreach (ICardEffect effect in permanent.TopCard.EffectList_ForCard(EffectTiming.OnDeclaration, card))
@@ -142,9 +143,9 @@ namespace DCGO.CardEffects.BT22
                         {
                             List<ICardEffect> candidateEffects = new List<ICardEffect>();
 
-                            List<ICardEffect> effects = selectedPermanent.TopCard.EffectList_ForCard(EffectTiming.OnDeclaration, card)
+                            List<ICardEffect> effects = selectedPermanent.TopCard.EffectList(EffectTiming.OnDeclaration)
                                 .Clone()
-                                .Filter(cardEffect => cardEffect != null && cardEffect is ActivateICardEffect && !cardEffect.IsSecurityEffect && cardEffect.EffectDiscription.Contains("[Main]"));
+                                .Filter(cardEffect => cardEffect != null && cardEffect is ActivateICardEffect && cardEffect.EffectDiscription.Contains("[Main]"));
 
                             candidateEffects.AddRange(effects);
 

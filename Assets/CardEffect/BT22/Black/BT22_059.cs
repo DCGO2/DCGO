@@ -231,9 +231,9 @@ namespace DCGO.CardEffects.BT22
 
                 bool IsUnidentified(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && permanent.TopCard.HasUnidentifiedTraits
-                        && permanent != card.PermanentOfThisCard();
+                    return permanent.TopCard.IsDigimon &&
+                           permanent.TopCard.HasUnidentifiedTraits &&
+                           permanent != card.PermanentOfThisCard();
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
