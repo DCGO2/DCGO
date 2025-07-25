@@ -1105,9 +1105,10 @@ public class Permanent
             LinkedDP -= cardSource.LinkDP;
             LinkedCards.Remove(cardSource);
 
+            yield return ContinuousController.instance.StartCoroutine(RemoveCardSource(cardSource));
+
             if (trashCard)
             {
-                yield return ContinuousController.instance.StartCoroutine(RemoveCardSource(cardSource));
                 yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddTrashCard(cardSource));
             }        
         }
