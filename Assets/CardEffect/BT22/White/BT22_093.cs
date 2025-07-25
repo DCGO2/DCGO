@@ -80,17 +80,12 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, DigivolvingCondition);
+                    return CardEffectCommons.IsExistOnField(card) &&
+                           CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, DigivolvingCondition);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (DigivolvingDigimon != null)
-                    {
-                        if (!DigivolvingCondition(DigivolvingDigimon))
-                            return false;
-                    }
-
                     return CardEffectCommons.IsExistOnField(card)
                         && CardEffectCommons.IsOwnerTurn(card)
                         && CardEffectCommons.CanActivateSuspendCostEffect(card);

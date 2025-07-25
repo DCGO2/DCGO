@@ -104,7 +104,7 @@ namespace DCGO.CardEffects.BT22
             #endregion
 
             #region When Attacking - OPT
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete 1 Digimon with lowest level", CanUseCondition, card);
