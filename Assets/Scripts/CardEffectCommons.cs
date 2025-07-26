@@ -479,7 +479,7 @@ public partial class CardEffectCommons
 
     #endregion
 
-    #region Delete target digivolution cards, and the effect determines whether the permanent has been deleted or not
+    #region Trash target digivolution cards, and the effect determines whether the permanent has been deleted or not
 
     public static IEnumerator TrashDigivolutionCardsAndProcessAccordingToResult(Permanent targetPermanent, List<CardSource> targetDigivolutionCards, ICardEffect activateClass, Func<List<CardSource>, IEnumerator> successProcess, Func<IEnumerator> failureProcess)
     {
