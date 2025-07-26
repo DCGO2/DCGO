@@ -4,9 +4,11 @@ using System;
 using System.Linq;
 using UnityEngine;
 using UnityEditor;
+
 public partial class CardEffectCommons
-{ 
+{
     #region Digivolution Requirements
+
     public enum IgnoreRequirement
     {
         None,
@@ -14,9 +16,11 @@ public partial class CardEffectCommons
         Level,
         Color
     }
+
     #endregion
 
     #region Play cards as new permanents
+
     public static IEnumerator PlayPermanentCards(List<CardSource> cardSources, ICardEffect activateClass, bool payCost, bool isTapped, SelectCardEffect.Root root, bool activateETB, bool isBreedingArea = false, int fixedCost = -1)
     {
         if (cardSources == null) yield break;
@@ -45,13 +49,14 @@ public partial class CardEffectCommons
             playCardClass.SetIsBreedingArea();
 
         playCardClass.SetFixedCost(fixedCost);
-        
+
         yield return ContinuousController.instance.StartCoroutine(playCardClass.PlayCard());
     }
 
     #endregion
 
     #region Play option cards
+
     public static IEnumerator PlayOptionCards(List<CardSource> cardSources, ICardEffect activateClass, bool payCost, SelectCardEffect.Root root,
         bool setAddSecurityEndOption = false)
     {
@@ -84,9 +89,11 @@ public partial class CardEffectCommons
 
         yield return ContinuousController.instance.StartCoroutine(playCard.PlayCard());
     }
+
     #endregion
 
     #region Play Delay Option cards as new permanents
+
     public static IEnumerator PlaceDelayOptionCards(CardSource card, ICardEffect cardEffect, SelectCardEffect.Root root = SelectCardEffect.Root.Execution)
     {
         if (CanPlayAsNewPermanent(cardSource: card, payCost: false, cardEffect: cardEffect, isPlayOption: true))
@@ -109,9 +116,11 @@ public partial class CardEffectCommons
             }
         }
     }
+
     #endregion
 
     #region Play 1 Token
+
     public static IEnumerator PlayToken(CEntity_Base tokenData, ICardEffect activateClass, bool isOwnerPermanent, bool isTapped, int quantity = 1)
     {
         if (activateClass == null) yield break;
@@ -125,7 +134,7 @@ public partial class CardEffectCommons
         if (card.Owner.fieldCardFrames.Count((frame) => frame.IsEmptyFrame() && frame.IsBattleAreaFrame()) >= quantity)
         {
             List<CardSource> playCards = new List<CardSource>();
-            
+
             for (int i = 0; i < quantity; i++)
             {
                 CardSource tokenCard = CardObjectController.CreateCardSource(
@@ -135,7 +144,6 @@ public partial class CardEffectCommons
 
                 playCards.Add(tokenCard);
             }
-                
 
             if (CanPlayAsNewPermanent(cardSource: playCards[0], payCost: false, cardEffect: activateClass))
             {
@@ -150,10 +158,12 @@ public partial class CardEffectCommons
             }
         }
     }
+
     #endregion
 
     #region Play 1 [Diaboromon] Token
-    public static IEnumerator PlayDiaboromonToken(ICardEffect activateClass,int quantity = 1)
+
+    public static IEnumerator PlayDiaboromonToken(ICardEffect activateClass, int quantity = 1)
     {
         yield return ContinuousController.instance.StartCoroutine(PlayToken(
             tokenData: ContinuousController.instance.DiaboromonToken,
@@ -163,9 +173,11 @@ public partial class CardEffectCommons
             quantity: quantity
         ));
     }
+
     #endregion
 
     #region Play 1 [Amon of Crimson Flame] Token
+
     public static IEnumerator PlayAmonToken(ICardEffect activateClass)
     {
         yield return ContinuousController.instance.StartCoroutine(PlayToken(
@@ -175,9 +187,11 @@ public partial class CardEffectCommons
             isTapped: false
         ));
     }
+
     #endregion
 
     #region Play 1 [Umon of Blue Thunder] Token
+
     public static IEnumerator PlayUmonToken(ICardEffect activateClass)
     {
         yield return ContinuousController.instance.StartCoroutine(PlayToken(
@@ -187,9 +201,11 @@ public partial class CardEffectCommons
             isTapped: false
         ));
     }
+
     #endregion
 
     #region Play 1 [Fujitsumon] Token
+
     public static IEnumerator PlayFujitsumonToken(ICardEffect activateClass, bool isOwnerPermanent)
     {
         yield return ContinuousController.instance.StartCoroutine(PlayToken(
@@ -199,9 +215,11 @@ public partial class CardEffectCommons
             isTapped: true
         ));
     }
+
     #endregion
 
     #region Play 1 [Gyuukimon] Token
+
     public static IEnumerator PlayGyuukimonToken(ICardEffect activateClass)
     {
         yield return ContinuousController.instance.StartCoroutine(PlayToken(
@@ -211,9 +229,11 @@ public partial class CardEffectCommons
             isTapped: false
         ));
     }
+
     #endregion
 
     #region Play 1 [KoHagurumon] Token
+
     public static IEnumerator PlayKoHagurumonToken(ICardEffect activateClass)
     {
         yield return ContinuousController.instance.StartCoroutine(PlayToken(
@@ -223,9 +243,11 @@ public partial class CardEffectCommons
             isTapped: false
         ));
     }
+
     #endregion
-    
+
     #region Play 1 [Familiar] Token
+
     public static IEnumerator PlayFamiliarToken(ICardEffect activateClass, int quantity = 1)
     {
         yield return ContinuousController.instance.StartCoroutine(PlayToken(
@@ -236,9 +258,11 @@ public partial class CardEffectCommons
             quantity: quantity
         ));
     }
+
     #endregion
-    
+
     #region Play 1 Self Deleting [Familiar] Token
+
     public static IEnumerator PlaySelfDeleteFamiliarToken(ICardEffect activateClass, int quantity = 1)
     {
         yield return ContinuousController.instance.StartCoroutine(PlayToken(
@@ -249,9 +273,11 @@ public partial class CardEffectCommons
             quantity: quantity
         ));
     }
+
     #endregion
 
     #region Play 1 [Vol�e & Zerdr�cken] Token
+
     public static IEnumerator PlayVoleeZerdrucken(ICardEffect activateClass)
     {
         yield return ContinuousController.instance.StartCoroutine(PlayToken(
@@ -261,9 +287,11 @@ public partial class CardEffectCommons
             isTapped: false
         ));
     }
+
     #endregion
-    
+
     #region Play 1 [Uka-no-Mitama] Token
+
     public static IEnumerator PlayUkaNoMitama(ICardEffect activateClass)
     {
         yield return ContinuousController.instance.StartCoroutine(PlayToken(
@@ -273,9 +301,11 @@ public partial class CardEffectCommons
             isTapped: false
         ));
     }
+
     #endregion
 
     #region Play 1 [WarGrowlmon] Token
+
     public static IEnumerator PlayWarGrowlmonToken(ICardEffect activateClass)
     {
         yield return ContinuousController.instance.StartCoroutine(PlayToken(
@@ -285,9 +315,11 @@ public partial class CardEffectCommons
             isTapped: false
         ));
     }
+
     #endregion
 
     #region Play 1 [Taomon] Token
+
     public static IEnumerator PlayTaomonToken(ICardEffect activateClass)
     {
         yield return ContinuousController.instance.StartCoroutine(PlayToken(
@@ -297,9 +329,11 @@ public partial class CardEffectCommons
             isTapped: false
         ));
     }
+
     #endregion
 
     #region Play 1 [Rapidmon] Token
+
     public static IEnumerator PlayRapidmonToken(ICardEffect activateClass)
     {
         yield return ContinuousController.instance.StartCoroutine(PlayToken(
@@ -309,8 +343,11 @@ public partial class CardEffectCommons
             isTapped: false
         ));
     }
+
     #endregion
+
     #region Play 1 [Pipe-Fox] Token
+
     public static IEnumerator PlayPipeFox(ICardEffect activateClass)
     {
         yield return ContinuousController.instance.StartCoroutine(PlayToken(
@@ -320,6 +357,7 @@ public partial class CardEffectCommons
             isTapped: false
         ));
     }
+
     #endregion
 
     #region Play 1 [AthoRenePor] Token
@@ -351,6 +389,7 @@ public partial class CardEffectCommons
     #endregion
 
     #region Security effect of "add this card to hand"
+
     public static IEnumerator AddThisCardToHand(CardSource card1, ICardEffect activateClass)
     {
         yield return new WaitForSeconds(0.5f);
@@ -359,9 +398,11 @@ public partial class CardEffectCommons
 
         yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddHandCards(new List<CardSource>() { card1 }, false, activateClass));
     }
+
     #endregion
 
     #region Delete target permanents, and the effect determines whether the permanent has been deleted or not
+
     public static IEnumerator DeletePeremanentAndProcessAccordingToResult(List<Permanent> targetPermanents, ICardEffect activateClass, Func<List<Permanent>, IEnumerator> successProcess, Func<IEnumerator> failureProcess)
     {
         DestroyPermanentsClass destroyPermanentsClass = new DestroyPermanentsClass(targetPermanents, CardEffectHashtable(activateClass));
@@ -375,7 +416,6 @@ public partial class CardEffectCommons
                 yield return ContinuousController.instance.StartCoroutine(successProcess(destroyPermanentsClass.DestroyedPermanents));
             }
         }
-
         else
         {
             if (failureProcess != null)
@@ -384,9 +424,11 @@ public partial class CardEffectCommons
             }
         }
     }
+
     #endregion
 
     #region Bounce target 1 permanent, and the effect determines whether the permanent has been bounced or not
+
     public static IEnumerator BouncePeremanentAndProcessAccordingToResult(List<Permanent> targetPermanents, ICardEffect activateClass, IEnumerator successProcess, IEnumerator failureProcess)
     {
         HandBounceClaass bouncePermanentClass = new HandBounceClaass(targetPermanents, CardEffectHashtable(activateClass));
@@ -400,7 +442,6 @@ public partial class CardEffectCommons
                 yield return ContinuousController.instance.StartCoroutine(successProcess);
             }
         }
-
         else
         {
             if (failureProcess != null)
@@ -409,9 +450,11 @@ public partial class CardEffectCommons
             }
         }
     }
+
     #endregion
 
     #region Deck Bounce target 1 permanent, and the effect determines whether the permanent has been bounced or not
+
     public static IEnumerator DeckBouncePeremanentAndProcessAccordingToResult(List<Permanent> targetPermanents, ICardEffect activateClass, IEnumerator successProcess, IEnumerator failureProcess)
     {
         DeckBottomBounceClass deckBounceClass = new DeckBottomBounceClass(targetPermanents, CardEffectHashtable(activateClass));
@@ -425,7 +468,6 @@ public partial class CardEffectCommons
                 yield return ContinuousController.instance.StartCoroutine(successProcess);
             }
         }
-
         else
         {
             if (failureProcess != null)
@@ -434,9 +476,37 @@ public partial class CardEffectCommons
             }
         }
     }
+
+    #endregion
+
+    #region Delete target digivolution cards, and the effect determines whether the permanent has been deleted or not
+
+    public static IEnumerator TrashDigivolutionCardsAndProcessAccordingToResult(Permanent targetPermanent, List<CardSource> targetDigivolutionCards, ICardEffect activateClass, Func<List<CardSource>, IEnumerator> successProcess, Func<IEnumerator> failureProcess)
+    {
+        ITrashDigivolutionCards trashDigivolutionCards = new ITrashDigivolutionCards(targetPermanent, targetDigivolutionCards, activateClass);
+
+        yield return ContinuousController.instance.StartCoroutine(trashDigivolutionCards.TrashDigivolutionCards());
+
+        if (targetDigivolutionCards.Some((sourceCard) => trashDigivolutionCards.IsTrashed(sourceCard)))
+        {
+            if (successProcess != null)
+            {
+                yield return ContinuousController.instance.StartCoroutine(successProcess(trashDigivolutionCards.TrashedCards));
+            }
+        }
+        else
+        {
+            if (failureProcess != null)
+            {
+                yield return ContinuousController.instance.StartCoroutine(failureProcess());
+            }
+        }
+    }
+
     #endregion
 
     #region Trash digivolution cards from top or bottom
+
     public static IEnumerator TrashDigivolutionCardsFromTopOrBottom(Permanent targetPermanent, int trashCount, bool isFromTop, ICardEffect activateClass, Func<CardSource, bool> cardCondition = null)
     {
         if (activateClass == null) yield break;
@@ -468,26 +538,34 @@ public partial class CardEffectCommons
 
         yield return ContinuousController.instance.StartCoroutine(new ITrashDigivolutionCards(targetPermanent, trashTargetCards, activateClass).TrashDigivolutionCards());
     }
+
     #endregion
 
     #region this Option card's Main effect
+
     public static ActivateClass OptionMainEffect(CardSource card) => card.EffectList(EffectTiming.OptionSkill).Find(cardEffect => cardEffect != null && cardEffect is ActivateClass && cardEffect.EffectDiscription.Contains("[Main]")) as ActivateClass;
+
     #endregion
 
     #region this Option card's Security effect
+
     public static ActivateClass OptionSecurityEffect(CardSource card) => card.EffectList(EffectTiming.SecuritySkill).Find(cardEffect => cardEffect != null && cardEffect is ActivateClass && cardEffect.EffectDiscription.Contains("[Security]")) as ActivateClass;
+
     #endregion
 
     #region Add Option's Security effect that "Activate this card's Main effect" to cardEffects
+
     public static void AddActivateMainOptionSecurityEffect(CardSource card, ref List<ICardEffect> cardEffects, string effectName, string effectDiscription = "", Func<ICardEffect, IEnumerator> afterMainEffect = null)
     {
         if (OptionMainEffect(card) == null) return;
 
         cardEffects.Add(CardEffectFactory.ActivateMainOptionSecurityEffect(card, effectName, effectDiscription, afterMainEffect));
     }
+
     #endregion
 
     #region Target permanent Digivolves into Digimon card from hand or trash
+
     public static IEnumerator DigivolveIntoHandOrTrashCard(
         Permanent targetPermanent,
         Func<CardSource, bool> cardCondition,
@@ -507,7 +585,7 @@ public partial class CardEffectCommons
         if (targetPermanent.TopCard == null) yield break;
         if (activateClass == null) yield break;
         if (activateClass.EffectSourceCard == null) yield break;
-       
+
         Player owner = targetPermanent.TopCard.Owner;
         SelectCardEffect.Root root = isHand ? SelectCardEffect.Root.Hand : SelectCardEffect.Root.Trash;
         bool ignoreDigivolutionRequirement = !ignoreRequirements.Equals(IgnoreRequirement.None) || ignoreDigivolutionRequirementFixedCost >= 0;//  ignoreDigivolutionRequirementFixedCost >= 0 || ignoreRequirements;
@@ -555,6 +633,7 @@ public partial class CardEffectCommons
         }
 
         #region reduce cost
+
         Func<EffectTiming, ICardEffect> getChangeCostEffect = null;
 
         if (reduceCostTuple != null)
@@ -598,9 +677,11 @@ public partial class CardEffectCommons
                     getCardEffect: getChangeCostEffect);
             }
         }
+
         #endregion
 
         #region set fixed cost
+
         Func<EffectTiming, ICardEffect> getFixedCostEffect = null;
 
         if (fixedCostTuple != null)
@@ -644,9 +725,11 @@ public partial class CardEffectCommons
                     getCardEffect: getFixedCostEffect);
             }
         }
+
         #endregion
 
         #region ignore digivolution requirement
+
         Func<EffectTiming, ICardEffect> getIgnoreDigivolutionRequirementEffect = null;
 
         if (ignoreDigivolutionRequirement)
@@ -693,6 +776,7 @@ public partial class CardEffectCommons
                 getCardEffect: getIgnoreDigivolutionRequirementEffect);
             }
         }
+
         #endregion
 
         List<CardSource> selectedCards = new List<CardSource>();
@@ -708,7 +792,6 @@ public partial class CardEffectCommons
         {
             if (owner.HandCards.Count(CanSelectCardCondition) >= 1)
             {
-
                 int maxCount = Mathf.Min(1, owner.HandCards.Count(CanSelectCardCondition));
 
                 SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
@@ -733,7 +816,6 @@ public partial class CardEffectCommons
                 yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
             }
         }
-
         else
         {
             if (HasMatchConditionOwnersCardInTrash(targetPermanent.TopCard, CanSelectCardCondition) && !ignoreSelection)
@@ -767,7 +849,7 @@ public partial class CardEffectCommons
             }
             else
             {
-                if(ignoreSelection)
+                if (ignoreSelection)
                     selectedCards.Add(activateClass.EffectSourceCard);
             }
         }
@@ -781,31 +863,36 @@ public partial class CardEffectCommons
             root: root,
             activateETB: true);
 
-        //if (ignoreRequirements.Equals(IgnoreRequirement.All) || ignoreRequirements.Equals(IgnoreRequirement.Level)) 
+        //if (ignoreRequirements.Equals(IgnoreRequirement.All) || ignoreRequirements.Equals(IgnoreRequirement.Level))
         //    playCardClass.SetIgnoreLevel();
         playCardClass.SetIgnoreRequirements(ignoreRequirements);
 
         //!ignoreRequirements
-        if (fixedCost >= 0) 
+        if (fixedCost >= 0)
             playCardClass.SetFixedCost(fixedCost);
 
         yield return ContinuousController.instance.StartCoroutine(playCardClass.PlayCard());
 
         #region release effect
+
         if (getChangeCostEffect != null) owner.UntilCalculateFixedCostEffect.Remove(getChangeCostEffect);
+
         #endregion
 
         #region release effect
+
         if (getFixedCostEffect != null) owner.UntilCalculateFixedCostEffect.Remove(getFixedCostEffect);
+
         #endregion
 
         #region release effect
+
         if (getIgnoreDigivolutionRequirementEffect != null) owner.UntilCalculateFixedCostEffect.Remove(getIgnoreDigivolutionRequirementEffect);
+
         #endregion
 
         if (selectedCards.Count >= 1)
         {
-
             if (IsDigivolvedByTheEffect(targetPermanent, selectedCards[0], activateClass))
             {
                 successful = true;
@@ -823,9 +910,11 @@ public partial class CardEffectCommons
                 yield return ContinuousController.instance.StartCoroutine(failedProcess);
         }
     }
+
     #endregion
 
     #region Target permanent Digivolves into Digimon card execution area
+
     public static IEnumerator DigivolveIntoExcecutingAreaCard(
         Permanent targetPermanent,
         Func<CardSource, bool> cardCondition,
@@ -884,6 +973,7 @@ public partial class CardEffectCommons
         }
 
         #region reduce cost
+
         Func<EffectTiming, ICardEffect> getChangeCostEffect = null;
 
         if (reduceCostTuple != null)
@@ -927,9 +1017,11 @@ public partial class CardEffectCommons
                     getCardEffect: getChangeCostEffect);
             }
         }
+
         #endregion
 
         #region set fixed cost
+
         Func<EffectTiming, ICardEffect> getFixedCostEffect = null;
 
         if (fixedCostTuple != null)
@@ -973,9 +1065,11 @@ public partial class CardEffectCommons
                     getCardEffect: getFixedCostEffect);
             }
         }
+
         #endregion
 
         #region ignore digivolution requirement
+
         Func<EffectTiming, ICardEffect> getIgnoreDigivolutionRequirementEffect = null;
 
         if (ignoreDigivolutionRequirement)
@@ -1022,7 +1116,9 @@ public partial class CardEffectCommons
                 getCardEffect: getIgnoreDigivolutionRequirementEffect);
             }
         }
+
         #endregion
+
         List<CardSource> selectedCards = new List<CardSource>();
 
         IEnumerator SelectCardCoroutine(CardSource cardSource)
@@ -1082,20 +1178,25 @@ public partial class CardEffectCommons
         yield return ContinuousController.instance.StartCoroutine(playCardClass.PlayCard());
 
         #region release effect
+
         if (getChangeCostEffect != null) owner.UntilCalculateFixedCostEffect.Remove(getChangeCostEffect);
+
         #endregion
 
         #region release effect
+
         if (getFixedCostEffect != null) owner.UntilCalculateFixedCostEffect.Remove(getFixedCostEffect);
+
         #endregion
 
         #region release effect
+
         if (getIgnoreDigivolutionRequirementEffect != null) owner.UntilCalculateFixedCostEffect.Remove(getIgnoreDigivolutionRequirementEffect);
+
         #endregion
 
         if (selectedCards.Count >= 1)
         {
-
             if (IsDigivolvedByTheEffect(targetPermanent, selectedCards[0], activateClass))
             {
                 if (successProcess != null)
@@ -1105,9 +1206,12 @@ public partial class CardEffectCommons
             }
         }
     }
+
     #endregion
 
     #region Get the effect given by EffectTiming
+
     public static Func<EffectTiming, ICardEffect> GetCardEffectByEffectTiming(EffectTiming timing, ICardEffect cardEffect) => (_timing) => _timing == timing ? cardEffect : null;
+
     #endregion
 }
