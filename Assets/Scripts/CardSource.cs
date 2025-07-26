@@ -3637,6 +3637,30 @@ public class CardSource : MonoBehaviour
     }
 
     #endregion
+
+    #region whether this card has "Evil" trait
+
+    public bool HasEvilTraits
+    {
+        get
+        {
+            return EqualsTraits("Evil");
+        }
+    }
+
+    #endregion
+
+    #region whether this card has "Wizard" trait
+
+    public bool HasWizardTraits
+    {
+        get
+        {
+            return EqualsTraits("Wizard");
+        }
+    }
+
+    #endregion
 }
 
 public class JogressCondition
