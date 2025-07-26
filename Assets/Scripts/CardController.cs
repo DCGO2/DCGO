@@ -3803,8 +3803,14 @@ public class IDestroySecurity
 
     Player _player = null;
     int _destroySecurityCount = 0;
+    public List<CardSource> DestroyedSecurity = new List<CardSource>();
     ICardEffect _cardEffect = null;
     bool _fromTop = false;
+
+    public bool IsDestroyed(CardSource cardSource)
+    {
+        return DestroyedSecurity.Contains(cardSource);
+    }
 
     public IEnumerator DestroySecurity()
     {
@@ -3871,6 +3877,8 @@ public class IDestroySecurity
                     #endregion
 
                     yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddTrashCard(destroyedSecurityCard));
+
+                    DestroyedSecurity.Add(destroyedSecurityCard);
                 }
             }
 
