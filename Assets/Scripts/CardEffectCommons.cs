@@ -505,6 +505,32 @@ public partial class CardEffectCommons
 
     #endregion
 
+    #region Trash Security cards and the effect determines whether the security were trashed or not
+
+    public static IEnumerator TrashSecurityAndProcessAccordingToResult(Player player, int trashAmount, ICardEffect activateClass, bool fromTop, Func<List<CardSource>, IEnumerator> successProcess, Func<IEnumerator> failureProcess)
+    {
+        IDestroySecurity destroySecurity = new IDestroySecurity(player, trashAmount, activateClass, fromTop);
+
+        yield return ContinuousController.instance.StartCoroutine(destroySecurity.DestroySecurity());
+
+        if (destroySecurity.DestroyedSecurity.Any())
+        {
+            if (successProcess != null)
+            {
+                yield return ContinuousController.instance.StartCoroutine(successProcess(destroySecurity.DestroyedSecurity));
+            }
+        }
+        else
+        {
+            if (failureProcess != null)
+            {
+                yield return ContinuousController.instance.StartCoroutine(failureProcess());
+            }
+        }
+    }
+
+    #endregion
+
     #region Trash digivolution cards from top or bottom
 
     public static IEnumerator TrashDigivolutionCardsFromTopOrBottom(Permanent targetPermanent, int trashCount, bool isFromTop, ICardEffect activateClass, Func<CardSource, bool> cardCondition = null)
