@@ -2239,10 +2239,12 @@ public class CardSource : MonoBehaviour
     #endregion
 
     #region Set DP - Must be used in conjunction with when removed field
+
     public void SetDP(int value)
     {
         BaseDP = value;
     }
+
     #endregion
 
     #region whether this card is token
@@ -3619,6 +3621,18 @@ public class CardSource : MonoBehaviour
         get
         {
             return EqualsTraits("Fallen Angel");
+        }
+    }
+
+    #endregion
+
+    #region whether this card has "Bagra Army" trait
+
+    public bool HasBagraArmyTraits
+    {
+        get
+        {
+            return EqualsTraits("Bagra Army");
         }
     }
 
