@@ -103,13 +103,6 @@ namespace DCGO.CardEffects.EX10
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
                 }
 
-                bool CanSelectOpponentDigimon(Permanent permanent, Permanent yourDigimon)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                        && permanent.TopCard.HasLevel
-                        && permanent.TopCard.Level <= yourDigimon.Level;
-                }
-
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsYourDigimon))
@@ -145,42 +138,52 @@ namespace DCGO.CardEffects.EX10
 
                         #endregion
 
-                        if (selectedYourDigimon != null && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, opponentDigimon => CanSelectOpponentDigimon(opponentDigimon, selectedYourDigimon)))
+                        if (selectedYourDigimon != null)
                         {
-                            Permanent selectedOpponentDigimon = null;
-
-                            #region Select Opponent Digimon to Destroy
-
-                            SelectPermanentEffect selectPermanentEffect1 = GManager.instance.GetComponent<SelectPermanentEffect>();
-                            int maxCount1 = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, opponentDigimon => CanSelectOpponentDigimon(opponentDigimon, selectedYourDigimon)));
-
-                            selectPermanentEffect1.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: opponentDigimon => CanSelectOpponentDigimon(opponentDigimon, selectedYourDigimon),
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: maxCount1,
-                                canNoSelect: false,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: SelectPermanentCoroutine1,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Custom,
-                                cardEffect: activateClass);
-
-                            IEnumerator SelectPermanentCoroutine1(Permanent permanent)
+                            bool CanSelectOpponentDigimon(Permanent permanent)
                             {
-                                selectedOpponentDigimon = permanent;
-                                yield return null;
+                                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
+                                    && permanent.TopCard.HasLevel
+                                    && permanent.TopCard.Level <= selectedYourDigimon.Level;
                             }
 
-                            selectPermanentEffect1.SetUpCustomMessage("Select 1 Digimon to destroy", "The opponent is selecting 1 Digimon to destroy");
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect1.Activate());
+                            if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectOpponentDigimon))
+                            {
+                                Permanent selectedOpponentDigimon = null;
 
-                            #endregion
+                                #region Select Opponent Digimon to Destroy
 
-                            yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(
-                                        destroyTargetPermanents: new List<Permanent>() { selectedYourDigimon, selectedOpponentDigimon },
-                                        hashtable).Destroy());
+                                SelectPermanentEffect selectPermanentEffect1 = GManager.instance.GetComponent<SelectPermanentEffect>();
+                                int maxCount1 = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, CanSelectOpponentDigimon));
+
+                                selectPermanentEffect1.SetUp(
+                                    selectPlayer: card.Owner,
+                                    canTargetCondition: CanSelectOpponentDigimon,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    maxCount: maxCount1,
+                                    canNoSelect: false,
+                                    canEndNotMax: false,
+                                    selectPermanentCoroutine: SelectPermanentCoroutine1,
+                                    afterSelectPermanentCoroutine: null,
+                                    mode: SelectPermanentEffect.Mode.Custom,
+                                    cardEffect: activateClass);
+
+                                IEnumerator SelectPermanentCoroutine1(Permanent permanent)
+                                {
+                                    selectedOpponentDigimon = permanent;
+                                    yield return null;
+                                }
+
+                                selectPermanentEffect1.SetUpCustomMessage("Select 1 Digimon to destroy", "The opponent is selecting 1 Digimon to destroy");
+                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect1.Activate());
+
+                                #endregion
+
+                                yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(
+                                            destroyTargetPermanents: new List<Permanent>() { selectedYourDigimon, selectedOpponentDigimon },
+                                            hashtable).Destroy());
+                            }
                         }
                     }
                 }
@@ -218,13 +221,6 @@ namespace DCGO.CardEffects.EX10
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
                 }
 
-                bool CanSelectOpponentDigimon(Permanent permanent, Permanent yourDigimon)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                        && permanent.TopCard.HasLevel
-                        && permanent.TopCard.Level <= yourDigimon.Level;
-                }
-
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsYourDigimon))
@@ -260,42 +256,52 @@ namespace DCGO.CardEffects.EX10
 
                         #endregion
 
-                        if (selectedYourDigimon != null && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, opponentDigimon => CanSelectOpponentDigimon(opponentDigimon, selectedYourDigimon)))
+                        if (selectedYourDigimon != null)
                         {
-                            Permanent selectedOpponentDigimon = null;
-
-                            #region Select Opponent Digimon to Destroy
-
-                            SelectPermanentEffect selectPermanentEffect1 = GManager.instance.GetComponent<SelectPermanentEffect>();
-                            int maxCount1 = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, opponentDigimon => CanSelectOpponentDigimon(opponentDigimon, selectedYourDigimon)));
-
-                            selectPermanentEffect1.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: opponentDigimon => CanSelectOpponentDigimon(opponentDigimon, selectedYourDigimon),
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: maxCount1,
-                                canNoSelect: false,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: SelectPermanentCoroutine1,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Custom,
-                                cardEffect: activateClass);
-
-                            IEnumerator SelectPermanentCoroutine1(Permanent permanent)
+                            bool CanSelectOpponentDigimon(Permanent permanent)
                             {
-                                selectedOpponentDigimon = permanent;
-                                yield return null;
+                                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
+                                    && permanent.TopCard.HasLevel
+                                    && permanent.TopCard.Level <= selectedYourDigimon.Level;
                             }
 
-                            selectPermanentEffect1.SetUpCustomMessage("Select 1 Digimon to destroy", "The opponent is selecting 1 Digimon to destroy");
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect1.Activate());
+                            if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectOpponentDigimon))
+                            {
+                                Permanent selectedOpponentDigimon = null;
 
-                            #endregion
+                                #region Select Opponent Digimon to Destroy
 
-                            yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(
-                                        destroyTargetPermanents: new List<Permanent>() { selectedYourDigimon, selectedOpponentDigimon },
-                                        hashtable).Destroy());
+                                SelectPermanentEffect selectPermanentEffect1 = GManager.instance.GetComponent<SelectPermanentEffect>();
+                                int maxCount1 = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, CanSelectOpponentDigimon));
+
+                                selectPermanentEffect1.SetUp(
+                                    selectPlayer: card.Owner,
+                                    canTargetCondition: CanSelectOpponentDigimon,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    maxCount: maxCount1,
+                                    canNoSelect: false,
+                                    canEndNotMax: false,
+                                    selectPermanentCoroutine: SelectPermanentCoroutine1,
+                                    afterSelectPermanentCoroutine: null,
+                                    mode: SelectPermanentEffect.Mode.Custom,
+                                    cardEffect: activateClass);
+
+                                IEnumerator SelectPermanentCoroutine1(Permanent permanent)
+                                {
+                                    selectedOpponentDigimon = permanent;
+                                    yield return null;
+                                }
+
+                                selectPermanentEffect1.SetUpCustomMessage("Select 1 Digimon to destroy", "The opponent is selecting 1 Digimon to destroy");
+                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect1.Activate());
+
+                                #endregion
+
+                                yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(
+                                            destroyTargetPermanents: new List<Permanent>() { selectedYourDigimon, selectedOpponentDigimon },
+                                            hashtable).Destroy());
+                            }
                         }
                     }
                 }
