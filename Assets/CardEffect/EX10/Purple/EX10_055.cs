@@ -38,12 +38,12 @@ namespace DCGO.CardEffects.EX10
                                 {
                                     if (cardSource.IsDigimon)
                                     {
-                                        if (cardSource.CardTraits.Contains("BagraArmy"))
+                                        if (cardSource.EqualsTraits("BagraArmy"))
                                         {
                                             return true;
                                         }
 
-                                        if (cardSource.CardTraits.Contains("Bagra Army"))
+                                        if (cardSource.EqualsTraits("Bagra Army"))
                                         {
                                             return true;
                                         }
@@ -103,14 +103,9 @@ namespace DCGO.CardEffects.EX10
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
                 }
 
-                bool IsOpponentDigimon(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
-                }
-
                 bool CanSelectOpponentDigimon(Permanent permanent, Permanent yourDigimon)
                 {
-                    return IsOpponentDigimon(permanent)
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
                         && permanent.TopCard.HasLevel
                         && permanent.TopCard.Level <= yourDigimon.Level;
                 }
@@ -183,21 +178,9 @@ namespace DCGO.CardEffects.EX10
 
                             #endregion
 
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
-                                targetPermanents: new List<Permanent> { selectedYourDigimon },
-                                activateClass: activateClass,
-                                successProcess: SuccessProcess,
-                                failureProcess: null));
-
-                            IEnumerator SuccessProcess(List<Permanent> deletedPermanents)
-                            {
-                                if (selectedOpponentDigimon != null)
-                                {
-                                    yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(
-                                        destroyTargetPermanents: new List<Permanent>() { selectedOpponentDigimon },
+                            yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(
+                                        destroyTargetPermanents: new List<Permanent>() { selectedYourDigimon, selectedOpponentDigimon },
                                         hashtable).Destroy());
-                                }
-                            }
                         }
                     }
                 }
@@ -235,14 +218,9 @@ namespace DCGO.CardEffects.EX10
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
                 }
 
-                bool IsOpponentDigimon(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
-                }
-
                 bool CanSelectOpponentDigimon(Permanent permanent, Permanent yourDigimon)
                 {
-                    return IsOpponentDigimon(permanent)
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
                         && permanent.TopCard.HasLevel
                         && permanent.TopCard.Level <= yourDigimon.Level;
                 }
@@ -315,21 +293,9 @@ namespace DCGO.CardEffects.EX10
 
                             #endregion
 
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
-                                targetPermanents: new List<Permanent> { selectedYourDigimon },
-                                activateClass: activateClass,
-                                successProcess: SuccessProcess,
-                                failureProcess: null));
-
-                            IEnumerator SuccessProcess(List<Permanent> deletedPermanents)
-                            {
-                                if (selectedOpponentDigimon != null)
-                                {
-                                    yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(
-                                        destroyTargetPermanents: new List<Permanent>() { selectedOpponentDigimon },
+                            yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(
+                                        destroyTargetPermanents: new List<Permanent>() { selectedYourDigimon, selectedOpponentDigimon },
                                         hashtable).Destroy());
-                                }
-                            }
                         }
                     }
                 }
@@ -366,7 +332,7 @@ namespace DCGO.CardEffects.EX10
                     removedPermanents = CardEffectCommons.GetPermanentsFromHashtable(hashtable).Filter(IsBagraArmyDigimon);
 
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && card.PermanentOfThisCard().StackCards.Count >= 2;
+                        && card.PermanentOfThisCard().DigivolutionCards.Count >= 2;
                 }
 
                 bool IsBagraArmyDigimon(Permanent permanent)
@@ -376,7 +342,7 @@ namespace DCGO.CardEffects.EX10
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (card.PermanentOfThisCard().StackCards.Count >= 2)
+                    if (card.PermanentOfThisCard().DigivolutionCards.Count >= 2)
                     {
                         Permanent thisPermanent = card.PermanentOfThisCard();
                         List<CardSource> selectedCards = new List<CardSource>();
