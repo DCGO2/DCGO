@@ -505,6 +505,32 @@ public partial class CardEffectCommons
 
     #endregion
 
+    #region Trash target link cards, and the effect determines whether the link cards were trashed or not
+
+    public static IEnumerator TrashLinkCardsAndProcessAccordingToResult(Permanent targetPermanent, List<CardSource> targetLinkCards, ICardEffect activateClass, Func<List<CardSource>, IEnumerator> successProcess, Func<IEnumerator> failureProcess)
+    {
+        ITrashLinkCards trashLinkCards = new ITrashLinkCards(targetPermanent, targetLinkCards, activateClass);
+
+        yield return ContinuousController.instance.StartCoroutine(trashLinkCards.TrashLinkCards());
+
+        if (targetLinkCards.Some((sourceCard) => trashLinkCards.IsTrashed(sourceCard)))
+        {
+            if (successProcess != null)
+            {
+                yield return ContinuousController.instance.StartCoroutine(successProcess(trashLinkCards.TrashedLinkCards));
+            }
+        }
+        else
+        {
+            if (failureProcess != null)
+            {
+                yield return ContinuousController.instance.StartCoroutine(failureProcess());
+            }
+        }
+    }
+
+    #endregion
+
     #region Trash Security cards and the effect determines whether the security were trashed or not
 
     public static IEnumerator TrashSecurityAndProcessAccordingToResult(Player player, int trashAmount, ICardEffect activateClass, bool fromTop, Func<List<CardSource>, IEnumerator> successProcess, Func<IEnumerator> failureProcess)
