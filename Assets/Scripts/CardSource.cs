@@ -3661,6 +3661,18 @@ public class CardSource : MonoBehaviour
     }
 
     #endregion
+
+    #region whether this card has "Leviathan" trait
+
+    public bool HasLeviathanTraits
+    {
+        get
+        {
+            return EqualsTraits("Leviathan");
+        }
+    }
+
+    #endregion
 }
 
 public class JogressCondition
