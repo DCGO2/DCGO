@@ -13,7 +13,7 @@ namespace DCGO.CardEffects.BT22
             if (timing == EffectTiming.OnAddDigivolutionCards)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Draw 1", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Draw 1, trash 1", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("BT22_006_Draw1");
                 activateClass.SetIsInheritedEffect(true);

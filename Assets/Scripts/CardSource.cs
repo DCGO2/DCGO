@@ -3400,6 +3400,18 @@ public class CardSource : MonoBehaviour
 
     #endregion
 
+    #region whether this card has "TS" trait
+
+    public bool HasTSTraits
+    {
+        get
+        {
+            return EqualsTraits("TS");
+        }
+    }
+
+    #endregion
+
     #region whether this card has "Unidentified" trait
 
     public bool HasUnidentifiedTraits

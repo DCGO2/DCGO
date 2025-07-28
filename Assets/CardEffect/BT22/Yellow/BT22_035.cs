@@ -353,7 +353,6 @@ namespace DCGO.CardEffects.BT22
                 bool IsAppMonCard(CardSource cardSource)
                 {
                     return CardEffectCommons.IsExistOnHand(cardSource)
-                        && cardSource.IsDigimon
                         && cardSource.HasPlayCost && cardSource.BasePlayCostFromEntity <= 4
                         && cardSource.HasAppmonTraits;
                 }

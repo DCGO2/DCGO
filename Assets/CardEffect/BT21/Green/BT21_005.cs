@@ -41,7 +41,8 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.IsOwnerTurn(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)

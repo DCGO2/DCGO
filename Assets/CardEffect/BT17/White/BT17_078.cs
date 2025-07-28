@@ -305,7 +305,7 @@ namespace DCGO.CardEffects.BT17
                             mode: SelectPermanentEffect.Mode.Destroy,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to destory.", "The opponent is selecting 1 Digimon to destory.");
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to delete.", "The opponent is selecting 1 Digimon to delete.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
@@ -479,7 +479,7 @@ namespace DCGO.CardEffects.BT17
                             mode: SelectPermanentEffect.Mode.Destroy,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to destory.", "The opponent is selecting 1 Digimon to destory.");
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to delete.", "The opponent is selecting 1 Digimon to delete.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }

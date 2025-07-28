@@ -19,7 +19,7 @@ namespace DCGO.CardEffects.BT22
                 {
                     return source.IsDigimon
                     && source.HasLevel && source.IsLevel3
-                    && (source.ContainsTraits("Sea Animal") || source.ContainsTraits("Aqua"));
+                    && (source.EqualsTraits("Sea Animal") || source.EqualsTraits("Aqua"));
                 }
 
                 string[] decodeStrings = { "(Lv.3 w/[Aqua]/[Sea Animal] trait)", "Level 3 Digimon card with [Aqua] or [Sea Animal]" };
