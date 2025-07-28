@@ -84,7 +84,7 @@ namespace DCGO.CardEffects.BT22
                             int motherCount = thisPermanent.DigivolutionCards.Count(CanSelectMother);
                             if (card.Owner.fieldCardFrames.Count((frame) => frame.IsEmptyFrame() && frame.IsBattleAreaFrame()) >= motherCount)
                             {
-                                int maxCount = Math.Max(1, motherCount);
+                                int maxCount = Math.Min(3, motherCount);
                                 SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                                 selectCardEffect.SetUp(
@@ -96,7 +96,7 @@ namespace DCGO.CardEffects.BT22
                                     afterSelectCardCoroutine: SelectCardCoroutine,
                                     message: "Select [Mother Eater]'s to play.",
                                     maxCount: maxCount,
-                                    canEndNotMax: true,
+                                    canEndNotMax: false,
                                     isShowOpponent: true,
                                     mode: SelectCardEffect.Mode.Custom,
                                     root: SelectCardEffect.Root.Custom,

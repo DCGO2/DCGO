@@ -247,8 +247,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && HasSourceCondition();
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 bool IsAlphamon(Permanent permanent)
@@ -268,8 +267,11 @@ namespace DCGO.CardEffects.BT22
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(
-                        CardEffectCommons.ChangeDigimonDP(card.PermanentOfThisCard(), 3000, EffectDuration.UntilOpponentTurnEnd, activateClass));
+                    if (HasSourceCondition())
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(
+                            CardEffectCommons.ChangeDigimonDP(card.PermanentOfThisCard(), 3000, EffectDuration.UntilOpponentTurnEnd, activateClass));
+                    }                        
 
                     yield return ContinuousController.instance.StartCoroutine(
                         new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() }, activateClass).Unsuspend());
