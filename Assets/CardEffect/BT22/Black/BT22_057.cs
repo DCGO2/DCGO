@@ -110,9 +110,9 @@ namespace DCGO.CardEffects.BT22
             if (timing == EffectTiming.WhenRemoveField)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Delete 1 of your other Digimon to prevent this Digimon from leaving", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Delete 1 of your other [Diaboromon] to prevent this Digimon from leaving", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
-                activateClass.SetHashString("Substitute_BT22_057");
+                activateClass.SetHashString("Substitute_BT22_056");
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
@@ -130,15 +130,15 @@ namespace DCGO.CardEffects.BT22
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           card.PermanentOfThisCard().TopCard.HasText("Diaboromon")
-                           && CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
+                           card.PermanentOfThisCard().TopCard.HasText("Diaboromon") &&
+                           CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
                            permanent != card.PermanentOfThisCard() &&
-                           (permanent.IsDigimon || permanent.TopCard.EqualsCardName("Diaboromon"));
+                           permanent.TopCard.EqualsCardName("Diaboromon");
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

@@ -207,28 +207,22 @@ namespace DCGO.CardEffects.BT22
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    Permanent thisPermaent = card.PermanentOfThisCard();
-
-                    List<ICardEffect> candidateEffects = new List<ICardEffect>();
-
-                    List<ICardEffect> effects = thisPermaent.EffectList_ForCard(EffectTiming.OnEnterFieldAnyone, card)
+                    List<ICardEffect> candidateEffects = card.PermanentOfThisCard().EffectList(EffectTiming.OnEnterFieldAnyone)
                         .Clone()
-                        .Filter(cardEffect => cardEffect is ActivateICardEffect && !cardEffect.IsSecurityEffect && cardEffect.IsWhenDigivolving);
-
-                    candidateEffects.AddRange(effects);
+                        .Filter(cardEffect => cardEffect != null && cardEffect is ActivateICardEffect && !cardEffect.IsSecurityEffect && cardEffect.IsWhenDigivolving);
 
                     if (candidateEffects.Count >= 1)
                     {
                         ICardEffect selectedEffect = null;
 
-                        #region Select Effect
-
-                        if (candidateEffects.Count == 1) 
+                        if (candidateEffects.Count == 1)
+                        {
                             selectedEffect = candidateEffects[0];
+                        }
                         else
                         {
                             List<SkillInfo> skillInfos = candidateEffects
-                                .Map(cardEffect => new SkillInfo(cardEffect, null, EffectTiming.OnEnterFieldAnyone));
+                                .Map(cardEffect => new SkillInfo(cardEffect, null, EffectTiming.None));
 
                             List<CardSource> cardSources = candidateEffects
                                 .Map(cardEffect => cardEffect.EffectSourceCard);
@@ -269,19 +263,14 @@ namespace DCGO.CardEffects.BT22
                             }
                         }
 
-                        #endregion
-
                         if (selectedEffect != null)
                         {
-                            if (selectedEffect.EffectSourceCard != null)
+                            Hashtable effectHashtable = CardEffectCommons.WhenDigivolvingCheckHashtableOfCard(selectedEffect.EffectSourceCard);
+
+                            if (!selectedEffect.IsDisabled)
                             {
-                                if (selectedEffect.EffectSourceCard.PermanentOfThisCard() != null)
-                                {
-                                    if (selectedEffect.CanUse(null))
-                                    {
-                                        yield return ContinuousController.instance.StartCoroutine(((ActivateICardEffect)selectedEffect).Activate_Optional_Effect_Execute(null));
-                                    }
-                                }
+                                yield return ContinuousController.instance.StartCoroutine(
+                                ((ActivateICardEffect)selectedEffect).Activate_Optional_Effect_Execute(effectHashtable));
                             }
                         }
                     }
