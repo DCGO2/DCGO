@@ -114,8 +114,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.HasMatchConditionOwnersHand(card, CardCondition) &&
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
                            card.Owner.SecurityCards.Any();
                 }
 
@@ -138,17 +137,20 @@ namespace DCGO.CardEffects.BT22
 
                     #endregion
 
-                    yield return ContinuousController.instance.StartCoroutine(
-                                CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                                    targetPermanent: card.PermanentOfThisCard(),
-                                    cardCondition: CardCondition,
-                                    payCost: true,
-                                    reduceCostTuple: (2, null),
-                                    fixedCostTuple: null,
-                                    ignoreDigivolutionRequirementFixedCost: -1,
-                                    isHand: true,
-                                    activateClass: activateClass,
-                                    successProcess: null));
+                    if(CardEffectCommons.HasMatchConditionOwnersHand(card, CardCondition))
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(
+                                                        CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                                                            targetPermanent: card.PermanentOfThisCard(),
+                                                            cardCondition: CardCondition,
+                                                            payCost: true,
+                                                            reduceCostTuple: (2, null),
+                                                            fixedCostTuple: null,
+                                                            ignoreDigivolutionRequirementFixedCost: -1,
+                                                            isHand: true,
+                                                            activateClass: activateClass,
+                                                            successProcess: null));
+                    }
                 }
             }
 

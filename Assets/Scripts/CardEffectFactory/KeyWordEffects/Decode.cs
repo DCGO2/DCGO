@@ -34,7 +34,7 @@ public partial class CardEffectFactory
         if (sourceCondition == null) sourceCondition = _ => true;
 
         // EX: "Decode (Red/Black)"
-        string effectname = $"Decode {decodeStrings[0].Split(' ')[0]}";
+        string effectname = $"Decode {decodeStrings[0]}";
 
         ActivateClass activateClass = new ActivateClass();
         activateClass.SetUpICardEffect(effectname, CanUseCondition, card);

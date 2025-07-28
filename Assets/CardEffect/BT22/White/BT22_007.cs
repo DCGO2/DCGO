@@ -84,7 +84,7 @@ namespace DCGO.CardEffects.BT22
                             int motherCount = thisPermanent.DigivolutionCards.Count(CanSelectMother);
                             if (card.Owner.fieldCardFrames.Count((frame) => frame.IsEmptyFrame() && frame.IsBattleAreaFrame()) >= motherCount)
                             {
-                                int maxCount = Math.Min(1, motherCount);
+                                int maxCount = Math.Max(1, motherCount);
                                 SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                                 selectCardEffect.SetUp(

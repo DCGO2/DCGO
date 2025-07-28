@@ -86,7 +86,7 @@ namespace DCGO.CardEffects.BT22
 
                     bool HasMainEffect(Permanent permanent)
                     {
-                        foreach (ICardEffect effect in permanent.TopCard.EffectList_ForCard(EffectTiming.OnDeclaration, card))
+                        foreach (ICardEffect effect in permanent.EffectList_ForCard(EffectTiming.OnDeclaration, card))
                         {
                             if (effect.EffectDiscription.Contains("[Main]"))
                             {
@@ -209,9 +209,9 @@ namespace DCGO.CardEffects.BT22
                                         {
                                             if (selectedEffect.CanUse(null))
                                             {
-                                                yield return ContinuousController.instance.StartCoroutine(((ActivateICardEffect)selectedEffect).Activate_Optional_Effect_Execute(null));
-
                                                 yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
+
+                                                yield return ContinuousController.instance.StartCoroutine(((ActivateICardEffect)selectedEffect).Activate_Optional_Effect_Execute(null));
                                             }
                                         }
                                     }

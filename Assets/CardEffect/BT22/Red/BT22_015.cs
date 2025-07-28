@@ -286,7 +286,7 @@ namespace DCGO.CardEffects.BT22
 
                         thisPermanent.StackCards.ForEach(card =>
                         {
-                            if (card.HasLevel)
+                            if (card.HasLevel && !card.IsFlipped)
                                 levelList[card.Level - 2]++;
                         });
 
