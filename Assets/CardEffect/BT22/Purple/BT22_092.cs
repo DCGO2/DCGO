@@ -86,7 +86,7 @@ namespace DCGO.CardEffects.BT22
 
                     bool HasMainEffect(Permanent permanent)
                     {
-                        foreach (ICardEffect effect in permanent.EffectList_ForCard(EffectTiming.OnDeclaration, card))
+                        foreach (ICardEffect effect in permanent.EffectList(EffectTiming.OnDeclaration))
                         {
                             if (effect.EffectDiscription.Contains("[Main]"))
                             {
@@ -143,7 +143,7 @@ namespace DCGO.CardEffects.BT22
                         {
                             List<ICardEffect> candidateEffects = new List<ICardEffect>();
 
-                            List<ICardEffect> effects = selectedPermanent.TopCard.EffectList(EffectTiming.OnDeclaration)
+                            List<ICardEffect> effects = selectedPermanent.EffectList(EffectTiming.OnDeclaration)
                                 .Clone()
                                 .Filter(cardEffect => cardEffect != null && cardEffect is ActivateICardEffect && cardEffect.EffectDiscription.Contains("[Main]"));
 

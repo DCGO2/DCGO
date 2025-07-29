@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
@@ -24,7 +24,7 @@ namespace DCGO.CardEffects.BT10
 
                 string EffectDiscription()
                 {
-                    return "[Your Turn][Once Per Turn] When one of your effects places a digivolution card under this Digimon, <Draw 1>. (Draw 1 card from your deck.)";
+                    return "[All Turns] [Once Per Turn] When a purple card is placed under this Tamer, ＜Draw 1＞ (Draw 1 card from your deck.) and memory +1.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

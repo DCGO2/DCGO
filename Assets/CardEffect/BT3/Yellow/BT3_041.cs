@@ -114,6 +114,8 @@ public class BT3_041 : CEntity_Effect
                             yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(selectedCard));
 
                             yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(card.Owner));
+
+                            yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(selectedCard.Owner).AddSecurity());
                         }
                     }
                 }

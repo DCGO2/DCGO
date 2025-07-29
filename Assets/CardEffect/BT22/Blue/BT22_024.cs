@@ -211,7 +211,7 @@ namespace DCGO.CardEffects.BT22
                 {
                     return source.IsDigimon
                         && source.HasLevel && source.Level <= 4
-                        && (source.HasSeaAnimalTraits || source.HasAquaTraits);
+                        && (source.ContainsTraits("Sea Animal") || source.ContainsTraits("Aqua"));
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
