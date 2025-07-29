@@ -75,8 +75,7 @@ namespace DCGO.CardEffects.BT22
                 }
 
                 bool PlayCardCondition(CardSource cardSource)
-                    => CardEffectCommons.IsExistOnHand(cardSource) && 
-                       (cardSource.IsDigimon || cardSource.IsTamer) && 
+                    => (cardSource.IsDigimon || cardSource.IsTamer) && 
                        cardSource.HasCSTraits && cardSource.Owner == card.Owner;
 
                 bool CanUseCondition(Hashtable hashtable)

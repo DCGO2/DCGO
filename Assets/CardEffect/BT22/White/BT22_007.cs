@@ -138,44 +138,6 @@ namespace DCGO.CardEffects.BT22
 
             #endregion
 
-            #region All Turns
-
-            /*if (timing == EffectTiming.None)
-            {
-                string EffectDiscription()
-                {
-                    return "[Breeding] [All Turns] All of your [Mother Eater]s in the battle area are treated as having 16000 DP.";
-                }
-
-                bool Condition()
-                {
-                    return CardEffectCommons.IsExistOnBreedingAreaDigimon(card);
-                }
-
-                bool PermanentCondition(Permanent permanent)
-                {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
-                    {
-                        if (permanent.TopCard.EqualsCardName("Mother Eater"))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
-                cardEffects.Add(CardEffectFactory.ChangeDPStaticEffect(
-                permanentCondition: PermanentCondition,
-                changeValue: 16000,
-                isInheritedEffect: false,
-                card: card,
-                condition: Condition,
-                effectName: EffectDiscription));
-            }*/
-
-            #endregion
-
             #region On Play
 
             if (timing == EffectTiming.OnEnterFieldAnyone)
