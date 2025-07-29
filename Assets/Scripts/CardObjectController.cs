@@ -1009,28 +1009,30 @@ public class CardObjectController : MonoBehaviour
                 FieldCardFrame moveTargetFrame = movingPermanent.TopCard.PreferredFrame();
 
                 if (toBreeding)
+                {
                     moveTargetFrame = player.fieldCardFrames.Filter(frame => frame.isBreedingAreaFrame()).ToList()[0];
 
-                #region cut in effect
+                    #region cut in effect
 
-                // "When permanents would remove field" effect
-                yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.StackSkillInfos(
-                    CardEffectCommons.WhenPermanentWouldRemoveFieldCheckHashtable(
-                        new List<Permanent> { movingPermanent },
-                        effect,
-                        null
-                    ),
-                    EffectTiming.WhenRemoveField));
+                    // "When permanents would remove field" effect
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.StackSkillInfos(
+                        CardEffectCommons.WhenPermanentWouldRemoveFieldCheckHashtable(
+                            new List<Permanent> { movingPermanent },
+                            effect,
+                            null
+                        ),
+                        EffectTiming.WhenRemoveField));
 
-                if (GManager.instance.autoProcessing_CutIn.HasAwaitingActivateEffects())
-                {
-                    // effect
-                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.ShrinkSecurityDigimonDisplay());
+                    if (GManager.instance.autoProcessing_CutIn.HasAwaitingActivateEffects())
+                    {
+                        // effect
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.ShrinkSecurityDigimonDisplay());
 
-                    // cut in effect process
-                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.TriggeredSkillProcess(false, null));
+                        // cut in effect process
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.TriggeredSkillProcess(false, null));
+                    }
+                    #endregion
                 }
-                #endregion
 
                 if (moveTargetFrame != null && moveTargetFrame != null)
                 {

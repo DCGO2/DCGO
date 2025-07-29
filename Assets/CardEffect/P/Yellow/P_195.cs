@@ -95,14 +95,8 @@ namespace DCGO.CardEffects.P
 
                 bool IsAegiomon(CardSource source)
                 {
-                    if (source.EqualsCardName("Aegiomon"))
-                    {
-                        return card.Owner.GetBattleAreaDigimons().Any(x =>
-                            card.CanPlayCardTargetFrame(x.PermanentFrame, false, activateClass)
-                        );
-                    }
-
-                    return false;
+                    return source.IsDigimon &&
+                           source.EqualsCardName("Aegiomon");
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -127,7 +121,7 @@ namespace DCGO.CardEffects.P
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     bool CanPlayElecmon = CardEffectCommons.HasMatchConditionOwnersHand(card, IsElecmon);
-                    bool CanEvoAegiomon = CardEffectCommons.HasMatchConditionOwnersHand(card, IsAegiomon);
+                    bool CanEvoAegiomon = CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
 
                     #region Option Selection
 
@@ -209,7 +203,7 @@ namespace DCGO.CardEffects.P
                                 mode: SelectPermanentEffect.Mode.Custom,
                                 cardEffect: activateClass);
 
-                            selectPermanentEffect.SetUpCustomMessage("Select 1 [Agumon] to digivolve.", "The opponent is selecting 1 [Agumon] to digivolve.");
+                            selectPermanentEffect.SetUpCustomMessage("Select 1 digimon to digivolve.", "The opponent is selecting 1 digimon to digivolve.");
                             yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
                             IEnumerator SelectPermanentCoroutine(Permanent permanent)
@@ -238,12 +232,6 @@ namespace DCGO.CardEffects.P
                     }
 
                     #endregion
-                    if (CanPlayElecmon || CanEvoAegiomon)
-                    {
-
-                    }
-
-                    yield return null;
                 }
             }
             #endregion
