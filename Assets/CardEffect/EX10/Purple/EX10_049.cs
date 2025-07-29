@@ -107,7 +107,7 @@ namespace DCGO.CardEffects.EX10
 
             #region On Deletion
 
-            if (timing == EffectTiming.OnEnterFieldAnyone)
+            if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("If opponent has 10 or more trash cards, trash top 3 of both player decks. then delete 1 level 3 or lower digimon, add 2 levels if enemy trash is 10 or more", CanUseCondition, card);
@@ -121,8 +121,7 @@ namespace DCGO.CardEffects.EX10
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
