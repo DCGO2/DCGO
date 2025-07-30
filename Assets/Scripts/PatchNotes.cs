@@ -15,9 +15,9 @@ public class PatchNotes : OffAnimation
     [SerializeField] ScrollRect _scroll;
     bool _isOpen = false;
 
-    public void OnClickOpenPatchNotesPanelButton()
+    public void ReportBug()
     {
-        Application.OpenURL("https://dcgo.online/PatchNotes.html");
+        Application.OpenURL("https://forms.gle/GhZgGVJS1qLeUMcG8");
     }
 
     public IEnumerator Open()
