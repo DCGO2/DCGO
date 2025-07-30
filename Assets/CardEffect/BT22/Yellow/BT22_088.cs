@@ -106,7 +106,6 @@ namespace DCGO.CardEffects.BT22
                                     activateETB: true));
                         }
 
-                        UnityEngine.Debug.Log($"THEN: {card.Owner.GetBattleAreaDigimons().Any()}, {CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, IsShoemon)}");
                         if (!card.Owner.GetBattleAreaDigimons().Any() && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, IsShoemon))
                         {
                             CardSource selectedTrashCard = null;

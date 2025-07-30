@@ -415,7 +415,6 @@ namespace DCGO.CardEffects.BT21
                             IEnumerator SelectPermanentCoroutine(Permanent permanent)
                             {
                                 selectedPermanent = permanent;
-                                UnityEngine.Debug.Log($"PERMENENT SELECTED: {permanent}");
                                 yield return null;
                             }
 

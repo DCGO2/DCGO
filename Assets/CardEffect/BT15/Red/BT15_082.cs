@@ -94,7 +94,6 @@ namespace DCGO.CardEffects.BT15
 
                         IEnumerator SuccessProcess()
                         {
-                            Debug.Log("Successful Return: Select and Play out digimon");
                             List<CardSource> selectedCards = new List<CardSource>();
 
                             SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();

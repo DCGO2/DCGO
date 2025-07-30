@@ -144,7 +144,7 @@ namespace DCGO.CardEffects.P
                                 activateClass: activateClass));
                     }
                     #endregion
-                    UnityEngine.Debug.Log($"SHOUTMONDORULUCANNON: {card.PermanentOfThisCard().DigivolutionCards.Count(DigivolutionCondition)}");
+
                     if (card.PermanentOfThisCard().DigivolutionCards.Count(DigivolutionCondition) > 0)
                     {
                         int maxCount = Math.Min(1, card.PermanentOfThisCard().DigivolutionCards.Count(DigivolutionCondition));

@@ -52,13 +52,10 @@ public class EX5_001 : CEntity_Effect
 
             bool CanActivateCondition(Hashtable hashtable)
             {
-                Debug.Log("b01");
                 if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
-                    Debug.Log("b02");
                     if (card.Owner.HandCards.Count >= 1)
                     {
-                        Debug.Log("b03");
                         return true;
                     }
                 }

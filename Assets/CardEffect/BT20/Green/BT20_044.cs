@@ -292,7 +292,6 @@ namespace DCGO.CardEffects.BT20
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    UnityEngine.Debug.Log($"CanActivateCondtion: {CardEffectCommons.IsExistOnBattleAreaDigimon(card)}, {CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentPermanentCondition)}");
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
                            CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentPermanentCondition);
                 }

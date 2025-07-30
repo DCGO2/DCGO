@@ -4,7 +4,6 @@ using System;
 using System.Linq;
 using UnityEngine;
 using UnityEditor.Rendering;
-using static UnityEngine.Rendering.DebugUI;
 
 public partial class CardEffectCommons
 {

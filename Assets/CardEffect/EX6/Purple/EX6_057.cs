@@ -5,7 +5,6 @@ using System.Linq;
 using Photon;
 using System;
 using Photon.Pun;
-using static UnityEngine.Rendering.DebugUI;
 
 namespace DCGO.CardEffects.EX6
 {

@@ -156,13 +156,10 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    UnityEngine.Debug.Log($"CAN SELECT: {CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)}");
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
                     {
-                        UnityEngine.Debug.Log($"CAN SELECT: {permanent.IsTamer}");
                         if (permanent.IsTamer)
                         {
-                            UnityEngine.Debug.Log($"CAN SELECT: {permanent.DigivolutionCards.Count(CanSelectCardCondition)}");
                             if (permanent.DigivolutionCards.Count() >= 1)
                             {
                                 return true;
@@ -213,7 +210,6 @@ namespace DCGO.CardEffects.BT21
                     {
                         if (CardEffectCommons.CanActivateSuspendCostEffect(card))
                         {
-                            UnityEngine.Debug.Log($"CAN ACTIVATE: {card.Owner.GetBattleAreaPermanents().Count(CanSelectPermanentCondition)}");
                             if (card.Owner.GetBattleAreaPermanents().Count(CanSelectPermanentCondition) >= 1)
                             {
                                 return true;
@@ -226,7 +222,6 @@ namespace DCGO.CardEffects.BT21
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    UnityEngine.Debug.Log($"ACTIVATE: {card.Owner.GetBattleAreaPermanents().Count(CanSelectPermanentCondition)}");
                     if (card.Owner.GetBattleAreaPermanents().Count(CanSelectPermanentCondition) >= 1)
                     {
                         yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(new List<Permanent>() { card.PermanentOfThisCard() }, CardEffectCommons.CardEffectHashtable(activateClass)).Tap());

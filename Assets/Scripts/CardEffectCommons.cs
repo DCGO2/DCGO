@@ -520,7 +520,7 @@ public partial class CardEffectCommons
         {
             fixedCost = fixedCostTuple.Value.fixedCost;
         }
-        Debug.Log($"Digivolve into hand or trash: {ignoreDigivolutionRequirement}");
+
         if (ignoreDigivolutionRequirement)
         {
             fixedCost = ignoreDigivolutionRequirementFixedCost;
