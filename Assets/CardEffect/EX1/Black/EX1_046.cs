@@ -26,20 +26,12 @@ namespace DCGO.CardEffects.EX1
 
                 bool PermanentCondition(Permanent permanent)
                 {
-                    Debug.Log("A001");
-
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        Debug.Log("A002");
-
                         if (permanent != card.PermanentOfThisCard())
                         {
-                            Debug.Log("A003");
-
                             if (permanent.TopCard.HasSameCardName(card.PermanentOfThisCard().TopCard))
                             {
-                                Debug.Log("A004");
-
                                 return true;
                             }
                         }
@@ -50,20 +42,12 @@ namespace DCGO.CardEffects.EX1
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    Debug.Log("B001");
-
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        Debug.Log("B002");
-
                         if (CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition))
                         {
-                            Debug.Log("B003");
-
                             if (CardEffectCommons.IsOwnerTurn(card))
                             {
-                                Debug.Log("B004");
-
                                 return true;
                             }
                         }

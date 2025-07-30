@@ -166,7 +166,6 @@ public class PlayCardClass
 
     private bool GetIgnoreRequirement(CardEffectCommons.IgnoreRequirement ignore)
     {
-        Debug.Log($"Get Ignore Requirement: {_ignoreRequirement.Equals(ignore)}, {_ignoreRequirement.Equals(CardEffectCommons.IgnoreRequirement.All)}");
         return _ignoreRequirement.Equals(ignore) || _ignoreRequirement.Equals(CardEffectCommons.IgnoreRequirement.All);
     }
     
@@ -1653,7 +1652,7 @@ public class UseOptionClass
 
             GManager.instance.turnStateMachine.isSync = true;
 
-            card.SetFace("CardContoller.UseOption");
+            card.SetFace();
 
             int cost = card.GetCostItself;
 
@@ -3068,7 +3067,7 @@ public class IPutSecurityPermanent
                 if (!_isFaceup)
                     topCard.SetReverse();
                 else
-                    topCard.SetFace("CardController.PutSecurity");
+                    topCard.SetFace();
 
                 if (!_toTop)
                 {

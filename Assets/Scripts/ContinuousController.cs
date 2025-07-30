@@ -1177,8 +1177,6 @@ public class ContinuousController : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
 
             EventSystem.current.SetSelectedGameObject(Opening.instance.battle.selectBattleMode.transform.GetChild(0).gameObject);
-
-            //Debug.Log("フォーカスを設定");
         }
 
         //GUI.UnfocusWindow();
@@ -1550,12 +1548,8 @@ public class PhotonUtility
 
         else
         {
-            Debug.Log($"SIGN UP BATTLE DECK: {ContinuousController.DeckDataPropertyKey}");
-            Debug.Log($"SIGN UP BATTLE DECK: {ContinuousController.instance.BattleDeckData.GetThisDeckCode()}");
             hash.Add(ContinuousController.DeckDataPropertyKey, ContinuousController.instance.BattleDeckData.GetThisDeckCode());
         }
-
-        //Debug.Log($"バトルデッキデータ登録,KeyCard:{ContinuousController.instance.BattleDeckData.KeyCard.CardName_JPN}");
 
         PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
 

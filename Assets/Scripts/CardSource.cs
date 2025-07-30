@@ -41,7 +41,7 @@ public class CardSource : MonoBehaviour
         Owner = owner;
         gameObject.name = _cEntity_Base.CardName_ENG;
 
-        SetFace("CardSource.SetBaseData");
+        SetFace();
     }
 
     #endregion
@@ -309,7 +309,7 @@ public class CardSource : MonoBehaviour
     public void Init()
     {
         cEntity_EffectController.InitUseCountThisTurn();
-        SetFace("CardSource.Initialize");
+        SetFace();
     }
 
     #endregion
