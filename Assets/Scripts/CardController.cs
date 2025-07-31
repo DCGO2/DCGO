@@ -3165,7 +3165,7 @@ public class DestroyPermanentsClass
             }
         }
         #endregion
-
+        
         // fix delete target permanents
         List<Permanent> destroyTargetPermanents_Fixed = _destroytargetPermanents.Filter(permanent =>
             permanent != null
@@ -4030,32 +4030,18 @@ public class IBattle
                 // battle effect
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().BattleEffect(WinnerPermanents, LoserPermanents, LoserCard));
 
-                yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(LoserPermanents, hashtable).Destroy());
+                DestroyPermanentsClass destoryBattlePermanents = new DestroyPermanentsClass(LoserPermanents, hashtable);
+                yield return ContinuousController.instance.StartCoroutine(destoryBattlePermanents.Destroy());
 
-                //Fix winner/loser permanents
-                int index = -1;
-                foreach (Permanent permanent in LoserPermanents)
+                
+                //Fix Loser Permanents
+                if(LoserPermanents != destoryBattlePermanents.DestroyedPermanents)
                 {
-                    if (permanent.TopCard != null)
-                    {
-                        index = LoserPermanents.IndexOf(permanent);
-                    }
-                }
-
-                if (index >= 0)
-                {
-                    LoserPermanents.RemoveAt(index);
-                    _LoserPermanents.RemoveAt(index);
-
+                    LoserPermanents = destoryBattlePermanents.DestroyedPermanents;
+                    _LoserPermanents = destoryBattlePermanents.DestroyedPermanents;
                     hashtable["LoserPermanents"] = _LoserPermanents;
                     hashtable["LoserPermanents_real"] = LoserPermanents;
                 }
-
-                //LoserPermanents = LoserPermanents.Filter(permanent => permanent.TopCard != null);
-                //_LoserPermanents = _LoserPermanents.Filter(permanent => permanent.TopCard != null);
-
-                //hashtable["LoserPermanents"] = _LoserPermanents;
-                //hashtable["LoserPermanents_real"] = LoserPermanents;
 
                 // "At the end of battle" effect
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(hashtable, EffectTiming.OnEndBattle));
@@ -4652,8 +4638,6 @@ public class SuspendPermanentsClass
         foreach (Permanent permanent in suspendTargetPermanents)
         {
             permanent.IsSuspended = true;
-
-            GManager.OnCardSuspendedChanged?.Invoke(true);
 
             permanent.DPWhenSuspended = permanent.DP;
 

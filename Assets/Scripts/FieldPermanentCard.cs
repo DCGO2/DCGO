@@ -174,7 +174,6 @@ public class FieldPermanentCard : MonoBehaviour
         //Events
         GManager.OnReverseOpponentsCardsChanged += SetTransformRotation;
         GManager.OnCardFlippedChanged += SetCardIsFlipped;
-        //GManager.OnCardSuspendedChanged += SetCardSuspended;
     }
 
     public IEnumerator ShowAddDigivolutionCardEffect()
