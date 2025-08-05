@@ -299,7 +299,7 @@ namespace DCGO.CardEffects.BT22
                                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
                                     targetPermanent: selectedPermanent,
                                     changeValue: -4000,
-                                    effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                                    effectDuration: EffectDuration.UntilOwnerTurnEnd,
                                     activateClass: activateClass
                                 ));
                             }
@@ -347,7 +347,7 @@ namespace DCGO.CardEffects.BT22
 
             #region When Attacking
 
-            if (timing == EffectTiming.OnEnterFieldAnyone)
+            if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("by trashing bottom face down source, 1 digimon cant use When digivolving effects and get -4K DP", CanUseCondition, card);

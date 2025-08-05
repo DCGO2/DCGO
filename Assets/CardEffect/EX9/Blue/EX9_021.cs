@@ -195,7 +195,7 @@ namespace DCGO.CardEffects.EX9
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 2 sources, place on top of security", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -257,7 +257,7 @@ namespace DCGO.CardEffects.EX9
                             canTargetCondition: (cardSource) => CanSelectCardCondition(cardSource),
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            canNoSelect: () => true,
+                            canNoSelect: () => false,
                             selectCardCoroutine: SelectCardCoroutine,
                             afterSelectCardCoroutine: null,
                             message: "Select 1 Digimon to play.",
@@ -289,7 +289,7 @@ namespace DCGO.CardEffects.EX9
                             canTargetCondition: (cardSource) => CanSelectCardCondition1(cardSource),
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            canNoSelect: () => true,
+                            canNoSelect: () => false,
                             selectCardCoroutine: SelectCardCoroutine,
                             afterSelectCardCoroutine: null,
                             message: "Select 1 Digimon to play.",

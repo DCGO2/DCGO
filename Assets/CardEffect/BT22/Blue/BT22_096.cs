@@ -159,8 +159,9 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanDeclareOptionDelayEffect(card)
-                        && CardEffectCommons.CanTriggerWhenPermanentSuspends(hashtable, IsYaoQinglan);
+                    return CardEffectCommons.CanDeclareOptionDelayEffect(card) &&
+                           CardEffectCommons.IsOwnerTurn(card) &&
+                           CardEffectCommons.CanTriggerWhenPermanentSuspends(hashtable, IsYaoQinglan);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

@@ -181,14 +181,7 @@ namespace DCGO.CardEffects.BT15
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                    {
-                        if (permanent.TopCard.HasLevel)
-                        {
-                            return true;
-                        }
-                    }
-                    return false;
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -201,6 +194,11 @@ namespace DCGO.CardEffects.BT15
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
                         if (card.Owner.HandCards.Count >= 1)
+                        {
+                            return true;
+                        }
+
+                        if(card.PermanentOfThisCard().DigivolutionCards.Count(CanSelectCardCondition) >= 1)
                         {
                             return true;
                         }
@@ -365,14 +363,7 @@ namespace DCGO.CardEffects.BT15
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
-                    {
-                        if (permanent.TopCard.HasLevel)
-                        {
-                            return true;
-                        }
-                    }
-                    return false;
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

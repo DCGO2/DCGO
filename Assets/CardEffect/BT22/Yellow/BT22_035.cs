@@ -425,6 +425,8 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
+                    dpMinus = card.Owner.GetBattleAreaDigimons().Count(x => x.TopCard.HasAppmonTraits) * 4000;
+
                     return CardEffectCommons.IsExistOnField(card)
                         && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, IsOpponentDigimon)
                         && dpMinus != 0;

@@ -233,6 +233,7 @@ namespace DCGO.CardEffects.BT22
                 {
                     return permanent.TopCard.IsDigimon &&
                            permanent.TopCard.HasUnidentifiedTraits &&
+                           CardEffectCommons.IsOwnerPermanent(permanent, card) &&
                            permanent != card.PermanentOfThisCard();
                 }
 

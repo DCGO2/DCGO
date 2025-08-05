@@ -4033,9 +4033,8 @@ public class IBattle
                 DestroyPermanentsClass destoryBattlePermanents = new DestroyPermanentsClass(LoserPermanents, hashtable);
                 yield return ContinuousController.instance.StartCoroutine(destoryBattlePermanents.Destroy());
 
-                
                 //Fix Loser Permanents
-                if(LoserPermanents != destoryBattlePermanents.DestroyedPermanents)
+                if(LoserPermanents.Count != destoryBattlePermanents.DestroyedPermanents.Count)
                 {
                     LoserPermanents = destoryBattlePermanents.DestroyedPermanents;
                     _LoserPermanents = destoryBattlePermanents.DestroyedPermanents;
