@@ -694,7 +694,7 @@ public class PlayCardClass
 
                 else
                 {
-                    if (card.jogressCondition != null)
+                    if (card.jogressCondition.Count > 0)
                     {
                         int cost = card.GetPayingCostWithBaseCost(card.jogressCondition[baseDNA].cost, Root, targetPermanents, checkAvailability: false, FixedCost: _fixedCost);
                         GManager.instance.memoryObject.ShowMemoryPredictionLine(card.Owner.ExpectedMemory(cost));
@@ -801,7 +801,7 @@ public class PlayCardClass
 
                 else
                 {
-                    if (card.jogressCondition != null)
+                    if (card.jogressCondition.Count > 0)
                     {
                         Cost = card.GetPayingCostWithBaseCost(card.jogressCondition[baseDNA].cost, Root, targetPermanents, checkAvailability: false, FixedCost: _fixedCost);
                     }
@@ -1149,6 +1149,11 @@ public class PlayPermanentClass
         _isBreedingArea = true;
     }
 
+    public void SetIsHatching()
+    {
+        _isHatching = true;
+    }
+
     public void SetISPlayOption()
     {
         _isPlayOption = true;
@@ -1166,6 +1171,7 @@ public class PlayPermanentClass
     int[] _appFusionFrameIDs = null;
     bool _appFusion = false;
     bool _isBreedingArea = false;
+    bool _isHatching = false;
     bool _isPlayOption = false;
 
     public bool isJogress => _jogressEvoRootsFrameIDs != null && _jogressEvoRootsFrameIDs.Length == 2;
@@ -1218,9 +1224,9 @@ public class PlayPermanentClass
                     if (card.Owner.GetBreedingAreaPermanents().Count == 0)
                     {
                         FieldCardFrame digieggFrame = card.Owner.fieldCardFrames.Find(fieldCardFrame =>
-                        fieldCardFrame.IsEmptyFrame()
-                        && !fieldCardFrame.IsBattleAreaFrame()
-                        && card.CanPlayCardTargetFrame(fieldCardFrame, false, CardEffect, isBreedingArea: _isBreedingArea));
+                        fieldCardFrame.IsEmptyFrame() &&
+                        !fieldCardFrame.IsBattleAreaFrame() &&
+                        (_isHatching || card.CanPlayCardTargetFrame(fieldCardFrame, false, CardEffect, isBreedingArea: _isBreedingArea)));
 
                         if (digieggFrame != null)
                         {

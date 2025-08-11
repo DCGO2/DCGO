@@ -261,7 +261,7 @@ namespace DCGO.CardEffects.BT18
                 {
                     return CardEffectCommons.IsExistOnHand(source) &&
                            source.EqualsCardName("Millenniummon") &&
-                           source.jogressCondition != null;
+                           source.jogressCondition.Count > 0;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

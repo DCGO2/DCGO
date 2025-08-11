@@ -207,7 +207,7 @@ namespace DCGO.CardEffects.EX5
                 {
                     if (targetPermanent != null)
                     {
-                        if (CardEffectCommons.IsOwnerPermanent(targetPermanent, card))
+                        if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(targetPermanent, card))
                         {
                             return true;
                         }

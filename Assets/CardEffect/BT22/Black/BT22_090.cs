@@ -44,8 +44,7 @@ namespace DCGO.CardEffects.BT22
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card)
-                        && CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsValidPermament)
-                        && CardEffectCommons.HasMatchConditionOwnersHand(card, IsLordKnightmon);
+                        && CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsValidPermament);
                 }
 
                 bool IsValidPermament(Permanent permanent)
