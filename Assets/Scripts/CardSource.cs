@@ -1919,7 +1919,7 @@ public class CardSource : MonoBehaviour
         foreach (string attribute in _cEntity_Base.Type_ENG)
             checkStrings.Add(DataBase.ReplaceToASCII(attribute));
 
-        if (jogressCondition != null)
+        if (jogressCondition.Count > 0)
         {
             foreach (JogressCondition jogress in jogressCondition)
             {
@@ -2631,7 +2631,7 @@ public class CardSource : MonoBehaviour
                 {
                     foreach (JogressCondition condition in jogressCondition)
                     {
-                        if (jogressCondition != null)
+                        if (condition != null)
                         {
                             List<Permanent[]> permanentsList = ParameterComparer.Enumerate(targetPermanents, 2).ToList();
 

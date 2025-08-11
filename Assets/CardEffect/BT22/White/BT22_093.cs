@@ -99,7 +99,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool DigivolvingCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsOwnerPermanent(permanent, card))
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
                         if (permanent.TopCard.HasCSTraits)
                         {

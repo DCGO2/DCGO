@@ -203,7 +203,7 @@ public class EX5_012 : CEntity_Effect
             {
                 if (targetPermanent != null)
                 {
-                    if (CardEffectCommons.IsOwnerPermanent(targetPermanent, card))
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(targetPermanent, card))
                     {
                         return true;
                     }

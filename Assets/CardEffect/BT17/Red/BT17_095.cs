@@ -214,7 +214,7 @@ namespace DCGO.CardEffects.BT17
                             cardSource.HasLevel &&
                             cardSource.Level == 7)
                         {
-                            if (cardSource.jogressCondition != null)
+                            if (cardSource.jogressCondition.Count > 0)
                                 return true;
                         }
                     }

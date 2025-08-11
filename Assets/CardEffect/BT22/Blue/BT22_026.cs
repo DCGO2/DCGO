@@ -292,7 +292,6 @@ namespace DCGO.CardEffects.BT22
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.CanUnsuspend(card.PermanentOfThisCard())
                         && card.PermanentOfThisCard().TopCard.ContainsCardName("Omnimon");
                 }
 

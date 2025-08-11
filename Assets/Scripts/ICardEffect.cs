@@ -1016,7 +1016,8 @@ public static class ActivateICardEffectExtensionClass
             ((ICardEffect)activateICardEffect).OnProcessCallbuck?.Invoke();
             ((ICardEffect)activateICardEffect).SetOnProcessCallbuck(null);
 
-            //Handling Effects
+            //Handling Effect
+            ((ICardEffect)activateICardEffect).EffectSourceCard.cEntity_EffectController.RegisterUseEfffectThisTurn(((ICardEffect)activateICardEffect));
             yield return ContinuousController.instance.StartCoroutine(activateICardEffect.Activate(hash));
         }
     }
