@@ -63,7 +63,7 @@ namespace DCGO.CardEffects.EX6
                     {
                         if (cardSource.HasLevel && cardSource.Level == 7)
                         {
-                            if (cardSource.jogressCondition != null)
+                            if (cardSource.jogressCondition.Count > 0)
                                 return true;
                         }
                     }
