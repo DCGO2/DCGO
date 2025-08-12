@@ -924,7 +924,8 @@ public enum EffectTiming
     WhenWouldDigivolutionCardDiscarded,
     WhenLinked,
     WhenTopCardTrashed,
-    RulesTiming
+    RulesTiming,
+    OnRemovedField
 }
 
 #endregion

@@ -16,6 +16,7 @@ public partial class CardEffectCommons
         if (IsDigimonOnly)
         {
             if (!permanent.IsDigimon) return false;
+
             var costs = permanent.TopCard.Owner.GetBattleAreaDigimons()
                 .Filter(x => x.TopCard.HasPlayCost)
                 .Select(x => x.TopCard.GetCostItself).ToList();

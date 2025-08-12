@@ -508,6 +508,14 @@ public class CardObjectController : MonoBehaviour
         if (permanent == null) yield break;
         if (permanent.TopCard == null) yield break;
 
+        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing_CutIn.StackSkillInfos(
+            CardEffectCommons.WhenPermanentWouldRemoveFieldCheckHashtable(
+                new List<Permanent> { permanent },
+                null,
+                null
+            ),
+            EffectTiming.OnRemovedField));
+
         if (!ignoreOverflow)
         {
             yield return ContinuousController.instance.StartCoroutine(new AceOverflowClass(permanent.cardSources).Overflow());

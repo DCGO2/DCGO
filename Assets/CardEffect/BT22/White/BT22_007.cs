@@ -260,7 +260,7 @@ namespace DCGO.CardEffects.BT22
 
             #region Remove Field - Reset DP
 
-            if (timing == EffectTiming.WhenRemoveField)
+            if (timing == EffectTiming.OnRemovedField)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("", CanUseCondition, card);

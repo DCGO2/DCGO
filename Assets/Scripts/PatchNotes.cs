@@ -20,6 +20,11 @@ public class PatchNotes : OffAnimation
         Application.OpenURL("https://forms.gle/GhZgGVJS1qLeUMcG8");
     }
 
+    public void OpenPatchNotes()
+    {
+        Application.OpenURL("https://dcgo.online/PatchNotes.html");
+    }
+
     public IEnumerator Open()
     {
         _verText.text = $"Patch Notes ver{ContinuousController.instance.GameVerString}";
