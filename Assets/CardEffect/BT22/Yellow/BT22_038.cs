@@ -294,7 +294,7 @@ namespace DCGO.CardEffects.BT22
 
                                 #endregion
 
-                                selectedPermanent.UntilOpponentTurnEndEffects.Add(_ => invalidationClass);
+                                selectedPermanent.UntilOwnerTurnEndEffects.Add(_ => invalidationClass);
 
                                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
                                     targetPermanent: selectedPermanent,

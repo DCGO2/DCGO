@@ -122,7 +122,7 @@ namespace DCGO.CardEffects.BT22
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete 1 digimon with less then 4K DP", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, _ => SharedActivateCoroutine(activateClass), 1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, _ => SharedActivateCoroutine(activateClass), -1, false, EffectDiscription());
                 activateClass.SetIsLinkedEffect(true);
                 cardEffects.Add(activateClass);
 

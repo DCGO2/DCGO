@@ -200,7 +200,7 @@ namespace DCGO.CardEffects.EX8
                         selectPlayer: card.Owner,
                         cardEffect: activateClass);
 
-                    selectCardEffect.SetUpCustomMessage("Select 1 digivolution card to play.", "The opponent is selecting 1 digivolution card to play.");
+                    selectCardEffect.SetUpCustomMessage("Select 1 digivolution card to play.", "The opponent is selecting card to play.");
                     selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
 
                     yield return StartCoroutine(selectCardEffect.Activate());

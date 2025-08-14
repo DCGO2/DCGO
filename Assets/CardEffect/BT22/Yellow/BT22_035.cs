@@ -408,8 +408,8 @@ namespace DCGO.CardEffects.BT22
             {
                 int dpMinus = card.Owner.GetBattleAreaDigimons().Count(x => x.TopCard.HasAppmonTraits) * 4000;
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect($"-{dpMinus} DP", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpICardEffect($"-4000 DP for each Digimon with [Appmon] trait", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 activateClass.SetIsLinkedEffect(true);
                 cardEffects.Add(activateClass);
 

@@ -229,7 +229,8 @@ namespace DCGO.CardEffects.BT18
                                         isHand: true,
                                         activateClass: activateClass,
                                         successProcess: null,
-                                        failedProcess: DigivolvedFailed()));
+                                        failedProcess: DigivolvedFailed(),
+                                        isOptional:false));
                             }
 
                             IEnumerator DigivolvedFailed()

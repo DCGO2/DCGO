@@ -1053,6 +1053,7 @@ public class HatchDigiEggClass
         ActivateETB: true);
 
         playPermanentClass.SetIsBreedingArea();
+        playPermanentClass.SetIsHatching();
 
         yield return ContinuousController.instance.StartCoroutine(playPermanentClass.PlayPermanent());
 

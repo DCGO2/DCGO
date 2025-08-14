@@ -501,7 +501,8 @@ public partial class CardEffectCommons
         //bool ignoreLevel = false,
         bool ignoreSelection = false,
         IgnoreRequirement ignoreRequirements = IgnoreRequirement.None,
-        IEnumerator failedProcess = null)
+        IEnumerator failedProcess = null,
+        bool isOptional = true)
     {
         if (targetPermanent == null) yield break;
         if (targetPermanent.TopCard == null) yield break;
@@ -719,7 +720,7 @@ public partial class CardEffectCommons
                     canTargetCondition_ByPreSelecetedList: null,
                     canEndSelectCondition: null,
                     maxCount: maxCount,
-                    canNoSelect: true,
+                    canNoSelect: isOptional,
                     canEndNotMax: false,
                     isShowOpponent: true,
                     selectCardCoroutine: SelectCardCoroutine,
@@ -746,7 +747,7 @@ public partial class CardEffectCommons
                             canTargetCondition: CanSelectCardCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            canNoSelect: () => true,
+                            canNoSelect: () => isOptional,
                             selectCardCoroutine: SelectCardCoroutine,
                             afterSelectCardCoroutine: null,
                             message: "Select 1 card to digivolve.",

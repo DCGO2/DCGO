@@ -277,9 +277,9 @@ namespace DCGO.CardEffects.BT15
                                 canEndNotMax: false,
                                 isShowOpponent: true,
                                 mode: SelectCardEffect.Mode.Discard,
-                                root: SelectCardEffect.Root.DigivolutionCards,
+                                root: SelectCardEffect.Root.Custom,
                                 customRootCardList: card.PermanentOfThisCard().DigivolutionCards,
-                                canLookReverseCard: true,
+                                canLookReverseCard: false,
                                 selectPlayer: card.Owner,
                                 cardEffect: activateClass);
 
