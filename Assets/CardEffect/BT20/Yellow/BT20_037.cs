@@ -88,7 +88,7 @@ namespace DCGO.CardEffects.BT20
 
                 bool IsLevel6(CardSource source)
                 {
-                    return source.HasLevel && source.IsLevel6;
+                    return source.HasLevel && source.IsLevel6 && !source.IsFlipped;
                 }
 
                 bool OpponentsDigimonOrTamer(Permanent permanent)

@@ -228,7 +228,7 @@ namespace DCGO.CardEffects.BT21
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("This digimon may attack", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 activateClass.SetIsLinkedEffect(true);
                 cardEffects.Add(activateClass);
 
@@ -237,6 +237,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
+                    UnityEngine.Debug.Log($"CAN USE: {CardEffectCommons.IsExistOnBattleAreaDigimon(card)}, {CardEffectCommons.CanTriggerWhenLinking(hashtable, PermanentCondition, card)}");
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (CardEffectCommons.CanTriggerWhenLinking(hashtable, PermanentCondition, card))
@@ -249,9 +250,10 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
+                    UnityEngine.Debug.Log($"CAN ACTIVATE: {CardEffectCommons.IsExistOnBattleAreaDigimon(card)}, {card.PermanentOfThisCard().CanAttack(activateClass)}");
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if (card.PermanentOfThisCard().TopCard.PermanentOfThisCard().CanAttack(activateClass))
+                        if (card.PermanentOfThisCard().CanAttack(activateClass))
                         {
                             return true;
                         }
@@ -261,7 +263,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool PermanentCondition(Permanent permanent)
                 {
-                    return permanent == card.PermanentOfThisCard().TopCard.PermanentOfThisCard();
+                    return permanent == card.PermanentOfThisCard();
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

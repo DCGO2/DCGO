@@ -404,7 +404,7 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return isExistOnField(card) && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, targetPermanentCondition);
+                    return isExistOnField(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

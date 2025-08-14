@@ -306,6 +306,7 @@ public abstract class ICardEffect
 
     public bool CanActivate(Hashtable hashtable)
     {
+        UnityEngine.Debug.Log($"CAN ACTIVATE: LINE 1");
         #region Effect availability determined by the maximum number of times it can be used in a turn
 
         if (EffectSourceCard.cEntity_EffectController.isOverMaxCountPerTurn(this, MaxCountPerTurn))
@@ -314,7 +315,7 @@ public abstract class ICardEffect
         }
 
         #endregion
-
+        UnityEngine.Debug.Log($"CAN ACTIVATE: LINE 2");
         #region Determination of availability for each effect
 
         if (CanActivateCondition != null && !CanActivateCondition(hashtable))
@@ -323,7 +324,7 @@ public abstract class ICardEffect
         }
 
         #endregion
-
+        UnityEngine.Debug.Log($"CAN ACTIVATE: LINE 3");
         #region Determination of availability for Inheritated/Linked Effect
 
         if (this is ActivateICardEffect)
@@ -358,7 +359,7 @@ public abstract class ICardEffect
         }
 
         #endregion
-
+        UnityEngine.Debug.Log($"CAN ACTIVATE: LINE 4");
         #region Determination of availability due to be disabled
 
         if (IsDisabled)
@@ -367,7 +368,7 @@ public abstract class ICardEffect
         }
 
         #endregion
-
+        UnityEngine.Debug.Log($"CAN ACTIVATE: LINE 5");
         //TODO: Look into this for the on deletion General issue
         #region Determination whether the permanent is same as when triggered
 
@@ -396,7 +397,7 @@ public abstract class ICardEffect
         }
 
         #endregion
-
+        UnityEngine.Debug.Log($"CAN ACTIVATE: LINE 6");
         return true;
     }
 

@@ -109,7 +109,7 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (cardSource.IsOption)
                     {
-                        if (cardSource.CardNames.Contains("GodFlame") || cardSource.CardTraits.Contains("Four Great Dragons") || cardSource.CardTraits.Contains("FourGreatDragons"))
+                        if (cardSource.EqualsCardName("God Flame") || cardSource.EqualsTraits("Four Great Dragons"))
                         {
                             if (!cardSource.CanNotPlayThisOption)
                             {
