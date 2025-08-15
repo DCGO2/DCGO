@@ -90,10 +90,7 @@ namespace DCGO.CardEffects.BT14
                     {
                         if (CardEffectCommons.IsExistOnBattleArea(card))
                         {
-                            if (permanent.DigivolutionCards.Count >= card.PermanentOfThisCard().DigivolutionCards.Count)
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
 
@@ -122,7 +119,9 @@ namespace DCGO.CardEffects.BT14
                 {
                     Permanent selectedPermanent = card.PermanentOfThisCard();
 
-                    yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { selectedPermanent }, activateClass).Unsuspend());
+                    if (selectedPermanent.DigivolutionCards.Count >= card.PermanentOfThisCard().DigivolutionCards.Count)
+                        yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { selectedPermanent }, activateClass).Unsuspend());
+                        
                 }
             }
 

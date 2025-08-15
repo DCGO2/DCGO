@@ -1201,7 +1201,7 @@ public class PlayPermanentClass
                 _assemblyCount = GManager.instance.GetComponent<SelectAssemblyClass>().selectedAssemblyCards.Count;
             }
 
-            bool isFromDigimonDigivolutionCards = card.Owner.GetBattleAreaDigimons().Some((permanent) => permanent.DigivolutionCards.Contains(card));
+            bool isFromDigimonDigivolutionCards = card.Owner.GetFieldPermanents().Some((permanent) => permanent.DigivolutionCards.Contains(card));
 
             bool isFromSecurity = card.Owner.SecurityCards.Contains(card);
 

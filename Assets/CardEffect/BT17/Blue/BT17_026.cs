@@ -383,7 +383,21 @@ namespace DCGO.CardEffects.BT17
                                                 ignoreDigivolutionRequirementFixedCost: -1,
                                                 isHand: true,
                                                 activateClass: activateClass,
-                                                successProcess: null));
+                                                successProcess: null,
+                                                failedProcess: DigivolvedFailed(),
+                                                isOptional: false));
+                                        }
+                                        else
+                                        {
+                                            yield return ContinuousController.instance.StartCoroutine("DigivolvedFailed");
+                                        }
+
+                                        IEnumerator DigivolvedFailed()
+                                        {
+                                            IDiscardHand discard = new IDiscardHand(card, hashtable);
+
+                                            discard.Discard();
+                                            yield return null;
                                         }
 
                                         foreach (Func<EffectTiming, ICardEffect> getCardEffect in getCardEffects)

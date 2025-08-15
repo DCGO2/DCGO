@@ -164,7 +164,7 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        return true;
+                        return CardEffectCommons.IsJogress(hashtable);
                     }
 
                     return false;
@@ -172,53 +172,34 @@ namespace DCGO.CardEffects.BT16
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    bool isJogress = false;
-
-                    if (_hashtable != null)
+                    if (card.Owner.GetBattleAreaDigimons().Contains(card.PermanentOfThisCard()))
                     {
-                        if (_hashtable.ContainsKey("isJogress"))
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                         {
-                            if (_hashtable["isJogress"] is bool)
+                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+
+                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                            selectPermanentEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: CanSelectPermanentCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: maxCount,
+                                canNoSelect: false,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: SelectPermanentCoroutine,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Custom,
+                                cardEffect: activateClass);
+
+                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will get DP -7000.", "The opponent is selecting 1 Digimon that will get DP -7000.");
+
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                            IEnumerator SelectPermanentCoroutine(Permanent permanent)
                             {
-                                isJogress = (bool)_hashtable["isJogress"];
-                            }
-                        }
-                    }
-
-                    if (isJogress)
-                    {
-                        if (isExistOnField(card))
-                        {
-                            if (card.Owner.GetBattleAreaDigimons().Contains(card.PermanentOfThisCard()))
-                            {
-                                if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                                {
-                                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-
-                                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                                    selectPermanentEffect.SetUp(
-                                        selectPlayer: card.Owner,
-                                        canTargetCondition: CanSelectPermanentCondition,
-                                        canTargetCondition_ByPreSelecetedList: null,
-                                        canEndSelectCondition: null,
-                                        maxCount: maxCount,
-                                        canNoSelect: false,
-                                        canEndNotMax: false,
-                                        selectPermanentCoroutine: SelectPermanentCoroutine,
-                                        afterSelectPermanentCoroutine: null,
-                                        mode: SelectPermanentEffect.Mode.Custom,
-                                        cardEffect: activateClass);
-
-                                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will get DP -7000.", "The opponent is selecting 1 Digimon that will get DP -7000.");
-
-                                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                                    {
-                                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: permanent, changeValue: -7000, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
-                                    }
-                                }
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(targetPermanent: permanent, changeValue: -7000, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
                             }
                         }
                     }
