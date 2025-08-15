@@ -145,7 +145,7 @@ namespace DCGO.CardEffects.BT12
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return true;
+                    return !cardSource.willBeRemoveSources;
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)

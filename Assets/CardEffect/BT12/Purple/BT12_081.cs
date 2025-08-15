@@ -429,6 +429,7 @@ namespace DCGO.CardEffects.BT12
                                                 IEnumerator SelectCardCoroutine(CardSource cardSource)
                                                 {
                                                     selectedCards.Add(cardSource);
+                                                    cardSource.willBeRemoveSources = true;
 
                                                     yield return null;
                                                 }

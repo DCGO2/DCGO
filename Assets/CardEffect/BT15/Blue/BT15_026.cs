@@ -191,22 +191,10 @@ namespace DCGO.CardEffects.BT15
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        bool CardEffectCondition(ICardEffect cardEffect)
-                        {
-                            if (CardEffectCommons.IsOwnerEffect(cardEffect, card))
-                            {
-                                if (cardEffect.IsDigimonEffect)
-                                {
-                                    return true;
-                                }
-                            }
-                            return false;
-                        }
-
                         if (CardEffectCommons.CanTriggerWhenAddHand(
                             hashtable,
                             player => player == card.Owner,
-                        CardEffectCondition))
+                            cardEffect => cardEffect != null))
                         {
                             return true;
                         }

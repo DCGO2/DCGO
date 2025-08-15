@@ -105,11 +105,8 @@ namespace DCGO.CardEffects.EX6
 
                             if (elements[i].EvoRootCondition(permanent))
                             {
-                                if(selectedLevel7.CanEvolve(permanent, true))
-                                {
-                                    allowedPermanents.Add(permanent);
-                                    added = true;
-                                }
+                                allowedPermanents.Add(permanent);
+                                added = true;
                             }
                         }
 
