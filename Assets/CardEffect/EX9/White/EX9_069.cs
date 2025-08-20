@@ -65,7 +65,7 @@ namespace DCGO.CardEffects.EX9
                         maxCount: maxCount,
                         canNoSelect: true,
                         canEndNotMax: true,
-                        isShowOpponent: true,
+                        isShowOpponent: false,
                         selectCardCoroutine: SelectCardCoroutine,
                         afterSelectCardCoroutine: null,
                         mode: SelectHandEffect.Mode.Custom,

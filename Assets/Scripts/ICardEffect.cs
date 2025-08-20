@@ -1165,6 +1165,8 @@ public static class ActivateICardEffectExtensionClass
             yield return ContinuousController.instance.StartCoroutine(Activate_Execute(activateICardEffect, hash));
         }
 
+        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(null, EffectTiming.AfterEffectsActivate));
+
         yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.RuleProcess());
     }
 
