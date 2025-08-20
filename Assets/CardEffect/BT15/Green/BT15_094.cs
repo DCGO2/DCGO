@@ -123,7 +123,7 @@ namespace DCGO.CardEffects.BT15
             {
                 string EffectDiscription()
                 {
-                    return "[Security] Suspend 1 of your opponent's Digimon. Then, add this card to your hand.";
+                    return "[Security] Activate this card's [Main] effect. Then, add this card to the hand.";
                 }
 
                 IEnumerator AfterMainEffect(ICardEffect activateClass)
