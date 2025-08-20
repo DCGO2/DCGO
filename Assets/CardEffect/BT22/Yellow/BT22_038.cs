@@ -299,7 +299,7 @@ namespace DCGO.CardEffects.BT22
                                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
                                     targetPermanent: selectedPermanent,
                                     changeValue: -4000,
-                                    effectDuration: EffectDuration.UntilOwnerTurnEnd,
+                                    effectDuration: EffectDuration.UntilOpponentTurnEnd,
                                     activateClass: activateClass
                                 ));
                             }
