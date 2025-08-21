@@ -171,7 +171,7 @@ namespace DCGO.CardEffects.BT15
 
                 string EffectDiscription()
                 {
-                    return "[Your Turn][Once Per Turn] When one of your Digimon's effects adds cards to your hand, 1 of your opponent's Digimon or Tamers can't suspend until the end of the turn.";
+                    return "[All Turns][Once Per Turn] When one of your Digimon's effects adds cards to your hand, 1 of your opponent's Digimon or Tamers can't suspend until the end of the turn.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -187,6 +187,19 @@ namespace DCGO.CardEffects.BT15
                     return false;
                 }
 
+                bool IsMyDigimonEffect(ICardEffect effect)
+                {
+                    if (effect.EffectSourceCard != null)
+                    {
+                        if (effect.EffectSourceCard.Owner == card.Owner)
+                        {
+                            return effect.EffectSourceCard.IsDigimon;
+                        }
+                    }
+
+                    return false;
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
@@ -194,7 +207,7 @@ namespace DCGO.CardEffects.BT15
                         if (CardEffectCommons.CanTriggerWhenAddHand(
                             hashtable,
                             player => player == card.Owner,
-                            cardEffect => cardEffect != null))
+                            IsMyDigimonEffect))
                         {
                             return true;
                         }
