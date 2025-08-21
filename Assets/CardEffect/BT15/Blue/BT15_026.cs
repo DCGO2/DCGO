@@ -164,14 +164,14 @@ namespace DCGO.CardEffects.BT15
             if (timing == EffectTiming.OnAddHand)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Opponent's 1 Digimon or Tamer can's suspend", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Opponent's 1 Digimon or Tamer can't suspend", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetHashString("CantSuspend_BT15_026");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[Your Turn][Once Per Turn] When an effect adds a card to your hand, this Digimon gets +1000 DP for the turn.";
+                    return "[Your Turn][Once Per Turn] When one of your Digimon's effects adds cards to your hand, 1 of your opponent's Digimon or Tamers can't suspend until the end of the turn.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
