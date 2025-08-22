@@ -67,48 +67,48 @@ namespace DCGO.CardEffects.BT22
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, SharedIsOpponentDigimon))
+                bool isTrashingSecurity = false;
+                int dpChange = 3000;
+
+                if (card.Owner.SecurityCards.Any())
                 {
-                    bool isTrashingSecurity = false;
-                    int dpChange = 3000;
+                    #region Make Selection for Trashing Security
 
-                    if (card.Owner.SecurityCards.Any())
-                    {
-                        #region Make Selection for Trashing Security
-
-                        List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
+                    List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
                         {
                             new SelectionElement<bool>(message: $"Yes", value : true, spriteIndex: 0),
                             new SelectionElement<bool>(message: $"No", value : false, spriteIndex: 1),
                         };
 
-                        string selectPlayerMessage = "Trash top security to -6K DP instead of 3K?";
-                        string notSelectPlayerMessage = "The opponent is choosing to trash top secuirty.";
+                    string selectPlayerMessage = "Trash top security to -6K DP instead of 3K?";
+                    string notSelectPlayerMessage = "The opponent is choosing to trash top secuirty.";
 
-                        GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-                        isTrashingSecurity = GManager.instance.userSelectionManager.SelectedBoolValue;
+                    GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+                    isTrashingSecurity = GManager.instance.userSelectionManager.SelectedBoolValue;
 
-                        #endregion
-                    }
+                    #endregion
+                }
 
-                    if (isTrashingSecurity)
-                    {
-                        CardSource topSec = card.Owner.SecurityCards.FirstOrDefault();
+                if (isTrashingSecurity)
+                {
+                    CardSource topSec = card.Owner.SecurityCards.FirstOrDefault();
 
-                        #region Trash Top Security
+                    #region Trash Top Security
 
-                        yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
-                        player: card.Owner,
-                        destroySecurityCount: 1,
-                        cardEffect: activateClass,
-                        fromTop: true).DestroySecurity());
+                    yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
+                    player: card.Owner,
+                    destroySecurityCount: 1,
+                    cardEffect: activateClass,
+                    fromTop: true).DestroySecurity());
 
-                        #endregion
+                    #endregion
 
-                        if (CardEffectCommons.IsExistOnTrash(topSec)) dpChange = 6000;
-                    }
+                    if (CardEffectCommons.IsExistOnTrash(topSec)) dpChange = 6000;
+                }
 
+                if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, SharedIsOpponentDigimon))
+                {
                     Permanent selectedPermament = null;
 
                     #region Select Permanent

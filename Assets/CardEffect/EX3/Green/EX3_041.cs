@@ -59,6 +59,7 @@ namespace DCGO.CardEffects.EX3
                     {
                         if (cardSource != null)
                         {
+                            UnityEngine.Debug.Log($"ADD LEVELS: {cardSource.BaseENGCardNameFromEntity}");
                             if (cardSource.Owner == card.Owner)
                             {
                                 if (cardSource.Owner.HandCards.Contains(cardSource))

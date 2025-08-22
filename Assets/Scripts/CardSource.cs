@@ -2576,22 +2576,31 @@ public class CardSource : MonoBehaviour
 
     public bool CanJogressFromTargetPermanent(Permanent targetPermanent, bool PayCost)
     {
+        UnityEngine.Debug.Log($"CAN JOGRESS: {targetPermanent}");
         if (targetPermanent != null)
         {
+            UnityEngine.Debug.Log($"CAN JOGRESS: {targetPermanent.TopCard}");
             if (targetPermanent.TopCard != null)
             {
+                UnityEngine.Debug.Log($"CAN JOGRESS: {jogressCondition.Count}");
                 foreach (JogressCondition condition in jogressCondition)
                 {
+                    UnityEngine.Debug.Log($"CAN JOGRESS: {targetPermanent.TopCard.Owner.GetBattleAreaDigimons().Contains(targetPermanent)}");
                     if (targetPermanent.TopCard.Owner.GetBattleAreaDigimons().Contains(targetPermanent))
                     {
+                        UnityEngine.Debug.Log($"CAN JOGRESS: {this.CanPlayJogress(PayCost)}");
                         if (this.CanPlayJogress(PayCost))
                         {
+                            UnityEngine.Debug.Log($"CAN JOGRESS: {(condition != null)}");
                             if (condition != null)
                             {
+                                UnityEngine.Debug.Log($"CAN JOGRESS: {(condition.elements.ToList().Count((element) => element.EvoRootCondition(targetPermanent)) >= 1)}");
                                 if (condition.elements.ToList().Count((element) => element.EvoRootCondition(targetPermanent)) >= 1)
                                 {
+                                    UnityEngine.Debug.Log($"CAN JOGRESS: {this.CanNotEvolve(targetPermanent)}");
                                     if (!this.CanNotEvolve(targetPermanent))
                                     {
+                                        UnityEngine.Debug.Log($"CAN JOGRESS: {PayCost}");
                                         if (PayCost)
                                         {
                                             int cost = condition.cost;
