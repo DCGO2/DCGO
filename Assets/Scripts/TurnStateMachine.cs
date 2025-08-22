@@ -708,7 +708,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
 
             if (gameContext.TurnPlayer.isYou)
             {
-                #region 孵化できる場合
+                #region If hatching is possible
                 if (gameContext.TurnPlayer.CanHatch || !gameContext.TurnPlayer.CanMove)
                 {
                     GManager.instance.hideCannotSelectObject.SetUpHideCannotSelectObject(new List<FieldPermanentCard>() { null }, true);
@@ -726,7 +726,7 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
                     }
                 }
                 #endregion
-                #region 移動できる場合
+                #region If you can move
                 else if (!gameContext.TurnPlayer.CanHatch || gameContext.TurnPlayer.CanMove)
                 {
                     //GManager.instance.commandText.OpenCommandText("BreedingPhase : Will you move your Digimon to Battle Area?");
@@ -780,13 +780,13 @@ public class TurnStateMachine : MonoBehaviourPunCallbacks
             {
                 if (doAction_BreedingPhase)
                 {
-                    //孵化
+                    //hatching
                     if (gameContext.TurnPlayer.CanHatch || !gameContext.TurnPlayer.CanMove)
                     {
                         yield return ContinuousController.instance.StartCoroutine(new HatchDigiEggClass(player: gameContext.TurnPlayer, hashtable: null).Hatch());
                     }
 
-                    //移動
+                    //move
                     else if (!gameContext.TurnPlayer.CanHatch || gameContext.TurnPlayer.CanMove)
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardObjectController.MovePermanent(gameContext.TurnPlayer.GetBreedingAreaPermanents()[0].PermanentFrame));

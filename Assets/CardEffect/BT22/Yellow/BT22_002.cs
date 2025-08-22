@@ -38,8 +38,8 @@ namespace DCGO.CardEffects.BT22
                 bool PermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsOwnerPermanent(permanent, card) &&
-                           permanent.IsToken ||
-                           (permanent.IsDigimon && permanent.TopCard.HasPuppetTraits && permanent != card.PermanentOfThisCard());
+                           (permanent.IsToken ||
+                           (permanent.IsDigimon && permanent.TopCard.HasPuppetTraits && permanent != card.PermanentOfThisCard()));
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

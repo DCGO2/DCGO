@@ -1226,12 +1226,14 @@ public class PlayPermanentClass
                     {
                         FieldCardFrame digieggFrame = card.Owner.fieldCardFrames.Find(fieldCardFrame =>
                         fieldCardFrame.IsEmptyFrame() &&
-                        !fieldCardFrame.IsBattleAreaFrame() &&
-                        (_isHatching || card.CanPlayCardTargetFrame(fieldCardFrame, false, CardEffect, isBreedingArea: _isBreedingArea)));
+                        !fieldCardFrame.IsBattleAreaFrame());
 
                         if (digieggFrame != null)
                         {
-                            frameId = digieggFrame.FrameID;
+                            if (_isHatching)
+                                frameId = digieggFrame.FrameID;
+                            else if(card.CanPlayCardTargetFrame(digieggFrame, false, CardEffect, isBreedingArea: _isBreedingArea))
+                                    frameId = digieggFrame.FrameID;
                         }
                     }
                 }
@@ -1284,6 +1286,9 @@ public class PlayPermanentClass
                         {
                             played = false;
                         }
+
+                        if(_isHatching)
+                            played = _isHatching;
                     }
 
                     if (played)

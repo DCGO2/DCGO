@@ -436,7 +436,7 @@ namespace DCGO.CardEffects.BT17
 
                             foreach (FieldCardFrame fieldCardFrame in selectedCardSource.Owner.fieldCardFrames)
                             {
-                                if (card.CanPlayCardTargetFrame(fieldCardFrame, false, null))
+                                if (selectedCardSource.CanPlayCardTargetFrame(fieldCardFrame, false, null))
                                 {
                                     if (fieldCardFrame.IsEmptyFrame())
                                     {
@@ -454,23 +454,30 @@ namespace DCGO.CardEffects.BT17
                                     CardObjectController.CreateNewPermanent(playedPermanent, frameID));
                             }
 
-                            int[] jogressEvoRootsFrameIDs =
+                            if (selectedLevel7.CanJogressFromTargetPermanent(selectedPermanent, false))
                             {
-                                selectedPermanent.PermanentFrame.FrameID, selectedCardSource.PermanentOfThisCard().PermanentFrame.FrameID
-                            };
+                                int[] jogressEvoRootsFrameIDs =
+                                {
+                                    selectedPermanent.PermanentFrame.FrameID, selectedCardSource.PermanentOfThisCard().PermanentFrame.FrameID
+                                };
 
-                            PlayCardClass playCard = new PlayCardClass(
-                                cardSources: new List<CardSource>() { selectedLevel7 },
-                                hashtable: CardEffectCommons.CardEffectHashtable(activateClass),
-                                payCost: true,
-                                targetPermanent: null,
-                                isTapped: false,
-                                root: SelectCardEffect.Root.Hand,
-                                activateETB: true);
+                                PlayCardClass playCard = new PlayCardClass(
+                                    cardSources: new List<CardSource>() { selectedLevel7 },
+                                    hashtable: CardEffectCommons.CardEffectHashtable(activateClass),
+                                    payCost: true,
+                                    targetPermanent: null,
+                                    isTapped: false,
+                                    root: SelectCardEffect.Root.Hand,
+                                    activateETB: true);
 
-                            playCard.SetJogress(jogressEvoRootsFrameIDs);
+                                playCard.SetJogress(jogressEvoRootsFrameIDs);
 
-                            yield return ContinuousController.instance.StartCoroutine(playCard.PlayCard());
+                                yield return ContinuousController.instance.StartCoroutine(playCard.PlayCard());
+                            }
+                            else
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddHandCard(selectedCardSource, false));
+                            }
                         }
                     }
                 }
