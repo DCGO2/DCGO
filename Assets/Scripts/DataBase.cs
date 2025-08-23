@@ -749,13 +749,20 @@ public class DataBase : MonoBehaviour
                     new CardLimitCount("P-029", 1),
                     new CardLimitCount("P-030", 1),
                     new CardLimitCount("ST9-09", 1),
+                    new CardLimitCount("EX5-065", 0),
+                    new CardLimitCount("BT6-104", 1),
+                    new CardLimitCount("BT13-110", 1),
+                    new CardLimitCount("BT6-011", 1),
+                    new CardLimitCount("EX4-006", 1),
+                    new CardLimitCount("BT19-040", 1),
+                    new CardLimitCount("EX2-070", 1),
+                    new CardLimitCount("EX1-021", 1),
                 },
                 new List<BannedPair>()
                 {
-                    new BannedPair("EX5-065", new List<string>(){
-                        "P-097",
-                        "BT13-102",
-                        "ST16-14",
+                    new BannedPair("BT20-037", new List<string>(){
+                        "BT17-035",
+                        "EX8-037",
                     }),
                     new BannedPair("EX2-007", new List<string>(){
                         "EX7-064",
