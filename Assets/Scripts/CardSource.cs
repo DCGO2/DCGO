@@ -3673,6 +3673,18 @@ public class CardSource : MonoBehaviour
     }
 
     #endregion
+
+    #region whether this card has "Undead" trait
+
+    public bool HasUndeadTraits
+    {
+        get
+        {
+            return EqualsTraits("Undead");
+        }
+    }
+
+    #endregion
 }
 
 public class JogressCondition
