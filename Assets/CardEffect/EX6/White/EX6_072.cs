@@ -63,7 +63,7 @@ namespace DCGO.CardEffects.EX6
                     {
                         if (cardSource.HasLevel && cardSource.Level == 7)
                         {
-                            if (cardSource.jogressCondition != null)
+                            if (cardSource.jogressCondition.Count > 0)
                                 return true;
                         }
                     }
@@ -72,7 +72,8 @@ namespace DCGO.CardEffects.EX6
 
                 bool HasLevel6HandSource(CardSource cardSource)
                 {
-                    return cardSource.IsDigimon;
+                    return cardSource.IsDigimon &&
+                           cardSource.HasLevel && cardSource.Level == 6;
                 }
 
                 bool HasLevel6Permanent(Permanent permanent)
@@ -105,11 +106,8 @@ namespace DCGO.CardEffects.EX6
 
                             if (elements[i].EvoRootCondition(permanent))
                             {
-                                if(selectedLevel7.CanEvolve(permanent, true))
-                                {
-                                    allowedPermanents.Add(permanent);
-                                    added = true;
-                                }
+                                allowedPermanents.Add(permanent);
+                                added = true;
                             }
                         }
 
@@ -283,12 +281,13 @@ namespace DCGO.CardEffects.EX6
 
                     if(selectedLevel7 != null && selectedPermanent != null && selectedCardSource != null)
                     {
+                        
                         Permanent playedPermanent;
                         int frameID = -1;
 
                         foreach (FieldCardFrame fieldCardFrame in selectedCardSource.Owner.fieldCardFrames)
                         {
-                            if (card.CanPlayCardTargetFrame(fieldCardFrame, false, null))
+                            if (selectedCardSource.CanPlayCardTargetFrame(fieldCardFrame, false, null))
                             {
                                 if (fieldCardFrame.IsEmptyFrame())
                                 {
@@ -305,20 +304,27 @@ namespace DCGO.CardEffects.EX6
                             yield return ContinuousController.instance.StartCoroutine(CardObjectController.CreateNewPermanent(playedPermanent, frameID));
                         }
 
-                        int[] JogressEvoRootsFrameIDs = { selectedPermanent.PermanentFrame.FrameID, selectedCardSource.PermanentOfThisCard().PermanentFrame.FrameID };
+                        if (selectedLevel7.CanJogressFromTargetPermanent(selectedPermanent, false))
+                        {
+                            int[] JogressEvoRootsFrameIDs = { selectedPermanent.PermanentFrame.FrameID, selectedCardSource.PermanentOfThisCard().PermanentFrame.FrameID };
 
-                        PlayCardClass playCard = new PlayCardClass(
-                            cardSources: new List<CardSource>() { selectedLevel7 },
-                            hashtable: CardEffectCommons.CardEffectHashtable(activateClass),
-                            payCost: true,
-                            targetPermanent: null,
-                            isTapped: false,
-                            root: SelectCardEffect.Root.Hand,
-                            activateETB: true);
+                            PlayCardClass playCard = new PlayCardClass(
+                                cardSources: new List<CardSource>() { selectedLevel7 },
+                                hashtable: CardEffectCommons.CardEffectHashtable(activateClass),
+                                payCost: true,
+                                targetPermanent: null,
+                                isTapped: false,
+                                root: SelectCardEffect.Root.Hand,
+                                activateETB: true);
 
-                        playCard.SetJogress(JogressEvoRootsFrameIDs);
+                            playCard.SetJogress(JogressEvoRootsFrameIDs);
 
-                        yield return ContinuousController.instance.StartCoroutine(playCard.PlayCard());
+                            yield return ContinuousController.instance.StartCoroutine(playCard.PlayCard());
+                        }
+                        else
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddHandCard(selectedCardSource, false));
+                        }
                     }
                 }
             }

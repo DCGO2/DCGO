@@ -119,13 +119,15 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, EnterFieldDigimon) ||
-                           CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, EnterFieldDigimon);
+                    return isExistOnField(card) &&
+                           (CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, EnterFieldDigimon) ||
+                           CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, EnterFieldDigimon));
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateSuspendCostEffect(card);
+                    return isExistOnField(card) && 
+                           CardEffectCommons.CanActivateSuspendCostEffect(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

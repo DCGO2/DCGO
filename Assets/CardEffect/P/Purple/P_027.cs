@@ -14,7 +14,7 @@ public class P_027 : CEntity_Effect
         if (timing == EffectTiming.OnDeclaration)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect("Play 1 Option from hand", CanUseCondition, card);
+            activateClass.SetUpICardEffect("Use 1 Option from hand", CanUseCondition, card);
             activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 
@@ -25,21 +25,10 @@ public class P_027 : CEntity_Effect
 
             bool CanSelectCardCondition(CardSource cardSource)
             {
-                if (cardSource.IsOption)
-                {
-                    if (cardSource.HasUseCost)
-                    {
-                        if (cardSource.GetCostItself <= 7)
-                        {
-                            if (!cardSource.CanNotPlayThisOption)
-                            {
-                                return true;
-                            }
-                        }
-                    }
-                }
-
-                return false;
+                return cardSource.IsOption &&
+                       cardSource.CardColors.Contains(CardColor.Purple) &&
+                       cardSource.HasUseCost && cardSource.GetCostItself <= 7 &&
+                       !cardSource.CanNotPlayThisOption;
             }
 
             bool CanUseCondition(Hashtable hashtable)

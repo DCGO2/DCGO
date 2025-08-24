@@ -335,7 +335,7 @@ public class CEntity_Base : ScriptableObject
     #endregion
 
     #region Wheter the card has play cost
-    public bool HasPlayCost => cardKind != CardKind.DigiEgg && cardKind != CardKind.Option && PlayCost >= 0;
+    public bool HasPlayCost => cardKind != CardKind.Option && PlayCost >= 0;
     #endregion
 
     #region Wheter the card has use cost

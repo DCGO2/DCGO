@@ -169,13 +169,16 @@ namespace DCGO.CardEffects.BT12
                     {
                         foreach (CardSource cardSource1 in cardSource.PermanentOfThisCard().DigivolutionCards)
                         {
-                            if (cardSource1.EqualsCardName("Machinedramon") || cardSource1.EqualsCardName("Chaosdramon"))
+                            if (!cardSource1.IsFlipped)
                             {
-                                foreach (ICardEffect cardEffect in cardSource1.cEntity_EffectController.GetCardEffects_ExceptAddedEffects(_timing, card))
+                                if (cardSource1.EqualsCardName("Machinedramon") || cardSource1.EqualsCardName("Chaosdramon"))
                                 {
-                                    if (!cardEffect.IsSecurityEffect && !cardEffect.IsInheritedEffect)
+                                    foreach (ICardEffect cardEffect in cardSource1.cEntity_EffectController.GetCardEffects_ExceptAddedEffects(_timing, card))
                                     {
-                                        cardEffects.Add(cardEffect);
+                                        if (!cardEffect.IsSecurityEffect && !cardEffect.IsInheritedEffect)
+                                        {
+                                            cardEffects.Add(cardEffect);
+                                        }
                                     }
                                 }
                             }

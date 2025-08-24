@@ -318,7 +318,6 @@ namespace DCGO.CardEffects.BT15
                                     if (selectedEffect != null)
                                     {
                                         Hashtable effectHashtable = CardEffectCommons.WhenDigivolvingCheckHashtableOfCard(selectedEffect.EffectSourceCard);
-                                        Debug.Log("XX");
 
                                         yield return ContinuousController.instance.StartCoroutine(
                                             ((ActivateICardEffect)selectedEffect).Activate_Optional_Effect_Execute(effectHashtable));

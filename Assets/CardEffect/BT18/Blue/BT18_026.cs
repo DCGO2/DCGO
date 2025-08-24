@@ -217,7 +217,9 @@ namespace DCGO.CardEffects.BT18
 
                             if (digivolve)
                             {
-                                yield return ContinuousController.instance.StartCoroutine(
+                                if (!card.CanNotEvolve(selectedPermanent))
+                                {
+                                    yield return ContinuousController.instance.StartCoroutine(
                                     CardEffectCommons.DigivolveIntoHandOrTrashCard(
                                         targetPermanent: selectedPermanent,
                                         cardCondition: source => source == card,
@@ -227,7 +229,23 @@ namespace DCGO.CardEffects.BT18
                                         ignoreDigivolutionRequirementFixedCost: 3,
                                         isHand: true,
                                         activateClass: activateClass,
-                                        successProcess: null));
+                                        successProcess: null,
+                                        failedProcess: DigivolvedFailed(),
+                                        isOptional: false));
+                                }
+                                else
+                                {
+                                    yield return ContinuousController.instance.StartCoroutine("DigivolvedFailed");
+                                }
+
+                            }
+
+                            IEnumerator DigivolvedFailed()
+                            {
+                                IDiscardHand discard = new IDiscardHand(card, hashtable);
+
+                                discard.Discard();
+                                yield return null;
                             }
                         }
                     }

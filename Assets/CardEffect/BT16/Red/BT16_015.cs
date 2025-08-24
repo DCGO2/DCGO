@@ -85,6 +85,7 @@ namespace DCGO.CardEffects.BT16
                         activateEndofAttack.SetHashString($"EndOfAttack_{endOfAttackEffect.EffectSourceCard.CardID}");
                         activateEndofAttack.SetEffectSourceCard(endOfAttackEffect.EffectSourceCard);
                         activateEndofAttack.SetEffectSourcePermanent(card.PermanentOfThisCard());
+                        activateEndofAttack.SetIsDigimonEffect(true);
 
                         bool CanUseEndOfAttackCondition(Hashtable hashtable1)
                         {

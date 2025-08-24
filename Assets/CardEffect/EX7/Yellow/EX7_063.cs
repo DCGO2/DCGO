@@ -83,8 +83,7 @@ namespace DCGO.CardEffects.EX7
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card) &&
-                           CardEffectCommons.CanActivateSuspendCostEffect(card) &&
-                           CardEffectCommons.HasMatchConditionOwnersHand(card, IsLevel3PuppetCardCondition);
+                           CardEffectCommons.CanActivateSuspendCostEffect(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -121,7 +120,7 @@ namespace DCGO.CardEffects.EX7
                         IEnumerator SelectCardCoroutine(CardSource cardSource)
                         {
                             selectedCards.Add(cardSource);
-                            
+
                             yield return null;
                         }
 

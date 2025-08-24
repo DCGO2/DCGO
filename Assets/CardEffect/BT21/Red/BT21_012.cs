@@ -24,29 +24,14 @@ namespace DCGO.CardEffects.BT21
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.CanActivateSuspendCostEffect(card))
-                        {
-                            return true;
-                        }
-                    }
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleArea(card) &&
+                           CardEffectCommons.CanActivateSuspendCostEffect(card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.IsOwnerTurn(card))
-                        {
-                            if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleArea(card) &&
+                           CardEffectCommons.IsOwnerTurn(card);
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
@@ -72,44 +57,47 @@ namespace DCGO.CardEffects.BT21
                 {
                     yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(new List<Permanent>() { card.PermanentOfThisCard() }, CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
 
-                    CardSource selectedCard = null;
-                    bool tamerPlayed = false;
-
-                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-                    selectHandEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectCardCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: 1,
-                        canNoSelect: true,
-                        canEndNotMax: false,
-                        isShowOpponent: true,
-                        selectCardCoroutine: SelectCardCoroutine,
-                        afterSelectCardCoroutine: null,
-                        mode: SelectHandEffect.Mode.Custom,
-                        cardEffect: activateClass);
-
-                    selectHandEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
-                    selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
-                    yield return StartCoroutine(selectHandEffect.Activate());
-
-                    IEnumerator SelectCardCoroutine(CardSource cardSource)
+                    if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
                     {
-                        selectedCard = cardSource;
-                        yield return null;
-                    }
+                        CardSource selectedCard = null;
+                        bool tamerPlayed = false;
 
-                    if (selectedCard != null)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: new List<CardSource>() { selectedCard }, activateClass: activateClass, payCost: false, isTapped: false, root: SelectCardEffect.Root.Hand, activateETB: true));
-                        tamerPlayed = true;
-                    }
+                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                        selectHandEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectCardCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: true,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            selectCardCoroutine: SelectCardCoroutine,
+                            afterSelectCardCoroutine: null,
+                            mode: SelectHandEffect.Mode.Custom,
+                            cardEffect: activateClass);
 
-                    if (tamerPlayed)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(selectedCard.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource>() { card }, activateClass));
-                    }
+                        selectHandEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
+                        selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
+                        yield return StartCoroutine(selectHandEffect.Activate());
+
+                        IEnumerator SelectCardCoroutine(CardSource cardSource)
+                        {
+                            selectedCard = cardSource;
+                            yield return null;
+                        }
+
+                        if (selectedCard != null)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(cardSources: new List<CardSource>() { selectedCard }, activateClass: activateClass, payCost: false, isTapped: false, root: SelectCardEffect.Root.Hand, activateETB: true));
+                            tamerPlayed = true;
+                        }
+
+                        if (tamerPlayed)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(selectedCard.PermanentOfThisCard().AddDigivolutionCardsBottom(new List<CardSource>() { card }, activateClass));
+                        }
+                    }                        
                 }
             }
 

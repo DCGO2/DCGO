@@ -31,7 +31,7 @@ public class BT9_033 : CEntity_Effect
 
             bool CardCondition(CardSource cardSource)
             {
-                return cardSource.IsDigimon;
+                return cardSource.IsDigimon || cardSource.IsDigiEgg;
             }
 
             bool CardEffectCondition(ICardEffect cardEffect)

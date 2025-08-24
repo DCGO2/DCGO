@@ -24,7 +24,6 @@ namespace DCGO.CardEffects.BT22
             }
             #endregion
 
-
             #region When Digivolving
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
@@ -43,23 +42,10 @@ namespace DCGO.CardEffects.BT22
 
                 bool HasSameLevelDigivolutionCards(Permanent permanent)
                 {
-                    //There might be a fancier more efficient way of doing this, if known feel free to replace with that
-                    //(and i don't mean for-each loops, here more primitive ones are used for optimisation)
-                    //The intersect method's override might be usable here, but I don't know 100% how to not have it count itself, and making the class for comparisons is really awkward
-                    for (int i = 0; i < permanent.cardSources.Count; i++)
-                    {
-                        if (permanent.cardSources[i].HasLevel)
-                        {
-                            for (int j = i + 1; j < permanent.cardSources.Count; j++)
-                            {
-                                if (permanent.cardSources[j].HasLevel && permanent.cardSources[i].Level == permanent.cardSources[j].Level)
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-                    return false;
+                    return permanent.StackCards
+                        .Filter(x => !x.IsFlipped)
+                        .GroupBy(x => x.Level)
+                        .Any(g => g.Count() >= 2);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -124,7 +110,7 @@ namespace DCGO.CardEffects.BT22
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Prevent this Digimon from being deleted", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("Inherit-BT22-072");
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);

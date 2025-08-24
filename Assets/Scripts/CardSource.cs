@@ -41,7 +41,7 @@ public class CardSource : MonoBehaviour
         Owner = owner;
         gameObject.name = _cEntity_Base.CardName_ENG;
 
-        SetFace("CardSource.SetBaseData");
+        SetFace();
     }
 
     #endregion
@@ -304,22 +304,12 @@ public class CardSource : MonoBehaviour
 
     #endregion
 
-    #region Top card of permanent in the field containing this card
-
-    public Permanent TopCardPermanent()
-    {
-        return Owner.GetFieldPermanents().Find(permanent =>
-            (permanent.cardSources.Contains(this)) && !IsFlipped).TopCard.PermanentOfThisCard();
-    }
-
-    #endregion
-
     #region initialize
 
     public void Init()
     {
         cEntity_EffectController.InitUseCountThisTurn();
-        SetFace("CardSource.Initialize");
+        SetFace();
     }
 
     #endregion
@@ -1929,7 +1919,7 @@ public class CardSource : MonoBehaviour
         foreach (string attribute in _cEntity_Base.Type_ENG)
             checkStrings.Add(DataBase.ReplaceToASCII(attribute));
 
-        if (jogressCondition != null)
+        if (jogressCondition.Count > 0)
         {
             foreach (JogressCondition jogress in jogressCondition)
             {
@@ -2641,7 +2631,7 @@ public class CardSource : MonoBehaviour
                 {
                     foreach (JogressCondition condition in jogressCondition)
                     {
-                        if (jogressCondition != null)
+                        if (condition != null)
                         {
                             List<Permanent[]> permanentsList = ParameterComparer.Enumerate(targetPermanents, 2).ToList();
 
@@ -3410,6 +3400,18 @@ public class CardSource : MonoBehaviour
 
     #endregion
 
+    #region whether this card has "TS" trait
+
+    public bool HasTSTraits
+    {
+        get
+        {
+            return EqualsTraits("TS");
+        }
+    }
+
+    #endregion
+
     #region whether this card has "Unidentified" trait
 
     public bool HasUnidentifiedTraits
@@ -3681,6 +3683,18 @@ public class CardSource : MonoBehaviour
         get
         {
             return EqualsTraits("Undead");
+		}
+	}
+	
+	#endregion
+
+    #region whether this card has "Galaxy" trait
+
+    public bool HasGalaxyTraits
+    {
+        get
+        {
+            return EqualsTraits("Galaxy");
         }
     }
 

@@ -44,9 +44,9 @@ namespace DCGO.CardEffects.P
             }
 
             #endregion
-            
+
             #region Your Turn
-            
+
             if (timing == EffectTiming.OnAddDigivolutionCards)
             {
                 Permanent sourcesAddedPermanent = null;
@@ -64,7 +64,7 @@ namespace DCGO.CardEffects.P
                 bool IsValidPermanentToDigivolveCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
-                           (permanent.TopCard.ContainsTraits("Aqua") || permanent.TopCard.ContainsTraits("Sea Animal"));
+                           (permanent.TopCard.HasAquaTraits || permanent.TopCard.HasSeaAnimalTraits);
                 }
 
                 bool IsValidCardToDigivolveIntoCondition(CardSource cardSource)
@@ -102,7 +102,7 @@ namespace DCGO.CardEffects.P
                 {
                     sourcesAddedPermanent = CardEffectCommons.GetPermanentFromHashtable(hashtable);
 
-                    return isExistOnField(card) && 
+                    return CardEffectCommons.IsExistOnBattleArea(card) &&
                            CardEffectCommons.CanActivateSuspendCostEffect(card) &&
                            IsValidPermanentToDigivolveCondition(sourcesAddedPermanent);
                 }
@@ -114,7 +114,7 @@ namespace DCGO.CardEffects.P
                     yield return ContinuousController.instance.StartCoroutine(
                         new SuspendPermanentsClass(new List<Permanent>() { card.PermanentOfThisCard() },
                             CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
-                    
+
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectDigimonToDigivolve))
                     {
                         Permanent selectedPermanent = null;
@@ -163,7 +163,7 @@ namespace DCGO.CardEffects.P
                     }
                 }
             }
-            
+
             #endregion
 
             #region Security Effect
@@ -174,7 +174,7 @@ namespace DCGO.CardEffects.P
             }
 
             #endregion
-            
+
             return cardEffects;
         }
     }

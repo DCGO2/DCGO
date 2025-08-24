@@ -281,59 +281,63 @@ namespace DCGO.CardEffects.BT12
                         {
                             List<CardSource> libraryCards = new List<CardSource>();
 
-                            if (selectedPermanent.DigivolutionCards.Count >= 1)
+                            if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
                             {
-                                if (selectedPermanent.DigivolutionCards.Count == 1)
+                                if (selectedPermanent.DigivolutionCards.Count >= 1)
                                 {
-                                    libraryCards = selectedPermanent.DigivolutionCards.Clone();
-                                }
-                                else
-                                {
-                                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                                    selectCardEffect.SetUp(
-                            canTargetCondition: (cardSource) => true,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            canNoSelect: () => false,
-                            selectCardCoroutine: null,
-                            afterSelectCardCoroutine: AfterSelectCardCoroutine1,
-                            message: "Specify the order to place the card at the bottom of the deck\n(cards will be placed back to the bottom of the deck so that cards with lower numbers are on top).",
-                            maxCount: selectedPermanent.DigivolutionCards.Count,
-                            canEndNotMax: false,
-                            isShowOpponent: false,
-                            mode: SelectCardEffect.Mode.Custom,
-                            root: SelectCardEffect.Root.Custom,
-                            customRootCardList: selectedPermanent.DigivolutionCards,
-                            canLookReverseCard: true,
-                            selectPlayer: card.Owner,
-                            cardEffect: activateClass);
-
-                                    selectCardEffect.SetNotShowCard();
-                                    selectCardEffect.SetNotAddLog();
-
-                                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-
-                                    IEnumerator AfterSelectCardCoroutine1(List<CardSource> cardSources)
+                                    if (selectedPermanent.DigivolutionCards.Count == 1)
                                     {
-                                        libraryCards = cardSources.Clone();
+                                        libraryCards = selectedPermanent.DigivolutionCards.Clone();
+                                    }
+                                    else
+                                    {
+                                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
-                                        yield return null;
+                                        selectCardEffect.SetUp(
+                                            canTargetCondition: (cardSource) => true,
+                                            canTargetCondition_ByPreSelecetedList: null,
+                                            canEndSelectCondition: null,
+                                            canNoSelect: () => false,
+                                            selectCardCoroutine: null,
+                                            afterSelectCardCoroutine: AfterSelectCardCoroutine1,
+                                            message: "Specify the order to place the card at the bottom of the deck\n(cards will be placed back to the bottom of the deck so that cards with lower numbers are on top).",
+                                            maxCount: selectedPermanent.DigivolutionCards.Count,
+                                            canEndNotMax: false,
+                                            isShowOpponent: false,
+                                            mode: SelectCardEffect.Mode.Custom,
+                                            root: SelectCardEffect.Root.Custom,
+                                            customRootCardList: selectedPermanent.DigivolutionCards,
+                                            canLookReverseCard: true,
+                                            selectPlayer: card.Owner,
+                                            cardEffect: activateClass);
+
+                                        selectCardEffect.SetNotShowCard();
+                                        selectCardEffect.SetNotAddLog();
+                                        selectCardEffect.SetUseFaceDown();
+
+                                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+
+                                        IEnumerator AfterSelectCardCoroutine1(List<CardSource> cardSources)
+                                        {
+                                            libraryCards = cardSources.Clone();
+
+                                            yield return null;
+                                        }
+                                    }
+
+                                    if (libraryCards.Count >= 1)
+                                    {
+                                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(libraryCards));
+
+                                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(libraryCards, "Deck Bottom Cards", true, true));
                                     }
                                 }
 
-                                if (libraryCards.Count >= 1)
+                                if (selectedPermanent.TopCard != null)
                                 {
-                                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(libraryCards));
-
-                                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(libraryCards, "Deck Bottom Cards", true, true));
+                                    yield return ContinuousController.instance.StartCoroutine(new DeckBottomBounceClass(new List<Permanent>() { selectedPermanent }, CardEffectCommons.CardEffectHashtable(activateClass)).DeckBounce());
                                 }
-                            }
-
-                            if (selectedPermanent.TopCard != null)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(new DeckBottomBounceClass(new List<Permanent>() { selectedPermanent }, CardEffectCommons.CardEffectHashtable(activateClass)).DeckBounce());
-                            }
+                            }                            
                         }
                     }
                 }

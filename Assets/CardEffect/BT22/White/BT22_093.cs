@@ -80,18 +80,18 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, DigivolvingCondition)
-                        && CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);
+                    return CardEffectCommons.IsExistOnField(card) &&
+                           CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, DigivolvingCondition);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if(DigivolvingDigimon != null)
+                    if (DigivolvingDigimon != null)
                     {
                         if (!DigivolvingCondition(DigivolvingDigimon))
                             return false;
-
                     }
+
                     return CardEffectCommons.IsExistOnField(card)
                         && CardEffectCommons.IsOwnerTurn(card)
                         && CardEffectCommons.CanActivateSuspendCostEffect(card);
@@ -99,11 +99,11 @@ namespace DCGO.CardEffects.BT22
 
                 bool DigivolvingCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsOwnerPermanent(permanent, card))
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
                         if (permanent.TopCard.HasCSTraits)
                         {
-                            if(permanent.DigivolutionCards.Filter(x => x.HasLevel && x.Level == permanent.Level).Count >= 1)
+                            if (permanent.DigivolutionCards.Filter(x => x.HasLevel && x.Level == permanent.Level).Count >= 1)
                             {
                                 DigivolvingDigimon = permanent;
                                 return true;

@@ -278,8 +278,9 @@ namespace DCGO.CardEffects.BT22
 
                 bool IsProperCard(CardSource cardSource)
                 {
-                    return card.HasPlayCost && cardSource.BasePlayCostFromEntity <= 4 &&
-                           (cardSource.CardColors.Contains(CardColor.Black) || cardSource.CardColors.Contains(CardColor.Red));
+                    return cardSource.HasPlayCost && cardSource.BasePlayCostFromEntity <= 4 &&
+                           (cardSource.CardColors.Contains(CardColor.Black) || cardSource.CardColors.Contains(CardColor.Red)) &&
+                           CardEffectCommons.CanPlayAsNewPermanent(cardSource,false,activateClass,SelectCardEffect.Root.Library);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

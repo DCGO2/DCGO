@@ -52,20 +52,10 @@ namespace DCGO.CardEffects.BT22
 
                 bool HasSameLevelDigivolutionCards(Permanent permanent)
                 {
-                    for (int i = 0; i < permanent.cardSources.Count; i++)
-                    {
-                        if (permanent.cardSources[i].HasLevel)
-                        {
-                            for (int j = i + 1; j < permanent.cardSources.Count; j++)
-                            {
-                                if (permanent.cardSources[j].HasLevel && permanent.cardSources[i].Level == permanent.cardSources[j].Level)
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-                    return false;
+                    return permanent.StackCards
+                        .Filter(x => !x.IsFlipped)
+                        .GroupBy(x => x.Level)
+                        .Any(g => g.Count() >= 2);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -186,7 +176,7 @@ namespace DCGO.CardEffects.BT22
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Prevent this Digimon from being deleted", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("Inherit-BT22-073");
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);

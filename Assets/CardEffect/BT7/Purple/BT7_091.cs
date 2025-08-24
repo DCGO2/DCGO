@@ -92,6 +92,7 @@ public class BT7_091 : CEntity_Effect
             activateClass.SetUpICardEffect("Memory +1", CanUseCondition, card);
             activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
             activateClass.SetIsInheritedEffect(true);
+            activateClass.SetIsDigimonEffect(true);
             cardEffects.Add(activateClass);
 
             string EffectDiscription()

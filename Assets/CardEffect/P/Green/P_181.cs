@@ -25,7 +25,6 @@ namespace DCGO.CardEffects.P
                     => "[Security] [Your Turn] [Once Per Turn] When any of your Digimon would digivolve into a Digimon card with the [Royal Base] trait, reduce the digivolution cost by 1.";
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    UnityEngine.Debug.Log($"CAN USE: {CardEffectCommons.IsExistInSecurity(card, false)}, {CardEffectCommons.IsOwnerTurn(card)}, {CardEffectCommons.CanTriggerWhenPermanentWouldDigivolve(hashtable, DigivolveTargetCondition, DigivolveCondition)}");
                     return CardEffectCommons.IsExistInSecurity(card, false) &&
                            CardEffectCommons.IsOwnerTurn(card) &&
                            CardEffectCommons.CanTriggerWhenPermanentWouldDigivolve(hashtable, DigivolveTargetCondition, DigivolveCondition);
@@ -33,7 +32,6 @@ namespace DCGO.CardEffects.P
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    UnityEngine.Debug.Log($"CAN ACTIVATE: {CardEffectCommons.IsExistInSecurity(card, false)}");
                     return CardEffectCommons.IsExistInSecurity(card, false);
                 }
 

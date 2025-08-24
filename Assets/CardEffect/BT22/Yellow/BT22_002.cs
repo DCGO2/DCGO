@@ -26,7 +26,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, permanent => PermanentCondition(permanent));
+                    return CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, PermanentCondition);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -37,8 +37,9 @@ namespace DCGO.CardEffects.BT22
 
                 bool PermanentCondition(Permanent permanent)
                 {
-                    return card.TopCardPermanent() != permanent
-                        && (permanent.IsToken || permanent.IsDigimon && permanent.TopCard.HasPuppetTraits);
+                    return CardEffectCommons.IsOwnerPermanent(permanent, card) &&
+                           (permanent.IsToken ||
+                           (permanent.IsDigimon && permanent.TopCard.HasPuppetTraits && permanent != card.PermanentOfThisCard()));
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

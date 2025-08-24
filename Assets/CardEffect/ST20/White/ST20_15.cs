@@ -43,8 +43,8 @@ namespace DCGO.CardEffects.ST20
 
                 bool PermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && permanent.Level >= 3;
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                           permanent.TopCard.HasLevel && permanent.Level >= 3;
                 }
 
                 string EffectDescription()
