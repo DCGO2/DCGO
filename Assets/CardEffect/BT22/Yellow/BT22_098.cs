@@ -162,14 +162,14 @@ namespace DCGO.CardEffects.BT22
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card)
-                        && CardEffectCommons.CanDeclareOptionDelayEffect(card)
-                        && CardEffectCommons.CanTriggerWhenPermanentSuspends(hashtable, IsArisaKinosaki);
+                        && CardEffectCommons.CanDeclareOptionDelayEffect(card) &&
+                        CardEffectCommons.IsOwnerTurn(card) &&
+                        CardEffectCommons.CanTriggerWhenPermanentSuspends(hashtable, IsArisaKinosaki);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card)
-                        && CardEffectCommons.IsOwnerTurn(card);
+                    return CardEffectCommons.IsExistOnBattleArea(card);
                 }
 
                 bool IsArisaKinosaki(Permanent permanent)
@@ -187,8 +187,9 @@ namespace DCGO.CardEffects.BT22
 
                 bool CardCondition(CardSource cardSource)
                 {
-                    return cardSource.IsDigimon &&
-                        (cardSource.HasPuppetTraits || cardSource.HasLiberatorTraits);
+                    return cardSource.IsDigimon
+                           && cardSource.HasPuppetTraits
+                           && cardSource.HasLiberatorTraits;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

@@ -33,8 +33,11 @@ public partial class CardEffectFactory
         if (card == null) return null;
         if (sourceCondition == null) sourceCondition = _ => true;
 
+        // EX: "Decode (Red/Black)"
+        string effectname = $"Decode {decodeStrings[0]}";
+
         ActivateClass activateClass = new ActivateClass();
-        activateClass.SetUpICardEffect("Decode", CanUseCondition, card);
+        activateClass.SetUpICardEffect(effectname, CanUseCondition, card);
         activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, DataBase.DecodeEffectDiscription(decodeStrings));
         activateClass.SetIsInheritedEffect(isInheritedEffect);
 

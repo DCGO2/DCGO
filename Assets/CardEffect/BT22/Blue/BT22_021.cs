@@ -19,10 +19,10 @@ namespace DCGO.CardEffects.BT22
                 {
                     return source.IsDigimon
                     && source.HasLevel && source.IsLevel3
-                    && (source.HasSeaAnimalTraits || source.HasAquaTraits);
+                    && (source.ContainsTraits("Sea Animal") || source.ContainsTraits("Aqua"));
                 }
 
-                string[] decodeStrings = { "(Lv.3 w/[Aqua]/[Sea Animal] trait)", "Level 3 Digimon card with [Aqua] or [Sea Animal] " };
+                string[] decodeStrings = { "(Lv.3 w/[Aqua]/[Sea Animal] in any trait)", "Level 3 Digimon card with [Aqua] or [Sea Animal]" };
                 cardEffects.Add(CardEffectFactory.DecodeSelfEffect(card: card, isInheritedEffect: false, decodeStrings: decodeStrings, sourceCondition: SourceCondition, condition: null));
             }
 

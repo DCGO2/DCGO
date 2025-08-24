@@ -16,7 +16,9 @@ namespace DCGO.CardEffects.BT22
             {
                 bool PermanentCondition(Permanent permanent)
                 {
-                    return permanent.TopCard.ContainsCardName("Tyrannomon") && !permanent.TopCard.HasXAntibodyTraits;
+                    return permanent.TopCard.IsLevel4 &&
+                           permanent.TopCard.ContainsCardName("Tyrannomon") && 
+                           !permanent.TopCard.HasXAntibodyTraits;
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(PermanentCondition, 0, false, card, null));

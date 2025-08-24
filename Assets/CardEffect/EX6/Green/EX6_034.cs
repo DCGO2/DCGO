@@ -222,7 +222,6 @@ namespace DCGO.CardEffects.EX6
 
                         IEnumerator SuccessProcess()
                         {
-                            Debug.Log("Successful Return: Select and Play out Digimon");
                             List<CardSource> selectedCards = new List<CardSource>();
 
                             SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();

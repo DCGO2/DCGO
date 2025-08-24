@@ -19,7 +19,7 @@ namespace DCGO.CardEffects.BT22
                 {
                     return source.IsDigimon
                     && source.HasLevel && source.IsLevel5
-                    && (source.HasSeaAnimalTraits || source.HasAquaTraits);
+                    && (source.ContainsTraits("Aqua") || source.ContainsTraits("Sea Animal"));
                 }
 
                 string[] decodeStrings = { "(Lv.5 w/[Aqua]/[Sea Animal] trait)", "Level 5 Digimon card with [Aqua] or [Sea Animal] " };
@@ -319,7 +319,11 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnAddDigivolutionCard(hashtable, IsRyugumon, null, null);
+                    return CardEffectCommons.CanTriggerOnAddDigivolutionCard(
+                        hashtable,
+                        IsRyugumon,
+                        cardEffectCondition: cardEffect => cardEffect.EffectSourceCard != null,
+                        null);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

@@ -173,7 +173,6 @@ public class PlayCardClass
 
     private bool GetIgnoreRequirement(CardEffectCommons.IgnoreRequirement ignore)
     {
-        Debug.Log($"Get Ignore Requirement: {_ignoreRequirement.Equals(ignore)}, {_ignoreRequirement.Equals(CardEffectCommons.IgnoreRequirement.All)}");
         return _ignoreRequirement.Equals(ignore) || _ignoreRequirement.Equals(CardEffectCommons.IgnoreRequirement.All);
     }
 
@@ -701,7 +700,7 @@ public class PlayCardClass
                 }
                 else
                 {
-                    if (card.jogressCondition != null)
+                    if (card.jogressCondition.Count > 0)
                     {
                         int cost = card.GetPayingCostWithBaseCost(card.jogressCondition[baseDNA].cost, Root, targetPermanents, checkAvailability: false, FixedCost: _fixedCost);
                         GManager.instance.memoryObject.ShowMemoryPredictionLine(card.Owner.ExpectedMemory(cost));
@@ -817,7 +816,7 @@ public class PlayCardClass
                 }
                 else
                 {
-                    if (card.jogressCondition != null)
+                    if (card.jogressCondition.Count > 0)
                     {
                         Cost = card.GetPayingCostWithBaseCost(card.jogressCondition[baseDNA].cost, Root, targetPermanents, checkAvailability: false, FixedCost: _fixedCost);
                     }
@@ -1081,6 +1080,7 @@ public class HatchDigiEggClass
         ActivateETB: true);
 
         playPermanentClass.SetIsBreedingArea();
+        playPermanentClass.SetIsHatching();
 
         yield return ContinuousController.instance.StartCoroutine(playPermanentClass.PlayPermanent());
 
@@ -1182,6 +1182,11 @@ public class PlayPermanentClass
         _isBreedingArea = true;
     }
 
+    public void SetIsHatching()
+    {
+        _isHatching = true;
+    }
+
     public void SetISPlayOption()
     {
         _isPlayOption = true;
@@ -1200,6 +1205,7 @@ public class PlayPermanentClass
     int[] _appFusionFrameIDs = null;
     bool _appFusion = false;
     bool _isBreedingArea = false;
+    bool _isHatching = false;
     bool _isPlayOption = false;
 
     public bool isJogress => _jogressEvoRootsFrameIDs != null && _jogressEvoRootsFrameIDs.Length == 2;
@@ -1228,7 +1234,7 @@ public class PlayPermanentClass
                 _assemblyCount = GManager.instance.GetComponent<SelectAssemblyClass>().selectedAssemblyCards.Count;
             }
 
-            bool isFromDigimonDigivolutionCards = card.Owner.GetBattleAreaDigimons().Some((permanent) => permanent.DigivolutionCards.Contains(card));
+            bool isFromDigimonDigivolutionCards = card.Owner.GetFieldPermanents().Some((permanent) => permanent.DigivolutionCards.Contains(card));
 
             bool isFromSecurity = card.Owner.SecurityCards.Contains(card);
 
@@ -1252,13 +1258,15 @@ public class PlayPermanentClass
                     if (card.Owner.GetBreedingAreaPermanents().Count == 0)
                     {
                         FieldCardFrame digieggFrame = card.Owner.fieldCardFrames.Find(fieldCardFrame =>
-                        fieldCardFrame.IsEmptyFrame()
-                        && !fieldCardFrame.IsBattleAreaFrame()
-                        && card.CanPlayCardTargetFrame(fieldCardFrame, false, CardEffect, isBreedingArea: _isBreedingArea));
+                        fieldCardFrame.IsEmptyFrame() &&
+                        !fieldCardFrame.IsBattleAreaFrame());
 
                         if (digieggFrame != null)
                         {
-                            frameId = digieggFrame.FrameID;
+                            if (_isHatching)
+                                frameId = digieggFrame.FrameID;
+                            else if(card.CanPlayCardTargetFrame(digieggFrame, false, CardEffect, isBreedingArea: _isBreedingArea))
+                                    frameId = digieggFrame.FrameID;
                         }
                     }
                 }
@@ -1308,6 +1316,9 @@ public class PlayPermanentClass
                         {
                             played = false;
                         }
+
+                        if(_isHatching)
+                            played = _isHatching;
                     }
 
                     if (played)
@@ -1685,7 +1696,7 @@ public class UseOptionClass
 
             GManager.instance.turnStateMachine.isSync = true;
 
-            card.SetFace("CardContoller.UseOption");
+            card.SetFace();
 
             int cost = card.GetCostItself;
 
@@ -3196,7 +3207,7 @@ public class IPutSecurityPermanent
                 if (!_isFaceup)
                     topCard.SetReverse();
                 else
-                    topCard.SetFace("CardController.PutSecurity");
+                    topCard.SetFace();
 
                 if (!_toTop)
                 {
@@ -3300,7 +3311,7 @@ public class DestroyPermanentsClass
         }
 
         #endregion
-
+        
         // fix delete target permanents
         List<Permanent> destroyTargetPermanents_Fixed = _destroytargetPermanents.Filter(permanent =>
             permanent != null
@@ -4207,32 +4218,17 @@ public class IBattle
                 // battle effect
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().BattleEffect(WinnerPermanents, LoserPermanents, LoserCard));
 
-                yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(LoserPermanents, hashtable).Destroy());
+                DestroyPermanentsClass destoryBattlePermanents = new DestroyPermanentsClass(LoserPermanents, hashtable);
+                yield return ContinuousController.instance.StartCoroutine(destoryBattlePermanents.Destroy());
 
-                //Fix winner/loser permanents
-                int index = -1;
-                foreach (Permanent permanent in LoserPermanents)
+                //Fix Loser Permanents
+                if(LoserPermanents.Count != destoryBattlePermanents.DestroyedPermanents.Count)
                 {
-                    if (permanent.TopCard != null)
-                    {
-                        index = LoserPermanents.IndexOf(permanent);
-                    }
-                }
-
-                if (index >= 0)
-                {
-                    LoserPermanents.RemoveAt(index);
-                    _LoserPermanents.RemoveAt(index);
-
+                    LoserPermanents = destoryBattlePermanents.DestroyedPermanents;
+                    _LoserPermanents = destoryBattlePermanents.DestroyedPermanents;
                     hashtable["LoserPermanents"] = _LoserPermanents;
                     hashtable["LoserPermanents_real"] = LoserPermanents;
                 }
-
-                //LoserPermanents = LoserPermanents.Filter(permanent => permanent.TopCard != null);
-                //_LoserPermanents = _LoserPermanents.Filter(permanent => permanent.TopCard != null);
-
-                //hashtable["LoserPermanents"] = _LoserPermanents;
-                //hashtable["LoserPermanents_real"] = LoserPermanents;
 
                 // "At the end of battle" effect
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(hashtable, EffectTiming.OnEndBattle));
@@ -4886,8 +4882,6 @@ public class SuspendPermanentsClass
         foreach (Permanent permanent in suspendTargetPermanents)
         {
             permanent.IsSuspended = true;
-
-            GManager.OnCardSuspendedChanged?.Invoke(true);
 
             permanent.DPWhenSuspended = permanent.DP;
 

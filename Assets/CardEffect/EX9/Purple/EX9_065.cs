@@ -129,15 +129,10 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.HasLevel && cardSource.Level <= 4 && cardSource.EqualsTraits("DM"))
-                    {
-                        if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return cardSource.IsDigimon &&
+                           cardSource.HasLevel && cardSource.Level <= 4 &&
+                           cardSource.EqualsTraits("DM") &&
+                           CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -208,15 +203,10 @@ namespace DCGO.CardEffects.EX9
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.HasLevel && cardSource.Level <= 4 && cardSource.EqualsTraits("DM"))
-                    {
-                        if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return cardSource.IsDigimon &&
+                           cardSource.HasLevel && cardSource.Level <= 4 &&
+                           cardSource.EqualsTraits("DM") &&
+                           CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

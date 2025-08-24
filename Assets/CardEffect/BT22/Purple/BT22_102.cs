@@ -38,13 +38,10 @@ namespace DCGO.CardEffects.BT22
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        foreach (CardSource source in permanent.StackCards)
-                        {
-                            if (permanent.StackCards.Count(cardSource => cardSource.Level == source.Level) >= 2)
-                            {
-                                return true;
-                            }
-                        }
+                        return permanent.StackCards
+                            .Filter(x => !x.IsFlipped)
+                            .GroupBy(x => x.Level)
+                            .Any(g => g.Count() >= 2);
                     }
 
                     return false;
@@ -80,7 +77,7 @@ namespace DCGO.CardEffects.BT22
 
                     bool CanSelectDigivolveTarget(CardSource source)
                     {
-                        return (source.HasLightFangOrNightClawTraits || source.HasCSTraits) &&
+                        return (source.HasLightFangOrNightClawTraits || source.HasGalaxyTraits || source.HasCSTraits) &&
                                source.CanPlayCardTargetFrame(attackingPermanent.PermanentFrame, true, activateClass, SelectCardEffect.Root.Trash);
                     }
 

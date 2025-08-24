@@ -145,7 +145,7 @@ public class SelectJogressEffect : MonoBehaviour
         {
             if (_card.CanPlayJogress(_isPayCost))
             {
-                if (_card.jogressCondition != null)
+                if (_card.jogressCondition.Count > 0)
                 {
                     foreach (JogressCondition dnaCondition in _card.jogressCondition)
                     {

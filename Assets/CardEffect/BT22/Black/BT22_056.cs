@@ -102,12 +102,12 @@ namespace DCGO.CardEffects.BT22
 
                     if (CardEffectCommons.HasMatchConditionPermanent(IsYourOpponentDigimon))
                     {
-                        int levelMatchCount = card.PermanentOfThisCard().DigivolutionCards.Sum(entity =>
-                        new[] { entity.IsLevel2, entity.IsLevel3, entity.IsLevel4, entity.IsLevel5, entity.IsLevel6, }
-                            .Count(level => level)
-                    );
+                        bool levelMatch = card.PermanentOfThisCard().StackCards
+                            .Filter(x => !x.IsFlipped)
+                            .GroupBy(x => x.Level)
+                            .Any(g => g.Count() >= 2);
 
-                        if (levelMatchCount >= 2)
+                        if (levelMatch)
                         {
                             Permanent selectedPermament = null;
                             int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, IsYourOpponentDigimon));
@@ -198,12 +198,12 @@ namespace DCGO.CardEffects.BT22
 
                     if (CardEffectCommons.HasMatchConditionPermanent(IsYourOpponentDigimon))
                     {
-                        int levelMatchCount = card.PermanentOfThisCard().DigivolutionCards.Sum(entity =>
-                        new[] { entity.IsLevel2, entity.IsLevel3, entity.IsLevel4, entity.IsLevel5, entity.IsLevel6, }
-                            .Count(level => level)
-                    );
+                        bool levelMatch = card.PermanentOfThisCard().StackCards
+                            .Filter(x => !x.IsFlipped)
+                            .GroupBy(x => x.Level)
+                            .Any(g => g.Count() >= 2);
 
-                        if (levelMatchCount >= 2)
+                        if (levelMatch)
                         {
                             Permanent selectedPermament = null;
                             int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, IsYourOpponentDigimon));

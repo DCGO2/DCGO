@@ -26,19 +26,18 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnAddDigivolutionCard(hashtable, PermanentCondition, null, CardCondition);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.CanTriggerOnAddDigivolutionCard(
+                               hashtable,
+                               permament => permament == card.PermanentOfThisCard(),
+                               cardEffectCondition: cardEffect => cardEffect.EffectSourceCard != null,
+                               CardCondition);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
                         && CardEffectCommons.IsOwnerTurn(card);
-                }
-
-                bool PermanentCondition(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && card.TopCardPermanent() == permanent;
                 }
 
                 bool CardCondition(CardSource cardSource)

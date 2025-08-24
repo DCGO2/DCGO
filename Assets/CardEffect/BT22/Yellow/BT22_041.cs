@@ -28,24 +28,72 @@ namespace DCGO.CardEffects.BT22
 
             #endregion
 
-            #region Reduce Cost
+            #region Play Cost Reduction
 
             if (timing == EffectTiming.None)
             {
-                bool Condition()
+                int securityCount = card.Owner.SecurityCards.Count + card.Owner.Enemy.SecurityCards.Count;
+
+                ChangeCostClass changeCostClass = new ChangeCostClass();
+                changeCostClass.SetUpICardEffect($"Play Cost -6", CanUseCondition, card);
+                changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost,
+                    cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: IsUpDown,
+                    isCheckAvailability: () => false, isChangePayingCost: () => true);
+
+                cardEffects.Add(changeCostClass);
+
+                bool CanUseCondition(Hashtable hashtable)
                 {
-                    return !CardEffectCommons.IsExistOnField(card)
-                        && card.Owner.SecurityCards.Count + card.Owner.Enemy.SecurityCards.Count <= 6;
+                    return CardEffectCommons.IsExistOnHand(card) &&
+                           securityCount <= 6;
                 }
 
-                cardEffects.Add(
-                    CardEffectFactory.ChangePlayCostStaticEffect(
-                        changeValue: -6,
-                        permanentCondition: null,
-                        isInheritedEffect: false,
-                        card: card,
-                        condition: Condition,
-                        setFixedCost: false));
+                int ChangeCost(CardSource cardSource, int cost, SelectCardEffect.Root root,
+                    List<Permanent> targetPermanents)
+                {
+                    if (CardSourceCondition(cardSource))
+                    {
+                        if (RootCondition(root))
+                        {
+                            if (PermanentsCondition(targetPermanents))
+                            {
+                                cost -= 6;
+                            }
+                        }
+                    }
+
+                    return cost;
+                }
+
+                bool PermanentsCondition(List<Permanent> targetPermanents)
+                {
+                    if (targetPermanents == null)
+                    {
+                        return true;
+                    }
+
+                    if (targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0)
+                    {
+                        return true;
+                    }
+
+                    return false;
+                }
+
+                bool CardSourceCondition(CardSource cardSource)
+                {
+                    return cardSource == card;
+                }
+
+                bool RootCondition(SelectCardEffect.Root root)
+                {
+                    return true;
+                }
+
+                bool IsUpDown()
+                {
+                    return true;
+                }
             }
 
             #endregion

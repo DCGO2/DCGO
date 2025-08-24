@@ -78,7 +78,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsMotherEater);
+                    return CardEffectCommons.HasMatchConditionPermanent(IsMotherEater);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -89,12 +89,13 @@ namespace DCGO.CardEffects.BT22
 
                 bool IsMotherEater(Permanent permanent)
                 {
-                    return permanent.TopCard.EqualsCardName("Mother Eater");
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent,card) &&
+                            permanent.TopCard.EqualsCardName("Mother Eater");
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsMotherEater))
+                    if (CardEffectCommons.HasMatchConditionPermanent(IsMotherEater))
                     {
                         Permanent motherEater = null;
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(IsMotherEater));
@@ -149,7 +150,7 @@ namespace DCGO.CardEffects.BT22
 
             #region Alliance
 
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnAllyAttack)
             {
                 cardEffects.Add(CardEffectFactory.AllianceSelfEffect(isInheritedEffect: true, card: card, condition: ESSCondition));
             }
@@ -158,7 +159,7 @@ namespace DCGO.CardEffects.BT22
 
             #region Scapegoat
 
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.WhenPermanentWouldBeDeleted)
             {
                 cardEffects.Add(CardEffectFactory.ScapegoatSelfEffect(isInheritedEffect: true, card: card, condition: ESSCondition, effectName: "<Scapegoat>", effectDiscription: null));
             }

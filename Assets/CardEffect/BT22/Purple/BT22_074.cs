@@ -48,12 +48,12 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card) && CardEffectCommons.IsOwnerTurn(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && CardEffectCommons.IsOwnerTurn(card);
                 }
 
                 bool CanSelectPermamentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) && 
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
                         permanent.TopCard.HasLevel && permanent.TopCard.Level <= 5;
                 }
 
@@ -187,11 +187,12 @@ namespace DCGO.CardEffects.BT22
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 level 4 or lower [Flame]/[CS] Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[On Deletion] You may play 1 level 4 or lower Digimon card with the [Flame] or [CS] traitfrom your trash without paying the cost.";
+                    return "[On Deletion] You may play 1 level 4 or lower Digimon card with the [Flame] or [CS] trait from your trash without paying the cost.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -208,8 +209,8 @@ namespace DCGO.CardEffects.BT22
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
                     return cardSource.IsDigimon
-                        && cardSource.HasFlameTraits || cardSource.HasCSTraits
-                        && cardSource.Level <= 4
+                        && (cardSource.HasFlameTraits || cardSource.HasCSTraits)
+                        && cardSource.HasLevel && cardSource.Level <= 4
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
                 }
 

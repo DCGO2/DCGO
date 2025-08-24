@@ -90,7 +90,8 @@ namespace DCGO.CardEffects.P
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent) && permanent.TopCard.EqualsCardName("Millenniummon");
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                           permanent.TopCard.EqualsCardName("Millenniummon");
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)

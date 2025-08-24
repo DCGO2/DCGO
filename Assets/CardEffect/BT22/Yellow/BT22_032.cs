@@ -112,8 +112,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card)
-                        && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, IsOpponentDigimon);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 bool IsOpponentDigimon(Permanent permanent)

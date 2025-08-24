@@ -76,10 +76,8 @@ namespace DCGO.CardEffects.BT16
                 {
                     if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                     {
-                        Debug.Log($"SelectCondion ({cardSource.BaseENGCardNameFromEntity}): Can Play as new permanent - {cardSource.HasDBrigadeorDigiPoliceTraits}");
                         if (cardSource.HasDBrigadeorDigiPoliceTraits)
                         {
-                            Debug.Log($"SelectCondion ({cardSource.BaseENGCardNameFromEntity}): has right traits");
                             if (cardSource.HasPlayCost && cardSource.GetCostItself <= 4)
                             {
                                 return true;

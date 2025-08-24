@@ -50,6 +50,7 @@ namespace DCGO.CardEffects.BT20
                 bool CanSelectCard(CardSource source)
                 {
                     return source.HasLevel && source.Level <= 4 &&
+                           !source.IsDigiEgg &&
                            (source.HasSocTraits || source.HasSeekersTraits) &&
                            CardEffectCommons.CanPlayAsNewPermanent(source, false, activateClass, SelectCardEffect.Root.Trash);
                 }

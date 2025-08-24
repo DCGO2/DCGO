@@ -83,7 +83,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card) && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, SharedPermanentCondition);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
             }
 
@@ -110,8 +110,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && 
-                           CardEffectCommons.HasMatchConditionOpponentsPermanent(card, SharedPermanentCondition);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
             }
 
@@ -123,7 +122,7 @@ namespace DCGO.CardEffects.BT22
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete 1 digimon with less then 4K DP", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, _ => SharedActivateCoroutine(activateClass), 1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, _ => SharedActivateCoroutine(activateClass), -1, false, EffectDiscription());
                 activateClass.SetIsLinkedEffect(true);
                 cardEffects.Add(activateClass);
 
@@ -136,7 +135,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, SharedPermanentCondition);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
             }
 

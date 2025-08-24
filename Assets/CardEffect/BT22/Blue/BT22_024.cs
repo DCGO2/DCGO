@@ -19,7 +19,7 @@ namespace DCGO.CardEffects.BT22
                 {
                     return source.IsDigimon
                     && source.HasLevel && source.IsLevel4
-                    && (source.HasSeaAnimalTraits || source.HasAquaTraits);
+                    && (source.ContainsTraits("Aqua") || source.ContainsTraits("Sea Animal"));
                 }
 
                 string[] decodeStrings = { "(Lv.4 w/[Aqua]/[Sea Animal] trait)", "Level 4 Digimon card with [Aqua] or [Sea Animal] " };
@@ -211,7 +211,7 @@ namespace DCGO.CardEffects.BT22
                 {
                     return source.IsDigimon
                         && source.HasLevel && source.Level <= 4
-                        && (source.HasSeaAnimalTraits || source.HasAquaTraits);
+                        && (source.ContainsTraits("Sea Animal") || source.ContainsTraits("Aqua"));
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

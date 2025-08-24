@@ -269,9 +269,6 @@ namespace DCGO.CardEffects.BT20
                             {
                                 if (!CardEffectCommons.GetCardFromHashtable(hashtable).IsFlipped)
                                 {
-                                    UnityEngine.Debug.Log(card);
-                                    UnityEngine.Debug.Log(card.PermanentOfThisCard());
-                                    UnityEngine.Debug.Log(card.PermanentOfThisCard().DigivolutionCards);
                                     return card.PermanentOfThisCard().DigivolutionCards.Count > 0;
                                 }
                             }

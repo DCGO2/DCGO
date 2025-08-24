@@ -194,6 +194,7 @@ namespace DCGO.CardEffects.BT20
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete 1 of your opponent's level 6 or lower Digimon.", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetIsSecurityEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

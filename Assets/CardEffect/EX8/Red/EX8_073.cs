@@ -226,7 +226,6 @@ namespace DCGO.CardEffects.EX8
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    UnityEngine.Debug.Log($"CAN USE: {CardEffectCommons.IsExistOnBattleAreaDigimon(card)}, {CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card)}");
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
                         if (CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card))
@@ -240,14 +239,13 @@ namespace DCGO.CardEffects.EX8
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    UnityEngine.Debug.Log($"CAN ACTIVATE: {CardEffectCommons.IsExistOnBattleAreaDigimon(card)}");
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     List<Permanent> deleteTargetPermanents = new List<Permanent>();
-                    UnityEngine.Debug.Log($"ACTIVATE: {CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentPermanentCondition)}");
+
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectOpponentPermanentCondition))
                     {
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectOpponentPermanentCondition));
@@ -273,14 +271,12 @@ namespace DCGO.CardEffects.EX8
 
                         IEnumerator AfterSelectPermanentCoroutine(List<Permanent> permanents)
                         {
-                            UnityEngine.Debug.Log($"ACTIVATE: Select Permanents - {permanents.Count}");
                             deleteTargetPermanents = permanents.Clone();
                             yield return null;
                         }
                     }
-                    UnityEngine.Debug.Log($"ACTIVATE: Attempt Delete");
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: deleteTargetPermanents, activateClass: activateClass, successProcess: null, failureProcess: FailureProcess));
-                    UnityEngine.Debug.Log($"ACTIVATE: Post Delete");
+
                     IEnumerator FailureProcess()
                     {
                         if (card.Owner.Enemy.SecurityCards.Count >= 1)

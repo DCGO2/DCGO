@@ -367,7 +367,6 @@ public abstract class ICardEffect
         }
 
         #endregion
-
         //TODO: Look into this for the on deletion General issue
         #region Determination whether the permanent is same as when triggered
 
@@ -924,7 +923,8 @@ public enum EffectTiming
     WhenWouldDigivolutionCardDiscarded,
     WhenLinked,
     WhenTopCardTrashed,
-    RulesTiming
+    RulesTiming,
+    OnRemovedField
 }
 
 #endregion
@@ -1016,7 +1016,8 @@ public static class ActivateICardEffectExtensionClass
             ((ICardEffect)activateICardEffect).OnProcessCallbuck?.Invoke();
             ((ICardEffect)activateICardEffect).SetOnProcessCallbuck(null);
 
-            //Handling Effects
+            //Handling Effect
+            ((ICardEffect)activateICardEffect).EffectSourceCard.cEntity_EffectController.RegisterUseEfffectThisTurn(((ICardEffect)activateICardEffect));
             yield return ContinuousController.instance.StartCoroutine(activateICardEffect.Activate(hash));
         }
     }
@@ -1161,6 +1162,8 @@ public static class ActivateICardEffectExtensionClass
 
             yield return ContinuousController.instance.StartCoroutine(Activate_Execute(activateICardEffect, hash));
         }
+
+        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(null, EffectTiming.AfterEffectsActivate));
 
         yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.RuleProcess());
     }

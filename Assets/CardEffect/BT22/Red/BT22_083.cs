@@ -224,7 +224,7 @@ namespace DCGO.CardEffects.BT22
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card)
-                           && CardEffectCommons.CanTriggerOnAttackTargetSwitch(hashtable, card);
+                           && CardEffectCommons.CanTriggerOnPermanentAttackTargetSwitch(hashtable, permanent => true);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

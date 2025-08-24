@@ -47,8 +47,8 @@ namespace DCGO.CardEffects.BT22
                 bool IsShoemon(CardSource cardSource)
                 {
                     return CardEffectCommons.IsExistOnTrash(cardSource)
-                        && cardSource.EqualsCardName("IsShoemon")
-                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
+                        && cardSource.EqualsCardName("Shoemon")
+                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass, SelectCardEffect.Root.Trash);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -112,7 +112,6 @@ namespace DCGO.CardEffects.BT22
 
                             #region Select Trash card
 
-                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, IsShoemon));
                             SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                             selectCardEffect.SetUp(
@@ -123,7 +122,7 @@ namespace DCGO.CardEffects.BT22
                                 selectCardCoroutine: SelectCardCoroutine,
                                 afterSelectCardCoroutine: null,
                                 message: "Select 1 [Shoemon] to play",
-                                maxCount: maxCount,
+                                maxCount: 1,
                                 canEndNotMax: false,
                                 isShowOpponent: true,
                                 mode: SelectCardEffect.Mode.Custom,

@@ -69,7 +69,7 @@ public class CommandPanel : MonoBehaviour
 
         //CommandPanelBackGround.sizeDelta = new Vector2(CommandPanelBackGround.sizeDelta.x, 4.6f * (FieldUnitCommands.Count + 1));
 
-        GridLayoutGroup grid = CommandPanelObject.transform.GetChild(1).GetComponent<GridLayoutGroup>();
+        GridLayoutGroup grid = CommandPanelObject.GetComponentInChildren<GridLayoutGroup>();
 
         float defaultWidth = 241.42f;
         int constraint = CardCommands.Count + 1;
@@ -78,8 +78,8 @@ public class CommandPanel : MonoBehaviour
         {
             constraint = grid.constraintCount;
         }
-
-        CommandPanelBackGround.sizeDelta = new Vector2(defaultWidth * (((CardCommands.Count - 1) / constraint) + 1), 27.07f * (CardCommands.Count - 1) + 104.63f);
+        UnityEngine.Debug.Log($"PANEL WIDTH: {defaultWidth}, {CardCommands.Count}, {constraint}, {Mathf.CeilToInt((float)CardCommands.Count / (float)constraint)}");
+        CommandPanelBackGround.sizeDelta = new Vector2(defaultWidth * Mathf.CeilToInt((float)CardCommands.Count / (float)constraint), 27.07f * (CardCommands.Count - 1) + 104.63f);
 
         if (fieldPokemonCard != null)
         {

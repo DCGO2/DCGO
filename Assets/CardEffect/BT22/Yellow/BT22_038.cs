@@ -294,7 +294,7 @@ namespace DCGO.CardEffects.BT22
 
                                 #endregion
 
-                                selectedPermanent.UntilOpponentTurnEndEffects.Add(_ => invalidationClass);
+                                selectedPermanent.UntilOwnerTurnEndEffects.Add(_ => invalidationClass);
 
                                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
                                     targetPermanent: selectedPermanent,
@@ -347,7 +347,7 @@ namespace DCGO.CardEffects.BT22
 
             #region When Attacking
 
-            if (timing == EffectTiming.OnEnterFieldAnyone)
+            if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("by trashing bottom face down source, 1 digimon cant use When digivolving effects and get -4K DP", CanUseCondition, card);
@@ -403,8 +403,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card)
-                        && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, IsOpponentDigimon);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 bool IsOpponentDigimon(Permanent permanent)

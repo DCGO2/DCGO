@@ -846,7 +846,7 @@ public class Permanent
         cardSources.Insert(0, cardSource);
 
         if (!cardSource.IsFlipped)
-            cardSource.SetFace("Permanent.AddSourceCard");
+            cardSource.SetFace();
         else
             cardSource.SetReverse();
     }
@@ -889,7 +889,7 @@ public class Permanent
                 this.cardSources.Insert(1, addedDigivolutionCard);
 
                 if (!addedDigivolutionCard.IsFlipped || addedDigivolutionCard.IsBeingRevealed || GManager.instance.turnStateMachine.gameContext.IsSecurityLooking)
-                    addedDigivolutionCard.SetFace("Permanent.AddDigivolutionCardsTop");
+                    addedDigivolutionCard.SetFace();
 
                 addedCards.Add(addedDigivolutionCard);
             }
@@ -989,7 +989,7 @@ public class Permanent
                 if (isFacedown)
                     addedDigivolutionCard.SetReverse();
                 else
-                    addedDigivolutionCard.SetFace("Permanent.AddDigivolutionCardsBottom");
+                    addedDigivolutionCard.SetFace();
 
                 addedCards.Add(addedDigivolutionCard);
             }
@@ -1059,7 +1059,7 @@ public class Permanent
             LinkedDP += addedLinkCard.LinkDP;
 
             this.cardSources.Insert(1, addedLinkCard);
-            addedLinkCard.SetFace("Permanent.AddLinkCard");
+            addedLinkCard.SetFace();
             addedCard = true;
         }
 
@@ -1105,9 +1105,10 @@ public class Permanent
             LinkedDP -= cardSource.LinkDP;
             LinkedCards.Remove(cardSource);
 
+            yield return ContinuousController.instance.StartCoroutine(RemoveCardSource(cardSource));
+
             if (trashCard)
             {
-                yield return ContinuousController.instance.StartCoroutine(RemoveCardSource(cardSource));
                 yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddTrashCard(cardSource));
             }        
         }

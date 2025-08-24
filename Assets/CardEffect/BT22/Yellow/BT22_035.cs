@@ -322,7 +322,7 @@ namespace DCGO.CardEffects.BT22
             if (timing == EffectTiming.WhenLinked)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play 1 level 4 or lower [Appmon] digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Play 1 4 cost or lower [Appmon] card", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("BT22_035_WL");
                 cardEffects.Add(activateClass);
@@ -353,7 +353,6 @@ namespace DCGO.CardEffects.BT22
                 bool IsAppMonCard(CardSource cardSource)
                 {
                     return CardEffectCommons.IsExistOnHand(cardSource)
-                        && cardSource.IsDigimon
                         && cardSource.HasPlayCost && cardSource.BasePlayCostFromEntity <= 4
                         && cardSource.HasAppmonTraits;
                 }
@@ -409,8 +408,8 @@ namespace DCGO.CardEffects.BT22
             {
                 int dpMinus = card.Owner.GetBattleAreaDigimons().Count(x => x.TopCard.HasAppmonTraits) * 4000;
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect($"-{dpMinus} DP", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpICardEffect($"-4000 DP for each Digimon with [Appmon] trait", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 activateClass.SetIsLinkedEffect(true);
                 cardEffects.Add(activateClass);
 
@@ -426,6 +425,8 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
+                    dpMinus = card.Owner.GetBattleAreaDigimons().Count(x => x.TopCard.HasAppmonTraits) * 4000;
+
                     return CardEffectCommons.IsExistOnField(card)
                         && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, IsOpponentDigimon)
                         && dpMinus != 0;

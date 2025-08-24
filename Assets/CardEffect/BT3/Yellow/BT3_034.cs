@@ -69,6 +69,8 @@ public class BT3_034 : CEntity_Effect
                         selectPlayer: card.Owner,
                         cardEffect: activateClass);
 
+                    selectCardEffect.SetUseFaceDown();
+
                     yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 
                     IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)

@@ -22,7 +22,7 @@ public class AttachCardData : MonoBehaviour
          BT11_086 Mervamon
          BT10_042
          */
-        List<string> DebugCardSpriteNames = new List<string>() { "EX5-070_P1" };
+        List<string> DebugCardSpriteNames = new List<string>() { };
 
         foreach (GameObject obj in Selection.gameObjects)
         {
@@ -69,8 +69,6 @@ public class AttachCardData : MonoBehaviour
                     var scene = SceneManager.GetActiveScene();
                     EditorSceneManager.MarkSceneDirty(scene);
                 }
-
-                Debug.Log($"card:{CCtrl.CardList.ToList().Map(cEntity_Base => cEntity_Base.CardID).Distinct().ToList().Count}kinds");
 
                 return;
             }

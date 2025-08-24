@@ -50,8 +50,10 @@ namespace DCGO.CardEffects.P
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if(card.PermanentOfThisCard().CanMove)
-                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.MovePermanent(card.PermanentOfThisCard().PermanentFrame,true));
+                    if (card.PermanentOfThisCard().CanMove)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.MovePermanent(card.PermanentOfThisCard().PermanentFrame, true, activateClass));
+                    }
                 }
             }
             #endregion

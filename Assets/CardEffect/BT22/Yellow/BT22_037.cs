@@ -33,6 +33,7 @@ namespace DCGO.CardEffects.BT22
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("-8K DP", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetIsDigimonEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -114,8 +115,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.HasMatchConditionOwnersHand(card, CardCondition) &&
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
                            card.Owner.SecurityCards.Any();
                 }
 
@@ -138,17 +138,20 @@ namespace DCGO.CardEffects.BT22
 
                     #endregion
 
-                    yield return ContinuousController.instance.StartCoroutine(
-                                CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                                    targetPermanent: card.PermanentOfThisCard(),
-                                    cardCondition: CardCondition,
-                                    payCost: true,
-                                    reduceCostTuple: (2, null),
-                                    fixedCostTuple: null,
-                                    ignoreDigivolutionRequirementFixedCost: -1,
-                                    isHand: true,
-                                    activateClass: activateClass,
-                                    successProcess: null));
+                    if(CardEffectCommons.HasMatchConditionOwnersHand(card, CardCondition))
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(
+                                                        CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                                                            targetPermanent: card.PermanentOfThisCard(),
+                                                            cardCondition: CardCondition,
+                                                            payCost: true,
+                                                            reduceCostTuple: (2, null),
+                                                            fixedCostTuple: null,
+                                                            ignoreDigivolutionRequirementFixedCost: -1,
+                                                            isHand: true,
+                                                            activateClass: activateClass,
+                                                            successProcess: null));
+                    }
                 }
             }
 
@@ -177,8 +180,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card)
-                        && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, IsOpponentDigimon);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 bool IsOpponentDigimon(Permanent permanent)
