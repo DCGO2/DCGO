@@ -4587,8 +4587,14 @@ public class ITrashLinkCards
         _cardEffect = cardEffect;
     }
 
+    public bool IsTrashed(CardSource cardSource)
+    {
+        return TrashedLinkCards.Contains(cardSource);
+    }
+
     Permanent _permanent = null;
     List<CardSource> _trashTargetCards = new List<CardSource>();
+    public List<CardSource> TrashedLinkCards = new List<CardSource>();
     ICardEffect _cardEffect = null;
 
     public IEnumerator TrashLinkCards()
@@ -4672,6 +4678,7 @@ public class ITrashLinkCards
             }
 
             cardSource.willBeRemoveSources = false;
+            TrashedLinkCards.Add(cardSource);
         }
     }
 }
