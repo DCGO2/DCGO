@@ -112,6 +112,75 @@ namespace DCGO.CardEffects.EX10
                                             isTapped: false,
                                             root: SelectCardEffect.Root.Hand,
                                             activateETB: true));
+
+                    #region Delete Digimon Played
+                    Permanent selectedPermanent = card.PermanentOfThisCard();
+
+                    ActivateClass activateClass1 = new ActivateClass();
+                    activateClass1.SetUpICardEffect("Delete this Digimon", CanUseCondition2, selectedPermanent.TopCard);
+                    activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDiscription1());
+                    activateClass1.SetEffectSourcePermanent(selectedPermanent);
+                    selectedPermanent.UntilOwnerTurnEndEffects.Add(GetCardEffect);
+
+                    if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(selectedPermanent));
+                    }
+
+                    string EffectDiscription1()
+                    {
+                        return "[End of Your Turn] Delete this Digimon.";
+                    }
+
+                    bool CanUseCondition2(Hashtable hashtable1)
+                    {
+                        if (CardEffectCommons.IsOpponentTurn(card))
+                        {
+                            if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(selectedPermanent, selectedPermanent.TopCard))
+                            {
+                                if (CardEffectCommons.CanTriggerOnEndAttack(hashtable1, selectedPermanent.TopCard))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+
+                        return false;
+                    }
+
+                    bool CanActivateCondition1(Hashtable hashtable1)
+                    {
+                        if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
+                        {
+                            if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
+                            {
+                                return true;
+                            }
+                        }
+
+                        return false;
+                    }
+
+                    IEnumerator ActivateCoroutine1(Hashtable _hashtable1)
+                    {
+                        if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(
+                            new List<Permanent>() { selectedPermanent },
+                            CardEffectCommons.CardEffectHashtable(activateClass1)).Destroy());
+                        }
+                    }
+
+                    ICardEffect GetCardEffect(EffectTiming _timing)
+                    {
+                        if (_timing == EffectTiming.OnEndTurn)
+                        {
+                            return activateClass1;
+                        }
+
+                        return null;
+                    }
+                    #endregion
                 }
             }
             #endregion
