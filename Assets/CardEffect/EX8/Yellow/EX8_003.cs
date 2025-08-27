@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
+// Kokomon
 namespace DCGO.CardEffects.EX8
 {
     public class EX8_003 : CEntity_Effect
@@ -39,15 +40,7 @@ namespace DCGO.CardEffects.EX8
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card) && AnotherDigimonOnField())
-                    {
-                        if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, SelectOpponentsDigimon))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && AnotherDigimonOnField();               
                 }
 
                 bool SelectOpponentsDigimon(Permanent permanent)
@@ -57,30 +50,33 @@ namespace DCGO.CardEffects.EX8
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                    selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: SelectOpponentsDigimon,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: 1,
-                        canNoSelect: false,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: SelectPermanentCoroutine,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Custom,
-                        cardEffect: activateClass);
-
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                    if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, SelectOpponentsDigimon))
                     {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
-                            targetPermanent: permanent,
-                            changeValue: -2000, 
-                            effectDuration: EffectDuration.UntilEachTurnEnd,
-                            activateClass: activateClass));
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: SelectOpponentsDigimon,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
+                                targetPermanent: permanent,
+                                changeValue: -2000,
+                                effectDuration: EffectDuration.UntilEachTurnEnd,
+                                activateClass: activateClass));
+                        }
                     }
                 }
             }
