@@ -4657,8 +4657,7 @@ public class ITrashLinkCards
 
         #endregion
 
-        //TODO: Create OnLinkCardDiscarded timing
-        //yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(hashtable, EffectTiming.OnDigivolutionCardDiscarded));
+        yield return ContinuousController.instance.StartCoroutine(GManager.instance.autoProcessing.StackSkillInfos(hashtable, EffectTiming.OnLinkCardDiscarded));
 
         #endregion
 
