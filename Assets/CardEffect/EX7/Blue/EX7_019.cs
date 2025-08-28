@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+// Sorcermon
 namespace DCGO.CardEffects.EX7
 {
     public class EX7_019 : CEntity_Effect
@@ -105,25 +106,15 @@ namespace DCGO.CardEffects.EX7
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent.IsDigimon)
-                        {
-                            return true;
-                        }
+                        return true;
                     }
 
                     return false;
                 }
+
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectDigimonCondition))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -133,7 +124,7 @@ namespace DCGO.CardEffects.EX7
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectDigimonCondition))
+                    if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectDigimonCondition))
                     {
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectDigimonCondition));
 
