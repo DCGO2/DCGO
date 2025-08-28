@@ -367,7 +367,7 @@ namespace DCGO.CardEffects
             #endregion
 
             #region Opponent's Turn - OPT
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnTappedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash 2, Suspend 2", CanUseCondition, card);
