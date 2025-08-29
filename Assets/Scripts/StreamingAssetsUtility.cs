@@ -117,7 +117,8 @@ public class StreamingAssetsUtility
 
     public static async Task<Sprite> GetCardImageData(string fileName, string filePath)
     {
-        string urlPath = $"https://raw.githubusercontent.com/TakaOtaku/Digimon-Cards/main/src/assets/images/cards/{fileName}.webp";
+        //string urlPath = $"https://raw.githubusercontent.com/TakaOtaku/Digimon-Cards/main/src/assets/images/cards/{fileName}.webp";
+        string urlPath = $"https://raw.githubusercontent.com/TakaOtaku/Digimon-Card-App/main/src/assets/images/cards/{fileName}.webp";
 
         UnityWebRequest webReq_CardImage = UnityWebRequest.Get(urlPath);
         UnityWebRequestAsyncOperation operation = webReq_CardImage.SendWebRequest();
