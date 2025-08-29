@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.EX10
 {
     public class EX10_002 : CEntity_Effect
     {
