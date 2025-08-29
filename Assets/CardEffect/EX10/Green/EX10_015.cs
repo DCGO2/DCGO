@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 
-namespace DCGO.CardEffects
+namespace DCGO.CardEffects.EX10
 {
     public class EX10_015 : CEntity_Effect
     {
