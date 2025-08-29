@@ -288,6 +288,15 @@ public abstract class ICardEffect
 
         #endregion
 
+        #region Effect availability determined by the maximum number of times it can be used in a turn
+
+        if (EffectSourceCard.cEntity_EffectController.isOverMaxCountPerTurn(this, MaxCountPerTurn))
+        {
+            return false;
+        }
+
+        #endregion
+
         #region Determination of availability for each effect
 
         if (CanUseCondition == null || !CanUseCondition(hashtable))

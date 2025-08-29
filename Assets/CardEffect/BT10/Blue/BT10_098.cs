@@ -143,7 +143,7 @@ namespace DCGO.CardEffects.BT10
 
                 string EffectDiscription()
                 {
-                    return "[Security] All of your Digimon gain <Security Attack +1>  (This Digimon checks 1 additional security card) until the end of your next turn.";
+                    return "[Security] Return 1 of your opponent's Digimon to its owner's hand.";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
