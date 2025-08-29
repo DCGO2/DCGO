@@ -215,7 +215,7 @@ namespace DCGO.CardEffects.EX10
 
                 string EffectDescription()
                 {
-                    return "[On Play] [When Digivolving] [When Attacking] [Once Per Turn] Delete 2 other unsuspended Digimon.";
+                    return "[On Play] [Once Per Turn] Delete 2 other unsuspended Digimon.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
