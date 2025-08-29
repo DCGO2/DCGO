@@ -78,7 +78,7 @@ namespace DCGO.Tools.Repair
 
         #endregion
 
-        #region Fix Errata Images
+        #region Fix Sample Images
         [MenuItem("Window/DCGO/Repair/Fix Sample Images")]
         static void SampleImages()
         {
@@ -123,7 +123,50 @@ namespace DCGO.Tools.Repair
 
         #endregion
 
+        #region Remove Sample Images
+        [MenuItem("Window/DCGO/Repair/Remove Sample Images")]
+        static void RemoveSample()
+        {
+            instance = new FixErrataImages();
+            instance.RemoveSampleImages();
+        }
 
+        void RemoveSampleImages()
+        {
+            string path = "Assets/CardBaseEntity/";
+
+            if (Selection.assetGUIDs.Length != 0)
+                path = AssetDatabase.GUIDToAssetPath(Selection.assetGUIDs[0]);
+
+            Debug.Log($"ASSET PATH: {path}");
+
+            List<CEntity_Base> Entities = GetAsset.LoadAll<CEntity_Base>(path);
+
+            foreach (CEntity_Base card in Entities)
+            {
+                string errataName = RemoveMatchingSample(card.CardSpriteName);
+
+                if (card.CardSpriteName != errataName)
+                {
+                    card.CardSpriteName = errataName;
+                    EditorUtility.SetDirty(card);
+                }
+            }
+
+            Debug.Log($"COMPLETED");
+        }
+
+        string RemoveMatchingSample(string imageName)
+        {
+            string name = imageName;
+
+            if (name.Contains("-Sample"))
+                name = name.Remove(name.IndexOf("-Sample"));
+
+            return name;
+        }
+
+        #endregion
 
 
 
