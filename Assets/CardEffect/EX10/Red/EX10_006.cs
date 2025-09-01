@@ -26,7 +26,7 @@ namespace DCGO.CardEffects.EX10
             #endregion
 
             #region Start of Your Main Phase
-            if (timing == EffectTiming.OnEnterFieldAnyone)
+            if (timing == EffectTiming.OnStartMainPhase)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Return 1 card from trash to hand", CanUseCondition, card);

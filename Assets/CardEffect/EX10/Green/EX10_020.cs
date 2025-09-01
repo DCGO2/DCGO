@@ -324,7 +324,7 @@ namespace DCGO.CardEffects.EX10
 
                 bool CardCondition(CardSource cardSource)
                 {
-                    return cardSource.EqualsCardName("Apocalymon");
+                    return !cardSource.EqualsCardName("Apocalymon");
                 }
 
                 cardEffects.Add(CardEffectFactory.CanNotDigivolveStaticSelfEffect(

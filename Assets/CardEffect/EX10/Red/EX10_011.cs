@@ -295,7 +295,7 @@ namespace DCGO.CardEffects.EX10
 
                 bool OpponentsLowestDP(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent) &&
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
                            CardEffectCommons.IsMinDP(permanent, permanent.TopCard.Owner);
                 }
 

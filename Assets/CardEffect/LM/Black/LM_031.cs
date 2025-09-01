@@ -184,7 +184,7 @@ namespace DCGO.CardEffects.LM
                             message: "Select a black Digimon to place at the top of the deck\n(cards will be placed back to the top of the deck so that cards with lower numbers are on top).",
                             maxCount: maxCount,
                             canEndNotMax: false,
-                            isShowOpponent: false,
+                            isShowOpponent: true,
                             mode: SelectCardEffect.Mode.Custom,
                             root: SelectCardEffect.Root.Trash,
                             customRootCardList: null,
