@@ -27,7 +27,7 @@ namespace DCGO.CardEffects.EX10
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           CardEffectCommons.CanTriggerOnTrashSelfDigivolutionCard(hashtable, cardEffect => cardEffect != null, card); ;
+                           CardEffectCommons.CanTriggerOnTrashLinkedCard(hashtable,perm => perm == card.PermanentOfThisCard(), cardEffect => cardEffect != null, source => source != null);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

@@ -12,7 +12,7 @@ namespace DCGO.CardEffects.EX10
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region OP/WD Shared
+            #region WD/OD Shared
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
@@ -132,7 +132,7 @@ namespace DCGO.CardEffects.EX10
                 bool CanSelectCardCondition(CardSource card)
                 {
                     return card.IsDigimon
-                        && card.CardColors.Contains(CardColor.Red) || card.CardColors.Contains(CardColor.Purple)
+                        && (card.CardColors.Contains(CardColor.Red) || card.CardColors.Contains(CardColor.Purple))
                         && card.BaseCardDP <= 5000
                         && CardEffectCommons.CanPlayAsNewPermanent(card, false, activateClass, isBreedingArea: true);
                 }
