@@ -309,7 +309,9 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
             }
             else
             {
-                SetUseFaceDown();
+                if (_root == Root.Library)
+                    SetUseFaceDown();
+
                 return true;
             }
         }
