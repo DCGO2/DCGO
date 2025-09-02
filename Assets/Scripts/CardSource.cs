@@ -3699,6 +3699,18 @@ public class CardSource : MonoBehaviour
     }
 
     #endregion
+
+    #region whether this card has "Rock"/"Mineral trait
+
+    public bool HasRockMineralTraits
+    {
+        get
+        {
+            return EqualsTraits("Rock") || EqualsTraits("Mineral");
+        }
+    }
+
+    #endregion
 }
 
 public class JogressCondition
