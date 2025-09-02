@@ -117,29 +117,32 @@ namespace DCGO.CardEffects.EX10
             #region All Turns
             if (timing == EffectTiming.OnRemovedField || timing == EffectTiming.OnEnterFieldAnyone || timing == EffectTiming.WhenTopCardTrashed)
             {
-                Permanent thisPermanent = card.PermanentOfThisCard();
-
-                bool OpponentsPermanent(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
-                           permanent.DP >= 13000;
-                }
-
                 if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                 {
-                    if (CardEffectCommons.HasMatchConditionPermanent(OpponentsPermanent))
+                    Permanent thisPermanent = card.PermanentOfThisCard();
+
+                    bool OpponentsPermanent(Permanent permanent)
                     {
-                        thisPermanent.AddBoost(new Permanent.DPBoost("AT_EX10-010", 3000, null));
+                        return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
+                               permanent.DP >= 13000;
+                    }
+
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    {
+                        if (CardEffectCommons.HasMatchConditionPermanent(OpponentsPermanent))
+                        {
+                            thisPermanent.AddBoost(new Permanent.DPBoost("AT_EX10-010", 3000, null));
+                        }
+                        else
+                        {
+                            thisPermanent.RemoveBoost("AT_EX10-010");
+                        }
                     }
                     else
                     {
                         thisPermanent.RemoveBoost("AT_EX10-010");
                     }
-                }
-                else
-                {
-                    thisPermanent.RemoveBoost("AT_EX10-010");
-                }
+                }                
             }
             #endregion
 

@@ -649,6 +649,21 @@ public partial class CardEffectCommons
 
     #endregion
 
+    #region Get unique colour count from permanents in opponents battle area
+
+    public static int GetUniqueColourCountOnOpponentsBattleArea(CardSource card, Func<Permanent, bool> canGetCardColour)
+    {
+        var uniqueColors = card.Owner.Enemy.GetBattleAreaPermanents()
+        .Filter(x => canGetCardColour(x))
+        .Select(x => x.TopCard)
+        .SelectMany(x => x.CardColors)
+        .Distinct()
+        .ToHashSet();
+        return uniqueColors.Count;
+    }
+
+    #endregion
+
     #region Does Owner has 1 or less tamers on the field
 
     public static bool OwnerHas1OrLessTamers(CardSource card)
