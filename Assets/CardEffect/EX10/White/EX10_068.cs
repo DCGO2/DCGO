@@ -11,7 +11,7 @@ namespace DCGO.CardEffects.EX10
             List<ICardEffect> cardEffects = new List<ICardEffect>();
             
             #region Start of Your Main Phase
-            if (timing == EffectTiming.None)
+            if (timing == EffectTiming.OnStartMainPhase)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Gain Memory", CanUseCondition, card);
@@ -41,7 +41,7 @@ namespace DCGO.CardEffects.EX10
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    int memoryGain = CardEffectCommons.GetUniqueColourCountOnOwnerBattleArea(card, CanGetCardColour) / 2;
+                    int memoryGain = CardEffectCommons.GetUniqueColourCountOnOpponentsBattleArea(card, CanGetCardColour) / 2;
 
                     if(memoryGain > 0)
                         yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(memoryGain, activateClass));

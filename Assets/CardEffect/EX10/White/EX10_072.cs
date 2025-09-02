@@ -63,7 +63,7 @@ namespace DCGO.CardEffects.EX10
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 [Dark Masters], delete it at end of your turn", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -121,7 +121,7 @@ namespace DCGO.CardEffects.EX10
                                 isShowOpponent: true,
                                 mode: SelectCardEffect.Mode.Custom,
                                 root: SelectCardEffect.Root.Security,
-                                customRootCardList: card.Owner.SecurityCards,
+                                customRootCardList: null,
                                 canLookReverseCard: false,
                                 selectPlayer: card.Owner,
                                 cardEffect: activateClass);
