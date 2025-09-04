@@ -503,38 +503,65 @@ namespace DCGO.CardEffects.EX10
 
             #endregion
 
-            // TODO: Need Mike Help
-            // [All Turns] This Digimon gains all [All Turns] effects on all level 6 [Bagra Army] trait Digimon cards in its digivolution cards.
-
             #region All Turns
 
-            //if (timing == EffectTiming.None)
-            //{
-            //    ActivateClass activateClass = new ActivateClass();
-            //    activateClass.SetUpICardEffect("", CanUseCondition, card);
-            //    activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
-            //    cardEffects.Add(activateClass);
+            if (timing == EffectTiming.None)
+            {
+                AddSkillClass addSkillClass = new AddSkillClass();
+                addSkillClass.SetUpICardEffect("This Digimon gains all [All Turns] effects on all level 6 [Bagra Army] trait Digimon cards in its digivolution cards.", CanUseCondition, card);
+                addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
 
-            //    string EffectDiscription()
-            //    {
-            //        return "[All Turns] This Digimon gains all [All Turns] effects on all level 6 [Bagra Army] trait Digimon cards in its digivolution cards.";
-            //    }
+                cardEffects.Add(addSkillClass);
 
-            //    bool CanUseCondition(Hashtable hashtable)
-            //    {
-            //        return true;
-            //    }
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleArea(card);
+                }
 
-            //    bool CanActivateCondition(Hashtable hashtable)
-            //    {
-            //        return true;
-            //    }
+                bool PermanentCondition(Permanent permanent)
+                {
+                    return permanent == card.PermanentOfThisCard();
+                }
 
-            //    IEnumerator ActivateCoroutine(Hashtable hashtable)
-            //    {
-            //        yield return null;
-            //    }
-            //}
+                bool CardSourceCondition(CardSource cardSource)
+                {
+                    if (PermanentCondition(cardSource.PermanentOfThisCard()))
+                    {
+                        if (cardSource == cardSource.PermanentOfThisCard().TopCard)
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming _timing)
+                {
+                    if (CardSourceCondition(cardSource))
+                    {
+                        foreach (CardSource cardSource1 in cardSource.PermanentOfThisCard().DigivolutionCards)
+                        {
+                            if (cardSource1.HasBagraArmyTraits)
+                            {
+                                if (cardSource1.HasLevel && cardSource1.IsLevel6)
+                                {
+                                    foreach (ICardEffect cardEffect in cardSource1.cEntity_EffectController.GetCardEffects_ExceptAddedEffects(_timing, card))
+                                    {
+                                        if (!cardEffect.IsSecurityEffect && !cardEffect.IsInheritedEffect)
+                                        {
+                                            if (cardEffect.EffectDiscription.StartsWith("[All Turns]"))
+                                                cardEffects.Add(cardEffect);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    return cardEffects;
+                }
+            }
 
             #endregion
 
