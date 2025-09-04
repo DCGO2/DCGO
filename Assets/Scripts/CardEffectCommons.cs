@@ -1267,4 +1267,31 @@ public partial class CardEffectCommons
     public static Func<EffectTiming, ICardEffect> GetCardEffectByEffectTiming(EffectTiming timing, ICardEffect cardEffect) => (_timing) => _timing == timing ? cardEffect : null;
 
     #endregion
+
+    #region Draw cards and trash cards
+
+    public static IEnumerator DrawAndDiscardCards(int drawAmount, int trashAmount, CardSource card, ICardEffect activateClass)
+    {
+        yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, drawAmount, activateClass).Draw());
+
+        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+        selectHandEffect.SetUp(
+            selectPlayer: card.Owner,
+            canTargetCondition: (cardSource) => true,
+            canTargetCondition_ByPreSelecetedList: null,
+            canEndSelectCondition: null,
+            maxCount: trashAmount,
+            canNoSelect: false,
+            canEndNotMax: false,
+            isShowOpponent: true,
+            selectCardCoroutine: null,
+            afterSelectCardCoroutine: null,
+            mode: SelectHandEffect.Mode.Discard,
+            cardEffect: activateClass);
+
+        yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+    }
+
+    #endregion
 }
