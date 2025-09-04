@@ -20,7 +20,7 @@ namespace DCGO.CardEffects.EX10
                     return targetPermanent.TopCard.HasAppmonTraits;
                 }
 
-                cardEffects.Add(CardEffectFactory.AddSelfLinkConditionStaticEffect(permanentCondition: PermanentCondition, linkCost: 1, card: card));
+                cardEffects.Add(CardEffectFactory.AddSelfLinkConditionStaticEffect(permanentCondition: PermanentCondition, linkCost: 2, card: card));
             }
 
             #endregion
