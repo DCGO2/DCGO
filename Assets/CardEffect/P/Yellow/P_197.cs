@@ -1,10 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
-// Gomamon
+// Patamon
 namespace DCGO.CardEffects.P
 {
-    public class P_196 : CEntity_Effect
+    public class P_197 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
@@ -30,13 +31,13 @@ namespace DCGO.CardEffects.P
             if (timing == EffectTiming.OnStartMainPhase)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Digivolve into a [Sea Beast]/[TS] digimon in hand", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Digivolve into a [Angel]/[TS] digimon in hand", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[Start of Your Main Phase] If you have 4 or less memory, this Digimon may digivolve into a Digimon card with the [Sea Beast] or [TS] trait in the hand without paying the cost.";
+                    return "[Start of Your Main Phase] If you have 4 or less memory, this Digimon may digivolve into a Digimon card with the [Angel] or [TS] trait in the hand without paying the cost.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -54,7 +55,7 @@ namespace DCGO.CardEffects.P
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
                     return cardSource.IsDigimon
-                        && (cardSource.HasSeaBeastTraits || cardSource.HasTSTraits)
+                        && (cardSource.HasAngelStrictTraits || cardSource.HasTSTraits)
                         && cardSource.CanPlayCardTargetFrame(card.PermanentOfThisCard().PermanentFrame, false, activateClass);
                 }
 
@@ -81,15 +82,15 @@ namespace DCGO.CardEffects.P
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Draw 1", CanUseCondition, card);
+                activateClass.SetUpICardEffect("-2k DP", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
-                activateClass.SetHashString("P_196_Draw1");
+                activateClass.SetHashString("P_196_DPMinus");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[When Attacking] [Once Per Turn] If you have 7 or fewer cards in your hand, <Draw 1>";
+                    return "[When Attacking] [Once Per Turn] 1 of your opponent's Digimon gets -2000 DP for the turn.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -100,12 +101,52 @@ namespace DCGO.CardEffects.P
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card)
-                        && card.Owner.HandCards.Count <= 7;
+                        && CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
+                }
+
+                bool CanSelectPermanentCondition(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                    {
+                        Permanent selectedPermanent = null;
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectPermanentCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: maxCount,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
+
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will get -2K DP", "The opponent is selecting 1 Digimon that will get -2K DP");
+
+                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                        {
+                            selectedPermanent = permanent;
+                            yield return null;
+                        }
+
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                        if (selectedPermanent != null) yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
+                                targetPermanent: selectedPermanent,
+                                changeValue: -2000,
+                                effectDuration: EffectDuration.UntilEachTurnEnd,
+                                activateClass: activateClass));
+                    }
                 }
             }
 
