@@ -10,6 +10,8 @@ namespace DCGO.CardEffects.EX10
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region Start Of Your Main Phase
+
             if (timing == EffectTiming.OnStartMainPhase)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -62,6 +64,10 @@ namespace DCGO.CardEffects.EX10
                 }
             }
 
+            #endregion
+
+            #region ESS - When Attacking
+
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -109,6 +115,8 @@ namespace DCGO.CardEffects.EX10
                     }
                 }
             }
+
+            #endregion
 
             return cardEffects;
         }
