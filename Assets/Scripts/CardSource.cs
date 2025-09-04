@@ -3723,6 +3723,18 @@ public class CardSource : MonoBehaviour
     }
 
     #endregion
+
+    #region whether this card has Angel trait
+
+    public bool HasAngelStrictTraits
+    {
+        get
+        {
+            return EqualsTraits("Angel");
+        }
+    }
+
+    #endregion
 }
 
 public class JogressCondition
