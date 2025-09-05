@@ -26,6 +26,13 @@ namespace DCGO.CardEffects.EX10
 
             #endregion
 
+            #region Link
+            if (timing == EffectTiming.OnDeclaration)
+            {
+                cardEffects.Add(CardEffectFactory.LinkEffect(card));
+            }
+            #endregion
+
             #region Alternative Digivolution Condition
             if (timing == EffectTiming.None)
             {
