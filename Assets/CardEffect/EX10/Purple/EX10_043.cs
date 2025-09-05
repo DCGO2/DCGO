@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+//EX10 Sakusimon
 namespace DCGO.CardEffects.EX10
 {
     public class EX10_043 : CEntity_Effect
@@ -166,7 +167,7 @@ namespace DCGO.CardEffects.EX10
 
                 string EffectDescription()
                 {
-                    return "[Your Turn] [Once Per Turn] When effects trash any of this Digimon's link cards, gain 1 memory.";
+                    return "[All turns] [Once Per Turn] When effects trash any of this Digimon's link cards, gain 1 memory.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
