@@ -302,11 +302,11 @@ namespace DCGO.CardEffects.EX10
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("-8k opposing digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDescription());
                 activateClass.SetHashString("MinusEX10_030");
                 cardEffects.Add(activateClass);
 
-                string EffectDiscription()
+                string EffectDescription()
                 {
                     return "[All Turns] [Once Per Turn] When effects trash any of this Digimon's link cards, 1 of your opponent's Digimon gets -8000 DP for the turn.";
                 }
