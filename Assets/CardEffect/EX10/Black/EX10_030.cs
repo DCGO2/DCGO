@@ -27,6 +27,7 @@ namespace DCGO.CardEffects.EX10
 
             #endregion
 
+
             #region Link
             if (timing == EffectTiming.OnDeclaration)
             {
@@ -39,6 +40,82 @@ namespace DCGO.CardEffects.EX10
             {
                 cardEffects.Add(CardEffectFactory.CollisionSelfStaticEffect(false, card, null));
             }
+            #endregion
+
+
+            #region App Fusion (Warpmon, Weatherdramon)
+
+            if (timing == EffectTiming.None)
+            {
+                AddAppFusionConditionClass addAppFusionConditionClass = new AddAppFusionConditionClass();
+                addAppFusionConditionClass.SetUpICardEffect($"App Fusion", (hashtable) => true, card);
+                addAppFusionConditionClass.SetUpAddAppFusionConditionClass(getAppFusionCondition: GetAppFusion);
+                addAppFusionConditionClass.SetNotShowUI(true);
+                cardEffects.Add(addAppFusionConditionClass);
+
+                AppFusionCondition GetAppFusion(CardSource cardSource)
+                {
+                    bool linkCondition(Permanent permanent, CardSource source)
+                    {
+                        if (source != null && source != card)
+                        {
+                            if (permanent.TopCard.EqualsCardName("DoGatchmon"))
+                            {
+                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Timemon")))
+                                {
+                                    return true;
+                                }
+                            }
+
+                            if (permanent.TopCard.EqualsCardName("Timemon"))
+                            {
+                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("DoGatchmon")))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+
+                        return false;
+                    }
+                    bool digimonCondition(Permanent permanent)
+                    {
+                        if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                        {
+                            if (permanent.TopCard.EqualsCardName("DoGatchmon"))
+                            {
+                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Timemon")))
+                                {
+                                    return true;
+                                }
+                            }
+
+                            if (permanent.TopCard.EqualsCardName("Timemon"))
+                            {
+                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("DoGatchmon")))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+
+                        return false;
+                    }
+
+                    if (cardSource == card)
+                    {
+                        AppFusionCondition AppFusionCondition = new AppFusionCondition(
+                            linkCondition,
+                            digimonCondition,
+                            0);
+
+                        return AppFusionCondition;
+                    }
+
+                    return null;
+                }
+            }
+
             #endregion
 
 
