@@ -19,7 +19,6 @@ namespace DCGO.CardEffects.EX10
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete 1 of your Myotis-in-text Digimon to get Play Cost -4", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
-                activateClass.SetHashString("PlayCost-4_EX10_048");
                 cardEffects.Add(activateClass);
 
                 activateClass.SetIsDigimonEffect(true);
