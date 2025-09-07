@@ -42,8 +42,7 @@ namespace DCGO.CardEffects.EX10
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card)
-                        && CardEffectCommons.CanActivateSuspendCostEffect(card);
+                    return CardEffectCommons.IsExistOnField(card);
                 }
 
                 bool PermamentCondition(Permanent permanent)
