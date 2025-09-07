@@ -12,13 +12,16 @@ namespace DCGO.CardEffects.EX10
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Blast Digivolve
+
             if (timing == EffectTiming.OnCounterTiming)
             {
                 cardEffects.Add(CardEffectFactory.BlastDigivolveEffect(card: card, condition: null));
             }
+
             #endregion
 
             #region Static Effects
+
             //Raid
             if (timing == EffectTiming.OnAllyAttack)
             {
@@ -31,6 +34,7 @@ namespace DCGO.CardEffects.EX10
                 cardEffects.Add(CardEffectFactory.RebootSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
                 cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
             }
+
             #endregion
 
             #region On Play/When Digivolving Shared
@@ -40,12 +44,10 @@ namespace DCGO.CardEffects.EX10
                 return $"[{tag}] Delete 1 of your opponent's play cost 7 or lower Digimon or Tamers.";
             }
 
-
             bool CanSelectPermanentCondition(Permanent permanent)
             {
-                return CardEffectCommons.IsPermanentExistsOnBattleArea(permanent) &&
-                       permanent.TopCard.HasPlayCost && permanent.TopCard.GetCostItself <= 7 &&
-                       (permanent.TopCard.IsDigimon || permanent.TopCard.IsTamer);
+                return (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) || CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaTamer(permanent, card))
+                       && permanent.TopCard.HasPlayCost && permanent.TopCard.GetCostItself <= 7;
             }
 
             bool CanActivateSharedCondition(Hashtable hashtable)
@@ -115,6 +117,7 @@ namespace DCGO.CardEffects.EX10
             #endregion
 
             #region All Turns
+
             if (timing == EffectTiming.OnRemovedField || timing == EffectTiming.OnEnterFieldAnyone || timing == EffectTiming.WhenTopCardTrashed)
             {
                 if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
@@ -142,8 +145,9 @@ namespace DCGO.CardEffects.EX10
                     {
                         thisPermanent.RemoveBoost("AT_EX10-010");
                     }
-                }                
+                }
             }
+
             #endregion
 
             return cardEffects;

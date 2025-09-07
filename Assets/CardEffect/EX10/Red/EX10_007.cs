@@ -38,7 +38,8 @@ namespace DCGO.CardEffects.EX10
 
             bool CanSelectPermanentCondition(Permanent permanent)
             {
-                return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
+                return CardEffectCommons.IsPermanentExistsOnBattleArea(permanent)
+                    && permanent.IsDigimon;
             }
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)

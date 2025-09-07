@@ -11,6 +11,99 @@ namespace DCGO.CardEffects.EX10
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region Alternative Digivolution Condition
+
+            if (timing == EffectTiming.None)
+            {
+                bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.HasSuperAppTraits;
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 4, ignoreDigivolutionRequirement: false, card: card, condition: null));
+            }
+
+            #endregion
+
+            #region App Fusion (Mienumon & Sakusimon)
+
+            if (timing == EffectTiming.None)
+            {
+                AddAppFusionConditionClass addAppFusionConditionClass = new AddAppFusionConditionClass();
+                addAppFusionConditionClass.SetUpICardEffect($"App Fusion", (hashtable) => true, card);
+                addAppFusionConditionClass.SetUpAddAppFusionConditionClass(getAppFusionCondition: GetAppFusion);
+                addAppFusionConditionClass.SetNotShowUI(true);
+                cardEffects.Add(addAppFusionConditionClass);
+
+                AppFusionCondition GetAppFusion(CardSource cardSource)
+                {
+                    bool linkCondition(Permanent permanent, CardSource source)
+                    {
+                        if (source != null)
+                        {
+                            if (source != card)
+                            {
+                                if (permanent.TopCard.EqualsCardName("Mienumon"))
+                                {
+                                    if (permanent.LinkedCards.Find(x => x.EqualsCardName("Sakusimon")))
+                                    {
+                                        return true;
+                                    }
+                                }
+                                if (permanent.TopCard.EqualsCardName("Sakusimon"))
+                                {
+                                    if (permanent.LinkedCards.Find(x => x.EqualsCardName("Mienumon")))
+                                    {
+                                        return true;
+                                    }
+                                }
+                            }
+
+                            return false;
+                        }
+
+                        return false;
+                    }
+                    bool digimonCondition(Permanent permanent)
+                    {
+                        if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                        {
+                            if (permanent.TopCard.EqualsCardName("Mienumon"))
+                            {
+                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Sakusimon")))
+                                {
+                                    return true;
+                                }
+                            }
+                            if (permanent.TopCard.EqualsCardName("Sakusimon"))
+                            {
+                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Mienumon")))
+                                {
+                                    return true;
+                                }
+                            }
+                            return false;
+                        }
+
+                        return false;
+                    }
+
+                    if (cardSource == card)
+                    {
+                        AppFusionCondition AppFusionCondition = new AppFusionCondition(
+                            linkedCondition: linkCondition,
+                            digimonCondition: digimonCondition,
+                            cost: 0);
+
+                        return AppFusionCondition;
+                    }
+
+                    return null;
+                }
+            }
+
+            #endregion
+
             #region Link Condition
 
             if (timing == EffectTiming.None)
@@ -26,20 +119,25 @@ namespace DCGO.CardEffects.EX10
             #endregion
 
             #region Link
+
             if (timing == EffectTiming.OnDeclaration)
             {
                 cardEffects.Add(CardEffectFactory.LinkEffect(card));
             }
+
             #endregion
 
             #region Fortitude
+
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 cardEffects.Add(CardEffectFactory.FortitudeSelfEffect(isInheritedEffect: false, card: card, condition: null));
             }
+
             #endregion
 
             #region On Play/When Digivolving shared
+
             bool CanLinkCondition(CardSource cardSource)
             {
                 return cardSource.HasLevel && cardSource.Level <= 4 && cardSource.CanLinkToTargetPermanent(card.PermanentOfThisCard(), false);
@@ -51,9 +149,11 @@ namespace DCGO.CardEffects.EX10
                     (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanLinkCondition) ||
                     card.PermanentOfThisCard().DigivolutionCards.Any(CanLinkCondition));
             }
+
             #endregion
 
             #region On Play
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -84,7 +184,6 @@ namespace DCGO.CardEffects.EX10
                             {
                                 new(message: "From trash", value: true, spriteIndex: 0),
                                 new(message: "From sources", value: false, spriteIndex: 1),
-
                             };
 
                             string selectPlayerMessage = "From which area do you select a card?";
@@ -92,7 +191,6 @@ namespace DCGO.CardEffects.EX10
 
                             GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
                         }
-
                         else
                         {
                             GManager.instance.userSelectionManager.SetBool(canSelectTrash);
@@ -101,7 +199,6 @@ namespace DCGO.CardEffects.EX10
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
                         bool fromTrash = GManager.instance.userSelectionManager.SelectedBoolValue;
-
 
                         List<CardSource> selectedCards = new List<CardSource>();
 
@@ -114,7 +211,6 @@ namespace DCGO.CardEffects.EX10
 
                         if (fromTrash)
                         {
-
                             SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
                             selectCardEffect.SetUp(
                                 canTargetCondition: CanLinkCondition,
@@ -139,7 +235,6 @@ namespace DCGO.CardEffects.EX10
 
                             yield return StartCoroutine(selectCardEffect.Activate());
                         }
-
                         else
                         {
                             SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
@@ -175,9 +270,11 @@ namespace DCGO.CardEffects.EX10
                     }
                 }
             }
+
             #endregion
 
             #region When Digivolving
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -208,7 +305,6 @@ namespace DCGO.CardEffects.EX10
                             {
                                 new(message: "From trash", value: true, spriteIndex: 0),
                                 new(message: "From sources", value: false, spriteIndex: 1),
-
                             };
 
                             string selectPlayerMessage = "From which area do you select a card?";
@@ -216,7 +312,6 @@ namespace DCGO.CardEffects.EX10
 
                             GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
                         }
-
                         else
                         {
                             GManager.instance.userSelectionManager.SetBool(canSelectTrash);
@@ -225,7 +320,6 @@ namespace DCGO.CardEffects.EX10
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
                         bool fromTrash = GManager.instance.userSelectionManager.SelectedBoolValue;
-
 
                         List<CardSource> selectedCards = new List<CardSource>();
 
@@ -238,7 +332,6 @@ namespace DCGO.CardEffects.EX10
 
                         if (fromTrash)
                         {
-
                             SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
                             selectCardEffect.SetUp(
                                 canTargetCondition: CanLinkCondition,
@@ -263,7 +356,6 @@ namespace DCGO.CardEffects.EX10
 
                             yield return StartCoroutine(selectCardEffect.Activate());
                         }
-
                         else
                         {
                             SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
@@ -299,9 +391,11 @@ namespace DCGO.CardEffects.EX10
                     }
                 }
             }
+
             #endregion
 
             #region All Turns - OPT
+
             if (timing == EffectTiming.WhenLinked)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -362,7 +456,7 @@ namespace DCGO.CardEffects.EX10
                             yield return null;
                         }
 
-                        if(selectedPermanent != null)
+                        if (selectedPermanent != null)
                         {
                             bool PermanentCondition(Permanent permanent)
                             {
@@ -379,9 +473,11 @@ namespace DCGO.CardEffects.EX10
                     }
                 }
             }
+
             #endregion
 
             #region Link Effect
+
             if (timing == EffectTiming.OnTappedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -471,6 +567,7 @@ namespace DCGO.CardEffects.EX10
                     }
                 }
             }
+
             #endregion
 
             return cardEffects;

@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 //EX10 Cometmon
 namespace DCGO.CardEffects.EX10
@@ -12,36 +11,7 @@ namespace DCGO.CardEffects.EX10
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-
-            #region Link Condition
-
-            if (timing == EffectTiming.None)
-            {
-                static bool PermanentCondition(Permanent targetPermanent)
-                {
-                    return targetPermanent.TopCard.HasAppmonTraits;
-                }
-
-                cardEffects.Add(CardEffectFactory.AddSelfLinkConditionStaticEffect(permanentCondition: PermanentCondition, linkCost: 2, card: card));
-            }
-
-            #endregion
-
-
-            #region Link
-            if (timing == EffectTiming.OnDeclaration)
-            {
-                cardEffects.Add(CardEffectFactory.LinkEffect(card));
-            }
-            #endregion
-
-            #region Collision
-            if (timing == EffectTiming.OnCounterTiming)
-            {
-                cardEffects.Add(CardEffectFactory.CollisionSelfStaticEffect(false, card, null));
-            }
-            #endregion
-
+            #region Static Effects
 
             #region App Fusion (Warpmon, Weatherdramon)
 
@@ -59,17 +29,17 @@ namespace DCGO.CardEffects.EX10
                     {
                         if (source != null && source != card)
                         {
-                            if (permanent.TopCard.EqualsCardName("DoGatchmon"))
+                            if (permanent.TopCard.EqualsCardName("Warpmon"))
                             {
-                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Timemon")))
+                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Weatherdramon")))
                                 {
                                     return true;
                                 }
                             }
 
-                            if (permanent.TopCard.EqualsCardName("Timemon"))
+                            if (permanent.TopCard.EqualsCardName("Weatherdramon"))
                             {
-                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("DoGatchmon")))
+                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Warpmon")))
                                 {
                                     return true;
                                 }
@@ -82,17 +52,17 @@ namespace DCGO.CardEffects.EX10
                     {
                         if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                         {
-                            if (permanent.TopCard.EqualsCardName("DoGatchmon"))
+                            if (permanent.TopCard.EqualsCardName("Warpmon"))
                             {
-                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Timemon")))
+                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Weatherdramon")))
                                 {
                                     return true;
                                 }
                             }
 
-                            if (permanent.TopCard.EqualsCardName("Timemon"))
+                            if (permanent.TopCard.EqualsCardName("Weatherdramon"))
                             {
-                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("DoGatchmon")))
+                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Warpmon")))
                                 {
                                     return true;
                                 }
@@ -118,8 +88,56 @@ namespace DCGO.CardEffects.EX10
 
             #endregion
 
+            #region Alternative Digivolution Condition
+
+            if (timing == EffectTiming.None)
+            {
+                bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.HasSuperAppTraits;
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 4, ignoreDigivolutionRequirement: false, card: card, condition: null));
+            }
+
+            #endregion
+
+            #region Link Condition
+
+            if (timing == EffectTiming.None)
+            {
+                static bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.HasAppmonTraits;
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfLinkConditionStaticEffect(permanentCondition: PermanentCondition, linkCost: 3, card: card));
+            }
+
+            #endregion
+
+            #region Link
+
+            if (timing == EffectTiming.OnDeclaration)
+            {
+                cardEffects.Add(CardEffectFactory.LinkEffect(card));
+            }
+
+            #endregion
+
+            #region Collision
+
+            if (timing == EffectTiming.OnCounterTiming)
+            {
+                cardEffects.Add(CardEffectFactory.CollisionSelfStaticEffect(false, card, null));
+            }
+
+            #endregion
+
+            #endregion
 
             #region On Play/When Digivolving shared
+
             bool CanActivateConditionShared(Hashtable hashtable)
             {
                 return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
@@ -235,6 +253,7 @@ namespace DCGO.CardEffects.EX10
                     }
                 }
             }
+
             #endregion
 
             #region On Play
@@ -262,7 +281,6 @@ namespace DCGO.CardEffects.EX10
                     }
                     return false;
                 }
-
             }
 
             #endregion
@@ -327,7 +345,6 @@ namespace DCGO.CardEffects.EX10
                     return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
                 }
 
-
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     Permanent selectedPermament = null;
@@ -372,48 +389,26 @@ namespace DCGO.CardEffects.EX10
 
             #endregion
 
-
             #region Link effect
+
             if (timing == EffectTiming.WhenRemoveField)
             {
-                List<Permanent> removedPermanents = new List<Permanent>();
-
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Trash a linked card to prevent this digimon from leaving", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
-                activateClass.SetIsLinkedEffect(true);
+                activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("Protection_EX10-030");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
                 {
-                    return
-                        "[All Turns] [Once Per Turn] When this Digimon would leave the battle area, by trashing 1 of this Digimon's link cards, it doesn't leave.";
+                    return "[All Turns] [Once Per Turn] When this Digimon would leave the battle area, by trashing 1 of this Digimon's link cards, it doesn't leave.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistLinked(card) &&
                            CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card);
-
-                }
-
-                bool CanSelectPermanentCondition(Permanent permanent)
-                {
-                    if (permanent == card.PermanentOfThisCard())
-                    {
-                        if (permanent.LinkedCards.Count(CanSelectCardCondition) >= 1)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
-                bool CanSelectCardCondition(CardSource cardSource)
-                {
-                    return true;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -425,41 +420,45 @@ namespace DCGO.CardEffects.EX10
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     Permanent thisPermanent = card.PermanentOfThisCard();
-                    bool trashed = false;
+                    CardSource selectedCard = null;
 
                     SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                     selectCardEffect.SetUp(
-                                canTargetCondition: CanSelectCardCondition,
+                                canTargetCondition: _ => true,
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
                                 canNoSelect: () => true,
-                                selectCardCoroutine: null,
-                                afterSelectCardCoroutine: SelectCardCoroutine,
+                                selectCardCoroutine: SelectCardCoroutine,
+                                afterSelectCardCoroutine: null,
                                 message: "Select 1 link card to trash.",
                                 maxCount: 1,
                                 canEndNotMax: false,
                                 isShowOpponent: true,
-                                mode: SelectCardEffect.Mode.Discard,
+                                mode: SelectCardEffect.Mode.Custom,
                                 root: SelectCardEffect.Root.Custom,
                                 customRootCardList: card.PermanentOfThisCard().LinkedCards,
                                 canLookReverseCard: true,
                                 selectPlayer: card.Owner,
                                 cardEffect: activateClass);
 
-                    selectCardEffect.SetUpCustomMessage("Select 1 link card to trash.", "The opponent is selecting 1 link card to trash.");
-
-                    yield return StartCoroutine(selectCardEffect.Activate());
-
-                    IEnumerator SelectCardCoroutine(List<CardSource> cardSources)
+                    IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
-                        if (cardSources.Count > 0)
-                            trashed = true;
-
+                        selectedCard = cardSource;
                         yield return null;
                     }
 
-                    if (trashed)
+                    selectCardEffect.SetUpCustomMessage("Select 1 link card to trash.", "The opponent is selecting 1 link card to trash.");
+                    yield return StartCoroutine(selectCardEffect.Activate());
+
+                    if (selectedCard != null) yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.TrashLinkCardsAndProcessAccordingToResult(
+                        targetPermanent: thisPermanent,
+                        targetLinkCards: new List<CardSource>() { selectedCard },
+                        activateClass: activateClass,
+                        successProcess: SuccessProcess,
+                        failureProcess: null));
+
+                    IEnumerator SuccessProcess(List<CardSource> cardSources)
                     {
                         thisPermanent.willBeRemoveField = false;
 
@@ -467,9 +466,12 @@ namespace DCGO.CardEffects.EX10
                         thisPermanent.HideDeckBounceEffect();
                         thisPermanent.HideWillRemoveFieldEffect();
                         thisPermanent.HideDeleteEffect();
+
+                        yield return null;
                     }
                 }
             }
+
             #endregion
 
             return cardEffects;
