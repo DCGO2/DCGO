@@ -91,7 +91,7 @@ namespace DCGO.CardEffects.EX10
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SimplifiedRevealDeckTopCardsAndSelect(
-                        revealCount: 4,
+                        revealCount: 3,
                         simplifiedSelectCardConditions:
                         new SimplifiedSelectCardConditionClass[]
                         {

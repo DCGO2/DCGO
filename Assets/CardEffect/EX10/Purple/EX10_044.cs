@@ -12,7 +12,8 @@ namespace DCGO.CardEffects.EX10
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Start of Your Main Phase
+            #region On Play
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -31,26 +32,20 @@ namespace DCGO.CardEffects.EX10
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                        && CardEffectCommons.HasMatchConditionPermanent(CanSelectTamerCondition)
+                        && CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition) || CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition);
                 }
 
                 bool CanSelectTamerCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)
-                           && (permanent.IsTamer || permanent.IsDigimon) &&
-                           permanent.TopCard.HasBagraArmyTraits;
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaTamer(permanent, card);
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.IsDigimon)
-                    {
-                        if (cardSource.HasBagraArmyTraits)
-                        {
-                            return true;
-                        }
-                    }
-                    return false;
+                    return cardSource.IsDigimon
+                        && cardSource.HasBagraArmyTraits;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -155,6 +150,7 @@ namespace DCGO.CardEffects.EX10
                     }
                 }
             }
+
             #endregion
 
             #region On Deletion
@@ -295,6 +291,7 @@ namespace DCGO.CardEffects.EX10
             #endregion
 
             #region ESS
+
             if (timing == EffectTiming.OnDigivolutionCardDiscarded)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -325,6 +322,7 @@ namespace DCGO.CardEffects.EX10
                     yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
                 }
             }
+
             #endregion
 
             return cardEffects;

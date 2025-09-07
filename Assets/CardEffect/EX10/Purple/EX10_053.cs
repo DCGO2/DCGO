@@ -28,15 +28,18 @@ namespace DCGO.CardEffects.EX10
             #endregion
 
             #region Static Effects
+
             //Rush/Blocker
             if (timing == EffectTiming.None)
             {
                 cardEffects.Add(CardEffectFactory.RushSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
                 cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
             }
+
             #endregion
 
             #region On Play
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -94,54 +97,33 @@ namespace DCGO.CardEffects.EX10
                             selectPlayer: card.Owner,
                             cardEffect: activateClass);
 
-                        selectCardEffect.SetUpCustomMessage_ShowCard("Digivolution Cards");
-                        selectCardEffect.SetUpCustomMessage("Select cards to place on bottom of digivolution cards.", "The opponent is selecting cards to place on bottom of digivolution cards.");
-
-                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-
                         IEnumerator SelectCardCoroutine(CardSource cardSource)
                         {
                             selectedCards.Add(cardSource);
-
                             yield return null;
                         }
 
                         bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
                         {
-                            List<string> cardNames = new List<string>();
+                            var allSources = (cardSources ?? Enumerable.Empty<CardSource>())
+                                .Concat(selectedCards ?? Enumerable.Empty<CardSource>());
 
-                            foreach (CardSource cardSource1 in cardSources)
-                            {
-                                foreach(string cardName in cardSource1.CardNames)
-                                {
-                                    if (!cardNames.Contains(cardName))
-                                    {
-                                        cardNames.Add(cardName);
-                                    }
-                                }                                
-                            }
+                            var nameSet = new HashSet<string>(
+                                allSources.SelectMany(s => s.CardNames ?? Enumerable.Empty<string>())
+                                          .Where(n => !string.IsNullOrWhiteSpace(n)));
 
-                            foreach (CardSource cardSource1 in selectedCards)
-                            {
-                                foreach (string cardName in cardSource1.CardNames)
-                                {
-                                    if (!cardNames.Contains(cardName))
-                                    {
-                                        cardNames.Add(cardName);
-                                    }
-                                }
-                            }
+                            var idSet = new HashSet<string>(
+                                allSources.Select(s => s.CardID)
+                                          .Where(id => !string.IsNullOrWhiteSpace(id)));
 
-                            foreach (string cardName in cardSource.CardNames)
-                            {
-                                if (cardNames.Contains(cardSource.CardID))
-                                {
-                                    return false;
-                                }
-                            }
-
+                            if (cardSource.CardNames.Exists(nameSet.Contains) || idSet.Contains(cardSource.CardID)) return false;
                             return true;
                         }
+
+                        selectCardEffect.SetUpCustomMessage_ShowCard("Digivolution Cards");
+                        selectCardEffect.SetUpCustomMessage("Select cards to place on bottom of digivolution cards.", "The opponent is selecting cards to place on bottom of digivolution cards.");
+
+                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 
                         if (selectedCards.Count >= 1)
                         {
@@ -153,7 +135,6 @@ namespace DCGO.CardEffects.EX10
                             {
                                 if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                                 {
-                                    
                                     if (permanent.DP <= card.Owner.MaxDP_DeleteEffect(card.PermanentOfThisCard().DP, activateClass))
                                     {
                                         return true;
@@ -187,9 +168,11 @@ namespace DCGO.CardEffects.EX10
                     }
                 }
             }
+
             #endregion
 
             #region When Digivolving
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -306,7 +289,6 @@ namespace DCGO.CardEffects.EX10
                             {
                                 if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
                                 {
-
                                     if (permanent.DP <= card.Owner.MaxDP_DeleteEffect(card.PermanentOfThisCard().DP, activateClass))
                                     {
                                         return true;
@@ -340,9 +322,11 @@ namespace DCGO.CardEffects.EX10
                     }
                 }
             }
+
             #endregion
 
             #region End of Turn
+
             if (timing == EffectTiming.OnEndTurn)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -382,9 +366,11 @@ namespace DCGO.CardEffects.EX10
                     yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
                 }
             }
+
             #endregion
 
             #region ESS
+
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -435,6 +421,7 @@ namespace DCGO.CardEffects.EX10
                     yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
                 }
             }
+
             #endregion
 
             return cardEffects;

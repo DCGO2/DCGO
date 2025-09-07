@@ -12,6 +12,22 @@ namespace DCGO.CardEffects.EX10
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region Static Effects
+
+            #region Stnd Appmon Alternative Digivolution Requirement
+
+            if (timing == EffectTiming.None)
+            {
+                bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.HasStandardAppTraits;
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 2, ignoreDigivolutionRequirement: false, card: card, condition: null));
+            }
+
+            #endregion
+
             #region Link Condition
 
             if (timing == EffectTiming.None)
@@ -26,16 +42,19 @@ namespace DCGO.CardEffects.EX10
 
             #endregion
 
-
             #region Link
+
             if (timing == EffectTiming.OnDeclaration)
             {
                 cardEffects.Add(CardEffectFactory.LinkEffect(card));
             }
+
             #endregion
 
+            #endregion
 
             #region On Play/When Digivolving shared
+
             bool CanSelectPermanentOPWDCondition(Permanent permanent)
             {
                 if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
@@ -64,9 +83,11 @@ namespace DCGO.CardEffects.EX10
 
                 return false;
             }
+
             #endregion
 
             #region On Play
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -109,9 +130,11 @@ namespace DCGO.CardEffects.EX10
                     }
                 }
             }
+
             #endregion
 
             #region When Digivolving
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -154,9 +177,11 @@ namespace DCGO.CardEffects.EX10
                     }
                 }
             }
+
             #endregion
 
             #region All Turns
+
             if (timing == EffectTiming.OnLinkCardDiscarded)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -186,9 +211,10 @@ namespace DCGO.CardEffects.EX10
                     yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
                 }
             }
+
             #endregion
 
-            #region When Attacking
+            #region Link - When Attacking
 
             if (timing == EffectTiming.OnAllyAttack)
             {
@@ -202,12 +228,13 @@ namespace DCGO.CardEffects.EX10
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenLinking(hashtable, null, card);
+                    return CardEffectCommons.IsExistLinked(card)
+                        && CardEffectCommons.CanTriggerOnAttack(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                    return CardEffectCommons.IsExistLinked(card) &&
                            !card.PermanentOfThisCard().HasNoLinkCards;
                 }
 
