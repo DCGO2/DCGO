@@ -12,6 +12,29 @@ namespace DCGO.CardEffects.EX10
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region Secuity
+
+            if (timing == EffectTiming.SecuritySkill)
+            {
+                cardEffects.Add(CardEffectFactory.PlaySelfDigimonAfterBattleSecurityEffect(card: card));
+            }
+
+            #endregion
+
+            #region Alternative Digivolution Condition
+
+            if (timing == EffectTiming.None)
+            {
+                bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.HasStandardAppTraits;
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 2, ignoreDigivolutionRequirement: false, card: card, condition: null));
+            }
+
+            #endregion
+
             #region Link Condition
 
             if (timing == EffectTiming.None)
@@ -27,25 +50,16 @@ namespace DCGO.CardEffects.EX10
             #endregion
 
             #region Link
+
             if (timing == EffectTiming.OnDeclaration)
             {
                 cardEffects.Add(CardEffectFactory.LinkEffect(card));
             }
-            #endregion
 
-            #region Alternative Digivolution Condition
-            if (timing == EffectTiming.None)
-            {
-                bool PermanentCondition(Permanent targetPermanent)
-                {
-                    return targetPermanent.TopCard.EqualsTraits("Stnd.");
-                }
-
-                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 2, ignoreDigivolutionRequirement: false, card: card, condition: null));
-            }
             #endregion
 
             #region Blocker
+
             if (timing == EffectTiming.None)
             {
                 cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(
@@ -53,6 +67,7 @@ namespace DCGO.CardEffects.EX10
                     card: card,
                     condition: null));
             }
+
             #endregion
 
             #region When Linked
@@ -159,10 +174,13 @@ namespace DCGO.CardEffects.EX10
                                     yield return null;
                                 }
 
+                                selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to gain De-digivolve immunity.", "The opponent is selecting 1 Digimon to gain De-digivolve immunity.");
+                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
                                 if (selectedPermanent != null)
                                 {
                                     #region De-digivolve immunity
-                                    
+
                                     bool CanUseImmunityCondition(Hashtable hashtable1)
                                     {
                                         return selectedPermanent.TopCard != null;
@@ -174,14 +192,12 @@ namespace DCGO.CardEffects.EX10
                                     }
 
                                     ImmuneFromDeDigivolveClass immuneFromDeDigivolveClass = new ImmuneFromDeDigivolveClass();
-                                    immuneFromDeDigivolveClass.SetUpICardEffect("Isn't affected by <De-Digivolve>", CanUseImmunityCondition,
-                                        selectedPermanent.TopCard);
+                                    immuneFromDeDigivolveClass.SetUpICardEffect("Isn't affected by <De-Digivolve>", CanUseImmunityCondition, selectedPermanent.TopCard);
                                     immuneFromDeDigivolveClass.SetUpImmuneFromDeDigivolveClass(PermanentCondition: PermanentImmunityCondition);
-                                    selectedPermanent.UntilOpponentTurnEndEffects.Add(_ => immuneFromDeDigivolveClass);
-                                    
+                                    selectedPermanent.UntilOpponentTurnEndEffects.Add((_timing) => immuneFromDeDigivolveClass);
+
                                     #endregion
                                 }
-                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                             }
                         }
                     }

@@ -11,6 +11,15 @@ namespace DCGO.CardEffects.EX10
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
+            #region Secuity
+
+            if (timing == EffectTiming.SecuritySkill)
+            {
+                cardEffects.Add(CardEffectFactory.PlaySelfDigimonAfterBattleSecurityEffect(card: card));
+            }
+
+            #endregion
+
             #region Link Condition
 
             if (timing == EffectTiming.None)
@@ -26,6 +35,7 @@ namespace DCGO.CardEffects.EX10
             #endregion
 
             #region Alternative Digivolution Condition
+
             if (timing == EffectTiming.None)
             {
                 bool PermanentCondition(Permanent targetPermanent)
@@ -35,6 +45,7 @@ namespace DCGO.CardEffects.EX10
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 2, ignoreDigivolutionRequirement: false, card: card, condition: null));
             }
+
             #endregion
 
             #region On Play
@@ -44,7 +55,6 @@ namespace DCGO.CardEffects.EX10
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Give 2 of your opponent's Digimon ＜Security A. -1＞", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-                activateClass.SetIsLinkedEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -117,7 +127,6 @@ namespace DCGO.CardEffects.EX10
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Give 2 of your opponent's Digimon ＜Security A. -1＞", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-                activateClass.SetIsLinkedEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -184,10 +193,12 @@ namespace DCGO.CardEffects.EX10
             #endregion
 
             #region Link
+
             if (timing == EffectTiming.OnDeclaration)
             {
                 cardEffects.Add(CardEffectFactory.LinkEffect(card));
             }
+
             #endregion
 
             #region When Attacking - Linked
@@ -219,7 +230,7 @@ namespace DCGO.CardEffects.EX10
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card)
-                        && card.PermanentOfThisCard().HasNoLinkCards;
+                        && !card.PermanentOfThisCard().HasNoLinkCards;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -304,9 +315,9 @@ namespace DCGO.CardEffects.EX10
 
                             if (selectedPermament != null)
                                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
-                                    targetPermanent: selectedPermament, 
-                                    changeValue: -6000, 
-                                    effectDuration: EffectDuration.UntilEachTurnEnd, 
+                                    targetPermanent: selectedPermament,
+                                    changeValue: -6000,
+                                    effectDuration: EffectDuration.UntilEachTurnEnd,
                                     activateClass: activateClass));
                         }
                     }
