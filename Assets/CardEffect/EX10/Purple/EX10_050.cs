@@ -207,9 +207,8 @@ namespace DCGO.CardEffects.EX10
 
                 int GetDPChangeValue()
                 {
-                    int count = card.Owner.LibraryCards.Count;
-                    int roundedCount = (count % 10 == 0) ? count : (count / 10) * 10;
-                    return roundedCount * 1000;
+                    int stacksOf10 = card.Owner.TrashCards.Count / 10;
+                    return stacksOf10 * 1000;
                 }
 
                 cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect(changeValue: GetDPChangeValue(), isInheritedEffect: true, card: card, condition: Condition));

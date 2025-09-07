@@ -468,10 +468,10 @@ namespace DCGO.CardEffects.EX10
 
                 string EffectDiscription()
                 {
-                    return "[On Deletion] If you have no black face-up security cards, place this Digimon face up as the bottom security card.";
+                    return "[On Deletion] If you have no blue face-up security cards, place this Digimon face up as the bottom security card.";
                 }
 
-                bool FaceUpBlack(CardSource card)
+                bool FaceUpBlue(CardSource card)
                 {
                     return card.IsFlipped &&
                            card.CardColors.Contains(CardColor.Black);
@@ -480,7 +480,7 @@ namespace DCGO.CardEffects.EX10
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerOnDeletion(hashtable, card) &&
-                           !CardEffectCommons.HasMatchConditionOwnersSecurity(card, FaceUpBlack);
+                           !CardEffectCommons.HasMatchConditionOwnersSecurity(card, FaceUpBlue);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
