@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 // Tactimon
 namespace DCGO.CardEffects.EX10
@@ -79,7 +80,7 @@ namespace DCGO.CardEffects.EX10
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Choose 1 of your digimon, delete it and 1 opponent digimon with equal or less level", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -197,7 +198,7 @@ namespace DCGO.CardEffects.EX10
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Choose 1 of your digimon, delete it and 1 opponent digimon with equal or less level", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -225,7 +226,7 @@ namespace DCGO.CardEffects.EX10
                 {
                     if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsYourDigimon))
                     {
-                        Permanent selectedYourDigimon = null;
+                        List<Permanent> permanentList = new List<Permanent>();
 
                         #region Select Your Digimon to Destroy
 
@@ -238,7 +239,7 @@ namespace DCGO.CardEffects.EX10
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,
-                            canNoSelect: false,
+                            canNoSelect: true,
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine,
                             afterSelectPermanentCoroutine: null,
@@ -247,7 +248,7 @@ namespace DCGO.CardEffects.EX10
 
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
-                            selectedYourDigimon = permanent;
+                            permanentList.Add(permanent);
                             yield return null;
                         }
 
@@ -256,7 +257,7 @@ namespace DCGO.CardEffects.EX10
 
                         #endregion
 
-                        if (selectedYourDigimon != null)
+                        if (!permanentList.Any())
                         {
                             bool CanSelectOpponentDigimon(Permanent permanent)
                             {
@@ -267,8 +268,6 @@ namespace DCGO.CardEffects.EX10
 
                             if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectOpponentDigimon))
                             {
-                                Permanent selectedOpponentDigimon = null;
-
                                 #region Select Opponent Digimon to Destroy
 
                                 SelectPermanentEffect selectPermanentEffect1 = GManager.instance.GetComponent<SelectPermanentEffect>();
@@ -289,7 +288,7 @@ namespace DCGO.CardEffects.EX10
 
                                 IEnumerator SelectPermanentCoroutine1(Permanent permanent)
                                 {
-                                    selectedOpponentDigimon = permanent;
+                                    permanentList.Add(permanent);
                                     yield return null;
                                 }
 
@@ -297,11 +296,12 @@ namespace DCGO.CardEffects.EX10
                                 yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect1.Activate());
 
                                 #endregion
-
-                                yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(
-                                            destroyTargetPermanents: new List<Permanent>() { selectedYourDigimon, selectedOpponentDigimon },
-                                            hashtable).Destroy());
                             }
+
+                            yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(
+                                            destroyTargetPermanents: permanentList,
+                                            hashtable: hashtable).Destroy()
+                            );
                         }
                     }
                 }
