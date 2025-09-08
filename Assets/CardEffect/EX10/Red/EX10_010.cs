@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 
 //Wargreymon ACE
 namespace DCGO.CardEffects.EX10
@@ -124,6 +125,54 @@ namespace DCGO.CardEffects.EX10
                 {
                     Permanent thisPermanent = card.PermanentOfThisCard();
 
+                    #region Setup Immunity
+
+                    bool CanUseCondition(Hashtable hashtable)
+                    {
+                        return FieldCondition();
+                    }
+
+                    bool CardCondition(CardSource cardSource)
+                    {
+                        if (cardSource == card)
+                        {
+                            if (CardEffectCommons.IsExistOnBattleArea(card))
+                            {
+                                if (cardSource == card.PermanentOfThisCard().TopCard)
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+
+                        return false;
+                    }
+
+                    bool SkillCondition(ICardEffect cardEffect)
+                    {
+                        if (CardEffectCommons.IsOpponentEffect(cardEffect, card))
+                        {
+                            if (cardEffect.IsDigimonEffect)
+                            {
+                                return true;
+                            }
+                        }
+
+                        return false;
+                    }
+
+                    bool FieldCondition()
+                    {
+                        return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                               CardEffectCommons.HasMatchConditionPermanent(OpponentsPermanent);
+                    }
+
+                    CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
+                    canNotAffectedClass.SetUpICardEffect("Isn't affected by opponent's Digimon's effects", CanUseCondition, card);
+                    canNotAffectedClass.SetUpCanNotAffectedClass(CardCondition: CardCondition, SkillCondition: SkillCondition);
+
+                    #endregion
+
                     bool OpponentsPermanent(Permanent permanent)
                     {
                         return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
@@ -135,15 +184,18 @@ namespace DCGO.CardEffects.EX10
                         if (CardEffectCommons.HasMatchConditionPermanent(OpponentsPermanent))
                         {
                             thisPermanent.AddBoost(new Permanent.DPBoost("AT_EX10-010", 3000, null));
+                            cardEffects.Add(canNotAffectedClass);
                         }
                         else
                         {
-                            thisPermanent.RemoveBoost("AT_EX10-010");
+                            if (thisPermanent.Boosts.Exists(x => x.ID == "AT_EX10-010")) thisPermanent.RemoveBoost("AT_EX10-010");
+                            if (cardEffects.Contains(canNotAffectedClass)) cardEffects.Remove(canNotAffectedClass);
                         }
                     }
                     else
                     {
-                        thisPermanent.RemoveBoost("AT_EX10-010");
+                        if (thisPermanent.Boosts.Exists(x => x.ID == "AT_EX10-010")) thisPermanent.RemoveBoost("AT_EX10-010");
+                        if (cardEffects.Contains(canNotAffectedClass)) cardEffects.Remove(canNotAffectedClass);
                     }
                 }
             }

@@ -2,7 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-namespace DCGO.CardEffects
+// Belphemon: Sleep Mode
+namespace DCGO.CardEffects.EX10
 {
     public class EX10_021 : CEntity_Effect
     {
@@ -11,6 +12,7 @@ namespace DCGO.CardEffects
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Digivolution Requirements
+
             if (timing == EffectTiming.None)
             {
                 bool PermanentCondition(Permanent targetPermanent)
@@ -20,9 +22,11 @@ namespace DCGO.CardEffects
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 1, ignoreDigivolutionRequirement: false, card: card, condition: null));
             }
+
             #endregion
 
             #region On Play
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -192,9 +196,11 @@ namespace DCGO.CardEffects
                     }
                 }
             }
+
             #endregion
 
             #region When Digivolving
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -364,9 +370,11 @@ namespace DCGO.CardEffects
                     }
                 }
             }
+
             #endregion
 
             #region Opponent's Turn - OPT
+
             if (timing == EffectTiming.OnTappedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -449,6 +457,7 @@ namespace DCGO.CardEffects
                     }
                 }
             }
+
             #endregion
 
             return cardEffects;
