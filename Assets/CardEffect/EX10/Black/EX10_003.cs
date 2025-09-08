@@ -11,11 +11,13 @@ namespace DCGO.CardEffects.EX10
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region ESS
+
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("by trashing 3 digivolution sources, end an attack", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("ESS_EX10-003");
                 cardEffects.Add(activateClass);
 
@@ -33,6 +35,7 @@ namespace DCGO.CardEffects.EX10
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.IsOpponentTurn(card) &&
                            card.PermanentOfThisCard().DigivolutionCards.Count(ProperSources) >= 3;
                 }
 
@@ -87,7 +90,9 @@ namespace DCGO.CardEffects.EX10
                         GManager.instance.attackProcess.IsEndAttack = true;
                 }
             }
+
             #endregion
+
             return cardEffects;
         }
     }

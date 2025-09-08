@@ -164,7 +164,7 @@ namespace DCGO.CardEffects.EX10
 
                 string EffectDiscription()
                 {
-                    return "[Opponent's Turn] [Once Per Turn] When attack targets change, if this Digimon has [Greymon] in its name in its name, trash your opponent's top security card.";
+                    return "[Opponent's Turn] [Once Per Turn] When attack targets change, if this Digimon has [Greymon] in its name, trash your opponent's top security card.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

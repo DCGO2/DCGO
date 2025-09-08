@@ -28,6 +28,7 @@ namespace DCGO.CardEffects.EX10
             #endregion
 
             #region On Play
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -42,20 +43,10 @@ namespace DCGO.CardEffects.EX10
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource != null)
-                    {
-                        if (cardSource.Owner == card.Owner)
-                        {
-                            if (cardSource.ContainsCardName("Sukamon"))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return cardSource.HasText("Knightmon") ||
-                           cardSource.HasBagraArmyTraits ||
-                           cardSource.EqualsTraits("Twilight");
+                    return cardSource.IsDigimon &&
+                           (cardSource.HasText("Knightmon")
+                           || cardSource.HasBagraArmyTraits
+                           || cardSource.HasTwilightTrait);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -135,9 +126,11 @@ namespace DCGO.CardEffects.EX10
                     }
                 }
             }
+
             #endregion
 
             #region When Digivolving
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -245,16 +238,20 @@ namespace DCGO.CardEffects.EX10
                     }
                 }
             }
+
             #endregion
 
             #region Save
+
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 cardEffects.Add(CardEffectFactory.SaveEffect(card: card));
             }
+
             #endregion
 
             #region Retaliation - ESS
+
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 cardEffects.Add(CardEffectFactory.RetaliationSelfEffect(
@@ -262,6 +259,7 @@ namespace DCGO.CardEffects.EX10
                     card: card,
                     condition: null));
             }
+
             #endregion
 
             return cardEffects;

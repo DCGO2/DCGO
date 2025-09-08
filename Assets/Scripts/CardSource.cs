@@ -3683,10 +3683,10 @@ public class CardSource : MonoBehaviour
         get
         {
             return EqualsTraits("Undead");
-		}
-	}
-	
-	#endregion
+        }
+    }
+
+    #endregion
 
     #region whether this card has "Galaxy" trait
 
@@ -3707,6 +3707,18 @@ public class CardSource : MonoBehaviour
         get
         {
             return EqualsTraits("Rock") || EqualsTraits("Mineral");
+        }
+    }
+
+    #endregion
+
+    #region whether this card has Twilight trait
+
+    public bool HasTwilightTrait
+    {
+        get
+        {
+            return EqualsTraits("Twilight");
         }
     }
 

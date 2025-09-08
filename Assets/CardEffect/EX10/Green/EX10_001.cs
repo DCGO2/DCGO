@@ -10,6 +10,7 @@ namespace DCGO.CardEffects.EX10
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region ESS
+
             if (timing == EffectTiming.OnLinkCardDiscarded)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -27,12 +28,13 @@ namespace DCGO.CardEffects.EX10
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           CardEffectCommons.CanTriggerOnTrashLinkedCard(hashtable,perm => perm == card.PermanentOfThisCard(), cardEffect => cardEffect != null, source => source != null);
+                           CardEffectCommons.CanTriggerOnTrashLinkedCard(hashtable, perm => perm == card.PermanentOfThisCard(), cardEffect => cardEffect != null, source => source != null);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                        && CardEffectCommons.IsOwnerTurn(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -40,6 +42,7 @@ namespace DCGO.CardEffects.EX10
                     yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
                 }
             }
+
             #endregion
 
             return cardEffects;
