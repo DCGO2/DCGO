@@ -33,10 +33,12 @@ namespace DCGO.CardEffects.EX10
             #endregion
 
             #region Blast Digivolve
+
             if (timing == EffectTiming.OnCounterTiming)
             {
                 cardEffects.Add(CardEffectFactory.BlastDigivolveEffect(card: card, condition: null));
             }
+
             #endregion
 
             #region Trash, then Delete effect
@@ -59,8 +61,8 @@ namespace DCGO.CardEffects.EX10
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
-                           permanent.TopCard.HasPlayCost && 
-                           permanent.TopCard.GetCostItself <= 6 + (3 * Mathf.FloorToInt(card.Owner.TrashCards.Count/2));
+                           permanent.TopCard.HasPlayCost &&
+                           permanent.TopCard.GetCostItself <= 6 + (3 * Mathf.FloorToInt(card.Owner.TrashCards.Count / 2));
                 }
 
                 if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
@@ -85,6 +87,7 @@ namespace DCGO.CardEffects.EX10
             }
 
             #region On Play
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -98,9 +101,11 @@ namespace DCGO.CardEffects.EX10
                            CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
             }
+
             #endregion
 
             #region When Digivolving
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -114,9 +119,11 @@ namespace DCGO.CardEffects.EX10
                            CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
             }
+
             #endregion
 
             #region When Attacking
+
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -130,11 +137,13 @@ namespace DCGO.CardEffects.EX10
                            CardEffectCommons.CanTriggerOnAttack(hashtable, card);
                 }
             }
+
             #endregion
 
             #endregion
 
             #region Return 2, De-Digivolve 2 effect
+
             string SecondEffectShortText() => "Return 2 cards to top of deck, <De-Digivolve 2>";
             string SecondEffectDiscription(string tag)
             {
@@ -150,7 +159,7 @@ namespace DCGO.CardEffects.EX10
             {
                 bool cardsAdded = false;
 
-                if(card.Owner.TrashCards.Count >= 10)
+                if (card.Owner.TrashCards.Count >= 10)
                 {
                     SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
@@ -183,10 +192,8 @@ namespace DCGO.CardEffects.EX10
                     {
                         if (cardSources.Count == 2)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources));
-
+                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(cardSources));
                             yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(cardSources, "Deck Top Cards", true, true));
-
                             cardsAdded = true;
                         }
                     }
@@ -234,6 +241,7 @@ namespace DCGO.CardEffects.EX10
             }
 
             #region On Play
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -247,9 +255,11 @@ namespace DCGO.CardEffects.EX10
                            CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
             }
+
             #endregion
 
             #region When Digivolving
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -263,6 +273,7 @@ namespace DCGO.CardEffects.EX10
                            CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
             }
+
             #endregion
 
             #endregion

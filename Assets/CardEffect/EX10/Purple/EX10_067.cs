@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DCGO.CardEffects
+// Ryoma Mogami
+namespace DCGO.CardEffects.EX10
 {
     public class EX10_067 : CEntity_Effect
     {
@@ -11,13 +12,16 @@ namespace DCGO.CardEffects
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Start of Your Turn
+
             if (timing == EffectTiming.OnStartTurn)
             {
                 cardEffects.Add(CardEffectFactory.SetMemoryTo3TamerEffect(card));
             }
+
             #endregion
 
             #region Your Turn
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -69,7 +73,7 @@ namespace DCGO.CardEffects
                     {
                         if (CardEffectCommons.CanActivateSuspendCostEffect(card))
                         {
-                            if(CardEffectCommons.HasMatchConditionPermanent(IsTamerHasSource))
+                            if (CardEffectCommons.HasMatchConditionPermanent(IsTamerHasSource))
                                 return true;
                         }
                     }
@@ -111,7 +115,7 @@ namespace DCGO.CardEffects
                         yield return null;
                     }
 
-                    if(selectedTamerPermanent != null)
+                    if (selectedTamerPermanent != null)
                     {
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
@@ -145,7 +149,7 @@ namespace DCGO.CardEffects
                             yield return null;
                         }
 
-                        if(selectedSource.Count > 0)
+                        if (selectedSource.Count > 0)
                         {
                             List<Permanent> permanents = CardEffectCommons.GetPlayedPermanentsFromEnterFieldHashtable(
                                 hashtable: hashtable,
@@ -155,13 +159,16 @@ namespace DCGO.CardEffects
                     }
                 }
             }
+
             #endregion
 
             #region Security Effect
+
             if (timing == EffectTiming.SecuritySkill)
             {
                 cardEffects.Add(CardEffectFactory.PlaySelfTamerSecurityEffect(card));
             }
+
             #endregion
 
             return cardEffects;
