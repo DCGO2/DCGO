@@ -12,6 +12,7 @@ namespace DCGO.CardEffects.EX10
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Name Change
+
             if (timing == EffectTiming.None)
             {
                 ChangeCardNamesClass changeCardNamesClass = new ChangeCardNamesClass();
@@ -59,9 +60,11 @@ namespace DCGO.CardEffects.EX10
                     return CardNames;
                 }
             }
+
             #endregion
 
             #region Start of Main Phase
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -89,13 +92,13 @@ namespace DCGO.CardEffects.EX10
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBreedingArea(card) &&
+                    return CardEffectCommons.IsExistOnBattleArea(card) &&
                            CardEffectCommons.IsOwnerTurn(card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBreedingArea(card) &&
+                    return CardEffectCommons.IsExistOnBattleArea(card) &&
                            (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition) ||
                            CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition));
                 }
@@ -217,9 +220,11 @@ namespace DCGO.CardEffects.EX10
                     }
                 }
             }
+
             #endregion
 
             #region All Turns
+
             if (timing == EffectTiming.BeforePayCost)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -338,13 +343,16 @@ namespace DCGO.CardEffects.EX10
                     }
                 }
             }
+
             #endregion
 
             #region Security
+
             if (timing == EffectTiming.SecuritySkill)
             {
                 cardEffects.Add(CardEffectFactory.PlaySelfTamerSecurityEffect(card));
             }
+
             #endregion
 
             return cardEffects;
