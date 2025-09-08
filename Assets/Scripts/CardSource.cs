@@ -3683,10 +3683,10 @@ public class CardSource : MonoBehaviour
         get
         {
             return EqualsTraits("Undead");
-		}
-	}
-	
-	#endregion
+        }
+    }
+
+    #endregion
 
     #region whether this card has "Galaxy" trait
 
@@ -3707,6 +3707,30 @@ public class CardSource : MonoBehaviour
         get
         {
             return EqualsTraits("Rock") || EqualsTraits("Mineral");
+        }
+    }
+
+    #endregion
+
+    #region whether this card has Sea Beast trait
+
+    public bool HasSeaBeastTraits
+    {
+        get
+        {
+            return EqualsTraits("Sea Beast");
+        }
+    }
+
+    #endregion
+
+    #region whether this card has Angel trait
+
+    public bool HasAngelStrictTraits
+    {
+        get
+        {
+            return EqualsTraits("Angel");
         }
     }
 
