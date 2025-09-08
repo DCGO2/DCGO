@@ -108,7 +108,7 @@ namespace DCGO.CardEffects.EX10
                 {
                     if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsYourDigimon))
                     {
-                        Permanent selectedYourDigimon = null;
+                        List<Permanent> permanentList = new List<Permanent>();
 
                         #region Select Your Digimon to Destroy
 
@@ -121,7 +121,7 @@ namespace DCGO.CardEffects.EX10
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,
-                            canNoSelect: false,
+                            canNoSelect: true,
                             canEndNotMax: false,
                             selectPermanentCoroutine: SelectPermanentCoroutine,
                             afterSelectPermanentCoroutine: null,
@@ -130,7 +130,7 @@ namespace DCGO.CardEffects.EX10
 
                         IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
-                            selectedYourDigimon = permanent;
+                            permanentList.Add(permanent);
                             yield return null;
                         }
 
@@ -139,19 +139,17 @@ namespace DCGO.CardEffects.EX10
 
                         #endregion
 
-                        if (selectedYourDigimon != null)
+                        if (!permanentList.Any())
                         {
                             bool CanSelectOpponentDigimon(Permanent permanent)
                             {
                                 return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
                                     && permanent.TopCard.HasLevel
-                                    && permanent.TopCard.Level <= selectedYourDigimon.Level;
+                                    && permanent.TopCard.Level <= permanentList[0].Level;
                             }
 
                             if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectOpponentDigimon))
                             {
-                                Permanent selectedOpponentDigimon = null;
-
                                 #region Select Opponent Digimon to Destroy
 
                                 SelectPermanentEffect selectPermanentEffect1 = GManager.instance.GetComponent<SelectPermanentEffect>();
@@ -172,7 +170,7 @@ namespace DCGO.CardEffects.EX10
 
                                 IEnumerator SelectPermanentCoroutine1(Permanent permanent)
                                 {
-                                    selectedOpponentDigimon = permanent;
+                                    permanentList.Add(permanent);
                                     yield return null;
                                 }
 
@@ -180,11 +178,12 @@ namespace DCGO.CardEffects.EX10
                                 yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect1.Activate());
 
                                 #endregion
-
-                                yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(
-                                            destroyTargetPermanents: new List<Permanent>() { selectedYourDigimon, selectedOpponentDigimon },
-                                            hashtable).Destroy());
                             }
+
+                            yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(
+                                            destroyTargetPermanents: permanentList,
+                                            hashtable: hashtable).Destroy()
+                            );
                         }
                     }
                 }
@@ -263,7 +262,7 @@ namespace DCGO.CardEffects.EX10
                             {
                                 return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
                                     && permanent.TopCard.HasLevel
-                                    && permanent.TopCard.Level <= selectedYourDigimon.Level;
+                                    && permanent.TopCard.Level <= permanentList[0].Level;
                             }
 
                             if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectOpponentDigimon))
