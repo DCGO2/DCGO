@@ -65,7 +65,7 @@ namespace DCGO.CardEffects.EX10
 
             #region All Turns
 
-            if(timing == EffectTiming.OnLinkCardDiscarded)
+            if (timing == EffectTiming.OnLinkCardDiscarded)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Suspend to draw on trash", CanUseCondition, card);
@@ -97,11 +97,13 @@ namespace DCGO.CardEffects.EX10
             #endregion
 
             #region End of turn
+
             if (timing == EffectTiming.OnEndTurn)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("May app fuse", CanUseCondition, card);
+                activateClass.SetUpICardEffect("App fuse 1 digimon into digimon in hand", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDescription());
+                activateClass.SetHashString("EX10_062_AppFusion");
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
@@ -116,17 +118,8 @@ namespace DCGO.CardEffects.EX10
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.IsOwnerTurn(card))
-                        {
-                            if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, perm => CardEffectCommons.IsExistOnBattleAreaDigimon(card))) {
-                                return true;
-                            }
-                        }
-                        
-                    }
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleArea(card)
+                        && CardEffectCommons.IsOwnerTurn(card);
                 }
 
                 bool CanSelectPermanent(Permanent permanent)
@@ -141,10 +134,10 @@ namespace DCGO.CardEffects.EX10
                                     return true;
                             }
                         }
-
                     }
                     return false;
                 }
+
                 bool CanSelectCard(CardSource card, Permanent permanent)
                 {
                     if (CardEffectCommons.IsExistOnHand(card))
@@ -231,6 +224,16 @@ namespace DCGO.CardEffects.EX10
                     }
                 }
             }
+
+            #endregion
+
+            #region Security Effect
+
+            if (timing == EffectTiming.SecuritySkill)
+            {
+                cardEffects.Add(CardEffectFactory.PlaySelfTamerSecurityEffect(card));
+            }
+
             #endregion
 
             return cardEffects;

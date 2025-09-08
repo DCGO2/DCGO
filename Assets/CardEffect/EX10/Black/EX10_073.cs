@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 //EX10 Deusmon
 namespace DCGO.CardEffects.EX10
@@ -13,6 +12,21 @@ namespace DCGO.CardEffects.EX10
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Static effects
+
+            #region Alternative Digivolution Cost
+
+            if (timing == EffectTiming.None)
+            {
+                bool PermanentCondition(Permanent targetPermanent)
+                {
+                    return targetPermanent.TopCard.HasUltimateAppTraits;
+                }
+
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 5, ignoreDigivolutionRequirement: false, card: card, condition: null));
+            }
+
+            #endregion
+
             #region Link +1
 
             if (timing == EffectTiming.None) cardEffects.Add(CardEffectFactory.ChangeSelfLinkMaxStaticEffect(1, false, card, null));
@@ -106,13 +120,16 @@ namespace DCGO.CardEffects.EX10
             }
 
             #endregion
+
             #endregion
 
             #region When Digivolving/EoOT shared
+
             bool CanActivateConditionShared(Hashtable hashtable)
             {
-                return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                    (card.Owner.HandCards.Count > 0 || card.PermanentOfThisCard().cardSources.Any(source => source.CanLinkToTargetPermanent(card.PermanentOfThisCard(), false)));
+                return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                    && (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectLinkCard)
+                    || CardEffectCommons.HasMatchConditionOwnersPermanent(card, ThisPermamentCondition));
             }
 
             bool CanSelectLinkCard(CardSource cardSource)
@@ -120,16 +137,48 @@ namespace DCGO.CardEffects.EX10
                 return cardSource.CanLinkToTargetPermanent(card.PermanentOfThisCard(), false);
             }
 
+            bool ThisPermamentCondition(Permanent permanent)
+            {
+                return permanent == card.PermanentOfThisCard()
+                    && permanent.DigivolutionCards.Exists(CanSelectLinkCard);
+            }
+
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
                 bool hasInHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectLinkCard);
-                bool hasInSources = card.PermanentOfThisCard().DigivolutionCards.Count(CanSelectLinkCard) > 0;
+                bool hasInSources = card.PermanentOfThisCard().DigivolutionCards.Exists(CanSelectLinkCard);
                 CardSource selectedCard = null;
 
                 IEnumerator SelectCardCoroutine(CardSource cardSource)
                 {
                     selectedCard = cardSource;
                     yield return null;
+                }
+
+                if (hasInSources)
+                {
+                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                    selectHandEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: CanSelectLinkCard,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: 1,
+                                canNoSelect: true,
+                                canEndNotMax: false,
+                                isShowOpponent: true,
+                                selectCardCoroutine: SelectCardCoroutine,
+                                afterSelectCardCoroutine: null,
+                                mode: SelectHandEffect.Mode.Custom,
+                                cardEffect: activateClass);
+                    selectHandEffect.SetUpCustomMessage("Select 1 card to link", "The opponent is selecting 1 card to link");
+
+                    yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+                    if (selectedCard != null)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddLinkCard(selectedCard, activateClass));
+                        selectedCard = null;
+                    }
                 }
 
                 if (hasInHand)
@@ -155,43 +204,15 @@ namespace DCGO.CardEffects.EX10
 
                     selectCardEffect.SetUpCustomMessage("Select 1 card to link", "The opponent is selecting 1 card to link");
 
-                    yield return StartCoroutine(selectCardEffect.Activate());
+                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                    if (selectedCard != null) yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddLinkCard(selectedCard, activateClass));
                 }
-
-                if (selectedCard != null)
-                {
-                    yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddLinkCard(selectedCard, activateClass));
-                    selectedCard = null;
-                }
-
-                if (hasInSources)
-                {
-                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-                    selectHandEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: CanSelectLinkCard,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: 1,
-                                canNoSelect: true,
-                                canEndNotMax: false,
-                                isShowOpponent: true,
-                                selectCardCoroutine: SelectCardCoroutine,
-                                afterSelectCardCoroutine: null,
-                                mode: SelectHandEffect.Mode.Custom,
-                                cardEffect: activateClass);
-                    selectHandEffect.SetUpCustomMessage("Select 1 card to link", "The opponent is selecting 1 card to link");
-
-                    yield return StartCoroutine(selectHandEffect.Activate());
-                }
-
-                if (selectedCard != null)
-                    yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddLinkCard(selectedCard, activateClass));
-
             }
+
             #endregion
 
             #region When Digivolving
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -204,19 +225,15 @@ namespace DCGO.CardEffects.EX10
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card))
-                        {
-                            return true;
-                        }
-                    }
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                        && CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
             }
+
             #endregion
 
             #region End Of Opponent's Turn
+
             if (timing == EffectTiming.OnEndTurn)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -229,20 +246,16 @@ namespace DCGO.CardEffects.EX10
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                    {
-                        if (CardEffectCommons.IsOpponentTurn(card))
-                        {
-                            return true;
-                        }
-                    }
-                    return false;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                        && CardEffectCommons.IsOpponentTurn(card);
                 }
             }
+
             #endregion
 
             #region All Turns
-            if(timing == EffectTiming.OnLinkCardDiscarded)
+
+            if (timing == EffectTiming.OnLinkCardDiscarded)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete when trash", CanUseCondition, card);
@@ -254,7 +267,7 @@ namespace DCGO.CardEffects.EX10
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && 
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
                         CardEffectCommons.CanTriggerOnTrashLinkedCard(hashtable, perm => perm == card.PermanentOfThisCard(), cardEffect => cardEffect != null, source => source != null);
                 }
 
@@ -298,7 +311,9 @@ namespace DCGO.CardEffects.EX10
                     }
                 }
             }
+
             #endregion
+
             return cardEffects;
         }
     }

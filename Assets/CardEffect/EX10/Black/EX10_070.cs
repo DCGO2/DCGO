@@ -10,8 +10,8 @@ namespace DCGO.CardEffects.EX10
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-
             #region Ignore Color Requirment
+
             if (timing == EffectTiming.None)
             {
                 IgnoreColorConditionClass ignoreColorConditionClass = new IgnoreColorConditionClass();
@@ -45,9 +45,11 @@ namespace DCGO.CardEffects.EX10
                     return cardSource == card;
                 }
             }
+
             #endregion
 
             #region Main
+
             if (timing == EffectTiming.OptionSkill)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -60,11 +62,6 @@ namespace DCGO.CardEffects.EX10
                     return "[Main] <Draw 1>. Then, place this card in the battle area.";
                 }
 
-                bool CanSelectCardCondition(CardSource cardSource)
-                {
-                    return cardSource.EqualsTraits("Appmon") || cardSource.EqualsTraits("App Driver");
-                }
-
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card);
@@ -72,29 +69,15 @@ namespace DCGO.CardEffects.EX10
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SimplifiedRevealDeckTopCardsAndSelect(
-                        revealCount: 3,
-                        simplifiedSelectCardConditions:
-                        new SimplifiedSelectCardConditionClass[]
-                        {
-                        new SimplifiedSelectCardConditionClass(
-                            canTargetCondition:CanSelectCardCondition,
-                            message: "Select 1 card with [Appmon]/[App Driver] in its traits.",
-                            mode: SelectCardEffect.Mode.AddHand,
-                            maxCount: 1,
-                            selectCardCoroutine: null)
-                        },
-                        remainingCardsPlace: RemainingCardsPlace.Trash,
-                        activateClass: activateClass
-                    ));
-
+                    yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlaceDelayOptionCards(card: card, cardEffect: activateClass));
                 }
             }
+
             #endregion
 
-
             #region Delay - link when link card trashed
+
             if (timing == EffectTiming.OnLinkCardDiscarded)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -234,8 +217,8 @@ namespace DCGO.CardEffects.EX10
                     }
                 }
             }
-            #endregion
 
+            #endregion
 
             #region Security
 
@@ -265,7 +248,6 @@ namespace DCGO.CardEffects.EX10
             }
 
             #endregion
-
 
             return cardEffects;
         }
