@@ -17,7 +17,7 @@ namespace DCGO.CardEffects.EX10
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.IsLevel4 && targetPermanent.TopCard.ContainsCardName("Greymon");
+                    return targetPermanent.TopCard.IsLevel4 && targetPermanent.TopCard.HasGreymonName;
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
@@ -177,7 +177,7 @@ namespace DCGO.CardEffects.EX10
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
                         && CardEffectCommons.IsOpponentTurn(card)
-                        && card.PermanentOfThisCard().TopCard.ContainsCardName("Greymon");
+                        && card.PermanentOfThisCard().TopCard.HasGreymonName;
                 }
 
                 bool PermanentCondition(Permanent permanent)

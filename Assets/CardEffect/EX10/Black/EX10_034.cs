@@ -31,6 +31,7 @@ namespace DCGO.CardEffects.EX10
                     {
                         DigiXrosConditionElement element = new DigiXrosConditionElement(CanSelectCardCondition, "Bagra Army trait");
                         DigiXrosConditionElement element1 = new DigiXrosConditionElement(CanSelectCardCondition, "Bagra Army trait");
+                        DigiXrosConditionElement element2 = new DigiXrosConditionElement(CanSelectCardCondition, "Bagra Army trait");
 
                         bool CanSelectCardCondition(CardSource cardSource)
                         {
@@ -51,7 +52,7 @@ namespace DCGO.CardEffects.EX10
                             return false;
                         }
 
-                        List<DigiXrosConditionElement> elements = new List<DigiXrosConditionElement>() { element, element1 };
+                        List<DigiXrosConditionElement> elements = new List<DigiXrosConditionElement>() { element, element1, element2 };
 
                         DigiXrosCondition digiXrosCondition = new DigiXrosCondition(elements, null, 2);
 
@@ -410,7 +411,7 @@ namespace DCGO.CardEffects.EX10
                 List<Permanent> removedPermanents = new List<Permanent>();
 
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Trash 2 source cards, prevent deletion", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Trash 2 source cards, gain ＜Security A. +1> and +3000 DP", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("AT_EX10_034");
                 cardEffects.Add(activateClass);

@@ -58,11 +58,9 @@ namespace DCGO.CardEffects.EX10
                     {
                         if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition) || CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
                         {
-                            SelectCardEffect.Root? rootmode = null!;
+                            SelectCardEffect.Root? rootmode = SelectCardEffect.Root.Hand;
                             bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);
                             bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition);
-
-                            if (canSelectHand && !canSelectTrash) rootmode = SelectCardEffect.Root.Hand;
 
                             if (!canSelectHand && canSelectTrash) rootmode = SelectCardEffect.Root.Trash;
 
@@ -82,9 +80,31 @@ namespace DCGO.CardEffects.EX10
                                 rootmode = GManager.instance.userSelectionManager.SelectedBoolValue ? SelectCardEffect.Root.Hand : SelectCardEffect.Root.Trash;
                             }
 
-                            if (rootmode != null)
+                            CardSource selectedCard = null;
+
+                            if (rootmode == SelectCardEffect.Root.Hand)
                             {
-                                CardSource selectedCard = null;
+                                SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                                selectHandEffect.SetUp(
+                                    selectPlayer: card.Owner,
+                                    canTargetCondition: CanSelectCardCondition,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    maxCount: 1,
+                                    canNoSelect: true,
+                                    canEndNotMax: false,
+                                    isShowOpponent: true,
+                                    selectCardCoroutine: SelectCardCoroutine,
+                                    afterSelectCardCoroutine: null,                                  
+                                    mode: SelectHandEffect.Mode.Custom,
+                                    cardEffect: activateClass);
+
+                                selectHandEffect.SetUpCustomMessage("Select 1 card to add as source.", "The opponent is selecting 1 card to add as source.");
+                                yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+                            }
+                            else
+                            {
                                 SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
                                 selectCardEffect.SetUp(
@@ -107,45 +127,45 @@ namespace DCGO.CardEffects.EX10
 
                                 selectCardEffect.SetUpCustomMessage("Select 1 card to add as source.", "The opponent is selecting 1 card to add as source.");
                                 yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                            }
 
-                                IEnumerator SelectCardCoroutine(CardSource cardSource)
+                            IEnumerator SelectCardCoroutine(CardSource cardSource)
+                            {
+                                selectedCard = cardSource;
+                                yield return null;
+                            }
+
+                            if (selectedCard != null)
+                            {
+                                Permanent selectedPermanent = null;
+                                int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectTamerCondition));
+
+                                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                                selectPermanentEffect.SetUp(
+                                    selectPlayer: card.Owner,
+                                    canTargetCondition: CanSelectTamerCondition,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    maxCount: maxCount,
+                                    canNoSelect: false,
+                                    canEndNotMax: false,
+                                    selectPermanentCoroutine: SelectPermanentCoroutine,
+                                    afterSelectPermanentCoroutine: null,
+                                    mode: SelectPermanentEffect.Mode.Custom,
+                                    cardEffect: activateClass);
+
+                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                                IEnumerator SelectPermanentCoroutine(Permanent permanent)
                                 {
-                                    selectedCard = cardSource;
+                                    selectedPermanent = permanent;
                                     yield return null;
                                 }
 
-                                if (selectedCard != null)
+                                if (selectedPermanent != null)
                                 {
-                                    Permanent selectedPermanent = null;
-                                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectTamerCondition));
-
-                                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                                    selectPermanentEffect.SetUp(
-                                        selectPlayer: card.Owner,
-                                        canTargetCondition: CanSelectTamerCondition,
-                                        canTargetCondition_ByPreSelecetedList: null,
-                                        canEndSelectCondition: null,
-                                        maxCount: maxCount,
-                                        canNoSelect: false,
-                                        canEndNotMax: false,
-                                        selectPermanentCoroutine: SelectPermanentCoroutine,
-                                        afterSelectPermanentCoroutine: null,
-                                        mode: SelectPermanentEffect.Mode.Custom,
-                                        cardEffect: activateClass);
-
-                                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                                    {
-                                        selectedPermanent = permanent;
-                                        yield return null;
-                                    }
-
-                                    if (selectedPermanent != null)
-                                    {
-                                        yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass));
-                                    }
+                                    yield return ContinuousController.instance.StartCoroutine(selectedPermanent.AddDigivolutionCardsBottom(new List<CardSource>() { selectedCard }, activateClass));
                                 }
                             }
                         }
