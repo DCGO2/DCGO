@@ -29,7 +29,7 @@ namespace DCGO.CardEffects.EX10
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Place 3 cards from trash as bottom sources", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Place up to 3 cards from trash as bottom sources", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("WDWA_EX10_033");
                 cardEffects.Add(activateClass);
@@ -115,7 +115,7 @@ namespace DCGO.CardEffects.EX10
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Place 3 cards from trash as bottom sources", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Place up to 3 cards from trash as bottom sources", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("WDWA_EX10_033");
                 cardEffects.Add(activateClass);
@@ -293,7 +293,7 @@ namespace DCGO.CardEffects.EX10
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 card to delete.", "The opponent is selecting 1 card to delete.");
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 card to reduce play cost.", "The opponent is selecting 1 card to reduce play cost.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                         
@@ -313,7 +313,7 @@ namespace DCGO.CardEffects.EX10
             #endregion
 
             #region When Attacking - Reduce Cost
-            if (timing == EffectTiming.OnEnterFieldAnyone)
+            if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By trashing up to 3 sources, reduce 1 digimons play cost by 2 for each card", CanUseCondition, card);
@@ -407,7 +407,7 @@ namespace DCGO.CardEffects.EX10
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 card to delete.", "The opponent is selecting 1 card to delete.");
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 card to reduce play cost.", "The opponent is selecting 1 card to reduce play cost.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 

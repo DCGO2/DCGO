@@ -40,7 +40,7 @@ namespace DCGO.CardEffects.EX10
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.HasGreymonName || cardSource.EqualsTraits("Virus");
+                    return cardSource.HasGreymonName && cardSource.EqualsTraits("Virus");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
