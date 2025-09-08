@@ -85,7 +85,7 @@ namespace DCGO.CardEffects.EX10
 
                 string EffectDiscription()
                 {
-                    return "[On Play] You may choose 1 of your Digimon. Delete the chosen Digimon and 1 of your opponent’s Digimon with as high or lower a level as it.";
+                    return "[On Play] You may choose 1 of your Digimon. Delete the chosen Digimon and 1 of your opponentï¿½s Digimon with as high or lower a level as it.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -139,7 +139,7 @@ namespace DCGO.CardEffects.EX10
 
                         #endregion
 
-                        if (!permanentList.Any())
+                        if (permanentList.Any())
                         {
                             bool CanSelectOpponentDigimon(Permanent permanent)
                             {
@@ -202,7 +202,7 @@ namespace DCGO.CardEffects.EX10
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] You may choose 1 of your Digimon. Delete the chosen Digimon and 1 of your opponent’s Digimon with as high or lower a level as it.";
+                    return "[When Digivolving] You may choose 1 of your Digimon. Delete the chosen Digimon and 1 of your opponentï¿½s Digimon with as high or lower a level as it.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -256,7 +256,7 @@ namespace DCGO.CardEffects.EX10
 
                         #endregion
 
-                        if (!permanentList.Any())
+                        if (permanentList.Any())
                         {
                             bool CanSelectOpponentDigimon(Permanent permanent)
                             {
