@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 // DarknessBagramon
 namespace DCGO.CardEffects.EX10
@@ -115,7 +116,7 @@ namespace DCGO.CardEffects.EX10
 
                 bool IsOpponentPermamentWithSources(Permanent permanent)
                 {
-                    return IsOpponentPermament(permanent) && permanent.StackCards.Count >= 1;
+                    return IsOpponentPermament(permanent) && permanent.StackCards.Count >= 2;
                 }
 
                 bool IsBagraArmyDigimon(CardSource cardSource)
