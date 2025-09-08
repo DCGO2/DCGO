@@ -7,14 +7,14 @@ using UnityEngine;
 public partial class CardEffectFactory
 {
     #region Static effect that gives the ability to appfuse by name
-    AddAppFusionConditionClass AddAppfuseMethodByName(List<string> cardNames, CardSource card, int cost = 0, string effectName = "App Fusion")
+    public static AddAppFusionConditionClass AddAppfuseMethodByName(List<string> cardNames, CardSource card, int cost = 0, string effectName = "App Fusion")
     {
         return AddAppfuseMethodByCondition(cardNames.Select<string, Func<CardSource, bool>>(name => card => card.EqualsCardName(name)).ToList(), card, cost, effectName);
     }
     #endregion
 
     #region Static effect that gives the ability to appfuse by condition
-    AddAppFusionConditionClass AddAppfuseMethodByCondition(List<Func<CardSource, bool>> cardConditions, CardSource card, int cost = 0, string effectName = "App Fusion")
+    public static AddAppFusionConditionClass AddAppfuseMethodByCondition(List<Func<CardSource, bool>> cardConditions, CardSource card, int cost = 0, string effectName = "App Fusion")
     {
         AddAppFusionConditionClass addAppFusionConditionClass = new AddAppFusionConditionClass();
         addAppFusionConditionClass.SetUpICardEffect(effectName, (hashtable) => true, card);
