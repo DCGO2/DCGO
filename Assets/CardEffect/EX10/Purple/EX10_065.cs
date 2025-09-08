@@ -24,6 +24,8 @@ namespace DCGO.CardEffects.EX10
 
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
+                List<Permanent> playedPermanents = new List<Permanent>();
+
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete this tamer, give one of your played digimon Rush, then gain 1 memory", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
@@ -37,12 +39,22 @@ namespace DCGO.CardEffects.EX10
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnField(card) &&
-                           CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, PermamentCondition);
+                           CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, CanTriggerCondition);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnField(card);
+                }
+
+                bool CanTriggerCondition(Permanent permanent)
+                {
+                    if (PermamentCondition(permanent))
+                    {
+                        playedPermanents.Add(permanent);
+                        return true;
+                    }
+                    return false;
                 }
 
                 bool PermamentCondition(Permanent permanent)
@@ -53,12 +65,6 @@ namespace DCGO.CardEffects.EX10
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    List<Permanent> playedPermanents = null;
-                    foreach (Hashtable hash in CardEffectCommons.GetHashtablesFromHashtable(hashtable))
-                    {
-                        playedPermanents.Add(CardEffectCommons.GetPermanentFromHashtable(hash));
-                    }
-
                     if (playedPermanents != null)
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(

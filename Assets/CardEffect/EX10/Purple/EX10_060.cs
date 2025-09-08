@@ -50,10 +50,16 @@ namespace DCGO.CardEffects.EX10
                         maxCount: maxCount,
                         canNoSelect: true,
                         canEndNotMax: false,
-                        selectPermanentCoroutine: null,
+                        selectPermanentCoroutine: SelectPermanentCoroutine,
                         afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Destroy,
+                        mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
+
+                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                    {
+                        selectedPermanent = permanent;
+                        yield return null;
+                    }
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
@@ -61,17 +67,17 @@ namespace DCGO.CardEffects.EX10
 
                     #region Attempt to delete selected permanent
 
-                    IEnumerator SuccessProcess(List<Permanent> deletedPermanents)
-                    {
-                        hasOpponentDeleted = true;
-                        yield return null;
-                    }
-
                     if (selectedPermanent != null) yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
                         targetPermanents: new List<Permanent> { selectedPermanent },
                         activateClass: activateClass,
                         successProcess: SuccessProcess,
                         failureProcess: null));
+
+                    IEnumerator SuccessProcess(List<Permanent> deletedPermanents)
+                    {
+                        hasOpponentDeleted = true;
+                        yield return null;
+                    }
 
                     #endregion
 
