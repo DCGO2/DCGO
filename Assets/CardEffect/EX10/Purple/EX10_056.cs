@@ -104,7 +104,8 @@ namespace DCGO.CardEffects.EX10
                     int digimon = card.Owner.Enemy.GetBattleAreaDigimons().Count;
                     int tamers = card.Owner.Enemy.GetBattleAreaPermanents().Filter(x => x.IsTamer).Count;
 
-                    return digimon >= 1 && digimon + tamers >= 2;
+                    return digimon >= 1
+                        && (digimon - 1 + tamers) >= 1;
                 }
 
                 bool IsEnemyDigimon(Permanent permanent)
@@ -114,7 +115,8 @@ namespace DCGO.CardEffects.EX10
 
                 bool IsEnemyPermanent(Permanent permanent, Permanent targetPermament)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card)
+                    return (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
+                        || CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaTamer(permanent, card))
                         && permanent != targetPermament;
                 }
 

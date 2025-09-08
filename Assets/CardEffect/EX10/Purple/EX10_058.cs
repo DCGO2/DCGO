@@ -13,6 +13,7 @@ namespace DCGO.CardEffects.EX10
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Digixros
+
             if (timing == EffectTiming.None)
             {
                 AddDigiXrosConditionClass addDigiXrosConditionClass = new AddDigiXrosConditionClass();
@@ -61,9 +62,11 @@ namespace DCGO.CardEffects.EX10
                     return null;
                 }
             }
+
             #endregion
 
             #region Shared On Play/When Digivolving
+
             string SharedEffectDiscription(string tag)
             {
                 return $"[{tag}] Until your opponent's turn ends, give 1 of their Digimon or Tamers \"[End of Your Turn] Delete 1 of your Digimon.\"";
@@ -78,10 +81,12 @@ namespace DCGO.CardEffects.EX10
             {
                 bool PermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
+                         || CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaTamer(permanent, card);
                 }
 
                 Permanent selectedPermanent = null;
+
                 #region Select Permanent
 
                 int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(PermanentCondition));
@@ -106,7 +111,7 @@ namespace DCGO.CardEffects.EX10
                     yield return null;
                 }
 
-                selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to gain effect", "The opponent is selecting 1 Digimon to gain effect");
+                selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon/Tamer to gain effect", "The opponent is selecting 1 Digimon/Tamer to gain effect");
                 yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
                 #endregion
@@ -114,7 +119,6 @@ namespace DCGO.CardEffects.EX10
                 AddSkillClass addSkillClass = new AddSkillClass();
                 addSkillClass.SetUpICardEffect("Delete 1 of your Digimon", CanUseCondition1, card);
                 addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
-
                 card.Owner.UntilOpponentTurnEndEffects.Add((_timing) => addSkillClass);
 
                 bool CanUseCondition1(Hashtable hashtable)
@@ -205,9 +209,11 @@ namespace DCGO.CardEffects.EX10
                     return cardEffects;
                 }
             }
+
             #endregion
 
             #region On Play
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -221,9 +227,11 @@ namespace DCGO.CardEffects.EX10
                            CardEffectCommons.CanTriggerOnPlay(hashtable, card);
                 }
             }
+
             #endregion
 
             #region When Digivolving
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -237,9 +245,11 @@ namespace DCGO.CardEffects.EX10
                            CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
             }
+
             #endregion
 
             #region All Turns - OPT
+
             if (timing == EffectTiming.OnEnterFieldAnyone || timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -257,7 +267,7 @@ namespace DCGO.CardEffects.EX10
                 {
                     if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                     {
-                        if(card.PermanentOfThisCard().DigivolutionCards.Count >= 2)
+                        if (card.PermanentOfThisCard().DigivolutionCards.Count >= 2)
                         {
                             if (timing == EffectTiming.OnEnterFieldAnyone)
                             {
@@ -268,7 +278,7 @@ namespace DCGO.CardEffects.EX10
                                 return CardEffectCommons.CanTriggerOnPermanentDeleted(hashtable, OpponentsDigimon);
                         }
                     }
-                    
+
                     return false;
                 }
 
@@ -383,6 +393,7 @@ namespace DCGO.CardEffects.EX10
                     }
                 }
             }
+
             #endregion
 
             return cardEffects;
