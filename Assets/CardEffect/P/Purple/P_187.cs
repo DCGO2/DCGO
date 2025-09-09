@@ -132,7 +132,7 @@ namespace DCGO.CardEffects.P
                 {
                     if (CardEffectCommons.IsPermanentExistsOnBattleArea(permanent))
                     {
-                        if(permanent != card.PermanentOfThisCard())
+                        if (permanent != card.PermanentOfThisCard())
                         {
                             if (permanent.IsDigimon || permanent.IsTamer)
                             {
@@ -202,7 +202,7 @@ namespace DCGO.CardEffects.P
 
                                     yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(selectedPermanent, CardEffectCommons.CardEffectHashtable(activateClass), toTop: position).PutSecurity());
 
-                                    if (topCard.Owner.SecurityCards.Contains(topCard))
+                                    if (topCard.Owner.SecurityCards.Contains(topCard) || topCard.IsToken)
                                     {
                                         yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
                                         player: card.Owner.Enemy,
@@ -273,7 +273,6 @@ namespace DCGO.CardEffects.P
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-
                     yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
                     player: card.Owner,
                     destroySecurityCount: 1,
