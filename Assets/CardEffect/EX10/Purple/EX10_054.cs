@@ -13,6 +13,7 @@ namespace DCGO.CardEffects.EX10
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Trash - Main
+
             if (timing == EffectTiming.OnDeclaration)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -35,12 +36,13 @@ namespace DCGO.CardEffects.EX10
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnHand(card) &&
+                    return CardEffectCommons.IsExistOnTrash(card) &&
                            CardEffectCommons.MatchConditionPermanentCount(IsLvl5Myotismon) >= 1;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    Permanent targetPermament = null;
                     int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(IsLvl5Myotismon));
 
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
@@ -53,99 +55,40 @@ namespace DCGO.CardEffects.EX10
                         maxCount: maxCount,
                         canNoSelect: false,
                         canEndNotMax: false,
-                        selectPermanentCoroutine: null,
-                        afterSelectPermanentCoroutine: AfterSelectDigimon,
+                        selectPermanentCoroutine: SelectPermanentCoroutine,
+                        afterSelectPermanentCoroutine: null,
                         mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
 
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to delete.", "The opponent is selecting 1 Digimon to delete.");
+                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                    {
+                        targetPermament = permanent;
+                        yield return null;
+                    }
 
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to delete.", "The opponent is selecting 1 Digimon to delete.");
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                    IEnumerator AfterSelectDigimon(List<Permanent> permanents)
+                    if (targetPermament != null) yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
+                            targetPermanents: new List<Permanent>() { targetPermament },
+                            activateClass: activateClass,
+                            successProcess: SuccessProcess,
+                            failureProcess: null));
+
+                    IEnumerator SuccessProcess(List<Permanent> permanents)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
-                            targetPermanents: permanents, activateClass: activateClass, successProcess: permanents => SuccessProcess(), failureProcess: null));
-                    }                   
-
-                    IEnumerator SuccessProcess()
-                    {
-                        #region reduce play cost
-                        if (card.Owner.CanReduceCost(null, card))
-                            ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().BuffSE);
-
-                        ChangeCostClass changeCostClass = new ChangeCostClass();
-                        changeCostClass.SetUpICardEffect($"Play Cost -7", CanUseCondition1, card);
-                        changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
-                        card.Owner.UntilCalculateFixedCostEffect.Add((_timing) => changeCostClass);
-
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ShowReducedCost(hashtable));
-
-                        bool CanUseCondition1(Hashtable hashtable)
-                        {
-                            return true;
-                        }
-
-                        int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
-                        {
-                            if (CardSourceCondition(cardSource))
-                            {
-                                if (RootCondition(root))
-                                {
-                                    if (PermanentsCondition(targetPermanents))
-                                    {
-                                        Cost -= 7;
-                                    }
-                                }
-                            }
-
-                            return Cost;
-                        }
-
-                        bool PermanentsCondition(List<Permanent> targetPermanents)
-                        {
-                            if (targetPermanents == null)
-                            {
-                                return true;
-                            }
-
-                            else
-                            {
-                                if (targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0)
-                                {
-                                    return true;
-                                }
-                            }
-
-                            return false;
-                        }
-
-                        bool CardSourceCondition(CardSource cardSource)
-                        {
-                            return true;
-                        }
-
-                        bool RootCondition(SelectCardEffect.Root root)
-                        {
-                            return true;
-                        }
-
-                        bool isUpDown()
-                        {
-                            return true;
-                        }
-                        #endregion
-
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
                                             cardSources: new List<CardSource> { card },
                                             activateClass: activateClass,
                                             payCost: true,
                                             isTapped: false,
                                             root: SelectCardEffect.Root.Trash,
-                                            activateETB: true));
+                                            activateETB: true,
+                                            fixedCost: 5));
                     }
                 }
             }
+
             #endregion
 
             #region On Play/When Digivolving Shared
@@ -335,7 +278,6 @@ namespace DCGO.CardEffects.EX10
             }
 
             #endregion
-
 
             return cardEffects;
         }
