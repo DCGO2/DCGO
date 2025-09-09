@@ -209,15 +209,15 @@ namespace DCGO.CardEffects.EX10
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentConditionShared);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    bool hasOpponentDeleted = false;
+
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentConditionShared))
                     {
-                        bool hasOpponentDeleted = false;
                         Permanent selectedPermanent = null;
 
                         #region Opponent Selects 1 Digimon or Tamer
@@ -258,26 +258,26 @@ namespace DCGO.CardEffects.EX10
                             failureProcess: null));
 
                         #endregion
+                    }
 
-                        if (!hasOpponentDeleted)
-                        {
-                            Permanent thisPermament = card.PermanentOfThisCard();
+                    if (!hasOpponentDeleted)
+                    {
+                        Permanent thisPermament = card.PermanentOfThisCard();
 
-                            #region Remove Events from Permanent
+                        #region Remove Events from Permanent
 
-                            thisPermament.HideDeleteEffect();
-                            thisPermament.HideHandBounceEffect();
-                            thisPermament.HideDeckBounceEffect();
-                            thisPermament.HideWillRemoveFieldEffect();
+                        thisPermament.HideDeleteEffect();
+                        thisPermament.HideHandBounceEffect();
+                        thisPermament.HideDeckBounceEffect();
+                        thisPermament.HideWillRemoveFieldEffect();
 
-                            thisPermament.DestroyingEffect = null;
-                            thisPermament.IsDestroyedByBattle = false;
-                            thisPermament.HandBounceEffect = null;
-                            thisPermament.LibraryBounceEffect = null;
-                            thisPermament.willBeRemoveField = false;
+                        thisPermament.DestroyingEffect = null;
+                        thisPermament.IsDestroyedByBattle = false;
+                        thisPermament.HandBounceEffect = null;
+                        thisPermament.LibraryBounceEffect = null;
+                        thisPermament.willBeRemoveField = false;
 
-                            #endregion
-                        }
+                        #endregion
                     }
                 }
             }
