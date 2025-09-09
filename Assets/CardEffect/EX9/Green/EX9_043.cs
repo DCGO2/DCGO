@@ -200,16 +200,15 @@ namespace DCGO.CardEffects.EX9
             {
                 return cardSource.IsDigimon && CardEffectCommons.IsExistOnTrash(cardSource);
             }
-
-            bool CanSelectPermanentDeleteCondition(Permanent permanent)
-            {
-                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
-                    permanent.DP <= 3000;
-            }
-
             IEnumerator SharedActivateCoroutine(ActivateClass activateClass)
             {
                 CardSource selectedCard = null;
+
+                bool CanSelectPermanentDeleteCondition(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
+                        permanent.DP <= card.Owner.MaxDP_DeleteEffect(3000, activateClass);
+                }
 
                 if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, SharedCardCondition))
                 {
