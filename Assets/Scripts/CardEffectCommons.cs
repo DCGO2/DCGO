@@ -1270,23 +1270,39 @@ public partial class CardEffectCommons
 
     #region Draw cards and trash cards
 
-    public static IEnumerator DrawAndDiscardCards(int drawAmount, int trashAmount, CardSource card, ICardEffect activateClass)
+    public static IEnumerator DrawAndDiscardCards((Player drawPlayer, Player trashPlayer) player,
+                                                  int drawAmount,
+                                                  int trashAmount,
+                                                  CardSource card,
+                                                  ICardEffect activateClass,
+                                                  Func<CardSource, bool> canTrashTargetCondition = null,
+                                                  Func<List<CardSource>, CardSource, bool> canTargetCondition_ByPreSelecetedList = null,
+                                                  Func<List<CardSource>, bool> canEndSelectCondition = null,
+                                                  bool canNoSelect = false,
+                                                  bool canEndNotMax = false,
+                                                  bool isShowOpponent = true,
+                                                  Func<List<CardSource>, IEnumerator> afterSelectPermanentCoroutine = null)
     {
-        yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, drawAmount, activateClass).Draw());
+        // Callback Setup
+        Func<List<CardSource>, IEnumerator> AfterSelectCardCoroutine = afterSelectPermanentCoroutine ?? null;
 
+        // Variable setup
+        Func<CardSource, bool> targetTrashCondition = canTrashTargetCondition ?? (cs => true);
+
+        yield return ContinuousController.instance.StartCoroutine(new DrawClass(player.drawPlayer, drawAmount, activateClass).Draw());
         SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
         selectHandEffect.SetUp(
-            selectPlayer: card.Owner,
-            canTargetCondition: (cardSource) => true,
-            canTargetCondition_ByPreSelecetedList: null,
-            canEndSelectCondition: null,
+            selectPlayer: player.trashPlayer,
+            canTargetCondition: targetTrashCondition,
+            canTargetCondition_ByPreSelecetedList: canTargetCondition_ByPreSelecetedList,
+            canEndSelectCondition: canEndSelectCondition,
             maxCount: trashAmount,
-            canNoSelect: false,
-            canEndNotMax: false,
-            isShowOpponent: true,
+            canNoSelect: canNoSelect,
+            canEndNotMax: canEndNotMax,
+            isShowOpponent: isShowOpponent,
             selectCardCoroutine: null,
-            afterSelectCardCoroutine: null,
+            afterSelectCardCoroutine: AfterSelectCardCoroutine,
             mode: SelectHandEffect.Mode.Discard,
             cardEffect: activateClass);
 
