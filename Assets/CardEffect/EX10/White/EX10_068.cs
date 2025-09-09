@@ -9,8 +9,37 @@ namespace DCGO.CardEffects.EX10
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
-            
+
+            #region Name Change
+
+            if (timing == EffectTiming.None)
+            {
+                ChangeCardNamesClass changeCardNamesClass = new ChangeCardNamesClass();
+                changeCardNamesClass.SetUpICardEffect("Also treated as [Ken Ichijoji]", CanUseCondition, card);
+                changeCardNamesClass.SetUpChangeCardNamesClass(changeCardNames: changeCardNames);
+
+                cardEffects.Add(changeCardNamesClass);
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return true;
+                }
+
+                List<string> changeCardNames(CardSource cardSource, List<string> CardNames)
+                {
+                    if (cardSource == card)
+                    {
+                        CardNames.Add("Ken Ichijoji");
+                    }
+
+                    return CardNames;
+                }
+            }
+
+            #endregion
+
             #region Start of Your Main Phase
+
             if (timing == EffectTiming.OnStartMainPhase)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -23,33 +52,37 @@ namespace DCGO.CardEffects.EX10
                     return "[Start of Your Main Phase] For every 2 colors your opponent's Digimon and Tamers have, gain 1 memory.";
                 }
 
-                bool CanGetCardColour(Permanent permanent) => 
-                    permanent.IsTamer && permanent.IsDigimon && 
-                    CardEffectCommons.IsOpponentPermanent(permanent, card);
-
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return isExistOnField(card) &&
+                    return CardEffectCommons.IsExistOnField(card) &&
                            CardEffectCommons.IsOwnerTurn(card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return isExistOnField(card) &&
+                    return CardEffectCommons.IsExistOnField(card) &&
                            card.Owner.CanAddMemory(activateClass);
+                }
+
+                bool CanGetCardColour(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
+                        && CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaTamer(permanent, card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     int memoryGain = CardEffectCommons.GetUniqueColourCountOnOpponentsBattleArea(card, CanGetCardColour) / 2;
 
-                    if(memoryGain > 0)
+                    if (memoryGain > 0)
                         yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(memoryGain, activateClass));
                 }
             }
+
             #endregion
 
             #region On Play
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -105,7 +138,7 @@ namespace DCGO.CardEffects.EX10
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
 
-                    if(CardEffectCommons.HasMatchConditionOpponentsCardInTrash(card, OpponentsTrashDigimon))
+                    if (CardEffectCommons.HasMatchConditionOpponentsCardInTrash(card, OpponentsTrashDigimon))
                     {
                         List<CardSource> selectedCards = new List<CardSource>();
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
@@ -134,10 +167,10 @@ namespace DCGO.CardEffects.EX10
                         {
                             selectedCards = cardSources.Clone();
 
-                            yield return null;   
+                            yield return null;
                         }
 
-                        if(selectedCards.Count > 0)
+                        if (selectedCards.Count > 0)
                         {
                             yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(selectedCards));
 
@@ -253,24 +286,27 @@ namespace DCGO.CardEffects.EX10
                                 }
 
                                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                                    cardSources: playingCards, 
-                                    activateClass: activateClass, 
-                                    payCost: false, 
-                                    isTapped: false, 
-                                    root: root, 
+                                    cardSources: playingCards,
+                                    activateClass: activateClass,
+                                    payCost: false,
+                                    isTapped: false,
+                                    root: root,
                                     activateETB: true));
                             }
                         }
                     }
                 }
             }
+
             #endregion
 
             #region Security Effect
+
             if (timing == EffectTiming.SecuritySkill)
             {
                 cardEffects.Add(CardEffectFactory.PlaySelfTamerSecurityEffect(card));
             }
+
             #endregion
 
             return cardEffects;
