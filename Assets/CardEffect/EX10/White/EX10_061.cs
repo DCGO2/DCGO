@@ -12,19 +12,22 @@ namespace DCGO.CardEffects.EX10
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Digivolution Requirements
+
             if (timing == EffectTiming.None)
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.EqualsTraits("Dark Masters") &&
+                    return targetPermanent.TopCard.HasDarkMastersTrait &&
                            targetPermanent.TopCard.IsLevel6;
                 }
 
-                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 7, ignoreDigivolutionRequirement: false, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 5, ignoreDigivolutionRequirement: false, card: card, condition: null));
             }
+
             #endregion
 
             #region Cost Reduction
+
             #region Before Pay Cost - Condition Effect
 
             if (timing == EffectTiming.BeforePayCost)
@@ -44,20 +47,12 @@ namespace DCGO.CardEffects.EX10
                 {
                     return cardSource.IsDigimon &&
                            cardSource.IsFlipped &&
-                           cardSource.EqualsTraits("Dark Masters");
+                           cardSource.HasDarkMastersTrait;
                 }
 
                 bool CardCondition(CardSource cardSource)
                 {
-                    if (cardSource == card)
-                    {
-                        if (CardEffectCommons.IsExistOnHand(cardSource))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return cardSource == card;
                 }
 
                 bool CanNoSelect(CardSource cardSource)
@@ -65,6 +60,26 @@ namespace DCGO.CardEffects.EX10
                     if (cardSource != null)
                     {
                         if (cardSource.PayingCost(SelectCardEffect.Root.Hand, null, checkAvailability: false) > cardSource.Owner.MaxMemoryCost)
+                        {
+                            return false;
+                        }
+
+                        if (cardSource.PayingCost(SelectCardEffect.Root.Trash, null, checkAvailability: false) > cardSource.Owner.MaxMemoryCost)
+                        {
+                            return false;
+                        }
+
+                        if (cardSource.PayingCost(SelectCardEffect.Root.DigivolutionCards, null, checkAvailability: false) > cardSource.Owner.MaxMemoryCost)
+                        {
+                            return false;
+                        }
+
+                        if (cardSource.PayingCost(SelectCardEffect.Root.Security, null, checkAvailability: false) > cardSource.Owner.MaxMemoryCost)
+                        {
+                            return false;
+                        }
+
+                        if (cardSource.PayingCost(SelectCardEffect.Root.Library, null, checkAvailability: false) > cardSource.Owner.MaxMemoryCost)
                         {
                             return false;
                         }
@@ -80,8 +95,7 @@ namespace DCGO.CardEffects.EX10
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnHand(card) &&
-                           CardEffectCommons.HasMatchConditionOwnersSecurity(card, CanSelectCardCondition);
+                    return CardEffectCommons.HasMatchConditionOwnersSecurity(card, CanSelectCardCondition);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -101,12 +115,12 @@ namespace DCGO.CardEffects.EX10
                         return false;
                     }
 
-                    if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, (cardSource) => CanSelectSecurityCardCondition(cardSource)))
+                    if (CardEffectCommons.HasMatchConditionOwnersSecurity(card, CanSelectSecurityCardCondition))
                     {
                         bool noSelect = CanNoSelect(CardEffectCommons.GetCardFromHashtable(_hashtable));
                         List<CardSource> selectedCards = new List<CardSource>();
 
-                        int maxCount = Math.Min(3 - digivolutionCards.Count, card.Owner.SecurityCards.Count((cardSource) => CanSelectSecurityCardCondition(cardSource)));
+                        int maxCount = Math.Min(3 - digivolutionCards.Count, card.Owner.SecurityCards.Count(CanSelectSecurityCardCondition));
 
                         if (maxCount >= 1)
                         {
@@ -198,8 +212,7 @@ namespace DCGO.CardEffects.EX10
                             if (selectedCards.Count >= 1)
                             {
                                 GManager.instance.GetComponent<SelectDigiXrosClass>().AddDigivolutionCardInfos(new AddDigivolutionCardsInfo(activateClass, selectedCards));
-
-                                yield return StartCoroutine(AfterSelectCardCoroutine(selectedCards));
+                                yield return ContinuousController.instance.StartCoroutine(AfterSelectCardCoroutine(selectedCards));
                             }
                         }
                     }
@@ -374,9 +387,11 @@ namespace DCGO.CardEffects.EX10
             }
 
             #endregion
+
             #endregion
 
             #region On Play
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -500,7 +515,8 @@ namespace DCGO.CardEffects.EX10
                                     activateClass: activateClass));
 
                         #region Delete Digimon Played
-                        foreach(CardSource source in selectedCards)
+
+                        foreach (CardSource source in selectedCards)
                         {
                             Permanent playedPermanent = source.PermanentOfThisCard();
 
@@ -569,14 +585,16 @@ namespace DCGO.CardEffects.EX10
                                 return null;
                             }
                         }
-                        
+
                         #endregion
                     }
                 }
             }
+
             #endregion
 
             #region When Digivolving
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -700,6 +718,7 @@ namespace DCGO.CardEffects.EX10
                                     activateClass: activateClass));
 
                         #region Delete Digimon Played
+
                         foreach (CardSource source in selectedCards)
                         {
                             Permanent playedPermanent = source.PermanentOfThisCard();
@@ -774,6 +793,7 @@ namespace DCGO.CardEffects.EX10
                     }
                 }
             }
+
             #endregion
 
             return cardEffects;

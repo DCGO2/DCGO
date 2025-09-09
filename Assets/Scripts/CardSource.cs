@@ -3723,6 +3723,18 @@ public class CardSource : MonoBehaviour
     }
 
     #endregion
+
+    #region whether this card has Dark Masters trait
+
+    public bool HasDarkMastersTrait
+    {
+        get
+        {
+            return EqualsTraits("Dark Masters");
+        }
+    }
+
+    #endregion
 }
 
 public class JogressCondition
