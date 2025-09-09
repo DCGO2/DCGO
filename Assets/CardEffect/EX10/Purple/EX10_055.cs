@@ -85,7 +85,7 @@ namespace DCGO.CardEffects.EX10
 
                 string EffectDiscription()
                 {
-                    return "[On Play] You may choose 1 of your Digimon. Delete the chosen Digimon and 1 of your opponent�s Digimon with as high or lower a level as it.";
+                    return "[On Play] You may choose 1 of your Digimon. Delete the chosen Digimon and 1 of your opponent's Digimon with as high or lower a level as it.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -329,7 +329,7 @@ namespace DCGO.CardEffects.EX10
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
                         && CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, IsBagraArmyDigimon)
-                        && CardEffectCommons.IsByEffect(hashtable, null);
+                        && CardEffectCommons.IsByEffect(hashtable, effect => effect != null);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
