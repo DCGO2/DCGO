@@ -105,6 +105,7 @@ namespace DCGO.CardEffects.P
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DrawAndDiscardCards(
+                        player: (card.Owner, card.Owner),
                         drawAmount: 1,
                         trashAmount: 1,
                         card: card,
