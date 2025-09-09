@@ -152,8 +152,7 @@ namespace DCGO.CardEffects.BT22
 
                 bool IsOpponentsDigimon(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                        && CardEffectCommons.IsMinCost(permanent, card.Owner.Enemy, true, null);
+                    return CardEffectCommons.IsMinCost(permanent, card.Owner.Enemy, true);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
