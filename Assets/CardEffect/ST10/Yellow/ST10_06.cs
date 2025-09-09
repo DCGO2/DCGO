@@ -251,6 +251,8 @@ public class ST10_06 : CEntity_Effect
 
                         yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 
+                        selectCardEffect.SetUseFaceDown();
+
                         IEnumerator SelectCardCoroutine(CardSource cardSource)
                         {
                             selectedCards.Add(cardSource);

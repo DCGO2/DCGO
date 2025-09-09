@@ -233,7 +233,7 @@ namespace DCGO.CardEffects.EX8
                                     CardEffectCommons.CardEffectHashtable(activateClass),
                                     false).PutSecurity());
 
-                            if(CardEffectCommons.IsExistInSecurity(_topCard, true))
+                            if(!CardEffectCommons.IsExistOnBattleArea(_topCard))
                                 yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() }, activateClass).Unsuspend());
                         }
                     }

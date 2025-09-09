@@ -146,6 +146,8 @@ namespace DCGO.CardEffects.EX10
 
                             yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 
+                            selectCardEffect.SetUseFaceDown();
+
                             bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
                             {
                                 List<string> cardNames = new List<string>();
@@ -738,14 +740,11 @@ namespace DCGO.CardEffects.EX10
 
                             bool CanUseCondition2(Hashtable hashtable1)
                             {
-                                if (CardEffectCommons.IsOpponentTurn(card))
+                                if (CardEffectCommons.IsOwnerTurn(card))
                                 {
                                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(selectedPermanent, selectedPermanent.TopCard))
                                     {
-                                        if (CardEffectCommons.CanTriggerOnEndAttack(hashtable1, selectedPermanent.TopCard))
-                                        {
-                                            return true;
-                                        }
+                                        return true;
                                     }
                                 }
 

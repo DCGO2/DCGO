@@ -21,7 +21,7 @@ namespace DCGO.CardEffects.BT22
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
-                    permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: true,
+                    permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false,
                     card: card, condition: null));
             }
 

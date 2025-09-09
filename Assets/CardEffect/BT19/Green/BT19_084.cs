@@ -165,6 +165,8 @@ namespace DCGO.CardEffects.BT19
 
                         yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 
+
+
                         IEnumerator SelectCardCoroutine(CardSource cardSource)
                         {
                             selectedCard = cardSource;
