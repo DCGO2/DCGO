@@ -200,6 +200,7 @@ namespace DCGO.CardEffects.P
                                 {
                                     CardSource topCard = selectedPermanent.TopCard;
 
+                                    // TODO: Replace this and if below with a PlaceInSecurityProcessFromResult
                                     yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(selectedPermanent, CardEffectCommons.CardEffectHashtable(activateClass), toTop: position).PutSecurity());
 
                                     if (topCard.Owner.SecurityCards.Contains(topCard) || topCard.IsToken)
