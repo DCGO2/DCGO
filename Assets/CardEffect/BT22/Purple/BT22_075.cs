@@ -29,73 +29,7 @@ namespace DCGO.CardEffects.BT22
 
             if (timing == EffectTiming.None)
             {
-                AddAppFusionConditionClass addAppFusionConditionClass = new AddAppFusionConditionClass();
-                addAppFusionConditionClass.SetUpICardEffect($"App Fusion", (hashtable) => true, card);
-                addAppFusionConditionClass.SetUpAddAppFusionConditionClass(getAppFusionCondition: GetAppFusion);
-                addAppFusionConditionClass.SetNotShowUI(true);
-                cardEffects.Add(addAppFusionConditionClass);
-
-                AppFusionCondition GetAppFusion(CardSource cardSource)
-                {
-                    bool linkCondition(Permanent permanent, CardSource source)
-                    {
-                        if (source != null && source != card)
-                        {
-                            if (permanent.TopCard.EqualsCardName("Roamon"))
-                            {
-                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Effecmon")))
-                                {
-                                    return true;
-                                }
-                            }
-
-                            if (permanent.TopCard.EqualsCardName("Effecmon"))
-                            {
-                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Roamon")))
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-
-                        return false;
-                    }
-                    bool digimonCondition(Permanent permanent)
-                    {
-                        if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
-                        {
-                            if (permanent.TopCard.EqualsCardName("Roamon"))
-                            {
-                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Effecmon")))
-                                {
-                                    return true;
-                                }
-                            }
-
-                            if (permanent.TopCard.EqualsCardName("Effecmon"))
-                            {
-                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Roamon")))
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-
-                        return false;
-                    }
-
-                    if (cardSource == card)
-                    {
-                        AppFusionCondition AppFusionCondition = new AppFusionCondition(
-                            linkCondition,
-                            digimonCondition,
-                            0);
-
-                        return AppFusionCondition;
-                    }
-
-                    return null;
-                }
+                cardEffects.Add(CardEffectFactory.AddAppfuseMethodByName(new List<string>() { "Roamon", "Effecmon" }, card));
             }
 
             #endregion
