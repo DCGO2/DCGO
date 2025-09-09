@@ -232,20 +232,116 @@ namespace DCGO.CardEffects.EX10
 
             bool CanSelectPurplePermanentCondition(Permanent permanent)
             {
-                if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
-                {
-                    if (permanent.TopCard.CardColors.Contains(CardColor.Purple))
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
+                return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                    && permanent.TopCard.CardColors.Contains(CardColor.Purple);
             }
 
-            IEnumerator ActivateBlockerRetalCoroutine(Hashtable _hashtable, ActivateClass activateClass)
+            #endregion
+
+            #region On Play
+
+            if (timing == EffectTiming.OnEnterFieldAnyone)
             {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Your 1 Digimon gains Retaliation and Blocker", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[On Play] 1 of your purple Digimon gains <Blocker> and <Retaliation> until your opponent's turn ends.";
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPurplePermanentCondition))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPurplePermanentCondition))
+                        {
+                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPurplePermanentCondition));
+
+                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                            selectPermanentEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: CanSelectPurplePermanentCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: maxCount,
+                                canNoSelect: false,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: SelectPermanentCoroutine,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Custom,
+                                cardEffect: activateClass);
+
+                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will get Blocker and Retaliation.", "The opponent is selecting 1 Digimon that will get Blocker and Retaliation.");
+
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                            IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBlocker(targetPermanent: permanent, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainRetaliation(targetPermanent: permanent, effectDuration: EffectDuration.UntilOpponentTurnEnd, activateClass: activateClass));
+                            }
+                        }
+                    }
+                }
+            }
+
+            #endregion
+
+            #region On Deletion
+
+            if (timing == EffectTiming.OnDestroyedAnyone)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Your 1 Digimon gains Retaliation and Blocker", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[On Deletion] 1 of your purple Digimon gains <Blocker> and <Retaliation> until your opponent's turn ends.";
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.CanActivateOnDeletion(card))
+                    {
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPurplePermanentCondition))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
                     if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPurplePermanentCondition))
                     {
@@ -281,77 +377,7 @@ namespace DCGO.CardEffects.EX10
 
             #endregion
 
-            #region On Play
-
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Your 1 Digimon gains Retaliation and Blocker", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, hashtable => ActivateBlockerRetalCoroutine(hashtable, activateClass), -1, false, EffectDiscription());
-                cardEffects.Add(activateClass);
-
-                string EffectDiscription()
-                {
-                    return "[On Play] 1 of your purple Digimon gains <Blocker> and <Retaliation> until your opponent's turn ends.";
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerOnPlay(hashtable, card);
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPurplePermanentCondition))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-            }
-
-            #endregion
-
-            #region On Deletion non-inherit
-
-            if (timing == EffectTiming.OnDestroyedAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Your 1 Digimon gains Retaliation and Blocker", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, hashtable => ActivateBlockerRetalCoroutine(hashtable, activateClass), -1, true, EffectDiscription());
-                cardEffects.Add(activateClass);
-
-                string EffectDiscription()
-                {
-                    return "[On Deletion] 1 of your purple Digimon gains <Blocker> and <Retaliation> until your opponent's turn ends.";
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    if (CardEffectCommons.CanActivateOnDeletion(card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPurplePermanentCondition))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-            }
-
-            #endregion
-
-            #region On Deletion inherit
+            #region ESS - On Deletion
 
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
