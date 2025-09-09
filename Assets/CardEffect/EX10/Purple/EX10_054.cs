@@ -77,14 +77,103 @@ namespace DCGO.CardEffects.EX10
 
                     IEnumerator SuccessProcess(List<Permanent> permanents)
                     {
+                        #region reduce play cost
+
+                        ChangeCostClass changeCostClass = new ChangeCostClass();
+                        changeCostClass.SetUpICardEffect("Play Cost -7", CanUseCondition1, card);
+                        changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
+                        Func<EffectTiming, ICardEffect> getCardEffect = GetCardEffect;
+                        card.Owner.UntilCalculateFixedCostEffect.Add(getCardEffect);
+
+                        ICardEffect GetCardEffect(EffectTiming _timing)
+                        {
+                            if (_timing == EffectTiming.None)
+                            {
+                                return changeCostClass;
+                            }
+
+                            return null;
+                        }
+
+                        bool CanUseCondition1(Hashtable hashtable)
+                        {
+                            return true;
+                        }
+
+                        int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
+                        {
+                            if (CardSourceCondition(cardSource))
+                            {
+                                if (RootCondition(root))
+                                {
+                                    if (PermanentsCondition(targetPermanents))
+                                    {
+                                        Cost -= 7;
+                                    }
+                                }
+                            }
+
+                            return Cost;
+                        }
+
+                        bool PermanentsCondition(List<Permanent> targetPermanents)
+                        {
+                            if (targetPermanents == null)
+                            {
+                                return true;
+                            }
+                            else
+                            {
+                                if (targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0)
+                                {
+                                    return true;
+                                }
+                            }
+
+                            return false;
+                        }
+
+                        bool CardSourceCondition(CardSource cardSource)
+                        {
+                            if (cardSource != null)
+                            {
+                                if (cardSource.Owner == card.Owner)
+                                {
+                                    if (cardSource == card)
+                                    {
+                                        return true;
+                                    }
+                                }
+                            }
+
+                            return false;
+                        }
+
+                        bool RootCondition(SelectCardEffect.Root root)
+                        {
+                            return true;
+                        }
+
+                        bool isUpDown()
+                        {
+                            return true;
+                        }
+
+                        #endregion
+
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
                                             cardSources: new List<CardSource> { card },
                                             activateClass: activateClass,
                                             payCost: true,
                                             isTapped: false,
                                             root: SelectCardEffect.Root.Trash,
-                                            activateETB: true,
-                                            fixedCost: 5));
+                                            activateETB: true));
+
+                        #region release reducing play cost
+
+                        card.Owner.UntilCalculateFixedCostEffect.Remove(getCardEffect);
+
+                        #endregion
                     }
                 }
             }
@@ -120,8 +209,8 @@ namespace DCGO.CardEffects.EX10
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: maxCount,
-                        canNoSelect: false,
-                        canEndNotMax: false,
+                        canNoSelect: true,
+                        canEndNotMax: true,
                         selectPermanentCoroutine: null,
                         afterSelectPermanentCoroutine: null,
                         mode: SelectPermanentEffect.Mode.Tap,
@@ -136,7 +225,7 @@ namespace DCGO.CardEffects.EX10
                         canEndSelectCondition: null,
                         maxCount: maxCount,
                         canNoSelect: false,
-                        canEndNotMax: false,
+                        canEndNotMax: true,
                         selectPermanentCoroutine: SelectPermanentCoroutine,
                         afterSelectPermanentCoroutine: null,
                         mode: SelectPermanentEffect.Mode.Custom,
