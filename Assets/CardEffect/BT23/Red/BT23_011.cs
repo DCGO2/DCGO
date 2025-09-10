@@ -165,25 +165,21 @@ namespace DCGO.CardEffects.BT23
                     {
                         CardSource selectedCard = null;
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, CanSelectCardCondition));
-                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
-                        selectCardEffect.SetUp(
-                                    canTargetCondition: CanSelectCardCondition,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    canNoSelect: () => true,
-                                    selectCardCoroutine: SelectCardCoroutine,
-                                    afterSelectCardCoroutine: null,
-                                    message: "Select 1 Red/[CS] tamer to play",
-                                    maxCount: maxCount,
-                                    canEndNotMax: false,
-                                    isShowOpponent: true,
-                                    mode: SelectCardEffect.Mode.Custom,
-                                    root: SelectCardEffect.Root.Hand,
-                                    customRootCardList: null,
-                                    canLookReverseCard: true,
-                                    selectPlayer: card.Owner,
-                                    cardEffect: activateClass);
+                        selectHandEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectCardCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: maxCount,
+                            canNoSelect: true,
+                            canEndNotMax: false,
+                            isShowOpponent: true,
+                            selectCardCoroutine: SelectCardCoroutine,
+                            afterSelectCardCoroutine: null,
+                            mode: SelectHandEffect.Mode.Custom,
+                            cardEffect: activateClass);
 
                         IEnumerator SelectCardCoroutine(CardSource cardSource)
                         {
@@ -191,9 +187,9 @@ namespace DCGO.CardEffects.BT23
                             yield return null;
                         }
 
-                        selectCardEffect.SetUpCustomMessage("Select 1 Red/[CS] tamer to play", "Your opponent is select 1 tamer to play");
-                        selectCardEffect.SetUpCustomMessage_ShowCard("Selected card");
-                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                        selectHandEffect.SetUpCustomMessage("Select 1 Red/[CS] tamer to play", "Your opponent is select 1 tamer to play");
+                        selectHandEffect.SetUpCustomMessage_ShowCard("Selected card");
+                        yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
 
                         if (selectedCard != null) yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
                             cardSources: new List<CardSource>() { selectedCard },
