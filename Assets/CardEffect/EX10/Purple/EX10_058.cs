@@ -119,7 +119,7 @@ namespace DCGO.CardEffects.EX10
                 AddSkillClass addSkillClass = new AddSkillClass();
                 addSkillClass.SetUpICardEffect("Delete 1 of your Digimon", CanUseCondition1, card);
                 addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
-                card.Owner.UntilOpponentTurnEndEffects.Add((_timing) => addSkillClass);
+                selectedPermanent.UntilOwnerTurnEndEffects.Add((_timing) => addSkillClass);
 
                 bool CanUseCondition1(Hashtable hashtable)
                 {

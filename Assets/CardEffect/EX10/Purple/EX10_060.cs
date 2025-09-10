@@ -31,9 +31,10 @@ namespace DCGO.CardEffects.EX10
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
+                bool hasOpponentDeleted = false;
                 if (CardEffectCommons.HasMatchConditionPermanent(IsOpponentDigimonOrTamer))
                 {
-                    bool hasOpponentDeleted = false;
+
                     Permanent selectedPermanent = null;
 
                     #region Opponent Selects 1 Digimon or Tamer
@@ -80,19 +81,19 @@ namespace DCGO.CardEffects.EX10
                     }
 
                     #endregion
+                }
 
-                    if (!hasOpponentDeleted)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
-                            player: card.Owner.Enemy,
-                            destroySecurityCount: 1,
-                            cardEffect: activateClass,
-                            fromTop: true).DestroySecurity());
+                if (!hasOpponentDeleted)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
+                        player: card.Owner.Enemy,
+                        destroySecurityCount: 1,
+                        cardEffect: activateClass,
+                        fromTop: true).DestroySecurity());
 
-                        if (card.PermanentOfThisCard().CanUnsuspend) yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(
-                            permanents: new List<Permanent>() { card.PermanentOfThisCard() },
-                            cardEffect: activateClass).Unsuspend());
-                    }
+                    if (card.PermanentOfThisCard().CanUnsuspend) yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(
+                        permanents: new List<Permanent>() { card.PermanentOfThisCard() },
+                        cardEffect: activateClass).Unsuspend());
                 }
             }
 
@@ -268,8 +269,7 @@ namespace DCGO.CardEffects.EX10
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, IsOpponentDigimonOrTamer);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
             }
 
@@ -298,8 +298,7 @@ namespace DCGO.CardEffects.EX10
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, IsOpponentDigimonOrTamer);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
             }
 

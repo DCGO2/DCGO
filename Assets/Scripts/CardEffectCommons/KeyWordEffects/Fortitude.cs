@@ -26,13 +26,13 @@ public partial class CardEffectCommons
                     foreach (Hashtable hashtable1 in hashtables)
                     {
                         Permanent deletedPermanent = CardEffectCommons.GetPermanentFromHashtable(hashtable1);
-                        List<CardSource> CardSources = CardEffectCommons.GetCardSourcesFromHashtable(hashtable1);
+                        List<CardSource> CardSources = CardEffectCommons.GetDigivolutionSourcesFromHashtable(hashtable1);
 
                         if (CardSources != null)
                         {
                             if (CardSources.Contains(card))
                             {
-                                if (deletedPermanent.DigivolutionCards.Count >= 1)
+                                if (CardSources.Count >= 1)
                                 {
                                     if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: card, payCost: false, cardEffect: activateClass, root: SelectCardEffect.Root.Trash))
                                     {

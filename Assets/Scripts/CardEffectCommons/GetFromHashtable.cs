@@ -592,6 +592,29 @@ public partial class CardEffectCommons
     }
     #endregion
 
+    #region Get DigivolutionSources from hashtable
+    public static List<CardSource> GetDigivolutionSourcesFromHashtable(Hashtable hashtable)
+    {
+        if (hashtable != null)
+        {
+            if (hashtable.ContainsKey("DigivolutionSources"))
+            {
+                if (hashtable["DigivolutionSources"] is List<CardSource>)
+                {
+                    List<CardSource> CardSources = (List<CardSource>)hashtable["DigivolutionSources"];
+
+                    if (CardSources != null)
+                    {
+                        return CardSources;
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+    #endregion
+
     #region Get DeckBottom Cards from hashtable
     public static List<CardSource> GetDeckBottomCardsFromHashtable(Hashtable hashtable)
     {

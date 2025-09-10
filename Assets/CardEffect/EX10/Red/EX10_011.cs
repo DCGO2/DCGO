@@ -253,7 +253,7 @@ namespace DCGO.CardEffects.EX10
 
             #region When Attacking
 
-            if (timing == EffectTiming.OnEnterFieldAnyone)
+            if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete 2 unsuspened Digimon", CanUseCondition, card);
