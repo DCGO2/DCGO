@@ -65,7 +65,7 @@ namespace DCGO.CardEffects.EX10
 
             #region Start of Main Phase
 
-            if (timing == EffectTiming.OnEnterFieldAnyone)
+            if (timing == EffectTiming.OnStartMainPhase)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Place 1 card under this Tamer from hand or trash to Draw 1", CanUseCondition, card);

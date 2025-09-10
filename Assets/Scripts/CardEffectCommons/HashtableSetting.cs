@@ -114,6 +114,7 @@ public partial class CardEffectCommons
                     {"Permanent", permanent},
                     {"TopCard", permanent.TopCard},
                     {"CardSources", cardSources},
+                    {"DigivolutionSources", permanent.DigivolutionCards.Clone()},
                     {"CardNames", cardNames},
                     {"CardColors", cardColors},
                     {"HasSaveText", permanent.TopCard.HasSaveText},

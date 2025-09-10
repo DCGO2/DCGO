@@ -81,28 +81,54 @@ namespace DCGO.CardEffects.EX10
                             if (rootmode != null)
                             {
                                 CardSource selectedCard = null;
-                                SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
 
-                                selectCardEffect.SetUp(
-                                    canTargetCondition: CanSelectCardCondition,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    canNoSelect: () => true,
-                                    selectCardCoroutine: SelectCardCoroutine,
-                                    afterSelectCardCoroutine: null,
-                                    message: "Select 1 card to add as source.",
-                                    maxCount: 1,
-                                    canEndNotMax: false,
-                                    isShowOpponent: true,
-                                    mode: SelectCardEffect.Mode.Custom,
-                                    root: (SelectCardEffect.Root)rootmode!,
-                                    customRootCardList: null,
-                                    canLookReverseCard: true,
-                                    selectPlayer: card.Owner,
-                                    cardEffect: activateClass);
+                                if(rootmode == SelectCardEffect.Root.Hand)
+                                {
+                                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
-                                selectCardEffect.SetUpCustomMessage("Select 1 card to add as source.", "The opponent is selecting 1 card to add as source.");
-                                yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                                    selectHandEffect.SetUp(
+                                        selectPlayer: card.Owner,
+                                        canTargetCondition: CanSelectCardCondition,
+                                        canTargetCondition_ByPreSelecetedList: null,
+                                        canEndSelectCondition: null,
+                                        maxCount: 1,
+                                        canNoSelect: true,
+                                        canEndNotMax: false,
+                                        isShowOpponent: true,
+                                        selectCardCoroutine: SelectCardCoroutine,
+                                        afterSelectCardCoroutine: null,
+                                        mode: SelectHandEffect.Mode.Custom,
+                                        cardEffect: activateClass);
+
+                                    selectHandEffect.SetUpCustomMessage("Select 1 card to add as source.", "The opponent is selecting 1 card to add as source.");
+                                    yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+                                }
+                                else
+                                {
+                                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                                    selectCardEffect.SetUp(
+                                        canTargetCondition: CanSelectCardCondition,
+                                        canTargetCondition_ByPreSelecetedList: null,
+                                        canEndSelectCondition: null,
+                                        canNoSelect: () => true,
+                                        selectCardCoroutine: SelectCardCoroutine,
+                                        afterSelectCardCoroutine: null,
+                                        message: "Select 1 card to add as source.",
+                                        maxCount: 1,
+                                        canEndNotMax: false,
+                                        isShowOpponent: true,
+                                        mode: SelectCardEffect.Mode.Custom,
+                                        root: (SelectCardEffect.Root)rootmode!,
+                                        customRootCardList: null,
+                                        canLookReverseCard: true,
+                                        selectPlayer: card.Owner,
+                                        cardEffect: activateClass);
+
+                                    selectCardEffect.SetUpCustomMessage("Select 1 card to add as source.", "The opponent is selecting 1 card to add as source.");
+                                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+                                }
+                                
 
                                 IEnumerator SelectCardCoroutine(CardSource cardSource)
                                 {
@@ -158,12 +184,12 @@ namespace DCGO.CardEffects.EX10
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Place 1 [Xros]/[Blue Flare]/[Hero] digimon under tamer, then <Save>", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpICardEffect("Play 1 [Tuwarmon] with a play cost of 7 or less under tamer, then <Save>", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
-                    => "[On Deletion] You may place 1 Digimon card with the [Xros Heart]/[Blue Flare]/[Hero] trait from your hand or trash under any of your Tamers. Then,＜Save＞";
+                    => "[On Deletion] You may play 1 [Tuwarmon] with a play cost of 7 or less from under your Tamers without paying the cost. Then, ＜Save＞";
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
@@ -278,12 +304,12 @@ namespace DCGO.CardEffects.EX10
                             isTapped: false,
                             root: SelectCardEffect.Root.DigivolutionCards,
                             activateETB: true));
+                    }
 
-                        if (CardEffectCommons.CanActivateSave(hashtable, CanSelectTamerCondition))
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(
-                                CardEffectCommons.SaveProcess(hashtable, activateClass, card, CanSelectTamerCondition));
-                        }
+                    if (CardEffectCommons.CanActivateSave(hashtable, CanSelectTamerCondition))
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(
+                            CardEffectCommons.SaveProcess(hashtable, activateClass, card, CanSelectTamerCondition));
                     }
                 }
             }

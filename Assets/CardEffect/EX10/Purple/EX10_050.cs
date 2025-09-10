@@ -122,14 +122,12 @@ namespace DCGO.CardEffects.EX10
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnTrash(card)
-                        && CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnTrash(card)
-                        && CardEffectCommons.CanActivateOnDeletion(card)
+                    return CardEffectCommons.CanActivateOnDeletion(card)
                         && card.Owner.SecurityCards.Count >= 10
                         && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, IsBeelzemon);
                 }
@@ -138,7 +136,7 @@ namespace DCGO.CardEffects.EX10
                 {
                     return cardSource.IsDigimon
                         && cardSource.EqualsCardName("Beelzemon")
-                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
+                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass, SelectCardEffect.Root.Trash);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

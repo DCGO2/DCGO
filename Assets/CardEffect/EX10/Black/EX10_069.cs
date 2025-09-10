@@ -27,7 +27,7 @@ namespace DCGO.CardEffects.EX10
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerSecurityEffect(hashtable, card);
+                    return CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card);
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
