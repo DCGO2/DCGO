@@ -46,7 +46,7 @@ namespace DCGO.CardEffects.EX10
 
                 bool ProperSources(CardSource source)
                 {
-                    return source.IsDigimon &&
+                    return !source.CanNotTrashFromDigivolutionCards(activateClass) &&
                            (source.EqualsTraits("Rock") ||
                            source.EqualsTraits("Mineral"));
                 }
@@ -87,7 +87,11 @@ namespace DCGO.CardEffects.EX10
                     }
 
                     if (selectedCards.Count >= 3)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(new ITrashDigivolutionCards(permanent, selectedCards, activateClass).TrashDigivolutionCards());
+
                         GManager.instance.attackProcess.IsEndAttack = true;
+                    }                        
                 }
             }
 

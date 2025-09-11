@@ -8,7 +8,7 @@ using Photon.Pun;
 
 public partial class CardEffectCommons
 {
-    public static IEnumerator SelectTrashDigivolutionCards(Func<Permanent, bool> permanentCondition, Func<CardSource, bool> cardCondition, int maxCount, bool canNoTrash, bool isFromOnly1Permanent, ICardEffect activateClass, string selectString = "Digimon", Func<Permanent, List<CardSource>, IEnumerator> afterSelectionCoroutine = null)
+    public static IEnumerator SelectTrashDigivolutionCards(Func<Permanent, bool> permanentCondition, Func<CardSource, bool> cardCondition, int maxCount, bool canNoTrash, bool isFromOnly1Permanent, ICardEffect activateClass, string selectString = "Digimon", Func<Permanent, List<CardSource>, IEnumerator> afterSelectionCoroutine = null, bool canEndNotMax = false)
     {
         if (maxCount <= 0) yield break;
         if (activateClass == null) yield break;
@@ -96,7 +96,7 @@ public partial class CardEffectCommons
                     canEndSelectCondition: null,
                     maxCount: maxCount,
                     canNoSelect: canNoTrash && NotSelectYet(),
-                    canEndNotMax: false,
+                    canEndNotMax: canEndNotMax,
                     selectPermanentCoroutine: SelectPermanentCoroutine,
                     afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine,
                     mode: SelectPermanentEffect.Mode.Custom,
