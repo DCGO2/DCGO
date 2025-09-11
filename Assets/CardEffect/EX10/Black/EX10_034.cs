@@ -418,7 +418,7 @@ namespace DCGO.CardEffects.EX10
 
                 string EffectDiscription()
                 {
-                    return "[All Turns] [Once Per Turn] When Digimon attack, by trashing any 2 of this Digimon's digivolution cards, this Digimon gains ＜Security A. +1> and +3000 DP until your turn ends.";
+                    return "[All Turns] [Once Per Turn] When Digimon attack, by trashing any 2 of this Digimon's digivolution cards, this Digimon gains ＜Security A. +1＞ and +3000 DP until your turn ends.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

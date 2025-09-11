@@ -68,7 +68,7 @@ namespace DCGO.CardEffects.EX10
                             afterSelectCardCoroutine: null,
                             message: "Select cards to place as the bottom digivolution sources",
                             maxCount: maxCount,
-                            canEndNotMax: true,
+                            canEndNotMax: false,
                             isShowOpponent: false,
                             mode: SelectCardEffect.Mode.Custom,
                             root: SelectCardEffect.Root.Trash,

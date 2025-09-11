@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 //Pyramidimon
 namespace DCGO.CardEffects.EX10
@@ -207,7 +208,7 @@ namespace DCGO.CardEffects.EX10
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] [When Attacking] By trashing up to 3 [Mineral] or [Rock] trait cards from any of your Digimon's digivolution cards, to 1 of your opponent's Digimon, reduce the play cost by 2 until their turn ends for each card trashed.";
+                    return "[When Digivolving] By trashing up to 3 [Mineral] or [Rock] trait cards from any of your Digimon's digivolution cards, to 1 of your opponent's Digimon, reduce the play cost by 2 until their turn ends for each card trashed.";
                 }
 
                 bool HasProperTrait(CardSource source)
@@ -216,7 +217,7 @@ namespace DCGO.CardEffects.EX10
                            (source.EqualsTraits("Mineral") || source.EqualsTraits("Rock"));
                 }
 
-                bool HasProperAmountOfSources()
+                int HasProperAmountOfSources()
                 {
                     int totalSourceCount = 0;
 
@@ -225,7 +226,7 @@ namespace DCGO.CardEffects.EX10
                         totalSourceCount += permanent.DigivolutionCards.Count(HasProperTrait);
                     }
 
-                    return totalSourceCount >= 3;
+                    return totalSourceCount;
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -245,7 +246,7 @@ namespace DCGO.CardEffects.EX10
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
-                        return HasProperAmountOfSources();
+                        return HasProperAmountOfSources() > 0;
 
                     return false;
                 }
@@ -253,6 +254,7 @@ namespace DCGO.CardEffects.EX10
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     int trashedCount = 0;
+                    int maxCount = Mathf.Min(1, HasProperAmountOfSources());
 
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SelectTrashDigivolutionCards(
                         permanentCondition: CanSelectPermanentCondition,
@@ -261,7 +263,8 @@ namespace DCGO.CardEffects.EX10
                         canNoTrash: false,
                         isFromOnly1Permanent: false,
                         activateClass: activateClass,
-                        afterSelectionCoroutine: AfterTrashedCards
+                        afterSelectionCoroutine: AfterTrashedCards,
+                        canEndNotMax: true
                     ));
 
                     IEnumerator AfterTrashedCards(Permanent permanent, List<CardSource> cards)
@@ -340,7 +343,7 @@ namespace DCGO.CardEffects.EX10
                         totalSourceCount += permanent.DigivolutionCards.Count(HasProperTrait);
                     }
 
-                    return totalSourceCount >= 3;
+                    return totalSourceCount >= 1;
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
