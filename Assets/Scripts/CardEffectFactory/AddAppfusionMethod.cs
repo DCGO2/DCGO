@@ -30,11 +30,11 @@ public partial class CardEffectFactory
                 {
                     if (source != card)
                     {
-                        for(int i = 0; i < cardConditions.Count; i++)
+                        for (int i = 0; i < cardConditions.Count; i++)
                         {
                             if (cardConditions[i](source)) 
                             {
-                                for (int j = 0; j <= cardConditions.Count; j++)
+                                for (int j = 0; j < cardConditions.Count; j++)
                                 {
                                     if(i != j)
                                     {
@@ -60,7 +60,7 @@ public partial class CardEffectFactory
                     {
                         if (cardConditions[i](permanent.TopCard))
                         {
-                            for (int j = 0; j <= cardConditions.Count; j++)
+                            for (int j = 0; j < cardConditions.Count; j++)
                             {
                                 if (i != j)
                                 {
