@@ -315,7 +315,7 @@ namespace DCGO.CardEffects.EX10
                     if (selectedPermament != null)
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
                             targetPermanent: selectedPermament,
-                            changeValue: -6000,
+                            changeValue: -8000,
                             effectDuration: EffectDuration.UntilEachTurnEnd,
                             activateClass: activateClass));
                 }

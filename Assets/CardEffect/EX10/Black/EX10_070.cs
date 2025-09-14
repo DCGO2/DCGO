@@ -80,10 +80,13 @@ namespace DCGO.CardEffects.EX10
 
             if (timing == EffectTiming.OnLinkCardDiscarded)
             {
+                Permanent trashedFrom = null;
+                string trashedName = "null";
+
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Link 1 card from trash with 1 Digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect($"Link 1 card from trash with {trashedName}", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
-                cardEffects.Add(activateClass);
+                cardEffects.Add(activateClass);                
 
                 string EffectDescription()
                 {
@@ -92,8 +95,18 @@ namespace DCGO.CardEffects.EX10
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanDeclareOptionDelayEffect(card) &&
-                        CardEffectCommons.CanTriggerOnTrashLinkedCard(hashtable, perm => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(perm, card), cardEffect => cardEffect != null, source => source != null);
+                    if (CardEffectCommons.CanDeclareOptionDelayEffect(card))
+                    {
+                        if (CardEffectCommons.CanTriggerOnTrashLinkedCard(hashtable, perm => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(perm, card), cardEffect => cardEffect != null, source => source != null))
+                        {
+                            trashedFrom = CardEffectCommons.GetPermanentFromHashtable(hashtable);
+                            trashedName = trashedName != null ? trashedFrom.TopCard.BaseENGCardNameFromEntity : "null";
+
+                            return true;
+                        }
+                    }
+
+                    return false;
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -102,7 +115,10 @@ namespace DCGO.CardEffects.EX10
                     {
                         if (card.PermanentOfThisCard().CanBeDestroyedBySkill(activateClass))
                         {
-                            return CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, cardSource => CanLinkToTrashedFromDigimon(cardSource, hashtable));
+                            if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, cardSource => CanLinkToTrashedFromDigimon(cardSource, hashtable)))
+                            {
+                                return true;
+                            }                            
                         }
                     }
 
@@ -116,7 +132,7 @@ namespace DCGO.CardEffects.EX10
 
                 bool CanSelectLinkTarget(CardSource cardSource)
                 {
-                    return cardSource.HasAppmonTraits && cardSource.CanLink(false);
+                    return cardSource.HasAppmonTraits && cardSource.CanLinkToTargetPermanent(trashedFrom, false);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -220,7 +236,7 @@ namespace DCGO.CardEffects.EX10
 
             #endregion
 
-            #region Security
+                #region Security
 
             if (timing == EffectTiming.SecuritySkill)
             {

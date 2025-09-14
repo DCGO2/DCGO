@@ -162,7 +162,7 @@ namespace DCGO.CardEffects.EX10
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: maxCount,
-                        canNoSelect: true,
+                        canNoSelect: false,
                         canEndNotMax: false,
                         selectPermanentCoroutine: SelectPermanentCoroutine,
                         afterSelectPermanentCoroutine: null,
@@ -191,7 +191,7 @@ namespace DCGO.CardEffects.EX10
                                     canTargetCondition: CanSelectSource,
                                     canTargetCondition_ByPreSelecetedList: null,
                                     canEndSelectCondition: null,
-                                    canNoSelect: () => true,
+                                    canNoSelect: () => false,
                                     selectCardCoroutine: SelectCardCoroutine,
                                     afterSelectCardCoroutine: null,
                                     message: "Select 1 digivolution card to discard.",
@@ -284,7 +284,7 @@ namespace DCGO.CardEffects.EX10
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By trashing 1 source, 1 digimon gains Blocker, Retaliation", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, hashtable => SharedActivateCoroutine(hashtable, activateClass), 1, false, SharedEffectDiscription("On Play"));
+                activateClass.SetUpActivateClass(CanActivateCondition, hashtable => SharedActivateCoroutine(hashtable, activateClass), 1, true, SharedEffectDiscription("On Play"));
                 activateClass.SetHashString("OPWDWA_EX10_045");
                 cardEffects.Add(activateClass);
 
@@ -308,7 +308,7 @@ namespace DCGO.CardEffects.EX10
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By trashing 1 source, 1 digimon gains Blocker, Retaliation", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, hashtable => SharedActivateCoroutine(hashtable, activateClass), 1, false, SharedEffectDiscription("When Digivolving"));
+                activateClass.SetUpActivateClass(CanActivateCondition, hashtable => SharedActivateCoroutine(hashtable, activateClass), 1, true, SharedEffectDiscription("When Digivolving"));
                 activateClass.SetHashString("OPWDWA_EX10_045");
                 cardEffects.Add(activateClass);
 
@@ -332,7 +332,7 @@ namespace DCGO.CardEffects.EX10
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By trashing 1 source, 1 digimon gains Blocker, Retaliation", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, hashtable => SharedActivateCoroutine(hashtable, activateClass), 1, false, SharedEffectDiscription("When Attacking"));
+                activateClass.SetUpActivateClass(CanActivateCondition, hashtable => SharedActivateCoroutine(hashtable, activateClass), 1, true, SharedEffectDiscription("When Attacking"));
                 activateClass.SetHashString("OPWDWA_EX10_045");
                 cardEffects.Add(activateClass);
 

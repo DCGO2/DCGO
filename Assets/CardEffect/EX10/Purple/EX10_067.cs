@@ -31,7 +31,7 @@ namespace DCGO.CardEffects.EX10
 
                 string EffectDiscription()
                 {
-                    return "[Your Turn] When any of your Digimon digivolve into a Digimon with ＜Save＞ in its text, by suspending this Tamer and placing 1 Digimon card with ＜Save＞ in its text from under your Tamers as that Digimon's bottom digivolution card, that Digimon gains ＜Alliance＞ for the turn. ";
+                    return "[Your Turn] When any of your Digimon digivolve into a Digimon with ＜Save＞ in its text, by suspending this Tamer and placing 1 Digimon card with ＜Save＞ in its text from under your Tamers as that Digimon's bottom digivolution card, that Digimon gains ＜Alliance＞ for the turn.";
                 }
 
                 bool HasSaveText(CardSource source)
@@ -96,7 +96,7 @@ namespace DCGO.CardEffects.EX10
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: 1,
-                        canNoSelect: true,
+                        canNoSelect: false,
                         canEndNotMax: false,
                         selectPermanentCoroutine: SelectPermanentCoroutine,
                         afterSelectPermanentCoroutine: null,
@@ -123,7 +123,7 @@ namespace DCGO.CardEffects.EX10
                             canTargetCondition: HasSaveText,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            canNoSelect: () => true,
+                            canNoSelect: () => false,
                             selectCardCoroutine: SelectCardCoroutine,
                             afterSelectCardCoroutine: null,
                             message: "Select 1 card to place on bottom of digivolution cards.",
@@ -155,6 +155,7 @@ namespace DCGO.CardEffects.EX10
                                 hashtable: hashtable,
                                 rootCondition: null);
                             yield return ContinuousController.instance.StartCoroutine(permanents[0].AddDigivolutionCardsBottom(selectedSource, activateClass));
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainAlliance(targetPermanent: permanents[0], effectDuration: EffectDuration.UntilEachTurnEnd, activateClass: activateClass));
                         }
                     }
                 }

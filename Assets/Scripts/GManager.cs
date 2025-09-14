@@ -527,7 +527,7 @@ public class GManager : MonoBehaviourPun
         //Place Top Security
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.R))
         {
-            bool keyInput = Input.GetKeyDown(KeyCode.LeftShift);
+            bool keyInput = Input.GetKey(KeyCode.LeftShift);
             photonView.RPC("PlaceInSecurityRPC", RpcTarget.Others, keyInput);
             StartCoroutine(PlaceInSecurity(You, keyInput));
         }

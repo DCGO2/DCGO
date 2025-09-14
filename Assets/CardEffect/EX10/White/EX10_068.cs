@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace DCGO.CardEffects.EX10
 {
@@ -67,12 +68,12 @@ namespace DCGO.CardEffects.EX10
                 bool CanGetCardColour(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                        && CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaTamer(permanent, card);
+                        || CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaTamer(permanent, card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    int memoryGain = CardEffectCommons.GetUniqueColourCountOnOpponentsBattleArea(card, CanGetCardColour) / 2;
+                    int memoryGain = Mathf.RoundToInt(CardEffectCommons.GetUniqueColourCountOnOpponentsBattleArea(card, CanGetCardColour) / 2);
 
                     if (memoryGain > 0)
                         yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(memoryGain, activateClass));
@@ -183,14 +184,17 @@ namespace DCGO.CardEffects.EX10
                             {
                                 if (cardSource.IsDigimon)
                                 {
-                                    if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
+                                    if(cardSource.HasLevel && cardSource.Level <= 4)
                                     {
-                                        foreach (CardSource item in selectedCards)
+                                        if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                                         {
-                                            if (cardSource.CardColors.Any(x => item.CardColors.Contains(x)))
-                                                return true;
+                                            foreach (CardSource item in selectedCards)
+                                            {
+                                                if (cardSource.CardColors.Any(x => item.CardColors.Contains(x)))
+                                                        return true;
+                                            }
                                         }
-                                    }
+                                    }                                    
                                 }
 
                                 return false;

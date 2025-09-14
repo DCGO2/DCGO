@@ -85,7 +85,7 @@ namespace DCGO.CardEffects.EX10
                     yield return null;
                 }
 
-                if (hasInSources)
+                if (hasInHand)
                 {
                     SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
                     selectHandEffect.SetUp(
@@ -111,7 +111,7 @@ namespace DCGO.CardEffects.EX10
                     }
                 }
 
-                if (hasInHand)
+                if (hasInSources)
                 {
                     SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
                     selectCardEffect.SetUp(
