@@ -385,7 +385,7 @@ public class FilterCardList : MonoBehaviour
             {
                 if (!string.IsNullOrEmpty(text))
                 {
-                    #region カード名
+                    #region card name
                     if (!string.IsNullOrEmpty(cEntity_Base.CardName_JPN))
                     {
                         if (Convert(cEntity_Base.CardName_JPN).Contains(Convert(text)))
@@ -404,7 +404,7 @@ public class FilterCardList : MonoBehaviour
 
                     #endregion
 
-                    #region カード画像名
+                    #region card image name
                     if (cEntity_Base.CardSprite != null)
                     {
                         if (!string.IsNullOrEmpty(cEntity_Base.CardSprite.name))
@@ -417,7 +417,7 @@ public class FilterCardList : MonoBehaviour
                     }
                     #endregion
 
-                    #region カードテキスト
+                    #region card text
                     if (!string.IsNullOrEmpty(cEntity_Base.EffectDiscription_JPN))
                     {
                         if (Convert(cEntity_Base.EffectDiscription_JPN).Contains(Convert(text)))

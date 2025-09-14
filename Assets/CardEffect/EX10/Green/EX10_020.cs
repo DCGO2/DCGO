@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using UnityEngine;
 
 namespace DCGO.CardEffects.EX10
 {
@@ -115,19 +116,21 @@ namespace DCGO.CardEffects.EX10
                                             root: SelectCardEffect.Root.Hand,
                                             activateETB: true));
 
+                    yield return new WaitForSeconds(0.2f);
+
                     #region Delete Digimon Played
 
-                    Permanent selectedPermanent = card.PermanentOfThisCard();
+                    Permanent playedPermanent = card.PermanentOfThisCard();
 
                     ActivateClass activateClass1 = new ActivateClass();
-                    activateClass1.SetUpICardEffect("Delete this Digimon", CanUseCondition2, selectedPermanent.TopCard);
+                    activateClass1.SetUpICardEffect("Delete the Digimon", CanUseCondition2, playedPermanent.TopCard);
                     activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDiscription1());
-                    activateClass1.SetEffectSourcePermanent(selectedPermanent);
-                    selectedPermanent.UntilOwnerTurnEndEffects.Add(GetCardEffect);
+                    activateClass1.SetEffectSourcePermanent(playedPermanent);
+                    playedPermanent.UntilOwnerTurnEndEffects.Add(GetCardEffect);
 
-                    if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
+                    if (!playedPermanent.TopCard.CanNotBeAffected(activateClass))
                     {
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(selectedPermanent));
+                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(playedPermanent));
                     }
 
                     string EffectDiscription1()
@@ -137,14 +140,11 @@ namespace DCGO.CardEffects.EX10
 
                     bool CanUseCondition2(Hashtable hashtable1)
                     {
-                        if (CardEffectCommons.IsOpponentTurn(card))
+                        if (CardEffectCommons.IsOwnerTurn(card))
                         {
-                            if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(selectedPermanent, selectedPermanent.TopCard))
+                            if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(playedPermanent, playedPermanent.TopCard))
                             {
-                                if (CardEffectCommons.CanTriggerOnEndAttack(hashtable1, selectedPermanent.TopCard))
-                                {
-                                    return true;
-                                }
+                                return true;
                             }
                         }
 
@@ -153,9 +153,9 @@ namespace DCGO.CardEffects.EX10
 
                     bool CanActivateCondition1(Hashtable hashtable1)
                     {
-                        if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
+                        if (CardEffectCommons.IsPermanentExistsOnBattleArea(playedPermanent))
                         {
-                            if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
+                            if (!playedPermanent.TopCard.CanNotBeAffected(activateClass))
                             {
                                 return true;
                             }
@@ -166,10 +166,10 @@ namespace DCGO.CardEffects.EX10
 
                     IEnumerator ActivateCoroutine1(Hashtable _hashtable1)
                     {
-                        if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
+                        if (CardEffectCommons.IsPermanentExistsOnBattleArea(playedPermanent))
                         {
                             yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(
-                            new List<Permanent>() { selectedPermanent },
+                            new List<Permanent>() { playedPermanent },
                             CardEffectCommons.CardEffectHashtable(activateClass1)).Destroy());
                         }
                     }
@@ -350,8 +350,7 @@ namespace DCGO.CardEffects.EX10
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Place this Digimon face up as bottom security, add top security to hand", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
-                activateClass.SetIsInheritedEffect(true);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -361,7 +360,7 @@ namespace DCGO.CardEffects.EX10
 
                 bool FaceUpGreen(CardSource card)
                 {
-                    return card.IsFlipped &&
+                    return !card.IsFlipped &&
                            card.CardColors.Contains(CardColor.Green);
                 }
 

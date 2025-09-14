@@ -89,8 +89,8 @@ namespace DCGO.CardEffects.EX10
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Place 1 opponent hand card uneranth a digimon or tamer, then by placing 3 [Bagra Army] digimon from trash under this, delete 1 digimon/tamer with sources", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpICardEffect("Place 1 opponent hand card under a digimon or tamer, then by placing 3 [Bagra Army] digimon from trash under this, delete 1 digimon/tamer with sources", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -219,8 +219,7 @@ namespace DCGO.CardEffects.EX10
                         }
                     }
 
-                    if (CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, IsBagraArmyDigimon) >= 3
-                        && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, IsOpponentPermamentWithSources))
+                    if (CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, IsBagraArmyDigimon) >= 3)
                     {
                         Permanent thisPermament = card.PermanentOfThisCard();
                         List<CardSource> selectedCards = new List<CardSource>();
@@ -265,28 +264,31 @@ namespace DCGO.CardEffects.EX10
                                 addedDigivolutionCards: selectedCards,
                                 cardEffect: activateClass));
 
-                            #region Select Enemy Permament to add source
+                            if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, IsOpponentPermamentWithSources))
+                            {
+                                #region Select Enemy Permament to delete
 
-                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-                            int maxCount1 = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, IsOpponentPermament));
+                                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                                int maxCount1 = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, IsOpponentPermamentWithSources));
 
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: IsOpponentPermament,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: maxCount1,
-                                canNoSelect: false,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: null,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Destroy,
-                                cardEffect: activateClass);
+                                selectPermanentEffect.SetUp(
+                                    selectPlayer: card.Owner,
+                                    canTargetCondition: IsOpponentPermamentWithSources,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    maxCount: maxCount1,
+                                    canNoSelect: false,
+                                    canEndNotMax: false,
+                                    selectPermanentCoroutine: null,
+                                    afterSelectPermanentCoroutine: null,
+                                    mode: SelectPermanentEffect.Mode.Destroy,
+                                    cardEffect: activateClass);
 
-                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon or tamer with sources to destroy", "The opponent is selecting 1 Digimon or tamer with sources to destroy");
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                                selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon or tamer with sources to destroy", "The opponent is selecting 1 Digimon or tamer with sources to destroy");
+                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                            #endregion
+                                #endregion
+                            }
                         }
                     }
                 }
@@ -299,8 +301,8 @@ namespace DCGO.CardEffects.EX10
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Place 1 opponent hand card uneranth a digimon or tamer, then by placing 3 [Bagra Army] digimon from trash under this, delete 1 digimon/tamer with sources", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpICardEffect("Place 1 opponent hand card under a digimon or tamer, then by placing 3 [Bagra Army] digimon from trash under this, delete 1 digimon/tamer with sources", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -429,8 +431,7 @@ namespace DCGO.CardEffects.EX10
                         }
                     }
 
-                    if (CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, IsBagraArmyDigimon) >= 3
-                        && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, IsOpponentPermamentWithSources))
+                    if (CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, IsBagraArmyDigimon) >= 3)
                     {
                         Permanent thisPermament = card.PermanentOfThisCard();
                         List<CardSource> selectedCards = new List<CardSource>();
@@ -475,29 +476,32 @@ namespace DCGO.CardEffects.EX10
                                 addedDigivolutionCards: selectedCards,
                                 cardEffect: activateClass));
 
-                            #region Select Enemy Permament to add source
+                            if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, IsOpponentPermamentWithSources))
+                            {
+                                #region Select Enemy Permament to delete
 
-                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-                            int maxCount1 = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, IsOpponentPermament));
+                                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                                int maxCount1 = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, IsOpponentPermamentWithSources));
 
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: IsOpponentPermament,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: maxCount1,
-                                canNoSelect: false,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: null,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Destroy,
-                                cardEffect: activateClass);
+                                selectPermanentEffect.SetUp(
+                                    selectPlayer: card.Owner,
+                                    canTargetCondition: IsOpponentPermamentWithSources,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    maxCount: maxCount1,
+                                    canNoSelect: false,
+                                    canEndNotMax: false,
+                                    selectPermanentCoroutine: null,
+                                    afterSelectPermanentCoroutine: null,
+                                    mode: SelectPermanentEffect.Mode.Destroy,
+                                    cardEffect: activateClass);
 
-                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon or tamer with sources to destroy", "The opponent is selecting 1 Digimon or tamer with sources to destroy");
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                                selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon or tamer with sources to destroy", "The opponent is selecting 1 Digimon or tamer with sources to destroy");
+                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                            #endregion
-                        }
+                                #endregion
+                            }
+                        }                        
                     }
                 }
             }

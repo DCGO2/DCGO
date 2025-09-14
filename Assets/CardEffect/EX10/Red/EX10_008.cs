@@ -80,7 +80,7 @@ namespace DCGO.CardEffects.EX10
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCollision(
                             targetPermanent: selectedPermanment,
-                            effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                            effectDuration: EffectDuration.UntilOwnerTurnEnd,
                             activateClass: activateClass));
 
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.StartOfMainAttack(
@@ -98,7 +98,7 @@ namespace DCGO.CardEffects.EX10
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Give 1 opponent digimon <Collision> and [Start of Your Main Phase] This Digimon attacks", CanUseCondition, card);
 
-                activateClass.SetUpActivateClass(CanActivateCondition, hashtable => SharedActivateCoroutine(hashtable, activateClass), -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, hashtable => SharedActivateCoroutine(hashtable, activateClass), -1, false, EffectDiscription());
 
                 cardEffects.Add(activateClass);
 
@@ -128,7 +128,7 @@ namespace DCGO.CardEffects.EX10
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Give 1 opponent digimon <Collision> and [Start of Your Main Phase] This Digimon attacks", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, hashtable => SharedActivateCoroutine(hashtable, activateClass), -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, hashtable => SharedActivateCoroutine(hashtable, activateClass), -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
