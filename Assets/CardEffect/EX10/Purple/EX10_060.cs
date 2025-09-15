@@ -17,7 +17,7 @@ namespace DCGO.CardEffects.EX10
             bool IsOpponentDigimonOrTamer(Permanent permanent)
             {
                 return CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card)
-                    && permanent.IsDigimon || permanent.IsTamer;
+                    && (permanent.IsDigimon || permanent.IsTamer);
             }
 
             bool IsLucemonLarva(CardSource cardSource, ActivateClass activateClass)
@@ -32,6 +32,7 @@ namespace DCGO.CardEffects.EX10
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
                 bool hasOpponentDeleted = false;
+
                 if (CardEffectCommons.HasMatchConditionPermanent(IsOpponentDigimonOrTamer))
                 {
 

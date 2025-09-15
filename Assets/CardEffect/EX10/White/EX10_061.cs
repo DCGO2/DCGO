@@ -91,13 +91,11 @@ namespace DCGO.CardEffects.EX10
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    UnityEngine.Debug.Log($"CAN USE: {CardEffectCommons.CanTriggerWhenPermanentWouldPlay(hashtable, CardCondition)}");
                     return CardEffectCommons.CanTriggerWhenPermanentWouldPlay(hashtable, CardCondition);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    UnityEngine.Debug.Log($"CAN ACTIVATE: {CardEffectCommons.HasMatchConditionOwnersSecurity(card, CanSelectCardCondition, false)}");
                     return CardEffectCommons.HasMatchConditionOwnersSecurity(card, CanSelectCardCondition, false);
                 }
 
@@ -118,13 +116,12 @@ namespace DCGO.CardEffects.EX10
                         return false;
                     }
 
-                    UnityEngine.Debug.Log($"ACTIVATING: {CardEffectCommons.HasMatchConditionOwnersSecurity(card, CanSelectSecurityCardCondition, false)}");
                     if (CardEffectCommons.HasMatchConditionOwnersSecurity(card, CanSelectSecurityCardCondition, false))
                     {
                         bool noSelect = CanNoSelect(CardEffectCommons.GetCardFromHashtable(_hashtable));
                         List<CardSource> selectedCards = new List<CardSource>();
 
-                        int maxCount = Math.Min(3 - digivolutionCards.Count, card.Owner.SecurityCards.Count(CanSelectSecurityCardCondition));
+                        int maxCount = Math.Min(4, card.Owner.SecurityCards.Count(CanSelectSecurityCardCondition));
 
                         if (maxCount >= 1)
                         {
@@ -417,7 +414,7 @@ namespace DCGO.CardEffects.EX10
                 {
                     return cardSource.IsDigimon &&
                            cardSource.EqualsTraits("Dark Masters") &&
-                           CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
+                           CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass, root:SelectCardEffect.Root.DigivolutionCards);
                 }
 
                 bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
@@ -519,7 +516,7 @@ namespace DCGO.CardEffects.EX10
                             Permanent playedPermanent = source.PermanentOfThisCard();
 
                             ActivateClass activateClass1 = new ActivateClass();
-                            activateClass1.SetUpICardEffect("Delete the Digimon", CanUseCondition2, playedPermanent.TopCard);
+                            activateClass1.SetUpICardEffect($"[{source.BaseENGCardNameFromEntity}] Delete the Digimon", CanUseCondition2, playedPermanent.TopCard);
                             activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDiscription1());
                             activateClass1.SetEffectSourcePermanent(selectedPermanent);
                             playedPermanent.UntilOwnerTurnEndEffects.Add(GetCardEffect);
@@ -617,7 +614,7 @@ namespace DCGO.CardEffects.EX10
                 {
                     return cardSource.IsDigimon &&
                            cardSource.EqualsTraits("Dark Masters") &&
-                           CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
+                           CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass, root:SelectCardEffect.Root.DigivolutionCards);
                 }
 
                 bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
