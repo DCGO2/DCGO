@@ -349,7 +349,7 @@ namespace DCGO.CardEffects.EX10
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Place this Digimon face up as bottom security, add top security to hand", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Place this Digimon face up as bottom security", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -402,7 +402,7 @@ namespace DCGO.CardEffects.EX10
                 {
                     return CardEffectCommons.CanTriggerSecurityEffect(hashtable, card)
                         && (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition) || CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
-                        && card.IsFlipped;
+                        && !card.IsFlipped;
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)

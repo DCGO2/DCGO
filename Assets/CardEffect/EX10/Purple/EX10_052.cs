@@ -236,7 +236,7 @@ namespace DCGO.CardEffects.EX10
                             canEndNotMax: false,
                             selectPermanentCoroutine: null,
                             afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Destroy,
+                            mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());

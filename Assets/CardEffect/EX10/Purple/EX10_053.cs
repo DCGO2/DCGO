@@ -244,38 +244,18 @@ namespace DCGO.CardEffects.EX10
 
                         bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
                         {
-                            List<string> cardNames = new List<string>();
+                            var allSources = (cardSources ?? Enumerable.Empty<CardSource>())
+                                .Concat(selectedCards ?? Enumerable.Empty<CardSource>());
 
-                            foreach (CardSource cardSource1 in cardSources)
-                            {
-                                foreach (string cardName in cardSource1.CardNames)
-                                {
-                                    if (!cardNames.Contains(cardName))
-                                    {
-                                        cardNames.Add(cardName);
-                                    }
-                                }
-                            }
+                            var nameSet = new HashSet<string>(
+                                allSources.SelectMany(s => s.CardNames ?? Enumerable.Empty<string>())
+                                          .Where(n => !string.IsNullOrWhiteSpace(n)));
 
-                            foreach (CardSource cardSource1 in selectedCards)
-                            {
-                                foreach (string cardName in cardSource1.CardNames)
-                                {
-                                    if (!cardNames.Contains(cardName))
-                                    {
-                                        cardNames.Add(cardName);
-                                    }
-                                }
-                            }
+                            var idSet = new HashSet<string>(
+                                allSources.Select(s => s.CardID)
+                                          .Where(id => !string.IsNullOrWhiteSpace(id)));
 
-                            foreach (string cardName in cardSource.CardNames)
-                            {
-                                if (cardNames.Contains(cardSource.CardID))
-                                {
-                                    return false;
-                                }
-                            }
-
+                            if (cardSource.CardNames.Exists(nameSet.Contains) || idSet.Contains(cardSource.CardID)) return false;
                             return true;
                         }
 
@@ -342,14 +322,14 @@ namespace DCGO.CardEffects.EX10
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsOwnerTurn(card);
+                    return CardEffectCommons.IsOwnerTurn(card) &&
+                           CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsOwnerTurn(card) &&
-                           card.PermanentOfThisCard().DigivolutionCards.Count >= 5 &&
-                           card.PermanentOfThisCard().CanAttack(activateClass, withoutTap: true);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           card.PermanentOfThisCard().DigivolutionCards.Count >= 5;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
