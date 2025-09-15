@@ -28,8 +28,8 @@ namespace DCGO.CardEffects.EX10
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card)
-                        && CardEffectCommons.CanTriggerWhenDiscardLibrary(hashtable, cardSource => cardSource.Owner == cardSource.Owner.Enemy);
+                    return CardEffectCommons.IsExistOnBattleArea(card)                        
+                        && CardEffectCommons.CanTriggerWhenDiscardLibrary(hashtable, cardSource => cardSource.Owner == card.Owner.Enemy);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
