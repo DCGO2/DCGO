@@ -25,12 +25,12 @@ public partial class CardEffectCommons
                 {
                     foreach (Hashtable hashtable1 in hashtables)
                     {
-                        Permanent deletedPermanent = CardEffectCommons.GetPermanentFromHashtable(hashtable1);
+                        List<CardSource> CardStack = CardEffectCommons.GetCardSourcesFromHashtable(hashtable1);
                         List<CardSource> CardSources = CardEffectCommons.GetDigivolutionSourcesFromHashtable(hashtable1);
 
-                        if (CardSources != null)
+                        if (CardStack != null && CardSources != null)
                         {
-                            if (CardSources.Contains(card))
+                            if (CardStack.Contains(card))
                             {
                                 if (CardSources.Count >= 1)
                                 {
