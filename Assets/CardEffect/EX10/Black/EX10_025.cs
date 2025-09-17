@@ -54,7 +54,7 @@ namespace DCGO.CardEffects.EX10
                 {
                     if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, IsRockOrMineral))
                     {
-                        List<CardSource> selectedCards = null;
+                        List<CardSource> selectedCards = new List<CardSource>();
 
                         int maxCount = Math.Min(2, CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, IsRockOrMineral));
                         SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();

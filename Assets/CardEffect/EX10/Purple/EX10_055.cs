@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 // Tactimon
@@ -182,7 +183,12 @@ namespace DCGO.CardEffects.EX10
 
                             yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(
                                             destroyTargetPermanents: permanentList,
-                                            hashtable: hashtable).Destroy()
+                                            hashtable: CardEffectCommons.OnDeletionHashtable(
+                                            permanentList,
+                                            activateClass,
+                                            null,
+                                            false
+                                            )).Destroy()
                             );
                         }
                     }
@@ -299,7 +305,12 @@ namespace DCGO.CardEffects.EX10
 
                             yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(
                                             destroyTargetPermanents: permanentList,
-                                            hashtable: hashtable).Destroy()
+                                            hashtable: CardEffectCommons.OnDeletionHashtable(
+                                            permanentList,
+                                            activateClass,
+                                            null,
+                                            false
+                                            )).Destroy()
                             );
                         }
                     }

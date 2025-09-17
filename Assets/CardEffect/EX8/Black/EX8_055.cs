@@ -90,7 +90,7 @@ namespace DCGO.CardEffects.EX8
 
                     IEnumerator AfterTrashedCards(Permanent permanent, List<CardSource> cards)
                     {
-                        trashedCount += cards.Count;
+                        trashedCount = cards.Count;
 
                         yield return null;
                     }
@@ -172,7 +172,7 @@ namespace DCGO.CardEffects.EX8
 
                     IEnumerator AfterTrashedCards(Permanent permanent, List<CardSource> cards)
                     {
-                        trashedCount += cards.Count;
+                        trashedCount = cards.Count;
 
                         yield return null;
                     }

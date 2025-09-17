@@ -102,10 +102,9 @@ namespace DCGO.CardEffects.EX10
                 bool HasValidEnemyPermanents()
                 {
                     int digimon = card.Owner.Enemy.GetBattleAreaDigimons().Count;
-                    int tamers = card.Owner.Enemy.GetBattleAreaPermanents().Filter(x => x.IsTamer).Count;
+                    int tamers = card.Owner.Enemy.GetBattleAreaDigimons().Filter(x => x.IsTamer).Count;
 
-                    return digimon >= 1
-                        && (digimon - 1 + tamers) >= 1;
+                    return digimon + tamers >= 1;
                 }
 
                 bool IsEnemyDigimon(Permanent permanent)
@@ -113,60 +112,60 @@ namespace DCGO.CardEffects.EX10
                     return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
                 }
 
-                bool IsEnemyPermanent(Permanent permanent, Permanent targetPermament)
-                {
-                    return (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                        || CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaTamer(permanent, card))
-                        && permanent != targetPermament;
-                }
-
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (HasValidEnemyPermanents())
+                    Permanent selectedPermamentToSource = null;
+
+                    #region Select Enemy Digimon to add as Source
+
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersPermanentCount(card, IsEnemyDigimon));
+
+                    selectPermanentEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: IsEnemyDigimon,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: maxCount,
+                        canNoSelect: true,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: SelectPermanentCoroutine,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
-                        Permanent selectedPermamentToSource = null;
+                        selectedPermamentToSource = permanent;
+                        yield return null;
+                    }
 
-                        #region Select Enemy Digimon to add as Source
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to move under a digimon/tamer", "The opponent is selecting 1 Digimon move under a digimon/tamer");
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersPermanentCount(card, IsEnemyDigimon));
+                    #endregion
 
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: IsEnemyDigimon,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: true,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: SelectPermanentCoroutine,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                    if (selectedPermamentToSource != null)
+                    {
+                        bool IsEnemyPermanent(Permanent permanent)
                         {
-                            selectedPermamentToSource = permanent;
-                            yield return null;
+                            return (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
+                                || CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaTamer(permanent, card))
+                                && permanent != selectedPermamentToSource;
                         }
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to move under a digimon/tamer", "The opponent is selecting 1 Digimon move under a digimon/tamer");
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                        #endregion
-
-                        if (selectedPermamentToSource != null && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, permament => IsEnemyPermanent(permament, selectedPermamentToSource)))
+                        if (CardEffectCommons.HasMatchConditionPermanent(IsEnemyPermanent))
                         {
                             Permanent selectedPermanent = null;
 
                             #region Select Enemy Permament to add source
 
                             SelectPermanentEffect selectPermanentEffect1 = GManager.instance.GetComponent<SelectPermanentEffect>();
-                            int maxCount1 = Math.Min(1, CardEffectCommons.MatchConditionOwnersPermanentCount(card, permament => IsEnemyPermanent(permament, selectedPermamentToSource)));
+                            int maxCount1 = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(IsEnemyPermanent));
 
                             selectPermanentEffect1.SetUp(
                                 selectPlayer: card.Owner,
-                                canTargetCondition: permament => IsEnemyPermanent(permament, selectedPermamentToSource),
+                                canTargetCondition: IsEnemyPermanent,
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
                                 maxCount: maxCount1,
@@ -231,9 +230,9 @@ namespace DCGO.CardEffects.EX10
                 bool HasValidEnemyPermanents()
                 {
                     int digimon = card.Owner.Enemy.GetBattleAreaDigimons().Count;
-                    int tamers = card.Owner.Enemy.GetBattleAreaPermanents().Filter(x => x.IsTamer).Count;
+                    int tamers = card.Owner.Enemy.GetBattleAreaDigimons().Filter(x => x.IsTamer).Count;
 
-                    return digimon >= 1 && digimon + tamers >= 2;
+                    return digimon + tamers >= 1;
                 }
 
                 bool IsEnemyDigimon(Permanent permanent)
@@ -241,59 +240,60 @@ namespace DCGO.CardEffects.EX10
                     return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
                 }
 
-                bool IsEnemyPermanent(Permanent permanent, Permanent targetPermament)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card)
-                        && permanent != targetPermament;
-                }
-
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (HasValidEnemyPermanents())
+                    Permanent selectedPermamentToSource = null;
+
+                    #region Select Enemy Digimon to add as Source
+
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersPermanentCount(card, IsEnemyDigimon));
+
+                    selectPermanentEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: IsEnemyDigimon,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: maxCount,
+                        canNoSelect: true,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: SelectPermanentCoroutine,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
-                        Permanent selectedPermamentToSource = null;
+                        selectedPermamentToSource = permanent;
+                        yield return null;
+                    }
 
-                        #region Select Enemy Digimon to add as Source
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to move under a digimon/tamer", "The opponent is selecting 1 Digimon move under a digimon/tamer");
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersPermanentCount(card, IsEnemyDigimon));
+                    #endregion
 
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: IsEnemyDigimon,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: true,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: SelectPermanentCoroutine,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                    if (selectedPermamentToSource != null)
+                    {
+                        bool IsEnemyPermanent(Permanent permanent)
                         {
-                            selectedPermamentToSource = permanent;
-                            yield return null;
+                            return (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
+                                || CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaTamer(permanent, card))
+                                && permanent != selectedPermamentToSource;
                         }
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to move under a digimon/tamer", "The opponent is selecting 1 Digimon move under a digimon/tamer");
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                        #endregion
-
-                        if (selectedPermamentToSource != null && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, permament => IsEnemyPermanent(permament, selectedPermamentToSource)))
+                        if (CardEffectCommons.HasMatchConditionPermanent(IsEnemyPermanent))
                         {
                             Permanent selectedPermanent = null;
 
                             #region Select Enemy Permament to add source
 
                             SelectPermanentEffect selectPermanentEffect1 = GManager.instance.GetComponent<SelectPermanentEffect>();
-                            int maxCount1 = Math.Min(1, CardEffectCommons.MatchConditionOwnersPermanentCount(card, permament => IsEnemyPermanent(permament, selectedPermamentToSource)));
+                            int maxCount1 = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(IsEnemyPermanent));
 
                             selectPermanentEffect1.SetUp(
                                 selectPlayer: card.Owner,
-                                canTargetCondition: permament => IsEnemyPermanent(permament, selectedPermamentToSource),
+                                canTargetCondition: IsEnemyPermanent,
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
                                 maxCount: maxCount1,
@@ -349,7 +349,7 @@ namespace DCGO.CardEffects.EX10
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.CanTriggerWhenPermanentWouldDigivolve(hashtable, PermamentCondition, null);
+                        && CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, PermamentCondition);
                 }
 
                 bool PermamentCondition(Permanent permanent)
@@ -360,12 +360,12 @@ namespace DCGO.CardEffects.EX10
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && card.PermanentOfThisCard().StackCards.Count >= 2;
+                        && card.PermanentOfThisCard().DigivolutionCards.Count >= 2;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (card.PermanentOfThisCard().StackCards.Count >= 2)
+                    if (card.PermanentOfThisCard().DigivolutionCards.Count >= 2)
                     {
                         Permanent thisPermanent = card.PermanentOfThisCard();
                         List<CardSource> selectedCards = new List<CardSource>();
@@ -457,12 +457,12 @@ namespace DCGO.CardEffects.EX10
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && card.PermanentOfThisCard().StackCards.Count >= 2;
+                        && card.PermanentOfThisCard().DigivolutionCards.Count >= 2;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (card.PermanentOfThisCard().StackCards.Count >= 2)
+                    if (card.PermanentOfThisCard().DigivolutionCards.Count >= 2)
                     {
                         Permanent thisPermanent = card.PermanentOfThisCard();
                         List<CardSource> selectedCards = new List<CardSource>();
