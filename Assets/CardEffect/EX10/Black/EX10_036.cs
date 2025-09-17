@@ -46,7 +46,7 @@ namespace DCGO.CardEffects.EX10
 
             #endregion
 
-            #region When Digivolving - Unsuspend
+            #region When Digivolving - Add Sources OPT
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -124,16 +124,15 @@ namespace DCGO.CardEffects.EX10
                         yield return null;
                     }
 
-                    if (selectedCards.Count >= 3)
+                    if (selectedCards.Count >= 1)
                     {
                         yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(selectedCards, activateClass));
-                        yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() }, activateClass).Unsuspend());
                     }
                 }
             }
             #endregion
 
-            #region When Attacking - Unsuspend
+            #region When Attacking - Add Sources OPT
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -211,10 +210,9 @@ namespace DCGO.CardEffects.EX10
                         yield return null;
                     }
 
-                    if (selectedCards.Count >= 3)
+                    if (selectedCards.Count >= 1)
                     {
                         yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(selectedCards, activateClass));
-                        yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() }, activateClass).Unsuspend());
                     }
                 }
             }
@@ -224,7 +222,7 @@ namespace DCGO.CardEffects.EX10
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("By trashing 3 sources, Unsuspend and gain Security A. +1", CanUseCondition, card);
+                activateClass.SetUpICardEffect("By trashing 3 sources, Delete 1 digimon and trash top security", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -332,10 +330,10 @@ namespace DCGO.CardEffects.EX10
             #endregion
 
             #region When Attacking - Delete/Trash
-            if (timing == EffectTiming.OnEnterFieldAnyone)
+            if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("By trashing 3 sources, Unsuspend and gain Security A. +1", CanUseCondition, card);
+                activateClass.SetUpICardEffect("By trashing 3 sources, Delete 1 digimon and trash top security", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 

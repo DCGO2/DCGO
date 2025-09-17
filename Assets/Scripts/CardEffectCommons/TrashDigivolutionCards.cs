@@ -84,6 +84,8 @@ public partial class CardEffectCommons
             }
             else
             {
+                Permanent selectedPermanent = null;
+
                 permanentSelectedCount++;
                 maxCount = Math.Min(1, permanentSum);
 
@@ -108,7 +110,7 @@ public partial class CardEffectCommons
 
                 IEnumerator SelectPermanentCoroutine(Permanent permanent)
                 {
-                    Permanent selectedPermanent = permanent;
+                    selectedPermanent = permanent;
 
                     if (selectedPermanent.DigivolutionCards.Count(CanSelectCardCondition) >= 1)
                     {
@@ -161,7 +163,7 @@ public partial class CardEffectCommons
                                 selectedCards,
                                 activateClass).TrashDigivolutionCards());
 
-                        digivolutionDiscardedCount += selectedCards.Count;
+                        digivolutionDiscardedCount = selectedCards.Count;
 
                         if (canNoTrash && NotSelectYet())
                         {
@@ -185,6 +187,9 @@ public partial class CardEffectCommons
 
                     yield return null;
                 }
+
+                if (canEndNotMax && selectedPermanent == null)
+                    break;
             }
         }
     }
