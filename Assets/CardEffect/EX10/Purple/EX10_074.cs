@@ -62,7 +62,7 @@ namespace DCGO.CardEffects.EX10
                 {
                     return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
                            permanent.TopCard.HasPlayCost &&
-                           permanent.TopCard.GetCostItself <= 6 + (3 * Mathf.FloorToInt(card.Owner.TrashCards.Count / 2));
+                           permanent.TopCard.GetCostItself <= 6 + (3 * Mathf.FloorToInt(card.Owner.TrashCards.Count / 10));
                 }
 
                 if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
