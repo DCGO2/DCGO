@@ -260,7 +260,7 @@ namespace DCGO.CardEffects.EX10
                         permanentCondition: CanSelectPermanentCondition,
                         cardCondition: HasProperTrait,
                         maxCount: 3,
-                        canNoTrash: false,
+                        canNoTrash: true,
                         isFromOnly1Permanent: false,
                         activateClass: activateClass,
                         afterSelectionCoroutine: AfterTrashedCards,

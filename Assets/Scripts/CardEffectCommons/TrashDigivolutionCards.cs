@@ -57,7 +57,7 @@ public partial class CardEffectCommons
         int digivolutionDiscardedCount = 0;
 
         void EndSelection() => digivolutionDiscardedCount = maxDigivolutionDiscardCount;
-        bool NotSelectYet() => digivolutionDiscardedCount == 0;
+        bool NotSelectYet() => digivolutionDiscardedCount <= maxDigivolutionDiscardCount;
 
         int permanentSelectedCount = 0;
 
@@ -187,9 +187,6 @@ public partial class CardEffectCommons
 
                     yield return null;
                 }
-
-                if (canEndNotMax && selectedPermanent == null)
-                    break;
             }
         }
     }

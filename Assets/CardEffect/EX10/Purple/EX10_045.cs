@@ -261,12 +261,12 @@ namespace DCGO.CardEffects.EX10
                                 if (selectedPermanment1 != null)
                                 {
                                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBlocker(
-                                        targetPermanent: selectedPermanment,
+                                        targetPermanent: selectedPermanment1,
                                         effectDuration: EffectDuration.UntilOpponentTurnEnd,
                                         activateClass: activateClass));
 
                                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainRetaliation(
-                                        targetPermanent: selectedPermanment,
+                                        targetPermanent: selectedPermanment1,
                                         effectDuration: EffectDuration.UntilOpponentTurnEnd,
                                         activateClass: activateClass));
                                 }

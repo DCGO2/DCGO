@@ -128,7 +128,7 @@ namespace DCGO.CardEffects.EX10
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanActivateOnDeletion(card)
-                        && card.Owner.SecurityCards.Count >= 10
+                        && card.Owner.TrashCards.Count >= 10
                         && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, IsBeelzemon);
                 }
 
