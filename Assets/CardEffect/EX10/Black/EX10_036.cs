@@ -88,12 +88,12 @@ namespace DCGO.CardEffects.EX10
                         canTargetCondition: HasProperTrait,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: CanEndSelectCondition,
-                        canNoSelect: () => true,
+                        canNoSelect: () => false,
                         selectCardCoroutine: SelectCardCoroutine,
                         afterSelectCardCoroutine: null,
                         message: "Select [Mineral] or [Rock] to place on bottom of digivolution cards\n(cards will be placed so that cards with lower numbers are on top).",
                         maxCount: 3,
-                        canEndNotMax: true,
+                        canEndNotMax: false,
                         isShowOpponent: true,
                         mode: SelectCardEffect.Mode.Custom,
                         root: SelectCardEffect.Root.Trash,
@@ -127,6 +127,7 @@ namespace DCGO.CardEffects.EX10
                     if (selectedCards.Count >= 1)
                     {
                         yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(selectedCards, activateClass));
+                        yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() }, activateClass).Unsuspend());
                     }
                 }
             }
@@ -174,12 +175,12 @@ namespace DCGO.CardEffects.EX10
                         canTargetCondition: HasProperTrait,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: CanEndSelectCondition,
-                        canNoSelect: () => true,
+                        canNoSelect: () => false,
                         selectCardCoroutine: SelectCardCoroutine,
                         afterSelectCardCoroutine: null,
                         message: "Select [Mineral] or [Rock] to place on bottom of digivolution cards\n(cards will be placed so that cards with lower numbers are on top).",
                         maxCount: 3,
-                        canEndNotMax: true,
+                        canEndNotMax: false,
                         isShowOpponent: true,
                         mode: SelectCardEffect.Mode.Custom,
                         root: SelectCardEffect.Root.Trash,
@@ -213,6 +214,7 @@ namespace DCGO.CardEffects.EX10
                     if (selectedCards.Count >= 1)
                     {
                         yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(selectedCards, activateClass));
+                        yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() }, activateClass).Unsuspend());
                     }
                 }
             }

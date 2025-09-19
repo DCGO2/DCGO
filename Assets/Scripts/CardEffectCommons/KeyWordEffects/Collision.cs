@@ -34,7 +34,7 @@ public partial class CardEffectCommons
             return false;
         }
 
-        ActivateClass collision = CardEffectFactory.CollisionStaticEffect(permanentCondition: PermanentCondition, isInheritedEffect: false, card: card, condition: CanUseCondition);
+        ActivateClass collision = CardEffectFactory.CollisionSelfStaticEffect(false, card, CanUseCondition);
 
         AddEffectToPermanent(targetPermanent: targetPermanent, effectDuration: effectDuration, card: card, cardEffect: collision, timing: EffectTiming.OnCounterTiming);
 
@@ -48,18 +48,10 @@ public partial class CardEffectCommons
     #region Can activate [Collision]
     public static bool CanActivateCollision(CardSource cardSource)
     {
-        if (IsExistOnBattleArea(cardSource))
-        {
-            if (cardSource.Owner.Enemy.GetBattleAreaDigimons().Count >= 1)
-            {
-                if (GManager.instance.attackProcess.IsAttacking)
-                {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+        return IsExistOnBattleArea(cardSource) &&
+               cardSource.Owner.Enemy.GetBattleAreaDigimons().Count >= 1 &&
+               GManager.instance.attackProcess.IsAttacking &&
+               GManager.instance.attackProcess.AttackingPermanent == cardSource.PermanentOfThisCard();
     }
     #endregion
 

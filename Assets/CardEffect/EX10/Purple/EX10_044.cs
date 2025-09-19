@@ -17,7 +17,7 @@ namespace DCGO.CardEffects.EX10
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Place 1 [Bagra Army] digimon under digimon/tamer, Then draw 1", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Place 1 [Bagra Army] digimon under tamer, Then draw 1", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
