@@ -234,13 +234,18 @@ namespace DCGO.CardEffects.EX10
                             maxCount: maxCount,
                             canNoSelect: true,
                             canEndNotMax: false,
-                            selectPermanentCoroutine: null,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
                             afterSelectPermanentCoroutine: null,
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
+                        IEnumerator SelectPermanentCoroutine (Permanent permanent)
+                        {
+                            selectedPermanent = permanent;
+                            yield return null;
+                        }
                         #endregion
 
                         #region Attempt to delete selected permanent
@@ -248,6 +253,7 @@ namespace DCGO.CardEffects.EX10
                         IEnumerator SuccessProcess(List<Permanent> deletedPermanents)
                         {
                             hasOpponentDeleted = true;
+                            UnityEngine.Debug.Log($"DELETED SUCCESSFULLY: {hasOpponentDeleted}");
                             yield return null;
                         }
 
@@ -260,6 +266,7 @@ namespace DCGO.CardEffects.EX10
                         #endregion
                     }
 
+                    UnityEngine.Debug.Log($"FINAL CHECK: {hasOpponentDeleted}");
                     if (!hasOpponentDeleted)
                     {
                         Permanent thisPermament = card.PermanentOfThisCard();
