@@ -282,7 +282,7 @@ namespace DCGO.CardEffects.EX9
                         if (selectedPermanent != null)
                         {
                             var degenCount = card.PermanentOfThisCard().DigivolutionCards.Filter(x => x.IsFlipped).Count;
-                            yield return ContinuousController.instance.StartCoroutine(new IDegeneration(selectedPermanent, degenCount, activateClass).Degeneration());
+                            yield return ContinuousController.instance.StartCoroutine(new IDegeneration(selectedPermanent, degenCount, activateClass,false).Degeneration());
                         }
                     }
 

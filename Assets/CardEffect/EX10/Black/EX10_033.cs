@@ -269,13 +269,10 @@ namespace DCGO.CardEffects.EX10
 
                     IEnumerator AfterTrashedCards(Permanent permanent, List<CardSource> cards)
                     {
-                        UnityEngine.Debug.Log($"AFTER TRASH: {trashedCount}, {cards.Count}");
                         trashedCount = cards.Count;
 
                         yield return null;
                     }
-
-                    UnityEngine.Debug.Log($"Trash Count: {trashedCount}");
 
                     if (trashedCount > 0)
                     {

@@ -100,7 +100,7 @@ namespace DCGO.CardEffects.EX10
                         if (CardEffectCommons.CanTriggerOnTrashLinkedCard(hashtable, perm => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(perm, card), cardEffect => cardEffect != null, source => source != null))
                         {
                             trashedFrom = CardEffectCommons.GetPermanentFromHashtable(hashtable);
-                            trashedName = trashedName != null ? trashedFrom.TopCard.BaseENGCardNameFromEntity : "null";
+                            trashedName = trashedFrom != null ? trashedFrom.TopCard.BaseENGCardNameFromEntity : "null";
 
                             return true;
                         }
@@ -215,7 +215,8 @@ namespace DCGO.CardEffects.EX10
                             bool CanSelectPermanentCondition(Permanent permanent)
                             {
                                 return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
-                                        cardForLinking.CanLinkToTargetPermanent(permanent, false);
+                                       permanent == trashedFrom &&
+                                       cardForLinking.CanLinkToTargetPermanent(permanent, false);
                             }
 
                             IEnumerator SelectPermanentCoroutine(Permanent permanent)

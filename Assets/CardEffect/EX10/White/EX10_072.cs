@@ -84,7 +84,7 @@ namespace DCGO.CardEffects.EX10
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.IsDigimon && cardSource.IsFlipped &&
+                    return cardSource.IsDigimon && !cardSource.IsFlipped &&
                            cardSource.EqualsTraits("Dark Masters") &&
                            CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass,SelectCardEffect.Root.Security);
                 }
@@ -371,7 +371,7 @@ namespace DCGO.CardEffects.EX10
                             activateClass1.SetUpICardEffect("Delete this Digimon", CanUseCondition2, card);
                             activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, "");
                             activateClass1.SetEffectSourcePermanent(selectedPermanent);
-                            CardEffectCommons.AddEffectToPlayer(effectDuration: EffectDuration.UntilEachTurnEnd, card: card, cardEffect: activateClass1, timing: EffectTiming.OnEndTurn);
+                            CardEffectCommons.AddEffectToPlayer(effectDuration: EffectDuration.UntilOwnerTurnEnd, card: card, cardEffect: activateClass1, timing: EffectTiming.OnEndTurn);
 
                             bool CanUseCondition2(Hashtable hashtable)
                             {

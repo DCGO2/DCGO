@@ -50,7 +50,8 @@ namespace DCGO.CardEffects.EX10
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnTrash(card) &&
-                           CardEffectCommons.MatchConditionPermanentCount(IsLvl5Myotismon) >= 2;
+                           CardEffectCommons.MatchConditionPermanentCount(IsLvl5Myotismon) >= 2 &&
+                           CardEffectCommons.CanPlayAsNewPermanent(cardSource: card, payCost: false, cardEffect: activateClass);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -173,8 +174,7 @@ namespace DCGO.CardEffects.EX10
 
             bool CanActivateSharedCondition(Hashtable hashtable)
             {
-                return CardEffectCommons.IsExistOnBattleArea(card) &&
-                       CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
+                return CardEffectCommons.IsExistOnBattleArea(card);
             }
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
