@@ -199,8 +199,7 @@ namespace DCGO.CardEffects.EX10
 
             bool CanActivateSharedCondition(Hashtable hashtable)
             {
-                return CardEffectCommons.IsExistOnBattleArea(card)
-                    && CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
+                return CardEffectCommons.IsExistOnBattleArea(card);
             }
 
             IEnumerator SharedActivateCoroutine(Hashtable _hashtable, ActivateClass activateClass)
@@ -350,13 +349,13 @@ namespace DCGO.CardEffects.EX10
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card) &&
-                           !CardEffectCommons.HasMatchConditionOwnersSecurity(card, FaceUpBlack);
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanActivateOnDeletion(card);
+                    return CardEffectCommons.CanActivateOnDeletion(card) &&
+                           !CardEffectCommons.HasMatchConditionOwnersSecurity(card, FaceUpBlack);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

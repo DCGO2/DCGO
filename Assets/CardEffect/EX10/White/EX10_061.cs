@@ -136,7 +136,7 @@ namespace DCGO.CardEffects.EX10
                                 afterSelectCardCoroutine: null,
                                 message: "Select cards to place in Digivolution cards.",
                                 maxCount: maxCount,
-                                canEndNotMax: true,
+                                canEndNotMax: false,
                                 isShowOpponent: true,
                                 mode: SelectCardEffect.Mode.Custom,
                                 root: SelectCardEffect.Root.Security,

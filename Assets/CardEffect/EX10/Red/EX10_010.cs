@@ -186,7 +186,7 @@ namespace DCGO.CardEffects.EX10
                                permanent.DP >= 13000;
                     }
 
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card) && thisPermanent.TopCard == card)
                     {
                         if (CardEffectCommons.HasMatchConditionPermanent(OpponentsPermanent))
                             thisPermanent.AddBoost(new Permanent.DPBoost("AT_EX10-010", 3000, null));
