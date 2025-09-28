@@ -2,10 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-// Greymon
+// Garurumon
 namespace DCGO.CardEffects.BT23
 {
-    public class BT23_008 : CEntity_Effect
+    public class BT23_018 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
@@ -17,8 +17,9 @@ namespace DCGO.CardEffects.BT23
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.IsLevel3
-                        && (targetPermanent.TopCard.ContainsCardName("Agumon") || targetPermanent.TopCard.HasCSTraits);
+                    return targetPermanent.TopCard.HasCSTraits || targetPermanent.TopCard.ContainsCardName("Gabumon")
+                        && targetPermanent.TopCard.HasLevel
+                        && targetPermanent.TopCard.IsLevel3;
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
@@ -32,15 +33,11 @@ namespace DCGO.CardEffects.BT23
 
             #endregion
 
-            #region Raid
+            #region Jamming
 
-            if (timing == EffectTiming.OnAllyAttack)
+            if (timing == EffectTiming.None)
             {
-                cardEffects.Add(CardEffectFactory.RaidSelfEffect(
-                    isInheritedEffect: false,
-                    card: card,
-                    condition: null)
-                );
+                cardEffects.Add(CardEffectFactory.JammingSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
             }
 
             #endregion
@@ -50,33 +47,33 @@ namespace DCGO.CardEffects.BT23
             if (timing == EffectTiming.OnDeclaration)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("By placing the top card of this Digimon as bottom digivolution card, play 1 [Gabumon]/[Nokia Shiramine] from hand for 2 less", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
-                activateClass.SetHashString("BT23_008_Main");
+                activateClass.SetUpICardEffect("By placing this card as bottom digivolution card, play 1 [Agumon]/[Nokia Shiramine] from hand for 2 reduce cost", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetHashString("BT23_018_Main");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[Main] [Once Per Turn] By placing this Digimon's top stacked card as its bottom digivolution card, you may play 1 [Gabumon] or [Nokia Shiramine] from your hand with the play cost reduced by 2.";
+                    return "[Main] [Once Per Turn] By placing this Digimon's top stacked card as its bottom digivolution card, you may play 1 [Agumon] or [Nokia Shiramine] from your hand with the play cost reduced by 2.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card)
-                       && CardEffectCommons.IsOwnerTurn(card)
-                       && card.PermanentOfThisCard().StackCards.Count >= 1;
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                        && CardEffectCommons.IsOwnerTurn(card)
+                        && card.PermanentOfThisCard().StackCards.Count >= 1;
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
                     if (CardEffectCommons.CanPlayAsNewPermanent(cardSource, true, activateClass))
                     {
-                        if (cardSource.IsDigimon && cardSource.EqualsCardName("Gabumon")) return true;
+                        if (cardSource.IsDigimon && cardSource.EqualsCardName("Agumon")) return true;
                         if (cardSource.IsTamer && cardSource.EqualsCardName("Nokia Shiramine")) return true;
                     }
 
@@ -149,7 +146,7 @@ namespace DCGO.CardEffects.BT23
             {
                 bool Condition()
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card) && CardEffectCommons.IsOwnerTurn(card);
+                    return CardEffectCommons.IsExistOnBattleArea(card) && CardEffectCommons.IsOpponentTurn(card);
                 }
 
                 cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect(changeValue: 2000, isInheritedEffect: true, card: card, condition: Condition));
