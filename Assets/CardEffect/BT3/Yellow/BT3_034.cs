@@ -63,13 +63,11 @@ public class BT3_034 : CEntity_Effect
                         canEndNotMax: false,
                         isShowOpponent: false,
                         mode: SelectCardEffect.Mode.AddHand,
-                        root: SelectCardEffect.Root.Custom,
+                        root: SelectCardEffect.Root.Security,
                         customRootCardList: new List<CardSource>() { topCard },
                         canLookReverseCard: true,
                         selectPlayer: card.Owner,
                         cardEffect: activateClass);
-
-                    selectCardEffect.SetUseFaceDown();
 
                     yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 

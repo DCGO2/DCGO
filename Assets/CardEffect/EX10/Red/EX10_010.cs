@@ -174,33 +174,68 @@ namespace DCGO.CardEffects.EX10
 
             #region All Turns - DP
 
-            if (timing == EffectTiming.OnRemovedField || timing == EffectTiming.OnEnterFieldAnyone || timing == EffectTiming.WhenTopCardTrashed)
+            if (timing == EffectTiming.OnRemovedField || timing == EffectTiming.OnMove || timing == EffectTiming.OnEnterFieldAnyone || timing == EffectTiming.WhenTopCardTrashed)
             {
-                if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("", CanUseCondition, card);
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, "");
+                activateClass.SetIsBackgroundProcess(true);
+                cardEffects.Add(activateClass);
+
+                bool CanUseCondition(Hashtable hashtable)
                 {
-                    Permanent thisPermanent = card.PermanentOfThisCard();
+                    if(timing == EffectTiming.OnRemovedField)
+                        return CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card);
 
-                    bool OpponentsPermanent(Permanent permanent)
-                    {
-                        return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
-                               permanent.DP >= 13000;
-                    }
+                    if (timing == EffectTiming.OnEnterFieldAnyone || timing == EffectTiming.OnMove)
+                        return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
 
-                    if (CardEffectCommons.IsExistOnBattleAreaDigimon(card) && thisPermanent.TopCard == card)
+                    if (timing == EffectTiming.WhenTopCardTrashed)
+                        return CardEffectCommons.CanTriggerWhenTopCardTrashed(hashtable, x => x == card);
+
+                    return false;
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    Permanent triggeredPermanent = CardEffectCommons.GetPermanentFromHashtable(hashtable);
+
+                    if(timing == EffectTiming.OnMove)
                     {
-                        if (CardEffectCommons.HasMatchConditionPermanent(OpponentsPermanent))
-                            thisPermanent.AddBoost(new Permanent.DPBoost("AT_EX10-010", 3000, null));
-                        else
+                        triggeredPermanent = null;
+
+                        if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
                         {
-                            if (thisPermanent.Boosts.Exists(x => x.ID == "AT_EX10-010"))
-                                thisPermanent.RemoveBoost("AT_EX10-010");
+                            triggeredPermanent = card.PermanentOfThisCard();
                         }
                     }
-                    else
+
+                    if(triggeredPermanent != null)
                     {
-                        if (thisPermanent.Boosts.Exists(x => x.ID == "AT_EX10-010")) 
-                            thisPermanent.RemoveBoost("AT_EX10-010");
+                        bool OpponentsPermanent(Permanent permanent)
+                        {
+                            return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
+                                   permanent.DP >= 13000;
+
+                        }
+                        if (CardEffectCommons.IsExistOnBattleAreaDigimon(card) && triggeredPermanent.TopCard == card)
+                        {
+                            if (CardEffectCommons.HasMatchConditionPermanent(OpponentsPermanent))
+                                triggeredPermanent.AddBoost(new Permanent.DPBoost("AT_EX10-010", 3000, null));
+                            else
+                            {
+                                if (triggeredPermanent.Boosts.Exists(x => x.ID == "AT_EX10-010"))
+                                    triggeredPermanent.RemoveBoost("AT_EX10-010");
+                            }
+                        }
+                        else
+                        {
+                            if (triggeredPermanent.Boosts.Exists(x => x.ID == "AT_EX10-010"))
+                                triggeredPermanent.RemoveBoost("AT_EX10-010");
+                        }
                     }
+
+                    yield return null;
                 }
             }
 

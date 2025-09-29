@@ -333,6 +333,25 @@ public partial class CardEffectCommons
 
     #endregion
 
+    #region Get Is Face Up from hashtable
+    public static CardSource GetFaceUpFromHashtable(Hashtable hashtable)
+    {
+        if (hashtable != null)
+        {
+            if (hashtable.ContainsKey("isFaceDown"))
+            {
+                if (hashtable["isFaceDown"] is bool)
+                {
+                    return (CardSource)hashtable["isFaceDown"];
+                }
+            }
+        }
+
+        return null;
+    }
+
+    #endregion
+
     #region Get battle info from hashtable
     public static IBattle GetBattleFromHashtable(Hashtable hashtable)
     {

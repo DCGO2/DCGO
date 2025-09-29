@@ -57,7 +57,7 @@ namespace DCGO.CardEffects.EX10
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] [Once Per Turn] You may place up to 3 [Mineral] or [Rock] cards from your trash as this Digimon's bottom digivolution cards.";
+                    return "[When Digivolving] [Once Per Turn] By placing 3 [Mineral] or [Rock] trait cards from your trash as this Digimon's bottom digivolution cards, it unsuspends.";
                 }
 
                 bool HasProperTrait(CardSource source)
@@ -75,7 +75,7 @@ namespace DCGO.CardEffects.EX10
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, HasProperTrait);
+                           CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, HasProperTrait) >= 3;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -144,7 +144,7 @@ namespace DCGO.CardEffects.EX10
 
                 string EffectDiscription()
                 {
-                    return "[When Attacking] [Once Per Turn] You may place up to 3 [Mineral] or [Rock] cards from your trash as this Digimon's bottom digivolution cards.";
+                    return "[When Attacking] [Once Per Turn] By placing 3 [Mineral] or [Rock] trait cards from your trash as this Digimon's bottom digivolution cards, it unsuspends.";
                 }
 
                 bool HasProperTrait(CardSource source)
@@ -162,7 +162,7 @@ namespace DCGO.CardEffects.EX10
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, HasProperTrait);
+                           CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, HasProperTrait) >= 3;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -294,7 +294,7 @@ namespace DCGO.CardEffects.EX10
 
                     IEnumerator AfterTrashedCards(Permanent permanent, List<CardSource> cards)
                     {
-                        trashedCount += cards.Count;
+                        trashedCount = cards.Count;
 
                         yield return null;
                     }
@@ -404,7 +404,7 @@ namespace DCGO.CardEffects.EX10
 
                     IEnumerator AfterTrashedCards(Permanent permanent, List<CardSource> cards)
                     {
-                        trashedCount += cards.Count;
+                        trashedCount = cards.Count;
 
                         yield return null;
                     }

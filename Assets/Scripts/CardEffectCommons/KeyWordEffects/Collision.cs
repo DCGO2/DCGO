@@ -34,7 +34,7 @@ public partial class CardEffectCommons
             return false;
         }
 
-        ActivateClass collision = CardEffectFactory.CollisionSelfStaticEffect(false, card, CanUseCondition);
+        ActivateClass collision = CardEffectFactory.CollisionSelfStaticEffect(false, targetPermanent.TopCard, CanUseCondition);
 
         AddEffectToPermanent(targetPermanent: targetPermanent, effectDuration: effectDuration, card: card, cardEffect: collision, timing: EffectTiming.OnCounterTiming);
 
