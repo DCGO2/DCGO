@@ -95,7 +95,7 @@ namespace DCGO.CardEffects.BT15
                                 mode: SelectPermanentEffect.Mode.Custom,
                                 cardEffect: activateClass);
 
-                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to delete.", "The opponent is selecting 1 Digimon to delete.");
+                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to protect.", "The opponent is selecting 1 Digimon to protect.");
 
                             yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 

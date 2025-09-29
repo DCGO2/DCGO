@@ -129,8 +129,6 @@ namespace DCGO.CardEffects.BT16
 
                         yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 
-                        selectCardEffect.SetUseFaceDown();
-
                         IEnumerator SelectCardCoroutine(CardSource cardSource)
                         {
                             selectedCard = cardSource;
@@ -329,8 +327,6 @@ namespace DCGO.CardEffects.BT16
                             cardEffect: activateClass);
 
                         yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-
-                        selectCardEffect.SetUseFaceDown();
 
                         IEnumerator SelectCardCoroutine(CardSource cardSource)
                         {

@@ -111,7 +111,8 @@ namespace DCGO.CardEffects.EX10
 
                 bool IsOpponentPermament(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card);
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card) &&
+                           !permanent.TopCard.IsOption;
                 }
 
                 bool IsOpponentPermamentWithSources(Permanent permanent)
@@ -323,12 +324,13 @@ namespace DCGO.CardEffects.EX10
 
                 bool IsOpponentPermament(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card);
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card) &&
+                           !permanent.TopCard.IsOption;
                 }
 
                 bool IsOpponentPermamentWithSources(Permanent permanent)
                 {
-                    return IsOpponentPermament(permanent) && permanent.StackCards.Count >= 1;
+                    return IsOpponentPermament(permanent) && permanent.StackCards.Count >= 2;
                 }
 
                 bool IsBagraArmyDigimon(CardSource cardSource)
@@ -501,7 +503,7 @@ namespace DCGO.CardEffects.EX10
 
                                 #endregion
                             }
-                        }                        
+                        }
                     }
                 }
             }

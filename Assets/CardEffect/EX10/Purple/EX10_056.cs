@@ -102,7 +102,7 @@ namespace DCGO.CardEffects.EX10
                 bool HasValidEnemyPermanents()
                 {
                     int digimon = card.Owner.Enemy.GetBattleAreaDigimons().Count;
-                    int notOptions = card.Owner.Enemy.GetBattleAreaDigimons().Filter(x => !x.IsOption).Count;
+                    int notOptions = card.Owner.Enemy.GetBattleAreaPermanents().Filter(x => !x.IsOption).Count;
 
                     return digimon >= 1 &&
                            notOptions >= 2;
@@ -233,7 +233,7 @@ namespace DCGO.CardEffects.EX10
                 bool HasValidEnemyPermanents()
                 {
                     int digimon = card.Owner.Enemy.GetBattleAreaDigimons().Count;
-                    int notOptions = card.Owner.Enemy.GetBattleAreaDigimons().Filter(x => !x.IsOption).Count;
+                    int notOptions = card.Owner.Enemy.GetBattleAreaPermanents().Filter(x => !x.IsOption).Count;
 
                     return digimon >= 1 &&
                            notOptions >= 2;

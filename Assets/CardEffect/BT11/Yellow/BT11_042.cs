@@ -95,8 +95,6 @@ namespace DCGO.CardEffects.BT11
 
                         yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 
-                        selectCardEffect.SetUseFaceDown();
-
                         IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
                         {
                             foreach (CardSource cardSource in cardSources)

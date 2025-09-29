@@ -81,10 +81,9 @@ namespace DCGO.CardEffects.EX10
             if (timing == EffectTiming.OnLinkCardDiscarded)
             {
                 Permanent trashedFrom = null;
-                string trashedName = "null";
 
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect($"Link 1 card from trash with {trashedName}", CanUseCondition, card);
+                activateClass.SetUpICardEffect($"Link 1 card from trash", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);                
 
@@ -99,9 +98,6 @@ namespace DCGO.CardEffects.EX10
                     {
                         if (CardEffectCommons.CanTriggerOnTrashLinkedCard(hashtable, perm => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(perm, card), cardEffect => cardEffect != null, source => source != null))
                         {
-                            trashedFrom = CardEffectCommons.GetPermanentFromHashtable(hashtable);
-                            trashedName = trashedFrom != null ? trashedFrom.TopCard.BaseENGCardNameFromEntity : "null";
-
                             return true;
                         }
                     }

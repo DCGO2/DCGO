@@ -121,7 +121,13 @@ namespace DCGO.CardEffects.EX10
                         bool noSelect = CanNoSelect(CardEffectCommons.GetCardFromHashtable(_hashtable));
                         List<CardSource> selectedCards = new List<CardSource>();
 
-                        int maxCount = Math.Min(4, card.Owner.SecurityCards.Count(CanSelectSecurityCardCondition));
+                        List<string> cardNames = card.Owner.SecurityCards.Filter(CanSelectSecurityCardCondition)
+                                            .Map(cardSource1 => cardSource1.CardNames)
+                                            .Flat()
+                                            .Distinct()
+                                            .ToList();
+
+                        int maxCount = Math.Min(4, cardNames.Count);
 
                         if (maxCount >= 1)
                         {

@@ -89,7 +89,9 @@ namespace DCGO.CardEffects.P
 
                 bool DigivolutionCondition(CardSource source)
                 {
-                    return source.EqualsTraits("Xros Heart");
+                    return !source.IsDigiEgg &&
+                           source.HasPlayCost &&
+                           source.EqualsTraits("Xros Heart");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

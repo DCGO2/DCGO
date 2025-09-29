@@ -14,74 +14,73 @@ namespace DCGO.CardEffects.P
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Your Turn
-
-            ActivateClass activateClass2 = new ActivateClass();
-            activateClass2.SetUpICardEffect("Digivolution Cost -1", CanUseCondition2, card);
-            activateClass2.SetUpActivateClass(CanActivateCondition2, ActivateCoroutine2, 1, false, EffectDiscription2());
-            activateClass2.SetNotShowUI(true);
-            activateClass2.SetIsBackgroundProcess(true);
-            activateClass2.SetHashString("DigivolutionCost-1_P_117");
+            #region Activate Cost Reduciton
+            ActivateClass costReduceClass = new ActivateClass();
+            costReduceClass.SetUpICardEffect("Digivolution Cost -1", CanUseReduceCondition, card);
+            costReduceClass.SetUpActivateClass(CanActivateCostReductionCondition, ActivateCostReductionCoroutine, 2, false, EffectDiscription2());
+            //costReduceClass.SetIsInheritedEffect(true);
+            //costReduceClass.SetNotShowUI(true);
+            //costReduceClass.SetIsBackgroundProcess(true);
+            costReduceClass.SetHashString("DigivolutionCost-1_P_117");
 
             string EffectDiscription2()
             {
                 return "[Your Turn] [Once Per Turn] When this Digimon would digivolve into a Digimon card with the [Free] trait, if you have a Tamer, reduce the digivolution cost by 1.";
             }
 
-            bool CanUseCondition2(Hashtable hashtable)
+            bool CardSourceCondition(CardSource cardSource)
+            {
+                return cardSource.CardTraits.Contains("Free");
+            }
+
+            bool CanUseReduceCondition(Hashtable hashtable)
             {
                 if (CardEffectCommons.IsExistOnBattleArea(card))
                 {
-                    if (CardEffectCommons.IsOwnerTurn(card))
+                    if (CardEffectCommons.CanTriggerWhenPermanentWouldDigivolveOfCard(hashtable, CardSourceCondition, card))
                     {
-                        if (CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card))
-                        {
-                            List<CardSource> evoRootTops = CardEffectCommons.GetEvoRootTopsFromEnterFieldHashtable(
-                                hashtable,
-                                permanent => permanent.cardSources.Contains(card));
-
-                            if (evoRootTops != null)
-                            {
-                                if (!evoRootTops.Contains(card))
-                                {
-                                    if (card.PermanentOfThisCard().TopCard.EqualsTraits("Free"))
-                                    {
-                                        return true;
-                                    }
-                                }
-                            }
-                        }
+                        return true;
                     }
                 }
+
 
                 return false;
             }
 
-            bool CanActivateCondition2(Hashtable hashtable)
+            bool CanActivateCostReductionCondition(Hashtable hashtable)
             {
-                return CardEffectCommons.IsOwnerTurn(card) &&
-                       CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.IsTamer) &&
-                       CardEffectCommons.IsExistOnBattleArea(card);
+                if (CardEffectCommons.IsOwnerTurn(card))
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
+                    {
+                        return true;
+                    }
+                }
+
+
+                return false;
             }
 
-            IEnumerator ActivateCoroutine2(Hashtable _hashtable)
+            IEnumerator ActivateCostReductionCoroutine(Hashtable _hashtable)
             {
                 yield return null;
             }
 
-            if (timing == EffectTiming.OnEnterFieldAnyone)
+
+
+
+            if (timing == EffectTiming.BeforePayCost)
             {
-                cardEffects.Add(activateClass2);
+                cardEffects.Add(costReduceClass);
             }
+            #endregion
 
-            #region Setup Reduce Cost Class
-
+            #region Cost reduction
             if (timing == EffectTiming.None)
             {
                 ChangeCostClass changeCostClass = new ChangeCostClass();
                 changeCostClass.SetUpICardEffect($"Digivolution Cost -1", CanUseCondition, card);
-                changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => true, isChangePayingCost: () => true);
-
+                changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
                 cardEffects.Add(changeCostClass);
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -92,7 +91,7 @@ namespace DCGO.CardEffects.P
                         {
                             if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, (permanent) => permanent.IsTamer))
                             {
-                                if (!card.cEntity_EffectController.isOverMaxCountPerTurn(activateClass2, activateClass2.MaxCountPerTurn))
+                                if (!card.cEntity_EffectController.isOverMaxCountPerTurn(costReduceClass, costReduceClass.MaxCountPerTurn))
                                 {
                                     return true;
                                 }
@@ -111,6 +110,7 @@ namespace DCGO.CardEffects.P
                         {
                             if (PermanentsCondition(targetPermanents))
                             {
+
                                 Cost -= 1;
                             }
                         }
@@ -137,11 +137,6 @@ namespace DCGO.CardEffects.P
                     return targetPermanent == card.PermanentOfThisCard();
                 }
 
-                bool CardSourceCondition(CardSource cardSource)
-                {
-                    return cardSource.EqualsTraits("Free");
-                }
-
                 bool RootCondition(SelectCardEffect.Root root)
                 {
                     return true;
@@ -152,9 +147,6 @@ namespace DCGO.CardEffects.P
                     return true;
                 }
             }
-
-            #endregion
-
             #endregion
 
             if (timing == EffectTiming.OnAllyAttack)
