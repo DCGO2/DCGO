@@ -98,6 +98,8 @@ namespace DCGO.CardEffects.EX10
                     {
                         if (CardEffectCommons.CanTriggerOnTrashLinkedCard(hashtable, perm => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(perm, card), cardEffect => cardEffect != null, source => source != null))
                         {
+                            trashedFrom = CardEffectCommons.GetPermanentFromHashtable(hashtable);
+
                             return true;
                         }
                     }

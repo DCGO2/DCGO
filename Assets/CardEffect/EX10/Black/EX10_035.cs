@@ -37,7 +37,8 @@ namespace DCGO.CardEffects.EX10
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnHand(card) &&
-                           CardEffectCommons.MatchConditionPermanentCount(IsDarkMaster) == 0;
+                           CardEffectCommons.MatchConditionPermanentCount(IsDarkMaster) == 0 &&
+                           CardEffectCommons.CanPlayAsNewPermanent(card, false, activateClass);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -53,6 +54,16 @@ namespace DCGO.CardEffects.EX10
                     card.Owner.UntilCalculateFixedCostEffect.Add((_timing) => changeCostClass);
 
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ShowReducedCost(hashtable));
+
+                    ICardEffect GetReduceCostCardEffect(EffectTiming _timing)
+                    {
+                        if (_timing == EffectTiming.None)
+                        {
+                            return changeCostClass;
+                        }
+
+                        return null;
+                    }
 
                     bool CanUseCondition1(Hashtable hashtable)
                     {
@@ -189,6 +200,12 @@ namespace DCGO.CardEffects.EX10
 
                         #endregion
                     }
+
+                    #region release reducing play cost
+
+                    card.Owner.UntilCalculateFixedCostEffect.Remove(GetReduceCostCardEffect);
+
+                    #endregion
                 }
             }
 
@@ -246,7 +263,7 @@ namespace DCGO.CardEffects.EX10
                         canEndSelectCondition: null,
                         maxCount: maxCount,
                         canNoSelect: false,
-                        canEndNotMax: true,
+                        canEndNotMax: false,
                         selectPermanentCoroutine: SelectPermanentCoroutine,
                         afterSelectPermanentCoroutine: null,
                         mode: SelectPermanentEffect.Mode.Custom,
@@ -405,7 +422,7 @@ namespace DCGO.CardEffects.EX10
                 {
                     return CardEffectCommons.CanTriggerSecurityEffect(hashtable, card)
                         && (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition) || CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
-                        && CardEffectCommons.GetFaceUpFromHashtable(hashtable);
+                        && !CardEffectCommons.GetFaceDownFromHashtable(hashtable);
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)

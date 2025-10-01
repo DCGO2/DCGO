@@ -334,7 +334,7 @@ namespace DCGO.CardEffects.EX10
                            (source.EqualsTraits("Mineral") || source.EqualsTraits("Rock"));
                 }
 
-                bool HasProperAmountOfSources()
+                int HasProperAmountOfSources()
                 {
                     int totalSourceCount = 0;
 
@@ -343,7 +343,7 @@ namespace DCGO.CardEffects.EX10
                         totalSourceCount += permanent.DigivolutionCards.Count(HasProperTrait);
                     }
 
-                    return totalSourceCount >= 1;
+                    return totalSourceCount;
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -362,7 +362,7 @@ namespace DCGO.CardEffects.EX10
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
-                        return HasProperAmountOfSources();
+                        return HasProperAmountOfSources() > 0;
 
                     return false;
                 }
@@ -370,20 +370,22 @@ namespace DCGO.CardEffects.EX10
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     int trashedCount = 0;
+                    int maxCount = Mathf.Min(1, HasProperAmountOfSources());
 
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SelectTrashDigivolutionCards(
                         permanentCondition: CanSelectPermanentCondition,
                         cardCondition: HasProperTrait,
                         maxCount: 3,
-                        canNoTrash: false,
+                        canNoTrash: true,
                         isFromOnly1Permanent: false,
                         activateClass: activateClass,
-                        afterSelectionCoroutine: AfterTrashedCards
+                        afterSelectionCoroutine: AfterTrashedCards,
+                        canEndNotMax: true
                     ));
 
                     IEnumerator AfterTrashedCards(Permanent permanent, List<CardSource> cards)
                     {
-                        trashedCount += cards.Count;
+                        trashedCount = cards.Count;
 
                         yield return null;
                     }

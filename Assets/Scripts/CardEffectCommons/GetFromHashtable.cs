@@ -334,7 +334,7 @@ public partial class CardEffectCommons
     #endregion
 
     #region Get Is Face Up from hashtable
-    public static CardSource GetFaceUpFromHashtable(Hashtable hashtable)
+    public static bool GetFaceDownFromHashtable(Hashtable hashtable)
     {
         if (hashtable != null)
         {
@@ -342,12 +342,12 @@ public partial class CardEffectCommons
             {
                 if (hashtable["isFaceDown"] is bool)
                 {
-                    return (CardSource)hashtable["isFaceDown"];
+                    return (bool)hashtable["isFaceDown"];
                 }
             }
         }
 
-        return null;
+        return true;
     }
 
     #endregion

@@ -119,8 +119,6 @@ namespace DCGO.CardEffects.EX10
 
             #region All Turns
 
-            #region All Turns - Immunity
-
             if (timing == EffectTiming.None)
             {
                 CanNotAffectedClass canNotAffectedClass = new CanNotAffectedClass();
@@ -130,8 +128,23 @@ namespace DCGO.CardEffects.EX10
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
+                    return CanUse();
+                }
+
+                bool CanUse()
+                {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
                            CardEffectCommons.HasMatchConditionPermanent(OpponentsPermanent);
+                }
+
+                bool PermanentCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
+                    {
+                        return true;
+                    }
+
+                    return false;
                 }
 
                 bool CardCondition(CardSource cardSource)
@@ -166,80 +179,17 @@ namespace DCGO.CardEffects.EX10
                 bool OpponentsPermanent(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
-                           card.PermanentOfThisCard().Boosts.Exists(x => x.ID == "AT_EX10-010");
+                           permanent.GetDP(card.PermanentOfThisCard()) >= 13000;
                 }
+
+                cardEffects.Add(CardEffectFactory.ChangeDPStaticEffect(
+                    permanentCondition: PermanentCondition,
+                    changeValue: 3000,
+                    isInheritedEffect: false,
+                    card: card,
+                    condition: CanUse,
+                    effectName: () => "This Digimon gain DP +3000"));
             }
-
-            #endregion
-
-            #region All Turns - DP
-
-            if (timing == EffectTiming.OnRemovedField || timing == EffectTiming.OnMove || timing == EffectTiming.OnEnterFieldAnyone || timing == EffectTiming.WhenTopCardTrashed)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("", CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, "");
-                activateClass.SetIsBackgroundProcess(true);
-                cardEffects.Add(activateClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    if(timing == EffectTiming.OnRemovedField)
-                        return CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card);
-
-                    if (timing == EffectTiming.OnEnterFieldAnyone || timing == EffectTiming.OnMove)
-                        return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
-
-                    if (timing == EffectTiming.WhenTopCardTrashed)
-                        return CardEffectCommons.CanTriggerWhenTopCardTrashed(hashtable, x => x == card);
-
-                    return false;
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    Permanent triggeredPermanent = CardEffectCommons.GetPermanentFromHashtable(hashtable);
-
-                    if(timing == EffectTiming.OnMove)
-                    {
-                        triggeredPermanent = null;
-
-                        if (CardEffectCommons.IsExistOnBattleAreaDigimon(card))
-                        {
-                            triggeredPermanent = card.PermanentOfThisCard();
-                        }
-                    }
-
-                    if(triggeredPermanent != null)
-                    {
-                        bool OpponentsPermanent(Permanent permanent)
-                        {
-                            return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
-                                   permanent.DP >= 13000;
-
-                        }
-                        if (CardEffectCommons.IsExistOnBattleAreaDigimon(card) && triggeredPermanent.TopCard == card)
-                        {
-                            if (CardEffectCommons.HasMatchConditionPermanent(OpponentsPermanent))
-                                triggeredPermanent.AddBoost(new Permanent.DPBoost("AT_EX10-010", 3000, null));
-                            else
-                            {
-                                if (triggeredPermanent.Boosts.Exists(x => x.ID == "AT_EX10-010"))
-                                    triggeredPermanent.RemoveBoost("AT_EX10-010");
-                            }
-                        }
-                        else
-                        {
-                            if (triggeredPermanent.Boosts.Exists(x => x.ID == "AT_EX10-010"))
-                                triggeredPermanent.RemoveBoost("AT_EX10-010");
-                        }
-                    }
-
-                    yield return null;
-                }
-            }
-
-            #endregion
 
             #endregion
 
