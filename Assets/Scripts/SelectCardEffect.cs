@@ -219,14 +219,7 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
     {
         List<CardSource> RootCardList = new List<CardSource>();
 
-        if (_customRootCardList.Count > 0)
-        {
-            foreach (CardSource cardSource in _customRootCardList)
-            {
-                RootCardList.Add(cardSource);
-            }
-        }
-        else
+        if (_customRootCardList == null)
         {
             switch (_root)
             {
@@ -257,6 +250,13 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
                         RootCardList.Add(cardSource);
                     }
                     break;
+            }
+        }
+        else
+        {
+            foreach (CardSource cardSource in _customRootCardList)
+            {
+                RootCardList.Add(cardSource);
             }
         }
 

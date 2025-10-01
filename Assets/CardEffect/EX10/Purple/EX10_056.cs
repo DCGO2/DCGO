@@ -404,6 +404,7 @@ namespace DCGO.CardEffects.EX10
                             yield return null;
                         }
 
+                        selectCardEffect.SetUseFaceDown();
                         selectCardEffect.SetUpCustomMessage("Select 2 digivolution cards to trash.", "The opponent is selecting 2 digivolution cards to trash.");
                         yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 

@@ -141,7 +141,7 @@ namespace DCGO.CardEffects.EX10
                         {
                             if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
                             {
-                                if (selectedPermanent.TopCard.Owner.GetBattleAreaDigimons().Contains(selectedPermanent))
+                                if (selectedPermanent.TopCard.Owner.GetBattleAreaPermanents().Contains(selectedPermanent))
                                 {
                                     if (GManager.instance.turnStateMachine.gameContext.TurnPlayer == selectedPermanent.TopCard.Owner)
                                     {
@@ -323,7 +323,7 @@ namespace DCGO.CardEffects.EX10
                                 mode: SelectCardEffect.Mode.Custom,
                                 root: SelectCardEffect.Root.Custom,
                                 customRootCardList: thisPermanent.DigivolutionCards,
-                                canLookReverseCard: true,
+                                canLookReverseCard: false,
                                 selectPlayer: card.Owner,
                                 cardEffect: activateClass);
 
@@ -333,6 +333,7 @@ namespace DCGO.CardEffects.EX10
                         yield return null;
                     }
 
+                    selectCardEffect.SetUseFaceDown();
                     selectCardEffect.SetUpCustomMessage("Select 2 digivolution cards to trash.", "The opponent is selecting 2 digivolution cards to trash.");
                     yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 

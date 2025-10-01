@@ -324,6 +324,178 @@ public class Permanent
 
     #region DP
 
+    public int GetDP(Permanent ignorePermanent = null)
+    {
+        int DP = -1;
+
+        if (HasDP)
+        {
+            DP = BaseDP;
+
+            #region DP By Effect
+
+            List<ICardEffect> cardEffects_ChangeDP = new List<ICardEffect>();
+
+            foreach (Player player in GManager.instance.turnStateMachine.gameContext.Players_ForTurnPlayer)
+            {
+                #region Effects of permanents in play
+                foreach (Permanent permanent in player.GetFieldPermanents())
+                {
+                    if (ignorePermanent != null)
+                    {
+                        if (permanent == ignorePermanent)
+                            continue;
+                    }
+                    foreach (ICardEffect cardEffect in permanent.EffectList(EffectTiming.None))
+                    {
+                        if (cardEffect is IChangeDPEffect)
+                        {
+                            if (cardEffect.CanUse(null))
+                            {
+                                if (((IChangeDPEffect)cardEffect).PermanentCondition(this))
+                                {
+                                    if (((IChangeDPEffect)cardEffect).IsMinusDP())
+                                    {
+                                        if (this.ImmuneFromDPMinus(cardEffect))
+                                        {
+                                            continue;
+                                        }
+                                    }
+
+                                    if (!TopCard.CanNotBeAffected(cardEffect))
+                                    {
+                                        cardEffects_ChangeDP.Add(cardEffect);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                #endregion
+
+                #region Effects of face up security
+                foreach (CardSource cardSource in player.SecurityCards)
+                {
+                    if (cardSource.IsFlipped)
+                        continue;
+
+                    foreach (ICardEffect cardEffect in cardSource.EffectList(EffectTiming.None))
+                    {
+                        if (cardEffect is IChangeDPEffect)
+                        {
+                            if (cardEffect.CanUse(null))
+                            {
+                                if (((IChangeDPEffect)cardEffect).PermanentCondition(this))
+                                {
+                                    if (((IChangeDPEffect)cardEffect).IsMinusDP())
+                                    {
+                                        if (this.ImmuneFromDPMinus(cardEffect))
+                                        {
+                                            continue;
+                                        }
+                                    }
+
+                                    if (!TopCard.CanNotBeAffected(cardEffect))
+                                    {
+                                        cardEffects_ChangeDP.Add(cardEffect);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                #endregion
+
+                #region Player effect
+                foreach (ICardEffect cardEffect in player.EffectList(EffectTiming.None))
+                {
+                    if (cardEffect is IChangeDPEffect)
+                    {
+                        if (cardEffect.CanUse(null))
+                        {
+                            if (((IChangeDPEffect)cardEffect).PermanentCondition(this))
+                            {
+                                if (((IChangeDPEffect)cardEffect).IsMinusDP())
+                                {
+                                    if (this.ImmuneFromDPMinus(cardEffect))
+                                    {
+                                        continue;
+                                    }
+                                }
+
+                                if (!TopCard.CanNotBeAffected(cardEffect))
+                                {
+                                    cardEffects_ChangeDP.Add(cardEffect);
+                                }
+                            }
+                        }
+                    }
+                }
+                #endregion
+            }
+
+            List<ICardEffect> cardEffects_ChangeDP_isUpDown = new List<ICardEffect>();
+            List<ICardEffect> cardEffects_ChangeDP_NotIsUpDown = new List<ICardEffect>();
+
+            foreach (ICardEffect cardEffect in cardEffects_ChangeDP)
+            {
+                if (cardEffect is IChangeDPEffect)
+                {
+                    if (cardEffect.CanUse(null))
+                    {
+                        if (((IChangeDPEffect)cardEffect).IsUpDown())
+                        {
+                            cardEffects_ChangeDP_isUpDown.Add(cardEffect);
+                        }
+
+                        else
+                        {
+                            cardEffects_ChangeDP_NotIsUpDown.Add(cardEffect);
+                        }
+                    }
+                }
+            }
+
+            foreach (ICardEffect cardEffect in cardEffects_ChangeDP_isUpDown)
+            {
+                if (cardEffect is IChangeDPEffect)
+                {
+                    if (cardEffect.CanUse(null))
+                    {
+                        DP = ((IChangeDPEffect)cardEffect).GetDP(DP, this);
+                    }
+                }
+            }
+
+            foreach (ICardEffect cardEffect in cardEffects_ChangeDP_NotIsUpDown)
+            {
+                if (cardEffect is IChangeDPEffect)
+                {
+                    if (cardEffect.CanUse(null))
+                    {
+                        DP = ((IChangeDPEffect)cardEffect).GetDP(DP, this);
+                    }
+                }
+            }
+            #endregion
+
+            #region DP Boosts
+            foreach (DPBoost boost in Boosts)
+            {
+                DP += boost.DP;
+            }
+            #endregion
+
+            DP += LinkedDP;
+
+            if (DP < 0)
+            {
+                DP = 0;
+            }
+        }
+
+        return DP;
+    }
     public int DP
     {
         get

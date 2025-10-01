@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.Analytics;
 
 // DarknessBagramon
 namespace DCGO.CardEffects.EX10
@@ -549,6 +550,9 @@ namespace DCGO.CardEffects.EX10
                     {
                         foreach (CardSource cardSource1 in cardSource.PermanentOfThisCard().DigivolutionCards)
                         {
+                            if (cardSource1.IsFlipped)
+                                continue;
+
                             if (cardSource1.HasBagraArmyTraits)
                             {
                                 if (cardSource1.HasLevel && cardSource1.IsLevel6)
