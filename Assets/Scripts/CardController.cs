@@ -3515,7 +3515,9 @@ public class ISecurityCheck
                     {
                         List<SkillInfo> triggeredSkillInfos = new List<SkillInfo>();
 
+                        
                         CardSource brokenSecurityCard = player.SecurityCards[0];
+                        bool isFaceDown = brokenSecurityCard.IsFlipped;
 
                         Hashtable hashtable = new Hashtable()
                             {
@@ -3565,6 +3567,7 @@ public class ISecurityCheck
                             {
                                 Hashtable hashtable1 = new Hashtable();
                                 hashtable1.Add("Card", brokenSecurityCard);
+                                hashtable1.Add("isFaceDown", isFaceDown);
 
                                 if (cardEffect.CanUse(hashtable1))
                                 {

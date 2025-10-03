@@ -261,6 +261,21 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
     }
     #endregion
 
+    #region Is Security Card
+    bool isSecurityCard(CardSource cardSource)
+    {
+        if (cardSource != null)
+        {
+            if (CardEffectCommons.IsExistInSecurity(cardSource, false))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    #endregion
+
     #region is Tamer Digivolution Card
     bool isTamerDigivolutionCard(CardSource cardSource)
     {
@@ -928,6 +943,7 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
                         List<CardSource> underTamerCards = new List<CardSource>();
                         List<Permanent> digimonPermanents = new List<Permanent>();
                         List<CardSource> trashCards = new List<CardSource>();
+                        List<CardSource> secuirtyCards = new List<CardSource>();
 
                         foreach (CardSource cardSource in info.cardSources)
                         {
@@ -945,6 +961,12 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
                             else if (isTrashCard(cardSource))
                             {
                                 trashCards.Add(cardSource);
+                                addedCards.Add(cardSource);
+                            }
+
+                            else if (isSecurityCard(cardSource))
+                            {
+                                secuirtyCards.Add(cardSource);
                                 addedCards.Add(cardSource);
                             }
                         }
@@ -965,6 +987,11 @@ public class SelectDigiXrosClass : MonoBehaviourPunCallbacks
                         if (trashCards.Count >= 1)
                         {
                             yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(trashCards, info.cardEffect));
+                        }
+
+                        if (secuirtyCards.Count >= 1)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(secuirtyCards, info.cardEffect));
                         }
                     }
 

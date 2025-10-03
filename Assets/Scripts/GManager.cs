@@ -215,6 +215,8 @@ public class GManager : MonoBehaviourPun
 
     public int CardIndex { get; set; } = 0;
 
+    public bool ActivateShortcuts = false;
+
     #region Events
 
     //Cards flipped
@@ -480,15 +482,25 @@ public class GManager : MonoBehaviourPun
             }
         }
 
+        if (Input.GetKey(KeyCode.LeftControl) &&
+           Input.GetKey(KeyCode.LeftShift) && 
+           Input.GetKey(KeyCode.LeftAlt) &&
+           Input.GetKeyDown(KeyCode.A))
+            ActivateShortcuts = !ActivateShortcuts;
+
+
         AllowAlphaInputs();
     }
 
     void AllowAlphaInputs()
     {
+        if (ContinuousController.instance.isRandomMatch && !ContinuousController.instance.isAI)
+            return;
+
         if (turnStateMachine == null)
             return;
         
-        if (Application.version.Split(".").Count() < 4)
+        if (!ActivateShortcuts)
             return;
 
         //Draw a card
@@ -515,7 +527,7 @@ public class GManager : MonoBehaviourPun
         //Place Top Security
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.R))
         {
-            bool keyInput = Input.GetKeyDown(KeyCode.LeftShift);
+            bool keyInput = Input.GetKey(KeyCode.LeftShift);
             photonView.RPC("PlaceInSecurityRPC", RpcTarget.Others, keyInput);
             StartCoroutine(PlaceInSecurity(You, keyInput));
         }

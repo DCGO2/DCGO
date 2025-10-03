@@ -70,7 +70,9 @@ namespace DCGO.CardEffects.EX3
                                 }
                             }
 
-                            return false;
+                            return cardSource.Owner == card.Owner.Enemy &&
+                                   (cardSource.IsDigimon || cardSource.IsDigiEgg) &&
+                                   (cardSource.HasDP && cardSource.CardDP <= 5000);
                         }
 
                         bool CardEffectCondition(ICardEffect cardEffect)

@@ -17,7 +17,7 @@ namespace DCGO.CardEffects.EX10
             {
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.IsLevel4 && targetPermanent.TopCard.ContainsCardName("Greymon");
+                    return targetPermanent.TopCard.IsLevel4 && targetPermanent.TopCard.HasGreymonName;
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
@@ -49,7 +49,7 @@ namespace DCGO.CardEffects.EX10
 
                     #region Select Permanent
 
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersPermanentCount(card, CanSelectPermanentCondition));
+                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                     selectPermanentEffect.SetUp(
@@ -80,7 +80,7 @@ namespace DCGO.CardEffects.EX10
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCollision(
                             targetPermanent: selectedPermanment,
-                            effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                            effectDuration: EffectDuration.UntilOwnerTurnEnd,
                             activateClass: activateClass));
 
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.StartOfMainAttack(
@@ -98,7 +98,7 @@ namespace DCGO.CardEffects.EX10
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Give 1 opponent digimon <Collision> and [Start of Your Main Phase] This Digimon attacks", CanUseCondition, card);
 
-                activateClass.SetUpActivateClass(CanActivateCondition, hashtable => SharedActivateCoroutine(hashtable, activateClass), -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, hashtable => SharedActivateCoroutine(hashtable, activateClass), -1, false, EffectDiscription());
 
                 cardEffects.Add(activateClass);
 
@@ -128,7 +128,7 @@ namespace DCGO.CardEffects.EX10
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Give 1 opponent digimon <Collision> and [Start of Your Main Phase] This Digimon attacks", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, hashtable => SharedActivateCoroutine(hashtable, activateClass), -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, hashtable => SharedActivateCoroutine(hashtable, activateClass), -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -164,7 +164,7 @@ namespace DCGO.CardEffects.EX10
 
                 string EffectDiscription()
                 {
-                    return "[Opponent's Turn] [Once Per Turn] When attack targets change, if this Digimon has [Greymon] in its name in its name, trash your opponent's top security card.";
+                    return "[Opponent's Turn] [Once Per Turn] When attack targets change, if this Digimon has [Greymon] in its name, trash your opponent's top security card.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -177,7 +177,7 @@ namespace DCGO.CardEffects.EX10
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
                         && CardEffectCommons.IsOpponentTurn(card)
-                        && card.PermanentOfThisCard().TopCard.ContainsCardName("Greymon");
+                        && card.PermanentOfThisCard().TopCard.HasGreymonName;
                 }
 
                 bool PermanentCondition(Permanent permanent)

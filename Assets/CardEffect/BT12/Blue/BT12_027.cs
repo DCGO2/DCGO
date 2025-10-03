@@ -30,10 +30,7 @@ namespace DCGO.CardEffects.BT12
                         {
                             if (permanent.TopCard.CardColors.Contains(CardColor.Blue))
                             {
-                                if (!permanent.IsToken)
-                                {
-                                    return true;
-                                }
+                                return true;
                             }
                         }
                     }
@@ -125,10 +122,7 @@ namespace DCGO.CardEffects.BT12
                         {
                             if (permanent.TopCard.CardColors.Contains(CardColor.Blue))
                             {
-                                if (!permanent.IsToken)
-                                {
-                                    return true;
-                                }
+                                return true;
                             }
                         }
                     }

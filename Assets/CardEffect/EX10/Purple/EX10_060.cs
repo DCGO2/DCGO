@@ -17,7 +17,7 @@ namespace DCGO.CardEffects.EX10
             bool IsOpponentDigimonOrTamer(Permanent permanent)
             {
                 return CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card)
-                    && permanent.IsDigimon || permanent.IsTamer;
+                    && (permanent.IsDigimon || permanent.IsTamer);
             }
 
             bool IsLucemonLarva(CardSource cardSource, ActivateClass activateClass)
@@ -31,9 +31,11 @@ namespace DCGO.CardEffects.EX10
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
+                bool hasOpponentDeleted = false;
+
                 if (CardEffectCommons.HasMatchConditionPermanent(IsOpponentDigimonOrTamer))
                 {
-                    bool hasOpponentDeleted = false;
+
                     Permanent selectedPermanent = null;
 
                     #region Opponent Selects 1 Digimon or Tamer
@@ -50,10 +52,16 @@ namespace DCGO.CardEffects.EX10
                         maxCount: maxCount,
                         canNoSelect: true,
                         canEndNotMax: false,
-                        selectPermanentCoroutine: null,
+                        selectPermanentCoroutine: SelectPermanentCoroutine,
                         afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Destroy,
+                        mode: SelectPermanentEffect.Mode.Custom,
                         cardEffect: activateClass);
+
+                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                    {
+                        selectedPermanent = permanent;
+                        yield return null;
+                    }
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
@@ -61,32 +69,32 @@ namespace DCGO.CardEffects.EX10
 
                     #region Attempt to delete selected permanent
 
-                    IEnumerator SuccessProcess(List<Permanent> deletedPermanents)
-                    {
-                        hasOpponentDeleted = true;
-                        yield return null;
-                    }
-
                     if (selectedPermanent != null) yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
                         targetPermanents: new List<Permanent> { selectedPermanent },
                         activateClass: activateClass,
                         successProcess: SuccessProcess,
                         failureProcess: null));
 
-                    #endregion
-
-                    if (!hasOpponentDeleted)
+                    IEnumerator SuccessProcess(List<Permanent> deletedPermanents)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
-                            player: card.Owner.Enemy,
-                            destroySecurityCount: 1,
-                            cardEffect: activateClass,
-                            fromTop: true).DestroySecurity());
-
-                        if (card.PermanentOfThisCard().CanUnsuspend) yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(
-                            permanents: new List<Permanent>() { card.PermanentOfThisCard() },
-                            cardEffect: activateClass).Unsuspend());
+                        hasOpponentDeleted = true;
+                        yield return null;
                     }
+
+                    #endregion
+                }
+
+                if (!hasOpponentDeleted)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
+                        player: card.Owner.Enemy,
+                        destroySecurityCount: 1,
+                        cardEffect: activateClass,
+                        fromTop: true).DestroySecurity());
+
+                    if (card.PermanentOfThisCard().CanUnsuspend) yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(
+                        permanents: new List<Permanent>() { card.PermanentOfThisCard() },
+                        cardEffect: activateClass).Unsuspend());
                 }
             }
 
@@ -262,8 +270,7 @@ namespace DCGO.CardEffects.EX10
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, IsOpponentDigimonOrTamer);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
             }
 
@@ -292,8 +299,7 @@ namespace DCGO.CardEffects.EX10
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, IsOpponentDigimonOrTamer);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
             }
 

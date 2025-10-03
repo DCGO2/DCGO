@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using System.Diagnostics;
 
 namespace DCGO.CardEffects.EX10
 {
@@ -12,19 +13,22 @@ namespace DCGO.CardEffects.EX10
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Digivolution Requirements
+
             if (timing == EffectTiming.None)
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.EqualsTraits("Dark Masters") &&
+                    return targetPermanent.TopCard.HasDarkMastersTrait &&
                            targetPermanent.TopCard.IsLevel6;
                 }
 
-                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 7, ignoreDigivolutionRequirement: false, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 5, ignoreDigivolutionRequirement: false, card: card, condition: null));
             }
+
             #endregion
 
             #region Cost Reduction
+
             #region Before Pay Cost - Condition Effect
 
             if (timing == EffectTiming.BeforePayCost)
@@ -32,7 +36,7 @@ namespace DCGO.CardEffects.EX10
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Placing 1 [Dark Masters] to get Play Cost -4", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-                activateClass.SetHashString("PlayCost-12_BT15_102");
+                activateClass.SetHashString("PlayCost-_EX10-061");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -43,21 +47,13 @@ namespace DCGO.CardEffects.EX10
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
                     return cardSource.IsDigimon &&
-                           cardSource.IsFlipped &&
-                           cardSource.EqualsTraits("Dark Masters");
+                           !cardSource.IsFlipped &&
+                           cardSource.HasDarkMastersTrait;
                 }
 
                 bool CardCondition(CardSource cardSource)
                 {
-                    if (cardSource == card)
-                    {
-                        if (CardEffectCommons.IsExistOnHand(cardSource))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return cardSource == card;
                 }
 
                 bool CanNoSelect(CardSource cardSource)
@@ -65,6 +61,26 @@ namespace DCGO.CardEffects.EX10
                     if (cardSource != null)
                     {
                         if (cardSource.PayingCost(SelectCardEffect.Root.Hand, null, checkAvailability: false) > cardSource.Owner.MaxMemoryCost)
+                        {
+                            return false;
+                        }
+
+                        if (cardSource.PayingCost(SelectCardEffect.Root.Trash, null, checkAvailability: false) > cardSource.Owner.MaxMemoryCost)
+                        {
+                            return false;
+                        }
+
+                        if (cardSource.PayingCost(SelectCardEffect.Root.DigivolutionCards, null, checkAvailability: false) > cardSource.Owner.MaxMemoryCost)
+                        {
+                            return false;
+                        }
+
+                        if (cardSource.PayingCost(SelectCardEffect.Root.Security, null, checkAvailability: false) > cardSource.Owner.MaxMemoryCost)
+                        {
+                            return false;
+                        }
+
+                        if (cardSource.PayingCost(SelectCardEffect.Root.Library, null, checkAvailability: false) > cardSource.Owner.MaxMemoryCost)
                         {
                             return false;
                         }
@@ -80,8 +96,7 @@ namespace DCGO.CardEffects.EX10
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnHand(card) &&
-                           CardEffectCommons.HasMatchConditionOwnersSecurity(card, CanSelectCardCondition);
+                    return CardEffectCommons.HasMatchConditionOwnersSecurity(card, CanSelectCardCondition, false);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
@@ -101,12 +116,18 @@ namespace DCGO.CardEffects.EX10
                         return false;
                     }
 
-                    if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, (cardSource) => CanSelectSecurityCardCondition(cardSource)))
+                    if (CardEffectCommons.HasMatchConditionOwnersSecurity(card, CanSelectSecurityCardCondition, false))
                     {
                         bool noSelect = CanNoSelect(CardEffectCommons.GetCardFromHashtable(_hashtable));
                         List<CardSource> selectedCards = new List<CardSource>();
 
-                        int maxCount = Math.Min(3 - digivolutionCards.Count, card.Owner.SecurityCards.Count((cardSource) => CanSelectSecurityCardCondition(cardSource)));
+                        List<string> cardNames = card.Owner.SecurityCards.Filter(CanSelectSecurityCardCondition)
+                                            .Map(cardSource1 => cardSource1.CardNames)
+                                            .Flat()
+                                            .Distinct()
+                                            .ToList();
+
+                        int maxCount = Math.Min(4, cardNames.Count);
 
                         if (maxCount >= 1)
                         {
@@ -121,12 +142,12 @@ namespace DCGO.CardEffects.EX10
                                 afterSelectCardCoroutine: null,
                                 message: "Select cards to place in Digivolution cards.",
                                 maxCount: maxCount,
-                                canEndNotMax: true,
+                                canEndNotMax: false,
                                 isShowOpponent: true,
                                 mode: SelectCardEffect.Mode.Custom,
                                 root: SelectCardEffect.Root.Security,
                                 customRootCardList: null,
-                                canLookReverseCard: true,
+                                canLookReverseCard: false,
                                 selectPlayer: card.Owner,
                                 cardEffect: activateClass);
 
@@ -198,8 +219,7 @@ namespace DCGO.CardEffects.EX10
                             if (selectedCards.Count >= 1)
                             {
                                 GManager.instance.GetComponent<SelectDigiXrosClass>().AddDigivolutionCardInfos(new AddDigivolutionCardsInfo(activateClass, selectedCards));
-
-                                yield return StartCoroutine(AfterSelectCardCoroutine(selectedCards));
+                                yield return ContinuousController.instance.StartCoroutine(AfterSelectCardCoroutine(selectedCards));
                             }
                         }
                     }
@@ -291,23 +311,17 @@ namespace DCGO.CardEffects.EX10
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
                     return cardSource.IsDigimon &&
-                           cardSource.IsFlipped &&
+                           !cardSource.IsFlipped &&
                            cardSource.EqualsTraits("Dark Masters");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    if (card.Owner.HandCards.Contains(card))
+                    ICardEffect activateClass = card.EffectList(EffectTiming.BeforePayCost).Find(cardEffect => cardEffect.EffectName == "Placing 1 [Dark Masters] to get Play Cost -4");
+                    
+                    if (activateClass != null)
                     {
-                        ICardEffect activateClass = card.EffectList(EffectTiming.BeforePayCost).Find(cardEffect => cardEffect.EffectName == "Placing 1 [Dark Masters] to get Play Cost -4");
-
-                        if (activateClass != null)
-                        {
-                            if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
-                            {
-                                return true;
-                            }
-                        }
+                        return CardEffectCommons.HasMatchConditionOwnersSecurity(card, CanSelectCardCondition, false);
                     }
 
                     return false;
@@ -374,19 +388,21 @@ namespace DCGO.CardEffects.EX10
             }
 
             #endregion
+
             #endregion
 
             #region On Play
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 [Dark Masters] from sources, give <Rush>, Delete them at end of turn", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[On Play] You may play 1 of each [Dark Masters] trait card with different names from this Digimon's digivolution cards without paying the costs. Then, all of your [Dark Masters] trait Digimon gain ＜Rush＞ for the turn. (This Digimon can attack the turn it comes into play.) At turn end, delete the Digimon this effect played.";
+                    return "[On Play] You may play 1 of each [Dark Masters] trait card with different names from this Digimon's digivolution cards without paying the costs. Then, all of your [Dark Masters] trait Digimon gain ＜Rush＞ for the turn. At turn end, delete the Digimon this effect played.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -404,7 +420,7 @@ namespace DCGO.CardEffects.EX10
                 {
                     return cardSource.IsDigimon &&
                            cardSource.EqualsTraits("Dark Masters") &&
-                           CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
+                           CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass, root:SelectCardEffect.Root.DigivolutionCards);
                 }
 
                 bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
@@ -500,19 +516,20 @@ namespace DCGO.CardEffects.EX10
                                     activateClass: activateClass));
 
                         #region Delete Digimon Played
-                        foreach(CardSource source in selectedCards)
+
+                        foreach (CardSource source in selectedCards)
                         {
                             Permanent playedPermanent = source.PermanentOfThisCard();
 
                             ActivateClass activateClass1 = new ActivateClass();
-                            activateClass1.SetUpICardEffect("Delete the Digimon", CanUseCondition2, selectedPermanent.TopCard);
+                            activateClass1.SetUpICardEffect($"[{source.BaseENGCardNameFromEntity}] Delete the Digimon", CanUseCondition2, playedPermanent.TopCard);
                             activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDiscription1());
                             activateClass1.SetEffectSourcePermanent(selectedPermanent);
-                            selectedPermanent.UntilOwnerTurnEndEffects.Add(GetCardEffect);
+                            playedPermanent.UntilOwnerTurnEndEffects.Add(GetCardEffect);
 
-                            if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
+                            if (!playedPermanent.TopCard.CanNotBeAffected(activateClass))
                             {
-                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(selectedPermanent));
+                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(playedPermanent));
                             }
 
                             string EffectDiscription1()
@@ -522,14 +539,11 @@ namespace DCGO.CardEffects.EX10
 
                             bool CanUseCondition2(Hashtable hashtable1)
                             {
-                                if (CardEffectCommons.IsOpponentTurn(card))
+                                if (CardEffectCommons.IsOwnerTurn(card))
                                 {
-                                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(selectedPermanent, selectedPermanent.TopCard))
+                                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(playedPermanent, playedPermanent.TopCard))
                                     {
-                                        if (CardEffectCommons.CanTriggerOnEndAttack(hashtable1, selectedPermanent.TopCard))
-                                        {
-                                            return true;
-                                        }
+                                        return true;
                                     }
                                 }
 
@@ -538,9 +552,9 @@ namespace DCGO.CardEffects.EX10
 
                             bool CanActivateCondition1(Hashtable hashtable1)
                             {
-                                if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
+                                if (CardEffectCommons.IsPermanentExistsOnBattleArea(playedPermanent))
                                 {
-                                    if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
+                                    if (!playedPermanent.TopCard.CanNotBeAffected(activateClass))
                                     {
                                         return true;
                                     }
@@ -551,10 +565,10 @@ namespace DCGO.CardEffects.EX10
 
                             IEnumerator ActivateCoroutine1(Hashtable _hashtable1)
                             {
-                                if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
+                                if (CardEffectCommons.IsPermanentExistsOnBattleArea(playedPermanent))
                                 {
                                     yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(
-                                    new List<Permanent>() { selectedPermanent },
+                                    new List<Permanent>() { playedPermanent },
                                     CardEffectCommons.CardEffectHashtable(activateClass1)).Destroy());
                                 }
                             }
@@ -569,19 +583,21 @@ namespace DCGO.CardEffects.EX10
                                 return null;
                             }
                         }
-                        
+
                         #endregion
                     }
                 }
             }
+
             #endregion
 
             #region When Digivolving
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 [Dark Masters] from sources, give <Rush>, Delete them at end of turn", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -604,7 +620,7 @@ namespace DCGO.CardEffects.EX10
                 {
                     return cardSource.IsDigimon &&
                            cardSource.EqualsTraits("Dark Masters") &&
-                           CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass);
+                           CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass, root:SelectCardEffect.Root.DigivolutionCards);
                 }
 
                 bool CanTargetCondition_ByPreSelecetedList(List<CardSource> cardSources, CardSource cardSource)
@@ -700,19 +716,20 @@ namespace DCGO.CardEffects.EX10
                                     activateClass: activateClass));
 
                         #region Delete Digimon Played
+
                         foreach (CardSource source in selectedCards)
                         {
                             Permanent playedPermanent = source.PermanentOfThisCard();
 
                             ActivateClass activateClass1 = new ActivateClass();
-                            activateClass1.SetUpICardEffect("Delete the Digimon", CanUseCondition2, selectedPermanent.TopCard);
+                            activateClass1.SetUpICardEffect("Delete the Digimon", CanUseCondition2, playedPermanent.TopCard);
                             activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDiscription1());
                             activateClass1.SetEffectSourcePermanent(selectedPermanent);
-                            selectedPermanent.UntilOwnerTurnEndEffects.Add(GetCardEffect);
+                            playedPermanent.UntilOwnerTurnEndEffects.Add(GetCardEffect);
 
-                            if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
+                            if (!playedPermanent.TopCard.CanNotBeAffected(activateClass))
                             {
-                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(selectedPermanent));
+                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(playedPermanent));
                             }
 
                             string EffectDiscription1()
@@ -722,14 +739,11 @@ namespace DCGO.CardEffects.EX10
 
                             bool CanUseCondition2(Hashtable hashtable1)
                             {
-                                if (CardEffectCommons.IsOpponentTurn(card))
+                                if (CardEffectCommons.IsOwnerTurn(card))
                                 {
-                                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(selectedPermanent, selectedPermanent.TopCard))
+                                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(playedPermanent, playedPermanent.TopCard))
                                     {
-                                        if (CardEffectCommons.CanTriggerOnEndAttack(hashtable1, selectedPermanent.TopCard))
-                                        {
-                                            return true;
-                                        }
+                                        return true;
                                     }
                                 }
 
@@ -738,9 +752,9 @@ namespace DCGO.CardEffects.EX10
 
                             bool CanActivateCondition1(Hashtable hashtable1)
                             {
-                                if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
+                                if (CardEffectCommons.IsPermanentExistsOnBattleArea(playedPermanent))
                                 {
-                                    if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
+                                    if (!playedPermanent.TopCard.CanNotBeAffected(activateClass))
                                     {
                                         return true;
                                     }
@@ -751,10 +765,10 @@ namespace DCGO.CardEffects.EX10
 
                             IEnumerator ActivateCoroutine1(Hashtable _hashtable1)
                             {
-                                if (CardEffectCommons.IsPermanentExistsOnBattleArea(selectedPermanent))
+                                if (CardEffectCommons.IsPermanentExistsOnBattleArea(playedPermanent))
                                 {
                                     yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(
-                                    new List<Permanent>() { selectedPermanent },
+                                    new List<Permanent>() { playedPermanent },
                                     CardEffectCommons.CardEffectHashtable(activateClass1)).Destroy());
                                 }
                             }
@@ -774,6 +788,7 @@ namespace DCGO.CardEffects.EX10
                     }
                 }
             }
+
             #endregion
 
             return cardEffects;

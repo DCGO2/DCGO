@@ -110,7 +110,7 @@ namespace DCGO.CardEffects.P
                         {
                             if (PermanentsCondition(targetPermanents))
                             {
-                                
+
                                 Cost -= 1;
                             }
                         }

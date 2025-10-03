@@ -22,12 +22,13 @@ namespace DCGO.CardEffects.EX10
                            targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.Level == 4;
                 }
 
-                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 4, ignoreDigivolutionRequirement: false, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
             }
 
             #endregion
 
             #region Digixros
+
             if (timing == EffectTiming.None)
             {
                 AddDigiXrosConditionClass addDigiXrosConditionClass = new AddDigiXrosConditionClass();
@@ -97,6 +98,73 @@ namespace DCGO.CardEffects.EX10
                     return null;
                 }
             }
+
+            #endregion
+
+            #region Shared OP/WD
+
+            bool SharedPermamentCondition(Permanent permanent)
+            {
+                return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
+            }
+
+            IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
+            {
+                if (CardEffectCommons.HasMatchConditionPermanent(SharedPermamentCondition))
+                {
+                    Permanent selectedPermament = null;
+
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                    selectPermanentEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: SharedPermamentCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: false,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: SelectPermanentCoroutine,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                    {
+                        selectedPermament = permanent;
+                        yield return null;
+                    }
+
+                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to gain De-Digivolve immunity & 3K DP", "The opponent is selecting 1 Digimon to gain De-Digivolve immunity & 3K DP");
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                    if (selectedPermament != null)
+                    {
+                        bool CanUseImmunityCondition(Hashtable hashtable1)
+                        {
+                            return selectedPermament.TopCard != null;
+                        }
+
+                        bool PermanentImmunityCondition(Permanent permanent)
+                        {
+                            return permanent == selectedPermament;
+                        }
+
+                        ImmuneFromDeDigivolveClass immuneFromDeDigivolveClass = new ImmuneFromDeDigivolveClass();
+                        immuneFromDeDigivolveClass.SetUpICardEffect("Isn't affected by <De-Digivolve>", CanUseImmunityCondition, selectedPermament.TopCard);
+                        immuneFromDeDigivolveClass.SetUpImmuneFromDeDigivolveClass(PermanentCondition: PermanentImmunityCondition);
+                        selectedPermament.UntilOpponentTurnEndEffects.Add((_timing) => immuneFromDeDigivolveClass);
+
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
+                            targetPermanent: selectedPermament,
+                            changeValue: 3000,
+                            effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                            activateClass: activateClass
+                        ));
+                    }
+                }
+            }
+
             #endregion
 
             #region On Play
@@ -105,7 +173,7 @@ namespace DCGO.CardEffects.EX10
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Gain immunity to De-Digivolve & gain 3k DP", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, (hashtable) => SharedActivateCoroutine(hashtable, activateClass), -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -121,38 +189,8 @@ namespace DCGO.CardEffects.EX10
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
-                }
-
-                void ActivateDeDigivolveProtection()
-                {
-                    Permanent thisPermanent = card.PermanentOfThisCard();
-
-                    bool CanUseImmunityCondition(Hashtable hashtable1)
-                    {
-                        return thisPermanent.TopCard != null;
-                    }
-
-                    bool PermanentImmunityCondition(Permanent permanent)
-                    {
-                        return permanent == thisPermanent;
-                    }
-
-                    ImmuneFromDeDigivolveClass immuneFromDeDigivolveClass = new ImmuneFromDeDigivolveClass();
-                    immuneFromDeDigivolveClass.SetUpICardEffect("Isn't affected by <De-Digivolve>", CanUseImmunityCondition, thisPermanent.TopCard);
-                    immuneFromDeDigivolveClass.SetUpImmuneFromDeDigivolveClass(PermanentCondition: PermanentImmunityCondition);
-                    thisPermanent.UntilOpponentTurnEndEffects.Add(_ => immuneFromDeDigivolveClass);
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
-                        targetPermanent: card.PermanentOfThisCard(), 
-                        changeValue: 3000, 
-                        effectDuration: EffectDuration.UntilOpponentTurnEnd, 
-                        activateClass: activateClass));
-
-                    ActivateDeDigivolveProtection();
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                        && CardEffectCommons.HasMatchConditionPermanent(SharedPermamentCondition);
                 }
             }
 
@@ -164,7 +202,7 @@ namespace DCGO.CardEffects.EX10
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Gain immunity to De-Digivolve & gain 3k DP", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, (hashtable) => SharedActivateCoroutine(hashtable, activateClass), -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -180,44 +218,15 @@ namespace DCGO.CardEffects.EX10
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
-                }
-
-                void ActivateDeDigivolveProtection()
-                {
-                    Permanent thisPermanent = card.PermanentOfThisCard();
-
-                    bool CanUseImmunityCondition(Hashtable hashtable1)
-                    {
-                        return thisPermanent.TopCard != null;
-                    }
-
-                    bool PermanentImmunityCondition(Permanent permanent)
-                    {
-                        return permanent == thisPermanent;
-                    }
-
-                    ImmuneFromDeDigivolveClass immuneFromDeDigivolveClass = new ImmuneFromDeDigivolveClass();
-                    immuneFromDeDigivolveClass.SetUpICardEffect("Isn't affected by <De-Digivolve>", CanUseImmunityCondition, thisPermanent.TopCard);
-                    immuneFromDeDigivolveClass.SetUpImmuneFromDeDigivolveClass(PermanentCondition: PermanentImmunityCondition);
-                    thisPermanent.UntilOpponentTurnEndEffects.Add(_ => immuneFromDeDigivolveClass);
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
-                {
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
-                        targetPermanent: card.PermanentOfThisCard(),
-                        changeValue: 3000,
-                        effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                        activateClass: activateClass));
-
-                    ActivateDeDigivolveProtection();
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                        && CardEffectCommons.HasMatchConditionPermanent(SharedPermamentCondition);
                 }
             }
 
             #endregion
 
             #region All Turns - OPT
+
             if (timing == EffectTiming.WhenPermanentWouldBeDeleted)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -235,7 +244,7 @@ namespace DCGO.CardEffects.EX10
                 {
                     return cardSource.IsDigimon &&
                            cardSource.HasPlayCost && cardSource.GetCostItself <= 4 &&
-                           CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass,SelectCardEffect.Root.DigivolutionCards);
+                           CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass, SelectCardEffect.Root.DigivolutionCards);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -312,6 +321,7 @@ namespace DCGO.CardEffects.EX10
                                         activateETB: true));
                 }
             }
+
             #endregion
 
             #region ESS

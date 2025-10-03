@@ -66,7 +66,7 @@ namespace DCGO.CardEffects.EX9
                             selectCardCoroutine: null),
                         new SimplifiedSelectCardConditionClass(
                             canTargetCondition:SelectAbbadomon,
-                            message:"Select 1 Tamer card with [Abbadomon] in its name.",
+                            message:"Select 1 Digimon card with [Abbadomon] in its name.",
                             mode: SelectCardEffect.Mode.AddHand,
                             maxCount: 1,
                             selectCardCoroutine: null),

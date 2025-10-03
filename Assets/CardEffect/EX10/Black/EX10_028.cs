@@ -12,10 +12,11 @@ namespace DCGO.CardEffects.EX10
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region On Play
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("By trashing 1 sources, 1 Digimon gains ＜Reboot＞, ＜Blocker＞ and +3000 DP", CanUseCondition, card);
+                activateClass.SetUpICardEffect("By trashing 1 sources, 1 Digimon gains <Reboot>, <Blocker> and +3000 DP", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -112,6 +113,7 @@ namespace DCGO.CardEffects.EX10
                                 mode: SelectPermanentEffect.Mode.Custom,
                                 cardEffect: activateClass);
 
+                            selectPermanentEffect.SetUpCustomMessage("Select 1 of your Digimon to gain effects & 3K DP", "The opponent is selecting 1 of their Digimon to gain effects & 3K DP");
                             yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
                             IEnumerator SelectTargetPermanent(Permanent permanent)
@@ -145,13 +147,15 @@ namespace DCGO.CardEffects.EX10
                     }
                 }
             }
+
             #endregion
 
             #region When Digivolving
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("By trashing 1 sources, 1 Digimon gains ＜Reboot＞, ＜Blocker＞ and +3000 DP", CanUseCondition, card);
+                activateClass.SetUpICardEffect("By trashing 1 sources, 1 Digimon gains <Reboot>, <Blocker> and +3000 DP", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -248,6 +252,7 @@ namespace DCGO.CardEffects.EX10
                                 mode: SelectPermanentEffect.Mode.Custom,
                                 cardEffect: activateClass);
 
+                            selectPermanentEffect.SetUpCustomMessage("Select 1 of your Digimon to gain effects & 3K DP", "The opponent is selecting 1 of their Digimon to gain effects & 3K DP");
                             yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
                             IEnumerator SelectTargetPermanent(Permanent permanent)
@@ -256,7 +261,7 @@ namespace DCGO.CardEffects.EX10
                                 yield return null;
                             }
 
-                            if(selectedPermanent != null)
+                            if (selectedPermanent != null)
                             {
                                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainReboot(
                                     targetPermanent: selectedPermanent,
@@ -281,9 +286,11 @@ namespace DCGO.CardEffects.EX10
                     }
                 }
             }
+
             #endregion
 
             #region ESS
+
             if (timing == EffectTiming.OnDigivolutionCardDiscarded)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -314,37 +321,33 @@ namespace DCGO.CardEffects.EX10
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnTrash(card))
-                    {
-                        if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectOpponentsDigimon))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsExistOnTrash(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                    if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, CanSelectOpponentsDigimon))
+                    {
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                    selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectOpponentsDigimon,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: 1,
-                        canNoSelect: false,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: null,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Destroy,
-                        cardEffect: activateClass);
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectOpponentsDigimon,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: 1,
+                            canNoSelect: false,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: null,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Destroy,
+                            cardEffect: activateClass);
 
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                    }                        
                 }
             }
+
             #endregion
 
             return cardEffects;

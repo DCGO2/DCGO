@@ -193,7 +193,7 @@ namespace DCGO.CardEffects.EX6
                             cardEffect: activateClass);
                         
                         yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-                        
+
                         IEnumerator SelectCardCoroutine(CardSource cardSource)
                         {
                             selectedCards.Add(cardSource);

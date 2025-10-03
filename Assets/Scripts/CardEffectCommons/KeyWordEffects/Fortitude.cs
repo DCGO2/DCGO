@@ -25,13 +25,14 @@ public partial class CardEffectCommons
                 {
                     foreach (Hashtable hashtable1 in hashtables)
                     {
-                        List<CardSource> CardSources = CardEffectCommons.GetCardSourcesFromHashtable(hashtable1);
+                        List<CardSource> CardStack = CardEffectCommons.GetCardSourcesFromHashtable(hashtable1);
+                        List<CardSource> CardSources = CardEffectCommons.GetDigivolutionSourcesFromHashtable(hashtable1);
 
-                        if (CardSources != null)
+                        if (CardStack != null && CardSources != null)
                         {
-                            if (CardSources.Contains(card))
+                            if (CardStack.Contains(card))
                             {
-                                if (CardSources.Count >= 2)
+                                if (CardSources.Count >= 1)
                                 {
                                     if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: card, payCost: false, cardEffect: activateClass, root: SelectCardEffect.Root.Trash))
                                     {

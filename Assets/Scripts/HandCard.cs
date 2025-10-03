@@ -379,7 +379,8 @@ public class HandCard : MonoBehaviour
 
     public void OnOutline()
     {
-        Outline_Select.SetActive(true);
+        if (Outline_Select != null)
+            Outline_Select.SetActive(true);
     }
 
     public void OnSelect()
@@ -391,7 +392,8 @@ public class HandCard : MonoBehaviour
 
     public void RemoveSelectEffect()
     {
-        Outline_Select.SetActive(false);
+        if(Outline_Select!= null)
+            Outline_Select.SetActive(false);
 
         OffClickText();
     }

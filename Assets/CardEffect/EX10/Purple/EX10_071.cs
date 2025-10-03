@@ -13,6 +13,7 @@ namespace DCGO.CardEffects.EX10
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region Ignore Color Requirement
+
             if (timing == EffectTiming.None)
             {
                 IgnoreColorConditionClass ignoreColorConditionClass = new IgnoreColorConditionClass();
@@ -22,9 +23,9 @@ namespace DCGO.CardEffects.EX10
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.HasMatchConditionPermanent((permanent) => 
+                    return CardEffectCommons.HasMatchConditionPermanent((permanent) =>
                            CardEffectCommons.IsOwnerPermanent(permanent, card) &&
-                           permanent.TopCard.ContainsCardName("Lucemon"),true);
+                           permanent.TopCard.ContainsCardName("Lucemon"), true);
                 }
 
                 bool CardCondition(CardSource cardSource)
@@ -32,9 +33,11 @@ namespace DCGO.CardEffects.EX10
                     return cardSource == card;
                 }
             }
+
             #endregion
 
             #region Main Effect
+
             if (timing == EffectTiming.OptionSkill)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -90,7 +93,7 @@ namespace DCGO.CardEffects.EX10
                             yield return null;
                         }
 
-                        if(selectedPermanent != null)
+                        if (selectedPermanent != null)
                         {
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainRaid(
                                 targetPermanent: selectedPermanent,
@@ -116,9 +119,11 @@ namespace DCGO.CardEffects.EX10
                     }
                 }
             }
+
             #endregion
 
             #region End Of Your Turn
+
             if (timing == EffectTiming.OnEndTurn)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -199,36 +204,41 @@ namespace DCGO.CardEffects.EX10
 
                         if (selectedPermanent != null)
                         {
-                            SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
+                            if (selectedPermanent.CanAttack(activateClass, withoutTap: true))
+                            {
+                                SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
 
-                            selectAttackEffect.SetUp(
-                                attacker: card.PermanentOfThisCard(),
-                                canAttackPlayerCondition: () => true,
-                                defenderCondition: (permanent) => true,
-                                cardEffect: activateClass);
+                                selectAttackEffect.SetUp(
+                                    attacker: selectedPermanent,
+                                    canAttackPlayerCondition: () => true,
+                                    defenderCondition: (permanent) => true,
+                                    cardEffect: activateClass);
 
-                            selectAttackEffect.SetWithoutTap();
-                            selectAttackEffect.SetCanNotSelectNotAttack();
+                                selectAttackEffect.SetCanNotSelectNotAttack();
+                                selectAttackEffect.SetWithoutTap();
 
-                            yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
+                                yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
+                            }
                         }
                     }
                 }
             }
+
             #endregion
 
             #region Security
+
             if (timing == EffectTiming.SecuritySkill)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play 1 Digimon from trash", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Play 1 [Lucemon] from trash", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, EffectDiscription());
                 activateClass.SetIsSecurityEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[Security] You may play 1 [Lucemon] in its name from your trash without paying the cost.";
+                    return "[Security] You may play 1 [Lucemon] from your trash without paying the cost.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
@@ -239,7 +249,7 @@ namespace DCGO.CardEffects.EX10
                         {
                             if (CardEffectCommons.CanPlayAsNewPermanent(cardSource: cardSource, payCost: false, cardEffect: activateClass))
                             {
-                                if (cardSource.ContainsCardName("Lucemon"))
+                                if (cardSource.EqualsCardName("Lucemon"))
                                 {
                                     return true;
                                 }
@@ -272,7 +282,7 @@ namespace DCGO.CardEffects.EX10
                                     canNoSelect: () => true,
                                     selectCardCoroutine: SelectCardCoroutine,
                                     afterSelectCardCoroutine: null,
-                                    message: "Select 1 card to play.",
+                                    message: "Select 1 [Lucemon] to play.",
                                     maxCount: maxCount,
                                     canEndNotMax: false,
                                     isShowOpponent: true,
@@ -283,10 +293,10 @@ namespace DCGO.CardEffects.EX10
                                     selectPlayer: card.Owner,
                                     cardEffect: activateClass);
 
-                        selectCardEffect.SetUpCustomMessage("Select 1 card to play.", "The opponent is selecting 1 card to play.");
-                        selectCardEffect.SetUpCustomMessage_ShowCard("Played Card");
+                        selectCardEffect.SetUpCustomMessage("Select 1 digimon to play.", "The opponent is selecting 1 digimon to play.");
+                        selectCardEffect.SetUpCustomMessage_ShowCard("Played Digimon");
 
-                        yield return StartCoroutine(selectCardEffect.Activate());
+                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 
                         IEnumerator SelectCardCoroutine(CardSource cardSource)
                         {
@@ -299,6 +309,7 @@ namespace DCGO.CardEffects.EX10
                     }
                 }
             }
+
             #endregion
 
             return cardEffects;

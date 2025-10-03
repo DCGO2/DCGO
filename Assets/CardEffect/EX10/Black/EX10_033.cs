@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 //Pyramidimon
 namespace DCGO.CardEffects.EX10
@@ -29,7 +30,7 @@ namespace DCGO.CardEffects.EX10
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Place 3 cards from trash as bottom sources", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Place up to 3 cards from trash as bottom sources", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("WDWA_EX10_033");
                 cardEffects.Add(activateClass);
@@ -115,7 +116,7 @@ namespace DCGO.CardEffects.EX10
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Place 3 cards from trash as bottom sources", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Place up to 3 cards from trash as bottom sources", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("WDWA_EX10_033");
                 cardEffects.Add(activateClass);
@@ -207,7 +208,7 @@ namespace DCGO.CardEffects.EX10
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] [When Attacking] By trashing up to 3 [Mineral] or [Rock] trait cards from any of your Digimon's digivolution cards, to 1 of your opponent's Digimon, reduce the play cost by 2 until their turn ends for each card trashed.";
+                    return "[When Digivolving] By trashing up to 3 [Mineral] or [Rock] trait cards from any of your Digimon's digivolution cards, to 1 of your opponent's Digimon, reduce the play cost by 2 until their turn ends for each card trashed.";
                 }
 
                 bool HasProperTrait(CardSource source)
@@ -216,7 +217,7 @@ namespace DCGO.CardEffects.EX10
                            (source.EqualsTraits("Mineral") || source.EqualsTraits("Rock"));
                 }
 
-                bool HasProperAmountOfSources()
+                int HasProperAmountOfSources()
                 {
                     int totalSourceCount = 0;
 
@@ -225,7 +226,7 @@ namespace DCGO.CardEffects.EX10
                         totalSourceCount += permanent.DigivolutionCards.Count(HasProperTrait);
                     }
 
-                    return totalSourceCount >= 3;
+                    return totalSourceCount;
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -245,7 +246,7 @@ namespace DCGO.CardEffects.EX10
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
-                        return HasProperAmountOfSources();
+                        return HasProperAmountOfSources() > 0;
 
                     return false;
                 }
@@ -253,20 +254,22 @@ namespace DCGO.CardEffects.EX10
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     int trashedCount = 0;
+                    int maxCount = Mathf.Min(1, HasProperAmountOfSources());
 
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SelectTrashDigivolutionCards(
                         permanentCondition: CanSelectPermanentCondition,
                         cardCondition: HasProperTrait,
                         maxCount: 3,
-                        canNoTrash: false,
+                        canNoTrash: true,
                         isFromOnly1Permanent: false,
                         activateClass: activateClass,
-                        afterSelectionCoroutine: AfterTrashedCards
+                        afterSelectionCoroutine: AfterTrashedCards,
+                        canEndNotMax: true
                     ));
 
                     IEnumerator AfterTrashedCards(Permanent permanent, List<CardSource> cards)
                     {
-                        trashedCount += cards.Count;
+                        trashedCount = cards.Count;
 
                         yield return null;
                     }
@@ -293,7 +296,7 @@ namespace DCGO.CardEffects.EX10
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 card to delete.", "The opponent is selecting 1 card to delete.");
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 card to reduce play cost.", "The opponent is selecting 1 card to reduce play cost.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                         
@@ -313,7 +316,7 @@ namespace DCGO.CardEffects.EX10
             #endregion
 
             #region When Attacking - Reduce Cost
-            if (timing == EffectTiming.OnEnterFieldAnyone)
+            if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By trashing up to 3 sources, reduce 1 digimons play cost by 2 for each card", CanUseCondition, card);
@@ -331,7 +334,7 @@ namespace DCGO.CardEffects.EX10
                            (source.EqualsTraits("Mineral") || source.EqualsTraits("Rock"));
                 }
 
-                bool HasProperAmountOfSources()
+                int HasProperAmountOfSources()
                 {
                     int totalSourceCount = 0;
 
@@ -340,7 +343,7 @@ namespace DCGO.CardEffects.EX10
                         totalSourceCount += permanent.DigivolutionCards.Count(HasProperTrait);
                     }
 
-                    return totalSourceCount >= 3;
+                    return totalSourceCount;
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -359,7 +362,7 @@ namespace DCGO.CardEffects.EX10
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
-                        return HasProperAmountOfSources();
+                        return HasProperAmountOfSources() > 0;
 
                     return false;
                 }
@@ -367,20 +370,22 @@ namespace DCGO.CardEffects.EX10
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     int trashedCount = 0;
+                    int maxCount = Mathf.Min(1, HasProperAmountOfSources());
 
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.SelectTrashDigivolutionCards(
                         permanentCondition: CanSelectPermanentCondition,
                         cardCondition: HasProperTrait,
                         maxCount: 3,
-                        canNoTrash: false,
+                        canNoTrash: true,
                         isFromOnly1Permanent: false,
                         activateClass: activateClass,
-                        afterSelectionCoroutine: AfterTrashedCards
+                        afterSelectionCoroutine: AfterTrashedCards,
+                        canEndNotMax: true
                     ));
 
                     IEnumerator AfterTrashedCards(Permanent permanent, List<CardSource> cards)
                     {
-                        trashedCount += cards.Count;
+                        trashedCount = cards.Count;
 
                         yield return null;
                     }
@@ -407,7 +412,7 @@ namespace DCGO.CardEffects.EX10
                             mode: SelectPermanentEffect.Mode.Custom,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 card to delete.", "The opponent is selecting 1 card to delete.");
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 card to reduce play cost.", "The opponent is selecting 1 card to reduce play cost.");
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 

@@ -9,7 +9,7 @@ namespace DCGO.CardEffects.EX4
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            if (timing == EffectTiming.OnEnterFieldAnyone)
+            if (timing == EffectTiming.BeforePayCost)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Draw 1", CanUseCondition, card);
@@ -36,13 +36,18 @@ namespace DCGO.CardEffects.EX4
                     return false;
                 }
 
+                bool CardSourceCondition(CardSource cardSource)
+                {
+                    return true;
+                }
+
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
                         if (CardEffectCommons.IsOwnerTurn(card))
                         {
-                            if (CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, PermanentCondition))
+                            if (CardEffectCommons.CanTriggerWhenPermanentWouldDigivolve(hashtable, PermanentCondition, CardSourceCondition))//.CanTriggerWhenPermanentDigivolving(hashtable, PermanentCondition))
                             {
                                 return true;
 

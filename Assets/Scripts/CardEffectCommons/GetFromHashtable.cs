@@ -333,6 +333,25 @@ public partial class CardEffectCommons
 
     #endregion
 
+    #region Get Is Face Up from hashtable
+    public static bool GetFaceDownFromHashtable(Hashtable hashtable)
+    {
+        if (hashtable != null)
+        {
+            if (hashtable.ContainsKey("isFaceDown"))
+            {
+                if (hashtable["isFaceDown"] is bool)
+                {
+                    return (bool)hashtable["isFaceDown"];
+                }
+            }
+        }
+
+        return true;
+    }
+
+    #endregion
+
     #region Get battle info from hashtable
     public static IBattle GetBattleFromHashtable(Hashtable hashtable)
     {
@@ -579,6 +598,29 @@ public partial class CardEffectCommons
                 if (hashtable["CardSources"] is List<CardSource>)
                 {
                     List<CardSource> CardSources = (List<CardSource>)hashtable["CardSources"];
+
+                    if (CardSources != null)
+                    {
+                        return CardSources;
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+    #endregion
+
+    #region Get DigivolutionSources from hashtable
+    public static List<CardSource> GetDigivolutionSourcesFromHashtable(Hashtable hashtable)
+    {
+        if (hashtable != null)
+        {
+            if (hashtable.ContainsKey("DigivolutionSources"))
+            {
+                if (hashtable["DigivolutionSources"] is List<CardSource>)
+                {
+                    List<CardSource> CardSources = (List<CardSource>)hashtable["DigivolutionSources"];
 
                     if (CardSources != null)
                     {

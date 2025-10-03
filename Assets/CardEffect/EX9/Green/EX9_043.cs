@@ -200,16 +200,15 @@ namespace DCGO.CardEffects.EX9
             {
                 return cardSource.IsDigimon && CardEffectCommons.IsExistOnTrash(cardSource);
             }
-
-            bool CanSelectPermanentDeleteCondition(Permanent permanent)
-            {
-                return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
-                    permanent.DP <= 3000;
-            }
-
             IEnumerator SharedActivateCoroutine(ActivateClass activateClass)
             {
                 CardSource selectedCard = null;
+
+                bool CanSelectPermanentDeleteCondition(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
+                        permanent.DP <= card.Owner.MaxDP_DeleteEffect(3000, activateClass);
+                }
 
                 if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, SharedCardCondition))
                 {
@@ -283,7 +282,7 @@ namespace DCGO.CardEffects.EX9
                         if (selectedPermanent != null)
                         {
                             var degenCount = card.PermanentOfThisCard().DigivolutionCards.Filter(x => x.IsFlipped).Count;
-                            yield return ContinuousController.instance.StartCoroutine(new IDegeneration(selectedPermanent, degenCount, activateClass).Degeneration());
+                            yield return ContinuousController.instance.StartCoroutine(new IDegeneration(selectedPermanent, degenCount, activateClass,false).Degeneration());
                         }
                     }
 

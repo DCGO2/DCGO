@@ -219,52 +219,45 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
     {
         List<CardSource> RootCardList = new List<CardSource>();
 
-        switch (_root)
+        if (_customRootCardList == null)
         {
-            case Root.Library:
-                if (_customRootCardList.Count > 0)
-                {
-                    foreach (CardSource cardSource in _customRootCardList)
-                    {
-                        RootCardList.Add(cardSource);
-                    }
-                }
-                else
-                {
+            switch (_root)
+            {
+                case Root.Library:
                     foreach (CardSource cardSource in _selectPlayer.LibraryCards)
                     {
                         RootCardList.Add(cardSource);
                     }
-                }
-                break;
+                    break;
 
-            case Root.Trash:
-                foreach (CardSource cardSource in _selectPlayer.TrashCards)
-                {
-                    RootCardList.Add(cardSource);
-                }
-                break;
+                case Root.Trash:
+                    foreach (CardSource cardSource in _selectPlayer.TrashCards)
+                    {
+                        RootCardList.Add(cardSource);
+                    }
+                    break;
 
-            case Root.Security:
-                foreach (CardSource cardSource in _selectPlayer.SecurityCards)
-                {
-                    RootCardList.Add(cardSource);
-                }
-                break;
+                case Root.Security:
+                    foreach (CardSource cardSource in _selectPlayer.SecurityCards)
+                    {
+                        RootCardList.Add(cardSource);
+                    }
+                    break;
 
-            case Root.Recollection:
-                foreach (CardSource cardSource in _selectPlayer.LostCards)
-                {
-                    RootCardList.Add(cardSource);
-                }
-                break;
-
-            case Root.Custom:
-                foreach (CardSource cardSource in _customRootCardList)
-                {
-                    RootCardList.Add(cardSource);
-                }
-                break;
+                case Root.Recollection:
+                    foreach (CardSource cardSource in _selectPlayer.LostCards)
+                    {
+                        RootCardList.Add(cardSource);
+                    }
+                    break;
+            }
+        }
+        else
+        {
+            foreach (CardSource cardSource in _customRootCardList)
+            {
+                RootCardList.Add(cardSource);
+            }
         }
 
         return RootCardList;
@@ -311,6 +304,12 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
             {
                 if (_root == Root.Library)
                     SetUseFaceDown();
+
+                if(_root == Root.Security)
+                {
+                    if (_canLookReverseCard)
+                        SetUseFaceDown();
+                }
 
                 return true;
             }
@@ -746,7 +745,10 @@ public class SelectCardEffect : MonoBehaviourPunCallbacks
                         }
                         else if (CardEffectCommons.IsExistLinked(cardSource))
                         {
-                            yield return ContinuousController.instance.StartCoroutine(cardSource.PermanentOfThisCard().RemoveLinkedCard(cardSource));
+                            yield return ContinuousController.instance.StartCoroutine(new ITrashLinkCards(
+                                cardSource.PermanentOfThisCard(),
+                                new List<CardSource> { cardSource },
+                                _cardEffect).TrashLinkCards());
                         }
                         else
                             yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddTrashCard(cardSource));

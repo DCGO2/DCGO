@@ -21,7 +21,7 @@ namespace DCGO.CardEffects.EX10
                            targetPermanent.TopCard.IsLevel5;
                 }
 
-                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 0, ignoreDigivolutionRequirement: false, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 5, ignoreDigivolutionRequirement: false, card: card, condition: null));
             }
 
             #endregion
@@ -49,8 +49,9 @@ namespace DCGO.CardEffects.EX10
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnHand(card) &&
-                           CardEffectCommons.MatchConditionPermanentCount(IsLvl5Myotismon) >= 2;
+                    return CardEffectCommons.IsExistOnTrash(card) &&
+                           CardEffectCommons.MatchConditionPermanentCount(IsLvl5Myotismon) >= 2 &&
+                           CardEffectCommons.CanPlayAsNewPermanent(cardSource: card, payCost: false, cardEffect: activateClass);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -167,13 +168,13 @@ namespace DCGO.CardEffects.EX10
             bool CanSelectPermanentCondition(Permanent permanent)
             {
                 return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent) &&
+                       permanent != card.PermanentOfThisCard() &&
                        !permanent.IsSuspended;
             }
 
             bool CanActivateSharedCondition(Hashtable hashtable)
             {
-                return CardEffectCommons.IsExistOnBattleArea(card) &&
-                       CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition);
+                return CardEffectCommons.IsExistOnBattleArea(card);
             }
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
@@ -252,7 +253,7 @@ namespace DCGO.CardEffects.EX10
 
             #region When Attacking
 
-            if (timing == EffectTiming.OnEnterFieldAnyone)
+            if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete 2 unsuspened Digimon", CanUseCondition, card);
@@ -277,7 +278,7 @@ namespace DCGO.CardEffects.EX10
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Tras security, then return 1 to bottom deck", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Trash security, then return 1 to bottom deck", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetHashString("AllTurns_EX10-001");
                 cardEffects.Add(activateClass);

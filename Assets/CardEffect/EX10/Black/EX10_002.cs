@@ -10,11 +10,12 @@ namespace DCGO.CardEffects.EX10
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region ESS
+
             if (timing == EffectTiming.OnAttackTargetChanged)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Draw 1", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1,false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("ESS_EX10-002");
                 cardEffects.Add(activateClass);
@@ -27,7 +28,7 @@ namespace DCGO.CardEffects.EX10
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           CardEffectCommons.CanTriggerOnAttackTargetSwitch(hashtable, card);
+                           CardEffectCommons.CanTriggerOnPermanentAttackTargetSwitch(hashtable, _ => true);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -40,6 +41,7 @@ namespace DCGO.CardEffects.EX10
                     yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
                 }
             }
+
             #endregion
 
             return cardEffects;
