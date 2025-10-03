@@ -368,7 +368,8 @@ namespace DCGO.CardEffects.BT23
                     changeValue: 1,
                     isInheritedEffect: false,
                     card: card,
-                    condition: null));
+                    condition: null,
+                    isLinkedEffect: true));
             }
 
             #endregion
