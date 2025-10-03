@@ -122,9 +122,10 @@ namespace DCGO.CardEffects.EX10
                     if (selectedPermanent != null)
                     {
                         ActivateClass activateClass1 = new ActivateClass();
-                        activateClass1.SetUpICardEffect("Delete this Digimon", CanUseCondition1, selectedPermanent.TopCard);
+                        activateClass1.SetUpICardEffect("Delete 1 of your Digimon", CanUseCondition1, selectedPermanent.TopCard);
                         activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDiscription1());
                         activateClass1.SetEffectSourcePermanent(selectedPermanent);
+                        activateClass1.SetEffectSourceCard(selectedPermanent.TopCard);
                         selectedPermanent.UntilOwnerTurnEndEffects.Add(GetCardEffect);
 
                         if (!selectedPermanent.TopCard.CanNotBeAffected(activateClass))
@@ -134,7 +135,7 @@ namespace DCGO.CardEffects.EX10
 
                         string EffectDiscription1()
                         {
-                            return "[End of Your Turn] Delete this Digimon.";
+                            return "[End of Your Turn] Delete 1 of your Digimon.";
                         }
 
                         bool CanUseCondition1(Hashtable hashtable1)
