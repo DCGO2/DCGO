@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 
 
@@ -30,5 +31,24 @@ public partial class CardEffectCommons
 
             return costs.Count >= 1 && permanent.TopCard.GetCostItself == costs.Max();
         }
+    }
+
+    public static List<Permanent> GetNonMaxCostPermanents(Player owner, bool digimonOnly = true)
+    {
+        var candidates = digimonOnly
+            ? owner.GetBattleAreaDigimons()
+            : owner.GetBattleAreaPermanents().Where(p => p.IsDigimon || p.IsTamer);
+
+        var list = candidates
+            .Where(x => x.TopCard != null && x.TopCard.HasPlayCost)
+            .ToList();
+
+        if (list.Count == 0) return new List<Permanent>();
+
+        var maxCost = list.Max(p => p.TopCard.GetCostItself);
+
+        return list
+            .Where(p => p.TopCard.GetCostItself < maxCost)
+            .ToList();
     }
 }
