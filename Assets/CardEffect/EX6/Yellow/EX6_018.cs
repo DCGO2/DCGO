@@ -370,7 +370,7 @@ namespace DCGO.CardEffects.EX6
                                     
                                     if (selectedPermanent.TopCard == null)
                                     {
-                                        if (securityCard.Owner.SecurityCards.Contains(securityCard))
+                                        if (!CardEffectCommons.IsExistOnBattleArea(securityCard))
                                         {
                                             if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, IsCardLucemonChaosModeCondition))
                                             {

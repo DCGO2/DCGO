@@ -5,7 +5,7 @@ using System;
 //Unique Emblem: Gravel Hearts
 namespace DCGO.CardEffects.EX10
 {
-    public class EX10_096 : CEntity_Effect
+    public class EX10_069 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
@@ -27,7 +27,7 @@ namespace DCGO.CardEffects.EX10
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerSecurityEffect(hashtable, card);
+                    return CardEffectCommons.CanTriggerOptionMainEffect(hashtable, card);
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)

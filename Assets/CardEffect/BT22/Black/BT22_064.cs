@@ -140,7 +140,7 @@ namespace DCGO.CardEffects.BT22
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, IsOpponentsDigimon);
+                        && CardEffectCommons.HasMatchConditionPermanent(IsOpponentsDigimon);
                 }
 
                 bool IsUnidentified(Permanent permanent)
@@ -152,17 +152,17 @@ namespace DCGO.CardEffects.BT22
 
                 bool IsOpponentsDigimon(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                        && CardEffectCommons.IsMinCost(permanent, card.Owner.Enemy, true, null);
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
+                           permanent.TopCard.HasPlayCost &&
+                           CardEffectCommons.IsMinCost(permanent, card.Owner.Enemy, true);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, IsOpponentsDigimon))
+                    if (CardEffectCommons.HasMatchConditionPermanent(IsOpponentsDigimon))
                     {
                         #region Delete Lowest Play Cost Digimon
 
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, IsOpponentsDigimon));
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
                         selectPermanentEffect.SetUp(
@@ -170,7 +170,7 @@ namespace DCGO.CardEffects.BT22
                             canTargetCondition: IsOpponentsDigimon,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: maxCount,
+                            maxCount: 1,
                             canNoSelect: false,
                             canEndNotMax: false,
                             selectPermanentCoroutine: null,

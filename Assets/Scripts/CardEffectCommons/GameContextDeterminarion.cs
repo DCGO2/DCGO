@@ -356,7 +356,7 @@ public partial class CardEffectCommons
 
     #endregion
 
-    #region Whether the permanent is Digimon and in the card's owner's Battle Area
+    #region Whether the permanent is Digimon and in the Battle Area
 
     public static bool IsPermanentExistsOnBattleAreaDigimon(Permanent permanent)
     {
@@ -397,6 +397,57 @@ public partial class CardEffectCommons
         if (IsPermanentExistsOnOpponentBattleArea(permanent, card))
         {
             if (permanent.IsDigimon)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    #endregion
+
+    #region Whether the permanent is Tamer and in the Battle Area
+
+    public static bool IsPermanentExistsOnBattleAreaTamer(Permanent permanent)
+    {
+        if (IsPermanentExistsOnBattleArea(permanent))
+        {
+            if (permanent.IsTamer)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    #endregion
+
+    #region Whether the permanent is Tamer and in the card's owner's Battle Area
+
+    public static bool IsPermanentExistsOnOwnerBattleAreaTamer(Permanent permanent, CardSource card)
+    {
+        if (IsPermanentExistsOnOwnerBattleArea(permanent, card))
+        {
+            if (permanent.IsTamer)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    #endregion
+
+    #region Whether the permanent is Tamer and in the card's owner's opponent's Battle Area
+
+    public static bool IsPermanentExistsOnOpponentBattleAreaTamer(Permanent permanent, CardSource card)
+    {
+        if (IsPermanentExistsOnOpponentBattleArea(permanent, card))
+        {
+            if (permanent.IsTamer)
             {
                 return true;
             }

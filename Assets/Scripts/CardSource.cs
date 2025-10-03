@@ -3719,6 +3719,18 @@ public class CardSource : MonoBehaviour
         get
         {
             return EqualsTraits("Sea Beast");
+		}
+    }
+
+    #endregion
+
+    #region whether this card has Twilight trait
+
+    public bool HasTwilightTrait
+    {
+        get
+        {
+            return EqualsTraits("Twilight");
         }
     }
 
@@ -3731,6 +3743,18 @@ public class CardSource : MonoBehaviour
         get
         {
             return EqualsTraits("Angel");
+		}
+    }
+
+    #endregion
+
+    #region whether this card has Dark Masters trait
+
+    public bool HasDarkMastersTrait
+    {
+        get
+        {
+            return EqualsTraits("Dark Masters");
         }
     }
 

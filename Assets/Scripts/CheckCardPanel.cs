@@ -286,6 +286,9 @@ public class CheckCardPanel : MonoBehaviour
         {
             foreach (HandCard handCard in handCards)
             {
+                if (handCard.cardSource.Owner != GManager.instance.turnStateMachine.gameContext.TurnPlayer)
+                    continue;
+
                 if (handCard.cardSource.CanDeclareSkill)
                 {
                     handCard.SetOrangeOutline();
@@ -293,7 +296,7 @@ public class CheckCardPanel : MonoBehaviour
                     handCard.AddClickTarget(OnClickHandCard);
                 }
             }
-        }
+        }        
     }
 
     public void OnClickHandCard(HandCard handCard)

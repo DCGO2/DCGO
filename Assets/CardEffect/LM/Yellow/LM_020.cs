@@ -127,14 +127,12 @@ namespace DCGO.CardEffects.LM
                                 canEndNotMax: false,
                                 isShowOpponent: true,
                                 mode: SelectCardEffect.Mode.Custom,
-                                root: SelectCardEffect.Root.Custom,
+                                root: SelectCardEffect.Root.Security,
                                 customRootCardList: card.Owner.Enemy.SecurityCards,
                                 canLookReverseCard: true,
                                 selectPlayer: card.Owner,
                                 cardEffect: activateClass);
 
-                            selectCardEffect.SetIsSecurity();
-                            selectCardEffect.SetUseFaceDown();
                             selectCardEffect.SetUpCustomMessage_ShowCard("Return card to top of deck");
 
                             yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());

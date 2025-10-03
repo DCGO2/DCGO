@@ -46,7 +46,7 @@ namespace DCGO.CardEffects.EX10
 
             #endregion
 
-            #region When Digivolving - Unsuspend
+            #region When Digivolving - Add Sources OPT
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -57,7 +57,7 @@ namespace DCGO.CardEffects.EX10
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] [Once Per Turn] You may place up to 3 [Mineral] or [Rock] cards from your trash as this Digimon's bottom digivolution cards.";
+                    return "[When Digivolving] [Once Per Turn] By placing 3 [Mineral] or [Rock] trait cards from your trash as this Digimon's bottom digivolution cards, it unsuspends.";
                 }
 
                 bool HasProperTrait(CardSource source)
@@ -75,7 +75,7 @@ namespace DCGO.CardEffects.EX10
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, HasProperTrait);
+                           CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, HasProperTrait) >= 3;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -88,12 +88,12 @@ namespace DCGO.CardEffects.EX10
                         canTargetCondition: HasProperTrait,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: CanEndSelectCondition,
-                        canNoSelect: () => true,
+                        canNoSelect: () => false,
                         selectCardCoroutine: SelectCardCoroutine,
                         afterSelectCardCoroutine: null,
                         message: "Select [Mineral] or [Rock] to place on bottom of digivolution cards\n(cards will be placed so that cards with lower numbers are on top).",
                         maxCount: 3,
-                        canEndNotMax: true,
+                        canEndNotMax: false,
                         isShowOpponent: true,
                         mode: SelectCardEffect.Mode.Custom,
                         root: SelectCardEffect.Root.Trash,
@@ -124,7 +124,7 @@ namespace DCGO.CardEffects.EX10
                         yield return null;
                     }
 
-                    if (selectedCards.Count >= 3)
+                    if (selectedCards.Count >= 1)
                     {
                         yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(selectedCards, activateClass));
                         yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() }, activateClass).Unsuspend());
@@ -133,7 +133,7 @@ namespace DCGO.CardEffects.EX10
             }
             #endregion
 
-            #region When Attacking - Unsuspend
+            #region When Attacking - Add Sources OPT
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -144,7 +144,7 @@ namespace DCGO.CardEffects.EX10
 
                 string EffectDiscription()
                 {
-                    return "[When Attacking] [Once Per Turn] You may place up to 3 [Mineral] or [Rock] cards from your trash as this Digimon's bottom digivolution cards.";
+                    return "[When Attacking] [Once Per Turn] By placing 3 [Mineral] or [Rock] trait cards from your trash as this Digimon's bottom digivolution cards, it unsuspends.";
                 }
 
                 bool HasProperTrait(CardSource source)
@@ -162,7 +162,7 @@ namespace DCGO.CardEffects.EX10
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, HasProperTrait);
+                           CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, HasProperTrait) >= 3;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -175,12 +175,12 @@ namespace DCGO.CardEffects.EX10
                         canTargetCondition: HasProperTrait,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: CanEndSelectCondition,
-                        canNoSelect: () => true,
+                        canNoSelect: () => false,
                         selectCardCoroutine: SelectCardCoroutine,
                         afterSelectCardCoroutine: null,
                         message: "Select [Mineral] or [Rock] to place on bottom of digivolution cards\n(cards will be placed so that cards with lower numbers are on top).",
                         maxCount: 3,
-                        canEndNotMax: true,
+                        canEndNotMax: false,
                         isShowOpponent: true,
                         mode: SelectCardEffect.Mode.Custom,
                         root: SelectCardEffect.Root.Trash,
@@ -211,7 +211,7 @@ namespace DCGO.CardEffects.EX10
                         yield return null;
                     }
 
-                    if (selectedCards.Count >= 3)
+                    if (selectedCards.Count >= 1)
                     {
                         yield return ContinuousController.instance.StartCoroutine(card.PermanentOfThisCard().AddDigivolutionCardsBottom(selectedCards, activateClass));
                         yield return ContinuousController.instance.StartCoroutine(new IUnsuspendPermanents(new List<Permanent>() { card.PermanentOfThisCard() }, activateClass).Unsuspend());
@@ -224,7 +224,7 @@ namespace DCGO.CardEffects.EX10
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("By trashing 3 sources, Unsuspend and gain Security A. +1", CanUseCondition, card);
+                activateClass.SetUpICardEffect("By trashing 3 sources, Delete 1 digimon and trash top security", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -294,7 +294,7 @@ namespace DCGO.CardEffects.EX10
 
                     IEnumerator AfterTrashedCards(Permanent permanent, List<CardSource> cards)
                     {
-                        trashedCount += cards.Count;
+                        trashedCount = cards.Count;
 
                         yield return null;
                     }
@@ -332,10 +332,10 @@ namespace DCGO.CardEffects.EX10
             #endregion
 
             #region When Attacking - Delete/Trash
-            if (timing == EffectTiming.OnEnterFieldAnyone)
+            if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("By trashing 3 sources, Unsuspend and gain Security A. +1", CanUseCondition, card);
+                activateClass.SetUpICardEffect("By trashing 3 sources, Delete 1 digimon and trash top security", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -404,7 +404,7 @@ namespace DCGO.CardEffects.EX10
 
                     IEnumerator AfterTrashedCards(Permanent permanent, List<CardSource> cards)
                     {
-                        trashedCount += cards.Count;
+                        trashedCount = cards.Count;
 
                         yield return null;
                     }

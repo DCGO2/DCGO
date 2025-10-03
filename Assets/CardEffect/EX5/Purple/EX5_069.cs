@@ -11,7 +11,7 @@ public class EX5_069 : CEntity_Effect
         if (timing == EffectTiming.OptionSkill)
         {
             ActivateClass activateClass = new ActivateClass();
-            activateClass.SetUpICardEffect(card.BaseENGCardNameFromEntity, CanUseCondition, card);
+            activateClass.SetUpICardEffect("By Trashing 1 card, delete level 6 or lower", CanUseCondition, card);
             activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
             cardEffects.Add(activateClass);
 

@@ -122,15 +122,13 @@ namespace DCGO.CardEffects.EX10
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnTrash(card)
-                        && CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnTrash(card)
-                        && CardEffectCommons.CanActivateOnDeletion(card)
-                        && card.Owner.SecurityCards.Count >= 10
+                    return CardEffectCommons.CanActivateOnDeletion(card)
+                        && card.Owner.TrashCards.Count >= 10
                         && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, IsBeelzemon);
                 }
 
@@ -138,7 +136,7 @@ namespace DCGO.CardEffects.EX10
                 {
                     return cardSource.IsDigimon
                         && cardSource.EqualsCardName("Beelzemon")
-                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
+                        && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass, SelectCardEffect.Root.Trash);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -207,9 +205,8 @@ namespace DCGO.CardEffects.EX10
 
                 int GetDPChangeValue()
                 {
-                    int count = card.Owner.LibraryCards.Count;
-                    int roundedCount = (count % 10 == 0) ? count : (count / 10) * 10;
-                    return roundedCount * 1000;
+                    int stacksOf10 = card.Owner.TrashCards.Count / 10;
+                    return stacksOf10 * 1000;
                 }
 
                 cardEffects.Add(CardEffectFactory.ChangeSelfDPStaticEffect(changeValue: GetDPChangeValue(), isInheritedEffect: true, card: card, condition: Condition));

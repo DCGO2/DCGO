@@ -82,7 +82,7 @@ namespace DCGO.CardEffects.EX8
                         canNoSelect: () => true,
                         selectCardCoroutine: null,
                         afterSelectCardCoroutine: SelectCardCoroutine,
-                        message: "Select 1 level 4 or lower Digimon card to play.",
+                        message: "Select 1 Digimon card to play.",
                         maxCount: 1,
                         canEndNotMax: false,
                         isShowOpponent: true,
@@ -94,8 +94,8 @@ namespace DCGO.CardEffects.EX8
                         cardEffect: activateClass);
 
                     selectCardEffect.SetUpCustomMessage(
-                        "Select 1 level 4 or lower Digimon card to play.",
-                        "The opponent is selecting 1 level 4 or lower Digimon card to play.");
+                        "Select 1 Digimon card to play.",
+                        "The opponent is selecting 1 Digimon card to play.");
                     selectCardEffect.SetUpCustomMessage_ShowCard("Play Card");
 
                     yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());

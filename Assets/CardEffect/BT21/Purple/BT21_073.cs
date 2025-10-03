@@ -27,78 +27,7 @@ namespace DCGO.CardEffects.BT21
 
             if (timing == EffectTiming.None)
             {
-                AddAppFusionConditionClass addAppFusionConditionClass = new AddAppFusionConditionClass();
-                addAppFusionConditionClass.SetUpICardEffect($"App Fusion", (hashtable) => true, card);
-                addAppFusionConditionClass.SetUpAddAppFusionConditionClass(getAppFusionCondition: GetAppFusion);
-                addAppFusionConditionClass.SetNotShowUI(true);
-                cardEffects.Add(addAppFusionConditionClass);
-
-                AppFusionCondition GetAppFusion(CardSource cardSource)
-                {
-                    bool linkCondition(Permanent permanent, CardSource source)
-                    {
-                        if (source != null)
-                        {
-                            if (source != card)
-                            {
-                                if (permanent.TopCard.EqualsCardName("Sociamon"))
-                                {
-                                    if (permanent.LinkedCards.Find(x => x.EqualsCardName("Gossipmon")))
-                                    {
-                                        return true;
-                                    }
-                                }
-                                if (permanent.TopCard.EqualsCardName("Gossipmon"))
-                                {
-                                    if (permanent.LinkedCards.Find(x => x.EqualsCardName("Sociamon")))
-                                    {
-                                        return true;
-                                    }
-                                }
-                            }
-
-                            return false;
-                        }
-
-                        return false;
-                    }
-                    bool digimonCondition(Permanent permanent)
-                    {
-                        if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
-                        {
-                            if (permanent.TopCard.EqualsCardName("Sociamon"))
-                            {
-                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Gossipmon")))
-                                {
-                                    return true;
-                                }
-                            }
-                            if (permanent.TopCard.EqualsCardName("Gossipmon"))
-                            {
-                                if (permanent.LinkedCards.Find(x => x.EqualsCardName("Sociamon")))
-                                {
-                                    return true;
-                                }
-                            }
-
-                            return false;
-                        }
-
-                        return false;
-                    }
-
-                    if (cardSource == card)
-                    {
-                        AppFusionCondition AppFusionCondition = new AppFusionCondition(
-                            linkedCondition: linkCondition,
-                            digimonCondition: digimonCondition,
-                            cost: 0);
-
-                        return AppFusionCondition;
-                    }
-
-                    return null;
-                }
+                cardEffects.Add(CardEffectFactory.AddAppfuseMethodByName(new List<string>() { "Sociamon", "Gossipmon" }, card));
             }
 
             #endregion

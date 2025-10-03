@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using UnityEngine.Analytics;
 
 // DarknessBagramon
 namespace DCGO.CardEffects.EX10
@@ -88,8 +90,8 @@ namespace DCGO.CardEffects.EX10
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Place 1 opponent hand card uneranth a digimon or tamer, then by placing 3 [Bagra Army] digimon from trash under this, delete 1 digimon/tamer with sources", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpICardEffect("Place 1 opponent hand card under a digimon or tamer, then by placing 3 [Bagra Army] digimon from trash under this, delete 1 digimon/tamer with sources", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -110,12 +112,13 @@ namespace DCGO.CardEffects.EX10
 
                 bool IsOpponentPermament(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card);
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card) &&
+                           !permanent.TopCard.IsOption;
                 }
 
                 bool IsOpponentPermamentWithSources(Permanent permanent)
                 {
-                    return IsOpponentPermament(permanent) && permanent.StackCards.Count >= 1;
+                    return IsOpponentPermament(permanent) && permanent.StackCards.Count >= 2;
                 }
 
                 bool IsBagraArmyDigimon(CardSource cardSource)
@@ -218,8 +221,7 @@ namespace DCGO.CardEffects.EX10
                         }
                     }
 
-                    if (CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, IsBagraArmyDigimon) >= 3
-                        && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, IsOpponentPermamentWithSources))
+                    if (CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, IsBagraArmyDigimon) >= 3)
                     {
                         Permanent thisPermament = card.PermanentOfThisCard();
                         List<CardSource> selectedCards = new List<CardSource>();
@@ -264,28 +266,31 @@ namespace DCGO.CardEffects.EX10
                                 addedDigivolutionCards: selectedCards,
                                 cardEffect: activateClass));
 
-                            #region Select Enemy Permament to add source
+                            if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, IsOpponentPermamentWithSources))
+                            {
+                                #region Select Enemy Permament to delete
 
-                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-                            int maxCount1 = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, IsOpponentPermament));
+                                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                                int maxCount1 = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, IsOpponentPermamentWithSources));
 
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: IsOpponentPermament,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: maxCount1,
-                                canNoSelect: false,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: null,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Destroy,
-                                cardEffect: activateClass);
+                                selectPermanentEffect.SetUp(
+                                    selectPlayer: card.Owner,
+                                    canTargetCondition: IsOpponentPermamentWithSources,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    maxCount: maxCount1,
+                                    canNoSelect: false,
+                                    canEndNotMax: false,
+                                    selectPermanentCoroutine: null,
+                                    afterSelectPermanentCoroutine: null,
+                                    mode: SelectPermanentEffect.Mode.Destroy,
+                                    cardEffect: activateClass);
 
-                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon or tamer with sources to destroy", "The opponent is selecting 1 Digimon or tamer with sources to destroy");
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                                selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon or tamer with sources to destroy", "The opponent is selecting 1 Digimon or tamer with sources to destroy");
+                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                            #endregion
+                                #endregion
+                            }
                         }
                     }
                 }
@@ -298,8 +303,8 @@ namespace DCGO.CardEffects.EX10
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Place 1 opponent hand card uneranth a digimon or tamer, then by placing 3 [Bagra Army] digimon from trash under this, delete 1 digimon/tamer with sources", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpICardEffect("Place 1 opponent hand card under a digimon or tamer, then by placing 3 [Bagra Army] digimon from trash under this, delete 1 digimon/tamer with sources", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -320,12 +325,13 @@ namespace DCGO.CardEffects.EX10
 
                 bool IsOpponentPermament(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card);
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card) &&
+                           !permanent.TopCard.IsOption;
                 }
 
                 bool IsOpponentPermamentWithSources(Permanent permanent)
                 {
-                    return IsOpponentPermament(permanent) && permanent.StackCards.Count >= 1;
+                    return IsOpponentPermament(permanent) && permanent.StackCards.Count >= 2;
                 }
 
                 bool IsBagraArmyDigimon(CardSource cardSource)
@@ -428,8 +434,7 @@ namespace DCGO.CardEffects.EX10
                         }
                     }
 
-                    if (CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, IsBagraArmyDigimon) >= 3
-                        && CardEffectCommons.HasMatchConditionOpponentsPermanent(card, IsOpponentPermamentWithSources))
+                    if (CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, IsBagraArmyDigimon) >= 3)
                     {
                         Permanent thisPermament = card.PermanentOfThisCard();
                         List<CardSource> selectedCards = new List<CardSource>();
@@ -474,28 +479,31 @@ namespace DCGO.CardEffects.EX10
                                 addedDigivolutionCards: selectedCards,
                                 cardEffect: activateClass));
 
-                            #region Select Enemy Permament to add source
+                            if (CardEffectCommons.HasMatchConditionOpponentsPermanent(card, IsOpponentPermamentWithSources))
+                            {
+                                #region Select Enemy Permament to delete
 
-                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-                            int maxCount1 = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, IsOpponentPermament));
+                                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                                int maxCount1 = Math.Min(1, CardEffectCommons.MatchConditionOpponentsPermanentCount(card, IsOpponentPermamentWithSources));
 
-                            selectPermanentEffect.SetUp(
-                                selectPlayer: card.Owner,
-                                canTargetCondition: IsOpponentPermament,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                maxCount: maxCount1,
-                                canNoSelect: false,
-                                canEndNotMax: false,
-                                selectPermanentCoroutine: null,
-                                afterSelectPermanentCoroutine: null,
-                                mode: SelectPermanentEffect.Mode.Destroy,
-                                cardEffect: activateClass);
+                                selectPermanentEffect.SetUp(
+                                    selectPlayer: card.Owner,
+                                    canTargetCondition: IsOpponentPermamentWithSources,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    maxCount: maxCount1,
+                                    canNoSelect: false,
+                                    canEndNotMax: false,
+                                    selectPermanentCoroutine: null,
+                                    afterSelectPermanentCoroutine: null,
+                                    mode: SelectPermanentEffect.Mode.Destroy,
+                                    cardEffect: activateClass);
 
-                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon or tamer with sources to destroy", "The opponent is selecting 1 Digimon or tamer with sources to destroy");
-                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                                selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon or tamer with sources to destroy", "The opponent is selecting 1 Digimon or tamer with sources to destroy");
+                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                            #endregion
+                                #endregion
+                            }
                         }
                     }
                 }
@@ -503,38 +511,68 @@ namespace DCGO.CardEffects.EX10
 
             #endregion
 
-            // TODO: Need Mike Help
-            // [All Turns] This Digimon gains all [All Turns] effects on all level 6 [Bagra Army] trait Digimon cards in its digivolution cards.
-
             #region All Turns
 
-            //if (timing == EffectTiming.None)
-            //{
-            //    ActivateClass activateClass = new ActivateClass();
-            //    activateClass.SetUpICardEffect("", CanUseCondition, card);
-            //    activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
-            //    cardEffects.Add(activateClass);
+            if (timing == EffectTiming.None)
+            {
+                AddSkillClass addSkillClass = new AddSkillClass();
+                addSkillClass.SetUpICardEffect("This Digimon gains all [All Turns] effects on all level 6 [Bagra Army] trait Digimon cards in its digivolution cards.", CanUseCondition, card);
+                addSkillClass.SetUpAddSkillClass(cardSourceCondition: CardSourceCondition, getEffects: GetEffects);
 
-            //    string EffectDiscription()
-            //    {
-            //        return "[All Turns] This Digimon gains all [All Turns] effects on all level 6 [Bagra Army] trait Digimon cards in its digivolution cards.";
-            //    }
+                cardEffects.Add(addSkillClass);
 
-            //    bool CanUseCondition(Hashtable hashtable)
-            //    {
-            //        return true;
-            //    }
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleArea(card);
+                }
 
-            //    bool CanActivateCondition(Hashtable hashtable)
-            //    {
-            //        return true;
-            //    }
+                bool PermanentCondition(Permanent permanent)
+                {
+                    return permanent == card.PermanentOfThisCard();
+                }
 
-            //    IEnumerator ActivateCoroutine(Hashtable hashtable)
-            //    {
-            //        yield return null;
-            //    }
-            //}
+                bool CardSourceCondition(CardSource cardSource)
+                {
+                    if (PermanentCondition(cardSource.PermanentOfThisCard()))
+                    {
+                        if (cardSource == cardSource.PermanentOfThisCard().TopCard)
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                List<ICardEffect> GetEffects(CardSource cardSource, List<ICardEffect> cardEffects, EffectTiming _timing)
+                {
+                    if (CardSourceCondition(cardSource))
+                    {
+                        foreach (CardSource cardSource1 in cardSource.PermanentOfThisCard().DigivolutionCards)
+                        {
+                            if (cardSource1.IsFlipped)
+                                continue;
+
+                            if (cardSource1.HasBagraArmyTraits)
+                            {
+                                if (cardSource1.HasLevel && cardSource1.IsLevel6)
+                                {
+                                    foreach (ICardEffect cardEffect in cardSource1.cEntity_EffectController.GetCardEffects_ExceptAddedEffects(_timing, card))
+                                    {
+                                        if (!cardEffect.IsSecurityEffect && !cardEffect.IsInheritedEffect)
+                                        {
+                                            if (cardEffect.EffectDiscription.StartsWith("[All Turns]"))
+                                                cardEffects.Add(cardEffect);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    return cardEffects;
+                }
+            }
 
             #endregion
 

@@ -55,6 +55,7 @@ namespace DCGO.CardEffects.EX10
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
+                           !permanent.TopCard.CanNotBeAffected(activateClass) &&
                            permanent.TopCard.HasLevel && permanent.TopCard.Level <= 5;
                 }
 

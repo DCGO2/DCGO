@@ -10,6 +10,7 @@ namespace DCGO.CardEffects.EX10
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
             #region ESS
+
             if (timing == EffectTiming.OnMove)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -33,14 +34,13 @@ namespace DCGO.CardEffects.EX10
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card) &&
-                           CardEffectCommons.IsOpponentTurn(card) &&
+                           CardEffectCommons.IsOwnerTurn(card) &&
                            CardEffectCommons.CanTriggerOnMove(hashtable, PermanentCondition);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card) &&
-                           card.Owner.HandCards.Count > 0;
+                    return CardEffectCommons.IsExistOnBattleArea(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -85,6 +85,7 @@ namespace DCGO.CardEffects.EX10
                     }
                 }
             }
+
             #endregion
 
             return cardEffects;

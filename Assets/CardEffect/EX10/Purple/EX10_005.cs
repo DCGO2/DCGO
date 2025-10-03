@@ -23,18 +23,18 @@ namespace DCGO.CardEffects.EX10
 
                 string EffectDiscription()
                 {
-                    return "[Your Turn] [Once Per Turn] When your opponent's deck is trashed from, <Draw 1> (Draw 1 card from your deck.)";
+                    return "[Your Turn] [Once Per Turn] When your opponent's deck is trashed from, <Draw 1>.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card)
-                        && CardEffectCommons.CanTriggerWhenDiscardLibrary(hashtable, cardSource => cardSource.Owner == cardSource.Owner.Enemy);
+                    return CardEffectCommons.IsExistOnBattleArea(card)                        
+                        && CardEffectCommons.CanTriggerWhenDiscardLibrary(hashtable, cardSource => cardSource.Owner == card.Owner.Enemy);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card)
+                    return CardEffectCommons.IsExistOnBattleArea(card)
                         && CardEffectCommons.IsOwnerTurn(card);
                 }
 

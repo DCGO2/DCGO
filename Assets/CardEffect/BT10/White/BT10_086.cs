@@ -334,14 +334,13 @@ namespace DCGO.CardEffects.BT10
                                 canEndNotMax: false,
                                 isShowOpponent: true,
                                 mode: SelectCardEffect.Mode.Custom,
-                                root: SelectCardEffect.Root.Custom,
+                                root: SelectCardEffect.Root.Security,
                                 customRootCardList: card.Owner.Enemy.SecurityCards,
                                 canLookReverseCard: true,
                                 selectPlayer: card.Owner,
                                 cardEffect: activateClass);
 
                             selectCardEffect.SetIsSecurity();
-                            selectCardEffect.SetUseFaceDown();
                             selectCardEffect.SetUpCustomMessage_ShowCard("Trash card");
 
                             yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
@@ -518,14 +517,12 @@ namespace DCGO.CardEffects.BT10
                                 canEndNotMax: false,
                                 isShowOpponent: true,
                                 mode: SelectCardEffect.Mode.Custom,
-                                root: SelectCardEffect.Root.Custom,
+                                root: SelectCardEffect.Root.Security,
                                 customRootCardList: card.Owner.Enemy.SecurityCards,
                                 canLookReverseCard: true,
                                 selectPlayer: card.Owner,
                                 cardEffect: activateClass);
 
-                            selectCardEffect.SetIsSecurity();
-                            selectCardEffect.SetUseFaceDown();
                             selectCardEffect.SetUpCustomMessage_ShowCard("Trash card");
 
                             yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
