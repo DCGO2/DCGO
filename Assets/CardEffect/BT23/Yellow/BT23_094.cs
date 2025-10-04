@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-// anomachine Break
+// Nanomachine Break
 namespace DCGO.CardEffects.BT23
 {
     public class BT23_094 : CEntity_Effect
