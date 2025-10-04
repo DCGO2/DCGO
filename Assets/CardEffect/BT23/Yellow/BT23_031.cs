@@ -250,7 +250,7 @@ namespace DCGO.CardEffects.BT23
 
                 #endregion
 
-                if (card.Owner.SecurityCards.Count <= 3) yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(card.Owner).AddSecurity());
+                if (card.Owner.SecurityCards.Count <= 3) yield return ContinuousController.instance.StartCoroutine(new IRecovery(card.Owner, 1, activateClass).Recovery());
             }
 
             #endregion
