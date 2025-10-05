@@ -3448,6 +3448,18 @@ public class CardSource : MonoBehaviour
 
     #endregion
 
+    #region whether this card has "Hudie" trait
+
+    public bool HasHudieTraits
+    {
+        get
+        {
+            return EqualsTraits("Hudie");
+        }
+    }
+
+    #endregion
+
     #region whether this card has "Sea Animal" trait
 
     public bool HasSeaAnimalTraits
