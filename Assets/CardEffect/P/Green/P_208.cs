@@ -18,7 +18,7 @@ namespace DCGO.CardEffects.P
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
                     return targetPermanent.TopCard.IsLevel5 &&
-                           targetPermanent.TopCard.EqualsTraits("Beastkin") || targetPermanent.TopCard.HasTSTraits;
+                           (targetPermanent.TopCard.EqualsTraits("Beastkin") || targetPermanent.TopCard.HasTSTraits);
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
@@ -154,7 +154,7 @@ namespace DCGO.CardEffects.P
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Bounce 1 suspended digimon to bottom of deck", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Return 1 suspended digimon to bottom of deck", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("P_208_WA");
                 cardEffects.Add(activateClass);
@@ -177,7 +177,7 @@ namespace DCGO.CardEffects.P
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
                         && permanent.IsSuspended;
                 }
 
@@ -201,7 +201,7 @@ namespace DCGO.CardEffects.P
                             mode: SelectPermanentEffect.Mode.PutLibraryBottom,
                             cardEffect: activateClass);
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to bounce to bottom of deck.", "The opponent is selecting 1 Digimon to bounce to bottom of deck.");
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to return to bottom of deck.", "The opponent is selecting 1 Digimon to return to bottom of deck.");
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
                 }

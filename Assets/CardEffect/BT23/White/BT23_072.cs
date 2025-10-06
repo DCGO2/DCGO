@@ -165,7 +165,8 @@ namespace DCGO.CardEffects.BT23
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBreedingAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBreedingAreaDigimon(card) &&
+                           CardEffectCommons.IsOwnerTurn(card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

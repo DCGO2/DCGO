@@ -113,7 +113,7 @@ namespace DCGO.CardEffects.BT23
                         canEndSelectCondition: null,
                         maxCount: maxCount,
                         canNoSelect: true,
-                        canEndNotMax: false,
+                        canEndNotMax: true,
                         isShowOpponent: true,
                         selectCardCoroutine: null,
                         afterSelectCardCoroutine: AfterSelectCardCoroutine,

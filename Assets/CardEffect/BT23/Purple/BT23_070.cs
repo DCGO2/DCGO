@@ -93,7 +93,7 @@ namespace DCGO.CardEffects.BT23
                         failureProcess: null));
 
                     var thisPermament = card.PermanentOfThisCard();
-                    if (thisPermament.StackCards.Exists(HasBelphemonInName) && thisPermament.CanAttack(activateClass, withoutTap: true))
+                    if (thisPermament.DigivolutionCards.Exists(HasBelphemonInName) && thisPermament.CanAttack(activateClass, withoutTap: true))
                     {
                         SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
 
@@ -114,7 +114,7 @@ namespace DCGO.CardEffects.BT23
 
             #region End of Attack
 
-            if (timing == EffectTiming.OnEndAttackPhase)
+            if (timing == EffectTiming.OnEndAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Digivolve into [Belphemon: Sleep Mode] in trash", CanUseCondition, card);

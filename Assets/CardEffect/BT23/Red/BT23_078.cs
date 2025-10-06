@@ -49,7 +49,7 @@ namespace DCGO.CardEffects.BT23
                 bool IsValidDigimon(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && permanent.TopCard.HasBeastTraits || permanent.TopCard.HasBirdTraits || permanent.TopCard.HasCSTraits;
+                        && (permanent.TopCard.HasBeastTraits || permanent.TopCard.HasBirdTraits || permanent.TopCard.HasCSTraits);
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)

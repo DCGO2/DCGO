@@ -132,13 +132,13 @@ namespace DCGO.CardEffects.BT23
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 Red/[CS] tamer from hand", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "You may play 1 red or [CS] trait tamer card from your hand without paying the cost.";
+                    return "[On Deletion] You may play 1 red or [CS] trait tamer card from your hand without paying the cost.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -154,7 +154,7 @@ namespace DCGO.CardEffects.BT23
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.IsDigimon
+                    return cardSource.IsTamer
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass)
                         && (cardSource.CardColors.Contains(CardColor.Red) || cardSource.HasCSTraits);
                 }

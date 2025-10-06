@@ -17,13 +17,14 @@ namespace DCGO.CardEffects.P
             if (timing == EffectTiming.None)
             {
                 IgnoreColorConditionClass ignoreColorConditionClass = new IgnoreColorConditionClass();
-                ignoreColorConditionClass.SetUpICardEffect("Ignore color requirements", null, card);
+                ignoreColorConditionClass.SetUpICardEffect("Ignore color requirements", CanUseCondition, card);
                 ignoreColorConditionClass.SetUpIgnoreColorConditionClass(cardCondition: CardCondition);
 
                 cardEffects.Add(ignoreColorConditionClass);
 
-                bool CardCondition(CardSource cardSource)
-                    => cardSource == card;
+                bool CanUseCondition(Hashtable hashtable) => true;
+
+                bool CardCondition(CardSource cardSource) => cardSource == card;
             }
 
             #endregion

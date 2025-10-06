@@ -278,7 +278,7 @@ namespace DCGO.CardEffects.BT23
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.CanTriggerOnPlay(hashtable, card);
+                        && CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -291,7 +291,7 @@ namespace DCGO.CardEffects.BT23
 
             #region When Attacking - OPT
 
-            if (timing == EffectTiming.OnEnterFieldAnyone)
+            if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("link 1 level 4 or lower digimon from hand or this cards sources to this card", CanUseCondition, card);

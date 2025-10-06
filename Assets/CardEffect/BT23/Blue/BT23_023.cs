@@ -102,7 +102,7 @@ namespace DCGO.CardEffects.BT23
             if (timing == EffectTiming.WhenRemoveField)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play 1 level 4 or lower Blue [CS] digimon from sources", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Play 1 level 4 or lower Blue or [CS] digimon from sources", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, hash => SharedActivateCoroutine(hash, activateClass, true), 1, true, EffectDiscription());
                 activateClass.SetHashString("BT23-023_AT");
                 cardEffects.Add(activateClass);
@@ -131,7 +131,7 @@ namespace DCGO.CardEffects.BT23
             if (timing == EffectTiming.WhenRemoveField)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Play 1 level 4 or lower Blue [CS] digimon from sources", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Play 1 level 4 or lower Blue or [CS] digimon from sources", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, hash => SharedActivateCoroutine(hash, activateClass, false), 1, true, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
                 activateClass.SetHashString("BT23-023_ESS_AT");

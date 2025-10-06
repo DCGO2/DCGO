@@ -258,12 +258,12 @@ namespace DCGO.CardEffects.BT23
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                 }
 
-                if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
+                if (CardEffectCommons.HasMatchConditionOpponentsCardInTrash(card, CanSelectCardCondition))
                 {
                     List<CardSource> selectedCards = new List<CardSource>();
 
                     SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, CanSelectCardCondition));
+                    int maxCount = Math.Min(3, CardEffectCommons.MatchConditionOpponentsCardCountInTrash(card, CanSelectCardCondition));
                     selectCardEffect.SetUp(
                                 canTargetCondition: CanSelectCardCondition,
                                 canTargetCondition_ByPreSelecetedList: null,
@@ -277,7 +277,7 @@ namespace DCGO.CardEffects.BT23
                                 isShowOpponent: true,
                                 mode: SelectCardEffect.Mode.Custom,
                                 root: SelectCardEffect.Root.Trash,
-                                customRootCardList: null,
+                                customRootCardList: card.Owner.Enemy.TrashCards,
                                 canLookReverseCard: true,
                                 selectPlayer: card.Owner,
                                 cardEffect: activateClass);
@@ -411,7 +411,7 @@ namespace DCGO.CardEffects.BT23
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerOnDeletion(hashtable, card);
+                    return CardEffectCommons.CanActivateOnDeletion(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
