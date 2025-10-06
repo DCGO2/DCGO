@@ -45,7 +45,7 @@ namespace DCGO.CardEffects.BT23
 
                 string EffectDiscription()
                 {
-                    return "[On Play] By trash 1 card in your hand, you may return 1 non-Digi-Egg card with the [CS] trait from your trash to the hand.";
+                    return "[On Play] By trashing 1 card in your hand, you may return 1 non-Digi-Egg card with the [CS] trait from your trash to the hand.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -154,12 +154,12 @@ namespace DCGO.CardEffects.BT23
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.IsDigiEgg
+                    return cardSource.IsDigimon
                         && cardSource.HasPlayCost && cardSource.BasePlayCostFromEntity <= 5
                         && cardSource.EqualsTraits("Hudie")
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);

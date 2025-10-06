@@ -96,7 +96,7 @@ namespace DCGO.CardEffects.BT23
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    return cardSource.IsDigiEgg
+                    return cardSource.IsDigimon
                         && cardSource.HasPlayCost && cardSource.BasePlayCostFromEntity <= 5
                         && cardSource.EqualsTraits("Hudie")
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);

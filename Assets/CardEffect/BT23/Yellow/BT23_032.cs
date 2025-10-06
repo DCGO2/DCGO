@@ -262,13 +262,14 @@ namespace DCGO.CardEffects.BT23
 
             #endregion
 
-            #region Region All Turns Shared
+            #region All Turns Shared
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
                     return cardSource.IsDigimon
+                        && cardSource.HasLevel && cardSource.Level <= 4
                         && (cardSource.CardColors.Contains(CardColor.Yellow) || cardSource.CardColors.Contains(CardColor.Black) || cardSource.HasCSTraits)
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
                 }

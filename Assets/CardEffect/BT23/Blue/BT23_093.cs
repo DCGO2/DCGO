@@ -88,7 +88,7 @@ namespace DCGO.CardEffects.BT23
 
                 string EffectDiscription()
                 {
-                    return "[All Turns] When any of your [Appmon] trait Digimon suspend <Delay, You may link 1 [Appmon] trait Digimon card from your hand to 1 of those Digimon without paying the cost.";
+                    return "[All Turns] When any of your [Appmon] trait Digimon suspend <Delay>, You may link 1 [Appmon] trait Digimon card from your hand to 1 of those Digimon without paying the cost.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -125,77 +125,82 @@ namespace DCGO.CardEffects.BT23
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(targetPermanents: new List<Permanent>() { card.PermanentOfThisCard() }, activateClass: activateClass, successProcess: permanents => SuccessProcess(), failureProcess: null));
+
+                    IEnumerator SuccessProcess()
                     {
-                        Permanent selectedPermament = null;
-
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectPermanentCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: true,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: SelectPermanentCoroutine,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-
-                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                         {
-                            selectedPermament = permanent;
-                            yield return null;
-                        }
+                            Permanent selectedPermament = null;
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will gain link", "The opponent is selecting 1 Digimon that will gain link");
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
 
-                        bool CanSelectCardCondition(CardSource cardSource)
-                        {
-                            return cardSource.IsDigimon
-                                && cardSource.HasAppmonTraits
-                                && cardSource.CanLinkToTargetPermanent(selectedPermament, false);
-                        }
-
-                        if (selectedPermament != null && CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
-                        {
-                            CardSource selectedCard = null;
-
-                            SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-                            int maxCount1 = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInHand(card, CanSelectCardCondition));
-                            selectHandEffect.SetUp(
+                            selectPermanentEffect.SetUp(
                                 selectPlayer: card.Owner,
-                                canTargetCondition: CanSelectCardCondition,
+                                canTargetCondition: CanSelectPermanentCondition,
                                 canTargetCondition_ByPreSelecetedList: null,
                                 canEndSelectCondition: null,
-                                maxCount: maxCount1,
+                                maxCount: maxCount,
                                 canNoSelect: true,
                                 canEndNotMax: false,
-                                isShowOpponent: true,
-                                selectCardCoroutine: SelectCardCoroutine1,
-                                afterSelectCardCoroutine: null,
-                                mode: SelectHandEffect.Mode.Custom,
+                                selectPermanentCoroutine: SelectPermanentCoroutine,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Custom,
                                 cardEffect: activateClass);
 
-                            IEnumerator SelectCardCoroutine1(CardSource cardSource)
+
+                            IEnumerator SelectPermanentCoroutine(Permanent permanent)
                             {
-                                selectedCard = cardSource;
+                                selectedPermament = permanent;
                                 yield return null;
                             }
 
-                            selectHandEffect.SetUpCustomMessage("Select 1 digimon to link.", "The opponent is selecting 1 digimon to link.");
-                            selectHandEffect.SetUpCustomMessage_ShowCard("Selected card");
+                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will gain link", "The opponent is selecting 1 Digimon that will gain link");
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                            yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+                            bool CanSelectCardCondition(CardSource cardSource)
+                            {
+                                return cardSource.IsDigimon
+                                    && cardSource.HasAppmonTraits
+                                    && cardSource.CanLinkToTargetPermanent(selectedPermament, false);
+                            }
 
-                            if (selectedCard != null) yield return ContinuousController.instance.StartCoroutine(selectedPermament.AddLinkCard(
-                                addedLinkCard: selectedCard,
-                                cardEffect: activateClass));
+                            if (selectedPermament != null && CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
+                            {
+                                CardSource selectedCard = null;
+
+                                SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                                int maxCount1 = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInHand(card, CanSelectCardCondition));
+                                selectHandEffect.SetUp(
+                                    selectPlayer: card.Owner,
+                                    canTargetCondition: CanSelectCardCondition,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    maxCount: maxCount1,
+                                    canNoSelect: true,
+                                    canEndNotMax: false,
+                                    isShowOpponent: true,
+                                    selectCardCoroutine: SelectCardCoroutine1,
+                                    afterSelectCardCoroutine: null,
+                                    mode: SelectHandEffect.Mode.Custom,
+                                    cardEffect: activateClass);
+
+                                IEnumerator SelectCardCoroutine1(CardSource cardSource)
+                                {
+                                    selectedCard = cardSource;
+                                    yield return null;
+                                }
+
+                                selectHandEffect.SetUpCustomMessage("Select 1 digimon to link.", "The opponent is selecting 1 digimon to link.");
+                                selectHandEffect.SetUpCustomMessage_ShowCard("Selected card");
+
+                                yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+
+                                if (selectedCard != null) yield return ContinuousController.instance.StartCoroutine(selectedPermament.AddLinkCard(
+                                    addedLinkCard: selectedCard,
+                                    cardEffect: activateClass));
+                            }
                         }
                     }
                 }

@@ -55,13 +55,14 @@ namespace DCGO.CardEffects.P
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     bool trashedTargetCard = false;
-                    CardEffectCommons.DrawAndDiscardCards(
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DrawAndDiscardCards(
                         player: (card.Owner, card.Owner),
                         drawAmount: 1,
                         trashAmount: 1,
                         card: card,
                         activateClass: activateClass,
-                        afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine);
+                        afterSelectPermanentCoroutine: AfterSelectPermanentCoroutine
+                    ));
 
                     IEnumerator AfterSelectPermanentCoroutine(List<CardSource> selectedCards)
                     {

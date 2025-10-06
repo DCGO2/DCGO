@@ -24,6 +24,11 @@ namespace DCGO.CardEffects.BT23
 
             if (timing == EffectTiming.None)
             {
+                string EffectDiscription()
+                {
+                    return "[All Turns] All of your [Hudie] Digimon get +1000 DP.";
+                }
+
                 bool Condition()
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card);
@@ -31,26 +36,17 @@ namespace DCGO.CardEffects.BT23
 
                 bool PermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
-                    {
-                        if (permanent.TopCard.EqualsTraits("Hudie"))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card) &&
+                           permanent.TopCard.HasHudieTraits;
                 }
 
-                foreach (Permanent permanent in card.Owner.GetBattleAreaPermanents())
-                {
-                    if (Condition() && PermanentCondition(permanent))
-                    {
-                        permanent.AddBoost(new Permanent.DPBoost("BT23_090_AT", 1000, Condition));
-                    }
-                    else
-                        permanent.RemoveBoost("BT23_090_AT");
-                }
+                cardEffects.Add(CardEffectFactory.ChangeDPStaticEffect(
+                permanentCondition: PermanentCondition,
+                changeValue: 1000,
+                isInheritedEffect: false,
+                card: card,
+                condition: Condition,
+                effectName: EffectDiscription));
             }
 
             #endregion

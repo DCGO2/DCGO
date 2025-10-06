@@ -18,7 +18,7 @@ namespace DCGO.CardEffects.P
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
                     return targetPermanent.TopCard.IsLevel5 &&
-                           targetPermanent.TopCard.EqualsTraits("Beastkin") || targetPermanent.TopCard.HasTSTraits;
+                           (targetPermanent.TopCard.EqualsTraits("Beastkin") || targetPermanent.TopCard.HasTSTraits);
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));

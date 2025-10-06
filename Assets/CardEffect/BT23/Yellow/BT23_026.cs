@@ -51,7 +51,7 @@ namespace DCGO.CardEffects.BT23
 
                 bool IsMakikoDate(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)
                         && permanent.TopCard.EqualsCardName("Makiko Date");
                 }
 
