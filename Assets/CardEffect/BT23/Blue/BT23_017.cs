@@ -67,63 +67,60 @@ namespace DCGO.CardEffects.BT23
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, _ => true))
-                    {
-                        bool trashed = false;
-                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+                    bool trashed = false;
+                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
 
-                        selectHandEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: (cardSource) => true,
+                    selectHandEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: (cardSource) => true,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: true,
+                        canEndNotMax: false,
+                        isShowOpponent: true,
+                        selectCardCoroutine: null,
+                        afterSelectCardCoroutine: AfterSelectCardCoroutine,
+                        mode: SelectHandEffect.Mode.Discard,
+                        cardEffect: activateClass);
+
+                    IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
+                    {
+                        if (cardSources.Any()) trashed = true;
+                        yield return null;
+                    }
+
+                    selectHandEffect.SetUpCustomMessage("Select 1 card to trash", "Your opponent is selecting 1 card to trash");
+                    selectHandEffect.SetUpCustomMessage_ShowCard("Selected Card");
+                    yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+
+                    if (trashed && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
+                    {
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, CanSelectCardCondition));
+                        SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                        selectCardEffect.SetUp(
+                            canTargetCondition: CanSelectCardCondition,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
-                            maxCount: 1,
-                            canNoSelect: true,
+                            canNoSelect: () => true,
+                            selectCardCoroutine: null,
+                            afterSelectCardCoroutine: null,
+                            message: "Select 1 [CS] card to add to hand.",
+                            maxCount: maxCount,
                             canEndNotMax: false,
                             isShowOpponent: true,
-                            selectCardCoroutine: null,
-                            afterSelectCardCoroutine: AfterSelectCardCoroutine,
-                            mode: SelectHandEffect.Mode.Discard,
+                            mode: SelectCardEffect.Mode.AddHand,
+                            root: SelectCardEffect.Root.Trash,
+                            customRootCardList: null,
+                            canLookReverseCard: true,
+                            selectPlayer: card.Owner,
                             cardEffect: activateClass);
 
-                        IEnumerator AfterSelectCardCoroutine(List<CardSource> cardSources)
-                        {
-                            if (cardSources.Any()) trashed = true;
-                            yield return null;
-                        }
+                        selectCardEffect.SetUpCustomMessage("Select 1 [CS] card to add to hand.", "The opponent is selecting 1 card to add to hand.");
+                        selectCardEffect.SetUpCustomMessage_ShowCard("Selected Card");
 
-                        selectHandEffect.SetUpCustomMessage("Select 1 card to trash", "Your opponent is selecting 1 card to trash");
-                        selectHandEffect.SetUpCustomMessage_ShowCard("Selected Card");
-                        yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
-
-                        if (trashed && CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardCondition))
-                        {
-                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, CanSelectCardCondition));
-                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                            selectCardEffect.SetUp(
-                                canTargetCondition: CanSelectCardCondition,
-                                canTargetCondition_ByPreSelecetedList: null,
-                                canEndSelectCondition: null,
-                                canNoSelect: () => true,
-                                selectCardCoroutine: null,
-                                afterSelectCardCoroutine: null,
-                                message: "Select 1 [CS] card to add to hand.",
-                                maxCount: maxCount,
-                                canEndNotMax: false,
-                                isShowOpponent: true,
-                                mode: SelectCardEffect.Mode.AddHand,
-                                root: SelectCardEffect.Root.Trash,
-                                customRootCardList: null,
-                                canLookReverseCard: true,
-                                selectPlayer: card.Owner,
-                                cardEffect: activateClass);
-
-                            selectCardEffect.SetUpCustomMessage("Select 1 [CS] card to add to hand.", "The opponent is selecting 1 card to add to hand.");
-                            selectCardEffect.SetUpCustomMessage_ShowCard("Selected Card");
-
-                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-                        }
+                        yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
                     }
                 }
             }

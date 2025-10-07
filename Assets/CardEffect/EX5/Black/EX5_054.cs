@@ -289,10 +289,6 @@ namespace DCGO.CardEffects.EX5
                             {
                                 yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(cardSource, toTop: true));
 
-                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(cardSource.Owner));
-
-                                yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(cardSource.Owner).AddSecurity());
-
                                 added = true;
                             }
                         }

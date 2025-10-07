@@ -19,8 +19,8 @@ namespace DCGO.CardEffects.BT23
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.HasCSTraits
-                        && (targetPermanent.TopCard.EqualsCardName("SaviorHuckmon") || targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.IsLevel5);
+                    return targetPermanent.TopCard.EqualsCardName("SaviorHuckmon")
+                        || (targetPermanent.TopCard.HasCSTraits && targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.IsLevel5);
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
@@ -45,7 +45,7 @@ namespace DCGO.CardEffects.BT23
 
                 bool Condition()
                 {
-                    return card.Owner.Enemy.GetBattleAreaDigimons().Filter(x => x.DP >= 1000).Count >= 1;
+                    return card.Owner.Enemy.GetBattleAreaDigimons().Filter(x => x.DP >= 10000).Count >= 1;
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(

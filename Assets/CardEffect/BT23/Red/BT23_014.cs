@@ -46,8 +46,8 @@ namespace DCGO.CardEffects.BT23
 
                 bool CardCondition(CardSource cardSource)
                 {
-                    return card.Owner.Enemy.TrashCards.Contains(cardSource)
-                            && cardSource.IsDigimon || cardSource.IsTamer;
+                    return CardEffectCommons.IsExistInAnyTrash(cardSource)
+                            && (cardSource.IsDigimon || cardSource.IsTamer);
                 }
 
                 bool CardEffectCondition(ICardEffect cardEffect)
@@ -77,7 +77,7 @@ namespace DCGO.CardEffects.BT23
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] Until your opponent's turn ends, their effects can't play Digimon or Tamers from the trash.";
+                    return "[On Play] Until your opponent's turn ends, their effects can't play Digimon or Tamers from the trash.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -134,8 +134,8 @@ namespace DCGO.CardEffects.BT23
             {
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && permanent.DP <= DPThreshold();
+                    return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
+                        && permanent.DP <= card.Owner.MaxDP_DeleteEffect(DPThreshold(), activateClass);
                 }
 
                 if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
@@ -169,7 +169,7 @@ namespace DCGO.CardEffects.BT23
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect($"Delete 1 digimon with {DPThreshold()} DP or less", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, hash => SharedActivateCoroutine(hash, activateClass), -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, hash => SharedActivateCoroutine(hash, activateClass), -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -197,7 +197,7 @@ namespace DCGO.CardEffects.BT23
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect($"Delete 1 digimon with {DPThreshold()} DP or less", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, hash => SharedActivateCoroutine(hash, activateClass), -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, hash => SharedActivateCoroutine(hash, activateClass), -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -225,7 +225,7 @@ namespace DCGO.CardEffects.BT23
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect($"Delete 1 digimon with {DPThreshold()} DP or less", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, hash => SharedActivateCoroutine(hash, activateClass), -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, hash => SharedActivateCoroutine(hash, activateClass), -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

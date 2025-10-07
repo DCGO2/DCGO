@@ -94,7 +94,7 @@ namespace DCGO.CardEffects.P
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 tamer with same colour as any of your digimon on the field, from your hand with 4 reduced cost", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -105,11 +105,6 @@ namespace DCGO.CardEffects.P
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.CanDeclareOptionDelayEffect(card);
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnField(card);
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
@@ -161,18 +156,85 @@ namespace DCGO.CardEffects.P
                             selectHandEffect.SetUpCustomMessage_ShowCard("Played Card");
                             yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
 
+                            #region Reduce Play Cost
+
+                            ChangeCostClass changeCostClass = new ChangeCostClass();
+                            changeCostClass.SetUpICardEffect($"Play Cost -4", _ => true, card);
+                            changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition,
+                                rootCondition: RootCondition, isUpDown: () => true, isCheckAvailability: () => false,
+                                isChangePayingCost: () => true);
+                            Func<EffectTiming, ICardEffect> getCardEffect = GetCardEffect;
+                            card.Owner.UntilCalculateFixedCostEffect.Add(getCardEffect);
+
+                            ICardEffect GetCardEffect(EffectTiming rcTiming)
+                            {
+                                if (rcTiming == EffectTiming.None)
+                                {
+                                    return changeCostClass;
+                                }
+
+                                return null;
+                            }
+
+                            int ChangeCost(CardSource cardSource, int cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
+                            {
+                                if (CardSourceCondition(cardSource))
+                                {
+                                    if (RootCondition(root))
+                                    {
+                                        if (PermanentsCondition(targetPermanents))
+                                        {
+                                            cost -= 4;
+                                        }
+                                    }
+                                }
+
+                                return cost;
+                            }
+
+                            bool PermanentsCondition(List<Permanent> targetPermanents)
+                            {
+                                if (targetPermanents == null)
+                                {
+                                    return true;
+                                }
+
+                                return targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0;
+                            }
+
+                            bool CardSourceCondition(CardSource cardSource)
+                            {
+                                if (cardSource.HasPlayCost)
+                                {
+                                    return selectedCard == cardSource;
+                                }
+
+                                return false;
+                            }
+
+                            bool RootCondition(SelectCardEffect.Root root)
+                            {
+                                return true;
+                            }
+
+                            #endregion
+
                             if (selectedCard != null)
                             {
-                                var cost = selectedCard.BasePlayCostFromEntity - 4;
                                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
                                 cardSources: new List<CardSource>() { selectedCard },
                                 activateClass: activateClass,
                                 payCost: true,
                                 isTapped: false,
                                 root: SelectCardEffect.Root.Hand,
-                                activateETB: true,
-                                fixedCost: cost));
+                                activateETB: true));
                             }
+
+                            #region Remove Reduce Cost effect
+
+                            card.Owner.UntilCalculateFixedCostEffect.Remove(getCardEffect);
+
+                            #endregion
                         }
                     }
                 }

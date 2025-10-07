@@ -986,6 +986,11 @@ public class CardObjectController : MonoBehaviour
                     cardSource.Owner.SecurityCards.Remove(cardSource);
                     cardSource.Owner.SecurityCards.Add(cardSource);
                 }
+
+                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>()
+                                                    .CreateRecoveryEffect(cardSource.Owner));
+
+                yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(cardSource.Owner).AddSecurity());
             }
         }
     }

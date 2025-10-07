@@ -167,8 +167,8 @@ namespace DCGO.CardEffects.BT23
 
                 bool AttackingPermament(Permanent permanent)
                 {
-                    attackingPermament = permanent;
-                    return CardEffectCommons.IsPermanentExistsOnBattleArea(permanent);
+                    return CardEffectCommons.IsPermanentExistsOnBattleArea(permanent) &&
+                           permanent != card.PermanentOfThisCard();
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -179,105 +179,99 @@ namespace DCGO.CardEffects.BT23
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (attackingPermament == null)
-                    {
-                        Permanent thisPermament = card.PermanentOfThisCard();
+                    Permanent thisPermament = card.PermanentOfThisCard();
 
-                        #region Setup User Selection
+                    #region Setup User Selection
 
-                        List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
+                    List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
                         {
                             new SelectionElement<bool>(message: $"Yes", value : true, spriteIndex: 0),
                             new SelectionElement<bool>(message: $"No", value : false, spriteIndex: 1),
                         };
 
-                        string selectPlayerMessage = "Will you delete Necromon?";
-                        string notSelectPlayerMessage = "The opponent is choosing to delete Necromon.";
+                    string selectPlayerMessage = "Will you delete Necromon?";
+                    string notSelectPlayerMessage = "The opponent is choosing to delete Necromon.";
+
+                    GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+
+                    #endregion
+
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+                    bool isDeleting = GManager.instance.userSelectionManager.SelectedBoolValue;
+
+                    if (isDeleting) yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
+                        targetPermanents: new List<Permanent>() { thisPermament },
+                        activateClass: activateClass,
+                        successProcess: DeleteNecromonSuccessProcess,
+                        failureProcess: null));
+
+                    IEnumerator DeleteNecromonSuccessProcess(List<Permanent> permanents)
+                    {
+                        if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
+                        {
+                            Permanent selectedPermament = null;
+
+                            #region Select Opponent Permament
+
+                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+
+                            selectPermanentEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: CanSelectPermanentCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: maxCount,
+                                canNoSelect: false,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: SelectPermanentCoroutine,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Custom,
+                                cardEffect: activateClass);
+
+                            IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                            {
+                                selectedPermament = permanent;
+                                yield return null;
+                            }
+
+                            selectPermanentEffect.SetUpCustomMessage("Select 1 digimon to delete", "Your opponent is selecting 1 digimon to delete");
+
+                            #endregion
+
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                            if (selectPermanentEffect != null) yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
+                                new List<Permanent>() { selectedPermament },
+                                activateClass: activateClass,
+                                successProcess: null,
+                                failureProcess: OpponentLevel6FailureProcess));
+                        }
+                    }
+
+                    IEnumerator OpponentLevel6FailureProcess()
+                    {
+                        #region Setup User Selection
+
+                        List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
+                                    {
+                                        new SelectionElement<bool>(message: $"Yes", value : true, spriteIndex: 0),
+                                        new SelectionElement<bool>(message: $"No", value : false, spriteIndex: 1),
+                                    };
+
+                        string selectPlayerMessage = "Will you end the attack?";
+                        string notSelectPlayerMessage = "The opponent is choosing to end the attack.";
 
                         GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
 
                         #endregion
 
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-                        bool isDeleting = GManager.instance.userSelectionManager.SelectedBoolValue;
+                        bool endAttack = GManager.instance.userSelectionManager.SelectedBoolValue;
 
-                        if (isDeleting) yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
-                            targetPermanents: new List<Permanent>() { thisPermament },
-                            activateClass: activateClass,
-                            successProcess: DeleteNecromonSuccessProcess,
-                            failureProcess: null));
-
-                        IEnumerator DeleteNecromonSuccessProcess(List<Permanent> permanents)
+                        if (endAttack)
                         {
-                            if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
-                            {
-                                Permanent selectedPermament = null;
-
-                                #region Select Opponent Permament
-
-                                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-                                int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
-
-                                selectPermanentEffect.SetUp(
-                                    selectPlayer: card.Owner,
-                                    canTargetCondition: CanSelectPermanentCondition,
-                                    canTargetCondition_ByPreSelecetedList: null,
-                                    canEndSelectCondition: null,
-                                    maxCount: maxCount,
-                                    canNoSelect: false,
-                                    canEndNotMax: false,
-                                    selectPermanentCoroutine: SelectPermanentCoroutine,
-                                    afterSelectPermanentCoroutine: null,
-                                    mode: SelectPermanentEffect.Mode.Custom,
-                                    cardEffect: activateClass);
-
-                                IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                                {
-                                    selectedPermament = permanent;
-                                    yield return null;
-                                }
-
-                                selectPermanentEffect.SetUpCustomMessage("Select 1 digimon to delete", "Your opponent is selecting 1 digimon to delete");
-
-                                #endregion
-
-                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                                if (selectPermanentEffect != null) yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
-                                    new List<Permanent>() { selectedPermament },
-                                    activateClass: activateClass,
-                                    successProcess: null,
-                                    failureProcess: OpponentLevel6FailureProcess));
-
-                                IEnumerator OpponentLevel6FailureProcess()
-                                {
-                                    #region Setup User Selection
-
-                                    List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
-                                    {
-                                        new SelectionElement<bool>(message: $"Yes", value : true, spriteIndex: 0),
-                                        new SelectionElement<bool>(message: $"No", value : false, spriteIndex: 1),
-                                    };
-
-                                    string selectPlayerMessage = "Will you end the attack?";
-                                    string notSelectPlayerMessage = "The opponent is choosing to end the attack.";
-
-                                    GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
-
-                                    #endregion
-
-                                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-                                    bool endAttack = GManager.instance.userSelectionManager.SelectedBoolValue;
-
-                                    if (endAttack)
-                                    {
-                                        GManager.instance.attackProcess.IsEndAttack = true;
-                                        yield return null;
-                                    }
-                                    yield return null;
-                                }
-                            }
-                            yield return null;
+                            GManager.instance.attackProcess.IsEndAttack = true;
                         }
                     }
                 }

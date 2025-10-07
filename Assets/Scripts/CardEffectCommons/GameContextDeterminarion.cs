@@ -134,6 +134,26 @@ public partial class CardEffectCommons
 
     #endregion
 
+    #region Whether the card is in trash
+
+    public static bool IsExistInAnyTrash(CardSource card)
+    {
+        if (card.Owner.TrashCards.Contains(card))
+        {
+            return true;
+        }
+
+        if (card.Owner.Enemy.TrashCards.Contains(card))
+        {
+            return true;
+        }
+
+
+        return false;
+    }
+
+    #endregion
+
     #region Whether the card is in Executing Area
 
     public static bool IsExistOnExecutingArea(CardSource card)

@@ -56,10 +56,6 @@ public class BT6_100 : CEntity_Effect
                 IEnumerator SelectCardCoroutine(CardSource cardSource)
                 {
                     yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(cardSource));
-
-                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(cardSource.Owner));
-
-                    yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(cardSource.Owner).AddSecurity());
                 }
 
                 yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlaceDelayOptionCards(card: card, cardEffect: activateClass));

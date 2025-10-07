@@ -264,10 +264,6 @@ namespace DCGO.CardEffects.P
 
                         yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(cardSource, toTop: false));
 
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(cardSource.Owner));
-
-                        yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(cardSource.Owner).AddSecurity());
-
                         thisCardPermanent.willBeRemoveField = false;
 
                         thisCardPermanent.HideDeleteEffect();

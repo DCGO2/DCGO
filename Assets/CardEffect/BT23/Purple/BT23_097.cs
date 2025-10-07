@@ -11,9 +11,60 @@ namespace DCGO.CardEffects.BT23
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-            #region Shared Main Effect
+            #region [Trash] Your Turn
 
-            ActivateClass SharedActivateClass()
+            if (timing == EffectTiming.OnEnterFieldAnyone)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("By returning this card to deck, Activate [Main] effect", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[Trash] [Your Turn] When any of your Digimon digivolve into [Belphemon (X Antibody)], by returning this card to the bottom of the deck, activate this card's [Main] effects.";
+                }
+
+                bool PermanentCondition(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                        && permanent.TopCard.EqualsCardName("Belphemon (X Antibody)");
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnTrash(card)
+                        && CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, PermanentCondition);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnTrash(card);
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable _hashtable)
+                {
+                    List<CardSource> cardSources = new List<CardSource>() { card };
+                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources));
+                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(cardSources, "Deck Bottom Card", true, true));
+
+                    if (card.Owner.LibraryCards.Contains(card))
+                    {
+                        ActivateClass mainActivateClass = CardEffectCommons.OptionMainEffect(card);
+
+                        if (mainActivateClass != null)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(mainActivateClass.Activate(CardEffectCommons.OptionMainCheckHashtable(card)));
+                        }
+                    }
+                }
+            }
+
+            #endregion
+
+            #region Main
+
+            if (timing == EffectTiming.OptionSkill)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete 1 digimon with equal or high level then cards in hand", CanUseCondition, card);
@@ -59,66 +110,6 @@ namespace DCGO.CardEffects.BT23
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                     }
                 }
-
-                return activateClass;
-            }
-
-            #endregion
-
-            #region [Trash] Your Turn
-
-            if (timing == EffectTiming.OnEnterFieldAnyone)
-            {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("By returning this card to deck, Activate [Main] effect", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
-                cardEffects.Add(activateClass);
-
-                string EffectDiscription()
-                {
-                    return "[Trash] [Your Turn] When any of your Digimon digivolve into [Belphemon (X Antibody)], by returning this card to the bottom of the deck, activate this card's [Main] effects.";
-                }
-
-                bool PermanentCondition(Permanent permanent)
-                {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)
-                        && permanent.TopCard.CardNames.Contains("Belphemon (X Antibody)") || permanent.TopCard.CardNames.Contains("Belphemon(X Antibody)");
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnTrash(card)
-                        && CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, PermanentCondition);
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnTrash(card);
-                }
-
-                IEnumerator ActivateCoroutine(Hashtable _hashtable)
-                {
-                    if (CardEffectCommons.IsExistOnTrash(card))
-                    {
-                        List<CardSource> cardSources = new List<CardSource>() { card };
-                        yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(cardSources));
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect2(cardSources, "Deck Bottom Card", true, true));
-
-                        if (card.Owner.LibraryCards[-1] == card)
-                        {
-                            yield return ContinuousController.instance.StartCoroutine(SharedActivateClass().Activate_Effect());
-                        }
-                    }
-                }
-            }
-
-            #endregion
-
-            #region Main
-
-            if (timing == EffectTiming.OptionSkill)
-            {
-                cardEffects.Add(SharedActivateClass());
             }
 
             #endregion
@@ -127,7 +118,10 @@ namespace DCGO.CardEffects.BT23
 
             if (timing == EffectTiming.SecuritySkill)
             {
-                cardEffects.Add(SharedActivateClass());
+                CardEffectCommons.AddActivateMainOptionSecurityEffect(
+                    card: card,
+                    cardEffects: ref cardEffects,
+                    effectName: "Delete 1 digimon with equal or high level then cards in hand");
             }
 
             #endregion

@@ -138,10 +138,6 @@ public class EX5_031 : CEntity_Effect
                     foreach (CardSource cardSource in selectedCards)
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(cardSource, toTop: true));
-
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(cardSource.Owner));
-
-                        yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(cardSource.Owner).AddSecurity());
                     }
                 }
             }
