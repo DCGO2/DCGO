@@ -88,7 +88,7 @@ namespace DCGO.CardEffects.BT23
                         && cardSource.CanLinkToTargetPermanent(thisPermament, false);
                 }
 
-                bool canSelectSources = thisPermament.StackCards.Exists(CanSelectCardSource);
+                bool canSelectSources = thisPermament.DigivolutionCards.Exists(CanSelectCardSource);
                 bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectCardSource);
 
                 if (canSelectSources || canSelectTrash)

@@ -95,10 +95,6 @@ namespace DCGO.CardEffects.BT18
                     IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(cardSource, toTop: false));
-
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(cardSource.Owner));
-
-                        yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(cardSource.Owner).AddSecurity());
                     }
                 
 
@@ -188,10 +184,6 @@ namespace DCGO.CardEffects.BT18
                     IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(cardSource, toTop: false));
-
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(cardSource.Owner));
-
-                        yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(cardSource.Owner).AddSecurity());
                     }
                     
                     if (card.Owner.SecurityCards.Count >= 4)

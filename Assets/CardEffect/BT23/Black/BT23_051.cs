@@ -18,12 +18,12 @@ namespace DCGO.CardEffects.BT23
                 bool PermanentCondition(Permanent targetPermanent)
                 {
                     return targetPermanent.TopCard.HasCSTraits
-                        && targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.IsLevel2;
+                        && targetPermanent.TopCard.HasLevel && targetPermanent.TopCard.IsLevel3;
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
                     permanentCondition: PermanentCondition,
-                    digivolutionCost: 0,
+                    digivolutionCost: 2,
                     ignoreDigivolutionRequirement: false,
                     card: card,
                     condition: null)

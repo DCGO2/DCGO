@@ -82,10 +82,6 @@ namespace DCGO.CardEffects.BT13
                             if (cardSource.CardColors.Contains(CardColor.Yellow))
                             {
                                 yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(cardSource));
-
-                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(cardSource.Owner));
-
-                                yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(cardSource.Owner).AddSecurity());
                             }
 
                             yield return null;
@@ -166,10 +162,6 @@ namespace DCGO.CardEffects.BT13
                             if (cardSource.CardColors.Contains(CardColor.Yellow))
                             {
                                 yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(cardSource));
-
-                                yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(cardSource.Owner));
-
-                                yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(cardSource.Owner).AddSecurity());
                             }
 
                             yield return null;

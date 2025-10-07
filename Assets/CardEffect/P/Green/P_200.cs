@@ -76,91 +76,71 @@ namespace DCGO.CardEffects.P
 
             #region Your Turn
 
-            #region Reduce Cost Effect
-
-            ActivateClass activateClass2 = new ActivateClass();
-            activateClass2.SetUpICardEffect("Reduce play cost", CanUseCondition2, card);
-            activateClass2.SetUpActivateClass(CanActivateCondition2, ActivateCoroutine2, -1, true, EffectDiscription2());
-
-            string EffectDiscription2()
+            if (timing == EffectTiming.BeforePayCost)
             {
-                return "[Your Turn] When any of your Digimon would digivolve into a Digimon card with the [TS] trait, by suspending this Tamer, reduce the digivolution cost by 1.";
-            }
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Digivolution Cost -1", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetHashString("Digivolve-1_P_200");
+                cardEffects.Add(activateClass);
 
-            bool CardCondition(CardSource cardSource)
-            {
-                if (cardSource.Owner == card.Owner)
+                string EffectDiscription()
                 {
-                    if (cardSource.IsDigimon)
-                    {
-                        if (cardSource.HasTSTraits)
-                        {
-                            return true;
-                        }
-                    }
+                    return "[Your Turn] When any of your Digimon would digivolve into a Digimon card with the [TS] trait, by suspending this Tamer, reduce the digivolution cost by 1.";
                 }
 
-                return false;
-            }
-
-            bool PermamentCondition(Permanent permanent)
-            {
-                return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
-            }
-
-            bool CanUseCondition2(Hashtable hashtable)
-            {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
+                bool PermanentCondition(Permanent permanent)
                 {
-                    if (CardEffectCommons.CanActivateSuspendCostEffect(card))
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
+                }
+
+                bool CardCondition(CardSource cardSource)
+                {
+                    return cardSource.HasTSTraits;
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
                         if (CardEffectCommons.IsOwnerTurn(card))
                         {
-                            if (CardEffectCommons.CanTriggerWhenPermanentWouldDigivolve(hashtable, PermamentCondition, CardCondition))
+                            if (CardEffectCommons.CanTriggerWhenPermanentWouldDigivolve(hashtable, PermanentCondition, CardCondition))
                             {
                                 return true;
                             }
                         }
                     }
+
+                    return false;
                 }
 
-                return false;
-            }
-
-            bool CanActivateCondition2(Hashtable hashtable)
-            {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
+                bool CanActivateCondition(Hashtable hashtable)
                 {
-                    PlayCardClass playCardClass = CardEffectCommons.GetPlayCardClassFromHashtable(hashtable);
-
-                    if (playCardClass != null)
+                    if (CardEffectCommons.IsExistOnBattleArea(card))
                     {
-                        if (playCardClass.PayCost)
+                        if (CardEffectCommons.CanActivateSuspendCostEffect(card))
                         {
                             return true;
                         }
                     }
+
+                    return false;
                 }
 
-                return false;
-            }
-
-            IEnumerator ActivateCoroutine2(Hashtable _hashtable)
-            {
-                if (CardEffectCommons.IsExistOnBattleArea(card))
+                IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
                     yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(
-                        permanents: new List<Permanent> { card.PermanentOfThisCard() },
-                        hashtable: _hashtable).Tap());
+                        new List<Permanent>() { card.PermanentOfThisCard() },
+                        CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
 
                     ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().BuffSE);
 
                     ChangeCostClass changeCostClass = new ChangeCostClass();
-                    changeCostClass.SetUpICardEffect($"Play Cost -1", CanUseCondition1, card);
+                    changeCostClass.SetUpICardEffect("Digivolution Cost -1", CanUseCondition1, card);
                     changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
                     card.Owner.UntilCalculateFixedCostEffect.Add((_timing) => changeCostClass);
 
-                    yield return new WaitForSeconds(0.4f);
                     yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ShowReducedCost(_hashtable));
 
                     bool CanUseCondition1(Hashtable hashtable)
@@ -186,38 +166,25 @@ namespace DCGO.CardEffects.P
 
                     bool PermanentsCondition(List<Permanent> targetPermanents)
                     {
-                        if (targetPermanents == null)
+                        if (targetPermanents != null)
                         {
-                            return true;
-                        }
-                        else
-                        {
-                            if (targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0)
-                            {
-                                targetPermanents.Filter(x => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(x, card));
-                                if (targetPermanents.Count == 0)
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-
-                        return false;
-                    }
-
-                    bool CardSourceCondition(CardSource cardSource)
-                    {
-                        CardSource Card = CardEffectCommons.GetCardFromHashtable(_hashtable);
-
-                        if (Card != null)
-                        {
-                            if (cardSource == Card)
+                            if (targetPermanents.Count(PermanentCondition) >= 1)
                             {
                                 return true;
                             }
                         }
 
                         return false;
+                    }
+
+                    bool PermanentCondition(Permanent targetPermanent)
+                    {
+                        return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(targetPermanent, card);
+                    }
+
+                    bool CardSourceCondition(CardSource cardSource)
+                    {
+                        return true;
                     }
 
                     bool RootCondition(SelectCardEffect.Root root)
@@ -231,117 +198,6 @@ namespace DCGO.CardEffects.P
                     }
                 }
             }
-
-            #endregion
-
-            #region Before Pay Cost
-
-            if (timing == EffectTiming.BeforePayCost)
-            {
-                cardEffects.Add(activateClass2);
-            }
-
-            #endregion
-
-            #region Before Pay Cost (Not Shown)
-
-            if (timing == EffectTiming.None)
-            {
-                ChangeCostClass changeCostClass = new ChangeCostClass();
-                changeCostClass.SetUpICardEffect("Play Cost -1", CanUseCondition, card);
-                changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => true, isChangePayingCost: () => true);
-                changeCostClass.SetNotShowUI(true);
-                cardEffects.Add(changeCostClass);
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    if (!card.Owner.isYou && GManager.instance.IsAI)
-                    {
-                        return false;
-                    }
-
-                    if (CardEffectCommons.IsExistOnBattleArea(card))
-                    {
-                        if (CardEffectCommons.IsOwnerTurn(card))
-                        {
-                            if (CardEffectCommons.CanActivateSuspendCostEffect(card))
-                            {
-                                if (activateClass2 != null)
-                                {
-                                    if (!card.cEntity_EffectController.isOverMaxCountPerTurn(activateClass2, activateClass2.MaxCountPerTurn))
-                                    {
-                                        return true;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    return false;
-                }
-
-                int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
-                {
-                    if (CardSourceCondition(cardSource))
-                    {
-                        if (RootCondition(root))
-                        {
-                            if (PermanentsCondition(targetPermanents))
-                            {
-                                Cost -= 1;
-                            }
-                        }
-                    }
-
-                    return Cost;
-                }
-
-                bool PermanentsCondition(List<Permanent> targetPermanents)
-                {
-                    if (targetPermanents == null)
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        if (targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0)
-                        {
-                            targetPermanents.Filter(x => CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(x, card));
-                            if (targetPermanents.Count == 0)
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return false;
-                }
-
-                bool CardSourceCondition(CardSource cardSource)
-                {
-                    if (cardSource.IsDigimon)
-                    {
-                        if (cardSource.HasTSTraits)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
-                bool RootCondition(SelectCardEffect.Root root)
-                {
-                    return true;
-                }
-
-                bool isUpDown()
-                {
-                    return true;
-                }
-            }
-
-            #endregion
 
             #endregion
 

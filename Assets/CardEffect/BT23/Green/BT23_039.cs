@@ -69,7 +69,7 @@ namespace DCGO.CardEffects.BT23
 
                 string EffectDiscription()
                 {
-                    return "[On Play] Reveal the top 3 cards of your deck. Add 1 card with the [Appmon] trait and 1 card with the [Game] or [Invincible (App Name)] trait among them to the hand. Return the rest to the bottom of the deck.";
+                    return "[On Play] Reveal the top 3 cards of your deck. Add 1 card with the [Appmon] trait and 1 card with the [Game] or [Invincible] trait among them to the hand. Return the rest to the bottom of the deck.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
@@ -79,7 +79,7 @@ namespace DCGO.CardEffects.BT23
 
                 bool CanSelectCardCondition1(CardSource cardSource)
                 {
-                    return cardSource.EqualsTraits("Game") || cardSource.EqualsTraits("Invincible (App Name)");
+                    return cardSource.EqualsTraits("Game") || cardSource.EqualsTraits("Invincible");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
