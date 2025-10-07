@@ -67,7 +67,7 @@ namespace DCGO.CardEffects.P
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
                         maxCount: 1,
-                        canNoSelect: true,
+                        canNoSelect: false,
                         canEndNotMax: false,
                         isShowOpponent: true,
                         selectCardCoroutine: null,
@@ -208,7 +208,7 @@ namespace DCGO.CardEffects.P
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermament));
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
                         selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner.Enemy,
+                            selectPlayer: card.Owner,
                             canTargetCondition: CanSelectPermament,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,

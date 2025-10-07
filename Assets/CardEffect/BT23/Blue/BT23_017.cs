@@ -158,7 +158,7 @@ namespace DCGO.CardEffects.BT23
                 {
                     return cardSource.IsDigimon
                         && cardSource.HasPlayCost && cardSource.BasePlayCostFromEntity <= 5
-                        && cardSource.EqualsTraits("Hudie")
+                        && cardSource.HasHudieTraits
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
                 }
 
