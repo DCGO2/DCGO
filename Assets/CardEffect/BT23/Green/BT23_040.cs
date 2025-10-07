@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 // Wormmon
 namespace DCGO.CardEffects.BT23
@@ -37,7 +38,7 @@ namespace DCGO.CardEffects.BT23
             if (timing == EffectTiming.OnStartMainPhase)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Place 1 [Erika Mishima] as bottom digivolution card, if you do you this may digiolve into a [Hudiemon] in hand or trash", CanUseCondition, card);
+                activateClass.SetUpICardEffect("By placing 1 [Erika Mishima] as bottom digivolution card, this digimon may digiolve", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -114,12 +115,12 @@ namespace DCGO.CardEffects.BT23
 
                             #endregion
 
-                            if (placeSources.Placed)
+                            if (thisPermament.DigivolutionCards.Contains(selectedErikaMishima.TopCard))
                             {
                                 bool SelectSourceCard(CardSource cardSource)
                                 {
                                     return cardSource.IsDigimon
-                                        && cardSource.EqualsTraits("Hudiemon")
+                                        && cardSource.HasHudieTraits
                                         && cardSource.CanPlayCardTargetFrame(thisPermament.PermanentFrame, true, activateClass);
                                 }
 
@@ -184,13 +185,13 @@ namespace DCGO.CardEffects.BT23
 
                 bool Condition()
                 {
-                    return CardEffectCommons.IsExistOnField(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 bool PermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && permanent.TopCard.EqualsTraits("Hudiemon");
+                        && permanent.TopCard.HasHudieTraits;
                 }
 
                 cardEffects.Add(CardEffectFactory.ChangeDPStaticEffect(
