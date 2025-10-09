@@ -52,7 +52,7 @@ namespace DCGO.CardEffects.BT23
                 {
                     if (cardSource.CanPlayJogress(true))
                     {
-                        if (cardSource.CardNames.Contains("Chaosmon"))
+                        if (cardSource.CardNames.Contains("Shakkoumon"))
                         {
                             return true;
                         }

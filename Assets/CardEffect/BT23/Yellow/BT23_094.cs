@@ -255,6 +255,7 @@ namespace DCGO.CardEffects.BT23
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("1 digimon gains Sec Atk -1 and cant use [When Digivolving] & [When Attacking effects]. then place is battle area", CanUseCondition, card);
                 activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetIsSecurityEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

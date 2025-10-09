@@ -104,7 +104,8 @@ namespace DCGO.CardEffects.BT23
                 bool RemovedFromPlayPermanent(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
-                           (permanent.TopCard.HasEaterTraits || permanent.TopCard.HasHudieTraits);
+                           (permanent.TopCard.HasEaterTraits || permanent.TopCard.HasHudieTraits) &&
+                           permanent != card.PermanentOfThisCard();
                 }
 
                 bool HasMother(Permanent permanent)
@@ -132,7 +133,7 @@ namespace DCGO.CardEffects.BT23
 
                     if (canAddSource || canDestroy)
                     {
-                        bool willProtect = canAddSource;
+                        bool willDestroy = canDestroy;
 
                         if (canAddSource && canDestroy)
                         {
@@ -149,27 +150,23 @@ namespace DCGO.CardEffects.BT23
 
                             yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                            willProtect = GManager.instance.userSelectionManager.SelectedBoolValue;
+                            willDestroy = GManager.instance.userSelectionManager.SelectedBoolValue;
                         }
 
-                        if (willProtect)
+                        if (willDestroy)
                         {
-                            if (canAddSource)
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(new IPlacePermanentToDigivolutionCards(new List<Permanent[]>() { new Permanent[] { card.PermanentOfThisCard(), card.Owner.GetBreedingAreaPermanents()[0] } }, false, activateClass).PlacePermanentToDigivolutionCards());
+                            yield return ContinuousController.instance.StartCoroutine(
+                                CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
+                                targetPermanents: new List<Permanent>() { card.PermanentOfThisCard() },
+                                activateClass: activateClass,
+                                successProcess: permanents => SuccessProcess(),
+                                failureProcess: null));
+                        }
+                        else
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(new IPlacePermanentToDigivolutionCards(new List<Permanent[]>() { new Permanent[] { card.PermanentOfThisCard(), card.Owner.GetBreedingAreaPermanents()[0] } }, false, activateClass).PlacePermanentToDigivolutionCards());
 
-                                if (card.Owner.GetBreedingAreaPermanents()[0].DigivolutionCards.Contains(card))
-                                    yield return ContinuousController.instance.StartCoroutine("SuccessProcess");
-                            }
-                            else
-                            {
-                                yield return ContinuousController.instance.StartCoroutine(
-                                    CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
-                                        targetPermanents: new List<Permanent>() { card.PermanentOfThisCard() },
-                                        activateClass: activateClass,
-                                        successProcess: permanents => SuccessProcess(),
-                                        failureProcess: null));
-                            }
+                            yield return ContinuousController.instance.StartCoroutine("SuccessProcess");
                         }                        
 
                         IEnumerator SuccessProcess()

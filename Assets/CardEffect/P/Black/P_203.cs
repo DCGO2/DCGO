@@ -250,7 +250,7 @@ namespace DCGO.CardEffects.P
             if (timing == EffectTiming.OnDestroyedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("1 digimon cant attack or digivolve", CanUseCondition, card);
+                activateClass.SetUpICardEffect("1 digimon can't attack or digivolve", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
                 activateClass.SetHashString("P_203_AT");
                 cardEffects.Add(activateClass);
@@ -309,7 +309,7 @@ namespace DCGO.CardEffects.P
                             yield return null;
                         }
 
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will gain cant digivolve & cant attacking players.", "The opponent is selecting 1 Digimon that will gain cant digivolve & cant attacking players.");
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will gain cant digivolve & can't attack players.", "The opponent is selecting 1 Digimon that will gain cant digivolve & can't attack players.");
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
                         if (selectedPermament != null)
@@ -326,7 +326,7 @@ namespace DCGO.CardEffects.P
                             yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotAttack(
                                 targetPermanent: selectedPermament,
                                 defenderCondition: DefenderCondition,
-                                effectDuration: EffectDuration.UntilOwnerTurnEnd,
+                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
                                 activateClass: activateClass,
                                 effectName: "Cannot attack player"));
 

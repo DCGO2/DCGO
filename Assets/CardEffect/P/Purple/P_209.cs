@@ -19,7 +19,7 @@ namespace DCGO.CardEffects.P
                 static bool PermanentCondition(Permanent targetPermanent)
                 {
                     return targetPermanent.TopCard.IsLevel5 &&
-                           targetPermanent.TopCard.EqualsTraits("Demon") || targetPermanent.TopCard.HasTSTraits;
+                           (targetPermanent.TopCard.EqualsTraits("Demon") || targetPermanent.TopCard.HasTSTraits);
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(permanentCondition: PermanentCondition, digivolutionCost: 3, ignoreDigivolutionRequirement: false, card: card, condition: null));
@@ -43,7 +43,7 @@ namespace DCGO.CardEffects.P
                 bool CanSelectPermanentCondition(Permanent targetPermanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(targetPermanent, card)
-                        && targetPermanent.IsDigimon || targetPermanent.IsTamer;
+                        && (targetPermanent.IsDigimon || targetPermanent.IsTamer);
                 }
 
                 bool trashed = false;
@@ -148,7 +148,7 @@ namespace DCGO.CardEffects.P
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] By trash 1 card in your hand, suspend 1 of your opponent's Digimon or Tamers. Then, 1 of their Digimon or Tamers can't unsuspend until their turn ends.";
+                    return "[When Digivolving] By trashing 1 card in your hand, suspend 1 of your opponent's Digimon or Tamers. Then, 1 of their Digimon or Tamers can't unsuspend until their turn ends.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -176,7 +176,7 @@ namespace DCGO.CardEffects.P
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] By trash 1 card in your hand, suspend 1 of your opponent's Digimon or Tamers. Then, 1 of their Digimon or Tamers can't unsuspend until their turn ends.";
+                    return "[When Digivolving] By trashing 1 card in your hand, suspend 1 of your opponent's Digimon or Tamers. Then, 1 of their Digimon or Tamers can't unsuspend until their turn ends.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -198,14 +198,14 @@ namespace DCGO.CardEffects.P
             if (timing == EffectTiming.OnDiscardHand)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("play 1 level 4 or lower [Demon] card from your trash", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Play 1 level 4 or lower [Demon] or [Titan] card", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("P_209_AT");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[All Turns] [Once Per Turn] When your hand is trashed from, you may play 1 level 4 or lower [Demon] card from your trash without paying the cost.";
+                    return "[All Turns] [Once Per Turn] When your hand is trashed from, you may play 1 level 4 or lower [Demon] or [Titan] trait card from your trash without paying the cost.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

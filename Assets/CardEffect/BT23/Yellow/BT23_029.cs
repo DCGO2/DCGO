@@ -189,7 +189,7 @@ namespace DCGO.CardEffects.BT23
                 bool IsYourDigimon(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && permanent != permanent.TopCard.PermanentOfThisCard();
+                        && permanent != card.PermanentOfThisCard();
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)

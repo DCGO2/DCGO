@@ -101,18 +101,25 @@ namespace DCGO.CardEffects.BT23
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
                 }
 
+                bool HasTokenInPlay(Permanent permanent)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                           permanent.TopCard.EqualsCardName("Atho, René & Por");
+                }
+
                 bool playToken = false;
                 bool playFromHand = false;
                 bool playFromTrash = false;
 
+                bool canPlayToken = !CardEffectCommons.HasMatchConditionPermanent(HasTokenInPlay);
                 bool canSelectHand = CardEffectCommons.HasMatchConditionOwnersHand(card, IsValidSistermon);
                 bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, IsValidSistermon);
 
                 #region User Selection - Play Token or Select Card Location
 
-                if (canSelectHand || canSelectTrash)
+                if (canPlayToken || canSelectHand || canSelectTrash)
                 {
-                    if (canSelectHand && canSelectTrash)
+                    if(canPlayToken && (canSelectHand || canSelectTrash))
                     {
                         List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
                         {
@@ -126,10 +133,20 @@ namespace DCGO.CardEffects.BT23
                         GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                        bool isPlayingToken = GManager.instance.userSelectionManager.SelectedBoolValue;
+                        playToken = GManager.instance.userSelectionManager.SelectedBoolValue;
+                    }
+                    else if(!canPlayToken && (canSelectHand || canSelectTrash))
+                    {
+                        
+                    }
 
-                        if (isPlayingToken) playToken = true;
-                        else
+                    if (playToken)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayAthoRenePorToken(activateClass));
+                    }
+                    else
+                    {
+                        if(canSelectHand && canSelectTrash)
                         {
                             List<SelectionElement<bool>> selectionElements1 = new List<SelectionElement<bool>>()
                             {
@@ -143,134 +160,89 @@ namespace DCGO.CardEffects.BT23
                             GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements1, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage1, notSelectPlayerMessage: notSelectPlayerMessage1);
                             yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
 
-                            bool isPlayingHand = GManager.instance.userSelectionManager.SelectedBoolValue;
+                            playFromHand = GManager.instance.userSelectionManager.SelectedBoolValue;
+                        }
+                        else
+                        {
+                            playFromHand = canSelectHand;
+                        }
 
-                            if (isPlayingHand) playFromHand = true;
-                            else playFromTrash = true;
+                        CardSource selectedCard = null;
+                        IEnumerator SelectCardCoroutine(CardSource cardSource)
+                        {
+                            selectedCard = cardSource;
+                            yield return null;
+                        }
+
+                        if (playFromHand)
+                        {
+                            SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                            selectHandEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: IsValidSistermon,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: 1,
+                                canNoSelect: true,
+                                canEndNotMax: false,
+                                isShowOpponent: true,
+                                selectCardCoroutine: SelectCardCoroutine,
+                                afterSelectCardCoroutine: null,
+                                mode: SelectHandEffect.Mode.Custom,
+                                cardEffect: activateClass);
+
+                            selectHandEffect.SetUpCustomMessage("Select 1 digimon to play", "The opponent is selecting 1 digimon to play");
+
+                            yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+
+                            if (selectedCard != null) yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
+                                new List<CardSource>() { selectedCard },
+                                activateClass: activateClass,
+                                payCost: false,
+                                isTapped: false,
+                                root: SelectCardEffect.Root.Hand,
+                                activateETB: true));
+                        }
+                        if (playFromTrash)
+                        {
+                            SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
+
+                            selectCardEffect.SetUp(
+                                canTargetCondition: IsValidSistermon,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                canNoSelect: () => true,
+                                selectCardCoroutine: SelectCardCoroutine,
+                                afterSelectCardCoroutine: null,
+                                message: "Select 1 digimon to play",
+                                maxCount: 1,
+                                canEndNotMax: false,
+                                isShowOpponent: true,
+                                mode: SelectCardEffect.Mode.Custom,
+                                root: SelectCardEffect.Root.Trash,
+                                customRootCardList: null,
+                                canLookReverseCard: true,
+                                selectPlayer: card.Owner,
+                                cardEffect: activateClass);
+
+                            selectCardEffect.SetUpCustomMessage("Select 1 digimon to play", "The opponent is selecting 1 digimon to play");
+                            selectCardEffect.SetUpCustomMessage_ShowCard("Selected Digimon");
+
+                            yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
+
+                            if (selectedCard != null) yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
+                                new List<CardSource>() { selectedCard },
+                                activateClass: activateClass,
+                                payCost: false,
+                                isTapped: false,
+                                root: SelectCardEffect.Root.Trash,
+                                activateETB: true));
                         }
                     }
-                    else if (canSelectHand && !canSelectTrash)
-                    {
-                        List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
-                        {
-                            new SelectionElement<bool>(message: $"Play [Atho, René & Por] Token", value : true, spriteIndex: 0),
-                            new SelectionElement<bool>(message: $"Player [Sistermon] in name digimon from hand", value : false, spriteIndex: 1),
-                        };
-
-                        string selectPlayerMessage = "Which effect will you use";
-                        string notSelectPlayerMessage = "The opponent is which effect to use.";
-
-                        GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-
-                        bool isPlayingToken = GManager.instance.userSelectionManager.SelectedBoolValue;
-
-                        if (isPlayingToken) playToken = true;
-                        else playFromHand = true;
-                    }
-                    else if (!canSelectHand && canSelectTrash)
-                    {
-                        List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
-                        {
-                            new SelectionElement<bool>(message: $"Play [Atho, René & Por] Token", value : true, spriteIndex: 0),
-                            new SelectionElement<bool>(message: $"Player [Sistermon] in name digimon from trash", value : false, spriteIndex: 1),
-                        };
-
-                        string selectPlayerMessage = "Which effect will you use";
-                        string notSelectPlayerMessage = "The opponent is which effect to use.";
-
-                        GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-
-                        bool isPlayingToken = GManager.instance.userSelectionManager.SelectedBoolValue;
-
-                        if (isPlayingToken) playToken = true;
-                        else playFromTrash = true;
-                    }
-
-                }
-                else
-                {
-                    playToken = true;
                 }
 
                 #endregion
-
-                if (playToken) yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayAthoRenePorToken(activateClass));
-
-                CardSource selectedCard = null;
-                IEnumerator SelectCardCoroutine(CardSource cardSource)
-                {
-                    selectedCard = cardSource;
-                    yield return null;
-                }
-
-                if (playFromHand)
-                {
-                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                    selectHandEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: IsValidSistermon,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: 1,
-                        canNoSelect: true,
-                        canEndNotMax: false,
-                        isShowOpponent: true,
-                        selectCardCoroutine: SelectCardCoroutine,
-                        afterSelectCardCoroutine: null,
-                        mode: SelectHandEffect.Mode.Custom,
-                        cardEffect: activateClass);
-
-                    selectHandEffect.SetUpCustomMessage("Select 1 digimon to play", "The opponent is selecting 1 digimon to play");
-
-                    yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
-
-                    if (selectedCard != null) yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                        new List<CardSource>() { selectedCard },
-                        activateClass: activateClass,
-                        payCost: false,
-                        isTapped: false,
-                        root: SelectCardEffect.Root.Hand,
-                        activateETB: true));
-                }
-                if (playFromTrash)
-                {
-                    SelectCardEffect selectCardEffect = GManager.instance.GetComponent<SelectCardEffect>();
-
-                    selectCardEffect.SetUp(
-                        canTargetCondition: IsValidSistermon,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        canNoSelect: () => true,
-                        selectCardCoroutine: SelectCardCoroutine,
-                        afterSelectCardCoroutine: null,
-                        message: "Select 1 digimon to play",
-                        maxCount: 1,
-                        canEndNotMax: false,
-                        isShowOpponent: true,
-                        mode: SelectCardEffect.Mode.Custom,
-                        root: SelectCardEffect.Root.Trash,
-                        customRootCardList: null,
-                        canLookReverseCard: true,
-                        selectPlayer: card.Owner,
-                        cardEffect: activateClass);
-
-                    selectCardEffect.SetUpCustomMessage("Select 1 digimon to play", "The opponent is selecting 1 digimon to play");
-                    selectCardEffect.SetUpCustomMessage_ShowCard("Selected Digimon");
-
-                    yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
-
-                    if (selectedCard != null) yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                        new List<CardSource>() { selectedCard },
-                        activateClass: activateClass,
-                        payCost: false,
-                        isTapped: false,
-                        root: SelectCardEffect.Root.Trash,
-                        activateETB: true));
-                }
-
             }
 
             #endregion
