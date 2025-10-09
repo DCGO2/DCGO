@@ -164,7 +164,8 @@ namespace DCGO.CardEffects.BT23
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Delete 1 digimon with lowest DP, then place in battle area", CanUseCondition, card);
-                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(null, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetIsSecurityEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

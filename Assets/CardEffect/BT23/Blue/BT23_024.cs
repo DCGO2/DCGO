@@ -314,8 +314,10 @@ namespace DCGO.CardEffects.BT23
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.IsOwnerTurn(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.IsOwnerTurn(card) &&
+                           card.PermanentOfThisCard().CanUnsuspend && 
+                           card.PermanentOfThisCard().IsSuspended;
                 }
 
                 bool IsThisDigimon(Permanent permanent)
@@ -332,17 +334,22 @@ namespace DCGO.CardEffects.BT23
                             permanents: new List<Permanent>() { card.PermanentOfThisCard() },
                             cardEffect: activateClass).Unsuspend());
 
-                        var digimonToStun = CardEffectCommons.GetNonMaxCostPermanents(card.Owner.Enemy);
-
-                        foreach (var permanent in digimonToStun)
+                        bool CantSuspendCondition(Permanent permanent)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotSuspend(
-                                targetPermanent: permanent,
-                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                                activateClass: activateClass,
-                                condition: null,
-                                effectName: "Can not suspend"));
+                            if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card))
+                            {
+                                return CardEffectCommons.GetNonMaxCostPermanents(card.Owner.Enemy).Contains(permanent);
+                            }
+
+                            return false;
                         }
+
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotSuspendPlayerEffect(
+                        permanentCondition: CantSuspendCondition,
+                        effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                        activateClass: activateClass,
+                        isOnlyActivePhase: false,
+                        effectName: "Can't Suspend"));
                     }
                 }
             }

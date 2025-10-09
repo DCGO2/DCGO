@@ -108,7 +108,7 @@ namespace DCGO.CardEffects.BT23
                     }
                     else
                     {
-                        GManager.instance.userSelectionManager.SetBool(canSelectSources ? canSelectSources : canSelectTrash);
+                        GManager.instance.userSelectionManager.SetBool(canSelectSources);
                     }
 
                     yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());

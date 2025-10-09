@@ -9,6 +9,7 @@ public class PartitionCondition
     public int Level;
     public CardColor Color;
     public CardColor Color2;
+    public string Name;
     public bool hasTwoColor = false;
 
     public PartitionCondition(int level, CardColor color)
@@ -24,18 +25,11 @@ public class PartitionCondition
         Color2 = color2;
         hasTwoColor = true;
     }
-    /*
-    public bool ContainsAll(List<CardColor> sourceColors)
-    {
-        foreach(CardColor cardColor in Color)
-        {
-            if(!sourceColors.Contains(cardColor))
-                return false;
-        }
 
-        return false;
+    public PartitionCondition(string cardName)
+    {
+        Name = cardName;
     }
-    */
 }
 
 public partial class CardEffectFactory
@@ -69,36 +63,37 @@ public partial class CardEffectFactory
         List<CardSource> sourceOneCard = new List<CardSource>();
         List<CardSource> sourceTwoCard = new List<CardSource>();
 
+        sourceOneCard = targetPermanent.DigivolutionCards.Clone();
+        sourceTwoCard = targetPermanent.DigivolutionCards.Clone();
+
+        if (!String.IsNullOrEmpty(partitionConditions[0].Name))
+            sourceOneCard = sourceOneCard.Filter(source => source.EqualsCardName(partitionConditions[0].Name));
+
+        if (!String.IsNullOrEmpty(partitionConditions[1].Name))
+            sourceOneCard = sourceOneCard.Filter(source => source.EqualsCardName(partitionConditions[1].Name));
+
         if (partitionConditions[0].hasTwoColor)
         {
-            sourceOneCard = targetPermanent.DigivolutionCards
-                .Clone()
-                .Filter(source =>
+            sourceOneCard = sourceOneCard.Filter(source =>
                     (source.CardColors.Contains(partitionConditions[0].Color) || source.CardColors.Contains(partitionConditions[0].Color2))
                     && (source.HasLevel && source.Level == partitionConditions[0].Level));
         }
         else
         {
-            sourceOneCard = targetPermanent.DigivolutionCards
-                .Clone()
-                .Filter(source =>
+            sourceOneCard = sourceOneCard.Filter(source =>
                     source.CardColors.Contains(partitionConditions[0].Color)
                     && (source.HasLevel && source.Level == partitionConditions[0].Level));
         }
 
         if (partitionConditions[1].hasTwoColor)
         {
-            sourceTwoCard = targetPermanent.DigivolutionCards
-                .Clone()
-                .Filter(source =>
+            sourceTwoCard = sourceTwoCard.Filter(source =>
                     (source.CardColors.Contains(partitionConditions[1].Color) || source.CardColors.Contains(partitionConditions[1].Color2))
                     && (source.HasLevel && source.Level == partitionConditions[1].Level));
         }
         else
         {
-            sourceTwoCard = targetPermanent.DigivolutionCards
-                .Clone()
-                .Filter(source =>
+            sourceTwoCard = sourceTwoCard.Filter(source =>
                     source.CardColors.Contains(partitionConditions[1].Color) && 
                     (source.HasLevel && source.Level == partitionConditions[1].Level));
         }
