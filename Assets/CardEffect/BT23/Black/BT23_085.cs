@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 
-namespace DCGO.CardEffects
+//Ryuji Mishima
+namespace DCGO.CardEffects.BT23
 {
     public class BT23_085 : CEntity_Effect
     {
@@ -188,17 +189,6 @@ namespace DCGO.CardEffects
 
                 bool CanSelectOptionCard(CardSource cardSource)
                 {
-                    if (cardSource.IsOption)
-                    {
-                        if (cardSource.CardColors.Count == 1)
-                        {
-                            if (!cardSource.CanNotPlayThisOption)
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
                     return cardSource.IsOption &&
                            cardSource.HasCSTraits &&
                            (cardSource.CardColors.Count == 1) &&
