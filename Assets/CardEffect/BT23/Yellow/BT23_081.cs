@@ -173,6 +173,8 @@ namespace DCGO.CardEffects.BT23
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(new List<Permanent>() { card.PermanentOfThisCard() }, CardEffectCommons.CardEffectHashtable(activateClass)).Tap());
+
                     if (CardEffectCommons.HasMatchConditionPermanent(IsOpponentsDigimon))
                     {
                         Permanent selectedPermanent = null;
