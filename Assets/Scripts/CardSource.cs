@@ -3771,6 +3771,18 @@ public class CardSource : MonoBehaviour
     }
 
     #endregion
+
+    #region whether this card has Ghost trait
+
+    public bool HasGhostTraits
+    {
+        get
+        {
+            return EqualsTraits("Ghost");
+        }
+    }
+
+    #endregion
 }
 
 public class JogressCondition
