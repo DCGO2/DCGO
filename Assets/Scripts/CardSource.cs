@@ -3783,6 +3783,18 @@ public class CardSource : MonoBehaviour
     }
 
     #endregion
+
+    #region whether this card has Dark Animal trait
+
+    public bool HasDarkAnimalTraits
+    {
+        get
+        {
+            return EqualsTraits("DarkAnimal");
+        }
+    }
+
+    #endregion
 }
 
 public class JogressCondition
