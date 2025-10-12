@@ -59,9 +59,9 @@ public partial class CardEffectFactory
 
     #endregion
 
-    #region Tamer's effect to Gain 1 Memory
+    #region Tamer's effect to Gain 1 Memory if opponent has a digimon
 
-    public static ICardEffect Gain1MemoryTamerEffect(CardSource card)
+    public static ICardEffect Gain1MemoryTamerOpponentDigimonEffect(CardSource card)
     {
         ActivateClass activateClass = new ActivateClass();
         activateClass.SetUpICardEffect("Memory +1", CanUseCondition, card);
