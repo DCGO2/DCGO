@@ -15,39 +15,22 @@ namespace DCGO.CardEffects.BT23
 
             if (timing == EffectTiming.OnStartMainPhase)
             {
-                ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Gain 1 memory", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
-                cardEffects.Add(activateClass);
-
-                string EffectDiscription()
-                {
-                    return "[Start of Your Main Phase] If you have a Digimon with the [CS] trait, gain 1 memory.";
-                }
-
-                bool CanUseCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleArea(card);
-                }
-
-                bool CanActivateCondition(Hashtable hashtable)
-                {
-                    return CardEffectCommons.IsExistOnBattleArea(card)
-                        && CardEffectCommons.IsOwnerTurn(card)
-                        && CardEffectCommons.HasMatchConditionPermanent(PermamentCondition)
-                        && card.Owner.CanAddMemory(activateClass);
-                }
-
                 bool PermamentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
                         && permanent.TopCard.HasCSTraits;
                 }
 
-                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                bool Condition()
                 {
-                    yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
+                    return CardEffectCommons.IsOwnerTurn(card);
                 }
+
+                cardEffects.Add(CardEffectFactory.Gain1MemoryTamerOwnerDigimonConditionalEffect(
+                    effectDescription: "[Start of Your Main Phase] If you have a Digimon with the [CS] trait, gain 1 memory.",
+                    permamentCondition: PermamentCondition,
+                    condition: Condition,
+                    card: card));
             }
 
             #endregion
