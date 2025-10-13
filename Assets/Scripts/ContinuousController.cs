@@ -118,6 +118,7 @@ public class ContinuousController : MonoBehaviour
     public CEntity_Base RapidmonToken { get; private set; }
     public CEntity_Base PipeFoxToken { get; private set; }
     public CEntity_Base AthoRenePorToken { get; private set; }
+    public CEntity_Base HinukamuyToken { get; private set; }
     public CEntity_Base PetrificationToken { get; private set; }
     public CardRestriction BanList { get; private set; } = new CardRestriction(new List<CardLimitCount>(), new List<BannedPair>());
 
@@ -437,6 +438,29 @@ public class ContinuousController : MonoBehaviour
         };
 
         await AthoRenePorToken.GetCardSprite();
+
+        HinukamuyToken = new CEntity_Base()
+        {
+            cardColors = new List<CardColor>() { CardColor.White },
+            PlayCost = -1,
+            Level = 0,
+            CardName_JPN = "",
+            CardName_ENG = "HinukamuyToken",
+            Form_JPN = new List<string>(),
+            Form_ENG = new List<string>(),
+            Attribute_JPN = new List<string>(),
+            Attribute_ENG = new List<string>(),
+            Type_JPN = new List<string>(),
+            Type_ENG = new List<string>(),
+            CardSpriteName = "BT23-057-token",
+            cardKind = CardKind.Digimon,
+            DP = 6000,
+            CardEffectClassName = "BT23_057_token"
+        };
+
+        await HinukamuyToken.GetCardSprite();
+
+        
 
         PetrificationToken = new CEntity_Base()
         {

@@ -374,6 +374,20 @@ public partial class CardEffectCommons
 
     #endregion
 
+    #region Play 1 [Hinukamuy] Token
+
+    public static IEnumerator PlayHinukamuyToken(ICardEffect activateClass)
+    {
+        yield return ContinuousController.instance.StartCoroutine(PlayToken(
+            tokenData: ContinuousController.instance.HinukamuyToken,
+            activateClass: activateClass,
+            isOwnerPermanent: true,
+            isTapped: false
+            ));
+    }
+
+    #endregion
+
     #region Play 1 [Petrification] Token
 
     public static IEnumerator PlayPetrificationToken(ICardEffect activateClass)

@@ -121,7 +121,7 @@ namespace DCGO.CardEffects.BT22
 
                 string EffectDiscription()
                 {
-                    return "[On Play] [When Digivolving] 1 of your opponent's Digimon gets -8000 DP for the turn.";
+                    return "[When Digivolving] 1 of your opponent's Digimon gets -8000 DP for the turn.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
