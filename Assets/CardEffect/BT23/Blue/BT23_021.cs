@@ -314,7 +314,6 @@ namespace DCGO.CardEffects.BT23
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Gain immunity from battle", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
-                activateClass.SetIsLinkedEffect(true);
                 activateClass.SetHashString("BT23_021_WL");
                 cardEffects.Add(activateClass);
 

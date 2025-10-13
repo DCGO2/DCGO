@@ -20,7 +20,7 @@ namespace DCGO.CardEffects.BT23
                 bool PermanentCondition(Permanent targetPermanent)
                 {
                     return targetPermanent.TopCard.EqualsCardName("Armadillomon") ||
-                           (targetPermanent.TopCard.IsLevel5 &&
+                           (targetPermanent.TopCard.IsLevel3 &&
                            targetPermanent.TopCard.HasCSTraits);
                 }
 

@@ -104,7 +104,7 @@ namespace DCGO.CardEffects.BT23
             #endregion
 
             #region All Turns - OPT
-            if (timing == EffectTiming.OnRemovedField)
+            if (timing == EffectTiming.WhenRemoveField)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By trashing 1 of your Option cards, protect this digimon", CanUseCondition, card);
@@ -184,7 +184,7 @@ namespace DCGO.CardEffects.BT23
             #endregion
 
             #region All Turns - OPT - ESS
-            if (timing == EffectTiming.OnRemovedField)
+            if (timing == EffectTiming.WhenRemoveField)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By trashing 1 of your Option cards, protect this digimon", CanUseCondition, card);

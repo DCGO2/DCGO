@@ -19,7 +19,7 @@ namespace DCGO.CardEffects.BT23
                 bool PermanentCondition(Permanent targetPermanent)
                 {
                     return targetPermanent.TopCard.IsLevel5
-                        && targetPermanent.TopCard.ContainsCardName("Leomon") || targetPermanent.TopCard.HasCSTraits;
+                        && (targetPermanent.TopCard.ContainsCardName("Leomon") || targetPermanent.TopCard.HasCSTraits);
                 }
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(

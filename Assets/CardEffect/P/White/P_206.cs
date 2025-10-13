@@ -109,7 +109,9 @@ namespace DCGO.CardEffects.P
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    var digimonColours = card.Owner.GetBattleAreaDigimons().SelectMany(digimon => digimon.TopCard.BaseCardColors).Distinct();
+                    var digimonColours = card.Owner.GetFieldPermanents()
+                        .Filter(x => x.IsDigimon)
+                        .SelectMany(digimon => digimon.TopCard.BaseCardColors).Distinct();
 
                     return cardSource.IsTamer
                         && cardSource.BaseCardColors.Exists(x => digimonColours.Contains(x))

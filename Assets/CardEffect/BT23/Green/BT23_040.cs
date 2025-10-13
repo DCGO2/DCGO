@@ -38,7 +38,7 @@ namespace DCGO.CardEffects.BT23
             if (timing == EffectTiming.OnStartMainPhase)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("By placing 1 [Erika Mishima] as bottom digivolution card, this digimon may digiolve", CanUseCondition, card);
+                activateClass.SetUpICardEffect("By placing 1 [Erika Mishima] as bottom digivolution card, this digimon may digivolve", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 

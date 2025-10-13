@@ -16,13 +16,13 @@ namespace DCGO.CardEffects.BT23
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("By adding your top security, you may place 1 digimon face up in security", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Add your top security, ＜Recovery +1 (Deck)＞", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
                 {
-                    return "[On Play] Add your top security card to the hand. Then, ＜Recovery +1 (Deck)＞ ";
+                    return "[On Play] Add your top security card to the hand. Then, ＜Recovery +1 (Deck)>";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
