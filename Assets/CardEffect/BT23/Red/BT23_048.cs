@@ -53,7 +53,7 @@ namespace DCGO.CardEffects.BT23
                 bool CanSelectCardCondition1(CardSource cardSource)
                 {
                     return cardSource.HasCSTraits
-                        && cardSource.IsTamer || cardSource.IsOption;
+                        && (cardSource.IsTamer || cardSource.IsOption);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

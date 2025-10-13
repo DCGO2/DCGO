@@ -55,7 +55,7 @@ namespace DCGO.CardEffects.BT23
 
             if (timing == EffectTiming.None)
             {
-                cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(isInheritedEffect: false, card: card, condition: null));
+                cardEffects.Add(CardEffectFactory.BlockerSelfStaticEffect(isInheritedEffect: true, card: card, condition: null));
             }
 
             #endregion

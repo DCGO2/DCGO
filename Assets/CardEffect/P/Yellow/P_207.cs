@@ -41,7 +41,7 @@ namespace DCGO.CardEffects.P
             {
                 return cardSource.IsDigimon
                     && cardSource.HasLevel && cardSource.Level <= 4
-                    && cardSource.HasAvianBeastAnimalTraits || cardSource.HasTSTraits
+                    && (cardSource.HasAvianBeastAnimalTraits || cardSource.HasTSTraits)
                     && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
             }
 

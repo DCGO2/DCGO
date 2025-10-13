@@ -43,7 +43,7 @@ namespace DCGO.CardEffects.BT23
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
                     return cardSource.EqualsTraits("Dragonkin") ||
-                           cardSource.EqualsTraits("Cybrog") ||
+                           cardSource.EqualsTraits("Cyborg") ||
                            cardSource.HasDeviceTraits ||
                            cardSource.HasCSTraits;
                 }

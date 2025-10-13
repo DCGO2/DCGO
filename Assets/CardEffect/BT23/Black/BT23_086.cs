@@ -76,8 +76,8 @@ namespace DCGO.CardEffects.BT23
                             new SelectionElement<bool>(message: $"From trash", value : false, spriteIndex: 1),
                         };
 
-                            string selectPlayerMessage = "From which area do you play a card?";
-                            string notSelectPlayerMessage = "The opponent is choosing from which area to play a card.";
+                            string selectPlayerMessage = "From which area do you select a card?";
+                            string notSelectPlayerMessage = "The opponent is choosing from which area to select a card.";
 
                             GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
                         }
@@ -125,7 +125,7 @@ namespace DCGO.CardEffects.BT23
                                 canNoSelect: () => true,
                                 selectCardCoroutine: SelectCardCoroutine,
                                 afterSelectCardCoroutine: null,
-                                message: "Select 1 card to play.",
+                                message: "Select 1 card to add face up in security.",
                                 maxCount: 1,
                                 canEndNotMax: false,
                                 isShowOpponent: true,
@@ -192,11 +192,16 @@ namespace DCGO.CardEffects.BT23
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
                            permanent.TopCard.HasLevel && permanent.TopCard.IsLevel6 &&
-                           (permanent.TopCard.EqualsTraits("Machine") && permanent.TopCard.EqualsTraits("Zaxon"));
+                           (permanent.TopCard.EqualsTraits("Machine") || permanent.TopCard.EqualsTraits("Zaxon"));
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(
+                        permanents: new List<Permanent>() { card.PermanentOfThisCard() },
+                        hashtable: hashtable).Tap()
+                    );
+
                     if (CardEffectCommons.HasMatchConditionPermanent(PermanentCondition))
                     {
                         Permanent selectedPermanent = null;

@@ -181,7 +181,7 @@ namespace DCGO.CardEffects.BT23
                 {
                     return cardSource.IsDigimon
                         && cardSource.HasLevel && cardSource.Level <= 5
-                        && cardSource.CardColors.Contains(CardColor.Yellow) || cardSource.CardColors.Contains(CardColor.Purple)
+                        && (cardSource.CardColors.Contains(CardColor.Yellow) || cardSource.CardColors.Contains(CardColor.Purple))
                         && CardEffectCommons.CanPlayAsNewPermanent(cardSource, false, activateClass);
                 }
 

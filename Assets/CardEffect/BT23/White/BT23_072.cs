@@ -60,7 +60,7 @@ namespace DCGO.CardEffects.BT23
             if (timing == EffectTiming.OnEnterFieldAnyone)
             { 
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("<Draw 1> and gain 1 memory", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Gain ＜Rush＞, ＜Raid＞, ＜Reboot＞ and ＜Blocker＞", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
@@ -89,6 +89,11 @@ namespace DCGO.CardEffects.BT23
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
+                    yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(
+                        permanents: new List<Permanent>() { card.PermanentOfThisCard() },
+                        hashtable: _hashtable).Tap()
+                    );
+
                     List<Permanent> playedPermanents = new List<Permanent>();
                     List<Hashtable> hashtables = CardEffectCommons.GetHashtablesFromHashtable(_hashtable);
 

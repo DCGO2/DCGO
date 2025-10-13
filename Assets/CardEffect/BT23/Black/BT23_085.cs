@@ -58,7 +58,7 @@ namespace DCGO.CardEffects.BT23
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Opponent's effects can't reduce a DS digimon's DP or de-digivolve it", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Opponent's effects can't reduce DP, and gain <Reboot> and <Blocker>", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
@@ -160,7 +160,7 @@ namespace DCGO.CardEffects.BT23
             if (timing == EffectTiming.OnTappedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("By suspending this tamer, -3K DP 1 digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("By suspending this tamer, use 1 option card", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -197,6 +197,11 @@ namespace DCGO.CardEffects.BT23
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
+                    yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(
+                        permanents: new List<Permanent>() { card.PermanentOfThisCard() },
+                        hashtable: hashtable).Tap()
+                    );
+
                     if (card.Owner.HandCards.Count(CanSelectOptionCard) >= 1 && CardEffectCommons.IsOwnerTurn(card))
                     {
                         List<CardSource> selectedCards = new List<CardSource>();

@@ -74,7 +74,8 @@ namespace DCGO.CardEffects.BT23
                 {
                     return CardEffectCommons.IsExistOnBattleArea(card)
                         && CardEffectCommons.IsOwnerTurn(card)
-                        && CardEffectCommons.CanActivateSuspendCostEffect(card);
+                        && CardEffectCommons.CanActivateSuspendCostEffect(card) &&
+                           CardEffectCommons.HasMatchConditionPermanent(PermanentCondition);
                 }
 
                 bool PermanentCondition(Permanent permanent)

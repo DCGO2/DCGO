@@ -103,7 +103,7 @@ namespace DCGO.CardEffects.BT23
             if (timing == EffectTiming.OnTappedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("1 of your other Digimon digivolves without paying the cost", CanUseCondition, card);
+                activateClass.SetUpICardEffect("＜De-Digivolve 1＞ 1 of your opponent's Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
@@ -120,7 +120,6 @@ namespace DCGO.CardEffects.BT23
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           CardEffectCommons.IsOwnerTurn(card) &&
                            CardEffectCommons.CanTriggerWhenSelfPermanentSuspends(hashtable, card);
                 }
 
