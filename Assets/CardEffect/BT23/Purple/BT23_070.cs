@@ -104,6 +104,7 @@ namespace DCGO.CardEffects.BT23
                             cardEffect: activateClass);
 
                         selectAttackEffect.SetWithoutTap();
+                        selectAttackEffect.SetCanNotSelectNotAttack();
 
                         yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
                     }
