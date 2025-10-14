@@ -1,9 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using System;
 using System.Linq;
-using UnityEditor.Rendering;
 
 public partial class CardEffectFactory
 {
@@ -59,9 +57,9 @@ public partial class CardEffectFactory
 
     #endregion
 
-    #region Tamer's effect to Gain 1 Memory
+    #region Tamer's effect to Gain 1 Memory if opponent has a digimon
 
-    public static ICardEffect Gain1MemoryTamerEffect(CardSource card)
+    public static ICardEffect Gain1MemoryTamerOpponentDigimonEffect(CardSource card)
     {
         ActivateClass activateClass = new ActivateClass();
         activateClass.SetUpICardEffect("Memory +1", CanUseCondition, card);
@@ -99,6 +97,39 @@ public partial class CardEffectFactory
             }
 
             return false;
+        }
+
+        IEnumerator ActivateCoroutine(Hashtable _hashtable)
+        {
+            yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
+        }
+
+        return activateClass;
+    }
+
+    #endregion
+
+    #region Tamer's effect to Gain 1 Memory if owner has condition digimon
+
+    public static ICardEffect Gain1MemoryTamerOwnerDigimonConditionalEffect(string effectDescription, Func<Permanent, bool> permamentCondition, Func<bool> condition, CardSource card)
+    {
+        ActivateClass activateClass = new ActivateClass();
+        activateClass.SetUpICardEffect("Memory +1", CanUseCondition, card);
+        activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+
+        string EffectDiscription() => effectDescription;
+
+        bool CanUseCondition(Hashtable hashtable)
+        {
+            return CardEffectCommons.IsExistOnBattleArea(card);
+        }
+
+        bool CanActivateCondition(Hashtable hashtable)
+        {
+            return CardEffectCommons.IsExistOnBattleArea(card)
+                && card.Owner.CanAddMemory(activateClass)
+                && condition()
+                && card.Owner.GetBattleAreaDigimons().Any(permamentCondition);
         }
 
         IEnumerator ActivateCoroutine(Hashtable _hashtable)

@@ -15,7 +15,7 @@ namespace DCGO.CardEffects.P
 
             if (timing == EffectTiming.OnStartMainPhase)
             {
-                cardEffects.Add(CardEffectFactory.Gain1MemoryTamerEffect(card));
+                cardEffects.Add(CardEffectFactory.Gain1MemoryTamerOpponentDigimonEffect(card));
             }
 
             #endregion
