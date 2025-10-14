@@ -76,8 +76,8 @@ namespace DCGO.CardEffects.BT23
 
                 bool RemovedPermanent(Permanent permanent)
                 {
-                    return permanent.TopCard.HasCSTraits &&
-                           permanent.IsDigimon;
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
+                           permanent.TopCard.HasCSTraits;
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
@@ -100,7 +100,7 @@ namespace DCGO.CardEffects.BT23
                 {
                     if (!cardSource.CanNotTrashFromDigivolutionCards(activateClass))
                     {
-                        foreach (CardSource cardSource1 in card.PermanentOfThisCard().DigivolutionCards)
+                        foreach (CardSource cardSource1 in cardSource.PermanentOfThisCard().DigivolutionCards)
                         {
                             if (cardSource != cardSource1)
                             {
