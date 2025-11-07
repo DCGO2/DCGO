@@ -36,7 +36,7 @@ namespace DCGO.CardEffects.BT23
 
             bool IsLadyDevimonOrMirei(Permanent permanent)
             {
-                return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)
                     && permanent.IsDigimon && permanent.TopCard.EqualsCardName("LadyDevimon") || permanent.IsTamer && permanent.TopCard.EqualsCardName("Mirei Mikagura");
             }
 
