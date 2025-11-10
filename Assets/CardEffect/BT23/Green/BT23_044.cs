@@ -1,11 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-// Angewomon
+// Lilamon 
 namespace DCGO.CardEffects.BT23
 {
-    public class BT23_031 : CEntity_Effect
+    public class BT23_044 : CEntity_Effect
     {
         public override List<ICardEffect> CardEffects(EffectTiming timing, CardSource card)
         {
@@ -34,10 +35,11 @@ namespace DCGO.CardEffects.BT23
 
             #region Reduce Cost
 
-            bool IsLadyDevimonOrMirei(Permanent permanent)
+            bool IsCSOrYuuko(Permanent permanent)
             {
                 return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)
-                    && permanent.IsDigimon && permanent.TopCard.EqualsCardName("LadyDevimon") || permanent.IsTamer && permanent.TopCard.EqualsCardName("Mirei Mikagura");
+                    && permanent.IsDigimon && permanent.TopCard.HasCSTraits
+                    || permanent.IsTamer && permanent.TopCard.EqualsCardName("Yuuko Kamishiro");
             }
 
             #region Before Pay Cost - Condition Effect
@@ -52,7 +54,7 @@ namespace DCGO.CardEffects.BT23
 
                 string EffectDiscription()
                 {
-                    return "When this card would be played from the hand, if you have [LadyDevimon] or [Mirei Mikagura], reduce the play cost by 3.";
+                    return "When this card would be played from the hand, if you have [Yuuko Kamishiro] or a [CS] trait Digimon, reduce the play cost by 3.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -63,7 +65,7 @@ namespace DCGO.CardEffects.BT23
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnHand(card)
-                        && CardEffectCommons.HasMatchConditionPermanent(IsLadyDevimonOrMirei);
+                        && CardEffectCommons.HasMatchConditionPermanent(IsCSOrYuuko);
                 }
 
                 bool CardCondition(CardSource cardSource)
@@ -93,7 +95,7 @@ namespace DCGO.CardEffects.BT23
                                 if (PermanentsCondition(targetPermanents))
                                 {
 
-                                    if (CardEffectCommons.HasMatchConditionPermanent(IsLadyDevimonOrMirei))
+                                    if (CardEffectCommons.HasMatchConditionPermanent(IsCSOrYuuko))
                                     {
                                         Cost -= 3;
                                     }
@@ -160,7 +162,7 @@ namespace DCGO.CardEffects.BT23
 
                         if (activateClass != null)
                         {
-                            if (CardEffectCommons.HasMatchConditionPermanent(IsLadyDevimonOrMirei))
+                            if (CardEffectCommons.HasMatchConditionPermanent(IsCSOrYuuko))
                             {
                                 return true;
                             }
@@ -178,7 +180,7 @@ namespace DCGO.CardEffects.BT23
                         {
                             if (PermanentsCondition(targetPermanents))
                             {
-                                if (CardEffectCommons.HasMatchConditionPermanent(IsLadyDevimonOrMirei))
+                                if (CardEffectCommons.HasMatchConditionPermanent(IsCSOrYuuko))
                                 {
                                     Cost -= 3;
                                 }
@@ -236,21 +238,106 @@ namespace DCGO.CardEffects.BT23
 
             #region OP/WD Shared
 
+            bool IsUnSuspendedDigimon(Permanent permanent)
+            {
+                return CardEffectCommons.IsPermanentExistsOnBattleAreaDigimon(permanent)
+                    && !permanent.IsSuspended;
+            }
+
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                #region Add top security to hand
+                if (CardEffectCommons.HasMatchConditionPermanent(IsUnSuspendedDigimon))
+                {
+                    Permanent selectedPermament = null;
+                    int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(IsUnSuspendedDigimon));
 
-                CardSource topCard = card.Owner.SecurityCards[0];
+                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddHandCards(new List<CardSource>() { topCard }, false, activateClass));
+                    selectPermanentEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: IsUnSuspendedDigimon,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: maxCount,
+                        canNoSelect: false,
+                        canEndNotMax: false,
+                        selectPermanentCoroutine: SelectPermanentCoroutine,
+                        afterSelectPermanentCoroutine: null,
+                        mode: SelectPermanentEffect.Mode.Tap,
+                        cardEffect: activateClass);
 
-                yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
-                    player: card.Owner,
-                    refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
+                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                    {
+                        selectedPermament = permanent;
+                        yield return null;
+                    }
 
-                #endregion
+                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                if (card.Owner.SecurityCards.Count <= 3) yield return ContinuousController.instance.StartCoroutine(new IRecovery(card.Owner, 1, activateClass).Recovery());
+                    if (selectedPermament != null && selectedPermament.IsSuspended)
+                    {
+                        bool CanSelectPermanentCondition(Permanent permanent)
+                        {
+                            return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                                && (permanent.TopCard.EqualsTraits("Vegetation")
+                                || permanent.TopCard.EqualsTraits("Plant")
+                                || permanent.TopCard.EqualsTraits("Fairy")
+                                || permanent.TopCard.HasCSTraits);
+                        }
+
+                        if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, CanSelectPermanentCondition))
+                        {
+                            Permanent selectedPermament1 = null;
+                            int maxCount1 = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+
+                            SelectPermanentEffect selectPermanentEffect1 = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                            selectPermanentEffect1.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: CanSelectPermanentCondition,
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: maxCount1,
+                                canNoSelect: false,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: SelectPermanentCoroutine1,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Custom,
+                                cardEffect: activateClass);
+
+                            IEnumerator SelectPermanentCoroutine1(Permanent permanent)
+                            {
+                                selectedPermament1 = permanent;
+                                yield return null;
+                            }
+
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect1.Activate());
+
+                            if (selectedPermament1 != null)
+                            {
+                                bool CardEffectCondition(ICardEffect cardEffect)
+                                {
+                                    return CardEffectCommons.IsOpponentEffect(cardEffect, card);
+                                }
+
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotReturnToHand(
+                                    targetPermanent: selectedPermament1,
+                                    cardEffectCondition: CardEffectCondition,
+                                    effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                                    activateClass: activateClass,
+                                    effectName: "Can't return to hand by opponent's effects"));
+
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotReturnToDeck(
+                                    targetPermanent: selectedPermament1,
+                                    cardEffectCondition: CardEffectCondition,
+                                    effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                                    activateClass: activateClass,
+                                    effectName: "Can't return to deck by opponent's effects"));
+                            }
+                        }
+
+                    }
+                }
             }
 
             #endregion
@@ -260,13 +347,13 @@ namespace DCGO.CardEffects.BT23
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Add top security to hand. then if you have 3 or less security, <Recovery +1>", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, hash => SharedActivateCoroutine(hash, activateClass), -1, false, EffectDiscription());
+                activateClass.SetUpICardEffect("By suspending 1 digimon, 1 digimon cant be bounced to hand & deck", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, hash => SharedActivateCoroutine(hash, activateClass), -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[On Play] [When Digivolving] Add your top security card to the hand. Then, if you have 3 or fewer security cards, <Recovery +1 (Deck)>";
+                    return "[On Play] By suspending 1 Digimon, until your opponent's turn ends, their effects can't return 1 of your Digimon with [Vegetation], [Plant] or [Fairy] in any of its traits or the [CS] trait to hands or decks.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -277,7 +364,8 @@ namespace DCGO.CardEffects.BT23
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                        && CardEffectCommons.HasMatchConditionPermanent(IsUnSuspendedDigimon);
                 }
             }
 
@@ -288,13 +376,13 @@ namespace DCGO.CardEffects.BT23
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Add top security to hand. then if you have 3 or less security, <Recovery +1>", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, hash => SharedActivateCoroutine(hash, activateClass), -1, false, EffectDiscription());
+                activateClass.SetUpICardEffect("By suspending 1 digimon, 1 digimon cant be bounced to hand & deck", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, hash => SharedActivateCoroutine(hash, activateClass), -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] Add your top security card to the hand. Then, if you have 3 or fewer security cards, <Recovery +1 (Deck)>";
+                    return "[When Digivolving] By suspending 1 Digimon, until your opponent's turn ends, their effects can't return 1 of your Digimon with [Vegetation], [Plant] or [Fairy] in any of its traits or the [CS] trait to hands or decks.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -305,17 +393,52 @@ namespace DCGO.CardEffects.BT23
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                        && CardEffectCommons.HasMatchConditionPermanent(IsUnSuspendedDigimon);
                 }
             }
 
             #endregion
 
-            #region Alliance - ESS
+            #region ESS
 
-            if (timing == EffectTiming.OnAllyAttack)
+            if (timing == EffectTiming.OnEndBattle)
             {
-                cardEffects.Add(CardEffectFactory.AllianceSelfEffect(isInheritedEffect: true, card: card, null));
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Trash opponent top security", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
+                activateClass.SetIsInheritedEffect(true);
+                activateClass.SetHashString("BT23_044_AT");
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[All Turns] [Once Per Turn] When this Digimon deletes your opponent's Digimon in battle, trash their top security card.";
+                }
+
+                bool WinnerCondition(Permanent permanent) => permanent.cardSources.Contains(card);
+                bool LoserCondition(Permanent permanent) => CardEffectCommons.IsOpponentPermanent(permanent, card);
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           CardEffectCommons.CanTriggerWhenDeleteOpponentDigimonByBattle(hashtable: hashtable,
+                               winnerCondition: WinnerCondition, loserCondition: LoserCondition, isOnlyWinnerSurvive: false);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                }
+
+                IEnumerator ActivateCoroutine(Hashtable hashtable)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
+                        player: card.Owner.Enemy,
+                        destroySecurityCount: 1,
+                        cardEffect: activateClass,
+                        fromTop: true).DestroySecurity());
+                }
             }
 
             #endregion
