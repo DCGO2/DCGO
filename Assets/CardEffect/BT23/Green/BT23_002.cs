@@ -32,7 +32,8 @@ namespace DCGO.CardEffects.BT23
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card);
+                    return CardEffectCommons.IsExistOnField(card)
+                        && card.PermanentOfThisCard().TopCard.HasCSTraits;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

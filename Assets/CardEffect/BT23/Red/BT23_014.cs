@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-
 // Gallantmon 
 namespace DCGO.CardEffects.BT23
 {
@@ -64,6 +63,7 @@ namespace DCGO.CardEffects.BT23
                 ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().DebuffSE);
                 yield return null;
             }
+
             #endregion
 
             #region On Play - Floodgate
@@ -159,6 +159,9 @@ namespace DCGO.CardEffects.BT23
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
                 }
+
+                // This is here to see if it helps with timing issues when this is used first & floodgate second
+                yield return null;
             }
 
             #endregion
