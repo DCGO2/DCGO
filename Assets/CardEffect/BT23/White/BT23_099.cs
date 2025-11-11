@@ -20,7 +20,9 @@ namespace DCGO.CardEffects.BT23
 
                 bool HasHuckmon(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
+                    return CardEffectCommons.IsPermanentExistsOnField(permanent) &&
+                           permanent.IsDigimon &&
+                           permanent.TopCard.ContainsCardName("Huckmon");
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -69,7 +71,7 @@ namespace DCGO.CardEffects.BT23
                 Permanent DigivolvingDigimon = null;
 
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Digivolve into a [CS] Digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("Play 1 card with [Sistermon] in its name", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
@@ -80,7 +82,7 @@ namespace DCGO.CardEffects.BT23
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card) &&
+                    return CardEffectCommons.IsExistOnBattleArea(card) &&
                            CardEffectCommons.CanTriggerWhenPermanentDigivolving(hashtable, DigivolvingCondition);
                 }
 
@@ -92,7 +94,7 @@ namespace DCGO.CardEffects.BT23
                             return false;
                     }
 
-                    return CardEffectCommons.IsExistOnField(card)
+                    return CardEffectCommons.IsExistOnBattleArea(card)
                         && CardEffectCommons.IsOwnerTurn(card)
                         && CardEffectCommons.CanDeclareOptionDelayEffect(card);
                 }
@@ -101,7 +103,7 @@ namespace DCGO.CardEffects.BT23
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        if (permanent.TopCard.EqualsCardName("Huckmon") || permanent.TopCard.EqualsCardName("Jesmon"))
+                        if (permanent.TopCard.ContainsCardName("Huckmon") || permanent.TopCard.ContainsCardName("Jesmon"))
                         {
                             return true;
                         }
