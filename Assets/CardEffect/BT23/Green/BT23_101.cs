@@ -23,7 +23,7 @@ namespace DCGO.CardEffects.BT23
 
                 cardEffects.Add(CardEffectFactory.AddSelfDigivolutionRequirementStaticEffect(
                     permanentCondition: PermanentCondition,
-                    digivolutionCost: 3,
+                    digivolutionCost: 4,
                     ignoreDigivolutionRequirement: false,
                     card: card,
                     condition: null)
@@ -170,7 +170,7 @@ namespace DCGO.CardEffects.BT23
                         int dpReduction = HudieDigimonAmount() * 3000;
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
                             targetPermanent: selectedOpponentDigimon,
-                            changeValue: dpReduction,
+                            changeValue: -dpReduction,
                             effectDuration: EffectDuration.UntilEachTurnEnd,
                             activateClass: activateClass));
                     }

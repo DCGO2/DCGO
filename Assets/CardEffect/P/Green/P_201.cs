@@ -157,13 +157,14 @@ namespace DCGO.CardEffects.P
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card)
-                        && CardEffectCommons.IsOpponentTurn(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           card.Owner.HandCards.Count > 0 &&
+                           CardEffectCommons.IsOpponentTurn(card);
                 }
 
                 bool CanSelectPermament(Permanent permanent)

@@ -133,7 +133,7 @@ namespace DCGO.CardEffects.BT23
                     {
                         bool IsYourDigimon(Permanent permanent)
                         {
-                            return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
+                            return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
                         }
 
                         Permanent selectedPermament = null;

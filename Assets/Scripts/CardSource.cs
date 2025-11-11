@@ -3790,7 +3790,7 @@ public class CardSource : MonoBehaviour
     {
         get
         {
-            return EqualsTraits("DarkAnimal");
+            return EqualsTraits("Dark Animal");
         }
     }
 
