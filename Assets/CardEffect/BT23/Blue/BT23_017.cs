@@ -235,7 +235,7 @@ namespace DCGO.CardEffects.BT23
                                 ActivateClass activateClass1 = new ActivateClass();
                                 activateClass1.SetUpICardEffect("Delete the Digimon", CanUseEndofOpponentTurnCondition, card);
                                 activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, "at the end of your opponent's turn, Delete this digimon");
-                                card.EffectList(EffectTiming.OnEndTurn).Add(activateClass1);
+                                playedDigimon.EffectList(EffectTiming.OnEndTurn).Add(activateClass1);
 
                                 bool CanUseEndofOpponentTurnCondition(Hashtable hashtable)
                                 {
