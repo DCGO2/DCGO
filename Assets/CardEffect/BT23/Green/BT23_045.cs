@@ -46,7 +46,7 @@ namespace DCGO.CardEffects.BT23
             bool CanSelectCardCondition(CardSource cardSource)
             {
                 return cardSource.IsDigimon
-                    && cardSource.HasRoyalBaseTraits || cardSource.EqualsTraits("Zaxon");
+                    && (cardSource.HasRoyalBaseTraits || cardSource.EqualsTraits("Zaxon"));
             }
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
@@ -140,7 +140,7 @@ namespace DCGO.CardEffects.BT23
                         bool CanSelectPermanentCondition(Permanent permanent)
                         {
                             return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
-                                && permanent.DP <= card.PermanentOfThisCard().DP;
+                                && permanent.HasDP && permanent.DP <= card.PermanentOfThisCard().DP;
                         }
 
                         if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
@@ -249,7 +249,7 @@ namespace DCGO.CardEffects.BT23
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By flipping your top face up security card face down, unsuspend 1 digimon", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

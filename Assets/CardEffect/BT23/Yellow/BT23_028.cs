@@ -181,18 +181,18 @@ namespace DCGO.CardEffects.BT23
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.CanTriggerWhenLinking(hashtable, PermanentCondition, null);
+                    return CardEffectCommons.IsExistOnField(card)
+                        && CardEffectCommons.CanTriggerWhenLinking(hashtable, PermanentCondition, null);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnField(card);
                 }
 
                 bool PermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && permanent.LinkedCards.Contains(card);
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
