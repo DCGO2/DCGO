@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using static UnityEngine.Rendering.DebugUI;
 
 //Machinedramon
 namespace DCGO.CardEffects.BT23
@@ -247,6 +246,7 @@ namespace DCGO.CardEffects.BT23
             #endregion
 
             #region When Attacking
+
             if (timing == EffectTiming.OnAllyAttack)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -262,20 +262,22 @@ namespace DCGO.CardEffects.BT23
 
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-                    if (cardSource.EqualsTraits("Zaxon"))
+
+                    bool OnPlayEffectSecurityCondition(CardSource cardSource)
                     {
-                        if (!cardSource.IsFlipped)
-                        {
-                            List<ICardEffect> effects = cardSource.EffectList_ForCard(EffectTiming.OnEnterFieldAnyone, cardSource)
+                        List<ICardEffect> effects = cardSource.EffectList_ForCard(EffectTiming.OnEnterFieldAnyone, cardSource)
                                 .Clone()
                                 .Filter(cardEffect => cardEffect != null && cardEffect is ActivateICardEffect && !cardEffect.IsSecurityEffect && cardEffect.IsOnPlay);
 
-                            if (effects.Count > 0)
-                                return true;
-                        }
+                        if (effects.Count > 0)
+                            return true;
+
+                        return false;
                     }
 
-                    return false;
+                    return cardSource.EqualsTraits("Zaxon")
+                    && !cardSource.IsFlipped
+                    && OnPlayEffectSecurityCondition(cardSource);
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -300,10 +302,10 @@ namespace DCGO.CardEffects.BT23
                         canTargetCondition: CanSelectCardCondition,
                         canTargetCondition_ByPreSelecetedList: null,
                         canEndSelectCondition: null,
-                        canNoSelect: () => true,
+                        canNoSelect: () => false,
                         selectCardCoroutine: SelectCardCoroutine,
                         afterSelectCardCoroutine: null,
-                        message: "Select 1 card to replicate effect.",
+                        message: "Select 1 card to use their [On Play] effect.",
                         maxCount: 1,
                         canEndNotMax: false,
                         isShowOpponent: true,
@@ -315,8 +317,8 @@ namespace DCGO.CardEffects.BT23
                         cardEffect: activateClass);
 
                     selectCardEffect.SetUpCustomMessage(
-                        "Select 1 card to replicate effect.",
-                        "The opponent is selecting 1 card to replicate effect.");
+                        "Select 1 card to use their [On Play] effect.",
+                        "The opponent is selecting 1 card to use their [On Play] effect.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectCardEffect.Activate());
 
@@ -329,6 +331,7 @@ namespace DCGO.CardEffects.BT23
                     #endregion
 
                     #region Select Effect
+
                     if (selectedCard != null)
                     {
                         List<ICardEffect> candidateEffects = selectedCard.EffectList_ForCard(EffectTiming.OnEnterFieldAnyone, card)
@@ -404,6 +407,7 @@ namespace DCGO.CardEffects.BT23
 
                 }
             }
+
             #endregion
 
             return cardEffects;
