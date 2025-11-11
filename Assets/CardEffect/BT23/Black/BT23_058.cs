@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 //Craniamon
 namespace DCGO.CardEffects.BT23
@@ -60,8 +59,10 @@ namespace DCGO.CardEffects.BT23
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleArea(card) &&
-                           CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, RemovedPermanent);
+                    return CardEffectCommons.IsExistOnBattleArea(card)
+                        && CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, RemovedPermanent)
+                        && CardEffectCommons.IsByEffect(hashtable, cardEffect => CardEffectCommons.IsOpponentEffect(cardEffect, card));
+
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -151,33 +152,14 @@ namespace DCGO.CardEffects.BT23
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    Permanent selectedPermanent = card.PermanentOfThisCard();
-
-                    int maxCost = selectedPermanent.TopCard.GetCostItself;
-
                     bool PermanentCondition(Permanent permanent)
                     {
-                        if (CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, selectedPermanent.TopCard))
-                        {
-                            if (permanent.TopCard.GetCostItself <= maxCost)
-                            {
-                                if (permanent.TopCard.HasPlayCost)
-                                {
-                                    if (permanent.CanBeDestroyedBySkill(activateClass))
-                                    {
-                                        if (!permanent.TopCard.CanNotBeAffected(activateClass))
-                                        {
-                                            return true;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        return false;
+                        return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card)
+                            && permanent.TopCard.HasPlayCost
+                            && CardEffectCommons.IsMinCost(permanent, card.Owner.Enemy, true);
                     }
 
-                    List<Permanent> destroyTargetPermanents = selectedPermanent.TopCard.Owner.Enemy.GetBattleAreaDigimons().Filter(PermanentCondition);
+                    List<Permanent> destroyTargetPermanents = card.Owner.Enemy.GetBattleAreaDigimons().Filter(PermanentCondition);
                     yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(destroyTargetPermanents, CardEffectCommons.CardEffectHashtable(activateClass)).Destroy());
                 }
             }
