@@ -65,9 +65,8 @@ namespace DCGO.CardEffects.BT23
 
                 bool SecurityCondition(CardSource cardSource)
                 {
-                    return cardSource.IsDigimon
-                        && !cardSource.IsFlipped
-                        && cardSource.HasRoyalBaseTraits || cardSource.EqualsTraits("Zaxon");
+                    return !cardSource.IsFlipped && 
+                           (cardSource.HasRoyalBaseTraits || cardSource.EqualsTraits("Zaxon"));
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

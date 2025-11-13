@@ -202,7 +202,7 @@ namespace DCGO.CardEffects.BT23
                         hashtable: hashtable).Tap()
                     );
 
-                    if (card.Owner.HandCards.Count(CanSelectOptionCard) >= 1 && CardEffectCommons.IsOwnerTurn(card))
+                    if (card.Owner.HandCards.Count(CanSelectOptionCard) >= 1)
                     {
                         List<CardSource> selectedCards = new List<CardSource>();
 

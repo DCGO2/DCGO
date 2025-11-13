@@ -241,12 +241,17 @@ namespace DCGO.CardEffects.BT23
 
                             yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                            if (selectPermanentEffect != null) yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
+                            if (selectPermanentEffect != null) 
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
                                 new List<Permanent>() { selectedPermament },
                                 activateClass: activateClass,
                                 successProcess: null,
                                 failureProcess: OpponentLevel6FailureProcess));
                         }
+                        else
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(OpponentLevel6FailureProcess());
+                        }                        
                     }
 
                     IEnumerator OpponentLevel6FailureProcess()

@@ -162,12 +162,6 @@ namespace DCGO.CardEffects.BT23
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (DigivolvingDigimon != null)
-                    {
-                        if (!DigivolvingCondition(DigivolvingDigimon))
-                            return false;
-                    }
-
                     return CardEffectCommons.IsExistOnField(card)
                         && CardEffectCommons.IsOwnerTurn(card)
                         && CardEffectCommons.CanActivateSuspendCostEffect(card);
@@ -186,10 +180,16 @@ namespace DCGO.CardEffects.BT23
 
                     List<Permanent> digivolvedPermanent = CardEffectCommons.GetPlayedPermanentsFromEnterFieldHashtable(hashtable, null);
 
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainRush(
-                            targetPermanent: digivolvedPermanent[0],
-                            effectDuration: EffectDuration.UntilEachTurnEnd,
-                            activateClass: activateClass));
+                    if(digivolvedPermanent.Count > 0)
+                    {
+                        if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(digivolvedPermanent[0], card))
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainRush(
+                                                        targetPermanent: digivolvedPermanent[0],
+                                                        effectDuration: EffectDuration.UntilEachTurnEnd,
+                                                        activateClass: activateClass));
+                        }                        
+                    }                    
                 }
             }
 
