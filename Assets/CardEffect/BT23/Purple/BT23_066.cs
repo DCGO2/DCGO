@@ -236,14 +236,14 @@ namespace DCGO.CardEffects.BT23
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Protect others", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("AllTurn_BT23_066");
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[All Turns] When any of your other Digimon would leave the battle area, by deleting this Digimon, they don't leave.";
+                    return "[All Turns] [Once per Turn] When any of your other Digimon would leave the battle area, by deleting this Digimon, they don't leave.";
                 }
 
                 bool PermanentCondition(Permanent permanent)

@@ -164,7 +164,7 @@ namespace DCGO.CardEffects.BT23
                     return CardEffectCommons.IsExistOnBattleArea(card)
                         && CardEffectCommons.CanDeclareOptionDelayEffect(card) &&
                         CardEffectCommons.IsOwnerTurn(card) &&
-                        CardEffectCommons.CanTriggerWhenPermanentSuspends(hashtable, IsArisaKinosaki);
+                        CardEffectCommons.CanTriggerWhenPermanentSuspends(hashtable, IsVioletInboots);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -172,7 +172,7 @@ namespace DCGO.CardEffects.BT23
                     return CardEffectCommons.IsExistOnBattleArea(card);
                 }
 
-                bool IsArisaKinosaki(Permanent permanent)
+                bool IsVioletInboots(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card)
                         && permanent.IsTamer
@@ -182,13 +182,13 @@ namespace DCGO.CardEffects.BT23
                 bool PermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && permanent.TopCard.HasRockMineralTraits;
+                        && permanent.TopCard.HasGhostTraits;
                 }
 
                 bool CardCondition(CardSource cardSource)
                 {
                     return cardSource.IsDigimon
-                           && cardSource.HasRockMineralTraits
+                           && cardSource.HasGhostTraits
                            && cardSource.HasLiberatorTraits;
                 }
 

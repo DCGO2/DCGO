@@ -73,7 +73,7 @@ namespace DCGO.CardEffects.BT23
 
                 string EffectDiscription()
                 {
-                    return "Delete 1 of your opponent's Digimon with a level as high or higher as the number of cards in your hand.";
+                    return "[Main] Delete 1 of your opponent's Digimon with a level as high or higher as the number of cards in your hand.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
