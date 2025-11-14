@@ -158,7 +158,7 @@ namespace DCGO.CardEffects.BT23
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Play 1 level 5 or lower yellow/purple card from hand or trash. then if digimon has 2+ same level cards in stack, trash both security till 3", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -379,11 +379,18 @@ namespace DCGO.CardEffects.BT23
                         #endregion
 
                         yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                        if (selectedPermament != null) yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(
-                            permanent: selectedPermament,
-                            hashtable: hashtable,
-                            toTop: false).PutSecurity()
-                        );
+
+                        if (selectedPermament != null)
+                        {
+                            if (!selectedPermament.TopCard.CanNotBeAffected(activateClass))
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(
+                                    permanent: selectedPermament,
+                                    hashtable: hashtable,
+                                    toTop: false).PutSecurity()
+                                );
+                            }
+                        }
                     }
                 }
             }

@@ -100,10 +100,6 @@ namespace DCGO.CardEffects.BT16
                                             Player owner = securityCard.Owner;
                                             yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(securityCard, true));
 
-                                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(owner));
-
-                                            yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(owner).AddSecurity());
-
                                             permanent.willBeRemoveField = false;
 
                                             if (permanent.ShowingPermanentCard != null)
@@ -213,10 +209,6 @@ namespace DCGO.CardEffects.BT16
                                         {
                                             Player owner = securityCard.Owner;
                                             yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(securityCard, true));
-
-                                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(owner));
-
-                                            yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(owner).AddSecurity());
 
                                             permanent.willBeRemoveField = false;
 

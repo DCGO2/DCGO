@@ -215,7 +215,7 @@ public class ST10_06 : CEntity_Effect
 
                                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(selectedCard.Owner));
 
-                                yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(selectedCard.Owner).AddSecurity());
+                                yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(selectedCard).AddSecurity());
                             }
                         }
                     }

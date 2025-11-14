@@ -146,7 +146,8 @@ namespace DCGO.CardEffects.BT23
                                         activateClass: activateClass,
                                         successProcess: null,
                                         ignoreSelection: true,
-                                        failedProcess: FailureProcess()));
+                                        failedProcess: FailureProcess(),
+                                        isOptional:false));
 
                                     #endregion
                                 }

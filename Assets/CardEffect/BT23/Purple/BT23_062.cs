@@ -245,7 +245,7 @@ namespace DCGO.CardEffects.BT23
                                 CardEffectCommons.DigivolveIntoHandOrTrashCard(
                                     targetPermanent: selectedPermanent,
                                     cardCondition: CanSelectDigiCardCondition,
-                                    payCost: false,
+                                    payCost: true,
                                     reduceCostTuple: null,
                                     fixedCostTuple: null,
                                     ignoreDigivolutionRequirementFixedCost: -1,

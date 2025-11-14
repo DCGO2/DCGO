@@ -219,10 +219,6 @@ namespace DCGO.CardEffects.BT13
                                 foreach (CardSource selectedCard in selectedCards)
                                 {
                                     yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(selectedCard));
-
-                                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(selectedCard.Owner));
-
-                                    yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(selectedCard.Owner).AddSecurity());
                                 }
                             }
                         }
@@ -344,12 +340,7 @@ namespace DCGO.CardEffects.BT13
                             {
                                 foreach (CardSource selectedCard in selectedCards)
                                 {
-                                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(selectedCard));
-
-                                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(selectedCard.Owner));
-
-                                    yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(selectedCard.Owner).AddSecurity());
-                                }
+                                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(selectedCard));                                }
                             }
                         }
                     }

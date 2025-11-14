@@ -152,8 +152,6 @@ namespace DCGO.CardEffects.BT23
                         {
                             yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(
                             selectedCard, toTop: false, faceUp: true));
-
-                            yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(card.Owner).AddSecurity());
                         }
 
                     }

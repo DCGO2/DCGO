@@ -101,12 +101,6 @@ namespace DCGO.CardEffects.BT18
                         yield return ContinuousController.instance.StartCoroutine(
                             CardObjectController.AddSecurityCard(cardSource, toTop: false));
 
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance
-                            .GetComponent<Effects>().CreateRecoveryEffect(cardSource.Owner));
-
-                        yield return ContinuousController.instance.StartCoroutine(
-                            new IAddSecurity(cardSource.Owner).AddSecurity());
-
                         chosenDigimonCardLevel = cardSource.Level;
                     }
 
@@ -182,12 +176,6 @@ namespace DCGO.CardEffects.BT18
                         if (cardSource.IsACE) yield return ContinuousController.instance.StartCoroutine(new AceOverflowClass(new List<CardSource> { cardSource }).Overflow());
                         yield return ContinuousController.instance.StartCoroutine(
                             CardObjectController.AddSecurityCard(cardSource, toTop: false));
-
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance
-                            .GetComponent<Effects>().CreateRecoveryEffect(cardSource.Owner));
-
-                        yield return ContinuousController.instance.StartCoroutine(
-                            new IAddSecurity(cardSource.Owner).AddSecurity());
 
                         chosenDigimonCardLevel = cardSource.Level;
                     }

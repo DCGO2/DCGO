@@ -148,11 +148,6 @@ namespace DCGO.CardEffects.BT17
 
                                             yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(permanent.TopCard));
 
-                                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(permanent.TopCard.Owner));
-
-
-                                            yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(permanent.TopCard.Owner).AddSecurity());
-
                                             permanent.willBeRemoveField = false;
 
                                             if (permanent.ShowingPermanentCard != null)

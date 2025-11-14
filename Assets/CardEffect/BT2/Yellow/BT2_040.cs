@@ -48,10 +48,6 @@ public class BT2_040 : CEntity_Effect
                     ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().ShowCardEffect(new List<CardSource>() { card }, "Added Security Cards", true, true));
 
                     yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(card));
-
-                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(card.Owner));
-
-                    yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(card.Owner).AddSecurity());
                 }
             }
         }
