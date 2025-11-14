@@ -32,23 +32,30 @@ namespace DCGO.CardEffects.BT23
 
             #endregion Alternative Digivolution Condition
 
-            #region Security
+            #region All Turns - Security
 
             if (timing == EffectTiming.None)
             {
                 bool Condition()
                 {
-                    return CardEffectCommons.IsExistInSecurity(card, true);
+                    return CardEffectCommons.IsExistInSecurity(card, false);
                 }
 
-                bool PermamentCondition(Permanent permanent)
+                bool PermanentCondition(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && permanent.TopCard.HasRoyalBaseTraits;
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
+                    {
+                        if (permanent.TopCard.EqualsTraits("Royal Base"))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
                 }
 
                 cardEffects.Add(CardEffectFactory.BlockerStaticEffect(
-                    permanentCondition: PermamentCondition,
+                    permanentCondition: PermanentCondition,
                     isInheritedEffect: false,
                     card: card,
                     condition: Condition));
@@ -150,13 +157,18 @@ namespace DCGO.CardEffects.BT23
                     removedPermanents = CardEffectCommons.GetPermanentsFromHashtable(hashtable).Filter(CanSelectPermanentCondition);
 
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.HasMatchConditionOwnersSecurity(card, _ => true, false);
+                        && CardEffectCommons.HasMatchConditionOwnersSecurity(card, null, false);
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
                         && permanent.TopCard.HasRoyalBaseTraits;
+                }
+
+                bool CanSelectPermament(Permanent permanent)
+                {
+                    return removedPermanents.Contains(permanent);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
@@ -176,11 +188,11 @@ namespace DCGO.CardEffects.BT23
                     {
                         Permanent selectedPermanent = null;
                         SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermament));
 
                         selectPermanentEffect.SetUp(
                             selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectPermanentCondition,
+                            canTargetCondition: CanSelectPermament,
                             canTargetCondition_ByPreSelecetedList: null,
                             canEndSelectCondition: null,
                             maxCount: maxCount,

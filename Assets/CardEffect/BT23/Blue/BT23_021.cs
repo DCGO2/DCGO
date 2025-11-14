@@ -307,13 +307,43 @@ namespace DCGO.CardEffects.BT23
 
             #endregion
 
-            #region Link ESS - OPT
+            #region AT/ESS Shared
+
+            IEnumerator SharedActivateCoroutine1(Hashtable hashtable, ActivateClass activateClass)
+            {
+                bool CanNotBeDestroyedByBattleCondition(Permanent permanent, Permanent AttackingPermanent, Permanent DefendingPermanent, CardSource DefendingCard)
+                {
+                    if (permanent == AttackingPermanent)
+                    {
+                        return true;
+                    }
+
+                    if (permanent == DefendingPermanent)
+                    {
+                        return true;
+                    }
+
+                    return false;
+                }
+
+                Permanent thisPermanent = card.PermanentOfThisCard().TopCard.PermanentOfThisCard();
+                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainCanNotBeDeletedByBattle(
+                    targetPermanent: thisPermanent,
+                    canNotBeDestroyedByBattleCondition: CanNotBeDestroyedByBattleCondition,
+                    effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                    activateClass: activateClass,
+                    effectName: "Can't be desstroyed by battle"));
+            }
+
+            #endregion
+
+            #region All Turns - OPT
 
             if (timing == EffectTiming.WhenLinked)
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Gain immunity from battle", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, hash => SharedActivateCoroutine1(hash, activateClass), 1, false, EffectDiscription());
                 activateClass.SetHashString("BT23_021_WL");
                 cardEffects.Add(activateClass);
 
@@ -324,13 +354,42 @@ namespace DCGO.CardEffects.BT23
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card)
-                        && CardEffectCommons.CanTriggerWhenLinking(hashtable, perm => perm.TopCard.Owner == card.Owner, card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
+                        && CardEffectCommons.CanTriggerWhenLinked(hashtable, perm => perm == card.PermanentOfThisCard(), null);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                }
+            }
+
+            #endregion
+
+            #region Link ESS - OPT
+
+            if (timing == EffectTiming.WhenLinked)
+            {
+                ActivateClass activateClass = new ActivateClass();
+                activateClass.SetUpICardEffect("Gain immunity from battle", CanUseCondition, card);
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetIsLinkedEffect(true);
+                cardEffects.Add(activateClass);
+
+                string EffectDiscription()
+                {
+                    return "[When Linking] This Digimon can't be deleted in battle until your opponent's turn ends.";
+                }
+
+                bool CanUseCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleArea(card)
+                        && CardEffectCommons.CanTriggerWhenLinking(hashtable, null, card);
+                }
+
+                bool CanActivateCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsExistOnBattleArea(card);
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

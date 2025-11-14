@@ -67,7 +67,7 @@ namespace DCGO.CardEffects.BT23
                     selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to delete.", "The opponent is selecting 1 Digimon to delete.");
 
                     yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-                }               
+                }
             }
             #endregion
 
@@ -97,13 +97,14 @@ namespace DCGO.CardEffects.BT23
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) && 
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
                            CardEffectCommons.CanTriggerWhenDigivolving(hashtable, card);
                 }
             }
             #endregion
 
             #region All Turns - OPT
+
             if (timing == EffectTiming.WhenRemoveField)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -119,7 +120,7 @@ namespace DCGO.CardEffects.BT23
 
                 bool IsOptionCard(Permanent permanent)
                 {
-                    return CardEffectCommons.IsOwnerPermanent(permanent, card) &&
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card) &&
                            permanent.IsOption;
                 }
 
@@ -184,6 +185,7 @@ namespace DCGO.CardEffects.BT23
             #endregion
 
             #region All Turns - OPT - ESS
+
             if (timing == EffectTiming.WhenRemoveField)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -200,7 +202,7 @@ namespace DCGO.CardEffects.BT23
 
                 bool IsOptionCard(Permanent permanent)
                 {
-                    return CardEffectCommons.IsOwnerPermanent(permanent, card) &&
+                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card) &&
                            permanent.IsOption;
                 }
 

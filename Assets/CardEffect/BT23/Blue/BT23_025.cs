@@ -73,7 +73,7 @@ namespace DCGO.CardEffects.BT23
                     return CardEffectCommons.IsExistOnHand(card)
                         && CardEffectCommons.IsOwnerTurn(card)
                         && CardEffectCommons.HasMatchConditionOwnersPermanent(card, IsCSDigimonOrTamer);
-                }   
+                }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
@@ -262,6 +262,33 @@ namespace DCGO.CardEffects.BT23
             if (timing == EffectTiming.SecuritySkill)
             {
                 cardEffects.Add(CardEffectFactory.PlaySelfDigimonAfterBattleSecurityEffect(card: card));
+
+                #region Delete EOOT
+
+                ActivateClass activateClass1 = new ActivateClass();
+                activateClass1.SetUpICardEffect("Delete the Digimon", CanUseEndofOpponentTurnCondition, card);
+                activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, "at the end of your opponent's turn, Delete this digimon");
+                card.EffectList(EffectTiming.OnEndTurn).Add(activateClass1);
+
+                bool CanUseEndofOpponentTurnCondition(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnBattleArea(card.PermanentOfThisCard())
+                        && CardEffectCommons.IsOpponentTurn(card);
+                }
+
+                bool CanActivateCondition1(Hashtable hashtable)
+                {
+                    return CardEffectCommons.IsPermanentExistsOnBattleArea(card.PermanentOfThisCard())
+                        && card.PermanentOfThisCard().CanBeDestroyedBySkill(activateClass1)
+                        && !card.PermanentOfThisCard().TopCard.CanNotBeAffected(activateClass1);
+                }
+
+                IEnumerator ActivateCoroutine1(Hashtable _hashtable1)
+                {
+                    yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(new List<Permanent>() { card.PermanentOfThisCard() }, CardEffectCommons.CardEffectHashtable(activateClass1)).Destroy());
+                }
+
+                #endregion
             }
             #endregion
 

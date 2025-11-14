@@ -1,6 +1,6 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System;
 
 //Rosemon
 namespace DCGO.CardEffects.BT23
@@ -43,8 +43,9 @@ namespace DCGO.CardEffects.BT23
 
             bool SharedCanSelectDigimonOrTamer(Permanent permanent)
             {
-                return !permanent.IsSuspended &&
-                       (permanent.IsDigimon || permanent.IsTamer);
+                return !permanent.IsSuspended
+                     && (CardEffectCommons.IsPermanentExistsOnOpponentBattleArea(permanent, card) || CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
+                     && (permanent.IsDigimon || permanent.IsTamer);
             }
 
             bool SharedCanSelectOpponentsDigimonOrTamer(Permanent permanent)
@@ -114,7 +115,7 @@ namespace DCGO.CardEffects.BT23
                                     targetPermanent: permanent,
                                     activateClass: activateClass
                                 ));
-                    }                    
+                    }
                 }
             }
             #endregion

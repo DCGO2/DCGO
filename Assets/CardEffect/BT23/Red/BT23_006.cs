@@ -114,13 +114,13 @@ namespace DCGO.CardEffects.BT23
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card)
+                    return CardEffectCommons.IsExistOnBattleArea(card)
                         && CardEffectCommons.CanTriggerOnPermanentPlay(hashtable, IsYourWhiteDigimon, null);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnField(card)
+                    return CardEffectCommons.IsExistOnBattleArea(card)
                         && CardEffectCommons.IsOwnerTurn(card);
 
                 }

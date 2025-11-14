@@ -31,28 +31,40 @@ namespace DCGO.CardEffects.BT23
 
             #endregion Alternative Digivolution Condition
 
-            #region Security
+            #region All Turns - Security
 
             if (timing == EffectTiming.None)
             {
-                bool Condition()
+                string EffectDiscription()
                 {
-                    return CardEffectCommons.IsExistInSecurity(card, true);
+                    return "(Security) [All Turns] All of your [Royal Base] trait Digimon get +1000 DP.";
                 }
 
-                bool PermamentCondition(Permanent permanent)
+                bool Condition()
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
-                        && permanent.TopCard.HasRoyalBaseTraits;
+                    return CardEffectCommons.IsExistInSecurity(card, false);
+                }
+
+                bool PermanentCondition(Permanent permanent)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card))
+                    {
+                        if (permanent.TopCard.EqualsTraits("Royal Base"))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
                 }
 
                 cardEffects.Add(CardEffectFactory.ChangeDPStaticEffect(
-                    permanentCondition: PermamentCondition,
-                    changeValue: 1000,
-                    isInheritedEffect: false,
-                    card: card,
-                    condition: Condition,
-                    effectName: () => "+1K DP"));
+                permanentCondition: PermanentCondition,
+                changeValue: 1000,
+                isInheritedEffect: false,
+                card: card,
+                condition: Condition,
+                effectName: EffectDiscription));
             }
 
             #endregion
