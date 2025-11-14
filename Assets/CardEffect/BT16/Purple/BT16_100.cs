@@ -255,10 +255,6 @@ namespace DCGO.CardEffects.BT16
                     if (card.Owner.SecurityCards.Count <= 2)
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(card, toTop: false));
-
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(card.Owner));
-
-                        yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(card.Owner).AddSecurity());
                     }
                 }
             }

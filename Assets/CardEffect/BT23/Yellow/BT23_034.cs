@@ -420,8 +420,6 @@ namespace DCGO.CardEffects.BT23
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
                     yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(card, toTop: false, faceUp: true));
-                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(card.Owner));
-                    yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(card.Owner).AddSecurity());
                 }
             }
 

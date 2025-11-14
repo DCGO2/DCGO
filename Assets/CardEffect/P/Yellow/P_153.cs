@@ -207,7 +207,7 @@ namespace DCGO.CardEffects.P
 
                         yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(owner));
 
-                        yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(owner).AddSecurity());
+                        yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(securityCard).AddSecurity());
 
                         selectedPermanent.willBeRemoveField = false;
 

@@ -239,12 +239,6 @@ namespace DCGO.CardEffects.BT18
                         {
                             yield return ContinuousController.instance.StartCoroutine(
                                 CardObjectController.AddSecurityCard(cardSource, toTop: false));
-
-                            yield return ContinuousController.instance.StartCoroutine(GManager.instance
-                                .GetComponent<Effects>().CreateRecoveryEffect(cardSource.Owner));
-
-                            yield return ContinuousController.instance.StartCoroutine(
-                                new IAddSecurity(cardSource.Owner).AddSecurity());
                         }
 
                         yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(

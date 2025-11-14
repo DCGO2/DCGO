@@ -675,10 +675,6 @@ public class GManager : MonoBehaviourPun
         {
             // Place this card face up as the top security card
             yield return StartCoroutine(CardObjectController.AddSecurityCard(selectedSource, toTop: true, faceUp: placeFaceup));
-
-            yield return StartCoroutine(GetComponent<Effects>().CreateRecoveryEffect(selectedSource.Owner));
-
-            yield return StartCoroutine(new IAddSecurity(selectedSource.Owner).AddSecurity());
         }
 
         yield return StartCoroutine(turnStateMachine.SetMainPhase());

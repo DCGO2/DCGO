@@ -164,10 +164,6 @@ namespace DCGO.CardEffects.BT15
                     if (CardEffectCommons.HasMatchConditionOwnersPermanent(card, PermanentCondition))
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(card, toTop: true));
-
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(card.Owner));
-
-                        yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(card.Owner).AddSecurity());
                     }
                 }
             }

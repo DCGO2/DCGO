@@ -240,17 +240,21 @@ namespace DCGO.CardEffects.BT23
             {
                 #region Add top security to hand
 
-                CardSource topCard = card.Owner.SecurityCards[0];
+                if(card.Owner.SecurityCards.Count > 0)
+                {
+                    CardSource topCard = card.Owner.SecurityCards[0];
 
-                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddHandCards(new List<CardSource>() { topCard }, false, activateClass));
+                    yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddHandCards(new List<CardSource>() { topCard }, false, activateClass));
 
-                yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
-                    player: card.Owner,
-                    refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
+                    yield return ContinuousController.instance.StartCoroutine(new IReduceSecurity(
+                        player: card.Owner,
+                        refSkillInfos: ref ContinuousController.instance.nullSkillInfos).ReduceSecurity());
+                }                
 
                 #endregion
 
-                if (card.Owner.SecurityCards.Count <= 3) yield return ContinuousController.instance.StartCoroutine(new IRecovery(card.Owner, 1, activateClass).Recovery());
+                if (card.Owner.SecurityCards.Count <= 3) 
+                    yield return ContinuousController.instance.StartCoroutine(new IRecovery(card.Owner, 1, activateClass).Recovery());
             }
 
             #endregion
@@ -266,7 +270,7 @@ namespace DCGO.CardEffects.BT23
 
                 string EffectDiscription()
                 {
-                    return "[On Play] [When Digivolving] Add your top security card to the hand. Then, if you have 3 or fewer security cards, <Recovery +1 (Deck)>";
+                    return "[On Play] Add your top security card to the hand. Then, if you have 3 or fewer security cards, <Recovery +1 (Deck)>";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

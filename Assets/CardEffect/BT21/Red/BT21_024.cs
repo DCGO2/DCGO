@@ -78,10 +78,6 @@ namespace DCGO.CardEffects.BT21
                     if (selectedCard != null)
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(selectedCard, toTop: false));
-
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(selectedCard.Owner));
-
-                        yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(selectedCard.Owner).AddSecurity());
                     }
 
                     yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
@@ -162,10 +158,6 @@ namespace DCGO.CardEffects.BT21
                     if (selectedCard != null)
                     {
                         yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(selectedCard, toTop: false));
-
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(selectedCard.Owner));
-
-                        yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(selectedCard.Owner).AddSecurity());
                     }
 
                     yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(

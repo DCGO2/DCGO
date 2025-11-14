@@ -1748,10 +1748,6 @@ public class UseOptionClass
                 if (_addSecurityEndOption && card.Owner.CanAddSecurity(CardEffect))
                 {
                     yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddSecurityCard(card));
-
-                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(card.Owner));
-
-                    yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(card.Owner).AddSecurity());
                 }
                 else
                 {
@@ -1944,11 +1940,6 @@ public class IAddSecurityFromLibrary
             log += "\n";
 
             PlayLog.OnAddLog?.Invoke(log);
-
-            if (GManager.instance.turnStateMachine.DoneStartGame)
-            {
-                yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(_player).AddSecurity());
-            }
         }
     }
 }
@@ -3216,7 +3207,7 @@ public class IPutSecurityPermanent
                 }
 
                 yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateRecoveryEffect(topCard.Owner));
-                yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(topCard.Owner).AddSecurity());
+                yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(topCard).AddSecurity());
             }
             else
             {
@@ -4797,12 +4788,14 @@ public class IReduceSecurity
 
 public class IAddSecurity
 {
-    public IAddSecurity(Player player)
+    public IAddSecurity(CardSource source)
     {
-        _player = player;
+        _player = source.Owner;
+        _cardSource = source;
     }
 
     Player _player { get; set; }
+    CardSource _cardSource {  get; set; }
 
     public IEnumerator AddSecurity()
     {
@@ -4814,7 +4807,8 @@ public class IAddSecurity
 
         Hashtable hashtable = new Hashtable()
         {
-            {"Player", _player}
+            {"Player", _player},
+            {"CardSources", new List<CardSource> { _cardSource } }
         };
 
         #endregion

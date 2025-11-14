@@ -460,7 +460,7 @@ public partial class CardEffectFactory
             yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>()
                 .CreateRecoveryEffect(card.Owner));
 
-            yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(card.Owner).AddSecurity());
+            yield return ContinuousController.instance.StartCoroutine(new IAddSecurity(card).AddSecurity());
 
             #endregion
         }
