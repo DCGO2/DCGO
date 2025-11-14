@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 // Belphemon (X Antibody)
 namespace DCGO.CardEffects.BT23
@@ -93,7 +94,8 @@ namespace DCGO.CardEffects.BT23
                         failureProcess: null));
 
                     var thisPermament = card.PermanentOfThisCard();
-                    if (thisPermament.DigivolutionCards.Exists(HasBelphemonInName) && thisPermament.CanAttack(activateClass, withoutTap: true))
+
+                    if (thisPermament.DigivolutionCards.Any(HasBelphemonInName) && thisPermament.CanAttack(activateClass, withoutTap: true))
                     {
                         SelectAttackEffect selectAttackEffect = GManager.instance.GetComponent<SelectAttackEffect>();
 
@@ -104,7 +106,6 @@ namespace DCGO.CardEffects.BT23
                             cardEffect: activateClass);
 
                         selectAttackEffect.SetWithoutTap();
-                        selectAttackEffect.SetCanNotSelectNotAttack();
 
                         yield return ContinuousController.instance.StartCoroutine(selectAttackEffect.Activate());
                     }

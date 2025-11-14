@@ -43,7 +43,7 @@ namespace DCGO.CardEffects.BT23
 
             #region OP/WD Shared
 
-            bool SharedOpponentDigimon(Permanent permanent)
+            bool SharedOwnerDigimon(Permanent permanent)
             {
                 return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
                        (permanent.TopCard.HasRoyalKnightTraits || permanent.TopCard.HasCSTraits);
@@ -51,6 +51,8 @@ namespace DCGO.CardEffects.BT23
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
+                yield return ContinuousController.instance.StartCoroutine(new DrawClass(card.Owner, 1, activateClass).Draw());
+
                 Permanent selectedPermanent = null;
 
                 #region Select Permanent
@@ -58,7 +60,7 @@ namespace DCGO.CardEffects.BT23
                 SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
                 selectPermanentEffect.SetUp(
                     selectPlayer: card.Owner,
-                    canTargetCondition: SharedOpponentDigimon,
+                    canTargetCondition: SharedOwnerDigimon,
                     canTargetCondition_ByPreSelecetedList: null,
                     canEndSelectCondition: null,
                     maxCount: 1,

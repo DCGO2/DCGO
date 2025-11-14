@@ -53,7 +53,7 @@ namespace DCGO.CardEffects.BT23
                 bool CanSelectCardCondition1(CardSource cardSource)
                 {
                     return cardSource.HasCSTraits
-                        && (cardSource.IsTamer || cardSource.IsOption);
+                        && cardSource.IsTamer || cardSource.IsOption;
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -199,39 +199,24 @@ namespace DCGO.CardEffects.BT23
                                 }
                                 #endregion
 
-                                #region Delete EoOT
+                                #region Delete EOOT
+
                                 ActivateClass activateClass1 = new ActivateClass();
                                 activateClass1.SetUpICardEffect("Delete the Digimon", CanUseEndofOpponentTurnCondition, card);
-                                activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, "");
-                                card.Owner.UntilOpponentTurnEndEffects.Add(GetCardEffect);
+                                activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, "at the end of your opponent's turn, Delete this digimon");
+                                playedDigimon.EffectList(EffectTiming.OnEndTurn).Add(activateClass1);
 
                                 bool CanUseEndofOpponentTurnCondition(Hashtable hashtable)
                                 {
-                                    if (CardEffectCommons.IsPermanentExistsOnBattleArea(playedDigimon))
-                                    {
-                                        if (CardEffectCommons.IsOpponentTurn(card))
-                                        {
-                                            return true;
-                                        }
-                                    }
-
-                                    return false;
+                                    return CardEffectCommons.IsPermanentExistsOnBattleArea(playedDigimon)
+                                        && CardEffectCommons.IsOpponentTurn(card);
                                 }
 
                                 bool CanActivateCondition1(Hashtable hashtable)
                                 {
-                                    if (CardEffectCommons.IsPermanentExistsOnBattleArea(playedDigimon))
-                                    {
-                                        if (playedDigimon.CanBeDestroyedBySkill(activateClass1))
-                                        {
-                                            if (!playedDigimon.TopCard.CanNotBeAffected(activateClass1))
-                                            {
-                                                return true;
-                                            }
-                                        }
-                                    }
-
-                                    return false;
+                                    return CardEffectCommons.IsPermanentExistsOnBattleArea(playedDigimon)
+                                        && playedDigimon.CanBeDestroyedBySkill(activateClass1)
+                                        && !playedDigimon.TopCard.CanNotBeAffected(activateClass1);
                                 }
 
                                 IEnumerator ActivateCoroutine1(Hashtable _hashtable1)
@@ -239,15 +224,6 @@ namespace DCGO.CardEffects.BT23
                                     yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(new List<Permanent>() { playedDigimon }, CardEffectCommons.CardEffectHashtable(activateClass1)).Destroy());
                                 }
 
-                                ICardEffect GetCardEffect(EffectTiming _timing)
-                                {
-                                    if (_timing == EffectTiming.OnEndTurn)
-                                    {
-                                        return activateClass1;
-                                    }
-
-                                    return null;
-                                }
                                 #endregion
                             }
                             #endregion
