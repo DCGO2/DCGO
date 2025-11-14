@@ -136,18 +136,22 @@ namespace DCGO.CardEffects.BT23
             #endregion
 
             #region Partition
+
+            List<PartitionCondition> partitionConditions = new List<PartitionCondition>
+            {
+                new PartitionCondition("Angewomon"),
+                new PartitionCondition("LadyDevimon")
+            };
+
             if (timing == EffectTiming.WhenRemoveField)
             {
-                List<PartitionCondition> partitionConditions = new List<PartitionCondition>();
-                partitionConditions.Add(new PartitionCondition("Angewomon"));
-                partitionConditions.Add(new PartitionCondition("LadyDevimon"));
-
                 cardEffects.Add(CardEffectFactory.PartitionSelfEffect(
                     isInheritedEffect: false,
                     card: card,
                     condition: null,
                     cardSourceConditions: partitionConditions));
             }
+
             #endregion
 
             #endregion
