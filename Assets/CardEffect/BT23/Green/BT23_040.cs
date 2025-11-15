@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 // Wormmon
 namespace DCGO.CardEffects.BT23
@@ -38,7 +37,7 @@ namespace DCGO.CardEffects.BT23
             if (timing == EffectTiming.OnStartMainPhase)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("By placing 1 [Erika Mishima] as bottom digivolution card, this digimon may digivolve", CanUseCondition, card);
+                activateClass.SetUpICardEffect("By placing 1 [Erika Mishima] as bottom digivolution card, this digimon may digivolve into a [Hudie] digimon in hand/trash for 2 reduced cost", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDiscription());
                 cardEffects.Add(activateClass);
 

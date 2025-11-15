@@ -1,8 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using System;
 
 //Eater Bit
 namespace DCGO.CardEffects.BT23
@@ -88,8 +88,11 @@ namespace DCGO.CardEffects.BT23
             #endregion
 
             #region All Turns
+
             if (timing == EffectTiming.WhenRemoveField)
             {
+                List<Permanent> wouldBeRemovedPermaments = new List<Permanent>();
+
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Prevent a Digimon from leaving battle area", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
@@ -103,9 +106,16 @@ namespace DCGO.CardEffects.BT23
 
                 bool RemovedFromPlayPermanent(Permanent permanent)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
-                           (permanent.TopCard.HasEaterTraits || permanent.TopCard.HasHudieTraits) &&
-                           permanent != card.PermanentOfThisCard();
+                    wouldBeRemovedPermaments.Add(permanent);
+                    if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                        && (permanent.TopCard.HasEaterTraits || permanent.TopCard.HasHudieTraits)
+                        && permanent != card.PermanentOfThisCard())
+                    {
+                        wouldBeRemovedPermaments.Add(permanent);
+                        return true;
+                    }
+                    return false;
+
                 }
 
                 bool HasMother(Permanent permanent)
@@ -127,13 +137,12 @@ namespace DCGO.CardEffects.BT23
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    Permanent selectedPermanent = CardEffectCommons.GetPermanentFromHashtable(_hashtable);
-                    bool canAddSource = CardEffectCommons.HasMatchConditionPermanent(HasMother, true);
+                    bool canAddSource = CardEffectCommons.HasMatchConditionOwnersBreedingPermanent(card, HasMother);
                     bool canDestroy = card.PermanentOfThisCard().CanBeDestroyed();
 
                     if (canAddSource || canDestroy)
                     {
-                        bool willDestroy = canDestroy;
+                        bool willDestroy = false;
 
                         if (canAddSource && canDestroy)
                         {
@@ -149,8 +158,11 @@ namespace DCGO.CardEffects.BT23
                             GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
 
                             yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
-
                             willDestroy = GManager.instance.userSelectionManager.SelectedBoolValue;
+                        }
+                        else
+                        {
+                            willDestroy = canDestroy;
                         }
 
                         if (willDestroy)
@@ -165,24 +177,53 @@ namespace DCGO.CardEffects.BT23
                         else
                         {
                             yield return ContinuousController.instance.StartCoroutine(new IPlacePermanentToDigivolutionCards(new List<Permanent[]>() { new Permanent[] { card.PermanentOfThisCard(), card.Owner.GetBreedingAreaPermanents()[0] } }, false, activateClass).PlacePermanentToDigivolutionCards());
-
-                            yield return ContinuousController.instance.StartCoroutine("SuccessProcess");
-                        }                        
+                            yield return ContinuousController.instance.StartCoroutine(SuccessProcess());
+                        }
 
                         IEnumerator SuccessProcess()
                         {
-                            selectedPermanent.willBeRemoveField = false;
+                            Permanent selectedPermanent = null;
+                            SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+                            int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(perm => wouldBeRemovedPermaments.Contains(perm)));
 
-                            selectedPermanent.HideDeleteEffect();
-                            selectedPermanent.HideHandBounceEffect();
-                            selectedPermanent.HideDeckBounceEffect();
-                            selectedPermanent.HideWillRemoveFieldEffect();
 
-                            yield return null;
+                            selectPermanentEffect.SetUp(
+                                selectPlayer: card.Owner,
+                                canTargetCondition: perm => wouldBeRemovedPermaments.Contains(perm),
+                                canTargetCondition_ByPreSelecetedList: null,
+                                canEndSelectCondition: null,
+                                maxCount: maxCount,
+                                canNoSelect: false,
+                                canEndNotMax: false,
+                                selectPermanentCoroutine: SelectPermanentCoroutine,
+                                afterSelectPermanentCoroutine: null,
+                                mode: SelectPermanentEffect.Mode.Custom,
+                                cardEffect: activateClass);
+
+                            IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                            {
+                                selectedPermanent = permanent;
+                                yield return null;
+                            }
+
+                            selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will not be removed from battle area.", "The opponent is selecting 1 Digimon that will not be removed from battle area.");
+                            yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                            if (selectedPermanent == null)
+                            {
+                                selectedPermanent.willBeRemoveField = false;
+
+                                selectedPermanent.HideDeleteEffect();
+                                selectedPermanent.HideHandBounceEffect();
+                                selectedPermanent.HideDeckBounceEffect();
+                                selectedPermanent.HideWillRemoveFieldEffect();
+                                yield return null;
+                            }
                         }
                     }
                 }
             }
+
             #endregion
 
             #region ESS

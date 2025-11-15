@@ -1,8 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System;
 using System.Linq;
-using UnityEngine;
 
 public class PartitionCondition
 {
@@ -10,12 +9,15 @@ public class PartitionCondition
     public CardColor Color;
     public CardColor Color2;
     public string Name;
+    public bool HasOneColour = false;
     public bool hasTwoColor = false;
+    public bool hasName = false;
 
     public PartitionCondition(int level, CardColor color)
     {
         Level = level;
         Color = color;
+        HasOneColour = true;
     }
 
     public PartitionCondition(int level, CardColor color, CardColor color2)
@@ -29,6 +31,7 @@ public class PartitionCondition
     public PartitionCondition(string cardName)
     {
         Name = cardName;
+        hasName = true;
     }
 }
 
@@ -38,7 +41,7 @@ public partial class CardEffectFactory
     public static ActivateClass PartitionSelfEffect(bool isInheritedEffect, CardSource card, Func<bool> condition, List<PartitionCondition> cardSourceConditions)
     {
         Permanent targetPermanent = card.PermanentOfThisCard();
-        
+
         bool CanUseCondition()
         {
             if (condition == null || condition())
@@ -66,37 +69,54 @@ public partial class CardEffectFactory
         sourceOneCard = targetPermanent.DigivolutionCards.Clone();
         sourceTwoCard = targetPermanent.DigivolutionCards.Clone();
 
-        if (!String.IsNullOrEmpty(partitionConditions[0].Name))
-            sourceOneCard = sourceOneCard.Filter(source => source.EqualsCardName(partitionConditions[0].Name));
+        #region Setup Partition Cards
 
-        if (!String.IsNullOrEmpty(partitionConditions[1].Name))
-            sourceOneCard = sourceOneCard.Filter(source => source.EqualsCardName(partitionConditions[1].Name));
+        // First Card
 
-        if (partitionConditions[0].hasTwoColor)
-        {
-            sourceOneCard = sourceOneCard.Filter(source =>
-                    (source.CardColors.Contains(partitionConditions[0].Color) || source.CardColors.Contains(partitionConditions[0].Color2))
-                    && (source.HasLevel && source.Level == partitionConditions[0].Level));
-        }
-        else
+        if (partitionConditions[0].HasOneColour)
         {
             sourceOneCard = sourceOneCard.Filter(source =>
                     source.CardColors.Contains(partitionConditions[0].Color)
                     && (source.HasLevel && source.Level == partitionConditions[0].Level));
         }
+        else if (partitionConditions[0].hasTwoColor)
+        {
+            sourceOneCard = sourceOneCard.Filter(source =>
+                    (source.CardColors.Contains(partitionConditions[0].Color) || source.CardColors.Contains(partitionConditions[0].Color2))
+                    && (source.HasLevel && source.Level == partitionConditions[0].Level));
+        }
+        else if (partitionConditions[0].hasName)
+        {
+            sourceOneCard = sourceOneCard.Filter(source => source.EqualsCardName(partitionConditions[0].Name));
+        }
+        else
+        {
+            sourceOneCard = null;
+        }
 
-        if (partitionConditions[1].hasTwoColor)
+
+        if (partitionConditions[1].HasOneColour)
+        {
+            sourceTwoCard = sourceTwoCard.Filter(source =>
+                    source.CardColors.Contains(partitionConditions[1].Color)
+                    && (source.HasLevel && source.Level == partitionConditions[1].Level));
+        }
+        else if (partitionConditions[1].hasTwoColor)
         {
             sourceTwoCard = sourceTwoCard.Filter(source =>
                     (source.CardColors.Contains(partitionConditions[1].Color) || source.CardColors.Contains(partitionConditions[1].Color2))
                     && (source.HasLevel && source.Level == partitionConditions[1].Level));
         }
+        else if (partitionConditions[1].hasName)
+        {
+            sourceTwoCard = sourceTwoCard.Filter(source => source.EqualsCardName(partitionConditions[1].Name));
+        }
         else
         {
-            sourceTwoCard = sourceTwoCard.Filter(source =>
-                    source.CardColors.Contains(partitionConditions[1].Color) && 
-                    (source.HasLevel && source.Level == partitionConditions[1].Level));
+            sourceTwoCard = null;
         }
+
+        #endregion
 
         ActivateClass activateClass = new ActivateClass();
         activateClass.SetUpICardEffect("Partition", CanUseCondition, card);
