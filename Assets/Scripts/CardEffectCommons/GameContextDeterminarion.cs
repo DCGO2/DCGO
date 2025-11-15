@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
 public partial class CardEffectCommons
 {
@@ -741,6 +739,22 @@ public partial class CardEffectCommons
     {
         return card.Owner.GetBattleAreaPermanents()
             .Count(permanent => permanent.IsTamer && permanent.TopCard.Owner == card.Owner) <= 1;
+    }
+
+    #endregion
+
+    #region Universial Root Can No Select Condition
+
+    public static bool UniversalRootCanNoSelectCondition(CardSource cardSource)
+    {
+        if (cardSource.PayingCost(SelectCardEffect.Root.Hand, null, checkAvailability: false) > cardSource.Owner.MaxMemoryCost) return false;
+        if (cardSource.PayingCost(SelectCardEffect.Root.Trash, null, checkAvailability: false) > cardSource.Owner.MaxMemoryCost) return false;
+        if (cardSource.PayingCost(SelectCardEffect.Root.DigivolutionCards, null, checkAvailability: false) > cardSource.Owner.MaxMemoryCost) return false;
+        if (cardSource.PayingCost(SelectCardEffect.Root.Library, null, checkAvailability: false) > cardSource.Owner.MaxMemoryCost) return false;
+        if (cardSource.PayingCost(SelectCardEffect.Root.DigivolutionCards, null, checkAvailability: false) > cardSource.Owner.MaxMemoryCost) return false;
+        if (cardSource.PayingCost(SelectCardEffect.Root.LinkedCards, null, checkAvailability: false) > cardSource.Owner.MaxMemoryCost) return false;
+        if (cardSource.PayingCost(SelectCardEffect.Root.Security, null, checkAvailability: false) > cardSource.Owner.MaxMemoryCost) return false;
+        return true;
     }
 
     #endregion

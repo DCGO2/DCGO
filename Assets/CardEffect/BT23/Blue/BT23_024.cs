@@ -315,8 +315,7 @@ namespace DCGO.CardEffects.BT23
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
-                           CardEffectCommons.IsOwnerTurn(card) &&
-                           card.PermanentOfThisCard().CanUnsuspend && 
+                           card.PermanentOfThisCard().CanUnsuspend &&
                            card.PermanentOfThisCard().IsSuspended;
                 }
 

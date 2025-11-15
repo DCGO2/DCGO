@@ -50,29 +50,10 @@ namespace DCGO.CardEffects.BT23
 
                 bool CardCondition(CardSource cardSource)
                 {
-                    if (cardSource == card)
-                    {
-                        if (CardEffectCommons.IsExistOnHand(cardSource))
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return cardSource == card;
                 }
 
-                bool CanNoSelect(CardSource cardSource)
-                {
-                    if (cardSource != null)
-                    {
-                        if (cardSource.PayingCost(SelectCardEffect.Root.Hand, null, checkAvailability: false) > cardSource.Owner.MaxMemoryCost)
-                        {
-                            return false;
-                        }
-                    }
-
-                    return true;
-                }
+                bool CanNoSelect(CardSource cardSource) => CardEffectCommons.UniversalRootCanNoSelectCondition(cardSource);
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
@@ -81,22 +62,14 @@ namespace DCGO.CardEffects.BT23
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.IsExistOnHand(card))
-                    {
-                        if (CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, CanSelectReductionCardCondition) >= 3)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
+                    return CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, CanSelectReductionCardCondition) >= 3;
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
                     List<CardSource> selectedCards = new List<CardSource>();
 
-                    if (CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, CanSelectReductionCardCondition) >= 6)
+                    if (CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, CanSelectReductionCardCondition) >= 3)
                     {
                         bool noSelect = CanNoSelect(CardEffectCommons.GetCardFromHashtable(_hashtable));
 
@@ -111,7 +84,7 @@ namespace DCGO.CardEffects.BT23
                             canNoSelect: () => noSelect,
                             selectCardCoroutine: SelectCardCoroutine,
                             afterSelectCardCoroutine: null,
-                            message: "Select cards to add to the top your deck\n(cards will be placed back to the top of the deck so that cards with lower numbers are on top).",
+                            message: "Select cards to add to your deck\n(cards will be placed back to your deck so that cards with lower numbers are on top).",
                             maxCount: maxCount,
                             canEndNotMax: false,
                             isShowOpponent: true,
@@ -133,79 +106,98 @@ namespace DCGO.CardEffects.BT23
                         if (selectedCards.Count == 3)
                         {
                             selectedCards.Reverse();
-                            yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(selectedCards));
-                        }
-                    }
 
-                    if (card.Owner.CanReduceCost(null, card))
-                    {
-                        ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().BuffSE);
-                    }
 
-                    ChangeCostClass changeCostClass = new ChangeCostClass();
-                    changeCostClass.SetUpICardEffect("Play Cost -1", CanUseCondition1, card);
-                    changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
-                    card.Owner.UntilCalculateFixedCostEffect.Add((_timing) => changeCostClass);
-
-                    bool CanUseCondition1(Hashtable hashtable)
-                    {
-                        return true;
-                    }
-
-                    int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
-                    {
-                        if (CardSourceCondition(cardSource))
-                        {
-                            if (RootCondition(root))
+                            List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
                             {
-                                if (PermanentsCondition(targetPermanents))
-                                {
-                                    int targetCost = 0;
+                                new SelectionElement<bool>(message: $"Top of deck", value : true, spriteIndex: 0),
+                                new SelectionElement<bool>(message: $"Bottom of deck", value : false, spriteIndex: 1),
+                            };
 
-                                    if (selectedCards.Count >= 3)
-                                        targetCost += 5;
+                            string selectPlayerMessage = "Return cards to top or bottom of deck?";
+                            string notSelectPlayerMessage = "The opponent is choosing to return cards to top or bottom of deck.";
 
-                                    Cost -= targetCost;
-                                }
+                            GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements, selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage, notSelectPlayerMessage: notSelectPlayerMessage);
+                            yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager.WaitForEndSelect());
+
+                            bool topOfDeck = GManager.instance.userSelectionManager.SelectedBoolValue;
+                            if (topOfDeck)
+                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryTopCards(selectedCards));
+                            else
+                                yield return ContinuousController.instance.StartCoroutine(CardObjectController.AddLibraryBottomCards(selectedCards));
+
+                            if (card.Owner.CanReduceCost(null, card))
+                            {
+                                ContinuousController.instance.PlaySE(GManager.instance.GetComponent<Effects>().BuffSE);
                             }
-                        }
 
-                        return Cost;
-                    }
+                            ChangeCostClass changeCostClass = new ChangeCostClass();
+                            changeCostClass.SetUpICardEffect("Play Cost -1", CanUseCondition1, card);
+                            changeCostClass.SetUpChangeCostClass(changeCostFunc: ChangeCost, cardSourceCondition: CardSourceCondition, rootCondition: RootCondition, isUpDown: isUpDown, isCheckAvailability: () => false, isChangePayingCost: () => true);
+                            card.Owner.UntilCalculateFixedCostEffect.Add((_timing) => changeCostClass);
 
-                    bool PermanentsCondition(List<Permanent> targetPermanents)
-                    {
-                        if (targetPermanents == null)
-                        {
-                            return true;
-                        }
-                        else
-                        {
-                            if (targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0)
+                            bool CanUseCondition1(Hashtable hashtable)
                             {
                                 return true;
                             }
+
+                            int ChangeCost(CardSource cardSource, int Cost, SelectCardEffect.Root root, List<Permanent> targetPermanents)
+                            {
+                                if (CardSourceCondition(cardSource))
+                                {
+                                    if (RootCondition(root))
+                                    {
+                                        if (PermanentsCondition(targetPermanents))
+                                        {
+                                            int targetCost = 0;
+
+                                            if (selectedCards.Count >= 3)
+                                                targetCost += 5;
+
+                                            Cost -= targetCost;
+                                        }
+                                    }
+                                }
+
+                                return Cost;
+                            }
+
+                            bool PermanentsCondition(List<Permanent> targetPermanents)
+                            {
+                                if (targetPermanents == null)
+                                {
+                                    return true;
+                                }
+                                else
+                                {
+                                    if (targetPermanents.Count((targetPermanent) => targetPermanent != null) == 0)
+                                    {
+                                        return true;
+                                    }
+                                }
+
+                                return false;
+                            }
+
+                            bool CardSourceCondition(CardSource cardSource)
+                            {
+                                return cardSource == card;
+                            }
+
+                            bool RootCondition(SelectCardEffect.Root root)
+                            {
+                                return true;
+                            }
+
+                            bool isUpDown()
+                            {
+                                return true;
+                            }
+
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ShowReducedCost(_hashtable));
                         }
-
-                        return false;
                     }
 
-                    bool CardSourceCondition(CardSource cardSource)
-                    {
-                        return cardSource == card;
-                    }
-
-                    bool RootCondition(SelectCardEffect.Root root)
-                    {
-                        return true;
-                    }
-
-                    bool isUpDown()
-                    {
-                        return true;
-                    }
-
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ShowReducedCost(_hashtable));
                 }
             }
 
@@ -305,6 +297,7 @@ namespace DCGO.CardEffects.BT23
             #endregion
 
             #region OP/WD Shared
+
             string SharedEffectDiscription(string tag)
             {
                 return $"[{tag}] You may play 1 [Hinukamuy] Token. (Digimon/White/6000 DP/＜Alliance＞ ＜Reboot＞ ＜Blocker＞) Then, delete 1 of your opponent's Digimon with a play cost of 6 or less. For each of your other Digimon, add 3 to this effect's play cost maximum.";
@@ -370,6 +363,7 @@ namespace DCGO.CardEffects.BT23
             #endregion
 
             #region On Play
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
@@ -386,6 +380,7 @@ namespace DCGO.CardEffects.BT23
             #endregion
 
             #region When Digivolving
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();

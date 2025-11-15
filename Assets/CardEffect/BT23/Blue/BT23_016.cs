@@ -77,15 +77,13 @@ namespace DCGO.CardEffects.BT23
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.CanTriggerWhenLinked(hashtable, perm => perm == card.PermanentOfThisCard(), _ => true);
+                        && CardEffectCommons.CanTriggerWhenLinked(hashtable, perm => perm == card.PermanentOfThisCard(), null);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.IsOwnerTurn(card)
-                        && CardEffectCommons.OwnerHas1OrLessTamers(card)
-                        && CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition);
+                        && CardEffectCommons.IsOwnerTurn(card);
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)
@@ -97,7 +95,7 @@ namespace DCGO.CardEffects.BT23
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
+                    if (CardEffectCommons.OwnerHas1OrLessTamers(card) && CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
                     {
                         CardSource selectedCard = null;
                         int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInHand(card, CanSelectCardCondition));

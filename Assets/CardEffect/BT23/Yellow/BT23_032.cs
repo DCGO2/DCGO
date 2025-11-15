@@ -342,7 +342,8 @@ namespace DCGO.CardEffects.BT23
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card);
+                        && CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card)
+                        && !CardEffectCommons.IsByEffect(hashtable, effect => effect.EffectSourceCard.Owner == card.Owner);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)
@@ -377,7 +378,8 @@ namespace DCGO.CardEffects.BT23
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnField(card)
-                        && CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, PermamentCondition);
+                        && CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, PermamentCondition)
+                        && !CardEffectCommons.IsByEffect(hashtable, effect => effect.EffectSourceCard.Owner == card.Owner);
                 }
 
                 bool CanActivateCondition(Hashtable hashtable)

@@ -44,22 +44,26 @@ namespace DCGO.CardEffects.BT23
 
             IEnumerator SharedActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
-                yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
-                        player: card.Owner,
-                        destroySecurityCount: 1,
-                        cardEffect: activateClass,
-                        fromTop: true).DestroySecurity());
-
-                var opponentDigimon = card.Owner.Enemy.GetBattleAreaDigimons();
-
-                foreach (var permament in opponentDigimon)
+                if (card.Owner.SecurityCards.Count >= 1)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
-                        targetPermanent: permament,
-                        changeValue: -6000,
-                        effectDuration: EffectDuration.UntilEachTurnEnd,
-                        activateClass: activateClass));
+                    yield return ContinuousController.instance.StartCoroutine(new IDestroySecurity(
+                    player: card.Owner,
+                    destroySecurityCount: 1,
+                    cardEffect: activateClass,
+                    fromTop: true).DestroySecurity());
+
+                    var opponentDigimon = card.Owner.Enemy.GetBattleAreaDigimons();
+
+                    foreach (var permament in opponentDigimon)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
+                            targetPermanent: permament,
+                            changeValue: -6000,
+                            effectDuration: EffectDuration.UntilEachTurnEnd,
+                            activateClass: activateClass));
+                    }
                 }
+
             }
 
             #endregion

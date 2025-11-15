@@ -230,7 +230,7 @@ namespace DCGO.CardEffects.BT23
 
                         if (selectedPermament != null) yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
                             targetPermanent: selectedPermament,
-                            changeValue: 4000,
+                            changeValue: -4000,
                             effectDuration: EffectDuration.UntilEachTurnEnd,
                             activateClass: activateClass));
                     }

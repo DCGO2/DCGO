@@ -1,7 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System;
 
 //King Drasil_7D6
 namespace DCGO.CardEffects.BT23
@@ -57,16 +55,17 @@ namespace DCGO.CardEffects.BT23
             #endregion
 
             #region All Turns
+
             if (timing == EffectTiming.OnEnterFieldAnyone)
-            { 
+            {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("Gain ＜Rush＞, ＜Raid＞, ＜Reboot＞ and ＜Blocker＞", CanUseCondition, card);
+                activateClass.SetUpICardEffect("By suspending this digimon, 1 played digimon gains <Rush>, <Raid>, <Reboot> and <Blocker>", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, true, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
                 {
-                    return "[All Turns] When any of your Digimon with the [Royal Knight] or [CS] trait are played, by suspending this Digimon, 1 of the played Digimon gains ＜Rush＞, ＜Raid＞, ＜Reboot＞ and ＜Blocker＞ until your opponent's turn ends.";
+                    return "[All Turns] When any of your Digimon with the [Royal Knight] or [CS] trait are played, by suspending this Digimon, 1 of the played Digimon gains <Rush>, <Raid>, <Reboot> and <Blocker> until your opponent's turn ends.";
                 }
 
                 bool PlayedPermanentCondition(Permanent permanent)
@@ -89,85 +88,92 @@ namespace DCGO.CardEffects.BT23
 
                 IEnumerator ActivateCoroutine(Hashtable _hashtable)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(
+                    if (!card.PermanentOfThisCard().IsSuspended)
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(new SuspendPermanentsClass(
                         permanents: new List<Permanent>() { card.PermanentOfThisCard() },
-                        hashtable: _hashtable).Tap()
-                    );
+                        hashtable: _hashtable).Tap());
 
-                    List<Permanent> playedPermanents = new List<Permanent>();
-                    List<Hashtable> hashtables = CardEffectCommons.GetHashtablesFromHashtable(_hashtable);
-
-                    if (hashtables != null)
-                    {
-                        foreach (Hashtable hashtable1 in hashtables)
+                        if (card.PermanentOfThisCard().IsSuspended)
                         {
-                            Permanent permanent = CardEffectCommons.GetPermanentFromHashtable(hashtable1);
 
-                            if (permanent != null)
-                                playedPermanents.Add(permanent);
+                            List<Permanent> playedPermanents = new List<Permanent>();
+                            List<Hashtable> hashtables = CardEffectCommons.GetHashtablesFromHashtable(_hashtable);
+
+                            if (hashtables != null)
+                            {
+                                foreach (Hashtable hashtable1 in hashtables)
+                                {
+                                    Permanent permanent = CardEffectCommons.GetPermanentFromHashtable(hashtable1);
+
+                                    if (permanent != null)
+                                        playedPermanents.Add(permanent);
+                                }
+
+                                playedPermanents = playedPermanents.Filter(PermanentCondition);
+                            }
+
+                            Permanent selectedPermanent = null;
+
+                            bool PermanentCondition(Permanent permanent)
+                            {
+                                return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card)
+                                    && (permanent.TopCard.HasRoyalKnightTraits || permanent.TopCard.HasCSTraits)
+                                    && playedPermanents.Contains(permanent);
+                            }
+
+                            if (playedPermanents.Count == 1) selectedPermanent = playedPermanents[0];
+                            else
+                            {
+                                SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
+
+                                selectPermanentEffect.SetUp(
+                                    selectPlayer: card.Owner,
+                                    canTargetCondition: PermanentCondition,
+                                    canTargetCondition_ByPreSelecetedList: null,
+                                    canEndSelectCondition: null,
+                                    maxCount: 1,
+                                    canNoSelect: false,
+                                    canEndNotMax: false,
+                                    selectPermanentCoroutine: SelectPermanentCoroutine,
+                                    afterSelectPermanentCoroutine: null,
+                                    mode: SelectPermanentEffect.Mode.Custom,
+                                    cardEffect: activateClass);
+
+                                selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to gain effects.", "The opponent is selecting 1 Digimon to gain effects.");
+
+                                yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
+
+                                IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                                {
+                                    selectedPermanent = permanent;
+                                    yield return null;
+                                }
+                            }
+
+                            if (selectedPermanent != null)
+                            {
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainRush(
+                                        targetPermanent: selectedPermanent,
+                                        effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                                        activateClass: activateClass));
+
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainRaid(
+                                        targetPermanent: selectedPermanent,
+                                        effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                                        activateClass: activateClass));
+
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainReboot(
+                                        targetPermanent: selectedPermanent,
+                                        effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                                        activateClass: activateClass));
+
+                                yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBlocker(
+                                        targetPermanent: selectedPermanent,
+                                        effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                                        activateClass: activateClass));
+                            }
                         }
-
-                        playedPermanents = playedPermanents.Filter(PermanentCondition);
-                    }
-
-                    Permanent selectedPermanent = null;
-
-                    bool PermanentCondition(Permanent permanent)
-                    {
-                        return CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card) &&
-                               (permanent.TopCard.HasRoyalKnightTraits || permanent.TopCard.HasCSTraits);                    }
-
-                    if (playedPermanents.Count == 1) 
-                        selectedPermanent = playedPermanents[0];
-                    else
-                    {
-                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                        selectPermanentEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: PermanentCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: 1,
-                            canNoSelect: false,
-                            canEndNotMax: false,
-                            selectPermanentCoroutine: SelectPermanentCoroutine,
-                            afterSelectPermanentCoroutine: null,
-                            mode: SelectPermanentEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to gain effects.", "The opponent is selecting 1 Digimon to gain effects.");
-
-                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
-                        {
-                            selectedPermanent = permanent;
-                            yield return null;
-                        }
-                    }
-                    
-                    if(selectedPermanent != null)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainRush(
-                                targetPermanent: selectedPermanent,
-                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                                activateClass: activateClass));
-
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainRaid(
-                                targetPermanent: selectedPermanent,
-                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                                activateClass: activateClass));
-
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainReboot(
-                                targetPermanent: selectedPermanent,
-                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                                activateClass: activateClass));
-
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.GainBlocker(
-                                targetPermanent: selectedPermanent,
-                                effectDuration: EffectDuration.UntilOpponentTurnEnd,
-                                activateClass: activateClass));
                     }
                 }
             }
@@ -191,7 +197,8 @@ namespace DCGO.CardEffects.BT23
                 {
                     return source.ContainsCardName("King Drasil") &&
                            source.IsDigimon &&
-                           CardEffectCommons.CanPlayAsNewPermanent(cardSource: source, payCost: false, cardEffect: activateClass);                }
+                           CardEffectCommons.CanPlayAsNewPermanent(cardSource: source, payCost: false, cardEffect: activateClass);
+                }
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
