@@ -147,6 +147,7 @@ namespace DCGO.CardEffects.BT23
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Draw 1", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
+                activateClass.SetIsLinkedEffect(true);
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()

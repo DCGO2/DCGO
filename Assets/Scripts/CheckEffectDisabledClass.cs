@@ -95,7 +95,7 @@ public static class CheckEffectDisabledClass
             {
                 foreach (Permanent permanent in player.GetBattleAreaPermanents())
                 {
-                    #region 
+                    #region Permanent Effects
 
                     foreach (ICardEffect cardEffect in permanent.EffectList_Added(EffectTiming.None))
                     {
@@ -117,7 +117,32 @@ public static class CheckEffectDisabledClass
                         {
                             foreach (ICardEffect cardEffect in cardSource.cEntity_EffectController.cEntity_Effect.GetCardEffects(EffectTiming.None, cardSource))
                             {
-                                if ((cardSource == permanent.TopCard) == (cardEffect.IsInheritedEffect) || (cardSource.IsFlipped))
+                                if (((cardSource == permanent.TopCard) == (cardEffect.IsInheritedEffect))  || (!cardSource.IsLinked == cardEffect.IsLinkedEffect) || (cardSource.IsFlipped))
+                                {
+                                    continue;
+                                }
+
+                                if (cardEffect != targetCardEffect && tree.Count((element) => element.cardEffect == cardEffect) == 0)
+                                {
+                                    if (cardEffect is IDisableCardEffect)
+                                    {
+                                        if (((IDisableCardEffect)cardEffect).IsDisabled(targetCardEffect))
+                                        {
+                                            PotentiallyDisablingEffects.Add(cardEffect);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    foreach (CardSource cardSource in permanent.LinkedCards)
+                    {
+                        if (cardSource.cEntity_EffectController.cEntity_Effect != null)
+                        {
+                            foreach (ICardEffect cardEffect in cardSource.cEntity_EffectController.cEntity_Effect.GetCardEffects(EffectTiming.None, cardSource))
+                            {
+                                if ((!cardEffect.IsLinkedEffect) || (cardSource.IsFlipped))
                                 {
                                     continue;
                                 }
@@ -138,7 +163,7 @@ public static class CheckEffectDisabledClass
                     #endregion
                 }
 
-                #region
+                #region Player Effects
                 foreach (ICardEffect cardEffect in player.EffectList(EffectTiming.None))
                 {
                     if (cardEffect is IDisableCardEffect)
