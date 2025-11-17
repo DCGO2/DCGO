@@ -63,6 +63,7 @@ namespace DCGO.CardEffects.BT23
                 bool IsOpponenetsDigimon(Permanent permanent)
                 {
                     return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card) &&
+                        permanent.TopCard.HasPlayCost &&
                         permanent.TopCard.GetCostItself <= 4;
                 }
 

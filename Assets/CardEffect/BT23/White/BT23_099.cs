@@ -27,7 +27,7 @@ namespace DCGO.CardEffects.BT23
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.HasMatchConditionPermanent(HasHuckmon);
+                    return CardEffectCommons.HasMatchConditionPermanent(HasHuckmon, true);
                 }
 
                 bool CardCondition(CardSource cardSource)

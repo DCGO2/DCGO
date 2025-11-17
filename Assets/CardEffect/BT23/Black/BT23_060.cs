@@ -260,21 +260,20 @@ namespace DCGO.CardEffects.BT23
                     return "[When Attacking] [Once Per Turn] Activate 1 [On Play] effect on a face-up [Zaxon] trait Digimon card in your security stack as an effect of this Digimon.";
                 }
 
+                bool OnPlayEffectSecurityCondition(CardSource cardSource)
+                {
+                    List<ICardEffect> effects = cardSource.EffectList_ForCard(EffectTiming.OnEnterFieldAnyone, cardSource)
+                            .Clone()
+                            .Filter(cardEffect => cardEffect != null && cardEffect is ActivateICardEffect && !cardEffect.IsSecurityEffect && cardEffect.IsOnPlay);
+
+                    if (effects.Count > 0)
+                        return true;
+
+                    return false;
+                }
+
                 bool CanSelectCardCondition(CardSource cardSource)
                 {
-
-                    bool OnPlayEffectSecurityCondition(CardSource cardSource)
-                    {
-                        List<ICardEffect> effects = cardSource.EffectList_ForCard(EffectTiming.OnEnterFieldAnyone, cardSource)
-                                .Clone()
-                                .Filter(cardEffect => cardEffect != null && cardEffect is ActivateICardEffect && !cardEffect.IsSecurityEffect && cardEffect.IsOnPlay);
-
-                        if (effects.Count > 0)
-                            return true;
-
-                        return false;
-                    }
-
                     return cardSource.EqualsTraits("Zaxon")
                     && !cardSource.IsFlipped
                     && OnPlayEffectSecurityCondition(cardSource);
