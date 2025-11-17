@@ -35,7 +35,7 @@ namespace DCGO.CardEffects.BT23
 
             #region Shared OP/WD Floodgate
 
-            IEnumerator SharedFloodGateActivateCoroutine(Hashtable hashtable)
+            IEnumerator SharedFloodGateActivateCoroutine(Hashtable hashtable, ActivateClass activateClass)
             {
 
                 bool CanUseCondition1(Hashtable hashtable)
@@ -72,7 +72,7 @@ namespace DCGO.CardEffects.BT23
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Your opponent effects cannot play digimon or tamers from trash until their turn ends", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, SharedFloodGateActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, hash => SharedFloodGateActivateCoroutine(hash, activateClass), -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
@@ -100,7 +100,7 @@ namespace DCGO.CardEffects.BT23
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("Your opponent effects cannot play digimon or tamers from trash until their turn ends", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, SharedFloodGateActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, hash => SharedFloodGateActivateCoroutine(hash, activateClass), -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
