@@ -52,16 +52,16 @@ namespace DCGO.CardEffects.BT23
                     cardEffect: activateClass,
                     fromTop: true).DestroySecurity());
 
-                    var opponentDigimon = card.Owner.Enemy.GetBattleAreaDigimons();
-
-                    foreach (var permament in opponentDigimon)
+                    bool PermanentCondition(Permanent permanent)
                     {
-                        yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDP(
-                            targetPermanent: permament,
-                            changeValue: -6000,
-                            effectDuration: EffectDuration.UntilEachTurnEnd,
-                            activateClass: activateClass));
+                        return CardEffectCommons.IsPermanentExistsOnOpponentBattleAreaDigimon(permanent, card);
                     }
+
+                    yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.ChangeDigimonDPPlayerEffect(
+                        permanentCondition: PermanentCondition,
+                        changeValue: -5000,
+                        effectDuration: EffectDuration.UntilOpponentTurnEnd,
+                        activateClass: activateClass));
                 }
 
             }
@@ -79,7 +79,7 @@ namespace DCGO.CardEffects.BT23
 
                 string EffectDiscription()
                 {
-                    return "[On Play] [When Digivolving] By trashing your top security card, all of your opponent's Digimon get -6000 DP for the turn.";
+                    return "[On Play] By trashing your top security card, all of your opponent's Digimon get -6000 DP for the turn.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -90,7 +90,8 @@ namespace DCGO.CardEffects.BT23
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           (card.Owner.SecurityCards.Count >= 1);
                 }
             }
 
@@ -118,7 +119,8 @@ namespace DCGO.CardEffects.BT23
 
                 bool CanActivateCondition(Hashtable hashtable)
                 {
-                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card);
+                    return CardEffectCommons.IsExistOnBattleAreaDigimon(card) &&
+                           (card.Owner.SecurityCards.Count >= 1);
                 }
             }
 

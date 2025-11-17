@@ -95,9 +95,15 @@ namespace DCGO.CardEffects.BT23
 
                             if (selectedPermanent != null)
                             {
+                                #region hashtable
+                                Hashtable _hashtable = new Hashtable()
+                                {
+                                    {"CardEffect", activateClass}
+                                };
+                                #endregion
                                 yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(
                                     permanent: selectedPermanent,
-                                    hashtable: hashtable,
+                                    hashtable: _hashtable,
                                     toTop: true).PutSecurity()
                                 );
                             }

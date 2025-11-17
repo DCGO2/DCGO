@@ -161,44 +161,40 @@ namespace DCGO.CardEffects.BT23
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    if (CardEffectCommons.HasMatchConditionOwnersHand(card, CanSelectCardCondition))
+                    CardSource selectedCard = null;
+                    SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
+
+                    selectHandEffect.SetUp(
+                        selectPlayer: card.Owner,
+                        canTargetCondition: CanSelectCardCondition,
+                        canTargetCondition_ByPreSelecetedList: null,
+                        canEndSelectCondition: null,
+                        maxCount: 1,
+                        canNoSelect: true,
+                        canEndNotMax: false,
+                        isShowOpponent: true,
+                        selectCardCoroutine: SelectCardCoroutine,
+                        afterSelectCardCoroutine: null,
+                        mode: SelectHandEffect.Mode.Custom,
+                        cardEffect: activateClass);
+
+                    IEnumerator SelectCardCoroutine(CardSource cardSource)
                     {
-                        CardSource selectedCard = null;
-                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionOwnersCardCountInTrash(card, CanSelectCardCondition));
-                        SelectHandEffect selectHandEffect = GManager.instance.GetComponent<SelectHandEffect>();
-
-                        selectHandEffect.SetUp(
-                            selectPlayer: card.Owner,
-                            canTargetCondition: CanSelectCardCondition,
-                            canTargetCondition_ByPreSelecetedList: null,
-                            canEndSelectCondition: null,
-                            maxCount: maxCount,
-                            canNoSelect: true,
-                            canEndNotMax: false,
-                            isShowOpponent: true,
-                            selectCardCoroutine: SelectCardCoroutine,
-                            afterSelectCardCoroutine: null,
-                            mode: SelectHandEffect.Mode.Custom,
-                            cardEffect: activateClass);
-
-                        IEnumerator SelectCardCoroutine(CardSource cardSource)
-                        {
-                            selectedCard = cardSource;
-                            yield return null;
-                        }
-
-                        selectHandEffect.SetUpCustomMessage("Select 1 Red/[CS] tamer to play", "Your opponent is select 1 tamer to play");
-                        selectHandEffect.SetUpCustomMessage_ShowCard("Selected card");
-                        yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
-
-                        if (selectedCard != null) yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
-                            cardSources: new List<CardSource>() { selectedCard },
-                            activateClass: activateClass,
-                            payCost: false,
-                            isTapped: false,
-                            root: SelectCardEffect.Root.Hand,
-                            activateETB: true));
+                        selectedCard = cardSource;
+                        yield return null;
                     }
+
+                    selectHandEffect.SetUpCustomMessage("Select 1 Red/[CS] tamer to play", "Your opponent is select 1 tamer to play");
+                    selectHandEffect.SetUpCustomMessage_ShowCard("Selected card");
+                    yield return ContinuousController.instance.StartCoroutine(selectHandEffect.Activate());
+
+                    if (selectedCard != null) yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.PlayPermanentCards(
+                        cardSources: new List<CardSource>() { selectedCard },
+                        activateClass: activateClass,
+                        payCost: false,
+                        isTapped: false,
+                        root: SelectCardEffect.Root.Hand,
+                        activateETB: true));
                 }
             }
 

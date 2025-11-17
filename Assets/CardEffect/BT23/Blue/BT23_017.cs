@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 // Betamon
 namespace DCGO.CardEffects.BT23
@@ -203,6 +204,8 @@ namespace DCGO.CardEffects.BT23
                                 root: SelectCardEffect.Root.Hand,
                                 activateETB: true));
 
+                            yield return new WaitForSeconds(0.2f);
+
                             Permanent playedDigimon = selectedCard.PermanentOfThisCard();
 
                             #region Can't Digivolve/Delete EoOT
@@ -230,29 +233,68 @@ namespace DCGO.CardEffects.BT23
                                 }
                                 #endregion
 
-                                #region Delete EOOT
+                                #region Delete Digimon Played
 
                                 ActivateClass activateClass1 = new ActivateClass();
-                                activateClass1.SetUpICardEffect("Delete the Digimon", CanUseEndofOpponentTurnCondition, card);
-                                activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, "at the end of your opponent's turn, Delete this digimon");
-                                playedDigimon.EffectList(EffectTiming.OnEndTurn).Add(activateClass1);
+                                activateClass1.SetUpICardEffect("Delete the Digimon", CanUseCondition2, playedDigimon.TopCard);
+                                activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDiscription1());
+                                activateClass1.SetEffectSourcePermanent(playedDigimon);
+                                playedDigimon.UntilOpponentTurnEndEffects.Add(GetCardEffect);
 
-                                bool CanUseEndofOpponentTurnCondition(Hashtable hashtable)
+                                if (!playedDigimon.TopCard.CanNotBeAffected(activateClass))
                                 {
-                                    return CardEffectCommons.IsPermanentExistsOnBattleArea(playedDigimon)
-                                        && CardEffectCommons.IsOpponentTurn(card);
+                                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.GetComponent<Effects>().CreateDebuffEffect(playedDigimon));
                                 }
 
-                                bool CanActivateCondition1(Hashtable hashtable)
+                                string EffectDiscription1()
                                 {
-                                    return CardEffectCommons.IsPermanentExistsOnBattleArea(playedDigimon)
-                                        && playedDigimon.CanBeDestroyedBySkill(activateClass1)
-                                        && !playedDigimon.TopCard.CanNotBeAffected(activateClass1);
+                                    return "[End of Opponents Turn] Delete this Digimon.";
+                                }
+
+                                bool CanUseCondition2(Hashtable hashtable1)
+                                {
+                                    if (CardEffectCommons.IsOpponentTurn(card))
+                                    {
+                                        if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(playedDigimon, playedDigimon.TopCard))
+                                        {
+                                            return true;
+                                        }
+                                    }
+
+                                    return false;
+                                }
+
+                                bool CanActivateCondition1(Hashtable hashtable1)
+                                {
+                                    if (CardEffectCommons.IsPermanentExistsOnBattleArea(playedDigimon))
+                                    {
+                                        if (!playedDigimon.TopCard.CanNotBeAffected(activateClass))
+                                        {
+                                            return true;
+                                        }
+                                    }
+
+                                    return false;
                                 }
 
                                 IEnumerator ActivateCoroutine1(Hashtable _hashtable1)
                                 {
-                                    yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(new List<Permanent>() { playedDigimon }, CardEffectCommons.CardEffectHashtable(activateClass1)).Destroy());
+                                    if (CardEffectCommons.IsPermanentExistsOnBattleArea(playedDigimon))
+                                    {
+                                        yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(
+                                        new List<Permanent>() { playedDigimon },
+                                        CardEffectCommons.CardEffectHashtable(activateClass1)).Destroy());
+                                    }
+                                }
+
+                                ICardEffect GetCardEffect(EffectTiming _timing)
+                                {
+                                    if (_timing == EffectTiming.OnEndTurn)
+                                    {
+                                        return activateClass1;
+                                    }
+
+                                    return null;
                                 }
 
                                 #endregion

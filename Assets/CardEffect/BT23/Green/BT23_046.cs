@@ -125,7 +125,7 @@ namespace DCGO.CardEffects.BT23
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By suspending 1 digimon/tamer, 1 can't unsuspend", CanUseCondition, card);
-                activateClass.SetUpActivateClass(SharedCanActivateCondition, hash => SharedActivateCoroutine(hash, activateClass), -1, false, SharedEffectDiscription("On Play"));
+                activateClass.SetUpActivateClass(SharedCanActivateCondition, hash => SharedActivateCoroutine(hash, activateClass), -1, true, SharedEffectDiscription("On Play"));
                 cardEffects.Add(activateClass);
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -141,7 +141,7 @@ namespace DCGO.CardEffects.BT23
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By suspending 1 digimon/tamer, 1 can't unsuspend", CanUseCondition, card);
-                activateClass.SetUpActivateClass(SharedCanActivateCondition, hash => SharedActivateCoroutine(hash, activateClass), -1, false, SharedEffectDiscription("When Digivolving"));
+                activateClass.SetUpActivateClass(SharedCanActivateCondition, hash => SharedActivateCoroutine(hash, activateClass), -1, true, SharedEffectDiscription("When Digivolving"));
                 cardEffects.Add(activateClass);
 
                 bool CanUseCondition(Hashtable hashtable)

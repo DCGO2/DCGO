@@ -66,7 +66,7 @@ namespace DCGO.CardEffects.BT23
                             isShowOpponent: true,
                             selectCardCoroutine: SelectCardCoroutine,
                             afterSelectCardCoroutine: null,
-                            mode: SelectHandEffect.Mode.Custom,
+                            mode: SelectHandEffect.Mode.Discard,
                             cardEffect: activateClass);
 
                         IEnumerator SelectCardCoroutine(CardSource cardSource)
@@ -83,10 +83,7 @@ namespace DCGO.CardEffects.BT23
 
                         if (selectedHandCard != null)
                         {
-                            IDiscardHand discardHandEffect = new IDiscardHand(selectedHandCard, hashtable);
-                            yield return ContinuousController.instance.StartCoroutine(discardHandEffect.Discard());
-
-                            if (discardHandEffect.discarded && card.Owner.CanAddMemory(activateClass))
+                            if (card.Owner.CanAddMemory(activateClass))
                                 yield return ContinuousController.instance.StartCoroutine(card.Owner.AddMemory(1, activateClass));
                         }
                     }

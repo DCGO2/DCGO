@@ -11,7 +11,6 @@ namespace DCGO.CardEffects.BT23
         {
             List<ICardEffect> cardEffects = new List<ICardEffect>();
 
-
             #region Alternative Digivolution Condition
 
             if (timing == EffectTiming.None)
@@ -263,29 +262,65 @@ namespace DCGO.CardEffects.BT23
             {
                 cardEffects.Add(CardEffectFactory.PlaySelfDigimonAfterBattleSecurityEffect(card: card));
 
-                #region Delete EOOT
+                #region Delete Digimon Played
+
+                Permanent playedDigimon = card.PermanentOfThisCard();
 
                 ActivateClass activateClass1 = new ActivateClass();
-                activateClass1.SetUpICardEffect("Delete the Digimon", CanUseEndofOpponentTurnCondition, card);
-                activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, "at the end of your opponent's turn, Delete this digimon");
-                card.EffectList(EffectTiming.OnEndTurn).Add(activateClass1);
+                activateClass1.SetUpICardEffect("Delete the Digimon", CanUseCondition2, card);
+                activateClass1.SetUpActivateClass(CanActivateCondition1, ActivateCoroutine1, -1, false, EffectDiscription1());
+                activateClass1.SetEffectSourcePermanent(playedDigimon);
+                playedDigimon.UntilOpponentTurnEndEffects.Add(GetCardEffect);
 
-                bool CanUseEndofOpponentTurnCondition(Hashtable hashtable)
+                string EffectDiscription1()
                 {
-                    return CardEffectCommons.IsPermanentExistsOnBattleArea(card.PermanentOfThisCard())
-                        && CardEffectCommons.IsOpponentTurn(card);
+                    return "[End of Opponents Turn] Delete this Digimon.";
                 }
 
-                bool CanActivateCondition1(Hashtable hashtable)
+                bool CanUseCondition2(Hashtable hashtable1)
                 {
-                    return CardEffectCommons.IsPermanentExistsOnBattleArea(card.PermanentOfThisCard())
-                        && card.PermanentOfThisCard().CanBeDestroyedBySkill(activateClass1)
-                        && !card.PermanentOfThisCard().TopCard.CanNotBeAffected(activateClass1);
+                    if (CardEffectCommons.IsOpponentTurn(card))
+                    {
+                        if (CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(playedDigimon, playedDigimon.TopCard))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                bool CanActivateCondition1(Hashtable hashtable1)
+                {
+                    if (CardEffectCommons.IsPermanentExistsOnBattleArea(playedDigimon))
+                    {
+                        if (!playedDigimon.TopCard.CanNotBeAffected(activateClass1))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
                 }
 
                 IEnumerator ActivateCoroutine1(Hashtable _hashtable1)
                 {
-                    yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(new List<Permanent>() { card.PermanentOfThisCard() }, CardEffectCommons.CardEffectHashtable(activateClass1)).Destroy());
+                    if (CardEffectCommons.IsPermanentExistsOnBattleArea(playedDigimon))
+                    {
+                        yield return ContinuousController.instance.StartCoroutine(new DestroyPermanentsClass(
+                        new List<Permanent>() { playedDigimon },
+                        CardEffectCommons.CardEffectHashtable(activateClass1)).Destroy());
+                    }
+                }
+
+                ICardEffect GetCardEffect(EffectTiming _timing)
+                {
+                    if (_timing == EffectTiming.OnEndTurn)
+                    {
+                        return activateClass1;
+                    }
+
+                    return null;
                 }
 
                 #endregion
