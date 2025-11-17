@@ -154,13 +154,10 @@ namespace DCGO.CardEffects.BT23
                 {
                     if (CardEffectCommons.IsPermanentExistsOnOwnerBattleAreaDigimon(permanent, card))
                     {
-                        // Loop thru the trash cards looking for a valid digi target
                         foreach (CardSource cardSource in card.Owner.TrashCards)
                         {
-                            // does it have undead or dark animal trait?
                             if (CanSelectDigiCardCondition(cardSource))
                             {
-                                // can this digimon digivolve into it?
                                 if (cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, true, activateClass))
                                 {
                                     return true;
@@ -192,66 +189,50 @@ namespace DCGO.CardEffects.BT23
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    Permanent selectedPermanent = null;
-                    SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
-
-                    selectPermanentEffect.SetUp(
-                        selectPlayer: card.Owner,
-                        canTargetCondition: CanSelectPermanentCondition,
-                        canTargetCondition_ByPreSelecetedList: null,
-                        canEndSelectCondition: null,
-                        maxCount: 1,
-                        canNoSelect: true,
-                        canEndNotMax: false,
-                        selectPermanentCoroutine: SelectPermanentCoroutine,
-                        afterSelectPermanentCoroutine: null,
-                        mode: SelectPermanentEffect.Mode.Custom,
-                        cardEffect: activateClass);
-
-                    selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to digivolve.", "The opponent is selecting 1 Digimon to digivolve.");
-
-                    yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
-
-                    IEnumerator SelectPermanentCoroutine(Permanent permanent)
+                    if (CardEffectCommons.HasMatchConditionPermanent(CanSelectPermanentCondition))
                     {
-                        selectedPermanent = permanent;
+                        Permanent selectedPermanent = null;
 
-                        yield return null;
-                    }
+                        int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(CanSelectPermanentCondition));
 
-                    bool canSelectTrash = CardEffectCommons.HasMatchConditionOwnersCardInTrash(card, CanSelectDigiCardCondition);
+                        SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
-                    if (canSelectTrash)
-                    {
-                        List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
-                            {
-                                new(message: "Digivolve", value: true, spriteIndex: 0),
-                                new(message: "Do not digivolve", value: false, spriteIndex: 1),
-                            };
+                        selectPermanentEffect.SetUp(
+                            selectPlayer: card.Owner,
+                            canTargetCondition: CanSelectPermanentCondition,
+                            canTargetCondition_ByPreSelecetedList: null,
+                            canEndSelectCondition: null,
+                            maxCount: maxCount,
+                            canNoSelect: true,
+                            canEndNotMax: false,
+                            selectPermanentCoroutine: SelectPermanentCoroutine,
+                            afterSelectPermanentCoroutine: null,
+                            mode: SelectPermanentEffect.Mode.Custom,
+                            cardEffect: activateClass);
 
-                        string selectPlayerMessage = "Digivolve?";
-                        string notSelectPlayerMessage = "The opponent is choosing whether to digivolve.";
+                        selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon to digivolve.", "The opponent is selecting 1 Digimon to digivolve.");
 
-                        GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements,
-                            selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage,
-                            notSelectPlayerMessage: notSelectPlayerMessage);
+                        yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                        yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager
-                            .WaitForEndSelect());
-
-                        if (GManager.instance.userSelectionManager.SelectedBoolValue)
+                        IEnumerator SelectPermanentCoroutine(Permanent permanent)
                         {
-                            yield return ContinuousController.instance.StartCoroutine(
-                                CardEffectCommons.DigivolveIntoHandOrTrashCard(
-                                    targetPermanent: selectedPermanent,
-                                    cardCondition: CanSelectDigiCardCondition,
-                                    payCost: true,
-                                    reduceCostTuple: null,
-                                    fixedCostTuple: null,
-                                    ignoreDigivolutionRequirementFixedCost: -1,
-                                    isHand: false,
-                                    activateClass: activateClass,
-                                    successProcess: null));
+                            selectedPermanent = permanent;
+
+                            yield return null;
+                        }
+
+                        if (selectedPermanent != null)
+                        {
+                            yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DigivolveIntoHandOrTrashCard(
+                                targetPermanent: selectedPermanent,
+                                cardCondition: CanSelectDigiCardCondition,
+                                payCost: true,
+                                reduceCostTuple: null,
+                                fixedCostTuple: null,
+                                ignoreDigivolutionRequirementFixedCost: -1,
+                                isHand: false,
+                                activateClass: activateClass,
+                                successProcess: null));
                         }
                     }
                 }
