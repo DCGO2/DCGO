@@ -17,7 +17,7 @@ namespace DCGO.CardEffects.BT23
             {
                 bool PermanentCondition(Permanent targetPermanent)
                 {
-                    return targetPermanent.TopCard.HasCSTraits || targetPermanent.TopCard.ContainsCardName("Gabumon")
+                    return (targetPermanent.TopCard.HasCSTraits || targetPermanent.TopCard.ContainsCardName("Gabumon"))
                         && targetPermanent.TopCard.HasLevel
                         && targetPermanent.TopCard.IsLevel3;
                 }

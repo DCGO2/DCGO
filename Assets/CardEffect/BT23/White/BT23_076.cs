@@ -73,8 +73,10 @@ namespace DCGO.CardEffects.BT23
                     return CardEffectCommons.IsPermanentExistsOnOwnerBattleArea(permanent, card) &&
                            permanent.IsDigimon &&
                            permanent != card.PermanentOfThisCard() &&
-                           card.Owner.HandCards.Where(DigivolveToCardCondition).Any(cardSource =>
-                               cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass));
+                           (card.Owner.HandCards.Where(DigivolveToCardCondition).Any(cardSource =>
+                               cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass)) ||
+                            card.Owner.TrashCards.Where(DigivolveToCardCondition).Any(cardSource =>
+                               cardSource.CanPlayCardTargetFrame(permanent.PermanentFrame, false, activateClass)));
                 }
 
                 bool DigivolveToCardCondition(CardSource cardSource)
