@@ -32,13 +32,14 @@ namespace DCGO.CardEffects.BT23
 
             #endregion Alternative Digivolution Condition
 
-            #region All Turns - Security
+            #region Opponents Turn - Security
 
             if (timing == EffectTiming.None)
             {
                 bool Condition()
                 {
-                    return CardEffectCommons.IsExistInSecurity(card, false);
+                    return CardEffectCommons.IsExistInSecurity(card, false) &&
+                           CardEffectCommons.IsOpponentTurn(card);
                 }
 
                 bool PermanentCondition(Permanent permanent)
@@ -69,7 +70,7 @@ namespace DCGO.CardEffects.BT23
             {
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By flipping your top face up security card face down, prevent remove from field", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("BT23_AT");
                 cardEffects.Add(activateClass);
 
@@ -135,7 +136,7 @@ namespace DCGO.CardEffects.BT23
 
                 ActivateClass activateClass = new ActivateClass();
                 activateClass.SetUpICardEffect("By flipping your top face up security card face down, prevent remove from field", CanUseCondition, card);
-                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, false, EffectDiscription());
+                activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetHashString("BT23_ESS_AT");
                 activateClass.SetIsInheritedEffect(true);
                 cardEffects.Add(activateClass);
@@ -148,7 +149,7 @@ namespace DCGO.CardEffects.BT23
                 bool CanUseCondition(Hashtable hashtable)
                 {
                     return CardEffectCommons.IsExistOnBattleAreaDigimon(card)
-                        && CardEffectCommons.CanTriggerWhenPermanentRemoveField(hashtable, CanSelectPermanentCondition)
+                        && CardEffectCommons.CanTriggerWhenRemoveField(hashtable, card)
                         && !CardEffectCommons.IsByEffect(hashtable, cardEffect => CardEffectCommons.IsOwnerEffect(cardEffect, card));
                 }
 
