@@ -182,7 +182,7 @@ namespace DCGO.CardEffects.BT23
 
                         IEnumerator SuccessProcess()
                         {
-                            Permanent selectedPermanent = null;
+                            Permanent selectedPermanent = wouldBeRemovedPermaments[0];
                             SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
                             int maxCount = Math.Min(1, CardEffectCommons.MatchConditionPermanentCount(perm => wouldBeRemovedPermaments.Contains(perm)));
 
@@ -209,7 +209,7 @@ namespace DCGO.CardEffects.BT23
                             selectPermanentEffect.SetUpCustomMessage("Select 1 Digimon that will not be removed from battle area.", "The opponent is selecting 1 Digimon that will not be removed from battle area.");
                             yield return ContinuousController.instance.StartCoroutine(selectPermanentEffect.Activate());
 
-                            if (selectedPermanent == null)
+                            if (selectedPermanent != null)
                             {
                                 selectedPermanent.willBeRemoveField = false;
 

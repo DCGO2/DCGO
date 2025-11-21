@@ -98,25 +98,7 @@ namespace DCGO.CardEffects.BT23
 
                 if (canSelectTrash)
                 {
-                    List<SelectionElement<bool>> selectionElements = new List<SelectionElement<bool>>()
-                            {
-                                new(message: "Digivolve", value: true, spriteIndex: 0),
-                                new(message: "Do not digivolve", value: false, spriteIndex: 1),
-                            };
-
-                    string selectPlayerMessage = "Digivolve?";
-                    string notSelectPlayerMessage = "The opponent is choosing whether to digivolve.";
-
-                    GManager.instance.userSelectionManager.SetBoolSelection(selectionElements: selectionElements,
-                        selectPlayer: card.Owner, selectPlayerMessage: selectPlayerMessage,
-                        notSelectPlayerMessage: notSelectPlayerMessage);
-
-                    yield return ContinuousController.instance.StartCoroutine(GManager.instance.userSelectionManager
-                        .WaitForEndSelect());
-
-                    if (GManager.instance.userSelectionManager.SelectedBoolValue)
-                    {
-                        yield return ContinuousController.instance.StartCoroutine(
+                    yield return ContinuousController.instance.StartCoroutine(
                             CardEffectCommons.DigivolveIntoHandOrTrashCard(
                                 targetPermanent: selectedPermanent,
                                 cardCondition: SharedCanSelectDigiCardCondition,
@@ -127,7 +109,6 @@ namespace DCGO.CardEffects.BT23
                                 isHand: false,
                                 activateClass: activateClass,
                                 successProcess: null));
-                    }
                 }
             }
 

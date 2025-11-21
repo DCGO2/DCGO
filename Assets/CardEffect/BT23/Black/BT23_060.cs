@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 //Machinedramon
 namespace DCGO.CardEffects.BT23
@@ -264,7 +265,7 @@ namespace DCGO.CardEffects.BT23
                 {
                     List<ICardEffect> effects = cardSource.EffectList_ForCard(EffectTiming.OnEnterFieldAnyone, cardSource)
                             .Clone()
-                            .Filter(cardEffect => cardEffect != null && cardEffect is ActivateICardEffect && !cardEffect.IsSecurityEffect && cardEffect.IsOnPlay);
+                            .Filter(cardEffect => cardEffect != null && cardEffect is ActivateICardEffect && !cardEffect.IsSecurityEffect && cardEffect.EffectDiscription.StartsWith("[On Play]"));
 
                     if (effects.Count > 0)
                         return true;
@@ -335,7 +336,7 @@ namespace DCGO.CardEffects.BT23
                     {
                         List<ICardEffect> candidateEffects = selectedCard.EffectList_ForCard(EffectTiming.OnEnterFieldAnyone, card)
                             .Clone()
-                            .Filter(cardEffect => cardEffect != null && cardEffect is ActivateICardEffect && !cardEffect.IsSecurityEffect && cardEffect.IsOnPlay);
+                            .Filter(cardEffect => cardEffect != null && cardEffect is ActivateICardEffect && !cardEffect.IsSecurityEffect && cardEffect.EffectDiscription.StartsWith("[On Play]"));
 
                         if (candidateEffects.Count >= 1)
                         {
@@ -391,7 +392,7 @@ namespace DCGO.CardEffects.BT23
 
                             if (selectedEffect != null)
                             {
-                                Hashtable effectHashtable = CardEffectCommons.WhenDigivolvingCheckHashtableOfCard(card);
+                                Hashtable effectHashtable = CardEffectCommons.OnPlayCheckHashtableOfCard(card);
 
                                 if (selectedEffect.CanUse(effectHashtable))
                                 {

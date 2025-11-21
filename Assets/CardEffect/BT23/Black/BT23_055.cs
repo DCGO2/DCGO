@@ -226,7 +226,7 @@ namespace DCGO.CardEffects.BT23
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)
                 {
-                    Permanent selectedPermanent = card.PermanentOfThisCard();
+                    Permanent selectedPermanent = null;
 
                     SelectPermanentEffect selectPermanentEffect = GManager.instance.GetComponent<SelectPermanentEffect>();
 
@@ -250,21 +250,30 @@ namespace DCGO.CardEffects.BT23
 
                     IEnumerator SelectPermanentCoroutine(Permanent permanent)
                     {
+                        selectedPermanent = permanent;
+
+                        yield return null;
+                    }
+
+                    if(selectedPermanent != null)
+                    {
                         yield return ContinuousController.instance.StartCoroutine(CardEffectCommons.DeletePeremanentAndProcessAccordingToResult(
-                                            targetPermanents: new List<Permanent>() { selectedPermanent },
-                                            activateClass: activateClass,
-                                            successProcess: permanents => SuccessProcess(),
-                                            failureProcess: null));
+                            targetPermanents: new List<Permanent>() { selectedPermanent },
+                            activateClass: activateClass,
+                            successProcess: permanents => SuccessProcess(),
+                            failureProcess: null));
                     }
 
                     IEnumerator SuccessProcess()
                     {
-                        selectedPermanent.willBeRemoveField = false;
+                        Permanent cardPermanent = card.PermanentOfThisCard();
 
-                        selectedPermanent.HideDeleteEffect();
-                        selectedPermanent.HideHandBounceEffect();
-                        selectedPermanent.HideDeckBounceEffect();
-                        selectedPermanent.HideWillRemoveFieldEffect();
+                        cardPermanent.willBeRemoveField = false;
+
+                        cardPermanent.HideDeleteEffect();
+                        cardPermanent.HideHandBounceEffect();
+                        cardPermanent.HideDeckBounceEffect();
+                        cardPermanent.HideWillRemoveFieldEffect();
 
                         yield return null;
                     }

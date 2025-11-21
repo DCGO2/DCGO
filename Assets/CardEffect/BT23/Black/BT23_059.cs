@@ -274,7 +274,7 @@ namespace DCGO.CardEffects.BT23
                                 {
                                     if (cardEffect.EffectSourceCard.Owner == card.Owner.Enemy)
                                     {
-                                        return true;
+                                        return cardEffect.EffectSourceCard.IsDigimon;
                                     }
                                 }
                             }
