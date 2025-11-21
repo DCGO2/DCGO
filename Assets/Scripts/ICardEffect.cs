@@ -658,10 +658,11 @@ public abstract class ICardEffect
             {
                 if (!string.IsNullOrEmpty(EffectDiscription))
                 {
+                    Debug.Log($"Effect Description: {EffectDiscription.Contains("[On Play]")}");
                     if (EffectDiscription.Contains("[On Play]"))
                     {
                         Hashtable hashtable = CardEffectCommons.OnPlayCheckHashtableOfCard(EffectSourceCard);
-
+                        Debug.Log($"Can Trigger: {CanTrigger(hashtable)}");
                         if (CanTrigger(hashtable))
                         {
                             return true;

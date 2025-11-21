@@ -81,7 +81,7 @@ namespace DCGO.CardEffects.BT23
 
                 bool HasBelphemonInName(CardSource cardSource)
                 {
-                    return card.ContainsCardName("Belphemon");
+                    return cardSource.ContainsCardName("Belphemon");
                 }
 
                 IEnumerator ActivateCoroutine(Hashtable hashtable)

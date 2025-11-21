@@ -388,9 +388,16 @@ namespace DCGO.CardEffects.BT23
                         {
                             if (!selectedPermament.TopCard.CanNotBeAffected(activateClass))
                             {
+                                #region hashtable
+                                Hashtable _hashtable = new Hashtable()
+                                {
+                                    {"CardEffect", activateClass}
+                                };
+                                #endregion
+
                                 yield return ContinuousController.instance.StartCoroutine(new IPutSecurityPermanent(
                                     permanent: selectedPermament,
-                                    hashtable: hashtable,
+                                    hashtable: _hashtable,
                                     toTop: false).PutSecurity()
                                 );
                             }
