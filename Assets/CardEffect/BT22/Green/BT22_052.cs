@@ -80,7 +80,7 @@ namespace DCGO.CardEffects.BT22
 
                 string EffectDiscription()
                 {
-                    return "[On Play] You may play 1 5000 DP or lower Digimon card from your hand without paying the cost. Then, all of your level 3 or higher Digimon gain ＜Blocker＞ (At blocker timing, by suspending this Digimon, it becomes the attack target.) until your opponent's turn ends.";
+                    return "[On Play] You may play 1 5000 DP or lower Digimon card from your hand without paying the cost. Then, all of your level 3 or higher Digimon gain <Blocker> (At blocker timing, by suspending this Digimon, it becomes the attack target.) until your opponent's turn ends.";
                 }
 
                 bool CanSelectCondition(CardSource cardSource)
@@ -158,7 +158,7 @@ namespace DCGO.CardEffects.BT22
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] You may play 1 5000 DP or lower Digimon card from your hand without paying the cost. Then, all of your level 3 or higher Digimon gain ＜Blocker＞ (At blocker timing, by suspending this Digimon, it becomes the attack target.) until your opponent's turn ends.";
+                    return "[When Digivolving] You may play 1 5000 DP or lower Digimon card from your hand without paying the cost. Then, all of your level 3 or higher Digimon gain <Blocker> (At blocker timing, by suspending this Digimon, it becomes the attack target.) until your opponent's turn ends.";
                 }
 
                 bool CanSelectCondition(CardSource cardSource)

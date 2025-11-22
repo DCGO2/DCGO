@@ -195,7 +195,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>＜Reboot＞ (This Digimon also unsuspends during your opponent's unsuspend phase.)</dd>
+<dd><Reboot> (This Digimon also unsuspends during your opponent's unsuspend phase.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -333,7 +333,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Blocker＞ (At blocker timing, by suspending this Digimon, it becomes the attack target.)<br> [Your Turn] When this Digimon attacks a player, lose 2 memory.</dd>
+<dd><Blocker> (At blocker timing, by suspending this Digimon, it becomes the attack target.)<br> [Your Turn] When this Digimon attacks a player, lose 2 memory.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -408,7 +408,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>＜Reboot＞ (This Digimon also unsuspends during your opponent's unsuspend phase.)</dd>
+<dd><Reboot> (This Digimon also unsuspends during your opponent's unsuspend phase.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -475,7 +475,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Jamming＞ (This Digimon can't be deleted in battles against Security Digimon.)</dd>
+<dd><Jamming> (This Digimon can't be deleted in battles against Security Digimon.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -546,7 +546,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] Lv.3 w/[Agumon] in name: Cost 2<br>[Security] You may play 1 [Agumon] or 1 Tamer card with [Tai Kamiya] in its name from your hand or trash without paying the cost.<br> ＜Blocker＞ (At blocker timing, by suspending this Digimon, it becomes the attack target.)</dd>
+<dd>[Digivolve] Lv.3 w/[Agumon] in name: Cost 2<br>[Security] You may play 1 [Agumon] or 1 Tamer card with [Tai Kamiya] in its name from your hand or trash without paying the cost.<br> <Blocker> (At blocker timing, by suspending this Digimon, it becomes the attack target.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -688,11 +688,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[When Digivolving] ＜De-Digivolve 1＞ 1 of your opponent's Digimon. (Trash the top card. You can't trash past level 3 cards.)</dd>
+<dd>[When Digivolving] <De-Digivolve 1> 1 of your opponent's Digimon. (Trash the top card. You can't trash past level 3 cards.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>＜Reboot＞ (This Digimon also unsuspends during your opponent's unsuspend phase.)</dd>
+<dd><Reboot> (This Digimon also unsuspends during your opponent's unsuspend phase.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -759,11 +759,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] Lv.4 w/[Greymon] in name: Cost 3<br>＜Blocker＞ (At blocker timing, by suspending this Digimon, it becomes the attack target.)</dd>
+<dd>[Digivolve] Lv.4 w/[Greymon] in name: Cost 3<br><Blocker> (At blocker timing, by suspending this Digimon, it becomes the attack target.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>＜S Attack +1＞ (This Digimon checks 1 additional card.)</dd>
+<dd><S Attack +1> (This Digimon checks 1 additional card.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -830,11 +830,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] Lv.5 w/[Greymon] in name: Cost 3<br>[Hand][Counter] ＜Blast Digivolve＞ (One of your Digimon may digivolve into this card without paying the cost.)<br> ＜Blocker＞<br> [All Turns][Once Per Turn] When a card is removed from a security stack, you may unsuspend this Digimon.</dd>
+<dd>[Digivolve] Lv.5 w/[Greymon] in name: Cost 3<br>[Hand][Counter] <Blast Digivolve> (One of your Digimon may digivolve into this card without paying the cost.)<br> <Blocker><br> [All Turns][Once Per Turn] When a card is removed from a security stack, you may unsuspend this Digimon.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>＜Overflow (-4)＞ (When this card would move from the battle area or under a card to another area, lose 4 memory.)</dd>
+<dd><Overflow (-4)> (When this card would move from the battle area or under a card to another area, lose 4 memory.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -901,7 +901,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Blocker＞ (At blocker timing, by suspending this Digimon, it becomes the attack target.<br> [When Digivolving] Delete 1 of your opponent's Digimon with a play cost of 8 or less.</dd>
+<dd><Blocker> (At blocker timing, by suspending this Digimon, it becomes the attack target.<br> [When Digivolving] Delete 1 of your opponent's Digimon with a play cost of 8 or less.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -971,7 +971,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Start of Your Turn] If you have 2 or fewer memory, set it to 3.<br> [All Turns] When an attack target is switched, by suspending this Tamer, ＜Draw 1＞ and 1 of your Digimon gets +2000 DP until the end of the turn.</dd>
+<dd>[Start of Your Turn] If you have 2 or fewer memory, set it to 3.<br> [All Turns] When an attack target is switched, by suspending this Tamer, <Draw 1> and 1 of your Digimon gets +2000 DP until the end of the turn.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1111,7 +1111,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Main] ＜De-Digivolve 3＞ 1 of your opponent's Digimon. Then, until the end of your opponent's turn, 1 of your opponent's Digimon gains "[Start of Your Main Phase] This Digimon attacks."</dd>
+<dd>[Main] <De-Digivolve 3> 1 of your opponent's Digimon. Then, until the end of your opponent's turn, 1 of your opponent's Digimon gains "[Start of Your Main Phase] This Digimon attacks."</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1119,7 +1119,7 @@
 </dl>
 <dl>
 <dt>Securityeffect</dt>
-<dd>[Security] ＜De-Digivolve 3＞ 1 of your opponent's Digimon. (Trash up to 3 cards from the top. You can't trash past level 3 cards.)</dd>
+<dd>[Security] <De-Digivolve 3> 1 of your opponent's Digimon. (Trash up to 3 cards from the top. You can't trash past level 3 cards.)</dd>
 </dl>
 <dl>
 <dt>Notes</dt>

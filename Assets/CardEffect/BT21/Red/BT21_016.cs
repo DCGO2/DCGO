@@ -147,7 +147,7 @@ namespace DCGO.CardEffects.BT21
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
-                    => "[On Deletion] You may place 1 Digimon card with the [Xros Heart]/[Blue Flare]/[Hero] trait from your hand or trash under any of your Tamers. Then,＜Save＞";
+                    => "[On Deletion] You may place 1 Digimon card with the [Xros Heart]/[Blue Flare]/[Hero] trait from your hand or trash under any of your Tamers. Then,<Save>";
 
                 bool CanUseCondition(Hashtable hashtable)
                 {

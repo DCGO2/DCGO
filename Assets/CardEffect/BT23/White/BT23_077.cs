@@ -104,13 +104,13 @@ namespace DCGO.CardEffects.BT23
             if (timing == EffectTiming.OnTappedAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("＜De-Digivolve 1＞ 1 of your opponent's Digimon", CanUseCondition, card);
+                activateClass.SetUpICardEffect("<De-Digivolve 1> 1 of your opponent's Digimon", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDescription());
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
                 {
-                    return "[All Turns] When this Digimon suspends, ＜De-Digivolve 1＞ 1 of your opponent's Digimon.";
+                    return "[All Turns] When this Digimon suspends, <De-Digivolve 1> 1 of your opponent's Digimon.";
                 }
 
                 bool OpponentsDigimon(Permanent permanent)

@@ -22,7 +22,7 @@ namespace DCGO.CardEffects.EX10
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
-                    => "[On Play] By placing 1 [Bagra Army] trait Digimon card from your hand or trash under any of your Tamers, ＜Draw 1＞ ";
+                    => "[On Play] By placing 1 [Bagra Army] trait Digimon card from your hand or trash under any of your Tamers, <Draw 1> ";
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
@@ -189,7 +189,7 @@ namespace DCGO.CardEffects.EX10
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
-                    => "[On Deletion] You may play 1 [Tuwarmon] with a play cost of 7 or less from under your Tamers without paying the cost. Then, ＜Save＞";
+                    => "[On Deletion] You may play 1 [Tuwarmon] with a play cost of 7 or less from under your Tamers without paying the cost. Then, <Save>";
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
@@ -332,7 +332,7 @@ namespace DCGO.CardEffects.EX10
 
                 string EffectDiscription()
                 {
-                    return "When effects trash this card from a [Bagra Army] trait Digimon's digivolution cards, ＜Draw 1＞";
+                    return "When effects trash this card from a [Bagra Army] trait Digimon's digivolution cards, <Draw 1>";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

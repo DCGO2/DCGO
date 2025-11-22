@@ -125,7 +125,7 @@ namespace DCGO.CardEffects.EX10
 
             string SharedEffectDiscription(string tag)
             {
-                return $"[{tag}] [Once Per Turn] By trashing any 1 digivolution card of your [Bagra Army] trait Digimon, 1 of your [Bagra Army] trait Digimon gains ＜Blocker＞ and ＜Retaliation＞ until your opponent's turn ends.";
+                return $"[{tag}] [Once Per Turn] By trashing any 1 digivolution card of your [Bagra Army] trait Digimon, 1 of your [Bagra Army] trait Digimon gains <Blocker> and <Retaliation> until your opponent's turn ends.";
             }
 
             bool CanSelectSource(CardSource source)
@@ -371,7 +371,7 @@ namespace DCGO.CardEffects.EX10
 
                 string EffectDiscription()
                 {
-                    return "When effects trash this card from a [Bagra Army] trait Digimon's digivolution cards, ＜Draw 1＞";
+                    return "When effects trash this card from a [Bagra Army] trait Digimon's digivolution cards, <Draw 1>";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

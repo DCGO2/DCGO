@@ -47,7 +47,7 @@ namespace DCGO.CardEffects.BT23
 
                 string EffectDiscription()
                 {
-                    return "[Main] ＜Draw 1＞ Then, place this card in the battle area.";
+                    return "[Main] <Draw 1> Then, place this card in the battle area.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -77,7 +77,7 @@ namespace DCGO.CardEffects.BT23
 
                 string EffectDiscription()
                 {
-                    return "[Your Turn] When any of your Digimon digivolve into a Digimon with [Huckmon] or [Jesmon] in its name, ＜Delay＞ \r\n・You may play 1 card with [Sistermon] in its name from your hand or trash without paying the cost.";
+                    return "[Your Turn] When any of your Digimon digivolve into a Digimon with [Huckmon] or [Jesmon] in its name, <Delay> \r\n・You may play 1 card with [Sistermon] in its name from your hand or trash without paying the cost.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

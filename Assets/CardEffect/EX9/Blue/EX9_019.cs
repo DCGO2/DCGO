@@ -344,7 +344,7 @@ namespace DCGO.CardEffects.EX9
 
                 string EffectDiscription()
                 {
-                    return "[When Attacking] [Once Per Turn] ＜De-Digivolve 1＞ 1 of your opponent's Digimon";
+                    return "[When Attacking] [Once Per Turn] <De-Digivolve 1> 1 of your opponent's Digimon";
                 }
 
                 bool CanSelectPermanentCondition(Permanent permanent)

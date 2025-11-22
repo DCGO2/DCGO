@@ -130,7 +130,7 @@ namespace DCGO.CardEffects.BT23
 
                 string EffectDiscription()
                 {
-                    return "[Your Turn] When one of your [CS] trait Digimon attacks, ＜Delay＞ \r\n・Return 1 of your opponent's suspended Digimon to the bottom of the deck.";
+                    return "[Your Turn] When one of your [CS] trait Digimon attacks, <Delay> \r\n・Return 1 of your opponent's suspended Digimon to the bottom of the deck.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

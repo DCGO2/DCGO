@@ -45,7 +45,7 @@ namespace DCGO.CardEffects.EX10
             #region On Play/When Digivolving Shared
             string EffectDiscription(string tag)
             {
-                return $"[{tag}] You may play 1 play cost 4 or lower card with ＜Save＞ in its text from under your Tamers without paying the cost.";
+                return $"[{tag}] You may play 1 play cost 4 or lower card with <Save> in its text from under your Tamers without paying the cost.";
             }
 
             bool CanActivateCondition(Hashtable hashtable)

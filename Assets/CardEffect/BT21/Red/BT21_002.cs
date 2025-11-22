@@ -23,7 +23,7 @@ namespace DCGO.CardEffects.BT21
                 cardEffects.Add(activateClass);
 
                 string EffectDescription()
-                    => "[When Attacking] [Once Per Turn] If this Digimon has [Gammamon] in its text or the [Hero] trait, ＜Draw 1＞ (Draw 1 card from your deck).";
+                    => "[When Attacking] [Once Per Turn] If this Digimon has [Gammamon] in its text or the [Hero] trait, <Draw 1> (Draw 1 card from your deck).";
 
                 bool CanUseCondition(Hashtable hashtable)
                 {

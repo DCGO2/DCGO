@@ -43,7 +43,7 @@ namespace DCGO.CardEffects.BT17
                 string EffectDiscription()
                 {
                     return
-                        "[On Play] Your opponent may play 1 Tamer card from their hand without paying the cost. If they don't, you may play 1 white Tamer card with a play cost of 4 or less from your hand without paying the cost. Then, ＜De-Digivolve1＞ 1 of your opponent's Digimon for every 2 Tamers.";
+                        "[On Play] Your opponent may play 1 Tamer card from their hand without paying the cost. If they don't, you may play 1 white Tamer card with a play cost of 4 or less from your hand without paying the cost. Then, <De-Digivolve1> 1 of your opponent's Digimon for every 2 Tamers.";
                 }
 
                 bool CanSelectTamerOpponentCondition(CardSource cardSource)
@@ -270,7 +270,7 @@ namespace DCGO.CardEffects.BT17
                 string EffectDiscription()
                 {
                     return
-                        "[When Digivolving] Your opponent may play 1 Tamer card from their hand without paying the cost. If they don't, you may play 1 white Tamer card with a play cost of 4 or less from your hand without paying the cost. Then, ＜De-Digivolve1＞ 1 of your opponent's Digimon for every 2 Tamers.";
+                        "[When Digivolving] Your opponent may play 1 Tamer card from their hand without paying the cost. If they don't, you may play 1 white Tamer card with a play cost of 4 or less from your hand without paying the cost. Then, <De-Digivolve1> 1 of your opponent's Digimon for every 2 Tamers.";
                 }
 
                 bool CanSelectTamerOpponentCondition(CardSource cardSource)

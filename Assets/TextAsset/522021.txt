@@ -1101,7 +1101,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] [Hawkmon]: Cost 2<br>＜Jamming＞ <br>[On Play] [When Digivolving] Delete 1 of your opponent's Digimon with 3000 DP or less.</dd>
+<dd>[Digivolve] [Hawkmon]: Cost 2<br><Jamming> <br>[On Play] [When Digivolving] Delete 1 of your opponent's Digimon with 3000 DP or less.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -1181,7 +1181,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] [Gatomon]: Cost 0<br>＜Raid＞＜Armor Purge＞ <br>[When Digivolving] 1 of your opponent's Digimon gets -3000 DP for the turn.</dd>
+<dd>[Digivolve] [Gatomon]: Cost 0<br><Raid><Armor Purge> <br>[When Digivolving] 1 of your opponent's Digimon gets -3000 DP for the turn.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -1261,7 +1261,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] Lv.4 w/[SoC] trait: Cost 3<br>＜Retaliation＞ <br>[End of Opponent’s Turn] By deleting this Digimon, delete 1 of your opponent's Digimon with the lowest DP. <br>[On Deletion] You may play 1 [Loogamon] or [Eiji Nagasumi] from your trash without paying the cost.</dd>
+<dd>[Digivolve] Lv.4 w/[SoC] trait: Cost 3<br><Retaliation> <br>[End of Opponent’s Turn] By deleting this Digimon, delete 1 of your opponent's Digimon with the lowest DP. <br>[On Deletion] You may play 1 [Loogamon] or [Eiji Nagasumi] from your trash without paying the cost.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -1341,7 +1341,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] [Garudamon]: Cost 0<br>[On Play] [When Digivolving] You may return 1 red Digimon card from your trash to the hand. Then, if [Garudamon] or [X Antibody] is in this Digimon's digivolution cards, delete 1 of your opponent’s Digimon with as much or less DP as this Digimon. <br>[Your Turn] [Once Per Turn] When a red card returns from your trash to the hand, 1 of your Digimon gains ＜Rush＞ for the turn.</dd>
+<dd>[Digivolve] [Garudamon]: Cost 0<br>[On Play] [When Digivolving] You may return 1 red Digimon card from your trash to the hand. Then, if [Garudamon] or [X Antibody] is in this Digimon's digivolution cards, delete 1 of your opponent’s Digimon with as much or less DP as this Digimon. <br>[Your Turn] [Once Per Turn] When a red card returns from your trash to the hand, 1 of your Digimon gains <Rush> for the turn.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -1421,11 +1421,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[DNA Digivolution] Red Lv.4 + yellow Lv.4: Cost 0 Digivolve unsuspended with the 2 specified Digimon stacked on top of each other.<br>＜Partition (red Lv.4 & yellow Lv.4)＞ <br>[When Digivolving] If DNA digivolving, 1 of your opponent's Digimon gets -7000 DP until the end of their turn. <br>[When Digivolving] [When Attacking] Delete 1 of your opponent's Digimon with 4000 DP or less.</dd>
+<dd>[DNA Digivolution] Red Lv.4 + yellow Lv.4: Cost 0 Digivolve unsuspended with the 2 specified Digimon stacked on top of each other.<br><Partition (red Lv.4 & yellow Lv.4)> <br>[When Digivolving] If DNA digivolving, 1 of your opponent's Digimon gets -7000 DP until the end of their turn. <br>[When Digivolving] [When Attacking] Delete 1 of your opponent's Digimon with 4000 DP or less.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
-<dd>＜Partition (red Lv.4 & yellow Lv.4)＞ (When this Digimon with each of the specified digivolution cards would leave the battle area other than by your effects or a battle, you may play 1 each of the specified cards without paying the costs.)</dd>
+<dd><Partition (red Lv.4 & yellow Lv.4)> (When this Digimon with each of the specified digivolution cards would leave the battle area other than by your effects or a battle, you may play 1 each of the specified cards without paying the costs.)</dd>
 </dl>
 <dl>
 <dt>SecurityEffect</dt>
@@ -1503,11 +1503,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[DNA Digivolution] Red Lv.4 + yellow Lv.4: Cost 0 Digivolve unsuspended with the 2 specified Digimon stacked on top of each other.<br>＜Partition (red Lv.4 & yellow Lv.4)＞ <br>[When Digivolving] If DNA digivolving, 1 of your opponent's Digimon gets -7000 DP until the end of their turn. <br>[When Digivolving] [When Attacking] Delete 1 of your opponent's Digimon with 4000 DP or less.</dd>
+<dd>[DNA Digivolution] Red Lv.4 + yellow Lv.4: Cost 0 Digivolve unsuspended with the 2 specified Digimon stacked on top of each other.<br><Partition (red Lv.4 & yellow Lv.4)> <br>[When Digivolving] If DNA digivolving, 1 of your opponent's Digimon gets -7000 DP until the end of their turn. <br>[When Digivolving] [When Attacking] Delete 1 of your opponent's Digimon with 4000 DP or less.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
-<dd>＜Partition (red Lv.4 & yellow Lv.4)＞ (When this Digimon with each of the specified digivolution cards would leave the battle area other than by your effects or a battle, you may play 1 each of the specified cards without paying the costs.)</dd>
+<dd><Partition (red Lv.4 & yellow Lv.4)> (When this Digimon with each of the specified digivolution cards would leave the battle area other than by your effects or a battle, you may play 1 each of the specified cards without paying the costs.)</dd>
 </dl>
 <dl>
 <dt>SecurityEffect</dt>
@@ -1583,11 +1583,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] [Silphymon]: Cost 3<br>[Hand] [Counter] ＜Blast Digivolve＞ (One of your Digimon may digivolve into this card without paying the cost.) <br>[On Play] [When Digivolving] All of your opponent's Digimon get -5000 DP for the turn.<br>[All Turns] [Once Per Turn] When a card is removed from a security stack, delete 1 of your opponent's 8000 DP or lower Digimon. If this effect didn't delete, this Digimon gains ＜Security A. +1＞ until the end of your turn.</dd>
+<dd>[Digivolve] [Silphymon]: Cost 3<br>[Hand] [Counter] <Blast Digivolve> (One of your Digimon may digivolve into this card without paying the cost.) <br>[On Play] [When Digivolving] All of your opponent's Digimon get -5000 DP for the turn.<br>[All Turns] [Once Per Turn] When a card is removed from a security stack, delete 1 of your opponent's 8000 DP or lower Digimon. If this effect didn't delete, this Digimon gains <Security A. +1> until the end of your turn.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
-<dd>＜Overflow (-4)＞ (As this card moves from the battle area or under a card to another area, lose 4 memory.)</dd>
+<dd><Overflow (-4)> (As this card moves from the battle area or under a card to another area, lose 4 memory.)</dd>
 </dl>
 <dl>
 <dt>SecurityEffect</dt>
@@ -1666,11 +1666,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] [Silphymon]: Cost 3<br>[Hand] [Counter] ＜Blast Digivolve＞ (One of your Digimon may digivolve into this card without paying the cost.) <br>[On Play] [When Digivolving] All of your opponent's Digimon get -5000 DP for the turn.<br>[All Turns] [Once Per Turn] When a card is removed from a security stack, delete 1 of your opponent's 8000 DP or lower Digimon. If this effect didn't delete, this Digimon gains ＜Security A. +1＞ until the end of your turn.</dd>
+<dd>[Digivolve] [Silphymon]: Cost 3<br>[Hand] [Counter] <Blast Digivolve> (One of your Digimon may digivolve into this card without paying the cost.) <br>[On Play] [When Digivolving] All of your opponent's Digimon get -5000 DP for the turn.<br>[All Turns] [Once Per Turn] When a card is removed from a security stack, delete 1 of your opponent's 8000 DP or lower Digimon. If this effect didn't delete, this Digimon gains <Security A. +1> until the end of your turn.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
-<dd>＜Overflow (-4)＞ (As this card moves from the battle area or under a card to another area, lose 4 memory.)</dd>
+<dd><Overflow (-4)> (As this card moves from the battle area or under a card to another area, lose 4 memory.)</dd>
 </dl>
 <dl>
 <dt>SecurityEffect</dt>
@@ -1749,11 +1749,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] [Silphymon]: Cost 3<br>[Hand] [Counter] ＜Blast Digivolve＞ (One of your Digimon may digivolve into this card without paying the cost.) <br>[On Play] [When Digivolving] All of your opponent's Digimon get -5000 DP for the turn.<br>[All Turns] [Once Per Turn] When a card is removed from a security stack, delete 1 of your opponent's 8000 DP or lower Digimon. If this effect didn't delete, this Digimon gains ＜Security A. +1＞ until the end of your turn.</dd>
+<dd>[Digivolve] [Silphymon]: Cost 3<br>[Hand] [Counter] <Blast Digivolve> (One of your Digimon may digivolve into this card without paying the cost.) <br>[On Play] [When Digivolving] All of your opponent's Digimon get -5000 DP for the turn.<br>[All Turns] [Once Per Turn] When a card is removed from a security stack, delete 1 of your opponent's 8000 DP or lower Digimon. If this effect didn't delete, this Digimon gains <Security A. +1> until the end of your turn.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
-<dd>＜Overflow (-4)＞ (As this card moves from the battle area or under a card to another area, lose 4 memory.)</dd>
+<dd><Overflow (-4)> (As this card moves from the battle area or under a card to another area, lose 4 memory.)</dd>
 </dl>
 <dl>
 <dt>SecurityEffect</dt>
@@ -1830,7 +1830,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] [Goldramon]: Cost 2<br>＜Raid＞ <br>[When Digivolving] [When Attacking] You may use 1 [God Flame] or 1 Option card with the [Four Great Dragons] trait from your hand without paying the cost. <br>[All Turns] This Digimon gains all effects of [Goldramon] in this Digimon's digivolution cards.</dd>
+<dd>[Digivolve] [Goldramon]: Cost 2<br><Raid> <br>[When Digivolving] [When Attacking] You may use 1 [God Flame] or 1 Option card with the [Four Great Dragons] trait from your hand without paying the cost. <br>[All Turns] This Digimon gains all effects of [Goldramon] in this Digimon's digivolution cards.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -1910,7 +1910,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] [Phoenixmon]: Cost 2<br>[When Digivolving] ＜Blitz＞ <br>[Your Turn] While [Phoenixmon] or [X Antibody] is in this Digimon's digivolution cards, attach [End of Attack] to all of this Digimon's [On Deletion] effects. <br>[On Deletion] You may play 1 11000 DP or lower red Digimon card with [Avian], [Bird], [Beast], [Animal] or [Sovereign], other than [Sea Animal], in one of its traits from your hand without paying the cost. Delete 1 of your opponent's Digimon with as much or less DP as the Digimon this effect played.</dd>
+<dd>[Digivolve] [Phoenixmon]: Cost 2<br>[When Digivolving] <Blitz> <br>[Your Turn] While [Phoenixmon] or [X Antibody] is in this Digimon's digivolution cards, attach [End of Attack] to all of this Digimon's [On Deletion] effects. <br>[On Deletion] You may play 1 11000 DP or lower red Digimon card with [Avian], [Bird], [Beast], [Animal] or [Sovereign], other than [Sea Animal], in one of its traits from your hand without paying the cost. Delete 1 of your opponent's Digimon with as much or less DP as the Digimon this effect played.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -2152,7 +2152,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] [Veemon]: Cost 2<br>＜Raid＞ <br>[On Play] [When Digivolving] 1 of your Digimon can't be deleted in battle until the end of your opponent's turn.</dd>
+<dd>[Digivolve] [Veemon]: Cost 2<br><Raid> <br>[On Play] [When Digivolving] 1 of your Digimon can't be deleted in battle until the end of your opponent's turn.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -2233,7 +2233,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] [Patamon]: Cost 2<br>＜Blocker＞ <br>[On Play] [When Digivolving] Unsuspend 1 of your level 4 or lower Digimon.</dd>
+<dd>[Digivolve] [Patamon]: Cost 2<br><Blocker> <br>[On Play] [When Digivolving] Unsuspend 1 of your level 4 or lower Digimon.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -2316,7 +2316,7 @@
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
-<dd>＜Jamming＞ (This Digimon can't be deleted in battles against Security Digimon.)</dd>
+<dd><Jamming> (This Digimon can't be deleted in battles against Security Digimon.)</dd>
 </dl>
 <dl>
 <dt>SecurityEffect</dt>
@@ -2392,7 +2392,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] [Wormmon]: Cost 2<br>＜Blocker＞＜Armor Purge＞ <br>[All Turns] [Once Per Turn] When an opponent's Digimon becomes suspended, trash the top digivolution card of 1 of their Digimon. Then, 1 of their Digimon with no digivolution cards can't attack or block until the end of their turn.</dd>
+<dd>[Digivolve] [Wormmon]: Cost 2<br><Blocker><Armor Purge> <br>[All Turns] [Once Per Turn] When an opponent's Digimon becomes suspended, trash the top digivolution card of 1 of their Digimon. Then, 1 of their Digimon with no digivolution cards can't attack or block until the end of their turn.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -2472,7 +2472,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] [Patamon]: Cost 2<br>＜Armor Purge＞ <br>[When Attacking] Trash any 1 digivolution card of 1 of your opponent's Digimon. Then, 1 of their Digimon with no digivolution cards gains ＜Security A. -1＞ until the end of their turn.</dd>
+<dd>[Digivolve] [Patamon]: Cost 2<br><Armor Purge> <br>[When Attacking] Trash any 1 digivolution card of 1 of your opponent's Digimon. Then, 1 of their Digimon with no digivolution cards gains <Security A. -1> until the end of their turn.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -2636,7 +2636,7 @@
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
-<dd>[Opponent's Turn] All of your Digimon with the [Angel], [Archangel] or [Three Great Angels] trait gain ＜Blocker＞.</dd>
+<dd>[Opponent's Turn] All of your Digimon with the [Angel], [Archangel] or [Three Great Angels] trait gain <Blocker>.</dd>
 </dl>
 <dl>
 <dt>SecurityEffect</dt>
@@ -2713,11 +2713,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[DNA Digivolution] Blue Lv.4 + green Lv.4: Cost 0 Digivolve unsuspended with the 2 specified Digimon stacked on top of each other.<br>＜Partition (blue Lv.4 & green Lv.4)＞ <br>[When Digivolving] Suspend all of your opponent's Digimon with as many or fewer digivolution cards as this Digimon. Then, if DNA digivolving, none of their Digimon can unsuspend until the end of their turn. <br>[When Attacking] [Once Per Turn] Suspend 1 of your opponent's unsuspended Digimon. If this effect didn't suspend, unsuspend this Digimon.</dd>
+<dd>[DNA Digivolution] Blue Lv.4 + green Lv.4: Cost 0 Digivolve unsuspended with the 2 specified Digimon stacked on top of each other.<br><Partition (blue Lv.4 & green Lv.4)> <br>[When Digivolving] Suspend all of your opponent's Digimon with as many or fewer digivolution cards as this Digimon. Then, if DNA digivolving, none of their Digimon can unsuspend until the end of their turn. <br>[When Attacking] [Once Per Turn] Suspend 1 of your opponent's unsuspended Digimon. If this effect didn't suspend, unsuspend this Digimon.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
-<dd>＜Partition (blue Lv.4 & green Lv.4)＞ (When this Digimon with each of the specified digivolution cards would leave the battle area other than by your effects or a battle, you may play 1 each of the specified cards without paying the costs.)</dd>
+<dd><Partition (blue Lv.4 & green Lv.4)> (When this Digimon with each of the specified digivolution cards would leave the battle area other than by your effects or a battle, you may play 1 each of the specified cards without paying the costs.)</dd>
 </dl>
 <dl>
 <dt>SecurityEffect</dt>
@@ -2796,11 +2796,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[DNA Digivolution] Blue Lv.4 + green Lv.4: Cost 0 Digivolve unsuspended with the 2 specified Digimon stacked on top of each other.<br>＜Partition (blue Lv.4 & green Lv.4)＞ <br>[When Digivolving] Suspend all of your opponent's Digimon with as many or fewer digivolution cards as this Digimon. Then, if DNA digivolving, none of their Digimon can unsuspend until the end of their turn. <br>[When Attacking] [Once Per Turn] Suspend 1 of your opponent's unsuspended Digimon. If this effect didn't suspend, unsuspend this Digimon.</dd>
+<dd>[DNA Digivolution] Blue Lv.4 + green Lv.4: Cost 0 Digivolve unsuspended with the 2 specified Digimon stacked on top of each other.<br><Partition (blue Lv.4 & green Lv.4)> <br>[When Digivolving] Suspend all of your opponent's Digimon with as many or fewer digivolution cards as this Digimon. Then, if DNA digivolving, none of their Digimon can unsuspend until the end of their turn. <br>[When Attacking] [Once Per Turn] Suspend 1 of your opponent's unsuspended Digimon. If this effect didn't suspend, unsuspend this Digimon.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
-<dd>＜Partition (blue Lv.4 & green Lv.4)＞ (When this Digimon with each of the specified digivolution cards would leave the battle area other than by your effects or a battle, you may play 1 each of the specified cards without paying the costs.)</dd>
+<dd><Partition (blue Lv.4 & green Lv.4)> (When this Digimon with each of the specified digivolution cards would leave the battle area other than by your effects or a battle, you may play 1 each of the specified cards without paying the costs.)</dd>
 </dl>
 <dl>
 <dt>SecurityEffect</dt>
@@ -2877,11 +2877,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] [Shakkoumon]/[Zudomon]: Cost 3<br>[Hand] [Counter] ＜Blast Digivolve＞ (One of your Digimon may digivolve into this card without paying the cost.) <br>[On Play] [When Digivolving] ＜De-Digivolve 2＞ 1 of your opponent's Digimon. Then, none of their Digimon with 1 or fewer digivolution cards can suspend until the end of their turn. <br>[When Attacking] Delete 1 of your opponent's Digimon with 1 or fewer digivolution cards.</dd>
+<dd>[Digivolve] [Shakkoumon]/[Zudomon]: Cost 3<br>[Hand] [Counter] <Blast Digivolve> (One of your Digimon may digivolve into this card without paying the cost.) <br>[On Play] [When Digivolving] <De-Digivolve 2> 1 of your opponent's Digimon. Then, none of their Digimon with 1 or fewer digivolution cards can suspend until the end of their turn. <br>[When Attacking] Delete 1 of your opponent's Digimon with 1 or fewer digivolution cards.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
-<dd>＜Overflow (-4)＞ (As this card moves from the battle area or under a card to another area, lose 4 memory.)</dd>
+<dd><Overflow (-4)> (As this card moves from the battle area or under a card to another area, lose 4 memory.)</dd>
 </dl>
 <dl>
 <dt>SecurityEffect</dt>
@@ -2959,11 +2959,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] [Shakkoumon]/[Zudomon]: Cost 3<br>[Hand] [Counter] ＜Blast Digivolve＞ (One of your Digimon may digivolve into this card without paying the cost.) <br>[On Play] [When Digivolving] ＜De-Digivolve 2＞ 1 of your opponent's Digimon. Then, none of their Digimon with 1 or fewer digivolution cards can suspend until the end of their turn. <br>[When Attacking] Delete 1 of your opponent's Digimon with 1 or fewer digivolution cards.</dd>
+<dd>[Digivolve] [Shakkoumon]/[Zudomon]: Cost 3<br>[Hand] [Counter] <Blast Digivolve> (One of your Digimon may digivolve into this card without paying the cost.) <br>[On Play] [When Digivolving] <De-Digivolve 2> 1 of your opponent's Digimon. Then, none of their Digimon with 1 or fewer digivolution cards can suspend until the end of their turn. <br>[When Attacking] Delete 1 of your opponent's Digimon with 1 or fewer digivolution cards.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
-<dd>＜Overflow (-4)＞ (As this card moves from the battle area or under a card to another area, lose 4 memory.)</dd>
+<dd><Overflow (-4)> (As this card moves from the battle area or under a card to another area, lose 4 memory.)</dd>
 </dl>
 <dl>
 <dt>SecurityEffect</dt>
@@ -3041,11 +3041,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] [Shakkoumon]/[Zudomon]: Cost 3<br>[Hand] [Counter] ＜Blast Digivolve＞ (One of your Digimon may digivolve into this card without paying the cost.) <br>[On Play] [When Digivolving] ＜De-Digivolve 2＞ 1 of your opponent's Digimon. Then, none of their Digimon with 1 or fewer digivolution cards can suspend until the end of their turn. <br>[When Attacking] Delete 1 of your opponent's Digimon with 1 or fewer digivolution cards.</dd>
+<dd>[Digivolve] [Shakkoumon]/[Zudomon]: Cost 3<br>[Hand] [Counter] <Blast Digivolve> (One of your Digimon may digivolve into this card without paying the cost.) <br>[On Play] [When Digivolving] <De-Digivolve 2> 1 of your opponent's Digimon. Then, none of their Digimon with 1 or fewer digivolution cards can suspend until the end of their turn. <br>[When Attacking] Delete 1 of your opponent's Digimon with 1 or fewer digivolution cards.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
-<dd>＜Overflow (-4)＞ (As this card moves from the battle area or under a card to another area, lose 4 memory.)</dd>
+<dd><Overflow (-4)> (As this card moves from the battle area or under a card to another area, lose 4 memory.)</dd>
 </dl>
 <dl>
 <dt>SecurityEffect</dt>
@@ -3121,11 +3121,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] [Imperialdramon: Dragon Mode]: Cost 2<br>[Hand] [Counter] ＜Blast Digivolve＞ (One of your Digimon may digivolve into this card without paying the cost.) <br>[On Play] [When Digivolving] Return 1 of your opponent's Digimon with as many or fewer digivolution cards as this Digimon to the bottom of the deck. <br>[End of Attack] [Once Per Turn] Unsuspend this Digimon. Then, if [Imperialdramon: Dragon Mode] is in this Digimon's digivolution cards, return 1 of your opponent's suspended Digimon to the bottom of the deck.</dd>
+<dd>[Digivolve] [Imperialdramon: Dragon Mode]: Cost 2<br>[Hand] [Counter] <Blast Digivolve> (One of your Digimon may digivolve into this card without paying the cost.) <br>[On Play] [When Digivolving] Return 1 of your opponent's Digimon with as many or fewer digivolution cards as this Digimon to the bottom of the deck. <br>[End of Attack] [Once Per Turn] Unsuspend this Digimon. Then, if [Imperialdramon: Dragon Mode] is in this Digimon's digivolution cards, return 1 of your opponent's suspended Digimon to the bottom of the deck.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
-<dd>＜Overflow (-4)＞ (As this card moves from the battle area or under a card to another area, lose 4 memory.)</dd>
+<dd><Overflow (-4)> (As this card moves from the battle area or under a card to another area, lose 4 memory.)</dd>
 </dl>
 <dl>
 <dt>SecurityEffect</dt>
@@ -3203,11 +3203,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] [Imperialdramon: Dragon Mode]: Cost 2<br>[Hand] [Counter] ＜Blast Digivolve＞ (One of your Digimon may digivolve into this card without paying the cost.) <br>[On Play] [When Digivolving] Return 1 of your opponent's Digimon with as many or fewer digivolution cards as this Digimon to the bottom of the deck. <br>[End of Attack] [Once Per Turn] Unsuspend this Digimon. Then, if [Imperialdramon: Dragon Mode] is in this Digimon's digivolution cards, return 1 of your opponent's suspended Digimon to the bottom of the deck.</dd>
+<dd>[Digivolve] [Imperialdramon: Dragon Mode]: Cost 2<br>[Hand] [Counter] <Blast Digivolve> (One of your Digimon may digivolve into this card without paying the cost.) <br>[On Play] [When Digivolving] Return 1 of your opponent's Digimon with as many or fewer digivolution cards as this Digimon to the bottom of the deck. <br>[End of Attack] [Once Per Turn] Unsuspend this Digimon. Then, if [Imperialdramon: Dragon Mode] is in this Digimon's digivolution cards, return 1 of your opponent's suspended Digimon to the bottom of the deck.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
-<dd>＜Overflow (-4)＞ (As this card moves from the battle area or under a card to another area, lose 4 memory.)</dd>
+<dd><Overflow (-4)> (As this card moves from the battle area or under a card to another area, lose 4 memory.)</dd>
 </dl>
 <dl>
 <dt>SecurityEffect</dt>
@@ -3285,11 +3285,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] [Imperialdramon: Dragon Mode]: Cost 2<br>[Hand] [Counter] ＜Blast Digivolve＞ (One of your Digimon may digivolve into this card without paying the cost.) <br>[On Play] [When Digivolving] Return 1 of your opponent's Digimon with as many or fewer digivolution cards as this Digimon to the bottom of the deck. <br>[End of Attack] [Once Per Turn] Unsuspend this Digimon. Then, if [Imperialdramon: Dragon Mode] is in this Digimon's digivolution cards, return 1 of your opponent's suspended Digimon to the bottom of the deck.</dd>
+<dd>[Digivolve] [Imperialdramon: Dragon Mode]: Cost 2<br>[Hand] [Counter] <Blast Digivolve> (One of your Digimon may digivolve into this card without paying the cost.) <br>[On Play] [When Digivolving] Return 1 of your opponent's Digimon with as many or fewer digivolution cards as this Digimon to the bottom of the deck. <br>[End of Attack] [Once Per Turn] Unsuspend this Digimon. Then, if [Imperialdramon: Dragon Mode] is in this Digimon's digivolution cards, return 1 of your opponent's suspended Digimon to the bottom of the deck.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
-<dd>＜Overflow (-4)＞ (As this card moves from the battle area or under a card to another area, lose 4 memory.)</dd>
+<dd><Overflow (-4)> (As this card moves from the battle area or under a card to another area, lose 4 memory.)</dd>
 </dl>
 <dl>
 <dt>SecurityEffect</dt>
@@ -3690,7 +3690,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] [Salamon]: Cost 2<br>＜Barrier＞ <br>[On Play] [When Digivolving] By trashing 1 card in your hand, return 1 level 6 or lower 2-color Digimon card that's red or purple from your trash to the hand.</dd>
+<dd>[Digivolve] [Salamon]: Cost 2<br><Barrier> <br>[On Play] [When Digivolving] By trashing 1 card in your hand, return 1 level 6 or lower 2-color Digimon card that's red or purple from your trash to the hand.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -3770,7 +3770,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] [Armadillomon]: Cost 2<br>＜Armor Purge＞ <br>＜Collision＞ (During this Digimon's attack, all of your opponent's Digimon gain ＜Blocker＞, and the opponent blocks if able.) <br>[All Turns] [Once Per Turn] When an attack target is switched, you may end the attack.</dd>
+<dd>[Digivolve] [Armadillomon]: Cost 2<br><Armor Purge> <br><Collision> (During this Digimon's attack, all of your opponent's Digimon gain <Blocker>, and the opponent blocks if able.) <br>[All Turns] [Once Per Turn] When an attack target is switched, you may end the attack.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -3851,7 +3851,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] [Hawkmon]: Cost 2<br>＜Armor Purge＞ <br>[Your Turn] When this Digimon checks your opponent's security stack, if you have 3 or more security cards, gain 1 memory. If you have 2 or fewer, ＜Recovery +1 (Deck)＞.</dd>
+<dd>[Digivolve] [Hawkmon]: Cost 2<br><Armor Purge> <br>[Your Turn] When this Digimon checks your opponent's security stack, if you have 3 or more security cards, gain 1 memory. If you have 2 or fewer, <Recovery +1 (Deck)>.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -3931,7 +3931,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] Lv.4 w/[Pulsemon] in text: Cost 3<br>[On Play] [When Digivolving] If you have 3 or more security cards, 1 of your opponent's Digimon gets -4000 DP until the end of their turn. If you have 3 or fewer, 1 of their Digimon gains ＜Security A. -2＞ until the end of their turn.</dd>
+<dd>[Digivolve] Lv.4 w/[Pulsemon] in text: Cost 3<br>[On Play] [When Digivolving] If you have 3 or more security cards, 1 of your opponent's Digimon gets -4000 DP until the end of their turn. If you have 3 or fewer, 1 of their Digimon gains <Security A. -2> until the end of their turn.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -4012,7 +4012,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Barrier＞＜Reboot＞<br>[All Turns] [Once Per Turn] When a card is removed from your security stack, you may unsuspend this Digimon. <br>(Rule) Trait: Has [Angel] type.</dd>
+<dd><Barrier><Reboot><br>[All Turns] [Once Per Turn] When a card is removed from your security stack, you may unsuspend this Digimon. <br>(Rule) Trait: Has [Angel] type.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -4092,7 +4092,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[DNA Digivolution] Yellow Lv.6 + black Lv.6: Cost 0 Digivolve unsuspended with the 2 specified Digimon stacked on top of each other.<br>＜Barrier＞ ＜Blocker＞ ＜Partition (yellow Lv.6 & black Lv.6)＞ (When this Digimon with each of the specified digivolution cards would leave the battle area other than by your effects or a battle, you may play 1 each of the specified cards without paying the costs.)<br>[When Digivolving] ＜De-Digivolve 3＞ 1 of your opponent's Digimon. Then, 1 of their Digimon gets -8000 DP for the turn. <br>[End of Opponent’s Turn] Trash the top card of both players' security stacks. <br>(Rule) Trait: Has [Boss] and [D-Brigade].</dd>
+<dd>[DNA Digivolution] Yellow Lv.6 + black Lv.6: Cost 0 Digivolve unsuspended with the 2 specified Digimon stacked on top of each other.<br><Barrier> <Blocker> <Partition (yellow Lv.6 & black Lv.6)> (When this Digimon with each of the specified digivolution cards would leave the battle area other than by your effects or a battle, you may play 1 each of the specified cards without paying the costs.)<br>[When Digivolving] <De-Digivolve 3> 1 of your opponent's Digimon. Then, 1 of their Digimon gets -8000 DP for the turn. <br>[End of Opponent’s Turn] Trash the top card of both players' security stacks. <br>(Rule) Trait: Has [Boss] and [D-Brigade].</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -4175,7 +4175,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[DNA Digivolution] Yellow Lv.6 + black Lv.6: Cost 0 Digivolve unsuspended with the 2 specified Digimon stacked on top of each other.<br>＜Barrier＞ ＜Blocker＞ ＜Partition (yellow Lv.6 & black Lv.6)＞ (When this Digimon with each of the specified digivolution cards would leave the battle area other than by your effects or a battle, you may play 1 each of the specified cards without paying the costs.)<br>[When Digivolving] ＜De-Digivolve 3＞ 1 of your opponent's Digimon. Then, 1 of their Digimon gets -8000 DP for the turn. <br>[End of Opponent’s Turn] Trash the top card of both players' security stacks. <br>(Rule) Trait: Has [Boss] and [D-Brigade].</dd>
+<dd>[DNA Digivolution] Yellow Lv.6 + black Lv.6: Cost 0 Digivolve unsuspended with the 2 specified Digimon stacked on top of each other.<br><Barrier> <Blocker> <Partition (yellow Lv.6 & black Lv.6)> (When this Digimon with each of the specified digivolution cards would leave the battle area other than by your effects or a battle, you may play 1 each of the specified cards without paying the costs.)<br>[When Digivolving] <De-Digivolve 3> 1 of your opponent's Digimon. Then, 1 of their Digimon gets -8000 DP for the turn. <br>[End of Opponent’s Turn] Trash the top card of both players' security stacks. <br>(Rule) Trait: Has [Boss] and [D-Brigade].</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -4338,7 +4338,7 @@
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
-<dd>[Your Turn] While this Digimon has [Gargomon] or [Rapidmon] in its name, it gains ＜Piercing＞.</dd>
+<dd>[Your Turn] While this Digimon has [Gargomon] or [Rapidmon] in its name, it gains <Piercing>.</dd>
 </dl>
 <dl>
 <dt>SecurityEffect</dt>
@@ -4575,7 +4575,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] [Wormmon]: Cost 2<br>＜Retaliation＞ <br>[On Play] [When Digivolving] Suspend 1 of your opponent's Digimon.</dd>
+<dd>[Digivolve] [Wormmon]: Cost 2<br><Retaliation> <br>[On Play] [When Digivolving] Suspend 1 of your opponent's Digimon.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -4974,11 +4974,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] [Dinobeemon] or Lv.5 w/[Insectoid] trait: Cost 3<br>[Hand] [Counter] ＜Blast Digivolve＞ (One of your Digimon may digivolve into this card without paying the cost.) <br>[On Play] [When Digivolving] Suspend 2 of your opponent's Digimon or Tamers. Cards this effect suspended can't unsuspend during your opponent's next unsuspend phase. Then, delete 1 of their suspended Tamers. <br>[Your Turn] [Once Per Turn] When this Digimon becomes suspended, 1 of your Digimon gains ＜Security A. +1＞ for the turn.</dd>
+<dd>[Digivolve] [Dinobeemon] or Lv.5 w/[Insectoid] trait: Cost 3<br>[Hand] [Counter] <Blast Digivolve> (One of your Digimon may digivolve into this card without paying the cost.) <br>[On Play] [When Digivolving] Suspend 2 of your opponent's Digimon or Tamers. Cards this effect suspended can't unsuspend during your opponent's next unsuspend phase. Then, delete 1 of their suspended Tamers. <br>[Your Turn] [Once Per Turn] When this Digimon becomes suspended, 1 of your Digimon gains <Security A. +1> for the turn.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
-<dd>＜Overflow (-4)＞ (As this card moves from the battle area or under a card to another area, lose 4 memory.)</dd>
+<dd><Overflow (-4)> (As this card moves from the battle area or under a card to another area, lose 4 memory.)</dd>
 </dl>
 <dl>
 <dt>SecurityEffect</dt>
@@ -5057,11 +5057,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] [Dinobeemon] or Lv.5 w/[Insectoid] trait: Cost 3<br>[Hand] [Counter] ＜Blast Digivolve＞ (One of your Digimon may digivolve into this card without paying the cost.) <br>[On Play] [When Digivolving] Suspend 2 of your opponent's Digimon or Tamers. Cards this effect suspended can't unsuspend during your opponent's next unsuspend phase. Then, delete 1 of their suspended Tamers. <br>[Your Turn] [Once Per Turn] When this Digimon becomes suspended, 1 of your Digimon gains ＜Security A. +1＞ for the turn.</dd>
+<dd>[Digivolve] [Dinobeemon] or Lv.5 w/[Insectoid] trait: Cost 3<br>[Hand] [Counter] <Blast Digivolve> (One of your Digimon may digivolve into this card without paying the cost.) <br>[On Play] [When Digivolving] Suspend 2 of your opponent's Digimon or Tamers. Cards this effect suspended can't unsuspend during your opponent's next unsuspend phase. Then, delete 1 of their suspended Tamers. <br>[Your Turn] [Once Per Turn] When this Digimon becomes suspended, 1 of your Digimon gains <Security A. +1> for the turn.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
-<dd>＜Overflow (-4)＞ (As this card moves from the battle area or under a card to another area, lose 4 memory.)</dd>
+<dd><Overflow (-4)> (As this card moves from the battle area or under a card to another area, lose 4 memory.)</dd>
 </dl>
 <dl>
 <dt>SecurityEffect</dt>
@@ -5703,11 +5703,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] [Hagurumon]: Cost 0<br>[When Digivolving] You may play 1 [KoHagurumon] Token. (Digimon/Black/1000 DP/＜Blocker＞＜Decoy (Black)＞ [Your Turn] This Digimon can't attack.) </dd>
+<dd>[Digivolve] [Hagurumon]: Cost 0<br>[When Digivolving] You may play 1 [KoHagurumon] Token. (Digimon/Black/1000 DP/<Blocker><Decoy (Black)> [Your Turn] This Digimon can't attack.) </dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
-<dd>＜Blocker＞ (At blocker timing, by suspending this Digimon, it becomes the attack target.)</dd>
+<dd><Blocker> (At blocker timing, by suspending this Digimon, it becomes the attack target.)</dd>
 </dl>
 <dl>
 <dt>SecurityEffect</dt>
@@ -5783,7 +5783,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] [Armadillomon]: Cost 2<br>＜Barrier＞ <br>[On Play] [When Digivolving] 1 of your opponent's Digimon can't attack players until the end of their turn.</dd>
+<dd>[Digivolve] [Armadillomon]: Cost 2<br><Barrier> <br>[On Play] [When Digivolving] 1 of your opponent's Digimon can't attack players until the end of their turn.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -5862,7 +5862,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play] [When Digivolving] By returning 3 cards with the [D-Brigade] or [DigiPolice] trait from your trash to the top of the deck, for the turn, this Digimon gains ＜Rush＞ and can't be blocked.</dd>
+<dd>[On Play] [When Digivolving] By returning 3 cards with the [D-Brigade] or [DigiPolice] trait from your trash to the top of the deck, for the turn, this Digimon gains <Rush> and can't be blocked.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -5941,7 +5941,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] [Pulsemon]: Cost 2<br>[On Play] [When Digivolving] If you have 3 or more security cards, until the end of your opponent's turn, 1 of your Digimon can't have its DP reduced by your opponent's effects and isn't affected by ＜De-Digivolve＞ effects. If you have 3 or fewer, 1 of your Digimon gains ＜Blocker＞ and ＜Reboot＞ until the end of your opponent's turn.</dd>
+<dd>[Digivolve] [Pulsemon]: Cost 2<br>[On Play] [When Digivolving] If you have 3 or more security cards, until the end of your opponent's turn, 1 of your Digimon can't have its DP reduced by your opponent's effects and isn't affected by <De-Digivolve> effects. If you have 3 or fewer, 1 of your Digimon gains <Blocker> and <Reboot> until the end of your opponent's turn.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -6101,7 +6101,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Blocker＞＜Armor Purge＞<br> [On Play] By placing 1 of your other Digimon with the [DigiPolice] trait as this Digimon's bottom digivolution card, ＜De-Digivolve 1＞ 1 of your opponent's Digimon. <br>[Your Turn] This Digimon with no digivolution cards can't attack.</dd>
+<dd><Blocker><Armor Purge><br> [On Play] By placing 1 of your other Digimon with the [DigiPolice] trait as this Digimon's bottom digivolution card, <De-Digivolve 1> 1 of your opponent's Digimon. <br>[Your Turn] This Digimon with no digivolution cards can't attack.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -6181,7 +6181,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] [Dorumon] or Lv.3 w/[SoC] trait: Cost 2<br>＜Collision＞ (During this Digimon's attack, all of your opponent's Digimon gain ＜Blocker＞, and the opponent blocks if able.) <br>[On Play] [When Digivolving] By trashing 1 card in your hand, ＜Draw 1＞. Then, if a Tamer card with the [SoC] trait is in this Digimon's digivolution cards, until the end of your opponent's turn, 1 of their Digimon gains "[Start of Your Main Phase] This Digimon attacks."</dd>
+<dd>[Digivolve] [Dorumon] or Lv.3 w/[SoC] trait: Cost 2<br><Collision> (During this Digimon's attack, all of your opponent's Digimon gain <Blocker>, and the opponent blocks if able.) <br>[On Play] [When Digivolving] By trashing 1 card in your hand, <Draw 1>. Then, if a Tamer card with the [SoC] trait is in this Digimon's digivolution cards, until the end of your opponent's turn, 1 of their Digimon gains "[Start of Your Main Phase] This Digimon attacks."</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -6260,7 +6260,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] Lv.4 w/[Pulsemon] in text: Cost 3<br>[On Play] [When Digivolving] If you have 3 or more security cards, ＜De-Digivolve 1＞ 1 of your opponent's Digimon. If you have 3 or fewer, delete 1 of their Digimon with a play cost of 6 or less.</dd>
+<dd>[Digivolve] Lv.4 w/[Pulsemon] in text: Cost 3<br>[On Play] [When Digivolving] If you have 3 or more security cards, <De-Digivolve 1> 1 of your opponent's Digimon. If you have 3 or fewer, delete 1 of their Digimon with a play cost of 6 or less.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -6344,7 +6344,7 @@
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
-<dd>[All Turns] [Once Per Turn] When one of your other Digimon with the [D-Brigade] or [DigiPolice] trait is played, ＜De-Digivolve 1＞ 1 of your opponent's Digimon.</dd>
+<dd>[All Turns] [Once Per Turn] When one of your other Digimon with the [D-Brigade] or [DigiPolice] trait is played, <De-Digivolve 1> 1 of your opponent's Digimon.</dd>
 </dl>
 <dl>
 <dt>SecurityEffect</dt>
@@ -6421,7 +6421,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] Lv.4 w/[Dorugamon] in name or w/[SoC] trait: Cost 3<br>＜Collision＞ (During this Digimon's attack, all of your opponent's Digimon gain ＜Blocker＞, and the opponent blocks if able.) <br>[All Turns] When an attack target is switched, this Digimon with an [SoC] trait Tamer card in its digivolution cards may digivolve into a Digimon card with the [Beast Dragon], [Undead] or [SoC] trait in the hand without paying the cost.</dd>
+<dd>[Digivolve] Lv.4 w/[Dorugamon] in name or w/[SoC] trait: Cost 3<br><Collision> (During this Digimon's attack, all of your opponent's Digimon gain <Blocker>, and the opponent blocks if able.) <br>[All Turns] When an attack target is switched, this Digimon with an [SoC] trait Tamer card in its digivolution cards may digivolve into a Digimon card with the [Beast Dragon], [Undead] or [SoC] trait in the hand without paying the cost.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -6501,7 +6501,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] Lv.4 w/[Gammamon] in text: Cost 3<br>[On Play] [When Digivolving] ＜De-Digivolve 1＞ 1 of your opponent's Digimon with as much or less DP as this Digimon. Then, delete 1 Digimon with a play cost of 3 or less. <br>[All Turns] This Digimon gains all of the effects on cards with [Gammamon] in their names in this Digimon's digivolution cards.</dd>
+<dd>[Digivolve] Lv.4 w/[Gammamon] in text: Cost 3<br>[On Play] [When Digivolving] <De-Digivolve 1> 1 of your opponent's Digimon with as much or less DP as this Digimon. Then, delete 1 Digimon with a play cost of 3 or less. <br>[All Turns] This Digimon gains all of the effects on cards with [Gammamon] in their names in this Digimon's digivolution cards.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -6582,11 +6582,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[DNA Digivolution] Black Lv.4 + yellow Lv.4: Cost 0 Digivolve unsuspended with the 2 specified Digimon stacked on top of each other.<br>＜Partition (black Lv.4 & yellow Lv.4)＞ <br>[When Digivolving] Until the end of your opponent's turn, this Digimon isn't affected by the effects of their Digimon. Then, if DNA digivolving, place 1 of your opponent's Digimon with as high or lower a level as the number of cards in your or their security stack at the bottom of their security stack.<br>(Rule) Trait: Has [Angel] type.</dd>
+<dd>[DNA Digivolution] Black Lv.4 + yellow Lv.4: Cost 0 Digivolve unsuspended with the 2 specified Digimon stacked on top of each other.<br><Partition (black Lv.4 & yellow Lv.4)> <br>[When Digivolving] Until the end of your opponent's turn, this Digimon isn't affected by the effects of their Digimon. Then, if DNA digivolving, place 1 of your opponent's Digimon with as high or lower a level as the number of cards in your or their security stack at the bottom of their security stack.<br>(Rule) Trait: Has [Angel] type.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
-<dd>＜Partition (black Lv.4 & yellow Lv.4)＞ (When this Digimon with each of the specified digivolution cards would leave the battle area other than by your effects or a battle, you may play 1 each of the specified cards without paying the costs.)</dd>
+<dd><Partition (black Lv.4 & yellow Lv.4)> (When this Digimon with each of the specified digivolution cards would leave the battle area other than by your effects or a battle, you may play 1 each of the specified cards without paying the costs.)</dd>
 </dl>
 <dl>
 <dt>SecurityEffect</dt>
@@ -6665,11 +6665,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[DNA Digivolution] Black Lv.4 + yellow Lv.4: Cost 0 Digivolve unsuspended with the 2 specified Digimon stacked on top of each other.<br>＜Partition (black Lv.4 & yellow Lv.4)＞ <br>[When Digivolving] Until the end of your opponent's turn, this Digimon isn't affected by the effects of their Digimon. Then, if DNA digivolving, place 1 of your opponent's Digimon with as high or lower a level as the number of cards in your or their security stack at the bottom of their security stack.<br>(Rule) Trait: Has [Angel] type.</dd>
+<dd>[DNA Digivolution] Black Lv.4 + yellow Lv.4: Cost 0 Digivolve unsuspended with the 2 specified Digimon stacked on top of each other.<br><Partition (black Lv.4 & yellow Lv.4)> <br>[When Digivolving] Until the end of your opponent's turn, this Digimon isn't affected by the effects of their Digimon. Then, if DNA digivolving, place 1 of your opponent's Digimon with as high or lower a level as the number of cards in your or their security stack at the bottom of their security stack.<br>(Rule) Trait: Has [Angel] type.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
-<dd>＜Partition (black Lv.4 & yellow Lv.4)＞ (When this Digimon with each of the specified digivolution cards would leave the battle area other than by your effects or a battle, you may play 1 each of the specified cards without paying the costs.)</dd>
+<dd><Partition (black Lv.4 & yellow Lv.4)> (When this Digimon with each of the specified digivolution cards would leave the battle area other than by your effects or a battle, you may play 1 each of the specified cards without paying the costs.)</dd>
 </dl>
 <dl>
 <dt>SecurityEffect</dt>
@@ -6746,7 +6746,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] Lv.5 w/[DoruGreymon] in name or w/[SoC] trait: Cost 3<br>＜Collision＞ (During this Digimon's attack, all of your opponent's Digimon gain ＜Blocker＞, and the opponent blocks if able.) <br>[When Digivolving] If a Tamer card with the [SoC] trait is in this Digimon's digivolution cards, delete 1 of your opponent's unsuspended Digimon or Tamers. <br>[All Turns] [Once Per Turn] When another Digimon is deleted, you may unsuspend this Digimon.</dd>
+<dd>[Digivolve] Lv.5 w/[DoruGreymon] in name or w/[SoC] trait: Cost 3<br><Collision> (During this Digimon's attack, all of your opponent's Digimon gain <Blocker>, and the opponent blocks if able.) <br>[When Digivolving] If a Tamer card with the [SoC] trait is in this Digimon's digivolution cards, delete 1 of your opponent's unsuspended Digimon or Tamers. <br>[All Turns] [Once Per Turn] When another Digimon is deleted, you may unsuspend this Digimon.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -6910,7 +6910,7 @@
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
-<dd>[When Attacking] [Once Per Turn] ＜Draw 1＞ and trash 1 card in your hand.</dd>
+<dd>[When Attacking] [Once Per Turn] <Draw 1> and trash 1 card in your hand.</dd>
 </dl>
 <dl>
 <dt>SecurityEffect</dt>
@@ -6991,7 +6991,7 @@
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
-<dd>[Your Turn] [Once Per Turn] When an effect plays one of your Digimon, ＜Draw 1＞.</dd>
+<dd>[Your Turn] [Once Per Turn] When an effect plays one of your Digimon, <Draw 1>.</dd>
 </dl>
 <dl>
 <dt>SecurityEffect</dt>
@@ -7066,11 +7066,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play] [When Digivolving] 1 of your Digimon gains ＜Blocker＞ until the end of your opponent's turn.</dd>
+<dd>[On Play] [When Digivolving] 1 of your Digimon gains <Blocker> until the end of your opponent's turn.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
-<dd>[Your Turn] [Once Per Turn] When an effect plays one of your Digimon, ＜Draw 1＞.</dd>
+<dd>[Your Turn] [Once Per Turn] When an effect plays one of your Digimon, <Draw 1>.</dd>
 </dl>
 <dl>
 <dt>SecurityEffect</dt>
@@ -7150,7 +7150,7 @@
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
-<dd>[When Attacking] [Once Per Turn] ＜Draw 1＞ and trash 1 card in your hand.</dd>
+<dd>[When Attacking] [Once Per Turn] <Draw 1> and trash 1 card in your hand.</dd>
 </dl>
 <dl>
 <dt>SecurityEffect</dt>
@@ -7226,7 +7226,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] [Veemon]: Cost 2<br>＜Armor Purge＞ <br>[When Digivolving] [When Attacking] You may choose 1 of your Digimon. Delete it and 1 of your opponent's Digimon with as much or less DP as it.</dd>
+<dd>[Digivolve] [Veemon]: Cost 2<br><Armor Purge> <br>[When Digivolving] [When Attacking] You may choose 1 of your Digimon. Delete it and 1 of your opponent's Digimon with as much or less DP as it.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -7387,7 +7387,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Blocker＞<br>[On Play] Reveal the top 5 cards of your deck. Trash 2 purple cards among them. Return the rest to the bottom of the deck. <br>[On Deletion] From your trash and without paying the cost, you may play 1 Tamer card with [Myotismon] in its text and without the same name as any of your Tamers.</dd>
+<dd><Blocker><br>[On Play] Reveal the top 5 cards of your deck. Trash 2 purple cards among them. Return the rest to the bottom of the deck. <br>[On Deletion] From your trash and without paying the cost, you may play 1 Tamer card with [Myotismon] in its text and without the same name as any of your Tamers.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -7467,7 +7467,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Retaliation＞<br>[On Play] ＜Draw 2＞ and trash 2 cards in your hand. <br>[On Deletion] From your trash and without paying the cost, you may play 1 Tamer card with [Myotismon] in its text and without the same name as any of your Tamers.</dd>
+<dd><Retaliation><br>[On Play] <Draw 2> and trash 2 cards in your hand. <br>[On Deletion] From your trash and without paying the cost, you may play 1 Tamer card with [Myotismon] in its text and without the same name as any of your Tamers.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -7547,7 +7547,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] Lv.4 w/[Pulsemon] in text: Cost 3<br>[When Digivolving] If you have 3 or more security cards, ＜Draw 2＞ and trash 1 card in your hand. If you have 3 or fewer, you may play 1 Digimon card with [Pulsemon] in its text and 6000 DP or less from your trash without paying the cost. At the next end of your opponent’s turn, delete it.</dd>
+<dd>[Digivolve] Lv.4 w/[Pulsemon] in text: Cost 3<br>[When Digivolving] If you have 3 or more security cards, <Draw 2> and trash 1 card in your hand. If you have 3 or fewer, you may play 1 Digimon card with [Pulsemon] in its text and 6000 DP or less from your trash without paying the cost. At the next end of your opponent’s turn, delete it.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -7631,7 +7631,7 @@
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
-<dd>[Your Turn] [Once Per Turn] When an effect plays one of your Digimon, 1 of your Digimon gains ＜Rush＞ for the turn.</dd>
+<dd>[Your Turn] [Once Per Turn] When an effect plays one of your Digimon, 1 of your Digimon gains <Rush> for the turn.</dd>
 </dl>
 <dl>
 <dt>SecurityEffect</dt>
@@ -7788,11 +7788,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[DNA Digivolution] Purple Lv.4 + red Lv.4: Cost 0 Digivolve unsuspended with the 2 specified Digimon stacked on top of each other.<br>＜Raid＞ ＜Partition (purple Lv.4 & red Lv.4)＞ <br>[When Digivolving] If DNA digivolving, you may play 1 level 5 or lower Digimon card with the [Free] trait from your trash without paying the cost. Then, 1 of your Digimon may gain ＜Rush＞ for the turn and attack a player.</dd>
+<dd>[DNA Digivolution] Purple Lv.4 + red Lv.4: Cost 0 Digivolve unsuspended with the 2 specified Digimon stacked on top of each other.<br><Raid> <Partition (purple Lv.4 & red Lv.4)> <br>[When Digivolving] If DNA digivolving, you may play 1 level 5 or lower Digimon card with the [Free] trait from your trash without paying the cost. Then, 1 of your Digimon may gain <Rush> for the turn and attack a player.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
-<dd>＜Partition (purple Lv.4 & red Lv.4)＞ (When this Digimon with each of the specified digivolution cards would leave the battle area other than by your effects or a battle, you may play 1 each of the specified cards without paying the costs.)</dd>
+<dd><Partition (purple Lv.4 & red Lv.4)> (When this Digimon with each of the specified digivolution cards would leave the battle area other than by your effects or a battle, you may play 1 each of the specified cards without paying the costs.)</dd>
 </dl>
 <dl>
 <dt>SecurityEffect</dt>
@@ -7871,11 +7871,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[DNA Digivolution] Purple Lv.4 + red Lv.4: Cost 0 Digivolve unsuspended with the 2 specified Digimon stacked on top of each other.<br>＜Raid＞ ＜Partition (purple Lv.4 & red Lv.4)＞ <br>[When Digivolving] If DNA digivolving, you may play 1 level 5 or lower Digimon card with the [Free] trait from your trash without paying the cost. Then, 1 of your Digimon may gain ＜Rush＞ for the turn and attack a player.</dd>
+<dd>[DNA Digivolution] Purple Lv.4 + red Lv.4: Cost 0 Digivolve unsuspended with the 2 specified Digimon stacked on top of each other.<br><Raid> <Partition (purple Lv.4 & red Lv.4)> <br>[When Digivolving] If DNA digivolving, you may play 1 level 5 or lower Digimon card with the [Free] trait from your trash without paying the cost. Then, 1 of your Digimon may gain <Rush> for the turn and attack a player.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
-<dd>＜Partition (purple Lv.4 & red Lv.4)＞ (When this Digimon with each of the specified digivolution cards would leave the battle area other than by your effects or a battle, you may play 1 each of the specified cards without paying the costs.)</dd>
+<dd><Partition (purple Lv.4 & red Lv.4)> (When this Digimon with each of the specified digivolution cards would leave the battle area other than by your effects or a battle, you may play 1 each of the specified cards without paying the costs.)</dd>
 </dl>
 <dl>
 <dt>SecurityEffect</dt>
@@ -8032,7 +8032,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] [Cherubimon]: Cost 2<br>＜Alliance＞ <br>[When Digivolving] [When Attacking] [Once Per Turn] You may play 1 level 4 or lower yellow or green Digimon card from your hand or trash without paying the cost. <br>[End of Your Turn] [Once Per Turn] If [Cherubimon] or [X Antibody] is in this Digimon's digivolution cards, you may delete 1 of your opponent's level 4 or lower Digimon. For each of your other Digimon, add 1 to this effect's choosable levels.</dd>
+<dd>[Digivolve] [Cherubimon]: Cost 2<br><Alliance> <br>[When Digivolving] [When Attacking] [Once Per Turn] You may play 1 level 4 or lower yellow or green Digimon card from your hand or trash without paying the cost. <br>[End of Your Turn] [Once Per Turn] If [Cherubimon] or [X Antibody] is in this Digimon's digivolution cards, you may delete 1 of your opponent's level 4 or lower Digimon. For each of your other Digimon, add 1 to this effect's choosable levels.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -8112,7 +8112,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] Lv.5 w/[Pulsemon] in text: Cost 5<br>[When Digivolving] [End of Attack] [Once Per Turn] If you have 3 or more security cards, 1 of your opponent's Digimon gets -7000 DP for the turn. If you have 3 or fewer, delete 1 of their unsuspended Digimon. <br>[All Turns] When this Digimon would leave the battle area by an opponent's effect, if you have 3 or more security cards, by trashing the top card of your security stack, prevent it from leaving. <br>[On Deletion] ＜Recovery +1 (Deck)＞ until there are 3 cards in your security stack.</dd>
+<dd>[Digivolve] Lv.5 w/[Pulsemon] in text: Cost 5<br>[When Digivolving] [End of Attack] [Once Per Turn] If you have 3 or more security cards, 1 of your opponent's Digimon gets -7000 DP for the turn. If you have 3 or fewer, delete 1 of their unsuspended Digimon. <br>[All Turns] When this Digimon would leave the battle area by an opponent's effect, if you have 3 or more security cards, by trashing the top card of your security stack, prevent it from leaving. <br>[On Deletion] <Recovery +1 (Deck)> until there are 3 cards in your security stack.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -8195,7 +8195,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] Lv.5 w/[Pulsemon] in text: Cost 5<br>[When Digivolving] [End of Attack] [Once Per Turn] If you have 3 or more security cards, 1 of your opponent's Digimon gets -7000 DP for the turn. If you have 3 or fewer, delete 1 of their unsuspended Digimon. <br>[All Turns] When this Digimon would leave the battle area by an opponent's effect, if you have 3 or more security cards, by trashing the top card of your security stack, prevent it from leaving. <br>[On Deletion] ＜Recovery +1 (Deck)＞ until there are 3 cards in your security stack.</dd>
+<dd>[Digivolve] Lv.5 w/[Pulsemon] in text: Cost 5<br>[When Digivolving] [End of Attack] [Once Per Turn] If you have 3 or more security cards, 1 of your opponent's Digimon gets -7000 DP for the turn. If you have 3 or fewer, delete 1 of their unsuspended Digimon. <br>[All Turns] When this Digimon would leave the battle area by an opponent's effect, if you have 3 or more security cards, by trashing the top card of your security stack, prevent it from leaving. <br>[On Deletion] <Recovery +1 (Deck)> until there are 3 cards in your security stack.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -9082,11 +9082,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Security] Play this card without paying the cost. <br>[Start of Your Turn] If you have 2 or less memory, set it to 3. <br>[Main] ＜Mind Link＞ with 1 of your Digimon with [Pulsemon] in its text. (Place this Tamer as that Digimon's bottom digivolution card if there are no Tamer cards in its digivolution cards.)<br>(Rule) Name: Also treated as [Leon Alexander].</dd>
+<dd>[Security] Play this card without paying the cost. <br>[Start of Your Turn] If you have 2 or less memory, set it to 3. <br>[Main] <Mind Link> with 1 of your Digimon with [Pulsemon] in its text. (Place this Tamer as that Digimon's bottom digivolution card if there are no Tamer cards in its digivolution cards.)<br>(Rule) Name: Also treated as [Leon Alexander].</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
-<dd>[All Turns] While this Digimon has [Pulsemon] in its text, it gains ＜Blocker＞ and ＜Barrier＞.<br>[End of All Turns] You may play 1 [Hacker Judge] from this Digimon's digivolution cards without paying the cost.</dd>
+<dd>[All Turns] While this Digimon has [Pulsemon] in its text, it gains <Blocker> and <Barrier>.<br>[End of All Turns] You may play 1 [Hacker Judge] from this Digimon's digivolution cards without paying the cost.</dd>
 </dl>
 <dl>
 <dt>SecurityEffect</dt>
@@ -9161,11 +9161,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Security] Play this card without paying the cost. <br>[Start of Your Turn] If you have 2 or less memory, set it to 3. <br>[Main] ＜Mind Link＞ with 1 of your Digimon with the [X Antibody] or [SoC] trait. (Place this Tamer as that Digimon's bottom digivolution card if there are no Tamer cards in its digivolution cards.)</dd>
+<dd>[Security] Play this card without paying the cost. <br>[Start of Your Turn] If you have 2 or less memory, set it to 3. <br>[Main] <Mind Link> with 1 of your Digimon with the [X Antibody] or [SoC] trait. (Place this Tamer as that Digimon's bottom digivolution card if there are no Tamer cards in its digivolution cards.)</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
-<dd>[All Turns] While this Digimon has the [X Antibody] or [SoC] trait, it gains ＜Piercing＞ and ＜Blocker＞.<br>[End of All Turns] You may play 1 [Kosuke Kisakata] from this Digimon's digivolution cards without paying the cost.</dd>
+<dd>[All Turns] While this Digimon has the [X Antibody] or [SoC] trait, it gains <Piercing> and <Blocker>.<br>[End of All Turns] You may play 1 [Kosuke Kisakata] from this Digimon's digivolution cards without paying the cost.</dd>
 </dl>
 <dl>
 <dt>SecurityEffect</dt>
@@ -9242,11 +9242,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Security] Play this card without paying the cost. <br>[Start of Your Turn] If you have 2 or less memory, set it to 3. <br>[Main] ＜Mind Link＞ with 1 of your Digimon with the [X Antibody] or [SoC] trait. (Place this Tamer as that Digimon's bottom digivolution card if there are no Tamer cards in its digivolution cards.)</dd>
+<dd>[Security] Play this card without paying the cost. <br>[Start of Your Turn] If you have 2 or less memory, set it to 3. <br>[Main] <Mind Link> with 1 of your Digimon with the [X Antibody] or [SoC] trait. (Place this Tamer as that Digimon's bottom digivolution card if there are no Tamer cards in its digivolution cards.)</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
-<dd>[All Turns] While this Digimon has the [X Antibody] or [SoC] trait, it gains ＜Piercing＞ and ＜Blocker＞.<br>[End of All Turns] You may play 1 [Kosuke Kisakata] from this Digimon's digivolution cards without paying the cost.</dd>
+<dd>[All Turns] While this Digimon has the [X Antibody] or [SoC] trait, it gains <Piercing> and <Blocker>.<br>[End of All Turns] You may play 1 [Kosuke Kisakata] from this Digimon's digivolution cards without paying the cost.</dd>
 </dl>
 <dl>
 <dt>SecurityEffect</dt>
@@ -9322,7 +9322,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Start of Your Main Phase] You may play 1 [Armadillomon] or [Patamon] from your hand without paying the cost. At the next end of your opponent’s turn, return it to the hand. <br>[Your Turn] When one of your Digimon digivolves into a black or yellow Digimon, by suspending this Tamer, gain 1 memory. If DNA digivolving, ＜De-Digivolve 1＞ 1 of your opponent's Digimon.</dd>
+<dd>[Start of Your Main Phase] You may play 1 [Armadillomon] or [Patamon] from your hand without paying the cost. At the next end of your opponent’s turn, return it to the hand. <br>[Your Turn] When one of your Digimon digivolves into a black or yellow Digimon, by suspending this Tamer, gain 1 memory. If DNA digivolving, <De-Digivolve 1> 1 of your opponent's Digimon.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -9404,7 +9404,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Start of Your Main Phase] You may play 1 [Armadillomon] or [Patamon] from your hand without paying the cost. At the next end of your opponent’s turn, return it to the hand. <br>[Your Turn] When one of your Digimon digivolves into a black or yellow Digimon, by suspending this Tamer, gain 1 memory. If DNA digivolving, ＜De-Digivolve 1＞ 1 of your opponent's Digimon.</dd>
+<dd>[Start of Your Main Phase] You may play 1 [Armadillomon] or [Patamon] from your hand without paying the cost. At the next end of your opponent’s turn, return it to the hand. <br>[Your Turn] When one of your Digimon digivolves into a black or yellow Digimon, by suspending this Tamer, gain 1 memory. If DNA digivolving, <De-Digivolve 1> 1 of your opponent's Digimon.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -9723,7 +9723,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Main] You may play 1 [Aquilamon] or [Gatomon] from your hand without paying the cost. Then, 2 of your Digimon may DNA digivolve into a Digimon card in your hand. The Digimon this effect DNA digivolved may gain ＜Security A. +1＞ for the turn and attack a player.</dd>
+<dd>[Main] You may play 1 [Aquilamon] or [Gatomon] from your hand without paying the cost. Then, 2 of your Digimon may DNA digivolve into a Digimon card in your hand. The Digimon this effect DNA digivolved may gain <Security A. +1> for the turn and attack a player.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -9803,7 +9803,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Main] You may play 1 [ExVeemon] or [Stingmon] from your hand without paying the cost. Then, 2 of your Digimon may DNA digivolve into a Digimon card in your hand. Until the end of your opponent's turn, the Digimon this effect DNA digivolved can't be deleted in battle and gains ＜Blocker＞.</dd>
+<dd>[Main] You may play 1 [ExVeemon] or [Stingmon] from your hand without paying the cost. Then, 2 of your Digimon may DNA digivolve into a Digimon card in your hand. Until the end of your opponent's turn, the Digimon this effect DNA digivolved can't be deleted in battle and gains <Blocker>.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -9960,7 +9960,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Main] Reveal the top 4 cards of your deck. Add 1 [Four Great Dragons] trait or 1 yellow card among them to the hand. Return the rest to the bottom of the deck. Then, place this card in the battle area.<br>[Main] ＜Delay＞<br>・Place 1 [Trial of the Four Great Dragons] from your hand in the battle area, or you may trash 1 [Four Great Dragons] trait card in your hand. If you did either, 1 of your opponent's Digimon gets -7000 DP for the turn.</dd>
+<dd>[Main] Reveal the top 4 cards of your deck. Add 1 [Four Great Dragons] trait or 1 yellow card among them to the hand. Return the rest to the bottom of the deck. Then, place this card in the battle area.<br>[Main] <Delay><br>・Place 1 [Trial of the Four Great Dragons] from your hand in the battle area, or you may trash 1 [Four Great Dragons] trait card in your hand. If you did either, 1 of your opponent's Digimon gets -7000 DP for the turn.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -10116,7 +10116,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Main] Reveal the top 3 cards of your deck. Add 1 card with the [D-Brigade] or [DigiPolice] trait among them to the hand. Return the rest to the top of the deck. Then, place this card in the battle area.<br>[Main] ＜Delay＞<br>・Reveal the top 3 cards of your deck. You may play 1 card with the [D-Brigade] or [DigiPolice] trait and a play cost of 4 or less among them without paying the cost. Trash the rest.</dd>
+<dd>[Main] Reveal the top 3 cards of your deck. Add 1 card with the [D-Brigade] or [DigiPolice] trait among them to the hand. Return the rest to the top of the deck. Then, place this card in the battle area.<br>[Main] <Delay><br>・Reveal the top 3 cards of your deck. You may play 1 card with the [D-Brigade] or [DigiPolice] trait and a play cost of 4 or less among them without paying the cost. Trash the rest.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -10195,7 +10195,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Main] You may play 1 [Ankylomon] or [Angemon] from your hand without paying the cost. Then, 2 of your Digimon may DNA digivolve into a Digimon card in your hand. If this effect DNA digivolved, ＜Recovery +1 (Deck)＞.</dd>
+<dd>[Main] You may play 1 [Ankylomon] or [Angemon] from your hand without paying the cost. Then, 2 of your Digimon may DNA digivolve into a Digimon card in your hand. If this effect DNA digivolved, <Recovery +1 (Deck)>.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -10353,7 +10353,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Main] Reveal the top 3 cards of your deck. Add 1 card with the [SoC] trait among them to the hand. Return the rest to the bottom of the deck. If this effect added to a hand, trash 1 card in your hand. Then, place this card in the battle area.<br>[Main] ＜Delay＞<br>・You may play 1 card with the [SoC] trait from your trash with the play cost reduced by 2.</dd>
+<dd>[Main] Reveal the top 3 cards of your deck. Add 1 card with the [SoC] trait among them to the hand. Return the rest to the bottom of the deck. If this effect added to a hand, trash 1 card in your hand. Then, place this card in the battle area.<br>[Main] <Delay><br>・You may play 1 card with the [SoC] trait from your trash with the play cost reduced by 2.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -10513,7 +10513,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] [Rapidmon]: Cost 4<br>＜Armor Purge＞ <br>[When Digivolving] Suspend all of your opponent’s Digimon. Then, this Digimon may attack. <br>[All Turns] While [Rapidmon] or [X Antibody] is in this Digimon's digivolution cards, all of your opponent's suspended Digimon get -4000 DP. <br>[All Turns] [Once Per Turn] When an opponent's Digimon is deleted in battle or by having 0 DP, gain 2 memory.</dd>
+<dd>[Digivolve] [Rapidmon]: Cost 4<br><Armor Purge> <br>[When Digivolving] Suspend all of your opponent’s Digimon. Then, this Digimon may attack. <br>[All Turns] While [Rapidmon] or [X Antibody] is in this Digimon's digivolution cards, all of your opponent's suspended Digimon get -4000 DP. <br>[All Turns] [Once Per Turn] When an opponent's Digimon is deleted in battle or by having 0 DP, gain 2 memory.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -10596,7 +10596,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] [Rapidmon]: Cost 4<br>＜Armor Purge＞ <br>[When Digivolving] Suspend all of your opponent’s Digimon. Then, this Digimon may attack. <br>[All Turns] While [Rapidmon] or [X Antibody] is in this Digimon's digivolution cards, all of your opponent's suspended Digimon get -4000 DP. <br>[All Turns] [Once Per Turn] When an opponent's Digimon is deleted in battle or by having 0 DP, gain 2 memory.</dd>
+<dd>[Digivolve] [Rapidmon]: Cost 4<br><Armor Purge> <br>[When Digivolving] Suspend all of your opponent’s Digimon. Then, this Digimon may attack. <br>[All Turns] While [Rapidmon] or [X Antibody] is in this Digimon's digivolution cards, all of your opponent's suspended Digimon get -4000 DP. <br>[All Turns] [Once Per Turn] When an opponent's Digimon is deleted in battle or by having 0 DP, gain 2 memory.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -10678,7 +10678,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] 2-color w/[Magnamon] in name: Cost 5<br>＜Blocker＞＜Armor Purge＞ <br>[When Digivolving] If [Magnamon (X Antibody)] or an [Armor Form] trait card is in this Digimon's digivolution cards, until the end of your opponent's turn, this Digimon gets +3000 DP and isn't affected by your opponent's effects. Then, unsuspend it.<br>[All Turns] [Once Per Turn] When a card is removed from a security stack, you may activate 1 of this Digimon's [When Digivolving] effects. <br>(Rule) Trait: Has [Free] attribute.</dd>
+<dd>[Digivolve] 2-color w/[Magnamon] in name: Cost 5<br><Blocker><Armor Purge> <br>[When Digivolving] If [Magnamon (X Antibody)] or an [Armor Form] trait card is in this Digimon's digivolution cards, until the end of your opponent's turn, this Digimon gets +3000 DP and isn't affected by your opponent's effects. Then, unsuspend it.<br>[All Turns] [Once Per Turn] When a card is removed from a security stack, you may activate 1 of this Digimon's [When Digivolving] effects. <br>(Rule) Trait: Has [Free] attribute.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -10762,7 +10762,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] 2-color w/[Magnamon] in name: Cost 5<br>＜Blocker＞＜Armor Purge＞ <br>[When Digivolving] If [Magnamon (X Antibody)] or an [Armor Form] trait card is in this Digimon's digivolution cards, until the end of your opponent's turn, this Digimon gets +3000 DP and isn't affected by your opponent's effects. Then, unsuspend it.<br>[All Turns] [Once Per Turn] When a card is removed from a security stack, you may activate 1 of this Digimon's [When Digivolving] effects. <br>(Rule) Trait: Has [Free] attribute.</dd>
+<dd>[Digivolve] 2-color w/[Magnamon] in name: Cost 5<br><Blocker><Armor Purge> <br>[When Digivolving] If [Magnamon (X Antibody)] or an [Armor Form] trait card is in this Digimon's digivolution cards, until the end of your opponent's turn, this Digimon gets +3000 DP and isn't affected by your opponent's effects. Then, unsuspend it.<br>[All Turns] [Once Per Turn] When a card is removed from a security stack, you may activate 1 of this Digimon's [When Digivolving] effects. <br>(Rule) Trait: Has [Free] attribute.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>
@@ -10846,7 +10846,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Digivolve] 2-color w/[Magnamon] in name: Cost 5<br>＜Blocker＞＜Armor Purge＞ <br>[When Digivolving] If [Magnamon (X Antibody)] or an [Armor Form] trait card is in this Digimon's digivolution cards, until the end of your opponent's turn, this Digimon gets +3000 DP and isn't affected by your opponent's effects. Then, unsuspend it.<br>[All Turns] [Once Per Turn] When a card is removed from a security stack, you may activate 1 of this Digimon's [When Digivolving] effects. <br>(Rule) Trait: Has [Free] attribute.</dd>
+<dd>[Digivolve] 2-color w/[Magnamon] in name: Cost 5<br><Blocker><Armor Purge> <br>[When Digivolving] If [Magnamon (X Antibody)] or an [Armor Form] trait card is in this Digimon's digivolution cards, until the end of your opponent's turn, this Digimon gets +3000 DP and isn't affected by your opponent's effects. Then, unsuspend it.<br>[All Turns] [Once Per Turn] When a card is removed from a security stack, you may activate 1 of this Digimon's [When Digivolving] effects. <br>(Rule) Trait: Has [Free] attribute.</dd>
 </dl>
 <dl>
 <dt>InheritedEffect</dt>

@@ -308,7 +308,7 @@ namespace DCGO.CardEffects.BT23
 
             string SharedEffectDiscription(string tag)
             {
-                return $"[{tag}] You may play 1 [Hinukamuy] Token. (Digimon/White/6000 DP/＜Alliance＞ ＜Reboot＞ ＜Blocker＞) Then, delete 1 of your opponent's Digimon with a play cost of 6 or less. For each of your other Digimon, add 3 to this effect's play cost maximum.";
+                return $"[{tag}] You may play 1 [Hinukamuy] Token. (Digimon/White/6000 DP/<Alliance> <Reboot> <Blocker>) Then, delete 1 of your opponent's Digimon with a play cost of 6 or less. For each of your other Digimon, add 3 to this effect's play cost maximum.";
             }
 
             bool SharedCanActivateCondition(Hashtable hashtable)

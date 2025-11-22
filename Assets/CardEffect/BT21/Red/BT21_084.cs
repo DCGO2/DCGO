@@ -32,7 +32,7 @@ namespace DCGO.CardEffects.BT21
 
                 string EffectDiscription()
                 {
-                    return "[Your Turn] When your Digimon get linked, by suspending this Tamer, ＜Draw 1＞ (Draw 1 card from your deck). Then, 1 of your Digimon may app fuse into a Digimon card in the hand.";
+                    return "[Your Turn] When your Digimon get linked, by suspending this Tamer, <Draw 1> (Draw 1 card from your deck). Then, 1 of your Digimon may app fuse into a Digimon card in the hand.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

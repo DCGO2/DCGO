@@ -24,7 +24,7 @@ namespace DCGO.CardEffects.BT10
 
                 string EffectDiscription()
                 {
-                    return "[All Turns] [Once Per Turn] When a purple card is placed under this Tamer, ＜Draw 1＞ (Draw 1 card from your deck.) and memory +1.";
+                    return "[All Turns] [Once Per Turn] When a purple card is placed under this Tamer, <Draw 1> (Draw 1 card from your deck.) and memory +1.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

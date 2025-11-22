@@ -38,7 +38,7 @@ namespace DCGO.CardEffects.EX10
 
                 string EffectDiscription()
                 {
-                    return "[Start of Your Main Phase] Suspend all of your opponent's level 5 or lower Digimon. Then, if you have 6 or fewer cards in your hand, this Digimon gains ＜Piercing＞ (When this Digimon attacks and deletes an opponent's Digimon and survives the battle, it performs any security checks it normally would.), ＜Security A. +2＞ (This Digimon checks 2 additional security cards.) and +3000 DP for the turn.";
+                    return "[Start of Your Main Phase] Suspend all of your opponent's level 5 or lower Digimon. Then, if you have 6 or fewer cards in your hand, this Digimon gains <Piercing> (When this Digimon attacks and deletes an opponent's Digimon and survives the battle, it performs any security checks it normally would.), <Security A. +2> (This Digimon checks 2 additional security cards.) and +3000 DP for the turn.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

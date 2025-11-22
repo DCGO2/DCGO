@@ -22,7 +22,7 @@ namespace DCGO.CardEffects.EX10
 
                 string EffectDiscription()
                 {
-                    return "[All Turns] [Once Per Turn] When attack targets change, ＜Draw 1＞ (Draw 1 card from your deck.)";
+                    return "[All Turns] [Once Per Turn] When attack targets change, <Draw 1> (Draw 1 card from your deck.)";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

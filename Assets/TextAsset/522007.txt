@@ -195,7 +195,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn] When this card is trashed due to activating this Digimon's ＜Digi-Burst＞, 1 of your opponent's Digimon gets -1000 DP for the turn.</dd>
+<dd>[Your Turn] When this card is trashed due to activating this Digimon's <Digi-Burst>, 1 of your opponent's Digimon gets -1000 DP for the turn.</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -410,7 +410,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn][Once Per Turn] When one of your effects places a digivolution card under this Digimon, ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[Your Turn][Once Per Turn] When one of your effects places a digivolution card under this Digimon, <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -483,7 +483,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn][Once Per Turn] When one of your effects places a digivolution card under this Digimon, ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[Your Turn][Once Per Turn] When one of your effects places a digivolution card under this Digimon, <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -1406,7 +1406,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[When Digivolving] ＜Blitz＞ (This Digimon can attack when your opponent has 1 or more memory.)[Your Turn][Once Per Turn] When this Digimon is blocked, unsuspend it, and gain 1 memory for each digivolution card this Digimon has with [Hybrid] in its traits.</dd>
+<dd>[When Digivolving] <Blitz> (This Digimon can attack when your opponent has 1 or more memory.)[Your Turn][Once Per Turn] When this Digimon is blocked, unsuspend it, and gain 1 memory for each digivolution card this Digimon has with [Hybrid] in its traits.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1479,7 +1479,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[When Digivolving] ＜Blitz＞ (This Digimon can attack when your opponent has 1 or more memory.)[Your Turn][Once Per Turn] When this Digimon is blocked, unsuspend it, and gain 1 memory for each digivolution card this Digimon has with [Hybrid] in its traits.</dd>
+<dd>[When Digivolving] <Blitz> (This Digimon can attack when your opponent has 1 or more memory.)[Your Turn][Once Per Turn] When this Digimon is blocked, unsuspend it, and gain 1 memory for each digivolution card this Digimon has with [Hybrid] in its traits.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1621,7 +1621,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play] When played from digivolution cards, ＜Draw 2＞. (Draw 2 cards from your deck.)</dd>
+<dd>[On Play] When played from digivolution cards, <Draw 2>. (Draw 2 cards from your deck.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1694,7 +1694,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play] When played from digivolution cards, ＜Draw 2＞. (Draw 2 cards from your deck.)</dd>
+<dd>[On Play] When played from digivolution cards, <Draw 2>. (Draw 2 cards from your deck.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -2197,7 +2197,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>You may digivolve this card from your hand onto one of your blue Tamers as if the Tamer is a level 3 blue Digimon for a memory cost of 2. [When Digivolving] If a card with [Hybrid] in its traits or [Koji Minamoto] is in this Digimon's digivolution cards, this Digimon gains ＜Jamming＞ for the turn. (This Digimon can't be deleted in battles against Security Digimon.)</dd>
+<dd>You may digivolve this card from your hand onto one of your blue Tamers as if the Tamer is a level 3 blue Digimon for a memory cost of 2. [When Digivolving] If a card with [Hybrid] in its traits or [Koji Minamoto] is in this Digimon's digivolution cards, this Digimon gains <Jamming> for the turn. (This Digimon can't be deleted in battles against Security Digimon.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -2412,7 +2412,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[When Digivolving] For each Digimon your opponent has with no digivolution cards, ＜Draw 1＞. (Draw 1 card from your deck.) [Opponent's Turn] While a card with [Hybrid] in its traits is in this Digimon's digivolution cards, none of your opponent's level 3 Digimon can attack.</dd>
+<dd>[When Digivolving] For each Digimon your opponent has with no digivolution cards, <Draw 1>. (Draw 1 card from your deck.) [Opponent's Turn] While a card with [Hybrid] in its traits is in this Digimon's digivolution cards, none of your opponent's level 3 Digimon can attack.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -2984,7 +2984,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[When Digivolving] For each card with [Hybrid] in its traits in this Digimon's digivolution cards, trash 1 digivolution card from the bottom of each of your opponent's Digimon. Then, for each Digimon your opponent has with no digivolution cards, ＜Draw 2＞. (Draw 2 cards from your deck.) [On Deletion] You may play 1 blue level 4 or lower card with [Hybrid] in its traits from your hand without paying its memory cost.</dd>
+<dd>[When Digivolving] For each card with [Hybrid] in its traits in this Digimon's digivolution cards, trash 1 digivolution card from the bottom of each of your opponent's Digimon. Then, for each Digimon your opponent has with no digivolution cards, <Draw 2>. (Draw 2 cards from your deck.) [On Deletion] You may play 1 blue level 4 or lower card with [Hybrid] in its traits from your hand without paying its memory cost.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -3057,7 +3057,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[When Digivolving] For each card with [Hybrid] in its traits in this Digimon's digivolution cards, trash 1 digivolution card from the bottom of each of your opponent's Digimon. Then, for each Digimon your opponent has with no digivolution cards, ＜Draw 2＞. (Draw 2 cards from your deck.) [On Deletion] You may play 1 blue level 4 or lower card with [Hybrid] in its traits from your hand without paying its memory cost.</dd>
+<dd>[When Digivolving] For each card with [Hybrid] in its traits in this Digimon's digivolution cards, trash 1 digivolution card from the bottom of each of your opponent's Digimon. Then, for each Digimon your opponent has with no digivolution cards, <Draw 2>. (Draw 2 cards from your deck.) [On Deletion] You may play 1 blue level 4 or lower card with [Hybrid] in its traits from your hand without paying its memory cost.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -3132,7 +3132,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn] When this card is trashed due to activating this Digimon's ＜Digi-Burst＞, return this card to its owner's hand.</dd>
+<dd>[Your Turn] When this card is trashed due to activating this Digimon's <Digi-Burst>, return this card to its owner's hand.</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -3205,7 +3205,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn] When this card is trashed due to activating this Digimon's ＜Digi-Burst＞, return this card to its owner's hand.</dd>
+<dd>[Your Turn] When this card is trashed due to activating this Digimon's <Digi-Burst>, return this card to its owner's hand.</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -3347,7 +3347,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Opponent's Turn] While you have 3 or more security cards, this Digimon gains ＜Blocker＞. (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
+<dd>[Opponent's Turn] While you have 3 or more security cards, this Digimon gains <Blocker>. (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -3414,7 +3414,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Main] ＜Digi-Burst 2＞ (Trash 2 of this Digimon's digivolution cards to activate the effect below.) ・1 of your opponent's Digimon gains ＜Security Attack -2＞ until the end of your opponent's next turn. (This Digimon checks 2 fewer security cards)</dd>
+<dd>[Main] <Digi-Burst 2> (Trash 2 of this Digimon's digivolution cards to activate the effect below.) ・1 of your opponent's Digimon gains <Security Attack -2> until the end of your opponent's next turn. (This Digimon checks 2 fewer security cards)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -3990,7 +3990,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>When one of your Digimon with a Tamer card in its digivolution cards digivolves into this card in your hand, reduce the memory cost of the digivolution by 2. [When Digivolving] If a card with [Hybrid] in its traits is in this Digimon's digivolution cards, ＜Recovery +1 (Deck)＞. (Place the top card of your deck on top of your security stack.)</dd>
+<dd>When one of your Digimon with a Tamer card in its digivolution cards digivolves into this card in your hand, reduce the memory cost of the digivolution by 2. [When Digivolving] If a card with [Hybrid] in its traits is in this Digimon's digivolution cards, <Recovery +1 (Deck)>. (Place the top card of your deck on top of your security stack.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -4061,11 +4061,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[When Digivolving] If this Digimon has 1 digivolution card, you may place up to 2 level 4 or lower yellow Digimon cards from your hand at the bottom of this Digimon's digivolution cards in any order. Then, ＜Draw 1＞ for each Digimon card you placed. (Draw 1 card from your deck.)</dd>
+<dd>[When Digivolving] If this Digimon has 1 digivolution card, you may place up to 2 level 4 or lower yellow Digimon cards from your hand at the bottom of this Digimon's digivolution cards in any order. Then, <Draw 1> for each Digimon card you placed. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn] When this card is trashed due to activating this Digimon's ＜Digi-Burst＞, 1 of your Digimon gains ＜Security Attack +1＞ for the turn. (This Digimon checks 1 additional security card.)</dd>
+<dd>[Your Turn] When this card is trashed due to activating this Digimon's <Digi-Burst>, 1 of your Digimon gains <Security Attack +1> for the turn. (This Digimon checks 1 additional security card.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -4132,7 +4132,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>When digivolving into this card from your hand, the memory cost of the digivolution is equal to the number of cards in your security stack. If you have 0 security cards, the memory cost is 1. [Main][Once Per Turn] ＜Digi-Burst up to 4＞ (Trash up to 4 of this Digimon's digivolution cards to activate the effect below.) ・1 of your opponent's Digimon gets -3000 DP for the turn for each card trashed by this card's effect.</dd>
+<dd>When digivolving into this card from your hand, the memory cost of the digivolution is equal to the number of cards in your security stack. If you have 0 security cards, the memory cost is 1. [Main][Once Per Turn] <Digi-Burst up to 4> (Trash up to 4 of this Digimon's digivolution cards to activate the effect below.) ・1 of your opponent's Digimon gets -3000 DP for the turn for each card trashed by this card's effect.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -4205,7 +4205,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>When digivolving into this card from your hand, the memory cost of the digivolution is equal to the number of cards in your security stack. If you have 0 security cards, the memory cost is 1. [Main][Once Per Turn] ＜Digi-Burst up to 4＞ (Trash up to 4 of this Digimon's digivolution cards to activate the effect below.) ・1 of your opponent's Digimon gets -3000 DP for the turn for each card trashed by this card's effect.</dd>
+<dd>When digivolving into this card from your hand, the memory cost of the digivolution is equal to the number of cards in your security stack. If you have 0 security cards, the memory cost is 1. [Main][Once Per Turn] <Digi-Burst up to 4> (Trash up to 4 of this Digimon's digivolution cards to activate the effect below.) ・1 of your opponent's Digimon gets -3000 DP for the turn for each card trashed by this card's effect.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -4276,7 +4276,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[When Digivolving] If you have 3 or more security cards, gain 2 memory. If you have 2 or fewer security cards, you may ＜Recovery +1 (Deck)＞ until there are 3 cards in your security stack. (Place the top card of your deck on top of your security stack.) [Your Turn] While you have 3 or more security cards, this Digimon gains ＜Security Attack +1＞. (This Digimon checks 1 additional security card.)</dd>
+<dd>[When Digivolving] If you have 3 or more security cards, gain 2 memory. If you have 2 or fewer security cards, you may <Recovery +1 (Deck)> until there are 3 cards in your security stack. (Place the top card of your deck on top of your security stack.) [Your Turn] While you have 3 or more security cards, this Digimon gains <Security Attack +1>. (This Digimon checks 1 additional security card.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -4349,7 +4349,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[When Digivolving] If you have 3 or more security cards, gain 2 memory. If you have 2 or fewer security cards, you may ＜Recovery +1 (Deck)＞ until there are 3 cards in your security stack. (Place the top card of your deck on top of your security stack.) [Your Turn] While you have 3 or more security cards, this Digimon gains ＜Security Attack +1＞. (This Digimon checks 1 additional security card.)</dd>
+<dd>[When Digivolving] If you have 3 or more security cards, gain 2 memory. If you have 2 or fewer security cards, you may <Recovery +1 (Deck)> until there are 3 cards in your security stack. (Place the top card of your deck on top of your security stack.) [Your Turn] While you have 3 or more security cards, this Digimon gains <Security Attack +1>. (This Digimon checks 1 additional security card.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -6290,7 +6290,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn] While this Digimon has [Knightmon] or [Bagramon] in its name, it gains ＜Security Attack +1＞. (This Digimon checks 1 additional security card.)</dd>
+<dd>[Your Turn] While this Digimon has [Knightmon] or [Bagramon] in its name, it gains <Security Attack +1>. (This Digimon checks 1 additional security card.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -6499,7 +6499,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>You may digivolve this card from your hand onto one of your black Tamers as if the Tamer is a level 3 black Digimon. ＜Blocker＞ (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
+<dd>You may digivolve this card from your hand onto one of your black Tamers as if the Tamer is a level 3 black Digimon. <Blocker> (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -6570,7 +6570,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Opponent's Turn] While you have another Digimon in play with [X-Antibody] in its traits, or a card with [X-Antibody] in its traits is in this Digimon's digivolution cards, this Digimon gains ＜Blocker＞. (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
+<dd>[Opponent's Turn] While you have another Digimon in play with [X-Antibody] in its traits, or a card with [X-Antibody] in its traits is in this Digimon's digivolution cards, this Digimon gains <Blocker>. (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -6643,7 +6643,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Opponent's Turn] While you have another Digimon in play with [X-Antibody] in its traits, or a card with [X-Antibody] in its traits is in this Digimon's digivolution cards, this Digimon gains ＜Blocker＞. (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
+<dd>[Opponent's Turn] While you have another Digimon in play with [X-Antibody] in its traits, or a card with [X-Antibody] in its traits is in this Digimon's digivolution cards, this Digimon gains <Blocker>. (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -6716,7 +6716,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Opponent's Turn] While you have another Digimon in play with [X-Antibody] in its traits, or a card with [X-Antibody] in its traits is in this Digimon's digivolution cards, this Digimon gains ＜Blocker＞. (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
+<dd>[Opponent's Turn] While you have another Digimon in play with [X-Antibody] in its traits, or a card with [X-Antibody] in its traits is in this Digimon's digivolution cards, this Digimon gains <Blocker>. (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -6789,7 +6789,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Opponent's Turn] While you have another Digimon in play with [X-Antibody] in its traits, or a card with [X-Antibody] in its traits is in this Digimon's digivolution cards, this Digimon gains ＜Blocker＞. (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
+<dd>[Opponent's Turn] While you have another Digimon in play with [X-Antibody] in its traits, or a card with [X-Antibody] in its traits is in this Digimon's digivolution cards, this Digimon gains <Blocker>. (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -7008,7 +7008,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn] While this Digimon has [X-Antibody] in its traits, it gains ＜Security Attack +1＞. (This Digimon checks 1 additional security card.)</dd>
+<dd>[Your Turn] While this Digimon has [X-Antibody] in its traits, it gains <Security Attack +1>. (This Digimon checks 1 additional security card.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -7081,7 +7081,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn] While this Digimon has [X-Antibody] in its traits, it gains ＜Security Attack +1＞. (This Digimon checks 1 additional security card.)</dd>
+<dd>[Your Turn] While this Digimon has [X-Antibody] in its traits, it gains <Security Attack +1>. (This Digimon checks 1 additional security card.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -7292,7 +7292,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[When Digivolving] ＜De-Digivolve 3＞ 1 of your opponent's Digimon. (Trash up to 3 cards from the top of one of your opponent's Digimon. If it has no digivolution cards, or becomes a level 3 Digimon, you can't trash any more cards.) [On Deletion] You may play 1 black level 4 or lower card with [Hybrid] in its traits from your hand without paying its memory cost.</dd>
+<dd>[When Digivolving] <De-Digivolve 3> 1 of your opponent's Digimon. (Trash up to 3 cards from the top of one of your opponent's Digimon. If it has no digivolution cards, or becomes a level 3 Digimon, you can't trash any more cards.) [On Deletion] You may play 1 black level 4 or lower card with [Hybrid] in its traits from your hand without paying its memory cost.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -7578,7 +7578,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Deletion] ＜Draw 3＞. (Draw 3 cards from your deck.) Then, trash 2 cards in your hand.</dd>
+<dd>[On Deletion] <Draw 3>. (Draw 3 cards from your deck.) Then, trash 2 cards in your hand.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -7651,7 +7651,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Deletion] ＜Draw 3＞. (Draw 3 cards from your deck.) Then, trash 2 cards in your hand.</dd>
+<dd>[On Deletion] <Draw 3>. (Draw 3 cards from your deck.) Then, trash 2 cards in your hand.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -7724,7 +7724,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Deletion] ＜Draw 3＞. (Draw 3 cards from your deck.) Then, trash 2 cards in your hand.</dd>
+<dd>[On Deletion] <Draw 3>. (Draw 3 cards from your deck.) Then, trash 2 cards in your hand.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -7799,7 +7799,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn][Once Per Turn] When you play a Tamer, ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[Your Turn][Once Per Turn] When you play a Tamer, <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -8154,7 +8154,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>You may digivolve this card from your hand onto one of your purple Tamers as if the Tamer is a level 3 purple Digimon for a memory cost of 2. [When Digivolving] If a card with [Hybrid] in its traits or [Koichi Kimura] is in this Digimon's digivolution cards, this Digimon gains ＜Retaliation＞ until the end of your opponent's next turn. (When this Digimon is deleted after losing a battle, delete the Digimon it was battling.)</dd>
+<dd>You may digivolve this card from your hand onto one of your purple Tamers as if the Tamer is a level 3 purple Digimon for a memory cost of 2. [When Digivolving] If a card with [Hybrid] in its traits or [Koichi Kimura] is in this Digimon's digivolution cards, this Digimon gains <Retaliation> until the end of your opponent's next turn. (When this Digimon is deleted after losing a battle, delete the Digimon it was battling.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -8227,7 +8227,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>You may digivolve this card from your hand onto one of your purple Tamers as if the Tamer is a level 3 purple Digimon for a memory cost of 2. [When Digivolving] If a card with [Hybrid] in its traits or [Koichi Kimura] is in this Digimon's digivolution cards, this Digimon gains ＜Retaliation＞ until the end of your opponent's next turn. (When this Digimon is deleted after losing a battle, delete the Digimon it was battling.)</dd>
+<dd>You may digivolve this card from your hand onto one of your purple Tamers as if the Tamer is a level 3 purple Digimon for a memory cost of 2. [When Digivolving] If a card with [Hybrid] in its traits or [Koichi Kimura] is in this Digimon's digivolution cards, this Digimon gains <Retaliation> until the end of your opponent's next turn. (When this Digimon is deleted after losing a battle, delete the Digimon it was battling.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -8440,7 +8440,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>When you trash this card in your hand using one of your effects, ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>When you trash this card in your hand using one of your effects, <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -9523,7 +9523,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play] You may place 1 [Sistermon Blanc] from your hand or trash at the bottom of this Digimon's digivolution cards to ＜Recovery +1 (Deck)＞. (Place the top card of your deck on top of your security stack.) [On Deletion] Return 1 card with [Jesmon], [Huckmon], or [Sistermon] in its name other than [Sistermon Blanc (Awakened)] from your trash to your hand.</dd>
+<dd>[On Play] You may place 1 [Sistermon Blanc] from your hand or trash at the bottom of this Digimon's digivolution cards to <Recovery +1 (Deck)>. (Place the top card of your deck on top of your security stack.) [On Deletion] Return 1 card with [Jesmon], [Huckmon], or [Sistermon] in its name other than [Sistermon Blanc (Awakened)] from your trash to your hand.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -9880,7 +9880,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>You may digivolve this card from your hand onto one of your Tamers as if the Tamer is a level 6 Digimon by placing 10 Tamer cards and/or cards with [Hybrid] in their traits from your hand and/or trash at the bottom of your deck in any order.  ＜Security Attack +2＞ (This Digimon checks 2 additional security cards.)[When Digivolving] Delete 1 of your opponent's Digimon.</dd>
+<dd>You may digivolve this card from your hand onto one of your Tamers as if the Tamer is a level 6 Digimon by placing 10 Tamer cards and/or cards with [Hybrid] in their traits from your hand and/or trash at the bottom of your deck in any order.  <Security Attack +2> (This Digimon checks 2 additional security cards.)[When Digivolving] Delete 1 of your opponent's Digimon.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -9953,7 +9953,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>You may digivolve this card from your hand onto one of your Tamers as if the Tamer is a level 6 Digimon by placing 10 Tamer cards and/or cards with [Hybrid] in their traits from your hand and/or trash at the bottom of your deck in any order.  ＜Security Attack +2＞ (This Digimon checks 2 additional security cards.)[When Digivolving] Delete 1 of your opponent's Digimon.</dd>
+<dd>You may digivolve this card from your hand onto one of your Tamers as if the Tamer is a level 6 Digimon by placing 10 Tamer cards and/or cards with [Hybrid] in their traits from your hand and/or trash at the bottom of your deck in any order.  <Security Attack +2> (This Digimon checks 2 additional security cards.)[When Digivolving] Delete 1 of your opponent's Digimon.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -10024,7 +10024,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[When Digivolving] If you have a Tamer in play, this Digimon gains ＜Security Attack +1＞ for the turn. (This Digimon checks 1 additional security card.) [Your Turn][Once Per Turn] When this Digimon is blocked, trash the top card of your opponent's security stack.</dd>
+<dd>[When Digivolving] If you have a Tamer in play, this Digimon gains <Security Attack +1> for the turn. (This Digimon checks 1 additional security card.) [Your Turn][Once Per Turn] When this Digimon is blocked, trash the top card of your opponent's security stack.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -10166,7 +10166,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[When Digivolving] If you have a Tamer in play, ＜Draw 2＞. (Draw 2 cards from your deck.)  [Opponent's Turn] This Digimon can't be attacked.</dd>
+<dd>[When Digivolving] If you have a Tamer in play, <Draw 2>. (Draw 2 cards from your deck.)  [Opponent's Turn] This Digimon can't be attacked.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -10379,7 +10379,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[When Digivolving] If you have a Tamer in play, ＜Recovery +1 (Deck)＞. (Place the top card of your deck on top of your security stack.)[On Deletion] ＜Recovery +1 (Deck)＞. (Place the top card of your deck on top of your security stack.)</dd>
+<dd>[When Digivolving] If you have a Tamer in play, <Recovery +1 (Deck)>. (Place the top card of your deck on top of your security stack.)[On Deletion] <Recovery +1 (Deck)>. (Place the top card of your deck on top of your security stack.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -10521,7 +10521,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Digisorption -2＞ (When one of your Digimon digivolves into this card from your hand, you may suspend 1 of your Digimon to reduce the memory cost of the digivolution by 2.)[When Digivolving] If you have a Tamer in play, 1 of your opponent's Digimon can't attack or block until the end of their next turn.</dd>
+<dd><Digisorption -2> (When one of your Digimon digivolves into this card from your hand, you may suspend 1 of your Digimon to reduce the memory cost of the digivolution by 2.)[When Digivolving] If you have a Tamer in play, 1 of your opponent's Digimon can't attack or block until the end of their next turn.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -10591,7 +10591,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Main] 1 of your Digimon gains ＜Security Attack +1＞ for the turn. (This Digimon checks 1 additional security card.) Then, place this card in your battle area.  [Main] ＜Delay＞ (Trash this card in your battle area to activate the effect below. You can't activate this effect the turn this card enters play.) ・Gain 2 memory.</dd>
+<dd>[Main] 1 of your Digimon gains <Security Attack +1> for the turn. (This Digimon checks 1 additional security card.) Then, place this card in your battle area.  [Main] <Delay> (Trash this card in your battle area to activate the effect below. You can't activate this effect the turn this card enters play.) ・Gain 2 memory.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -11151,7 +11151,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>When using this card from your hand, its memory cost is equal to the number of cards in your security stack.  [Main] 1 of your opponent's Digimon gets -3000 DP for the turn. Then, 1 of your [Rasenmon] gains ＜Security Attack +1＞ for the turn. (This Digimon checks 1 additional security card.)</dd>
+<dd>When using this card from your hand, its memory cost is equal to the number of cards in your security stack.  [Main] 1 of your opponent's Digimon gets -3000 DP for the turn. Then, 1 of your [Rasenmon] gains <Security Attack +1> for the turn. (This Digimon checks 1 additional security card.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -11291,7 +11291,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Main] Suspend 1 of your opponent's Digimon. Then, place this card in your battle area.  [Main] ＜Delay＞ (Trash this card in your battle area to activate the effect below. You can't activate this effect the turn this card enters play.) ・Gain 2 memory.</dd>
+<dd>[Main] Suspend 1 of your opponent's Digimon. Then, place this card in your battle area.  [Main] <Delay> (Trash this card in your battle area to activate the effect below. You can't activate this effect the turn this card enters play.) ・Gain 2 memory.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -11431,7 +11431,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Main] Choose 1 of your Digimon with [X-Antibody] in its traits. Then, ＜Draw 1＞ for each of that Digimon's digivolution cards. (Draw 1 card from your deck.)</dd>
+<dd>[Main] Choose 1 of your Digimon with [X-Antibody] in its traits. Then, <Draw 1> for each of that Digimon's digivolution cards. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -11501,7 +11501,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Main] Reveal the top 3 cards of your deck. You may play 1 black Digimon card with a play cost of 4 or less among them without paying its memory cost. Trash the remaining cards. Then, place this card in your battle area.  [Main] ＜Delay＞ (Trash this card in your battle area to activate the effect below. You can't activate this effect the turn this card enters play.) ・Gain 2 memory.</dd>
+<dd>[Main] Reveal the top 3 cards of your deck. You may play 1 black Digimon card with a play cost of 4 or less among them without paying its memory cost. Trash the remaining cards. Then, place this card in your battle area.  [Main] <Delay> (Trash this card in your battle area to activate the effect below. You can't activate this effect the turn this card enters play.) ・Gain 2 memory.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -12285,7 +12285,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn] This Digimon gets +2000 DP. While this Digimon has 10000 DP or more, it gains ＜Security Attack +1＞. (This Digimon checks 1 additional security card.)</dd>
+<dd>[Your Turn] This Digimon gets +2000 DP. While this Digimon has 10000 DP or more, it gains <Security Attack +1>. (This Digimon checks 1 additional security card.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -12357,7 +12357,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn] This Digimon gets +2000 DP. While this Digimon has 10000 DP or more, it gains ＜Security Attack +1＞. (This Digimon checks 1 additional security card.)</dd>
+<dd>[Your Turn] This Digimon gets +2000 DP. While this Digimon has 10000 DP or more, it gains <Security Attack +1>. (This Digimon checks 1 additional security card.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -12707,7 +12707,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Security] Play this card without paying its memory cost. [On Play] You may search your security stack for 1 card with [Hybrid] or [Ten Warriors] in its traits, reveal it, and add it to your hand. If you added a card to your hand, ＜Recovery +1 (Deck)＞. (Place the top card of your deck on top of your security stack.) Then, shuffle your security stack.</dd>
+<dd>[Security] Play this card without paying its memory cost. [On Play] You may search your security stack for 1 card with [Hybrid] or [Ten Warriors] in its traits, reveal it, and add it to your hand. If you added a card to your hand, <Recovery +1 (Deck)>. (Place the top card of your deck on top of your security stack.) Then, shuffle your security stack.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -12779,7 +12779,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Security] Play this card without paying its memory cost. [On Play] You may search your security stack for 1 card with [Hybrid] or [Ten Warriors] in its traits, reveal it, and add it to your hand. If you added a card to your hand, ＜Recovery +1 (Deck)＞. (Place the top card of your deck on top of your security stack.) Then, shuffle your security stack.</dd>
+<dd>[Security] Play this card without paying its memory cost. [On Play] You may search your security stack for 1 card with [Hybrid] or [Ten Warriors] in its traits, reveal it, and add it to your hand. If you added a card to your hand, <Recovery +1 (Deck)>. (Place the top card of your deck on top of your security stack.) Then, shuffle your security stack.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -12853,7 +12853,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>＜Piercing＞ (When this Digimon attacks and deletes an opponent's Digimon and survives the battle, it performs any security checks it normally would.)</dd>
+<dd><Piercing> (When this Digimon attacks and deletes an opponent's Digimon and survives the battle, it performs any security checks it normally would.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -12925,7 +12925,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>＜Piercing＞ (When this Digimon attacks and deletes an opponent's Digimon and survives the battle, it performs any security checks it normally would.)</dd>
+<dd><Piercing> (When this Digimon attacks and deletes an opponent's Digimon and survives the battle, it performs any security checks it normally would.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -13061,7 +13061,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Security] Play this card without paying its memory cost. [On Play] ＜Draw 1＞. (Draw 1 card from your deck.) Then, trash 1 card in your hand.</dd>
+<dd>[Security] Play this card without paying its memory cost. [On Play] <Draw 1>. (Draw 1 card from your deck.) Then, trash 1 card in your hand.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -13133,7 +13133,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Security] Play this card without paying its memory cost. [On Play] ＜Draw 1＞. (Draw 1 card from your deck.) Then, trash 1 card in your hand.</dd>
+<dd>[Security] Play this card without paying its memory cost. [On Play] <Draw 1>. (Draw 1 card from your deck.) Then, trash 1 card in your hand.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>

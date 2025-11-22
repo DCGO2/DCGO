@@ -57,7 +57,7 @@ namespace DCGO.CardEffects.BT22
 
                 string EffectDescription()
                 {
-                    return "[On Play] By placing 1 Digimon card with [Gammamon] in its name from your hand as this Digimon's bottom digivolution card, it gains ＜Blocker＞ and +3000 DP until your opponent's turn ends.";
+                    return "[On Play] By placing 1 Digimon card with [Gammamon] in its name from your hand as this Digimon's bottom digivolution card, it gains <Blocker> and +3000 DP until your opponent's turn ends.";
                 }
 
                 bool CanUseEffect(Hashtable hashtable)
@@ -130,7 +130,7 @@ namespace DCGO.CardEffects.BT22
 
                 string EffectDescription()
                 {
-                    return "[On Play] By placing 1 Digimon card with [Gammamon] in its name from your hand as this Digimon's bottom digivolution card, it gains ＜Blocker＞ and +3000 DP until your opponent's turn ends.";
+                    return "[On Play] By placing 1 Digimon card with [Gammamon] in its name from your hand as this Digimon's bottom digivolution card, it gains <Blocker> and +3000 DP until your opponent's turn ends.";
                 }
 
                 bool CanUseEffect(Hashtable hashtable)

@@ -412,7 +412,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[When Attacking] If you have 7 or fewer cards in your hand, trigger ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[When Attacking] If you have 7 or fewer cards in your hand, trigger <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -485,7 +485,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[When Attacking] If you have 7 or fewer cards in your hand, trigger ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[When Attacking] If you have 7 or fewer cards in your hand, trigger <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -558,7 +558,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[When Attacking] If you have 7 or fewer cards in your hand, trigger ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[When Attacking] If you have 7 or fewer cards in your hand, trigger <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -631,7 +631,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[When Attacking] If you have 7 or fewer cards in your hand, trigger ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[When Attacking] If you have 7 or fewer cards in your hand, trigger <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -704,7 +704,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[When Attacking] If you have 7 or fewer cards in your hand, trigger ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[When Attacking] If you have 7 or fewer cards in your hand, trigger <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -842,7 +842,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Security] At the end of the battle, play this card without paying its memory cost.[On Play] Trigger ＜Draw 2＞. (Draw 2 cards from your deck.)</dd>
+<dd>[Security] At the end of the battle, play this card without paying its memory cost.[On Play] Trigger <Draw 2>. (Draw 2 cards from your deck.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -915,7 +915,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Security] At the end of the battle, play this card without paying its memory cost.[On Play] Trigger ＜Draw 2＞. (Draw 2 cards from your deck.)</dd>
+<dd>[Security] At the end of the battle, play this card without paying its memory cost.[On Play] Trigger <Draw 2>. (Draw 2 cards from your deck.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -988,7 +988,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Security] At the end of the battle, play this card without paying its memory cost.[On Play] Trigger ＜Draw 2＞. (Draw 2 cards from your deck.)</dd>
+<dd>[Security] At the end of the battle, play this card without paying its memory cost.[On Play] Trigger <Draw 2>. (Draw 2 cards from your deck.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1061,7 +1061,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Security] At the end of the battle, play this card without paying its memory cost.[On Play] Trigger ＜Draw 2＞. (Draw 2 cards from your deck.)</dd>
+<dd>[Security] At the end of the battle, play this card without paying its memory cost.[On Play] Trigger <Draw 2>. (Draw 2 cards from your deck.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1278,7 +1278,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Blocker＞ (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
+<dd><Blocker> (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1349,7 +1349,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd> ＜Jamming＞ (This Digimon can't be deleted in battles against Security Digimon.)</dd>
+<dd> <Jamming> (This Digimon can't be deleted in battles against Security Digimon.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1420,7 +1420,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[When Digivolving] This Digimon gains ＜Security Attack +1＞ for the turn. (This Digimon checks 1 additional security card.)[Your Turn] This Digimon is unblockable.</dd>
+<dd>[When Digivolving] This Digimon gains <Security Attack +1> for the turn. (This Digimon checks 1 additional security card.)[Your Turn] This Digimon is unblockable.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>

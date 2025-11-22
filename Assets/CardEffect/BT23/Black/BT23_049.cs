@@ -37,7 +37,7 @@ namespace DCGO.CardEffects.BT23
 
                 string EffectDiscription()
                 {
-                    return "[Start of Your Main Phase] By trashing 1 card with the [Dragonkin], [Cyborg], [Device] or [CS] trait from your hand, ＜Draw 1＞ and gain 1 memory.";
+                    return "[Start of Your Main Phase] By trashing 1 card with the [Dragonkin], [Cyborg], [Device] or [CS] trait from your hand, <Draw 1> and gain 1 memory.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)

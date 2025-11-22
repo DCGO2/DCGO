@@ -191,7 +191,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play] Trash the top 2 cards of your deck.[On Deletion] If you have 10 or more cards in your trash, ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[On Play] Trash the top 2 cards of your deck.[On Deletion] If you have 10 or more cards in your trash, <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -262,7 +262,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Blocker＞ (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)[Your Turn] This Digimon can't attack players.</dd>
+<dd><Blocker> (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)[Your Turn] This Digimon can't attack players.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -333,7 +333,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Blocker＞ (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.) [On Play] Trash the top 2 cards of your deck.</dd>
+<dd><Blocker> (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.) [On Play] Trash the top 2 cards of your deck.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -546,7 +546,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[When Digivolving] Trash the top 4 cards of your deck. [All Turns][Once Per Turn] When a card is trashed from your deck, gain 1 memory for every 10 cards in your trash.[Your Turn][Once Per Turn] When a card is trashed from your deck, this Digimon gains ＜Security Attack +1＞ (This Digimon checks 1 additional security card) for the turn.</dd>
+<dd>[When Digivolving] Trash the top 4 cards of your deck. [All Turns][Once Per Turn] When a card is trashed from your deck, gain 1 memory for every 10 cards in your trash.[Your Turn][Once Per Turn] When a card is trashed from your deck, this Digimon gains <Security Attack +1> (This Digimon checks 1 additional security card) for the turn.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -619,7 +619,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[When Digivolving] Trash the top 4 cards of your deck. [All Turns][Once Per Turn] When a card is trashed from your deck, gain 1 memory for every 10 cards in your trash.[Your Turn][Once Per Turn] When a card is trashed from your deck, this Digimon gains ＜Security Attack +1＞ (This Digimon checks 1 additional security card) for the turn.</dd>
+<dd>[When Digivolving] Trash the top 4 cards of your deck. [All Turns][Once Per Turn] When a card is trashed from your deck, gain 1 memory for every 10 cards in your trash.[Your Turn][Once Per Turn] When a card is trashed from your deck, this Digimon gains <Security Attack +1> (This Digimon checks 1 additional security card) for the turn.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -690,7 +690,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>When you would play this card from your hand, reduce the play cost by 4 for every 10 cards in your trash.[All Turns][Once Per Turn] When a card is trashed from your deck, you may play 1 [Impmon] from your trash without paying the cost. The Digimon played by this effect gains ＜Rush＞ for the turn.[Opponent's Turn] When an opponent's Digimon attacks, trash the top card of your deck.</dd>
+<dd>When you would play this card from your hand, reduce the play cost by 4 for every 10 cards in your trash.[All Turns][Once Per Turn] When a card is trashed from your deck, you may play 1 [Impmon] from your trash without paying the cost. The Digimon played by this effect gains <Rush> for the turn.[Opponent's Turn] When an opponent's Digimon attacks, trash the top card of your deck.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -901,7 +901,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>When this card is trashed from your deck, you may place it in the battle area.  [Main] Delete 1 of your opponent's Digimon with the highest level. [Main]  ＜Delay＞ (After this card is placed, by trashing it the next turn or later, activate the effect below.) ・Return 1 purple Digimon card or Tamer card from your trash to your hand.</dd>
+<dd>When this card is trashed from your deck, you may place it in the battle area.  [Main] Delete 1 of your opponent's Digimon with the highest level. [Main]  <Delay> (After this card is placed, by trashing it the next turn or later, activate the effect below.) ・Return 1 purple Digimon card or Tamer card from your trash to your hand.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>

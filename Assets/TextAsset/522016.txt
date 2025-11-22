@@ -195,7 +195,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn][Once Per Turn] When a card is removed from your security stack, 1 of your Digimon gains ＜Jamming＞ for the turn.</dd>
+<dd>[Your Turn][Once Per Turn] When a card is removed from your security stack, 1 of your Digimon gains <Jamming> for the turn.</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -337,7 +337,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[When Attacking] If this Digimon has 4 or more digivolution cards, ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[When Attacking] If this Digimon has 4 or more digivolution cards, <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -765,7 +765,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[On Deletion] ＜Draw 1＞ (Draw 1 card from your deck.)</dd>
+<dd>[On Deletion] <Draw 1> (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -836,7 +836,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[On Deletion] ＜Draw 1＞ (Draw 1 card from your deck.)</dd>
+<dd>[On Deletion] <Draw 1> (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -903,7 +903,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 2 from Lv.3 w/[Agumon] in name and [Dinosaur] trait<bt>[When Digivolving] Search your security stack, and you may play 1 red or yellow Tamer card among it without paying the cost. If you did, ＜Recovery +1 (Deck)＞. (Place the top card of your deck on top of your security stack.) Then, shuffle your security stack.</dd>
+<dd>Digivolve: 2 from Lv.3 w/[Agumon] in name and [Dinosaur] trait<bt>[When Digivolving] Search your security stack, and you may play 1 red or yellow Tamer card among it without paying the cost. If you did, <Recovery +1 (Deck)>. (Place the top card of your deck on top of your security stack.) Then, shuffle your security stack.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1402,7 +1402,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 3 from Lv.5 w/[RizeGreymon] in name<br>[Start of Your Main Phase][When Digivolving] Until the end of your opponent's turn, 1 of your [Marcus Damon]s is also treated as a 3000 DP Digimon, can't digivolve, and gains ＜Blocker＞.<br> [All Turns][Once Per Turn] When one of your red or yellow Tamers becomes suspended, 1 of your opponent's Digimon gets -6000 DP for the turn.</dd>
+<dd>Digivolve: 3 from Lv.5 w/[RizeGreymon] in name<br>[Start of Your Main Phase][When Digivolving] Until the end of your opponent's turn, 1 of your [Marcus Damon]s is also treated as a 3000 DP Digimon, can't digivolve, and gains <Blocker>.<br> [All Turns][Once Per Turn] When one of your red or yellow Tamers becomes suspended, 1 of your opponent's Digimon gets -6000 DP for the turn.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1473,7 +1473,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Blocker＞<br> [On Play][When Digivolving] Without paying the cost, you may play 1 Digimon card with [Sistermon] in its name from your trash or 1 Digimon card with the [Royal Knight] trait from the digivolution cards of your Digimon in the breeding area. This effect can't play [Omnimon] or [Gankoomon].</dd>
+<dd><Blocker><br> [On Play][When Digivolving] Without paying the cost, you may play 1 Digimon card with [Sistermon] in its name from your trash or 1 Digimon card with the [Royal Knight] trait from the digivolution cards of your Digimon in the breeding area. This effect can't play [Omnimon] or [Gankoomon].</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1546,7 +1546,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Blocker＞<br> [On Play][When Digivolving] Without paying the cost, you may play 1 Digimon card with [Sistermon] in its name from your trash or 1 Digimon card with the [Royal Knight] trait from the digivolution cards of your Digimon in the breeding area. This effect can't play [Omnimon] or [Gankoomon].</dd>
+<dd><Blocker><br> [On Play][When Digivolving] Without paying the cost, you may play 1 Digimon card with [Sistermon] in its name from your trash or 1 Digimon card with the [Royal Knight] trait from the digivolution cards of your Digimon in the breeding area. This effect can't play [Omnimon] or [Gankoomon].</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1617,7 +1617,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Burst Digivolve: 0 from [ShineGreymon] by returning 1 [Marcus Damon] to hand<br>At the end of the burst digivolution turn, trash this Digimon’s top card<br>[When Digivolving] You may play 1 [Marcus Damon] from your hand without paying the cost. For the turn, the Tamer played by this effect is also treated as a 12000 DP Digimon, can't digivolve, and gains ＜Rush＞.<br> [Your Turn][Once Per Turn] When one of your Tamers becomes suspended, trash the top card of your opponent’s security stack.</dd>
+<dd>Burst Digivolve: 0 from [ShineGreymon] by returning 1 [Marcus Damon] to hand<br>At the end of the burst digivolution turn, trash this Digimon’s top card<br>[When Digivolving] You may play 1 [Marcus Damon] from your hand without paying the cost. For the turn, the Tamer played by this effect is also treated as a 12000 DP Digimon, can't digivolve, and gains <Rush>.<br> [Your Turn][Once Per Turn] When one of your Tamers becomes suspended, trash the top card of your opponent’s security stack.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1690,7 +1690,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Burst Digivolve: 0 from [ShineGreymon] by returning 1 [Marcus Damon] to hand<br>At the end of the burst digivolution turn, trash this Digimon’s top card<br>[When Digivolving] You may play 1 [Marcus Damon] from your hand without paying the cost. For the turn, the Tamer played by this effect is also treated as a 12000 DP Digimon, can't digivolve, and gains ＜Rush＞.<br> [Your Turn][Once Per Turn] When one of your Tamers becomes suspended, trash the top card of your opponent’s security stack.</dd>
+<dd>Burst Digivolve: 0 from [ShineGreymon] by returning 1 [Marcus Damon] to hand<br>At the end of the burst digivolution turn, trash this Digimon’s top card<br>[When Digivolving] You may play 1 [Marcus Damon] from your hand without paying the cost. For the turn, the Tamer played by this effect is also treated as a 12000 DP Digimon, can't digivolve, and gains <Rush>.<br> [Your Turn][Once Per Turn] When one of your Tamers becomes suspended, trash the top card of your opponent’s security stack.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1763,7 +1763,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Burst Digivolve: 0 from [ShineGreymon] by returning 1 [Marcus Damon] to hand<br>At the end of the burst digivolution turn, trash this Digimon’s top card<br>[When Digivolving] You may play 1 [Marcus Damon] from your hand without paying the cost. For the turn, the Tamer played by this effect is also treated as a 12000 DP Digimon, can't digivolve, and gains ＜Rush＞.<br> [Your Turn][Once Per Turn] When one of your Tamers becomes suspended, trash the top card of your opponent’s security stack.</dd>
+<dd>Burst Digivolve: 0 from [ShineGreymon] by returning 1 [Marcus Damon] to hand<br>At the end of the burst digivolution turn, trash this Digimon’s top card<br>[When Digivolving] You may play 1 [Marcus Damon] from your hand without paying the cost. For the turn, the Tamer played by this effect is also treated as a 12000 DP Digimon, can't digivolve, and gains <Rush>.<br> [Your Turn][Once Per Turn] When one of your Tamers becomes suspended, trash the top card of your opponent’s security stack.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1905,7 +1905,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Blocker＞ (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
+<dd><Blocker> (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1976,7 +1976,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Evade＞ (When this Digimon would be deleted, you may suspend it to prevent that deletion).</dd>
+<dd><Evade> (When this Digimon would be deleted, you may suspend it to prevent that deletion).</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -2047,7 +2047,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Blocker＞ (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
+<dd><Blocker> (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -2189,7 +2189,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[When Attacking] ＜Draw 1＞ (Draw 1 card from your deck.)</dd>
+<dd>[When Attacking] <Draw 1> (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -2260,7 +2260,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Blocker＞<br> [Opponent's Turn] When an opponent's Digimon attacks, you may play 1 level 4 or lower Digimon card from this Digimon's digivolution cards without paying the cost.</dd>
+<dd><Blocker><br> [Opponent's Turn] When an opponent's Digimon attacks, you may play 1 level 4 or lower Digimon card from this Digimon's digivolution cards without paying the cost.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -2617,7 +2617,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Evade＞ (When this Digimon would be deleted, you may suspend it to prevent that deletion).<br> [When Digivolving] Return 1 of your opponent’s Tamers to the hand.<br> [All Turns][Once Per Turn] When an effect adds cards to your opponent's hand, you may play 1 [Thomas H. Norstein] from your hand without paying the cost.</dd>
+<dd><Evade> (When this Digimon would be deleted, you may suspend it to prevent that deletion).<br> [When Digivolving] Return 1 of your opponent’s Tamers to the hand.<br> [All Turns][Once Per Turn] When an effect adds cards to your opponent's hand, you may play 1 [Thomas H. Norstein] from your hand without paying the cost.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -2688,7 +2688,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Blocker＞<br> [Opponent's Turn] When an opponent's Digimon attacks, you may play 1 level 5 or lower Digimon card from this Digimon's digivolution cards without paying the cost.</dd>
+<dd><Blocker><br> [Opponent's Turn] When an opponent's Digimon attacks, you may play 1 level 5 or lower Digimon card from this Digimon's digivolution cards without paying the cost.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -3051,7 +3051,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>＜Reboot＞ (Unsuspend this Digimon during your opponent's unsuspend phase)</dd>
+<dd><Reboot> (Unsuspend this Digimon during your opponent's unsuspend phase)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -3260,7 +3260,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[When Attacking] By trashing the top card of your security stack, 1 of your opponent's Digimon gains ＜Security Attack -2＞ until the end of your opponent's turn.</dd>
+<dd>[When Attacking] By trashing the top card of your security stack, 1 of your opponent's Digimon gains <Security Attack -2> until the end of your opponent's turn.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -3335,7 +3335,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>＜Reboot＞ (Unsuspend this Digimon during your opponent's unsuspend phase)</dd>
+<dd><Reboot> (Unsuspend this Digimon during your opponent's unsuspend phase)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -3402,7 +3402,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 3 from [Veemon]<br>＜Blocker＞ (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)<br> [All Turns] When this Digimon would leave the battle area, ＜Draw 1＞. Then, you may play 1 [Veemon] from your hand or this Digimon's digivolution cards without paying the cost.</dd>
+<dd>Digivolve: 3 from [Veemon]<br><Blocker> (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)<br> [All Turns] When this Digimon would leave the battle area, <Draw 1>. Then, you may play 1 [Veemon] from your hand or this Digimon's digivolution cards without paying the cost.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -3475,7 +3475,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 3 from [Veemon]<br>＜Blocker＞ (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)<br> [All Turns] When this Digimon would leave the battle area, ＜Draw 1＞. Then, you may play 1 [Veemon] from your hand or this Digimon's digivolution cards without paying the cost.</dd>
+<dd>Digivolve: 3 from [Veemon]<br><Blocker> (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)<br> [All Turns] When this Digimon would leave the battle area, <Draw 1>. Then, you may play 1 [Veemon] from your hand or this Digimon's digivolution cards without paying the cost.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -3546,7 +3546,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Barrier＞ (When this Digimon would be deleted in battle, by trashing the top card of your security stack, prevent that deletion.)</dd>
+<dd><Barrier> (When this Digimon would be deleted in battle, by trashing the top card of your security stack, prevent that deletion.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -3621,7 +3621,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>＜Reboot＞ (Unsuspend this Digimon during your opponent's unsuspend phase)</dd>
+<dd><Reboot> (Unsuspend this Digimon during your opponent's unsuspend phase)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -3688,11 +3688,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Barrier＞ (When this Digimon would be deleted in battle, by trashing the top card of your security stack, prevent that deletion.)</dd>
+<dd><Barrier> (When this Digimon would be deleted in battle, by trashing the top card of your security stack, prevent that deletion.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>＜Barrier＞ (When this Digimon would be deleted in battle, by trashing the top card of your security stack, prevent that deletion.)</dd>
+<dd><Barrier> (When this Digimon would be deleted in battle, by trashing the top card of your security stack, prevent that deletion.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -3759,7 +3759,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Blocker＞<br> [When Digivolving] By trashing the top card of your security stack, 1 of your opponent's Digimon gets -6000 DP until the end of your opponent's turn.<br> [All Turns][Once Per Turn] When a card is removed from your security stack, you may play 1 yellow Tamer card from your hand without paying the cost.</dd>
+<dd><Blocker><br> [When Digivolving] By trashing the top card of your security stack, 1 of your opponent's Digimon gets -6000 DP until the end of your opponent's turn.<br> [All Turns][Once Per Turn] When a card is removed from your security stack, you may play 1 yellow Tamer card from your hand without paying the cost.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -4045,7 +4045,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Blocker＞ (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
+<dd><Blocker> (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -4329,7 +4329,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play] 1 of your Digimon gains ＜Piercing＞ for the turn. (When this Digimon attacks and deletes an opponent's Digimon, it performs any security checks it normally would.)</dd>
+<dd>[On Play] 1 of your Digimon gains <Piercing> for the turn. (When this Digimon attacks and deletes an opponent's Digimon, it performs any security checks it normally would.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -4400,7 +4400,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Jamming＞ (This Digimon can't be deleted in battles against Security Digimon.)</dd>
+<dd><Jamming> (This Digimon can't be deleted in battles against Security Digimon.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -4546,7 +4546,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn] While your opponent has a suspended Digimon, this Digimon gains ＜Security Attack +1＞.</dd>
+<dd>[Your Turn] While your opponent has a suspended Digimon, this Digimon gains <Security Attack +1>.</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -4684,7 +4684,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[When Digivolving][Main][Once Per Turn] You may play 1 green or [Royal Knight] trait Digimon card from your hand for the cost. When it would be played by this effect, reduce the play cost by 4.<br> [All Turns] When you play another Digimon, all of your green and/or [Royal Knight] trait Digimon gain ＜Blocker＞ until the end of your opponent's turn.</dd>
+<dd>[When Digivolving][Main][Once Per Turn] You may play 1 green or [Royal Knight] trait Digimon card from your hand for the cost. When it would be played by this effect, reduce the play cost by 4.<br> [All Turns] When you play another Digimon, all of your green and/or [Royal Knight] trait Digimon gain <Blocker> until the end of your opponent's turn.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -4757,7 +4757,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[When Digivolving][Main][Once Per Turn] You may play 1 green or [Royal Knight] trait Digimon card from your hand for the cost. When it would be played by this effect, reduce the play cost by 4.<br> [All Turns] When you play another Digimon, all of your green and/or [Royal Knight] trait Digimon gain ＜Blocker＞ until the end of your opponent's turn.</dd>
+<dd>[When Digivolving][Main][Once Per Turn] You may play 1 green or [Royal Knight] trait Digimon card from your hand for the cost. When it would be played by this effect, reduce the play cost by 4.<br> [All Turns] When you play another Digimon, all of your green and/or [Royal Knight] trait Digimon gain <Blocker> until the end of your opponent's turn.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -5404,7 +5404,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Blocker＞ (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)<br> [On Deletion] If it's your opponent's turn, reveal the top 3 cards of your deck. Add 1 black card among them to the hand. Place the rest at the bottom of the deck in any order.</dd>
+<dd><Blocker> (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)<br> [On Deletion] If it's your opponent's turn, reveal the top 3 cards of your deck. Add 1 black card among them to the hand. Place the rest at the bottom of the deck in any order.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -5617,7 +5617,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Blocker＞<br>[On Deletion] If it's your opponent's turn, you may play 1 level 3 or lower Digimon card with [Chessmon] in its name from your hand without paying the cost. If you have 8 or more Digimon cards with [Chessmon] in their names in your trash, add 2 to the maximum level of the card this effect can play.</dd>
+<dd><Blocker><br>[On Deletion] If it's your opponent's turn, you may play 1 level 3 or lower Digimon card with [Chessmon] in its name from your hand without paying the cost. If you have 8 or more Digimon cards with [Chessmon] in their names in your trash, add 2 to the maximum level of the card this effect can play.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -5688,7 +5688,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Deletion] ＜De-Digivolve 1＞ 1 of your opponent's Digimon. (Trash 1 card from the top of 1 of your opponent's Digimon. Stop trashing when you would trash a level 3 card or the Digimon's last card.)</dd>
+<dd>[On Deletion] <De-Digivolve 1> 1 of your opponent's Digimon. (Trash 1 card from the top of 1 of your opponent's Digimon. Stop trashing when you would trash a level 3 card or the Digimon's last card.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -5830,11 +5830,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Jamming＞ (This Digimon can't be deleted in battles against Security Digimon.)</dd>
+<dd><Jamming> (This Digimon can't be deleted in battles against Security Digimon.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>＜Reboot＞ (Unsuspend this Digimon during your opponent's unsuspend phase)</dd>
+<dd><Reboot> (Unsuspend this Digimon during your opponent's unsuspend phase)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -5901,7 +5901,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 2 from Lv.3 w/[Chessmon] in name <br>＜Blocker＞ (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)<br> [On Deletion] If it's your opponent's turn, you may play 1 level 4 or lower Digimon card with [Chessmon] in its name from your hand without paying the cost.</dd>
+<dd>Digivolve: 2 from Lv.3 w/[Chessmon] in name <br><Blocker> (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)<br> [On Deletion] If it's your opponent's turn, you may play 1 level 4 or lower Digimon card with [Chessmon] in its name from your hand without paying the cost.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -6043,7 +6043,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 3 from Lv.4 w/[Chessmon] in name <br>＜Blocker＞ (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)<br> [On Deletion] If it's your opponent's turn, you may play 1 level 5 or lower Digimon card with [Chessmon] in its name from your hand without paying the cost.</dd>
+<dd>Digivolve: 3 from Lv.4 w/[Chessmon] in name <br><Blocker> (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)<br> [On Deletion] If it's your opponent's turn, you may play 1 level 5 or lower Digimon card with [Chessmon] in its name from your hand without paying the cost.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -6114,7 +6114,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Blocker＞ (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
+<dd><Blocker> (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -6256,7 +6256,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 3 from Lv.5 w/[Chessmon] in name <br>＜Blocker＞ (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)<br> [All Turns] When one of your Digimon with [Chessmon] in its name is deleted, unsuspend this Digimon.</dd>
+<dd>Digivolve: 3 from Lv.5 w/[Chessmon] in name <br><Blocker> (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)<br> [All Turns] When one of your Digimon with [Chessmon] in its name is deleted, unsuspend this Digimon.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -6327,7 +6327,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play][When Digivolving] Reveal the top 3 cards of your deck. You may play 1 Digimon card that has [Mamemon] in its name and a play cost of 10 or less among them without paying the cost. Trash the rest.<br>[All Turns] All of your Digimon with [Mamemon] in their names or the [Royal Knight] trait gain ＜Jamming＞ and ＜Reboot＞.</dd>
+<dd>[On Play][When Digivolving] Reveal the top 3 cards of your deck. You may play 1 Digimon card that has [Mamemon] in its name and a play cost of 10 or less among them without paying the cost. Trash the rest.<br>[All Turns] All of your Digimon with [Mamemon] in their names or the [Royal Knight] trait gain <Jamming> and <Reboot>.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -6542,7 +6542,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 4 from Lv.5 w/[Etemon] or [Sukamon] in name<br>[All Turns][Once Per Turn] When another Digimon with [Etemon] or [Sukamon] in its name is deleted, 1 of your opponent's Digimon gets -3000 DP and gains ＜Security Attack -1＞ until the end of your opponent's turn.<br> [Opponent's Turn] All of your Digimon with [Etemon] or [Sukamon] in their names gain ＜Blocker＞ and can't be returned to hands or decks.</dd>
+<dd>Digivolve: 4 from Lv.5 w/[Etemon] or [Sukamon] in name<br>[All Turns][Once Per Turn] When another Digimon with [Etemon] or [Sukamon] in its name is deleted, 1 of your opponent's Digimon gets -3000 DP and gains <Security Attack -1> until the end of your opponent's turn.<br> [Opponent's Turn] All of your Digimon with [Etemon] or [Sukamon] in their names gain <Blocker> and can't be returned to hands or decks.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -6613,7 +6613,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Blocker＞<br> [On Play][When Digivolving] Until the end of your opponent's turn, this Digimon isn't affected by the effects of your opponent's Digimon.<br> [End of Opponent’s Turn] Choose 1 of your opponent's Digimon. Your opponent attacks with the chosen Digimon.</dd>
+<dd><Blocker><br> [On Play][When Digivolving] Until the end of your opponent's turn, this Digimon isn't affected by the effects of your opponent's Digimon.<br> [End of Opponent’s Turn] Choose 1 of your opponent's Digimon. Your opponent attacks with the chosen Digimon.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -6686,7 +6686,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Blocker＞<br> [On Play][When Digivolving] Until the end of your opponent's turn, this Digimon isn't affected by the effects of your opponent's Digimon.<br> [End of Opponent’s Turn] Choose 1 of your opponent's Digimon. Your opponent attacks with the chosen Digimon.</dd>
+<dd><Blocker><br> [On Play][When Digivolving] Until the end of your opponent's turn, this Digimon isn't affected by the effects of your opponent's Digimon.<br> [End of Opponent’s Turn] Choose 1 of your opponent's Digimon. Your opponent attacks with the chosen Digimon.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -6757,11 +6757,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Deletion] ＜Draw 1＞ (Draw 1 card from your deck.) Then, trash 1 card in your hand.</dd>
+<dd>[On Deletion] <Draw 1> (Draw 1 card from your deck.) Then, trash 1 card in your hand.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[End of Opponent’s Turn][Once Per Turn] ＜Draw 1＞. Then, trash 1 card in your hand.</dd>
+<dd>[End of Opponent’s Turn][Once Per Turn] <Draw 1>. Then, trash 1 card in your hand.</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -6828,7 +6828,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play] 1 of your purple Digimon gains ＜Retaliation＞ until the end of your opponent's turn.</dd>
+<dd>[On Play] 1 of your purple Digimon gains <Retaliation> until the end of your opponent's turn.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -6899,7 +6899,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>When you would play this card, by deleting 1 of your level 2 Digimon in the breeding area, reduce the play cost by 2.<br> [On Play] ＜Draw 1＞. Then, trash 1 card in your hand.<br> [All Turns] This Digimon can't digivolve.<br> [On Deletion] By returning 2 cards with [Gizmon] in their names from your trash to the bottom of the deck in any order, you may play 1 [Gizmon: AT] from your trash without paying the cost.</dd>
+<dd>When you would play this card, by deleting 1 of your level 2 Digimon in the breeding area, reduce the play cost by 2.<br> [On Play] <Draw 1>. Then, trash 1 card in your hand.<br> [All Turns] This Digimon can't digivolve.<br> [On Deletion] By returning 2 cards with [Gizmon] in their names from your trash to the bottom of the deck in any order, you may play 1 [Gizmon: AT] from your trash without paying the cost.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -6974,7 +6974,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[End of Opponent’s Turn][Once Per Turn] ＜Draw 1＞. Then, trash 1 card in your hand.</dd>
+<dd>[End of Opponent’s Turn][Once Per Turn] <Draw 1>. Then, trash 1 card in your hand.</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -7041,7 +7041,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Blocker＞ (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
+<dd><Blocker> (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -7112,7 +7112,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>When you would play this card, by deleting 1 of your level 3 Digimon, reduce the play cost by 4.<br> [On Play] ＜Draw 2＞. Then, trash 2 cards in your hand.<br> [All Turns] This Digimon can't digivolve.<br> [On Deletion] By returning 2 cards with [Gizmon] in their names from your trash to the bottom of the deck in any order, you may play 1 [Gizmon: XT] from your trash without paying the cost.</dd>
+<dd>When you would play this card, by deleting 1 of your level 3 Digimon, reduce the play cost by 4.<br> [On Play] <Draw 2>. Then, trash 2 cards in your hand.<br> [All Turns] This Digimon can't digivolve.<br> [On Deletion] By returning 2 cards with [Gizmon] in their names from your trash to the bottom of the deck in any order, you may play 1 [Gizmon: XT] from your trash without paying the cost.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -7325,7 +7325,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>When you would play this card, by deleting 1 of your level 4 Digimon, reduce the play cost by 6.<br> ＜Blocker＞<br> [On Play] Play 1 [Akihiro Kurata] from your trash without paying the cost.<br> [All Turns] This Digimon can't digivolve.<br> [On Deletion] You may play 1 [ProtoGizmon] from your trash without paying the cost.</dd>
+<dd>When you would play this card, by deleting 1 of your level 4 Digimon, reduce the play cost by 6.<br> <Blocker><br> [On Play] Play 1 [Akihiro Kurata] from your trash without paying the cost.<br> [All Turns] This Digimon can't digivolve.<br> [On Deletion] You may play 1 [ProtoGizmon] from your trash without paying the cost.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -7826,7 +7826,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Start of Your Main Phase] Delete all of your opponent's level 5 or lower Digimon. Then, if you have 6 or fewer cards in your hand, this Digimon gets +3000 DP and gains ＜Security Attack +1＞ for the turn.<br>[End of Attack][Once Per Turn] By deleting 1 of your other Digimon, unsuspend this Digimon.</dd>
+<dd>[Start of Your Main Phase] Delete all of your opponent's level 5 or lower Digimon. Then, if you have 6 or fewer cards in your hand, this Digimon gets +3000 DP and gains <Security Attack +1> for the turn.<br>[End of Attack][Once Per Turn] By deleting 1 of your other Digimon, unsuspend this Digimon.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -7899,7 +7899,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Start of Your Main Phase] Delete all of your opponent's level 5 or lower Digimon. Then, if you have 6 or fewer cards in your hand, this Digimon gets +3000 DP and gains ＜Security Attack +1＞ for the turn.<br>[End of Attack][Once Per Turn] By deleting 1 of your other Digimon, unsuspend this Digimon.</dd>
+<dd>[Start of Your Main Phase] Delete all of your opponent's level 5 or lower Digimon. Then, if you have 6 or fewer cards in your hand, this Digimon gets +3000 DP and gains <Security Attack +1> for the turn.<br>[End of Attack][Once Per Turn] By deleting 1 of your other Digimon, unsuspend this Digimon.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -8187,7 +8187,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd> [On Play] ＜Draw 1＞ (Draw 1 card from your deck.)<br> [On Deletion] Place 1 Digimon card with the [Royal Knight] trait from your hand as the bottom digivolution card of one of your [King Drasil_7D6] in the breeding area.</dd>
+<dd> [On Play] <Draw 1> (Draw 1 card from your deck.)<br> [On Deletion] Place 1 Digimon card with the [Royal Knight] trait from your hand as the bottom digivolution card of one of your [King Drasil_7D6] in the breeding area.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -8258,7 +8258,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>When you would play this card from the hand, if you have no Digimon, reduce the play cost by 2 for every 5 total cards in both players' trashes.<br>＜Rush＞ (This Digimon can attack the turn it was played.)<br> [On Play][When Digivolving][When Attacking] Delete 1 of your opponent's Digimon with 6000 DP or less. If no opponent's Digimon was deleted by this effect, delete 1 of their Digimon with 13000 DP or more.</dd>
+<dd>When you would play this card from the hand, if you have no Digimon, reduce the play cost by 2 for every 5 total cards in both players' trashes.<br><Rush> (This Digimon can attack the turn it was played.)<br> [On Play][When Digivolving][When Attacking] Delete 1 of your opponent's Digimon with 6000 DP or less. If no opponent's Digimon was deleted by this effect, delete 1 of their Digimon with 13000 DP or more.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -8331,7 +8331,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>When you would play this card from the hand, if you have no Digimon, reduce the play cost by 2 for every 5 total cards in both players' trashes.<br>＜Rush＞ (This Digimon can attack the turn it was played.)<br> [On Play][When Digivolving][When Attacking] Delete 1 of your opponent's Digimon with 6000 DP or less. If no opponent's Digimon was deleted by this effect, delete 1 of their Digimon with 13000 DP or more.</dd>
+<dd>When you would play this card from the hand, if you have no Digimon, reduce the play cost by 2 for every 5 total cards in both players' trashes.<br><Rush> (This Digimon can attack the turn it was played.)<br> [On Play][When Digivolving][When Attacking] Delete 1 of your opponent's Digimon with 6000 DP or less. If no opponent's Digimon was deleted by this effect, delete 1 of their Digimon with 13000 DP or more.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -8402,7 +8402,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play][When Digivolving] You may delete 1 of your opponent's Digimon, or play 1 of each Digimon with the [Royal Knight] trait and different names from the digivolution cards of your Digimon in the breeding area without paying the costs. When a Digimon is played by this effect, trash your Digimon in the breeding area, and all your Digimon gain ＜Rush＞ for the turn.</dd>
+<dd>[On Play][When Digivolving] You may delete 1 of your opponent's Digimon, or play 1 of each Digimon with the [Royal Knight] trait and different names from the digivolution cards of your Digimon in the breeding area without paying the costs. When a Digimon is played by this effect, trash your Digimon in the breeding area, and all your Digimon gain <Rush> for the turn.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -8475,7 +8475,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play][When Digivolving] You may delete 1 of your opponent's Digimon, or play 1 of each Digimon with the [Royal Knight] trait and different names from the digivolution cards of your Digimon in the breeding area without paying the costs. When a Digimon is played by this effect, trash your Digimon in the breeding area, and all your Digimon gain ＜Rush＞ for the turn.</dd>
+<dd>[On Play][When Digivolving] You may delete 1 of your opponent's Digimon, or play 1 of each Digimon with the [Royal Knight] trait and different names from the digivolution cards of your Digimon in the breeding area without paying the costs. When a Digimon is played by this effect, trash your Digimon in the breeding area, and all your Digimon gain <Rush> for the turn.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -9111,7 +9111,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[All Turns][Once Per Turn] When one of your yellow Digimon becomes suspended, 1 of your opponent's Digimon gets -1000 DP until the end of your opponent's turn.<br>[End of Your Turn][Once Per Turn] If there're 6 or fewer total cards in both players' security stacks, until the end of your opponent's turn, this Tamer is also treated as a 3000 DP Digimon, can't digivolve, and gains ＜Blocker＞.</dd>
+<dd>[All Turns][Once Per Turn] When one of your yellow Digimon becomes suspended, 1 of your opponent's Digimon gets -1000 DP until the end of your opponent's turn.<br>[End of Your Turn][Once Per Turn] If there're 6 or fewer total cards in both players' security stacks, until the end of your opponent's turn, this Tamer is also treated as a 3000 DP Digimon, can't digivolve, and gains <Blocker>.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -9323,7 +9323,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play] You may play 1 Digimon card with [PawnChessmon] in its name from your hand without paying the cost.<br> [All Turns] When you play a 2-color black and yellow Digimon, by suspending this Tamer, ＜Draw 1＞ and gain 1 memory.</dd>
+<dd>[On Play] You may play 1 Digimon card with [PawnChessmon] in its name from your hand without paying the cost.<br> [All Turns] When you play a 2-color black and yellow Digimon, by suspending this Tamer, <Draw 1> and gain 1 memory.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -9395,7 +9395,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play] You may play 1 Digimon card with [PawnChessmon] in its name from your hand without paying the cost.<br> [All Turns] When you play a 2-color black and yellow Digimon, by suspending this Tamer, ＜Draw 1＞ and gain 1 memory.</dd>
+<dd>[On Play] You may play 1 Digimon card with [PawnChessmon] in its name from your hand without paying the cost.<br> [All Turns] When you play a 2-color black and yellow Digimon, by suspending this Tamer, <Draw 1> and gain 1 memory.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -9465,7 +9465,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play] Your opponent may trash 1 Tamer card or Option card in their hand. If they don't, gain 1 memory and ＜Draw 1＞.<br> [Opponent's Turn] When an effect plays a Digimon, by suspending this Tamer, gain 1 memory.</dd>
+<dd>[On Play] Your opponent may trash 1 Tamer card or Option card in their hand. If they don't, gain 1 memory and <Draw 1>.<br> [Opponent's Turn] When an effect plays a Digimon, by suspending this Tamer, gain 1 memory.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -9537,7 +9537,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play] Your opponent may trash 1 Tamer card or Option card in their hand. If they don't, gain 1 memory and ＜Draw 1＞.<br> [Opponent's Turn] When an effect plays a Digimon, by suspending this Tamer, gain 1 memory.</dd>
+<dd>[On Play] Your opponent may trash 1 Tamer card or Option card in their hand. If they don't, gain 1 memory and <Draw 1>.<br> [Opponent's Turn] When an effect plays a Digimon, by suspending this Tamer, gain 1 memory.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -9607,7 +9607,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Your Turn] When a card with [Belphemon] in its name would be played, by deleting 1 of your Digimon with [Gizmon] in its name, reduce the play cost by the play cost of the deleted Digimon.<br> [End of Opponent’s Turn][Once Per Turn] ＜Draw 1＞ and trash 1 card in your hand. Then, by placing this Tamer as the bottom digivolution card of 1 of your Digimon with [Belphemon] in its name, delete 1 of your opponent's level 6 Digimon.</dd>
+<dd>[Your Turn] When a card with [Belphemon] in its name would be played, by deleting 1 of your Digimon with [Gizmon] in its name, reduce the play cost by the play cost of the deleted Digimon.<br> [End of Opponent’s Turn][Once Per Turn] <Draw 1> and trash 1 card in your hand. Then, by placing this Tamer as the bottom digivolution card of 1 of your Digimon with [Belphemon] in its name, delete 1 of your opponent's level 6 Digimon.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -9817,7 +9817,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd> When an effect trashes this card from the security stack, activate this card's [Main] effect.<br>[Main] 1 of your opponent's Digimon gets -3000 DP until the end of your opponent's turn. Then, if there're 6 or fewer total cards in both players' security stacks, all of your opponent's Digimon gain ＜Security Attack -1＞ until the end of your opponent's turn.</dd>
+<dd> When an effect trashes this card from the security stack, activate this card's [Main] effect.<br>[Main] 1 of your opponent's Digimon gets -3000 DP until the end of your opponent's turn. Then, if there're 6 or fewer total cards in both players' security stacks, all of your opponent's Digimon gain <Security Attack -1> until the end of your opponent's turn.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -10097,7 +10097,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Main] ＜Draw 1＞. You may place 1 Digimon card from your hand as the bottom digivolution card of 1 of your [King Drasil_7D6] in the breeding area. Then, place this card in the battle area.<br> [Main] ＜Delay＞<br> ・ Play 1 [Royal Knight] trait card from the digivolution cards of your Digimon in the breeding area without paying the cost. [On Play] effects on Digimon played by this effect don't activate, and they gain ＜Rush＞ for the turn.</dd>
+<dd>[Main] <Draw 1>. You may place 1 Digimon card from your hand as the bottom digivolution card of 1 of your [King Drasil_7D6] in the breeding area. Then, place this card in the battle area.<br> [Main] <Delay><br> ・ Play 1 [Royal Knight] trait card from the digivolution cards of your Digimon in the breeding area without paying the cost. [On Play] effects on Digimon played by this effect don't activate, and they gain <Rush> for the turn.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>

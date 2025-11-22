@@ -126,7 +126,7 @@ namespace DCGO.CardEffects.BT19
 
                 string EffectDiscription()
                 {
-                    return "[On Deletion] You may play 1 [Nene Amano] from your trash without paying the cost. Then, ＜Save＞.";
+                    return "[On Deletion] You may play 1 [Nene Amano] from your trash without paying the cost. Then, <Save>.";
                 }
 
                 bool CanSelectCardCondition(CardSource cardSource)

@@ -223,7 +223,7 @@ namespace DCGO.CardEffects.BT23
 
                 string EffectDiscription()
                 {
-                    return " [When Linking] This Digimon gains ＜Reboot＞ and ＜Blocker＞ until your opponent's turn ends.";
+                    return " [When Linking] This Digimon gains <Reboot> and <Blocker> until your opponent's turn ends.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

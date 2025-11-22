@@ -89,7 +89,7 @@ namespace DCGO.CardEffects.BT21
 
                 string EffectDiscription()
                 {
-                    return "[All Turns] When effects place digivolution cards under your Digimon, ＜Delay＞ (After this card is placed, by trashing it the next turn or later, activate the effect below).\r\n・1 of your Digimon may digivolve into a Digimon card with [Gammamon] in its text in the hand without paying the cost.";
+                    return "[All Turns] When effects place digivolution cards under your Digimon, <Delay> (After this card is placed, by trashing it the next turn or later, activate the effect below).\r\n・1 of your Digimon may digivolve into a Digimon card with [Gammamon] in its text in the hand without paying the cost.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

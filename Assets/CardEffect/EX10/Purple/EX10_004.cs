@@ -22,7 +22,7 @@ namespace DCGO.CardEffects.EX10
 
                 string EffectDiscription()
                 {
-                    return "[Your Turn] [Once Per Turn] When any of your Digimon with [Lucemon] in their names move from the breeding area to the battle area, by trashing 1 card in your hand, ＜Draw 1＞ (Draw 1 card from your deck.) and gain 1 memory.";
+                    return "[Your Turn] [Once Per Turn] When any of your Digimon with [Lucemon] in their names move from the breeding area to the battle area, by trashing 1 card in your hand, <Draw 1> (Draw 1 card from your deck.) and gain 1 memory.";
                 }
 
                 bool PermanentCondition(Permanent permanent)

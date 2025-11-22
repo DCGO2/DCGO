@@ -41,7 +41,7 @@ namespace DCGO.CardEffects.EX10
 
                 string EffectDescription()
                 {
-                    return "[Main] ＜Draw 2＞ (Draw 2 cards from your deck.) Then, place this card in the battle area.";
+                    return "[Main] <Draw 2> (Draw 2 cards from your deck.) Then, place this card in the battle area.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -68,7 +68,7 @@ namespace DCGO.CardEffects.EX10
 
                 string EffectDiscription()
                 {
-                    return "[End of Opponent's Turn] ＜Delay＞ (By trashing this card after the placing turn, activate the effect below.)\r\n・You may play 1 face-up Digimon card with the [Dark Masters] trait from your security stack without paying the cost. At the end of your turn, delete the Digimon this effect played.";
+                    return "[End of Opponent's Turn] <Delay> (By trashing this card after the placing turn, activate the effect below.)\r\n・You may play 1 face-up Digimon card with the [Dark Masters] trait from your security stack without paying the cost. At the end of your turn, delete the Digimon this effect played.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

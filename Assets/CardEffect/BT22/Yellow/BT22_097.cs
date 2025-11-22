@@ -86,7 +86,7 @@ namespace DCGO.CardEffects.BT22
 
                 string EffectDiscription()
                 {
-                    return "[All Turns] When any of your [Appmon] trait Digimon are played, ＜Delay＞ (By trashing this card after the placing turn, activate the effect below.)\r\n・You may link 1 [Appmon] trait Digimon card from your hand to 1 of your Digimon without paying the cost.";
+                    return "[All Turns] When any of your [Appmon] trait Digimon are played, <Delay> (By trashing this card after the placing turn, activate the effect below.)\r\n・You may link 1 [Appmon] trait Digimon card from your hand to 1 of your Digimon without paying the cost.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

@@ -148,7 +148,7 @@ namespace DCGO.CardEffects.BT22
 
                 string EffectDiscription()
                 {
-                    return "[All Turns] [Once Per Turn] When attack targets change, this Digimon gains ＜Piercing＞ (When this Digimon attacks and deletes an opponent's Digimon and survives the battle, it performs any security checks it normally would.) and +5000 DP for the turn.";
+                    return "[All Turns] [Once Per Turn] When attack targets change, this Digimon gains <Piercing> (When this Digimon attacks and deletes an opponent's Digimon and survives the battle, it performs any security checks it normally would.) and +5000 DP for the turn.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

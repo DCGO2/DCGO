@@ -86,7 +86,7 @@ namespace DCGO.CardEffects.BT21
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
-                    => "[On Play] This Digimon gains <Piercing＞ (When this Digimon attacks and deletes an opponent's Digimon and survives the battle, it performs any security checks it normally would) and +3000 DP for the turn.";
+                    => "[On Play] This Digimon gains <Piercing> (When this Digimon attacks and deletes an opponent's Digimon and survives the battle, it performs any security checks it normally would) and +3000 DP for the turn.";
 
                 bool CanUseCondition(Hashtable hashtable)
                 {
@@ -122,7 +122,7 @@ namespace DCGO.CardEffects.BT21
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
-                    => "[When Digivolving] This Digimon gains <Piercing＞ (When this Digimon attacks and deletes an opponent's Digimon and survives the battle, it performs any security checks it normally would) and +3000 DP for the turn.";
+                    => "[When Digivolving] This Digimon gains <Piercing> (When this Digimon attacks and deletes an opponent's Digimon and survives the battle, it performs any security checks it normally would) and +3000 DP for the turn.";
 
                 bool CanUseCondition(Hashtable hashtable)
                 {

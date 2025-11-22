@@ -147,7 +147,7 @@ namespace DCGO.CardEffects.EX10
             string SecondEffectShortText() => "Return 2 cards to top of deck, <De-Digivolve 2>";
             string SecondEffectDiscription(string tag)
             {
-                return $"[{tag}] If you have 10 or more cards in your trash, by returning 2 non-Digi-Egg cards from your trash to the top of the deck, ＜De-Digivolve 2＞ 1 of your opponent's Digimon.";
+                return $"[{tag}] If you have 10 or more cards in your trash, by returning 2 non-Digi-Egg cards from your trash to the top of the deck, <De-Digivolve 2> 1 of your opponent's Digimon.";
             }
 
             bool SecondCanActivateCondition(Hashtable hashtable)

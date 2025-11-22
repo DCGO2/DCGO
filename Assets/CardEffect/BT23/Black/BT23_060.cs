@@ -46,13 +46,13 @@ namespace DCGO.CardEffects.BT23
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("＜De-Digivolve 1＞, then delete 1 with 8000DP or less", CanUseCondition, card);
+                activateClass.SetUpICardEffect("<De-Digivolve 1>, then delete 1 with 8000DP or less", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[On Play] ＜De-Digivolve 1＞ 1 of your opponent's Digimon. Then, delete 1 of their Digimon with 8000 DP or less.";
+                    return "[On Play] <De-Digivolve 1> 1 of your opponent's Digimon. Then, delete 1 of their Digimon with 8000 DP or less.";
                 }
 
                 bool IsDigimonWithCorrectDP(Permanent permanent)
@@ -148,13 +148,13 @@ namespace DCGO.CardEffects.BT23
             if (timing == EffectTiming.OnEnterFieldAnyone)
             {
                 ActivateClass activateClass = new ActivateClass();
-                activateClass.SetUpICardEffect("＜De-Digivolve 1＞, then delete 1 with 8000DP or less", CanUseCondition, card);
+                activateClass.SetUpICardEffect("<De-Digivolve 1>, then delete 1 with 8000DP or less", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, -1, false, EffectDiscription());
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
                 {
-                    return "[When Digivolving] ＜De-Digivolve 1＞ 1 of your opponent's Digimon. Then, delete 1 of their Digimon with 8000 DP or less.";
+                    return "[When Digivolving] <De-Digivolve 1> 1 of your opponent's Digimon. Then, delete 1 of their Digimon with 8000 DP or less.";
                 }
 
                 bool IsDigimonWithCorrectDP(Permanent permanent)

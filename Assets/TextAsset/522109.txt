@@ -625,7 +625,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜DNA Digivolution: 0 from blue Lv.4 + green Lv.4＞ Digivolve unsuspended with the 2 specified Digimon stacked on top of each other.[When Digivolving] When DNA digivolving, return 1 of your opponent's Digimon with 6000 DP or less to the bottom of its owner's deck.[When Attacking][Once Per Turn] Unsuspend this Digimon.</dd>
+<dd><DNA Digivolution: 0 from blue Lv.4 + green Lv.4> Digivolve unsuspended with the 2 specified Digimon stacked on top of each other.[When Digivolving] When DNA digivolving, return 1 of your opponent's Digimon with 6000 DP or less to the bottom of its owner's deck.[When Attacking][Once Per Turn] Unsuspend this Digimon.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -698,7 +698,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜DNA Digivolution: 0 from blue Lv.4 + green Lv.4＞ Digivolve unsuspended with the 2 specified Digimon stacked on top of each other.[When Digivolving] When DNA digivolving, return 1 of your opponent's Digimon with 6000 DP or less to the bottom of its owner's deck.[When Attacking][Once Per Turn] Unsuspend this Digimon.</dd>
+<dd><DNA Digivolution: 0 from blue Lv.4 + green Lv.4> Digivolve unsuspended with the 2 specified Digimon stacked on top of each other.[When Digivolving] When DNA digivolving, return 1 of your opponent's Digimon with 6000 DP or less to the bottom of its owner's deck.[When Attacking][Once Per Turn] Unsuspend this Digimon.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -771,7 +771,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜DNA Digivolution: 0 from blue Lv.4 + green Lv.4＞ Digivolve unsuspended with the 2 specified Digimon stacked on top of each other.[When Digivolving] When DNA digivolving, return 1 of your opponent's Digimon with 6000 DP or less to the bottom of its owner's deck.[When Attacking][Once Per Turn] Unsuspend this Digimon.</dd>
+<dd><DNA Digivolution: 0 from blue Lv.4 + green Lv.4> Digivolve unsuspended with the 2 specified Digimon stacked on top of each other.[When Digivolving] When DNA digivolving, return 1 of your opponent's Digimon with 6000 DP or less to the bottom of its owner's deck.[When Attacking][Once Per Turn] Unsuspend this Digimon.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -844,7 +844,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜DNA Digivolution: 0 from blue Lv.4 + green Lv.4＞ Digivolve unsuspended with the 2 specified Digimon stacked on top of each other.[When Digivolving] When DNA digivolving, return 1 of your opponent's Digimon with 6000 DP or less to the bottom of its owner's deck.[When Attacking][Once Per Turn] Unsuspend this Digimon.</dd>
+<dd><DNA Digivolution: 0 from blue Lv.4 + green Lv.4> Digivolve unsuspended with the 2 specified Digimon stacked on top of each other.[When Digivolving] When DNA digivolving, return 1 of your opponent's Digimon with 6000 DP or less to the bottom of its owner's deck.[When Attacking][Once Per Turn] Unsuspend this Digimon.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -917,7 +917,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜DNA Digivolution: 0 from blue Lv.4 + green Lv.4＞ Digivolve unsuspended with the 2 specified Digimon stacked on top of each other.[When Digivolving] When DNA digivolving, return 1 of your opponent's Digimon with 6000 DP or less to the bottom of its owner's deck.[When Attacking][Once Per Turn] Unsuspend this Digimon.</dd>
+<dd><DNA Digivolution: 0 from blue Lv.4 + green Lv.4> Digivolve unsuspended with the 2 specified Digimon stacked on top of each other.[When Digivolving] When DNA digivolving, return 1 of your opponent's Digimon with 6000 DP or less to the bottom of its owner's deck.[When Attacking][Once Per Turn] Unsuspend this Digimon.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1278,7 +1278,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[When Attacking] If you have a blue Digimon in play, ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[When Attacking] If you have a blue Digimon in play, <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -1416,7 +1416,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜DNA Digivolution: 0 from green Lv.4 + blue Lv.4＞ Digivolve unsuspended with the 2 specified Digimon stacked on top of each other. [When Digivolving] Suspend 1 of your opponent's Digimon. When DNA digivolving, that Digimon doesn't unsuspend during its owner's next unsuspend phase.</dd>
+<dd><DNA Digivolution: 0 from green Lv.4 + blue Lv.4> Digivolve unsuspended with the 2 specified Digimon stacked on top of each other. [When Digivolving] Suspend 1 of your opponent's Digimon. When DNA digivolving, that Digimon doesn't unsuspend during its owner's next unsuspend phase.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1558,7 +1558,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Security Attack +1＞ (This Digimon checks 1 additional security card.) [When Digivolving] This Digimon gets +4000 DP for the turn.</dd>
+<dd><Security Attack +1> (This Digimon checks 1 additional security card.) [When Digivolving] This Digimon gets +4000 DP for the turn.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1698,7 +1698,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Main] 1 of your Digimon gets +2000 DP for the turn. Then, If you have a blue Digimon in play, 1 of your Digimon gains ＜Piercing＞ for the turn. (When this Digimon attacks and deletes an opponent's Digimon and survives the battle, it performs any security checks it normally would.)</dd>
+<dd>[Main] 1 of your Digimon gets +2000 DP for the turn. Then, If you have a blue Digimon in play, 1 of your Digimon gains <Piercing> for the turn. (When this Digimon attacks and deletes an opponent's Digimon and survives the battle, it performs any security checks it normally would.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1776,7 +1776,7 @@
 </dl>
 <dl>
 <dt>Securityeffect</dt>
-<dd>[Security] Suspend all of your opponent's Digimon without ＜Blocker＞.</dd>
+<dd>[Security] Suspend all of your opponent's Digimon without <Blocker>.</dd>
 </dl>
 <dl>
 <dt>Notes</dt>

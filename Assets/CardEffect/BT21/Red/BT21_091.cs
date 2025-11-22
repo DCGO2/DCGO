@@ -43,7 +43,7 @@ namespace DCGO.CardEffects.BT21
 
                 string EffectDiscription()
                 {
-                    return "[Main] By trashing 1 card with the [Hybrid] trait from your hand, ＜Draw 2＞ (Draw 2 cards from your deck). Then, place this card in the battle area.";
+                    return "[Main] By trashing 1 card with the [Hybrid] trait from your hand, <Draw 2> (Draw 2 cards from your deck). Then, place this card in the battle area.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
@@ -116,7 +116,7 @@ namespace DCGO.CardEffects.BT21
 
                 string EffectDiscription()
                 {
-                    return "[All Turns] When any of your Tamers with inherited effects are played, ＜Delay＞ (After this card is placed, by trashing it the next turn or later, activate the effect below).\r\n・1 of your Tamers may digivolve into a Digimon card with the [Hybrid] trait in the hand without paying the cost";
+                    return "[All Turns] When any of your Tamers with inherited effects are played, <Delay> (After this card is placed, by trashing it the next turn or later, activate the effect below).\r\n・1 of your Tamers may digivolve into a Digimon card with the [Hybrid] trait in the hand without paying the cost";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

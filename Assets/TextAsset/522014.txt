@@ -197,7 +197,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[When Attacking][Once Per Turn] If you have a green Digimon in play, ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[When Attacking][Once Per Turn] If you have a green Digimon in play, <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -410,7 +410,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn][Once Per Turn] If you play a Digimon with ＜Save＞ in its text, ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[Your Turn][Once Per Turn] If you play a Digimon with <Save> in its text, <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -481,7 +481,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[On Deletion] If this Digimon has ＜Save＞ in its text, ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[On Deletion] If this Digimon has <Save> in its text, <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -692,11 +692,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 0 from Lv.2 w/＜Save＞ in text [On Deletion] ＜Save＞ (You may place this card under one of your Tamers.)</dd>
+<dd>Digivolve: 0 from Lv.2 w/<Save> in text [On Deletion] <Save> (You may place this card under one of your Tamers.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[When Attacking][Once Per Turn] If this Digimon has ＜Save＞ in its text, delete 1 of your opponent's Digimon with 4000 DP or less.</dd>
+<dd>[When Attacking][Once Per Turn] If this Digimon has <Save> in its text, delete 1 of your opponent's Digimon with 4000 DP or less.</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -763,7 +763,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play] By trashing 1 Digimon card with a [Hybrid] trait, ＜Draw 2＞. (Draw 2 cards from your deck.)</dd>
+<dd>[On Play] By trashing 1 Digimon card with a [Hybrid] trait, <Draw 2>. (Draw 2 cards from your deck.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -978,11 +978,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 2 from Lv.3 w/＜Save＞ in text DigiXros -2: 1 Digimon card w/＜Save＞ in text[On Play][When Digivolving] You may play 1 [Taiki Kudo], [Yuu Amano], or [Tagiru Akashi] card from your hand without paying its cost.[On Deletion] ＜Save＞. Then, place 1 Digimon card with ＜Save＞ in its text from your trash under 1 of your Tamers.</dd>
+<dd>Digivolve: 2 from Lv.3 w/<Save> in text DigiXros -2: 1 Digimon card w/<Save> in text[On Play][When Digivolving] You may play 1 [Taiki Kudo], [Yuu Amano], or [Tagiru Akashi] card from your hand without paying its cost.[On Deletion] <Save>. Then, place 1 Digimon card with <Save> in its text from your trash under 1 of your Tamers.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[When Attacking][Once Per Turn] If this Digimon has ＜Save＞ in its text, delete 1 of your opponent's Digimon with 4000 DP or less.</dd>
+<dd>[When Attacking][Once Per Turn] If this Digimon has <Save> in its text, delete 1 of your opponent's Digimon with 4000 DP or less.</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -1051,11 +1051,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 2 from Lv.3 w/＜Save＞ in text DigiXros -2: 1 Digimon card w/＜Save＞ in text[On Play][When Digivolving] You may play 1 [Taiki Kudo], [Yuu Amano], or [Tagiru Akashi] card from your hand without paying its cost.[On Deletion] ＜Save＞. Then, place 1 Digimon card with ＜Save＞ in its text from your trash under 1 of your Tamers.</dd>
+<dd>Digivolve: 2 from Lv.3 w/<Save> in text DigiXros -2: 1 Digimon card w/<Save> in text[On Play][When Digivolving] You may play 1 [Taiki Kudo], [Yuu Amano], or [Tagiru Akashi] card from your hand without paying its cost.[On Deletion] <Save>. Then, place 1 Digimon card with <Save> in its text from your trash under 1 of your Tamers.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[When Attacking][Once Per Turn] If this Digimon has ＜Save＞ in its text, delete 1 of your opponent's Digimon with 4000 DP or less.</dd>
+<dd>[When Attacking][Once Per Turn] If this Digimon has <Save> in its text, delete 1 of your opponent's Digimon with 4000 DP or less.</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -1124,11 +1124,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 2 from Lv.3 w/＜Save＞ in text DigiXros -2: 1 Digimon card w/＜Save＞ in text[On Play][When Digivolving] You may play 1 [Taiki Kudo], [Yuu Amano], or [Tagiru Akashi] card from your hand without paying its cost.[On Deletion] ＜Save＞. Then, place 1 Digimon card with ＜Save＞ in its text from your trash under 1 of your Tamers.</dd>
+<dd>Digivolve: 2 from Lv.3 w/<Save> in text DigiXros -2: 1 Digimon card w/<Save> in text[On Play][When Digivolving] You may play 1 [Taiki Kudo], [Yuu Amano], or [Tagiru Akashi] card from your hand without paying its cost.[On Deletion] <Save>. Then, place 1 Digimon card with <Save> in its text from your trash under 1 of your Tamers.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[When Attacking][Once Per Turn] If this Digimon has ＜Save＞ in its text, delete 1 of your opponent's Digimon with 4000 DP or less.</dd>
+<dd>[When Attacking][Once Per Turn] If this Digimon has <Save> in its text, delete 1 of your opponent's Digimon with 4000 DP or less.</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -1197,11 +1197,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 2 from Lv.3 w/＜Save＞ in text DigiXros -2: 1 Digimon card w/＜Save＞ in text[On Play][When Digivolving] You may play 1 [Taiki Kudo], [Yuu Amano], or [Tagiru Akashi] card from your hand without paying its cost.[On Deletion] ＜Save＞. Then, place 1 Digimon card with ＜Save＞ in its text from your trash under 1 of your Tamers.</dd>
+<dd>Digivolve: 2 from Lv.3 w/<Save> in text DigiXros -2: 1 Digimon card w/<Save> in text[On Play][When Digivolving] You may play 1 [Taiki Kudo], [Yuu Amano], or [Tagiru Akashi] card from your hand without paying its cost.[On Deletion] <Save>. Then, place 1 Digimon card with <Save> in its text from your trash under 1 of your Tamers.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[When Attacking][Once Per Turn] If this Digimon has ＜Save＞ in its text, delete 1 of your opponent's Digimon with 4000 DP or less.</dd>
+<dd>[When Attacking][Once Per Turn] If this Digimon has <Save> in its text, delete 1 of your opponent's Digimon with 4000 DP or less.</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -1410,11 +1410,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 3 from Lv.4 w/＜Save＞ in text [When Digivolving] Choose any number of your opponent's Digimon whose total DP adds up to 4000 or less and delete them. For every 2 cards in this Digimon's digivolution cards, it gets +3000 to the maximum DP-based deletion effects.[Your Turn] If you have 4 or more digivolution cards under this Digimon, it gains ＜Security Attack +1＞. (This Digimon checks 1 additional security card.)</dd>
+<dd>Digivolve: 3 from Lv.4 w/<Save> in text [When Digivolving] Choose any number of your opponent's Digimon whose total DP adds up to 4000 or less and delete them. For every 2 cards in this Digimon's digivolution cards, it gets +3000 to the maximum DP-based deletion effects.[Your Turn] If you have 4 or more digivolution cards under this Digimon, it gains <Security Attack +1>. (This Digimon checks 1 additional security card.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[When Attacking][Once Per Turn] If this Digimon has ＜Save＞ in its text, delete 1 of your opponent's Digimon with 4000 DP or less.</dd>
+<dd>[When Attacking][Once Per Turn] If this Digimon has <Save> in its text, delete 1 of your opponent's Digimon with 4000 DP or less.</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -1483,11 +1483,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 3 from Lv.4 w/＜Save＞ in text [When Digivolving] Choose any number of your opponent's Digimon whose total DP adds up to 4000 or less and delete them. For every 2 cards in this Digimon's digivolution cards, it gets +3000 to the maximum DP-based deletion effects.[Your Turn] If you have 4 or more digivolution cards under this Digimon, it gains ＜Security Attack +1＞. (This Digimon checks 1 additional security card.)</dd>
+<dd>Digivolve: 3 from Lv.4 w/<Save> in text [When Digivolving] Choose any number of your opponent's Digimon whose total DP adds up to 4000 or less and delete them. For every 2 cards in this Digimon's digivolution cards, it gets +3000 to the maximum DP-based deletion effects.[Your Turn] If you have 4 or more digivolution cards under this Digimon, it gains <Security Attack +1>. (This Digimon checks 1 additional security card.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[When Attacking][Once Per Turn] If this Digimon has ＜Save＞ in its text, delete 1 of your opponent's Digimon with 4000 DP or less.</dd>
+<dd>[When Attacking][Once Per Turn] If this Digimon has <Save> in its text, delete 1 of your opponent's Digimon with 4000 DP or less.</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -1769,7 +1769,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Security Attack +1＞. (This Digimon checks 1 additional security card.)[When Digivolving] Delete 1 of your opponent's Digimon with 6000 DP or less. If this Digimon has a red Tamer in its digivolution cards, delete 1 of your opponent’s Digimon with DP less than or equal to this Digimon’s DP instead.[On Deletion] You may play 1 [Takuya Kanbara] from your hand or trash without paying its cost.</dd>
+<dd><Security Attack +1>. (This Digimon checks 1 additional security card.)[When Digivolving] Delete 1 of your opponent's Digimon with 6000 DP or less. If this Digimon has a red Tamer in its digivolution cards, delete 1 of your opponent’s Digimon with DP less than or equal to this Digimon’s DP instead.[On Deletion] You may play 1 [Takuya Kanbara] from your hand or trash without paying its cost.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1842,7 +1842,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Security Attack +1＞. (This Digimon checks 1 additional security card.)[When Digivolving] Delete 1 of your opponent's Digimon with 6000 DP or less. If this Digimon has a red Tamer in its digivolution cards, delete 1 of your opponent’s Digimon with DP less than or equal to this Digimon’s DP instead.[On Deletion] You may play 1 [Takuya Kanbara] from your hand or trash without paying its cost.</dd>
+<dd><Security Attack +1>. (This Digimon checks 1 additional security card.)[When Digivolving] Delete 1 of your opponent's Digimon with 6000 DP or less. If this Digimon has a red Tamer in its digivolution cards, delete 1 of your opponent’s Digimon with DP less than or equal to this Digimon’s DP instead.[On Deletion] You may play 1 [Takuya Kanbara] from your hand or trash without paying its cost.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1913,7 +1913,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Raid＞ (When this Digimon attacks, you may switch the target of attack to 1 of your opponent's unsuspended Digimon with the highest DP.)[When Digivolving] Delete 1 of your opponent's Digimon with 6000 DP or less.[When Attacking] Delete 1 of your opponent's Digimon with 6000 DP or less. If no Digimon was deleted by this effect, trash the top card of your opponent's security stack.</dd>
+<dd><Raid> (When this Digimon attacks, you may switch the target of attack to 1 of your opponent's unsuspended Digimon with the highest DP.)[When Digivolving] Delete 1 of your opponent's Digimon with 6000 DP or less.[When Attacking] Delete 1 of your opponent's Digimon with 6000 DP or less. If no Digimon was deleted by this effect, trash the top card of your opponent's security stack.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -1986,7 +1986,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Raid＞ (When this Digimon attacks, you may switch the target of attack to 1 of your opponent's unsuspended Digimon with the highest DP.)[When Digivolving] Delete 1 of your opponent's Digimon with 6000 DP or less.[When Attacking] Delete 1 of your opponent's Digimon with 6000 DP or less. If no Digimon was deleted by this effect, trash the top card of your opponent's security stack.</dd>
+<dd><Raid> (When this Digimon attacks, you may switch the target of attack to 1 of your opponent's unsuspended Digimon with the highest DP.)[When Digivolving] Delete 1 of your opponent's Digimon with 6000 DP or less.[When Attacking] Delete 1 of your opponent's Digimon with 6000 DP or less. If no Digimon was deleted by this effect, trash the top card of your opponent's security stack.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -2059,7 +2059,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Raid＞ (When this Digimon attacks, you may switch the target of attack to 1 of your opponent's unsuspended Digimon with the highest DP.)[When Digivolving] Delete 1 of your opponent's Digimon with 6000 DP or less.[When Attacking] Delete 1 of your opponent's Digimon with 6000 DP or less. If no Digimon was deleted by this effect, trash the top card of your opponent's security stack.</dd>
+<dd><Raid> (When this Digimon attacks, you may switch the target of attack to 1 of your opponent's unsuspended Digimon with the highest DP.)[When Digivolving] Delete 1 of your opponent's Digimon with 6000 DP or less.[When Attacking] Delete 1 of your opponent's Digimon with 6000 DP or less. If no Digimon was deleted by this effect, trash the top card of your opponent's security stack.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -2347,7 +2347,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn] While this Digimon has [Imperialdramon] in its name or a [Free] trait, it gains ＜Jamming＞.</dd>
+<dd>[Your Turn] While this Digimon has [Imperialdramon] in its name or a [Free] trait, it gains <Jamming>.</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -2485,7 +2485,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 0 from [Calmaramon] You may digivolve this card from your hand onto one of your blue Tamers as if the Tamer is a level 3 blue Digimon.[When Digivolving] By placing a blue level 3 Digimon card from your hand under 1 of your blue Digimon as its bottom digivolution card, this Digimon gains ＜Jamming＞ for the turn. (This Digimon can't be deleted in battles against Security Digimon.)</dd>
+<dd>Digivolve: 0 from [Calmaramon] You may digivolve this card from your hand onto one of your blue Tamers as if the Tamer is a level 3 blue Digimon.[When Digivolving] By placing a blue level 3 Digimon card from your hand under 1 of your blue Digimon as its bottom digivolution card, this Digimon gains <Jamming> for the turn. (This Digimon can't be deleted in battles against Security Digimon.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -3055,7 +3055,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 2 from [Imperialdramon: Dragon Mode][When Digivolving] Suspend all of your opponent's Digimon with no digivolution cards. Then, return 1 of your opponent's suspended Digimon to its owner's hand. By returning 1 [Imperialdramon: Dragon Mode] card from this Digimon's digivolution cards to its owner's hand, place all of your opponent's suspended Digimon at the bottom of their owners' decks instead.[All Turns] This Digimon gets +1000 DP for each of its digivolution card colors. While this Digimon has 2 or more colors, it gains ＜Security Attack +1＞ and ＜Blocker＞.</dd>
+<dd>Digivolve: 2 from [Imperialdramon: Dragon Mode][When Digivolving] Suspend all of your opponent's Digimon with no digivolution cards. Then, return 1 of your opponent's suspended Digimon to its owner's hand. By returning 1 [Imperialdramon: Dragon Mode] card from this Digimon's digivolution cards to its owner's hand, place all of your opponent's suspended Digimon at the bottom of their owners' decks instead.[All Turns] This Digimon gets +1000 DP for each of its digivolution card colors. While this Digimon has 2 or more colors, it gains <Security Attack +1> and <Blocker>.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -3128,7 +3128,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 2 from [Imperialdramon: Dragon Mode][When Digivolving] Suspend all of your opponent's Digimon with no digivolution cards. Then, return 1 of your opponent's suspended Digimon to its owner's hand. By returning 1 [Imperialdramon: Dragon Mode] card from this Digimon's digivolution cards to its owner's hand, place all of your opponent's suspended Digimon at the bottom of their owners' decks instead.[All Turns] This Digimon gets +1000 DP for each of its digivolution card colors. While this Digimon has 2 or more colors, it gains ＜Security Attack +1＞ and ＜Blocker＞.</dd>
+<dd>Digivolve: 2 from [Imperialdramon: Dragon Mode][When Digivolving] Suspend all of your opponent's Digimon with no digivolution cards. Then, return 1 of your opponent's suspended Digimon to its owner's hand. By returning 1 [Imperialdramon: Dragon Mode] card from this Digimon's digivolution cards to its owner's hand, place all of your opponent's suspended Digimon at the bottom of their owners' decks instead.[All Turns] This Digimon gets +1000 DP for each of its digivolution card colors. While this Digimon has 2 or more colors, it gains <Security Attack +1> and <Blocker>.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -3412,11 +3412,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 0 from Lv.2 w/＜Save＞ in text</dd>
+<dd>Digivolve: 0 from Lv.2 w/<Save> in text</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[When Attacking][Once Per Turn] If this Digimon has ＜Save＞ in its text, 1 of your opponent's Digimon gets -2000 DP for the turn.</dd>
+<dd>[When Attacking][Once Per Turn] If this Digimon has <Save> in its text, 1 of your opponent's Digimon gets -2000 DP for the turn.</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -3554,11 +3554,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 2 from Lv.3 w/＜Save＞ in text DigiXros -2: 1 Digimon card w/＜Save＞ in text [On Play][When Digivolving] Reveal the top 3 cards of your deck. You may play 1 [Airu Suzaki], [Ren Tobari], or [Ryouma Mogami] card among them without paying its cost. Place the remaining cards at the bottom of your deck in any order.[On Deletion] ＜Save＞. Then, place 1 Digimon card with ＜Save＞ in its text from your trash under 1 of your Tamers.</dd>
+<dd>Digivolve: 2 from Lv.3 w/<Save> in text DigiXros -2: 1 Digimon card w/<Save> in text [On Play][When Digivolving] Reveal the top 3 cards of your deck. You may play 1 [Airu Suzaki], [Ren Tobari], or [Ryouma Mogami] card among them without paying its cost. Place the remaining cards at the bottom of your deck in any order.[On Deletion] <Save>. Then, place 1 Digimon card with <Save> in its text from your trash under 1 of your Tamers.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[When Attacking][Once Per Turn] If this Digimon has ＜Save＞ in its text, 1 of your opponent's Digimon gets -2000 DP for the turn.</dd>
+<dd>[When Attacking][Once Per Turn] If this Digimon has <Save> in its text, 1 of your opponent's Digimon gets -2000 DP for the turn.</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -3696,11 +3696,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 3 from Lv.4 w/＜Save＞ in text When you would play this card from your hand, if your opponent has a Digimon with ＜Security Attack＞ in play, reduce its play cost by 3.</dd>
+<dd>Digivolve: 3 from Lv.4 w/<Save> in text When you would play this card from your hand, if your opponent has a Digimon with <Security Attack> in play, reduce its play cost by 3.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[When Attacking][Once Per Turn] Until the end of your opponent's turn, 1 of your opponent's Digimon gains ＜Security Attack -1＞. (This Digimon checks 1 fewer security cards.)</dd>
+<dd>[When Attacking][Once Per Turn] Until the end of your opponent's turn, 1 of your opponent's Digimon gains <Security Attack -1>. (This Digimon checks 1 fewer security cards.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -3767,11 +3767,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 3 from Lv.4 w/＜Save＞ in text When you would play this card from your hand, if your opponent has a Digimon with ＜Security Attack＞ in play, reduce its play cost by 3.</dd>
+<dd>Digivolve: 3 from Lv.4 w/<Save> in text When you would play this card from your hand, if your opponent has a Digimon with <Security Attack> in play, reduce its play cost by 3.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[When Attacking][Once Per Turn] Until the end of your opponent's turn, 1 of your opponent's Digimon gains ＜Security Attack -1＞. (This Digimon checks 1 fewer security cards.)</dd>
+<dd>[When Attacking][Once Per Turn] Until the end of your opponent's turn, 1 of your opponent's Digimon gains <Security Attack -1>. (This Digimon checks 1 fewer security cards.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -3838,11 +3838,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 3 from Lv.4 w/＜Save＞ in text [When Digivolving] For every 2 cards in this Digimon's digivolution cards, activate the following effect:・1 of your opponent's Digimon gets -3000 DP for the turn.[Your Turn] If an opponent's Digimon is deleted by dropping to 0 DP, ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>Digivolve: 3 from Lv.4 w/<Save> in text [When Digivolving] For every 2 cards in this Digimon's digivolution cards, activate the following effect:・1 of your opponent's Digimon gets -3000 DP for the turn.[Your Turn] If an opponent's Digimon is deleted by dropping to 0 DP, <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[When Attacking][Once Per Turn] If this Digimon has ＜Save＞ in its text, 1 of your opponent's Digimon gets -2000 DP for the turn.</dd>
+<dd>[When Attacking][Once Per Turn] If this Digimon has <Save> in its text, 1 of your opponent's Digimon gets -2000 DP for the turn.</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -3911,11 +3911,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 3 from Lv.4 w/＜Save＞ in text [When Digivolving] For every 2 cards in this Digimon's digivolution cards, activate the following effect:・1 of your opponent's Digimon gets -3000 DP for the turn.[Your Turn] If an opponent's Digimon is deleted by dropping to 0 DP, ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>Digivolve: 3 from Lv.4 w/<Save> in text [When Digivolving] For every 2 cards in this Digimon's digivolution cards, activate the following effect:・1 of your opponent's Digimon gets -3000 DP for the turn.[Your Turn] If an opponent's Digimon is deleted by dropping to 0 DP, <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[When Attacking][Once Per Turn] If this Digimon has ＜Save＞ in its text, 1 of your opponent's Digimon gets -2000 DP for the turn.</dd>
+<dd>[When Attacking][Once Per Turn] If this Digimon has <Save> in its text, 1 of your opponent's Digimon gets -2000 DP for the turn.</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -4053,7 +4053,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 3 from Lv.5 w/[RizeGreymon] in name [When Digivolving] For each yellow or red Tamer you have in play, 1 of your opponent's Digimon and all of your opponent's Security Digimon get -3000 DP for the turn.[Your Turn] All of your [Marcus Damon] cards in play get +3000 DP and ＜Security Attack +1＞. (This Digimon checks 1 additional security card.)</dd>
+<dd>Digivolve: 3 from Lv.5 w/[RizeGreymon] in name [When Digivolving] For each yellow or red Tamer you have in play, 1 of your opponent's Digimon and all of your opponent's Security Digimon get -3000 DP for the turn.[Your Turn] All of your [Marcus Damon] cards in play get +3000 DP and <Security Attack +1>. (This Digimon checks 1 additional security card.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -4126,7 +4126,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 3 from Lv.5 w/[RizeGreymon] in name [When Digivolving] For each yellow or red Tamer you have in play, 1 of your opponent's Digimon and all of your opponent's Security Digimon get -3000 DP for the turn.[Your Turn] All of your [Marcus Damon] cards in play get +3000 DP and ＜Security Attack +1＞. (This Digimon checks 1 additional security card.)</dd>
+<dd>Digivolve: 3 from Lv.5 w/[RizeGreymon] in name [When Digivolving] For each yellow or red Tamer you have in play, 1 of your opponent's Digimon and all of your opponent's Security Digimon get -3000 DP for the turn.[Your Turn] All of your [Marcus Damon] cards in play get +3000 DP and <Security Attack +1>. (This Digimon checks 1 additional security card.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -4197,7 +4197,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[When Digivolving] Until the end of your opponent's turn, 1 of your opponent's Digimon gains ＜Security Attack -2＞. (This Digimon checks 2 fewer security cards.)[Your Turn] This Digimon gains ＜Security Attack +1＞ (This Digimon checks 1 additional security card) for each of your opponent's Digimon with ＜Security Attack＞. </dd>
+<dd>[When Digivolving] Until the end of your opponent's turn, 1 of your opponent's Digimon gains <Security Attack -2>. (This Digimon checks 2 fewer security cards.)[Your Turn] This Digimon gains <Security Attack +1> (This Digimon checks 1 additional security card) for each of your opponent's Digimon with <Security Attack>. </dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -4481,11 +4481,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 0 from Lv.2 w/＜Save＞ in text DigiXros -2: 1 Digimon card w/＜Save＞ in text [On Play] By revealing up to 3 Tamer cards from your hand and placing all of the revealed cards at the bottom of your deck in any order, ＜Draw 1＞ for each card placed.[On Deletion] ＜Save＞ (You may place this card under one of your Tamers.)</dd>
+<dd>Digivolve: 0 from Lv.2 w/<Save> in text DigiXros -2: 1 Digimon card w/<Save> in text [On Play] By revealing up to 3 Tamer cards from your hand and placing all of the revealed cards at the bottom of your deck in any order, <Draw 1> for each card placed.[On Deletion] <Save> (You may place this card under one of your Tamers.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn] While this Digimon has ＜Save＞ in its text, it gets +2000 DP.</dd>
+<dd>[Your Turn] While this Digimon has <Save> in its text, it gets +2000 DP.</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -4552,7 +4552,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Blocker＞ (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
+<dd><Blocker> (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -4627,7 +4627,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn] While this Digimon has [Imperialdramon] in its name or a [Free] trait, it gains ＜Piercing＞.</dd>
+<dd>[Your Turn] While this Digimon has [Imperialdramon] in its name or a [Free] trait, it gains <Piercing>.</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -4694,11 +4694,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 2 from Lv.3 w/＜Save＞ in text DigiXros -2: 1 Digimon card w/＜Save＞ in text [On Play][When Digivolving] You may play 1 [Airu Suzaki], [Ren Tobari], or [Ryouma Mogami] card from your hand without paying its cost.[On Deletion] ＜Save＞. Then, place 1 Digimon card with ＜Save＞ in its text from your trash under 1 of your Tamers.</dd>
+<dd>Digivolve: 2 from Lv.3 w/<Save> in text DigiXros -2: 1 Digimon card w/<Save> in text [On Play][When Digivolving] You may play 1 [Airu Suzaki], [Ren Tobari], or [Ryouma Mogami] card from your hand without paying its cost.[On Deletion] <Save>. Then, place 1 Digimon card with <Save> in its text from your trash under 1 of your Tamers.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn] While this Digimon has ＜Save＞ in its text, it gets +2000 DP.</dd>
+<dd>[Your Turn] While this Digimon has <Save> in its text, it gets +2000 DP.</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -4767,11 +4767,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 2 from Lv.3 w/＜Save＞ in text DigiXros -2: 1 Digimon card w/＜Save＞ in text [On Play][When Digivolving] You may play 1 [Airu Suzaki], [Ren Tobari], or [Ryouma Mogami] card from your hand without paying its cost.[On Deletion] ＜Save＞. Then, place 1 Digimon card with ＜Save＞ in its text from your trash under 1 of your Tamers.</dd>
+<dd>Digivolve: 2 from Lv.3 w/<Save> in text DigiXros -2: 1 Digimon card w/<Save> in text [On Play][When Digivolving] You may play 1 [Airu Suzaki], [Ren Tobari], or [Ryouma Mogami] card from your hand without paying its cost.[On Deletion] <Save>. Then, place 1 Digimon card with <Save> in its text from your trash under 1 of your Tamers.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn] While this Digimon has ＜Save＞ in its text, it gets +2000 DP.</dd>
+<dd>[Your Turn] While this Digimon has <Save> in its text, it gets +2000 DP.</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -4909,7 +4909,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 3 from Lv.4 w/＜Save＞ in text</dd>
+<dd>Digivolve: 3 from Lv.4 w/<Save> in text</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -5193,7 +5193,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 9 from Lv.5 w/＜Save＞ in text [When Digivolving] Suspend all Digimon except this one, and suspend all of you and your opponent's Tamers. Then, for every 2 suspended Digimon and Tamers, gain 1 memory.[All Turns] Other than this Digimon, all Digimon and Tamers don't unsuspend.[When Attacking] Suspend 1 of your opponent's Digimon or Tamers. Then, trash 1 card from the top of your opponent’s security stack for every 5 suspended Digimon and Tamers.</dd>
+<dd>Digivolve: 9 from Lv.5 w/<Save> in text [When Digivolving] Suspend all Digimon except this one, and suspend all of you and your opponent's Tamers. Then, for every 2 suspended Digimon and Tamers, gain 1 memory.[All Turns] Other than this Digimon, all Digimon and Tamers don't unsuspend.[When Attacking] Suspend 1 of your opponent's Digimon or Tamers. Then, trash 1 card from the top of your opponent’s security stack for every 5 suspended Digimon and Tamers.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -5266,7 +5266,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 9 from Lv.5 w/＜Save＞ in text [When Digivolving] Suspend all Digimon except this one, and suspend all of you and your opponent's Tamers. Then, for every 2 suspended Digimon and Tamers, gain 1 memory.[All Turns] Other than this Digimon, all Digimon and Tamers don't unsuspend.[When Attacking] Suspend 1 of your opponent's Digimon or Tamers. Then, trash 1 card from the top of your opponent’s security stack for every 5 suspended Digimon and Tamers.</dd>
+<dd>Digivolve: 9 from Lv.5 w/<Save> in text [When Digivolving] Suspend all Digimon except this one, and suspend all of you and your opponent's Tamers. Then, for every 2 suspended Digimon and Tamers, gain 1 memory.[All Turns] Other than this Digimon, all Digimon and Tamers don't unsuspend.[When Attacking] Suspend 1 of your opponent's Digimon or Tamers. Then, trash 1 card from the top of your opponent’s security stack for every 5 suspended Digimon and Tamers.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -5337,7 +5337,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 0 from Lv.2 w/＜Save＞ in text</dd>
+<dd>Digivolve: 0 from Lv.2 w/<Save> in text</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -5479,11 +5479,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 0 from Lv.2 w/＜Save＞ in text [On Deletion] ＜Save＞ (You may place this card under one of your Tamers.)</dd>
+<dd>Digivolve: 0 from Lv.2 w/<Save> in text [On Deletion] <Save> (You may place this card under one of your Tamers.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn] While this Digimon has ＜Save＞ in its text, it gains ＜Blocker＞.</dd>
+<dd>[Your Turn] While this Digimon has <Save> in its text, it gains <Blocker>.</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -5550,11 +5550,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 2 from Lv.3 w/＜Save＞ in text</dd>
+<dd>Digivolve: 2 from Lv.3 w/<Save> in text</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>＜Reboot＞ (Unsuspend this Digimon during your opponent's unsuspend phase)</dd>
+<dd><Reboot> (Unsuspend this Digimon during your opponent's unsuspend phase)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -5692,11 +5692,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 2 from Lv.3 w/＜Save＞ in text DigiXros -2: 1 Digimon card w/＜Save＞ in text[On Play][When Digivolving] Reveal the top 3 cards of your deck. You may play 1 [Taiki Kudo], [Yuu Amano], or [Tagiru Akashi] card among them without paying its cost. Place the remaining cards at the bottom of your deck in any order.[On Deletion] ＜Save＞. Then, place 1 Digimon card with ＜Save＞ in its text from your trash under 1 of your Tamers.</dd>
+<dd>Digivolve: 2 from Lv.3 w/<Save> in text DigiXros -2: 1 Digimon card w/<Save> in text[On Play][When Digivolving] Reveal the top 3 cards of your deck. You may play 1 [Taiki Kudo], [Yuu Amano], or [Tagiru Akashi] card among them without paying its cost. Place the remaining cards at the bottom of your deck in any order.[On Deletion] <Save>. Then, place 1 Digimon card with <Save> in its text from your trash under 1 of your Tamers.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn] While this Digimon has ＜Save＞ in its text, it gains ＜Blocker＞.</dd>
+<dd>[Your Turn] While this Digimon has <Save> in its text, it gains <Blocker>.</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -5763,11 +5763,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 3 from Lv.3 w/＜Save＞ in text [When Digivolving] ＜De-Digivolve 1＞ on 1 of your opponent's level 5 or lower Digimon. For every 2 cards in this Digimon's digivolution cards, add 1 to the max level of the Digimon you can choose with this effect.[On Deletion] ＜Save＞ (You may place this card under one of your Tamers.) Then, place 1 Digimon card with ＜Save＞ in its text from your trash under 1 of your Tamers.</dd>
+<dd>Digivolve: 3 from Lv.3 w/<Save> in text [When Digivolving] <De-Digivolve 1> on 1 of your opponent's level 5 or lower Digimon. For every 2 cards in this Digimon's digivolution cards, add 1 to the max level of the Digimon you can choose with this effect.[On Deletion] <Save> (You may place this card under one of your Tamers.) Then, place 1 Digimon card with <Save> in its text from your trash under 1 of your Tamers.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn] While this Digimon has ＜Save＞ in its text, it gains ＜Blocker＞.</dd>
+<dd>[Your Turn] While this Digimon has <Save> in its text, it gains <Blocker>.</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -5836,11 +5836,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 3 from Lv.3 w/＜Save＞ in text [When Digivolving] ＜De-Digivolve 1＞ on 1 of your opponent's level 5 or lower Digimon. For every 2 cards in this Digimon's digivolution cards, add 1 to the max level of the Digimon you can choose with this effect.[On Deletion] ＜Save＞ (You may place this card under one of your Tamers.) Then, place 1 Digimon card with ＜Save＞ in its text from your trash under 1 of your Tamers.</dd>
+<dd>Digivolve: 3 from Lv.3 w/<Save> in text [When Digivolving] <De-Digivolve 1> on 1 of your opponent's level 5 or lower Digimon. For every 2 cards in this Digimon's digivolution cards, add 1 to the max level of the Digimon you can choose with this effect.[On Deletion] <Save> (You may place this card under one of your Tamers.) Then, place 1 Digimon card with <Save> in its text from your trash under 1 of your Tamers.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn] While this Digimon has ＜Save＞ in its text, it gains ＜Blocker＞.</dd>
+<dd>[Your Turn] While this Digimon has <Save> in its text, it gains <Blocker>.</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -5978,7 +5978,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 0 from [Sephirothmon] You may digivolve this card from your hand onto one of your black Tamers as if the Tamer is a level 3 black Digimon.[On Play][When Digivolving] 1 of your Digimon gains ＜Blocker＞ until the end of your opponent's turn.</dd>
+<dd>Digivolve: 0 from [Sephirothmon] You may digivolve this card from your hand onto one of your black Tamers as if the Tamer is a level 3 black Digimon.[On Play][When Digivolving] 1 of your Digimon gains <Blocker> until the end of your opponent's turn.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -6049,7 +6049,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 3 from Lv.4 w/＜Save＞ in text</dd>
+<dd>Digivolve: 3 from Lv.4 w/<Save> in text</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -6120,11 +6120,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 3 from Lv.4 w/[Greymon] in name ＜Raid＞ (When this Digimon attacks, you may switch the target of attack to 1 of your opponent's unsuspended Digimon with the highest DP.)[All Turns][Once Per Turn] If an attack target is switched, you may play 1 black or red Tamer card with a play cost of 4 or less from your hand without paying its cost.</dd>
+<dd>Digivolve: 3 from Lv.4 w/[Greymon] in name <Raid> (When this Digimon attacks, you may switch the target of attack to 1 of your opponent's unsuspended Digimon with the highest DP.)[All Turns][Once Per Turn] If an attack target is switched, you may play 1 black or red Tamer card with a play cost of 4 or less from your hand without paying its cost.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn] While this Digimon has [Greymon] or [Omnimon] in its name, it gains ＜Piercing＞.</dd>
+<dd>[Your Turn] While this Digimon has [Greymon] or [Omnimon] in its name, it gains <Piercing>.</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -6262,7 +6262,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 3 from Lv.5 w/[MetalGreymon] in name ＜Raid＞ (When this Digimon attacks, you may switch the target of attack to 1 of your opponent's unsuspended Digimon with the highest DP.)[When Digivolving] This Digimon gets +3000 DP and ＜Reboot＞ until the end of your opponent's turn.[All Turns][Once Per Turn] If an attack target is switched, unsuspend this Digimon.</dd>
+<dd>Digivolve: 3 from Lv.5 w/[MetalGreymon] in name <Raid> (When this Digimon attacks, you may switch the target of attack to 1 of your opponent's unsuspended Digimon with the highest DP.)[When Digivolving] This Digimon gets +3000 DP and <Reboot> until the end of your opponent's turn.[All Turns][Once Per Turn] If an attack target is switched, unsuspend this Digimon.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -6335,7 +6335,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 3 from Lv.5 w/[MetalGreymon] in name ＜Raid＞ (When this Digimon attacks, you may switch the target of attack to 1 of your opponent's unsuspended Digimon with the highest DP.)[When Digivolving] This Digimon gets +3000 DP and ＜Reboot＞ until the end of your opponent's turn.[All Turns][Once Per Turn] If an attack target is switched, unsuspend this Digimon.</dd>
+<dd>Digivolve: 3 from Lv.5 w/[MetalGreymon] in name <Raid> (When this Digimon attacks, you may switch the target of attack to 1 of your opponent's unsuspended Digimon with the highest DP.)[When Digivolving] This Digimon gets +3000 DP and <Reboot> until the end of your opponent's turn.[All Turns][Once Per Turn] If an attack target is switched, unsuspend this Digimon.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -6619,11 +6619,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 0 from Lv.2 w/＜Save＞ in text DigiXros -2: 1 Digimon card w/＜Save＞ in text When you would play this card, you may place specified cards from your hand/battle area under it. Each placed card reduces the play cost.[On Play] By placing 1 Digimon card with ＜Save＞ in its text from your hand under one of your Tamers, ＜Draw 1＞.[On Deletion] ＜Save＞ (You may place this card under one of your Tamers.)</dd>
+<dd>Digivolve: 0 from Lv.2 w/<Save> in text DigiXros -2: 1 Digimon card w/<Save> in text When you would play this card, you may place specified cards from your hand/battle area under it. Each placed card reduces the play cost.[On Play] By placing 1 Digimon card with <Save> in its text from your hand under one of your Tamers, <Draw 1>.[On Deletion] <Save> (You may place this card under one of your Tamers.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[When Attacking][Once Per Turn] If this Digimon has ＜Save＞ in its text, ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[When Attacking][Once Per Turn] If this Digimon has <Save> in its text, <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -6690,11 +6690,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 0 from Lv.2 w/＜Save＞ in text DigiXros -2: 1 Digimon card w/＜Save＞ in text When you would play this card, you may place specified cards from your hand/battle area under it. Each placed card reduces the play cost.[On Play] You may return 1 Digimon card with ＜Save＞ in its text from under one of your Tamers to your hand.[On Deletion] ＜Save＞ (You may place this card under one of your Tamers.)</dd>
+<dd>Digivolve: 0 from Lv.2 w/<Save> in text DigiXros -2: 1 Digimon card w/<Save> in text When you would play this card, you may place specified cards from your hand/battle area under it. Each placed card reduces the play cost.[On Play] You may return 1 Digimon card with <Save> in its text from under one of your Tamers to your hand.[On Deletion] <Save> (You may place this card under one of your Tamers.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[When Attacking][Once Per Turn] If this Digimon has ＜Save＞ in its text, ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[When Attacking][Once Per Turn] If this Digimon has <Save> in its text, <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -6761,11 +6761,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 2 from Lv.3 w/＜Save＞ in text</dd>
+<dd>Digivolve: 2 from Lv.3 w/<Save> in text</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>＜Retaliation＞ (When this Digimon is deleted after losing a battle, delete the Digimon it was battling.)</dd>
+<dd><Retaliation> (When this Digimon is deleted after losing a battle, delete the Digimon it was battling.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -6832,11 +6832,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 2 from Lv.3 w/＜Save＞ in text [When Digivolving] If there are 2 or more digivolution cards under this Digimon, this Digimon gains ＜Rush＞ for the turn.[On Deletion] ＜Save＞ (You may place this card under one of your Tamers.) Then, place 1 Digimon card with ＜Save＞ in its text from your trash under 1 of your Tamers.</dd>
+<dd>Digivolve: 2 from Lv.3 w/<Save> in text [When Digivolving] If there are 2 or more digivolution cards under this Digimon, this Digimon gains <Rush> for the turn.[On Deletion] <Save> (You may place this card under one of your Tamers.) Then, place 1 Digimon card with <Save> in its text from your trash under 1 of your Tamers.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[When Attacking][Once Per Turn] If this Digimon has ＜Save＞ in its text, ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[When Attacking][Once Per Turn] If this Digimon has <Save> in its text, <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -6905,11 +6905,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 2 from Lv.3 w/＜Save＞ in text [When Digivolving] If there are 2 or more digivolution cards under this Digimon, this Digimon gains ＜Rush＞ for the turn.[On Deletion] ＜Save＞ (You may place this card under one of your Tamers.) Then, place 1 Digimon card with ＜Save＞ in its text from your trash under 1 of your Tamers.</dd>
+<dd>Digivolve: 2 from Lv.3 w/<Save> in text [When Digivolving] If there are 2 or more digivolution cards under this Digimon, this Digimon gains <Rush> for the turn.[On Deletion] <Save> (You may place this card under one of your Tamers.) Then, place 1 Digimon card with <Save> in its text from your trash under 1 of your Tamers.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[When Attacking][Once Per Turn] If this Digimon has ＜Save＞ in its text, ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[When Attacking][Once Per Turn] If this Digimon has <Save> in its text, <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -6976,7 +6976,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 0 from [Wizardmon][When Digivolving] Trash the top 2 cards of your deck. If [Wizardmon] or [X Antibody] is in this Digimon's digivolution cards, it gains ＜Blocker＞ until the end of your opponent's turn instead.</dd>
+<dd>Digivolve: 0 from [Wizardmon][When Digivolving] Trash the top 2 cards of your deck. If [Wizardmon] or [X Antibody] is in this Digimon's digivolution cards, it gains <Blocker> until the end of your opponent's turn instead.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -7122,7 +7122,7 @@
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>＜Blocker＞ (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
+<dd><Blocker> (When an opponent's Digimon attacks, you may suspend this Digimon to force the opponent to attack it instead.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -7189,11 +7189,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 5 from [Psychemon]/3 from yellow, green, or purple Lv.4 w/＜Save＞ text [When Digivolving] You may play 1 level 4 or lower Digimon card with ＜Save＞ from under one of your Tamers without paying its cost. If there are 4 or more digivolution cards under this Digimon, it can be digivolved into a [Quartzmon] in your hand or under one of your Tamers with the digivolution cost reduced by 3 instead.</dd>
+<dd>Digivolve: 5 from [Psychemon]/3 from yellow, green, or purple Lv.4 w/<Save> text [When Digivolving] You may play 1 level 4 or lower Digimon card with <Save> from under one of your Tamers without paying its cost. If there are 4 or more digivolution cards under this Digimon, it can be digivolved into a [Quartzmon] in your hand or under one of your Tamers with the digivolution cost reduced by 3 instead.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[When Attacking][Once Per Turn] If this Digimon has ＜Save＞ in its text, ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[When Attacking][Once Per Turn] If this Digimon has <Save> in its text, <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -7262,11 +7262,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 5 from [Psychemon]/3 from yellow, green, or purple Lv.4 w/＜Save＞ text [When Digivolving] You may play 1 level 4 or lower Digimon card with ＜Save＞ from under one of your Tamers without paying its cost. If there are 4 or more digivolution cards under this Digimon, it can be digivolved into a [Quartzmon] in your hand or under one of your Tamers with the digivolution cost reduced by 3 instead.</dd>
+<dd>Digivolve: 5 from [Psychemon]/3 from yellow, green, or purple Lv.4 w/<Save> text [When Digivolving] You may play 1 level 4 or lower Digimon card with <Save> from under one of your Tamers without paying its cost. If there are 4 or more digivolution cards under this Digimon, it can be digivolved into a [Quartzmon] in your hand or under one of your Tamers with the digivolution cost reduced by 3 instead.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[When Attacking][Once Per Turn] If this Digimon has ＜Save＞ in its text, ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[When Attacking][Once Per Turn] If this Digimon has <Save> in its text, <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -7404,11 +7404,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 4 from red, black, or purple Lv.4 w/＜Save＞ text [When Digivolving] Place one of your opponent's level 3 or lower Digimon under another of your opponent's Digimon as its bottom digivolution card or under an opponent's Tamer. Add 1 to the max level of the Digimon you can choose with this effect for each differently colored Tamer you have in play.[End of Your Turn][Once Per Turn] If there are 4 or more digivolution cards under this Digimon, you may attack with this Digimon without suspending it.</dd>
+<dd>Digivolve: 4 from red, black, or purple Lv.4 w/<Save> text [When Digivolving] Place one of your opponent's level 3 or lower Digimon under another of your opponent's Digimon as its bottom digivolution card or under an opponent's Tamer. Add 1 to the max level of the Digimon you can choose with this effect for each differently colored Tamer you have in play.[End of Your Turn][Once Per Turn] If there are 4 or more digivolution cards under this Digimon, you may attack with this Digimon without suspending it.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[When Attacking][Once Per Turn] If this Digimon has ＜Save＞ in its text, ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[When Attacking][Once Per Turn] If this Digimon has <Save> in its text, <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -7477,11 +7477,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>Digivolve: 4 from red, black, or purple Lv.4 w/＜Save＞ text [When Digivolving] Place one of your opponent's level 3 or lower Digimon under another of your opponent's Digimon as its bottom digivolution card or under an opponent's Tamer. Add 1 to the max level of the Digimon you can choose with this effect for each differently colored Tamer you have in play.[End of Your Turn][Once Per Turn] If there are 4 or more digivolution cards under this Digimon, you may attack with this Digimon without suspending it.</dd>
+<dd>Digivolve: 4 from red, black, or purple Lv.4 w/<Save> text [When Digivolving] Place one of your opponent's level 3 or lower Digimon under another of your opponent's Digimon as its bottom digivolution card or under an opponent's Tamer. Add 1 to the max level of the Digimon you can choose with this effect for each differently colored Tamer you have in play.[End of Your Turn][Once Per Turn] If there are 4 or more digivolution cards under this Digimon, you may attack with this Digimon without suspending it.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[When Attacking][Once Per Turn] If this Digimon has ＜Save＞ in its text, ＜Draw 1＞. (Draw 1 card from your deck.)</dd>
+<dd>[When Attacking][Once Per Turn] If this Digimon has <Save> in its text, <Draw 1>. (Draw 1 card from your deck.)</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -7548,7 +7548,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>DigiXros -3: [Mervamon] × [Sparrowmon]＜Armor Purge＞[On Play][When Digivolving] You may place 1 Digimon card with a [Xros Heart] trait from your hand or from under one of your Tamers under this Digimon as its bottom digivolution card. Then, if this Digimon has [Sparrowmon] in its digivolution cards, until the end of your opponent's turn, all of your Digimon gain ＜Blocker＞ and can't be returned to hands or decks.[All Turns][Once Per Turn] If one of your other Digimon is deleted, unsuspend this Digimon.</dd>
+<dd>DigiXros -3: [Mervamon] × [Sparrowmon]<Armor Purge>[On Play][When Digivolving] You may place 1 Digimon card with a [Xros Heart] trait from your hand or from under one of your Tamers under this Digimon as its bottom digivolution card. Then, if this Digimon has [Sparrowmon] in its digivolution cards, until the end of your opponent's turn, all of your Digimon gain <Blocker> and can't be returned to hands or decks.[All Turns][Once Per Turn] If one of your other Digimon is deleted, unsuspend this Digimon.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -7763,11 +7763,11 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>＜Blocker＞[On Play] Reveal the top 3 cards of your deck. Add up to 2 differently colored Digimon cards with ＜Save＞ in their text among them to your hand. Place the remaining cards at the bottom of your deck in any order.[On Deletion] ＜Save＞ (You may place this card under one of your Tamers.)</dd>
+<dd><Blocker>[On Play] Reveal the top 3 cards of your deck. Add up to 2 differently colored Digimon cards with <Save> in their text among them to your hand. Place the remaining cards at the bottom of your deck in any order.[On Deletion] <Save> (You may place this card under one of your Tamers.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
-<dd>[Your Turn] While this Digimon has ＜Save＞ in its text, it gains ＜Jamming＞. (This Digimon can't be deleted in battles against Security Digimon).</dd>
+<dd>[Your Turn] While this Digimon has <Save> in its text, it gains <Jamming>. (This Digimon can't be deleted in battles against Security Digimon).</dd>
 </dl>
 <dl>
 <dt>Securityeffect</dt>
@@ -8267,7 +8267,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Start of Your Main Phase] By placing 1 of your Digimon cards with ＜Save＞ in its text from your hand under this Tamer, ＜Draw 1＞. (Draw 1 card from your deck.)[Your Turn] If one of your Digimon digivolves into a Digimon card with ＜Save＞ in its text, by suspending this Tamer and placing 1 card from under one of your Tamers under that Digimon as one of its digivolution cards, reduce the digivolution cost by 1.</dd>
+<dd>[Start of Your Main Phase] By placing 1 of your Digimon cards with <Save> in its text from your hand under this Tamer, <Draw 1>. (Draw 1 card from your deck.)[Your Turn] If one of your Digimon digivolves into a Digimon card with <Save> in its text, by suspending this Tamer and placing 1 card from under one of your Tamers under that Digimon as one of its digivolution cards, reduce the digivolution cost by 1.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -8339,7 +8339,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Start of Your Main Phase] By placing 1 of your Digimon cards with ＜Save＞ in its text from your hand under this Tamer, ＜Draw 1＞. (Draw 1 card from your deck.)[Your Turn] If one of your Digimon digivolves into a Digimon card with ＜Save＞ in its text, by suspending this Tamer and placing 1 card from under one of your Tamers under that Digimon as one of its digivolution cards, reduce the digivolution cost by 1.</dd>
+<dd>[Start of Your Main Phase] By placing 1 of your Digimon cards with <Save> in its text from your hand under this Tamer, <Draw 1>. (Draw 1 card from your deck.)[Your Turn] If one of your Digimon digivolves into a Digimon card with <Save> in its text, by suspending this Tamer and placing 1 card from under one of your Tamers under that Digimon as one of its digivolution cards, reduce the digivolution cost by 1.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -8835,7 +8835,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Start of Your Main Phase] By placing 1 Digimon card with ＜Save＞ in its text from your hand under this Tamer, 1 of your opponent's Digimon gets -2000 DP for the turn.[Your Turn] If one of your Digimon digivolves into a Digimon card with ＜Save＞ in its text, by suspending this Tamer and placing 1 card from under one of your Tamers under that Digimon as one of its digivolution cards, reduce the digivolution cost by 1.</dd>
+<dd>[Start of Your Main Phase] By placing 1 Digimon card with <Save> in its text from your hand under this Tamer, 1 of your opponent's Digimon gets -2000 DP for the turn.[Your Turn] If one of your Digimon digivolves into a Digimon card with <Save> in its text, by suspending this Tamer and placing 1 card from under one of your Tamers under that Digimon as one of its digivolution cards, reduce the digivolution cost by 1.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -9047,7 +9047,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Start of Your Main Phase] By placing 1 Digimon card with ＜Save＞ in its text from your hand under this Tamer, 1 of your Digimon gets +2000 DP for the turn.[Your Turn] If one of your Digimon digivolves into a Digimon card with ＜Save＞ in its text, by suspending this Tamer and placing 1 card from under one of your Tamers under that Digimon as one of its digivolution cards, reduce the digivolution cost by 1.</dd>
+<dd>[Start of Your Main Phase] By placing 1 Digimon card with <Save> in its text from your hand under this Tamer, 1 of your Digimon gets +2000 DP for the turn.[Your Turn] If one of your Digimon digivolves into a Digimon card with <Save> in its text, by suspending this Tamer and placing 1 card from under one of your Tamers under that Digimon as one of its digivolution cards, reduce the digivolution cost by 1.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -9117,7 +9117,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Start of Your Main Phase] By placing 1 Digimon card with ＜Save＞ in its text from your hand under this Tamer, gain 1 memory.[Your Turn] If one of your Digimon digivolves into a Digimon card with ＜Save＞ in its text, by suspending this Tamer and placing 1 card from under one of your Tamers under that Digimon as one of its digivolution cards, reduce the digivolution cost by 1.</dd>
+<dd>[Start of Your Main Phase] By placing 1 Digimon card with <Save> in its text from your hand under this Tamer, gain 1 memory.[Your Turn] If one of your Digimon digivolves into a Digimon card with <Save> in its text, by suspending this Tamer and placing 1 card from under one of your Tamers under that Digimon as one of its digivolution cards, reduce the digivolution cost by 1.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -9187,7 +9187,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Start of Your Main Phase][On Play] 1 of your Digimon with [Agumon] or [Greymon] in its name gets +1000 DP and ＜Blocker＞ until the end of your opponent's turn.[Your Turn] If one of your Digimon digivolves into a Digimon with [Greymon] or [Omnimon] in its name, by suspending this Tamer, gain 1 memory.</dd>
+<dd>[Start of Your Main Phase][On Play] 1 of your Digimon with [Agumon] or [Greymon] in its name gets +1000 DP and <Blocker> until the end of your opponent's turn.[Your Turn] If one of your Digimon digivolves into a Digimon with [Greymon] or [Omnimon] in its name, by suspending this Tamer, gain 1 memory.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -9259,7 +9259,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Start of Your Main Phase][On Play] 1 of your Digimon with [Agumon] or [Greymon] in its name gets +1000 DP and ＜Blocker＞ until the end of your opponent's turn.[Your Turn] If one of your Digimon digivolves into a Digimon with [Greymon] or [Omnimon] in its name, by suspending this Tamer, gain 1 memory.</dd>
+<dd>[Start of Your Main Phase][On Play] 1 of your Digimon with [Agumon] or [Greymon] in its name gets +1000 DP and <Blocker> until the end of your opponent's turn.[Your Turn] If one of your Digimon digivolves into a Digimon with [Greymon] or [Omnimon] in its name, by suspending this Tamer, gain 1 memory.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -9329,7 +9329,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Start of Your Turn] If you have 2 memory or less, set your memory to 3.[Your Turn] If one of your Digimon digivolves into a Digimon card with ＜Save＞ in its text, by suspending this Tamer and placing 1 card from under one of your Tamers under that Digimon as one of its digivolution cards, reduce the digivolution cost by 1.</dd>
+<dd>[Start of Your Turn] If you have 2 memory or less, set your memory to 3.[Your Turn] If one of your Digimon digivolves into a Digimon card with <Save> in its text, by suspending this Tamer and placing 1 card from under one of your Tamers under that Digimon as one of its digivolution cards, reduce the digivolution cost by 1.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -9401,7 +9401,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Start of Your Turn] If you have 2 memory or less, set your memory to 3.[Your Turn] If one of your Digimon digivolves into a Digimon card with ＜Save＞ in its text, by suspending this Tamer and placing 1 card from under one of your Tamers under that Digimon as one of its digivolution cards, reduce the digivolution cost by 1.</dd>
+<dd>[Start of Your Turn] If you have 2 memory or less, set your memory to 3.[Your Turn] If one of your Digimon digivolves into a Digimon card with <Save> in its text, by suspending this Tamer and placing 1 card from under one of your Tamers under that Digimon as one of its digivolution cards, reduce the digivolution cost by 1.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -9471,7 +9471,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Start of Your Main Phase] If there are 2 or less cards under this Tamer, place 1 Digimon card with ＜Save＞ in its text from your trash under this Tamer.[Your Turn] If one of your Digimon digivolves into a Digimon card with ＜Save＞ in its text, by suspending this Tamer and placing 1 card from under one of your Tamers under that Digimon as one of its digivolution cards, reduce the digivolution cost by 1.</dd>
+<dd>[Start of Your Main Phase] If there are 2 or less cards under this Tamer, place 1 Digimon card with <Save> in its text from your trash under this Tamer.[Your Turn] If one of your Digimon digivolves into a Digimon card with <Save> in its text, by suspending this Tamer and placing 1 card from under one of your Tamers under that Digimon as one of its digivolution cards, reduce the digivolution cost by 1.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -9541,7 +9541,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[On Play] Reveal the top 3 cards of your deck. Add 1 Digimon card with ＜Save＞ in its text and 1 card with a [Hunter] trait among them to your hand. Place the remaining cards at the bottom of your deck in any order.[Main] If you have 4 or more Tamers in play, by suspending this Tamer, 1 of your Digimon with ＜Save＞ in its text gains ＜Security Attack +1＞ for the turn.</dd>
+<dd>[On Play] Reveal the top 3 cards of your deck. Add 1 Digimon card with <Save> in its text and 1 card with a [Hunter] trait among them to your hand. Place the remaining cards at the bottom of your deck in any order.[Main] If you have 4 or more Tamers in play, by suspending this Tamer, 1 of your Digimon with <Save> in its text gains <Security Attack +1> for the turn.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -9891,7 +9891,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>While you have a Tamer with a [Hunter] trait in play, you may use this card without meeting its color requirements.[Main] 1 of your opponent's Digimon gets -4000 DP for the turn. Then, if you have a Digimon with 4 or more digivolution cards in play, 1 of your opponent's Digimon gains ＜Security Attack -1＞ for the turn. (This Digimon checks 1 fewer security cards.)</dd>
+<dd>While you have a Tamer with a [Hunter] trait in play, you may use this card without meeting its color requirements.[Main] 1 of your opponent's Digimon gets -4000 DP for the turn. Then, if you have a Digimon with 4 or more digivolution cards in play, 1 of your opponent's Digimon gains <Security Attack -1> for the turn. (This Digimon checks 1 fewer security cards.)</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>
@@ -10311,7 +10311,7 @@
 <divclass="cardinfo_bottom">
 <dl>
 <dt>Effect</dt>
-<dd>[Main] While you have a Tamer with a [Hunter] trait in play, you may use this card without meeting its color requirements.Digivolve 1 of your Digimon into a Digimon card with ＜Save＞ in its text under one of your Tamers for its digivolution cost.</dd>
+<dd>[Main] While you have a Tamer with a [Hunter] trait in play, you may use this card without meeting its color requirements.Digivolve 1 of your Digimon into a Digimon card with <Save> in its text under one of your Tamers for its digivolution cost.</dd>
 </dl>
 <dl>
 <dt>Digivolveeffect</dt>

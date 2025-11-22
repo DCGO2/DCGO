@@ -156,7 +156,7 @@ namespace DCGO.CardEffects.BT22
 
                 string EffectDiscription()
                 {
-                    return "[Your Turn] When any of your [Arisa Kinosaki] suspend, ＜Delay＞ (By trashing this card after the placing turn, activate the effect below.)\r\n・1 of your [Puppet] trait Digimon may digivolve into a [Puppet] and [LIBERATOR] trait Digimon card in the hand with the digivolution cost reduced by 3.";
+                    return "[Your Turn] When any of your [Arisa Kinosaki] suspend, <Delay> (By trashing this card after the placing turn, activate the effect below.)\r\n・1 of your [Puppet] trait Digimon may digivolve into a [Puppet] and [LIBERATOR] trait Digimon card in the hand with the digivolution cost reduced by 3.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)

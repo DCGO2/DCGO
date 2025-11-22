@@ -92,7 +92,7 @@ namespace DCGO.CardEffects.EX10
 
                 string EffectDiscription()
                 {
-                    return "[Start of Your Main Phase] By trashing 1 card with ＜Save＞ in its text from your hand, ＜Draw 1＞ (Draw 1 card from your deck.) and suspend 1 of your opponent's Digimon.";
+                    return "[Start of Your Main Phase] By trashing 1 card with <Save> in its text from your hand, <Draw 1> (Draw 1 card from your deck.) and suspend 1 of your opponent's Digimon.";
                 }
 
                 bool CanUseCondition(Hashtable hashtable)
