@@ -104,6 +104,7 @@ namespace DCGO.CardEffects.BT23
                 activateClass.SetUpICardEffect("Digivolve 1 of your Digimon into [Undead] or [Dark Animal] Digimon in trash", CanUseCondition, card);
                 activateClass.SetUpActivateClass(CanActivateCondition, ActivateCoroutine, 1, true, EffectDiscription());
                 activateClass.SetIsInheritedEffect(true);
+                activateClass.SetHashString("BT23_063");
                 cardEffects.Add(activateClass);
 
                 string EffectDiscription()
